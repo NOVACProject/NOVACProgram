@@ -36,7 +36,7 @@ public:
 		if(!szObjectName)
 			szObjName = "none";
 
-		char* szName;
+		const char* szName;
 		if(szModule)
 		{
 			szName = strrchr(szModule, '\\');
@@ -387,7 +387,7 @@ public:
 			return(true);
 
 		// strip path definitions
-		char* szModName = strrchr(szModule, '\\');
+		const char* szModName = strrchr(szModule, '\\');
 		if(!szModName)
 		{
 			szModName = strrchr(szModule, '/');

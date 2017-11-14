@@ -263,7 +263,7 @@ void CScannerConfiguration::OnChangeScanner(){
 	m_pageCommunication.OnChangeScanner();
 	m_pageDark.OnChangeScanner();
 	m_pageLocation.OnChangeScanner();
-	for(k = 0; k < MAX_CHANNEL_NUM; ++k){
+	for(int k = 0; k < MAX_CHANNEL_NUM; ++k){
 		if(m_showEvalPage[k])
 			m_pageEvaluation[k].OnChangeScanner();
 	}

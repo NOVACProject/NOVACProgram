@@ -242,14 +242,14 @@ void CExportSpectraDlg::SaveSpectrum(const CSpectrum &spec, const CString &path)
 
 	int nChn = spec.Split(mSpec);
 
-	for(k = 0; k < nChn; ++k){
+	for(int k = 0; k < nChn; ++k){
 		filename.Format("%s\\%05d_%d.STD",     path, m_specIndex, k);
 
 		// Write the spectrum to file
 		CSTDFile::WriteSpectrum(mSpec[k], filename, 1);
 	}
 
-	for(k = 0; k < MAX_CHANNEL_NUM; ++k){
+	for(int k = 0; k < MAX_CHANNEL_NUM; ++k){
 		delete(mSpec[k]);
 	}
 }

@@ -173,7 +173,7 @@ namespace MathFit
 		*/
 		CVector& Copy(const CVector& vSecond)
 		{
-			const iSecSize = vSecond.GetSize();
+			const int iSecSize = vSecond.GetSize();
 
 			SetSize(iSecSize);
 

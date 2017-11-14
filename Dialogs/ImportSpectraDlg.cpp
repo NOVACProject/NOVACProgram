@@ -781,7 +781,7 @@ int ReadSpectrum(unsigned int index, const CString &prefix, CSpectrum &spec, con
 		return i;
 	}	
 
-	for(i = 0; i < startAt; ++i){
+	for(int i = 0; i < startAt; ++i){
 		str = spectrumFiles.GetAt(i);
 		// search for 'dark' spectra...
 		if(-1 == str->Find(prefix))

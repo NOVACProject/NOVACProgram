@@ -1049,7 +1049,7 @@ double Common::CalculateFlux_ConeFormula(const double *scanAngle, const double *
 	}
 
 	// Now make the actual flux-calculation
-	for(i = 0; i < nDataPoints - 2; ++i){
+	for(int i = 0; i < nDataPoints - 2; ++i){
 		if(fabs(fabs(alpha[i]) - HALF_PI) < 1e-2 || fabs(fabs(alpha[i+1]) - HALF_PI) < 1e-2)
 			continue;// This algorithm does not work very well for scanangles around +-90 degrees
 
@@ -1146,7 +1146,7 @@ double Common::CalculateFlux_HeidelbergFormula(const double *scanAngle1, const d
 
 	// Now make the actual flux-calculation
 /*TODO: flux calculations for Heidelberg instrument differ from Gothenborg instrument because local and global coordinate system do not differ!!!! Define another loop for Heidelberg?*/
-	for(i = 0; i < nDataPoints - 2; ++i){
+	for(int i = 0; i < nDataPoints - 2; ++i){
 		if(fabs(fabs(elev[i]) - HALF_PI) < 1e-2 || fabs(fabs(elev[i+1]) - HALF_PI) < 1e-2)
 			continue;// This algorithm does not work very well for scanangles around +-90 degrees
 		
@@ -1311,14 +1311,14 @@ bool Common::FindPlume(const double *scanAngles, const double *phi, const double
 		plumeEdge_high = angle[nCol-1];
 		double minCol = Min(col, nCol);
 		double maxCol_div_e = (Max(col, nCol) - minCol) * 0.3679;
-		for(k = 0; k < nCol; ++k){
+		for(int k = 0; k < nCol; ++k){
 			if(angle[k] > plumeCentre_alpha){
 				break;
 			}else if((col[k] - minCol) < maxCol_div_e){
 				plumeEdge_low = angle[k];
 			}
 		}
-		for(k = nCol - 1; k >= 0; --k){
+		for(int k = nCol - 1; k >= 0; --k){
 			if(angle[k] <= plumeCentre_alpha){
 				break;
 			}else if((col[k] - minCol) < maxCol_div_e){
@@ -1382,7 +1382,7 @@ bool Common::CalculatePlumeCompleteness(const double *scanAngles, const double *
 	// Calculate the average of the 'nDataPointsToAverage' right-most values
 	double avgRight = 0.0;
 	nAverage = 0;
-	for(k = numPoints-1; k > 0; --k){
+	for(int k = numPoints-1; k > 0; --k){
 		if(!badEvaluation[k]){
 			avgRight += columns[k] - offset;
 			++nAverage;
@@ -1399,7 +1399,7 @@ bool Common::CalculatePlumeCompleteness(const double *scanAngles, const double *
 
 	// Find the maximum column value
 	double maxColumn = 0.0;
-	for(k = 0; k < numPoints; ++k){
+	for(int k = 0; k < numPoints; ++k){
 		if(!badEvaluation[k]){
 			maxColumn = max(maxColumn, columns[k] - offset);
 		}

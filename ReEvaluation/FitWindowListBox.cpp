@@ -243,7 +243,8 @@ void CFitWindowListBox::OnRemoveFitWindow(){
 	// Remove the window
 
 	// Shift down all the other windows.
-	for(int i = curSel; i < m_reeval->MAX_N_WINDOWS-2; ++i){
+	int i;
+	for(i = curSel; i < m_reeval->MAX_N_WINDOWS-2; ++i){
 		m_reeval->m_window[i] = m_reeval->m_window[i+1];		
 	}
 	m_reeval->m_window[i].Clear();

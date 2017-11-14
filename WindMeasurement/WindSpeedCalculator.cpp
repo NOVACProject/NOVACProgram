@@ -208,7 +208,7 @@ RETURN_CODE CWindSpeedCalculator::LowPassFilter(const CMeasurementSeries *series
 	memset(tmpTime, 0, newLength * sizeof(double));
 
 	// 7. Do the filtering...
-	for(k = 1; k < nIterations + 1; ++k){
+	for(int k = 1; k < nIterations + 1; ++k){
 		// 7a. The coefficient in the binomial - expansion
 		double coefficient = factorial[nIterations - 1] / (factorial[nIterations - k] * factorial[k - 1]);
 		coeffSum	+= coefficient;	

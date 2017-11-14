@@ -349,7 +349,7 @@ void CDataBrowserDlg::DrawScan(){
 		divisor = divisor << 1;
 	}
 	if(divisor > 1){
-		for(k = 0; k < numSpec; ++k){
+		for(int k = 0; k < numSpec; ++k){
 			peakIntensity[k] /= (double)divisor;
 		}
 	}
@@ -360,7 +360,7 @@ void CDataBrowserDlg::DrawScan(){
 		m_scanGraph.SetSecondYUnit("Saturation [%]");
 		SetDlgItemText(IDC_STATIC_PEAKINTENSITY, "Peak Saturation Ratio");
 		SetDlgItemText(IDC_STATIC_FITINTENSITY, "Fit Saturation Ratio");
-		for(k = 0; k < numSpec; ++k){
+		for(int k = 0; k < numSpec; ++k){
 			peakIntensity[k] *= 100.0;
 			fitIntensity[k]  *= 100.0;
 		}

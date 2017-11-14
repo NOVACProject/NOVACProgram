@@ -213,7 +213,7 @@ void CPakFileInspector::CheckPakFile(){
 		pFile		= new CFile(m_fileName, CFile::modeRead | CFile::shareDenyNone);
 		fileSize	= pFile->GetLength();
 		fileSize	/= 1024; // we want the size in kB.
-	}catch(CFileException pEx){
+	}catch(CFileException* pEx){
 		// Here I don't know what to do...
 	}
 	if(pFile != NULL){

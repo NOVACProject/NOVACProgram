@@ -95,12 +95,13 @@ void CConfigurationTreeCtrl::PopulateTreeControl(){
 		
 		for(j = 0; j < m_configuration->scannerNum; ++j){
 			if(scanners[j] == i){
-				for(k = 0; k < m_configuration->scanner[j].specNum; ++k)
+				for (k = 0; k < m_configuration->scanner[j].specNum; ++k) {
 					HTREEITEM item = InsertItem(m_configuration->scanner[j].spec[k].serialNumber, hTree);
-					if(first){
+					if (first) {
 						firstItem = &item;
 						first = false;
 					}
+				}
 			}
 		}
 		Expand(hTree, TVE_EXPAND);

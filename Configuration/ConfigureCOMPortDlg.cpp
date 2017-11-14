@@ -168,7 +168,7 @@ BOOL ConfigurationDialog::CConfigureCOMPortDlg::OnInitDialog()
 		m_comPort.AddString(port);
 	}
 
-	for(i = 0; i < sizeof(m_availableBaudrates)/sizeof(int); ++i){
+	for(int i = 0; i < sizeof(m_availableBaudrates)/sizeof(int); ++i){
 		bdr.Format("%d", m_availableBaudrates[i]);
 		m_baudrate.AddString(bdr);
 	}

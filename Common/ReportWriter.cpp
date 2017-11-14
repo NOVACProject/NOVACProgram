@@ -379,7 +379,7 @@ int CReportWriter::WriteDataHistogram(double *data, long nDataPoints, long nBins
 	CPoint pt[4]; // each rectangle...
 	CBrush barBrush(RGB(0, 0, 240));
 	CBrush *pBrush = dc->SelectObject(&barBrush);
-	for(k = 0; k < nBins; ++k){
+	for(int k = 0; k < nBins; ++k){
 		x1 = axisMargin + binWidth * k;
 		x2 = axisMargin + binWidth * (k+1);
 		y1 = imageHeight - axisMargin;

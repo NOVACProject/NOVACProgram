@@ -179,8 +179,8 @@ namespace MathFit
 				return vError;
 			}
 
-			const iErrorSize = vError.GetSize();
-			const iXSizeBase = mXData.GetSize();
+			const int iErrorSize = vError.GetSize();
+			const int iXSizeBase = mXData.GetSize();
 			int i, j;
 			for(i = j = 0; j < iErrorSize; j++)
 			{

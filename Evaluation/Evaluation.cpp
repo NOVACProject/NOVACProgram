@@ -159,11 +159,11 @@ int CEvaluation::Evaluate(const CSpectrum &sky, const CSpectrum &meas, const CFi
 	if(0 != CreateReferenceSpectrum(window, sky.m_info.m_startChannel)){
 		free(skyArray);
 		free(measArray);
-		for(k = 0; k < MAX_N_REFERENCES; ++k)
+		for(int k = 0; k < MAX_N_REFERENCES; ++k)
 			delete ref[k];
 		return 1;
 	}
-	for(i = 0; i < window.nRef; ++i){
+	for(int i = 0; i < window.nRef; ++i){
 			cRefSum.AddReference(*ref[i]); // <-- at last add the reference to the summation object
 	}
 
@@ -204,7 +204,7 @@ int CEvaluation::Evaluate(const CSpectrum &sky, const CSpectrum &meas, const CFi
 			ShowMessage(message);
 			free(skyArray);
 			free(measArray);
-			for(k = 0; k < MAX_N_REFERENCES; ++k)
+			for(int k = 0; k < MAX_N_REFERENCES; ++k)
 				delete ref[k];
 			return 1;
 		}
@@ -259,7 +259,7 @@ int CEvaluation::Evaluate(const CSpectrum &sky, const CSpectrum &meas, const CFi
 			// clean up the evaluation
 			free(skyArray);
 			free(measArray);
-			for(k = 0; k < MAX_N_REFERENCES; ++k)
+			for(int k = 0; k < MAX_N_REFERENCES; ++k)
 				delete ref[k];
 				return (0);
 			}
@@ -284,7 +284,7 @@ int CEvaluation::Evaluate(const CSpectrum &sky, const CSpectrum &meas, const CFi
 			// clean up the evaluation
 			free(skyArray);
 			free(measArray);
-			for(k = 0; k < MAX_N_REFERENCES; ++k)
+			for(int k = 0; k < MAX_N_REFERENCES; ++k)
 				delete ref[k];
 			delete solarSpec;
 
@@ -345,7 +345,7 @@ int CEvaluation::EvaluateShift(const CSpectrum &measured, const CFitWindow &wind
 
 	// Make a local copy of the solar-spectrum, this for the filtering...
 	double *solarArray = (double *)calloc(m_solarSpectrumData.GetSize(), sizeof(double));
-	for(k = 0; k < m_solarSpectrumData.GetSize(); ++k){
+	for(int k = 0; k < m_solarSpectrumData.GetSize(); ++k){
 		solarArray[k] = m_solarSpectrumData.GetAt(k);
 	}
 
@@ -366,7 +366,7 @@ int CEvaluation::EvaluateShift(const CSpectrum &measured, const CFitWindow &wind
 	Log(solarArray,	window.specLength);
 	CVector localSolarSpectrumData;
 	localSolarSpectrumData.SetSize(m_solarSpectrumData.GetSize());
-	for(k = 0; k < window.specLength; ++k){
+	for(int k = 0; k < window.specLength; ++k){
 		localSolarSpectrumData.SetAt(k, solarArray[k]);
 	}
 
@@ -410,7 +410,7 @@ int CEvaluation::EvaluateShift(const CSpectrum &measured, const CFitWindow &wind
 		Error0("Error initializing spline object!");
 		free(measArray);
 		delete solarSpec;
-		for(k = 0; k < MAX_N_REFERENCES; ++k)
+		for(int k = 0; k < MAX_N_REFERENCES; ++k)
 			delete ref[k];
 		return(1);
 	}
@@ -442,7 +442,7 @@ int CEvaluation::EvaluateShift(const CSpectrum &measured, const CFitWindow &wind
 		// transformation of the spectral data into a B-Spline that will be used to interpolate the 
 		// reference spectrum during shift and squeeze operations
 		yValues.SetSize(m_crossSection[i].GetSize());
-		for(k = 0; k < m_crossSection[i].GetSize(); ++k){
+		for(int k = 0; k < m_crossSection[i].GetSize(); ++k){
 			yValues.SetAt(k, m_crossSection[i].GetAt(k));
 		}
 		if(!ref[i]->SetData(vXData.SubVector(0, m_crossSection[i].GetSize()), yValues))
@@ -450,7 +450,7 @@ int CEvaluation::EvaluateShift(const CSpectrum &measured, const CFitWindow &wind
 			Error0("Error initializing spline object!");
 			free(measArray);
 			delete solarSpec;
-			for(k = 0; k < MAX_N_REFERENCES; ++k)
+			for(int k = 0; k < MAX_N_REFERENCES; ++k)
 				delete ref[k];
 			return(1);
 		}
@@ -498,7 +498,7 @@ int CEvaluation::EvaluateShift(const CSpectrum &measured, const CFitWindow &wind
 			ShowMessage(message);
 			free(measArray);
 			delete solarSpec;
-			for(k = 0; k < MAX_N_REFERENCES; ++k)
+			for(int k = 0; k < MAX_N_REFERENCES; ++k)
 				delete ref[k];
 			return 1;
 		}
@@ -543,7 +543,7 @@ int CEvaluation::EvaluateShift(const CSpectrum &measured, const CFitWindow &wind
 		// clean up the evaluation
 		free(measArray);
 		delete solarSpec;
-		for(k = 0; k < MAX_N_REFERENCES; ++k)
+		for(int k = 0; k < MAX_N_REFERENCES; ++k)
 			delete ref[k];
 			return (0);
 		}
@@ -592,7 +592,7 @@ int CEvaluation::EvaluateShift(const CSpectrum &measured, const CFitWindow &wind
 			// clean up the evaluation
 			free(measArray);
 			delete solarSpec;
-			for(k = 0; k < MAX_N_REFERENCES; ++k)
+			for(int k = 0; k < MAX_N_REFERENCES; ++k)
 				delete ref[k];
 
 			return (1);

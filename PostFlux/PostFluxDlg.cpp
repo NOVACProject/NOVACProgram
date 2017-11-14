@@ -438,7 +438,7 @@ void CPostFluxDlg::DrawScan(){
 	}
 	// If this is a time-series then we need the start-times for each spectrum
 	if(isTimeSeries){
-		for(k = 0; k < numSpec; ++k){
+		for(int k = 0; k < numSpec; ++k){
 			const CSpectrumTime *tid = scan.GetStartTime(k);
 			times[k] = tid->hr * 3600 + tid->m * 60 + tid->sec;
 		}
@@ -514,7 +514,7 @@ void CPostFluxDlg::DrawScan(){
 		}
 	}
 	if(divisor > 1){
-		for(k = 0; k < numSpec; ++k){
+		for(int k = 0; k < numSpec; ++k){
 			peakIntensity[k] /= (double)divisor;
 			fitIntensity[k]	/= (double)divisor;
 		}
@@ -534,7 +534,7 @@ void CPostFluxDlg::DrawScan(){
 		m_scanGraph.SetSecondYUnit("Saturation [%]");
 		SetDlgItemText(IDC_STATIC_PEAKINTENSITY, "Peak Saturation Ratio");
 		SetDlgItemText(IDC_STATIC_FITINTENSITY, "Fit Saturation Ratio");
-		for(k = 0; k < numSpec; ++k){
+		for(int k = 0; k < numSpec; ++k){
 			peakIntensity[k] *= 100.0;
 			fitIntensity[k]	*= 100.0;
 		}
@@ -725,7 +725,8 @@ void CPostFluxDlg::InitializeControls(){
 	SetDlgItemText(IDC_PF_TILT, str);
 
 	// The cone-angle
-	for(int k = 0; k < m_coneAngleNum; ++k){
+	int k;
+	for(k = 0; k < m_coneAngleNum; ++k){
 		if(fabs(info.m_coneAngle - m_coneAngles[k]) < 1){
 			m_coneangleCombo.SetCurSel(k);
 			if(k == 0){
