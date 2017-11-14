@@ -1,0 +1,512 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>NovacProgram</ProjectName>
+    <ProjectGuid>{376B3B71-E83D-4166-AD27-7114BEBE8335}</ProjectGuid>
+    <Keyword>MFCProj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+    <UseOfMfc>Static</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+    <UseOfMfc>Static</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>15.0.26730.3</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>Debug\</OutDir>
+    <IntDir>Debug\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+    <GenerateManifest>false</GenerateManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>Release\</OutDir>
+    <IntDir>Release\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+    <GenerateManifest>false</GenerateManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/D "_WIN32_IE 0x0550" %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <OmitFramePointers>false</OmitFramePointers>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <SmallerTypeCheck>false</SmallerTypeCheck>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>false</OptimizeReferences>
+      <EnableCOMDATFolding>false</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+      <TypeLibraryResourceID>1</TypeLibraryResourceID>
+    </Link>
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+    </Midl>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/D "_WIN32_IE 0x0550" %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Full</Optimization>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <OmitFramePointers>false</OmitFramePointers>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+      <TypeLibraryResourceID>1</TypeLibraryResourceID>
+    </Link>
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+    </Midl>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ShowProgress>false</ShowProgress>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="CombinerThread.cpp" />
+    <ClCompile Include="Common\CfgTxtFileHandler.cpp" />
+    <ClCompile Include="Common\Common.cpp" />
+    <ClCompile Include="Common\CompositionMeasurement.cpp" />
+    <ClCompile Include="Common\DateTime.cpp" />
+    <ClCompile Include="Common\EvaluationLogFileHandler.cpp" />
+    <ClCompile Include="Common\FluxLogFileHandler.cpp" />
+    <ClCompile Include="Common\GPSData.cpp" />
+    <ClCompile Include="Common\LogFileWriter.cpp" />
+    <ClCompile Include="Common\ReferenceFile.cpp" />
+    <ClCompile Include="Common\ReportWriter.cpp" />
+    <ClCompile Include="Common\Spectra\PakFileHandler.cpp" />
+    <ClCompile Include="Common\Spectra\ScanFileHandler.cpp" />
+    <ClCompile Include="Common\Spectra\Spectrum.cpp" />
+    <ClCompile Include="Common\Spectra\SpectrumInfo.cpp" />
+    <ClCompile Include="Common\Spectra\SpectrumIO.cpp" />
+    <ClCompile Include="Common\Spectra\SpectrumTime.cpp" />
+    <ClCompile Include="Common\SpectrometerModel.cpp" />
+    <ClCompile Include="Common\SpectrumFormat\MKPack.cpp" />
+    <ClCompile Include="Common\SpectrumFormat\STDFile.cpp" />
+    <ClCompile Include="Common\SpectrumFormat\TXTFile.cpp" />
+    <ClCompile Include="Common\Version.cpp" />
+    <ClCompile Include="Common\WindField.cpp" />
+    <ClCompile Include="Common\WindFieldRecord.cpp" />
+    <ClCompile Include="Common\WindFileReader.cpp" />
+    <ClCompile Include="Common\XMLFileReader.cpp" />
+    <ClCompile Include="CommunicationDataStorage.cpp" />
+    <ClCompile Include="communication\CommunicationController.cpp" />
+    <ClCompile Include="communication\FTPCom.cpp" />
+    <ClCompile Include="communication\FTPHandler.cpp" />
+    <ClCompile Include="communication\FTPServerContacter.cpp" />
+    <ClCompile Include="communication\FTPSocket.cpp" />
+    <ClCompile Include="communication\LinkStatistics.cpp" />
+    <ClCompile Include="communication\SerialCOM.cpp" />
+    <ClCompile Include="communication\SerialControllerWithTx.cpp" />
+    <ClCompile Include="Configuration\AdvancedFTPUploadSettings.cpp" />
+    <ClCompile Include="Configuration\Configuration.cpp" />
+    <ClCompile Include="Configuration\ConfigurationFileHandler.cpp" />
+    <ClCompile Include="Configuration\ConfigurationTreeCtrl.cpp" />
+    <ClCompile Include="Configuration\ConfigureCOMPortDlg.cpp" />
+    <ClCompile Include="Configuration\DarkConfigurationDlg.cpp" />
+    <ClCompile Include="Configuration\EvaluationConfigurationDlg.cpp" />
+    <ClCompile Include="Configuration\GlobalConfiguration.cpp" />
+    <ClCompile Include="Configuration\LocationConfigurationDlg.cpp" />
+    <ClCompile Include="Configuration\RemoteConfigurationDlg.cpp" />
+    <ClCompile Include="Configuration\ScannerConfiguration.cpp" />
+    <ClCompile Include="Configuration\SystemConfigurationPage.cpp" />
+    <ClCompile Include="Configuration\VIIAdvancedConfigurationDlg.cpp" />
+    <ClCompile Include="Configuration\WindConfigurationDlg.cpp" />
+    <ClCompile Include="Dialogs\ConfigurationDlg.cpp" />
+    <ClCompile Include="Dialogs\DarkSettingsDialog.cpp" />
+    <ClCompile Include="Dialogs\DataBrowserDlg.cpp" />
+    <ClCompile Include="Dialogs\ExportDlg.cpp" />
+    <ClCompile Include="Dialogs\ExportEvallogDlg.cpp" />
+    <ClCompile Include="Dialogs\ExportSpectraDlg.cpp" />
+    <ClCompile Include="Dialogs\FECFileDialog.cpp" />
+    <ClCompile Include="Dialogs\FileTransferDlg.cpp" />
+    <ClCompile Include="Dialogs\FluxErrorDlg.cpp" />
+    <ClCompile Include="Dialogs\GeometryDlg.cpp" />
+    <ClCompile Include="Dialogs\ImportDlg.cpp" />
+    <ClCompile Include="Dialogs\ImportSpectraDlg.cpp" />
+    <ClCompile Include="Dialogs\ManualCompositionDlg.cpp" />
+    <ClCompile Include="Dialogs\ManualWindDlg.cpp" />
+    <ClCompile Include="Dialogs\MergePakFilesDlg.cpp" />
+    <ClCompile Include="Dialogs\PakFileInspector.cpp" />
+    <ClCompile Include="Dialogs\QueryStringDialog.cpp" />
+    <ClCompile Include="Dialogs\ReferencePropertiesDlg.cpp" />
+    <ClCompile Include="Dialogs\SelectionDialog.cpp" />
+    <ClCompile Include="Dialogs\SimplePropertySheet.cpp" />
+    <ClCompile Include="Dialogs\SplitPakFilesDlg.cpp" />
+    <ClCompile Include="Dialogs\SummarizeFluxDataDlg.cpp" />
+    <ClCompile Include="DlgControls\GridCtrl\GridCell.cpp" />
+    <ClCompile Include="DlgControls\GridCtrl\GridCellBase.cpp" />
+    <ClCompile Include="DlgControls\GridCtrl\GridCtrl.cpp" />
+    <ClCompile Include="DlgControls\GridCtrl\GridDropTarget.cpp" />
+    <ClCompile Include="DlgControls\GridCtrl\InPlaceEdit.cpp" />
+    <ClCompile Include="DlgControls\GridCtrl\TitleTip.cpp" />
+    <ClCompile Include="DlgControls\Label.cpp" />
+    <ClCompile Include="DlgControls\MeasGrid.cpp" />
+    <ClCompile Include="DlgControls\ReferenceFileControl.cpp" />
+    <ClCompile Include="EvaluatedDataStorage.cpp" />
+    <ClCompile Include="Evaluation\BasicMath.cpp" />
+    <ClCompile Include="Evaluation\ColumnCorrection.cpp" />
+    <ClCompile Include="Evaluation\CrossSectionData.cpp" />
+    <ClCompile Include="Evaluation\Evaluation.cpp" />
+    <ClCompile Include="Evaluation\EvaluationController.cpp" />
+    <ClCompile Include="Evaluation\EvaluationResult.cpp" />
+    <ClCompile Include="Evaluation\FitWindow.cpp" />
+    <ClCompile Include="Evaluation\FitWindowFileHandler.cpp" />
+    <ClCompile Include="Evaluation\FluxResult.cpp" />
+    <ClCompile Include="Evaluation\MessageLog.cpp" />
+    <ClCompile Include="Evaluation\ReferenceFitResult.cpp" />
+    <ClCompile Include="Evaluation\ScanEvaluation.cpp" />
+    <ClCompile Include="Evaluation\ScanResult.cpp" />
+    <ClCompile Include="Evaluation\Spectrometer.cpp" />
+    <ClCompile Include="Evaluation\SpectrometerHistory.cpp" />
+    <ClCompile Include="FileInfo.cpp" />
+    <ClCompile Include="FileTreeCtrl.cpp" />
+    <ClCompile Include="Geometry\GeometryCalculator.cpp" />
+    <ClCompile Include="Geometry\GeometryEvaluator.cpp" />
+    <ClCompile Include="Geometry\GeometryResult.cpp" />
+    <ClCompile Include="Geometry\RealTimeSetupChanger.cpp" />
+    <ClCompile Include="Graphs\DOASFitGraph.cpp" />
+    <ClCompile Include="Graphs\GraphCtrl.cpp" />
+    <ClCompile Include="Graphs\OScopeCtrl.cpp" />
+    <ClCompile Include="Graphs\ScanGraph.cpp" />
+    <ClCompile Include="Graphs\SpectrumGraph.cpp" />
+    <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="MasterController.cpp" />
+    <ClCompile Include="MeteorologicalData.cpp" />
+    <ClCompile Include="NodeControlInfo.cpp" />
+    <ClCompile Include="NovacMasterProgram.cpp" />
+    <ClCompile Include="NovacMasterProgramDoc.cpp" />
+    <ClCompile Include="NovacMasterProgramView.cpp" />
+    <ClCompile Include="ObservatoryInfo.cpp" />
+    <ClCompile Include="PostFlux\PostFluxCalculator.cpp" />
+    <ClCompile Include="PostFlux\PostFluxDlg.cpp" />
+    <ClCompile Include="ReEvaluation\FitWindowListBox.cpp" />
+    <ClCompile Include="ReEvaluation\PakFileListBox.cpp" />
+    <ClCompile Include="ReEvaluation\ReEvalSettingsFileHandler.cpp" />
+    <ClCompile Include="ReEvaluation\ReEvaluationDlg.cpp" />
+    <ClCompile Include="ReEvaluation\ReEvaluator.cpp" />
+    <ClCompile Include="ReEvaluation\ReEval_DoEvaluationDlg.cpp" />
+    <ClCompile Include="ReEvaluation\ReEval_MiscSettingsDlg.cpp" />
+    <ClCompile Include="ReEvaluation\ReEval_ScanDlg.cpp" />
+    <ClCompile Include="ReEvaluation\ReEval_WindowDlg.cpp" />
+    <ClCompile Include="ScannerFileInfo.cpp" />
+    <ClCompile Include="ScannerFolderInfo.cpp" />
+    <ClCompile Include="StatusFileReader.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="UserSettings.cpp" />
+    <ClCompile Include="View_Instrument.cpp" />
+    <ClCompile Include="View_OverView.cpp" />
+    <ClCompile Include="View_Scanner.cpp" />
+    <ClCompile Include="View_WindMeasOverView.cpp" />
+    <ClCompile Include="VolcanoInfo.cpp" />
+    <ClCompile Include="WindFileController.cpp" />
+    <ClCompile Include="WindMeasurement\PostWindDlg.cpp" />
+    <ClCompile Include="WindMeasurement\RealTimeWind.cpp" />
+    <ClCompile Include="WindMeasurement\WindEvaluator.cpp" />
+    <ClCompile Include="WindMeasurement\WindSpeedCalculator.cpp" />
+    <ClCompile Include="WindMeasurement\WindSpeedMeasSettings.cpp" />
+    <ClCompile Include="WindMeasurement\WindSpeedResult.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CombinerThread.h" />
+    <ClInclude Include="Common\ASCII.H" />
+    <ClInclude Include="Common\CfgTxtFileHandler.h" />
+    <ClInclude Include="Common\Common.h" />
+    <ClInclude Include="Common\CompositionMeasurement.h" />
+    <ClInclude Include="Common\DateTime.h" />
+    <ClInclude Include="Common\EvaluationLogFileHandler.h" />
+    <ClInclude Include="Common\FluxLogFileHandler.h" />
+    <ClInclude Include="Common\GPSData.h" />
+    <ClInclude Include="Common\LogFileWriter.h" />
+    <ClInclude Include="Common\ReferenceFile.h" />
+    <ClInclude Include="Common\ReportWriter.h" />
+    <ClInclude Include="Common\Spectra\PakFileHandler.h" />
+    <ClInclude Include="Common\Spectra\ScanFileHandler.h" />
+    <ClInclude Include="Common\Spectra\Spectrum.h" />
+    <ClInclude Include="Common\Spectra\SpectrumInfo.h" />
+    <ClInclude Include="Common\Spectra\SpectrumIO.h" />
+    <ClInclude Include="Common\Spectra\SpectrumTime.h" />
+    <ClInclude Include="Common\SpectrometerModel.h" />
+    <ClInclude Include="Common\SpectrumFormat\MKPack.h" />
+    <ClInclude Include="Common\SpectrumFormat\STDFile.h" />
+    <ClInclude Include="Common\SpectrumFormat\TXTFile.h" />
+    <ClInclude Include="Common\Version.h" />
+    <ClInclude Include="Common\WindField.h" />
+    <ClInclude Include="Common\WindFieldRecord.h" />
+    <ClInclude Include="Common\WindFileReader.h" />
+    <ClInclude Include="Common\XMLFileReader.h" />
+    <ClInclude Include="CommunicationDataStorage.h" />
+    <ClInclude Include="communication\CommunicationController.h" />
+    <ClInclude Include="communication\FTPCom.h" />
+    <ClInclude Include="communication\FTPHandler.h" />
+    <ClInclude Include="communication\FTPServerContacter.h" />
+    <ClInclude Include="communication\FTPSocket.h" />
+    <ClInclude Include="communication\LinkStatistics.h" />
+    <ClInclude Include="communication\SerialCOM.h" />
+    <ClInclude Include="communication\SerialControllerWithTx.h" />
+    <ClInclude Include="Configuration\AdvancedFTPUploadSettings.h" />
+    <ClInclude Include="Configuration\Configuration.h" />
+    <ClInclude Include="Configuration\ConfigurationFileHandler.h" />
+    <ClInclude Include="Configuration\ConfigurationTreeCtrl.h" />
+    <ClInclude Include="Configuration\ConfigureCOMPortDlg.h" />
+    <ClInclude Include="Configuration\DarkConfigurationDlg.h" />
+    <ClInclude Include="Configuration\EvaluationConfigurationDlg.h" />
+    <ClInclude Include="Configuration\FTPSettingsDlg.h" />
+    <ClInclude Include="Configuration\GlobalConfiguration.h" />
+    <ClInclude Include="Configuration\LocationConfigurationDlg.h" />
+    <ClInclude Include="Configuration\RemoteConfigurationDlg.h" />
+    <ClInclude Include="Configuration\ScannerConfiguration.h" />
+    <ClInclude Include="Configuration\SystemConfigurationPage.h" />
+    <ClInclude Include="Configuration\VIIAdvancedConfigurationDlg.h" />
+    <ClInclude Include="Configuration\WindConfigurationDlg.h" />
+    <ClInclude Include="Dialogs\ConfigurationDlg.h" />
+    <ClInclude Include="Dialogs\DarkSettingsDialog.h" />
+    <ClInclude Include="Dialogs\DataBrowserDlg.h" />
+    <ClInclude Include="Dialogs\ExportDlg.h" />
+    <ClInclude Include="Dialogs\ExportEvallogDlg.h" />
+    <ClInclude Include="Dialogs\ExportSpectraDlg.h" />
+    <ClInclude Include="Dialogs\FECFileDialog.h" />
+    <ClInclude Include="Dialogs\FileTransferDlg.h" />
+    <ClInclude Include="Dialogs\FluxErrorDlg.h" />
+    <ClInclude Include="Dialogs\GeometryDlg.h" />
+    <ClInclude Include="Dialogs\ImportDlg.h" />
+    <ClInclude Include="Dialogs\ImportSpectraDlg.h" />
+    <ClInclude Include="Dialogs\ManualCompositionDlg.h" />
+    <ClInclude Include="Dialogs\ManualWindDlg.h" />
+    <ClInclude Include="Dialogs\MergePakFilesDlg.h" />
+    <ClInclude Include="Dialogs\PakFileInspector.h" />
+    <ClInclude Include="Dialogs\QueryStringDialog.h" />
+    <ClInclude Include="Dialogs\ReferencePropertiesDlg.h" />
+    <ClInclude Include="Dialogs\SelectionDialog.h" />
+    <ClInclude Include="Dialogs\SimplePropertySheet.h" />
+    <ClInclude Include="Dialogs\SplitPakFilesDlg.h" />
+    <ClInclude Include="Dialogs\SummarizeFluxDataDlg.h" />
+    <ClInclude Include="DlgControls\GridCtrl\CellRange.h" />
+    <ClInclude Include="DlgControls\GridCtrl\GridCell.h" />
+    <ClInclude Include="DlgControls\GridCtrl\GridCellBase.h" />
+    <ClInclude Include="DlgControls\GridCtrl\GridCtrl.h" />
+    <ClInclude Include="DlgControls\GridCtrl\GridDropTarget.h" />
+    <ClInclude Include="DlgControls\GridCtrl\InPlaceEdit.h" />
+    <ClInclude Include="DlgControls\GridCtrl\MemDC.h" />
+    <ClInclude Include="DlgControls\GridCtrl\TitleTip.h" />
+    <ClInclude Include="DlgControls\Label.h" />
+    <ClInclude Include="DlgControls\MeasGrid.h" />
+    <ClInclude Include="DlgControls\ReferenceFileControl.h" />
+    <ClInclude Include="EvaluatedDataStorage.h" />
+    <ClInclude Include="Evaluation\BasicMath.h" />
+    <ClInclude Include="Evaluation\ColumnCorrection.h" />
+    <ClInclude Include="Evaluation\CrossSectionData.h" />
+    <ClInclude Include="Evaluation\Evaluation.h" />
+    <ClInclude Include="Evaluation\EvaluationController.h" />
+    <ClInclude Include="Evaluation\EvaluationResult.h" />
+    <ClInclude Include="Evaluation\FitWindow.h" />
+    <ClInclude Include="Evaluation\FitWindowFileHandler.h" />
+    <ClInclude Include="Evaluation\FluxResult.h" />
+    <ClInclude Include="Evaluation\MessageLog.h" />
+    <ClInclude Include="Evaluation\ReferenceFitResult.h" />
+    <ClInclude Include="Evaluation\ScanEvaluation.h" />
+    <ClInclude Include="Evaluation\ScanResult.h" />
+    <ClInclude Include="Evaluation\Spectrometer.h" />
+    <ClInclude Include="Evaluation\SpectrometerHistory.h" />
+    <ClInclude Include="FileInfo.h" />
+    <ClInclude Include="FileTreeCtrl.h" />
+    <ClInclude Include="Fit\ApertureFunction.h" />
+    <ClInclude Include="Fit\BandedMatrix.h" />
+    <ClInclude Include="Fit\BSpline.h" />
+    <ClInclude Include="Fit\BSplineD.h" />
+    <ClInclude Include="Fit\BSplineF.h" />
+    <ClInclude Include="Fit\BSplineImpl.h" />
+    <ClInclude Include="Fit\ConstFunction.h" />
+    <ClInclude Include="Fit\ConvoluteFunction.h" />
+    <ClInclude Include="Fit\ConvolutionCoreFunction.h" />
+    <ClInclude Include="Fit\CubicBSplineFunction.h" />
+    <ClInclude Include="Fit\CubicSplineFunction.h" />
+    <ClInclude Include="Fit\DataSet.h" />
+    <ClInclude Include="Fit\DiscreteFunction.h" />
+    <ClInclude Include="Fit\DivFunction.h" />
+    <ClInclude Include="Fit\DOASVector.h" />
+    <ClInclude Include="Fit\ExpFunction.h" />
+    <ClInclude Include="Fit\Fit.h" />
+    <ClInclude Include="Fit\FitBasic.h" />
+    <ClInclude Include="Fit\FitException.h" />
+    <ClInclude Include="Fit\Function.h" />
+    <ClInclude Include="Fit\GaussFunction.h" />
+    <ClInclude Include="Fit\LeastSquareFit.h" />
+    <ClInclude Include="Fit\LevenbergMarquardtFit.h" />
+    <ClInclude Include="Fit\LinearInterpolateFunction.h" />
+    <ClInclude Include="Fit\LnFunction.h" />
+    <ClInclude Include="Fit\Matrix.h" />
+    <ClInclude Include="Fit\Minimizer.h" />
+    <ClInclude Include="Fit\MulFunction.h" />
+    <ClInclude Include="Fit\NegateFunction.h" />
+    <ClInclude Include="Fit\NonlinearParameterFunction.h" />
+    <ClInclude Include="Fit\ParameterLinkItem.h" />
+    <ClInclude Include="Fit\ParameterVector.h" />
+    <ClInclude Include="Fit\ParamFunction.h" />
+    <ClInclude Include="Fit\PolynomialFunction.h" />
+    <ClInclude Include="Fit\ReferenceSpectrumFunction.h" />
+    <ClInclude Include="Fit\SimpleDOASFunction.h" />
+    <ClInclude Include="Fit\StandardFit.h" />
+    <ClInclude Include="Fit\StandardMetricFunction.h" />
+    <ClInclude Include="Fit\StatisticVector.h" />
+    <ClInclude Include="Fit\SumFunction.h" />
+    <ClInclude Include="Fit\Vector.h" />
+    <ClInclude Include="Geometry\GeometryCalculator.h" />
+    <ClInclude Include="Geometry\GeometryEvaluator.h" />
+    <ClInclude Include="Geometry\GeometryResult.h" />
+    <ClInclude Include="Geometry\RealTimeSetupChanger.h" />
+    <ClInclude Include="Graphs\DOASFitGraph.h" />
+    <ClInclude Include="Graphs\GraphCtrl.h" />
+    <ClInclude Include="Graphs\OScopeCtrl.h" />
+    <ClInclude Include="Graphs\ScanGraph.h" />
+    <ClInclude Include="Graphs\SpectrumGraph.h" />
+    <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="MasterController.h" />
+    <ClInclude Include="MeteorologicalData.h" />
+    <ClInclude Include="NodeControlInfo.h" />
+    <ClInclude Include="NovacMasterProgram.h" />
+    <ClInclude Include="NovacMasterProgramDoc.h" />
+    <ClInclude Include="NovacMasterProgramView.h" />
+    <ClInclude Include="ObservatoryInfo.h" />
+    <ClInclude Include="PostFlux\PostFluxCalculator.h" />
+    <ClInclude Include="PostFlux\PostFluxDlg.h" />
+    <ClInclude Include="ReEvaluation\FitWindowListBox.h" />
+    <ClInclude Include="ReEvaluation\PakFileListBox.h" />
+    <ClInclude Include="ReEvaluation\ReEvalSettingsFileHandler.h" />
+    <ClInclude Include="ReEvaluation\ReEvaluationDlg.h" />
+    <ClInclude Include="ReEvaluation\ReEvaluator.h" />
+    <ClInclude Include="ReEvaluation\ReEval_DoEvaluationDlg.h" />
+    <ClInclude Include="ReEvaluation\ReEval_MiscSettingsDlg.h" />
+    <ClInclude Include="ReEvaluation\ReEval_ScanDlg.h" />
+    <ClInclude Include="ReEvaluation\ReEval_WindowDlg.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="ScannerFileInfo.h" />
+    <ClInclude Include="ScannerFolderInfo.h" />
+    <ClInclude Include="StatusFileReader.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="UserSettings.h" />
+    <ClInclude Include="View_Instrument.h" />
+    <ClInclude Include="View_OverView.h" />
+    <ClInclude Include="View_Scanner.h" />
+    <ClInclude Include="View_WindMeasOverView.h" />
+    <ClInclude Include="VolcanoInfo.h" />
+    <ClInclude Include="WindFileController.h" />
+    <ClInclude Include="WindMeasurement\PostWindDlg.h" />
+    <ClInclude Include="WindMeasurement\RealTimeWind.h" />
+    <ClInclude Include="WindMeasurement\WindEvaluator.h" />
+    <ClInclude Include="WindMeasurement\WindSpeedCalculator.h" />
+    <ClInclude Include="WindMeasurement\WindSpeedMeasSettings.h" />
+    <ClInclude Include="WindMeasurement\WindSpeedResult.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\battery.bmp" />
+    <Image Include="res\bitmap1.bmp" />
+    <Image Include="res\bitmap2.bmp" />
+    <Image Include="res\bitmap3.bmp" />
+    <Image Include="res\bmp00001.bmp" />
+    <Image Include="res\datFile.bmp" />
+    <Image Include="res\disk.bmp" />
+    <Image Include="res\exeFile.bmp" />
+    <Image Include="res\favicon.ico" />
+    <Image Include="res\file.bmp" />
+    <Image Include="res\folder.bmp" />
+    <Image Include="res\green_li.bmp" />
+    <Image Include="res\green_light.bmp" />
+    <Image Include="res\novacico.ico" />
+    <Image Include="res\NovacLogo2.bmp" />
+    <Image Include="res\NOVAClogo2.ico" />
+    <Image Include="res\novacLogo_small.ico" />
+    <Image Include="res\NovacMasterProgram.ico" />
+    <Image Include="res\NovacMasterProgramDoc.ico" />
+    <Image Include="res\pakFile.bmp" />
+    <Image Include="res\red_light.bmp" />
+    <Image Include="res\Toolbar.bmp" />
+    <Image Include="res\yellow_l.bmp" />
+    <Image Include="res\yellow_light.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="res\NovacMasterProgram.manifest" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="NovacMasterProgram.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\NovacMasterProgram.rc2" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

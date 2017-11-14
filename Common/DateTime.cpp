@@ -34,7 +34,7 @@ CDateTime::~CDateTime(void)
 {
 }
 
-CDateTime::operator <(const CDateTime &t2) const{
+int CDateTime::operator <(const CDateTime &t2) const{
 	if(this->year < t2.year)
 		return 1;
 	if(this->year > t2.year)

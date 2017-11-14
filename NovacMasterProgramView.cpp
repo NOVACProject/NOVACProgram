@@ -312,7 +312,8 @@ void CNovacMasterProgramView::OnInitialUpdate()
 		TRACE0("Failed to create tooltip control\n"); 
 	}
 	CTabCtrl *tabPtr = m_sheet.GetTabControl();
-	for(int i = 0; i < tabPtr->GetItemCount() - 1; ++i){
+	int i;
+	for(i = 0; i < tabPtr->GetItemCount() - 1; ++i){
 		tabPtr->GetItemRect(i, &tabRect);
 		m_toolTip.AddTool(tabPtr, IDD_VIEW_SCANNERSTATUS, &tabRect, IDD_VIEW_SCANNERSTATUS);
 	}
@@ -1051,7 +1052,7 @@ void CNovacMasterProgramView::OnMenuAnalysisWind()
 }
 
 void CNovacMasterProgramView::UploadAuxData(){
-	static lastUploadDate = 0;
+	static int lastUploadDate = 0;
 	CString fileName[52];
 	int fileNameIndex = 0;
 	CString	cfgFileName, observatoryStr, dateStr, timeStr;
@@ -1067,8 +1068,8 @@ void CNovacMasterProgramView::UploadAuxData(){
 
 		dateStr.Format("%02d%02d%02d", m_common.GetYear(), m_common.GetMonth(), m_common.GetDay()); // current day
 		timeStr.Format("%02d%02d", m_common.GetHour(), m_common.GetMinute());	// current time
-
-		for(unsigned int it = 0; it < g_settings.scannerNum; ++it){
+		unsigned int it;
+		for(it = 0; it < g_settings.scannerNum; ++it){
 			// The volcano that this instrument is monitoring
 			int thisVolcano = Common::GetMonitoredVolcano(g_settings.scanner[it].spec[0].serialNumber);
 

@@ -508,7 +508,7 @@ int CFTPSocket::CloseASocket(SOCKET sock)
 				reply = closesocket(sock);
 			}
 	}
-	catch(exception pEx)
+	catch (std::exception pEx)
 	{
 		ShowMessage("Disconnect exception");
 	}

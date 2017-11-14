@@ -212,7 +212,8 @@ void CReEval_WindowDlg::PopulateReferenceFileControl(){
 		m_btnRemoveRef.EnableWindow(TRUE);
 	}
 
-	for(int i = 0; i < window.nRef; ++i){
+	int i;
+	for(i = 0; i < window.nRef; ++i){
 
 		CReferenceFile &ref = window.ref[i];
 

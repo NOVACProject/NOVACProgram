@@ -133,7 +133,8 @@ int CPostWindDlg::BrowseForEvalLog(int seriesNumber){
 		}
 		
 		// find the wind-speed measurement series in the log file
-		for(int k = 0; k < m_logFileHandler[seriesNumber]->m_scanNum; ++k){
+		int k;
+		for(k = 0; k < m_logFileHandler[seriesNumber]->m_scanNum; ++k){
 			if(m_logFileHandler[seriesNumber]->IsWindSpeedMeasurement(k))
 				break;
 		}
@@ -154,7 +155,7 @@ int CPostWindDlg::BrowseForEvalLog(int seriesNumber){
 				return 0; // <-- failed to allocate enough memory
 
 			const CSpectrumTime *startTime = scan.GetStartTime(0);
-			for(k = 0; k < length; ++k){
+			for(int k = 0; k < length; ++k){
 				const CSpectrumTime *time = scan.GetStartTime(k);
 				m_OriginalSeries[seriesNumber]->column[k] = scan.GetColumn(k, 0);
 
@@ -176,7 +177,7 @@ int CPostWindDlg::BrowseForEvalLog(int seriesNumber){
 				return 0; // <-- failed to allocate enough memory
 
 			const CSpectrumTime *startTime = scan.GetStartTime(0);
-			for(k = 0; k < length; ++k){
+			for(int k = 0; k < length; ++k){
 				const CSpectrumTime *time = scan.GetStartTime(k);
 				m_OriginalSeries[k % 2]->column[k / 2] = scan.GetColumn(k, 0);
 
@@ -354,7 +355,7 @@ void	CPostWindDlg::DrawColumn(){
 	m_columnGraph.SetRange(minT, maxT, 0,		minC, maxC, 1);
 
 	// Draw the time series
-	for(k = 0; k < MAX_N_SERIES; ++k){
+	for(int k = 0; k < MAX_N_SERIES; ++k){
 		if(m_OriginalSeries[k] != NULL){
 
 			// ---------- Draw the original time series -----------

@@ -1,21 +1,24 @@
-Microsoft Visual Studio Solution File, Format Version 7.00
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NovacProgram", "NovacMasterProgram.vcproj", "{376B3B71-E83D-4166-AD27-7114BEBE8335}"
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NovacProgram", "NovacMasterProgram.vcxproj", "{376B3B71-E83D-4166-AD27-7114BEBE8335}"
 EndProject
 Global
-	GlobalSection(SolutionConfiguration) = preSolution
-		ConfigName.0 = Debug
-		ConfigName.1 = Release
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
 	EndGlobalSection
-	GlobalSection(ProjectDependencies) = postSolution
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{376B3B71-E83D-4166-AD27-7114BEBE8335}.Debug|x86.ActiveCfg = Debug|Win32
+		{376B3B71-E83D-4166-AD27-7114BEBE8335}.Debug|x86.Build.0 = Debug|Win32
+		{376B3B71-E83D-4166-AD27-7114BEBE8335}.Release|x86.ActiveCfg = Release|Win32
+		{376B3B71-E83D-4166-AD27-7114BEBE8335}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
-	GlobalSection(ProjectConfiguration) = postSolution
-		{376B3B71-E83D-4166-AD27-7114BEBE8335}.Debug.ActiveCfg = Debug|Win32
-		{376B3B71-E83D-4166-AD27-7114BEBE8335}.Debug.Build.0 = Debug|Win32
-		{376B3B71-E83D-4166-AD27-7114BEBE8335}.Release.ActiveCfg = Release|Win32
-		{376B3B71-E83D-4166-AD27-7114BEBE8335}.Release.Build.0 = Release|Win32
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-	EndGlobalSection
-	GlobalSection(ExtensibilityAddIns) = postSolution
+		SolutionGuid = {5B0F72FC-F59A-4F3C-8736-82E754BE416F}
 	EndGlobalSection
 EndGlobal

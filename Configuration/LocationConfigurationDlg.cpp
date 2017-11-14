@@ -124,7 +124,7 @@ BOOL CLocationConfigurationDlg::OnInitDialog()
 
 	// The channels combo box
 	m_comboSpectrometerChannels.ResetContent();
-	for(k = 0; k < MAX_CHANNEL_NUM; ++k){
+	for(int k = 0; k < MAX_CHANNEL_NUM; ++k){
 		str.Format("%d", k+1);
 		m_comboSpectrometerChannels.AddString(str);
 	}
