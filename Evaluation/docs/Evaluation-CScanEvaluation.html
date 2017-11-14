@@ -1,0 +1,699 @@
+<!DOCTYPE HTML PUBLIC"-//W3C//DTD HTML 4.0 Frameset//EN""http://www.w3.org/TR/REC-html40/frameset/dtd">
+<HTML>
+<HEAD>
+<!-- The file this documentation was generated from is:  C:\Novac\NovacMasterProgram\2008_10_27\Evaluation\ScanEvaluation.h -->
+</HEAD>
+<TITLE>
+class CScanEvaluation
+</TITLE>
+<LINK REL="stylesheet" TYPE="text/css" HREF="./stylesheet.css" TITLE="Style">
+<BODY BGCOLOR="#FFFFFF">
+
+
+
+<!-- ********************CLASS HEADING INFORMATION******************** -->
+
+<H3><p>
+namespace Evaluation
+</H3>
+<H2><P>class CScanEvaluation</H2></P>
+<P>
+ An object of the <b>CScanEvaluation</b>-class handles the evaluation of one
+ scan.
+ 
+ </P>
+<P></h2><hr size="2"></P>
+
+
+
+<!-- ********************ATTRIBUTE SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2"><B>Attribute Summary</B></FONT></TD>
+</TR>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">bool</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CScanEvaluation.html#m_averagedSpectra">m_averagedSpectra</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">True if the spectra are averaged, not summed</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">long</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CScanEvaluation.html#m_fitHigh">m_fitHigh</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">long</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CScanEvaluation.html#m_fitLow">m_fitLow</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">This is the fit region</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">IgnoreOption</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CScanEvaluation.html#m_ignore_Lower">m_ignore_Lower</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The options for which spectra to ignore</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">IgnoreOption</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CScanEvaluation.html#m_ignore_Upper">m_ignore_Upper</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CScanEvaluation.html#m_indexOfMostAbsorbingSpectrum">m_indexOfMostAbsorbingSpectrum</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">Remember the index of the spectrum with the highest absorption, to be able to
+ adjust the shift and squeeze with it later</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int*</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CScanEvaluation.html#m_pause">m_pause</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">If the contents of m_pause is true then the current thread will
+ be suspended between each iteration.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">long</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CScanEvaluation.html#m_prog_SpecCur">m_prog_SpecCur</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">which spectrum we are on in the current scan-file(for showing the progress)</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">long</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CScanEvaluation.html#m_prog_SpecNum">m_prog_SpecNum</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">how many spectra there are in the current scan-file(for showing the progress)</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CScanResult*</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CScanEvaluation.html#m_result">m_result</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The evaluation results from the last scan evaluated</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">long</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CScanEvaluation.html#m_skyIndex">m_skyIndex</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">SKY_OPTION</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CScanEvaluation.html#m_skyOption">m_skyOption</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">This is the options for the sky spectrum</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">bool*</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CScanEvaluation.html#m_sleeping">m_sleeping</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The state of the evaluation.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CSpectrum</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CScanEvaluation.html#m_spec[MAX_N_REFERENCES + 4]">m_spec[MAX_N_REFERENCES + 4]</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">If the pView != NULL then these spectra will be filled in after each evaluation
+ and the address of the first spectrum in the array will be sent
+ with the 'WM_EVAL_SUCCESS' message to the pView window.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CString</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CScanEvaluation.html#m_userSkySpectrum">m_userSkySpectrum</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CWnd*</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CScanEvaluation.html#pView">pView</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">if pView != NULL then after the evaluation of a spectrum, a 'WM_EVAL_SUCCESS'
+ message will be sent to pView.</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************CONSTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Constructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanEvaluation.html#CScanEvaluation(void)"><B>CScanEvaluation</B></A>(void)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Default constructor</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************DESTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Destructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanEvaluation.html#~CScanEvaluation(void)"><B>~CScanEvaluation</B></A>(void)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Default destructor</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************METHOD SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2">
+<B>Method Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">long</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanEvaluation.html#EvaluateScan(const CString &scanfile, CEvaluation *evaluator, bool *fRun = NULL, const CConfigurationSetting::DarkSettings *darkSettings = NULL)"><B>EvaluateScan</B></A>(const CString &scanfile, CEvaluation *evaluator, bool *fRun = NULL, const CConfigurationSetting::DarkSettings *darkSettings = NULL)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Called to evaluate one scan.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanEvaluation.html#FindOptimumShiftAndSqueeze(CEvaluation *eval, FileHandler::CScanFileHandler *scan, CScanResult *result)"><B>FindOptimumShiftAndSqueeze</B></A>(CEvaluation *eval, FileHandler::CScanFileHandler *scan, CScanResult *result)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Finds the optimum shift and squeeze for an evaluated scan
+ by looking at the spectrum with the highest absorption of the evaluated specie
+ and evaluate it with shift and squeeze free</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanEvaluation.html#FindOptimumShiftAndSqueeze_Fraunhofer(CEvaluation *eval, FileHandler::CScanFileHandler *scan)"><B>FindOptimumShiftAndSqueeze_Fraunhofer</B></A>(CEvaluation *eval, FileHandler::CScanFileHandler *scan)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Finds the optimum shift and squeeze for an scan by evaluating
+ with a solar-reference spectrum and studying the shift of the
+ Fraunhofer-lines.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">RETURN_CODE</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanEvaluation.html#GetDark(FileHandler::CScanFileHandler *scan, const CSpectrum &spec, CSpectrum &dark, const CConfigurationSetting::DarkSettings *darkSettings = NULL)"><B>GetDark</B></A>(FileHandler::CScanFileHandler *scan, const CSpectrum &spec, CSpectrum &dark, const CConfigurationSetting::DarkSettings *darkSettings = NULL)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">This returns the dark spectrum that is to be used in the fitting.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">RETURN_CODE</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanEvaluation.html#GetSky(FileHandler::CScanFileHandler *scan, CSpectrum &sky)"><B>GetSky</B></A>(FileHandler::CScanFileHandler *scan, CSpectrum &sky)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">This returns the sky spectrum that is to be used in the fitting.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">bool</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanEvaluation.html#Ignore(const CSpectrum &spec, const CFitWindow window)"><B>Ignore</B></A>(const CSpectrum &spec, const CFitWindow window)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">checks the spectrum to the settings and returns 'true' if the spectrum should not be evaluated</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">bool</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanEvaluation.html#IncludeSkySpecInFit(CEvaluation *eval, const CSpectrum &skySpectrum, CFitWindow &window)"><B>IncludeSkySpecInFit</B></A>(CEvaluation *eval, const CSpectrum &skySpectrum, CFitWindow &window)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Includes the sky spectrum into the fitting.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanEvaluation.html#SetOption_AveragedSpectra(bool averaged)"><B>SetOption_AveragedSpectra</B></A>(bool averaged)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Setting the option for wheather the spectra are averaged or not.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanEvaluation.html#SetOption_Ignore(IgnoreOption lowerLimit, IgnoreOption upperLimit)"><B>SetOption_Ignore</B></A>(IgnoreOption lowerLimit, IgnoreOption upperLimit)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Setting the option for which spectra to ignore</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanEvaluation.html#SetOption_Sky(SKY_OPTION skyOption, long skyIndex, const CString *skySpecPath = NULL)"><B>SetOption_Sky</B></A>(SKY_OPTION skyOption, long skyIndex, const CString *skySpecPath = NULL)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Setting the option for how to get the sky spectrum.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanEvaluation.html#ShowResult(const CSpectrum &spec, const CEvaluation *eval, long curSpecIndex, long specNum)"><B>ShowResult</B></A>(const CSpectrum &spec, const CEvaluation *eval, long curSpecIndex, long specNum)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">This function updates the 'm_residual' and 'm_fitResult' spectra
+ and sends the 'WM_EVAL_SUCCESS' message to the pView-window.</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR>
+
+
+
+<!-- ********************ATTRIBUTE DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Attribute Detail</B></FONT></TD>
+</TR></TABLE>
+
+<A NAME="m_averagedSpectra"><!-- --></A>
+<H3>m_averagedSpectra</H3>
+<P>
+<CODE>private bool <B>m_averagedSpectra</B></CODE>
+<BLOCKQUOTE>
+True if the spectra are averaged, not summed
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_fitHigh"><!-- --></A>
+<H3>m_fitHigh</H3>
+<P>
+<CODE>private long <B>m_fitHigh</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_fitLow"><!-- --></A>
+<H3>m_fitLow</H3>
+<P>
+<CODE>private long <B>m_fitLow</B></CODE>
+<BLOCKQUOTE>
+This is the fit region
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_ignore_Lower"><!-- --></A>
+<H3>m_ignore_Lower</H3>
+<P>
+<CODE>private IgnoreOption <B>m_ignore_Lower</B></CODE>
+<BLOCKQUOTE>
+The options for which spectra to ignore
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_ignore_Upper"><!-- --></A>
+<H3>m_ignore_Upper</H3>
+<P>
+<CODE>private IgnoreOption <B>m_ignore_Upper</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_indexOfMostAbsorbingSpectrum"><!-- --></A>
+<H3>m_indexOfMostAbsorbingSpectrum</H3>
+<P>
+<CODE>private int <B>m_indexOfMostAbsorbingSpectrum</B></CODE>
+<BLOCKQUOTE>
+Remember the index of the spectrum with the highest absorption, to be able to
+ adjust the shift and squeeze with it later
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_pause"><!-- --></A>
+<H3>m_pause</H3>
+<P>
+<CODE>public int* <B>m_pause</B></CODE>
+<BLOCKQUOTE>
+If the contents of m_pause is true then the current thread will
+ be suspended between each iteration. Useful for reevaluation as it
+ lets the user have a look at each fitted spectrum before continuing.
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_prog_SpecCur"><!-- --></A>
+<H3>m_prog_SpecCur</H3>
+<P>
+<CODE>private long <B>m_prog_SpecCur</B></CODE>
+<BLOCKQUOTE>
+which spectrum we are on in the current scan-file(for showing the progress)
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_prog_SpecNum"><!-- --></A>
+<H3>m_prog_SpecNum</H3>
+<P>
+<CODE>private long <B>m_prog_SpecNum</B></CODE>
+<BLOCKQUOTE>
+how many spectra there are in the current scan-file(for showing the progress)
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_result"><!-- --></A>
+<H3>m_result</H3>
+<P>
+<CODE>public CScanResult* <B>m_result</B></CODE>
+<BLOCKQUOTE>
+The evaluation results from the last scan evaluated
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_skyIndex"><!-- --></A>
+<H3>m_skyIndex</H3>
+<P>
+<CODE>private long <B>m_skyIndex</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_skyOption"><!-- --></A>
+<H3>m_skyOption</H3>
+<P>
+<CODE>private SKY_OPTION <B>m_skyOption</B></CODE>
+<BLOCKQUOTE>
+This is the options for the sky spectrum
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_sleeping"><!-- --></A>
+<H3>m_sleeping</H3>
+<P>
+<CODE>public bool* <B>m_sleeping</B></CODE>
+<BLOCKQUOTE>
+The state of the evaluation. If m_sleeping is true then the
+ thread is sleeping and needs to be woken up.
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_spec[MAX_N_REFERENCES + 4]"><!-- --></A>
+<H3>m_spec[MAX_N_REFERENCES + 4]</H3>
+<P>
+<CODE>public CSpectrum <B>m_spec[MAX_N_REFERENCES + 4]</B></CODE>
+<BLOCKQUOTE>
+If the pView != NULL then these spectra will be filled in after each evaluation
+ and the address of the first spectrum in the array will be sent
+ with the 'WM_EVAL_SUCCESS' message to the pView window.
+ The first spectrum in the array defines the last read spectrum.
+ The second spectrum is the residual of the fit,
+ The third spectrum is the fitted polynomial, and the following
+ MAX_N_REFERENCES + 1 spectra are the scaled reference spectra used in the fit.
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_userSkySpectrum"><!-- --></A>
+<H3>m_userSkySpectrum</H3>
+<P>
+<CODE>private CString <B>m_userSkySpectrum</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="pView"><!-- --></A>
+<H3>pView</H3>
+<P>
+<CODE>public CWnd* <B>pView</B></CODE>
+<BLOCKQUOTE>
+if pView != NULL then after the evaluation of a spectrum, a 'WM_EVAL_SUCCESS'
+ message will be sent to pView.
+</BLOCKQUOTE>
+
+
+
+<!-- ********************CONSTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Constructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="CScanEvaluation(void)"><!-- --></A>
+<H3>CScanEvaluation</H3>
+<P>
+<CODE>public  <B>CScanEvaluation</B>(void)</CODE>
+<BLOCKQUOTE>
+Default constructor
+</BLOCKQUOTE>
+
+
+
+<!-- ********************DESTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Destructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="~CScanEvaluation(void)"><!-- --></A>
+<H3>~CScanEvaluation</H3>
+<P>
+<CODE>public  <B>~CScanEvaluation</B>(void)</CODE>
+<BLOCKQUOTE>
+Default destructor
+</BLOCKQUOTE>
+
+
+
+<!-- ********************METHOD DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="EvaluateScan(const CString &scanfile, CEvaluation *evaluator, bool *fRun = NULL, const CConfigurationSetting::DarkSettings *darkSettings = NULL)"></A>
+<H3>EvaluateScan</H3>
+<P>
+<CODE>public long <B>EvaluateScan</B>(const CString &scanfile, CEvaluation *evaluator, bool *fRun = NULL, const CConfigurationSetting::DarkSettings *darkSettings = NULL)</CODE>
+<BLOCKQUOTE>
+Called to evaluate one scan.
+
+<P>
+<B>Returns:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">the number of spectra evaluated.</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="FindOptimumShiftAndSqueeze(CEvaluation *eval, FileHandler::CScanFileHandler *scan, CScanResult *result)"></A>
+<H3>FindOptimumShiftAndSqueeze</H3>
+<P>
+<CODE>private void <B>FindOptimumShiftAndSqueeze</B>(CEvaluation *eval, FileHandler::CScanFileHandler *scan, CScanResult *result)</CODE>
+<BLOCKQUOTE>
+Finds the optimum shift and squeeze for an evaluated scan
+ by looking at the spectrum with the highest absorption of the evaluated specie
+ and evaluate it with shift and squeeze free
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="FindOptimumShiftAndSqueeze_Fraunhofer(CEvaluation *eval, FileHandler::CScanFileHandler *scan)"></A>
+<H3>FindOptimumShiftAndSqueeze_Fraunhofer</H3>
+<P>
+<CODE>private void <B>FindOptimumShiftAndSqueeze_Fraunhofer</B>(CEvaluation *eval, FileHandler::CScanFileHandler *scan)</CODE>
+<BLOCKQUOTE>
+Finds the optimum shift and squeeze for an scan by evaluating
+ with a solar-reference spectrum and studying the shift of the
+ Fraunhofer-lines.
+
+<P>
+<B>Parameters:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>eval&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the evaluator to use for the evaluation. On successful determination
+ of the shift and squeeze then the shift and squeeze of the reference-files
+ in the CEvaluation-objects CFitWindow will be fixed to the optimum value found
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>scan&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - a handle to the spectrum file.</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetDark(FileHandler::CScanFileHandler *scan, const CSpectrum &spec, CSpectrum &dark, const CConfigurationSetting::DarkSettings *darkSettings = NULL)"></A>
+<H3>GetDark</H3>
+<P>
+<CODE>private RETURN_CODE <B>GetDark</B>(FileHandler::CScanFileHandler *scan, const CSpectrum &spec, CSpectrum &dark, const CConfigurationSetting::DarkSettings *darkSettings = NULL)</CODE>
+<BLOCKQUOTE>
+This returns the dark spectrum that is to be used in the fitting.
+
+<P>
+<B>Parameters:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>scan&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the scan-file handler from which to get the dark spectrum
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>spec&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the spectrum for which the dark spectrum should be retrieved
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>dark&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - will on return be filled with the dark spectrum
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>darkSettings&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the settings for how to get the dark spectrum from this spectrometer</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetSky(FileHandler::CScanFileHandler *scan, CSpectrum &sky)"></A>
+<H3>GetSky</H3>
+<P>
+<CODE>private RETURN_CODE <B>GetSky</B>(FileHandler::CScanFileHandler *scan, CSpectrum &sky)</CODE>
+<BLOCKQUOTE>
+This returns the sky spectrum that is to be used in the fitting.
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="Ignore(const CSpectrum &spec, const CFitWindow window)"></A>
+<H3>Ignore</H3>
+<P>
+<CODE>private bool <B>Ignore</B>(const CSpectrum &spec, const CFitWindow window)</CODE>
+<BLOCKQUOTE>
+checks the spectrum to the settings and returns 'true' if the spectrum should not be evaluated
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="IncludeSkySpecInFit(CEvaluation *eval, const CSpectrum &skySpectrum, CFitWindow &window)"></A>
+<H3>IncludeSkySpecInFit</H3>
+<P>
+<CODE>private bool <B>IncludeSkySpecInFit</B>(CEvaluation *eval, const CSpectrum &skySpectrum, CFitWindow &window)</CODE>
+<BLOCKQUOTE>
+Includes the sky spectrum into the fitting. The dark-spectrum
+ should already have been removed from the 'sky'
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="SetOption_AveragedSpectra(bool averaged)"></A>
+<H3>SetOption_AveragedSpectra</H3>
+<P>
+<CODE>public void <B>SetOption_AveragedSpectra</B>(bool averaged)</CODE>
+<BLOCKQUOTE>
+Setting the option for wheather the spectra are averaged or not.
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="SetOption_Ignore(IgnoreOption lowerLimit, IgnoreOption upperLimit)"></A>
+<H3>SetOption_Ignore</H3>
+<P>
+<CODE>public void <B>SetOption_Ignore</B>(IgnoreOption lowerLimit, IgnoreOption upperLimit)</CODE>
+<BLOCKQUOTE>
+Setting the option for which spectra to ignore
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="SetOption_Sky(SKY_OPTION skyOption, long skyIndex, const CString *skySpecPath = NULL)"></A>
+<H3>SetOption_Sky</H3>
+<P>
+<CODE>public void <B>SetOption_Sky</B>(SKY_OPTION skyOption, long skyIndex, const CString *skySpecPath = NULL)</CODE>
+<BLOCKQUOTE>
+Setting the option for how to get the sky spectrum.
+
+<P>
+<B>Parameters:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>skySpecPath&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - if not null and skyOption == SKY_USER, then this string will be used
+ as sky-spectrum.
+ If skyOption==SKY_USER and skySpecPath ==NULL then SKY_FIRST will be
+ used instead</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="ShowResult(const CSpectrum &spec, const CEvaluation *eval, long curSpecIndex, long specNum)"></A>
+<H3>ShowResult</H3>
+<P>
+<CODE>private void <B>ShowResult</B>(const CSpectrum &spec, const CEvaluation *eval, long curSpecIndex, long specNum)</CODE>
+<BLOCKQUOTE>
+This function updates the 'm_residual' and 'm_fitResult' spectra
+ and sends the 'WM_EVAL_SUCCESS' message to the pView-window.
+</BLOCKQUOTE>
+</BODY>
+</HTML>

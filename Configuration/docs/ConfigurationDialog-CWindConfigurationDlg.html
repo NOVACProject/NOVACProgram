@@ -1,0 +1,828 @@
+<!DOCTYPE HTML PUBLIC"-//W3C//DTD HTML 4.0 Frameset//EN""http://www.w3.org/TR/REC-html40/frameset/dtd">
+<HTML>
+<HEAD>
+<!-- The file this documentation was generated from is:  C:\Novac\NovacMasterProgram\2008_12_19\Configuration\WindConfigurationDlg.h -->
+</HEAD>
+<TITLE>
+class CWindConfigurationDlg
+</TITLE>
+<LINK REL="stylesheet" TYPE="text/css" HREF="./stylesheet.css" TITLE="Style">
+<BODY BGCOLOR="#FFFFFF">
+
+
+
+<!-- ********************CLASS HEADING INFORMATION******************** -->
+
+<H3><p>
+namespace ConfigurationDialog
+</H3>
+<H2><P>class CWindConfigurationDlg</H2></P>
+<P><H4>Inherits:&nbsp;&nbsp;<A HREF="./ConfigurationDialog-CSystemConfigurationPage.html">public CSystemConfigurationPage</A>&nbsp;&nbsp;</H4></P><P></h2><hr size="2"></P>
+
+
+
+<!-- ********************ATTRIBUTE SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2"><B>Attribute Summary</B></FONT></TD>
+</TR>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CWindConfigurationDlg.html#automatic">automatic</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">the local copies of the settings</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">double </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CWindConfigurationDlg.html#desiredAngle">desiredAngle</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">double </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CWindConfigurationDlg.html#desiredDistance">desiredDistance</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CWindConfigurationDlg.html#duration">duration</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CWindConfigurationDlg.html#interval">interval</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">CEdit </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CWindConfigurationDlg.html#m_editAngle">m_editAngle</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">CEdit </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CWindConfigurationDlg.html#m_editDistance">m_editDistance</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">CEdit </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CWindConfigurationDlg.html#m_editDuration">m_editDuration</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The edit-boxes on the screen</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">CEdit </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CWindConfigurationDlg.html#m_editInterval">m_editInterval</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The edit-boxes on the screen</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">CEdit </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CWindConfigurationDlg.html#m_editMaxAngle">m_editMaxAngle</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The edit-boxes on the screen</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">CEdit </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CWindConfigurationDlg.html#m_editMinPeakColumn">m_editMinPeakColumn</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The edit-boxes on the screen</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">CEdit </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CWindConfigurationDlg.html#m_editMotorStepsComp">m_editMotorStepsComp</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The edit-boxes on the screen</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">CEdit </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CWindConfigurationDlg.html#m_editStablePeriod">m_editStablePeriod</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The edit-boxes on the screen</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">CStatic </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CWindConfigurationDlg.html#m_frameDistance">m_frameDistance</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">CStatic </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CWindConfigurationDlg.html#m_labelDeg">m_labelDeg</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">CStatic </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CWindConfigurationDlg.html#m_labelMeters">m_labelMeters</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">CButton </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CWindConfigurationDlg.html#m_radioAngle">m_radioAngle</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">CButton </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CWindConfigurationDlg.html#m_radioDistance">m_radioDistance</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">CButton</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CWindConfigurationDlg.html#m_useCalcWind">m_useCalcWind</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CWindConfigurationDlg.html#maxAngle">maxAngle</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CWindConfigurationDlg.html#minPeakColumn">minPeakColumn</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CWindConfigurationDlg.html#motorStepsComp">motorStepsComp</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CWindConfigurationDlg.html#stablePeriod">stablePeriod</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CWindConfigurationDlg.html#useAngle">useAngle</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CWindConfigurationDlg.html#useCalcWind">useCalcWind</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************MACRO SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2"><B>Macro Summary</B></FONT></TD>
+</TR>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CWindConfigurationDlg.html#DECLARE_DYNAMIC(CWindConfigurationDlg)">DECLARE_DYNAMIC(CWindConfigurationDlg)</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CWindConfigurationDlg.html#DECLARE_MESSAGE_MAP()">DECLARE_MESSAGE_MAP()</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************ENUM SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2"><B>Enum Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CWindConfigurationDlg.html#enum {  IDD = IDD_CONFIGURE_WIND }">enum </A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************CONSTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Constructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CWindConfigurationDlg.html#CWindConfigurationDlg()"><B>CWindConfigurationDlg</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************DESTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Destructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CWindConfigurationDlg.html#virtual ~CWindConfigurationDlg()"><B>virtual ~CWindConfigurationDlg</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************METHOD SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2">
+<B>Method Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">virtual void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CWindConfigurationDlg.html#DoDataExchange(CDataExchange* pDX)"><B>DoDataExchange</B></A>(CDataExchange* pDX)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CWindConfigurationDlg.html#InitToolTips()"><B>InitToolTips</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Setup the tool tips</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">afx_msg void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CWindConfigurationDlg.html#OnChangeAngleDistance()"><B>OnChangeAngleDistance</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Called when the user has changed between using angles or distances</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CWindConfigurationDlg.html#OnChangeScanner()"><B>OnChangeScanner</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Called when the user has changed the currently selected scanner</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">virtual BOOL</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CWindConfigurationDlg.html#OnInitDialog()"><B>OnInitDialog</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Initializing the dialog</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">afx_msg void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CWindConfigurationDlg.html#OnOnOff()"><B>OnOnOff</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Called when the automatic measurements have been turned on/off</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">virtual BOOL</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CWindConfigurationDlg.html#PreTranslateMessage(MSG* pMsg)"><B>PreTranslateMessage</B></A>(MSG* pMsg)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Handling the tool tips</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">afx_msg void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CWindConfigurationDlg.html#SaveData()"><B>SaveData</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Saves the data in the dialog</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR>
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD><B>Attributes inherited from </B><A HREF="./ConfigurationDialog-CSystemConfigurationPage.html"><B>ConfigurationDialog-CSystemConfigurationPage</B></A></TD>
+</TR>
+<TR>
+<TD><A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#m_configuration">m_configuration</A>,&nbsp;
+<A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#m_curScanner">m_curScanner</A>,&nbsp;
+<A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#m_curSpec">m_curSpec</A>,&nbsp;
+<A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#m_parent">m_parent</A>,&nbsp;
+<A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#m_scannerTree">m_scannerTree</A>,&nbsp;
+<A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#m_toolTip">m_toolTip</A>
+
+</TD>
+</TR>
+</TABLE><BR>
+
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD><B>Methods inherited from </B><A HREF="./ConfigurationDialog-CSystemConfigurationPage.html"><B>ConfigurationDialog-CSystemConfigurationPage</B></A></TD>
+</TR>
+<TR>
+<TD><A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#GetScanAndSpec(int &scanner, int &spec)">GetScanAndSpec</A>,&nbsp;
+<A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#OnChangeScanner()">OnChangeScanner</A>
+
+</TD>
+</TR>
+</TABLE><BR>
+
+
+
+
+<!-- ********************ATTRIBUTE DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Attribute Detail</B></FONT></TD>
+</TR></TABLE>
+
+<A NAME="automatic"><!-- --></A>
+<H3>automatic</H3>
+<P>
+<CODE>protected int <B>automatic</B></CODE>
+<BLOCKQUOTE>
+the local copies of the settings
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="desiredAngle"><!-- --></A>
+<H3>desiredAngle</H3>
+<P>
+<CODE>protected double  <B>desiredAngle</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="desiredDistance"><!-- --></A>
+<H3>desiredDistance</H3>
+<P>
+<CODE>protected double  <B>desiredDistance</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="duration"><!-- --></A>
+<H3>duration</H3>
+<P>
+<CODE>protected int <B>duration</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="interval"><!-- --></A>
+<H3>interval</H3>
+<P>
+<CODE>protected int <B>interval</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_editAngle"><!-- --></A>
+<H3>m_editAngle</H3>
+<P>
+<CODE>protected CEdit  <B>m_editAngle</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_editDistance"><!-- --></A>
+<H3>m_editDistance</H3>
+<P>
+<CODE>protected CEdit  <B>m_editDistance</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_editDuration"><!-- --></A>
+<H3>m_editDuration</H3>
+<P>
+<CODE>protected CEdit  <B>m_editDuration</B></CODE>
+<BLOCKQUOTE>
+The edit-boxes on the screen
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_editInterval"><!-- --></A>
+<H3>m_editInterval</H3>
+<P>
+<CODE>protected CEdit  <B>m_editInterval</B></CODE>
+<BLOCKQUOTE>
+The edit-boxes on the screen
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_editMaxAngle"><!-- --></A>
+<H3>m_editMaxAngle</H3>
+<P>
+<CODE>protected CEdit  <B>m_editMaxAngle</B></CODE>
+<BLOCKQUOTE>
+The edit-boxes on the screen
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_editMinPeakColumn"><!-- --></A>
+<H3>m_editMinPeakColumn</H3>
+<P>
+<CODE>protected CEdit  <B>m_editMinPeakColumn</B></CODE>
+<BLOCKQUOTE>
+The edit-boxes on the screen
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_editMotorStepsComp"><!-- --></A>
+<H3>m_editMotorStepsComp</H3>
+<P>
+<CODE>protected CEdit  <B>m_editMotorStepsComp</B></CODE>
+<BLOCKQUOTE>
+The edit-boxes on the screen
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_editStablePeriod"><!-- --></A>
+<H3>m_editStablePeriod</H3>
+<P>
+<CODE>protected CEdit  <B>m_editStablePeriod</B></CODE>
+<BLOCKQUOTE>
+The edit-boxes on the screen
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_frameDistance"><!-- --></A>
+<H3>m_frameDistance</H3>
+<P>
+<CODE>protected CStatic  <B>m_frameDistance</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_labelDeg"><!-- --></A>
+<H3>m_labelDeg</H3>
+<P>
+<CODE>protected CStatic  <B>m_labelDeg</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_labelMeters"><!-- --></A>
+<H3>m_labelMeters</H3>
+<P>
+<CODE>protected CStatic  <B>m_labelMeters</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_radioAngle"><!-- --></A>
+<H3>m_radioAngle</H3>
+<P>
+<CODE>protected CButton  <B>m_radioAngle</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_radioDistance"><!-- --></A>
+<H3>m_radioDistance</H3>
+<P>
+<CODE>protected CButton  <B>m_radioDistance</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_useCalcWind"><!-- --></A>
+<H3>m_useCalcWind</H3>
+<P>
+<CODE>protected CButton <B>m_useCalcWind</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="maxAngle"><!-- --></A>
+<H3>maxAngle</H3>
+<P>
+<CODE>protected double <B>maxAngle</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="minPeakColumn"><!-- --></A>
+<H3>minPeakColumn</H3>
+<P>
+<CODE>protected double <B>minPeakColumn</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="motorStepsComp"><!-- --></A>
+<H3>motorStepsComp</H3>
+<P>
+<CODE>protected int <B>motorStepsComp</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="stablePeriod"><!-- --></A>
+<H3>stablePeriod</H3>
+<P>
+<CODE>protected int <B>stablePeriod</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="useAngle"><!-- --></A>
+<H3>useAngle</H3>
+<P>
+<CODE>protected int <B>useAngle</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="useCalcWind"><!-- --></A>
+<H3>useCalcWind</H3>
+<P>
+<CODE>protected int <B>useCalcWind</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************ENUM DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Enum Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="enum {  IDD = IDD_CONFIGURE_WIND }"><!-- --></A>
+<H3>enum {  IDD = IDD_CONFIGURE_WIND }</H3>
+<P>
+<CODE>public <B>enum {  IDD = IDD_CONFIGURE_WIND }</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************Macro DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Macro Detail</B></FONT></TD>
+</TR></TABLE>
+
+<A NAME="DECLARE_DYNAMIC(CWindConfigurationDlg)"><!-- --></A>
+<H3>DECLARE_DYNAMIC(CWindConfigurationDlg)</H3>
+<P>
+<CODE>private <B>DECLARE_DYNAMIC(CWindConfigurationDlg)</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="DECLARE_MESSAGE_MAP()"><!-- --></A>
+<H3>DECLARE_MESSAGE_MAP()</H3>
+<P>
+<CODE>protected <B>DECLARE_MESSAGE_MAP()</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************CONSTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Constructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="CWindConfigurationDlg()"><!-- --></A>
+<H3>CWindConfigurationDlg</H3>
+<P>
+<CODE>public  <B>CWindConfigurationDlg</B>()</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************DESTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Destructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="virtual ~CWindConfigurationDlg()"><!-- --></A>
+<H3>virtual ~CWindConfigurationDlg</H3>
+<P>
+<CODE>public  <B>virtual ~CWindConfigurationDlg</B>()</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************METHOD DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="DoDataExchange(CDataExchange* pDX)"></A>
+<H3>DoDataExchange</H3>
+<P>
+<CODE>protected virtual void <B>DoDataExchange</B>(CDataExchange* pDX)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="InitToolTips()"></A>
+<H3>InitToolTips</H3>
+<P>
+<CODE>public void <B>InitToolTips</B>()</CODE>
+<BLOCKQUOTE>
+Setup the tool tips
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnChangeAngleDistance()"></A>
+<H3>OnChangeAngleDistance</H3>
+<P>
+<CODE>public afx_msg void <B>OnChangeAngleDistance</B>()</CODE>
+<BLOCKQUOTE>
+Called when the user has changed between using angles or distances
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnChangeScanner()"></A>
+<H3>OnChangeScanner</H3>
+<P>
+<CODE>public void <B>OnChangeScanner</B>()</CODE>
+<BLOCKQUOTE>
+Called when the user has changed the currently selected scanner
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnInitDialog()"></A>
+<H3>OnInitDialog</H3>
+<P>
+<CODE>public virtual BOOL <B>OnInitDialog</B>()</CODE>
+<BLOCKQUOTE>
+Initializing the dialog
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnOnOff()"></A>
+<H3>OnOnOff</H3>
+<P>
+<CODE>public afx_msg void <B>OnOnOff</B>()</CODE>
+<BLOCKQUOTE>
+Called when the automatic measurements have been turned on/off
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="PreTranslateMessage(MSG* pMsg)"></A>
+<H3>PreTranslateMessage</H3>
+<P>
+<CODE>public virtual BOOL <B>PreTranslateMessage</B>(MSG* pMsg)</CODE>
+<BLOCKQUOTE>
+Handling the tool tips
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="SaveData()"></A>
+<H3>SaveData</H3>
+<P>
+<CODE>public afx_msg void <B>SaveData</B>()</CODE>
+<BLOCKQUOTE>
+Saves the data in the dialog
+</BLOCKQUOTE>
+</BODY>
+</HTML>

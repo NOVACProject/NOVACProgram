@@ -1,0 +1,251 @@
+<!DOCTYPE HTML PUBLIC"-//W3C//DTD HTML 4.0 Frameset//EN""http://www.w3.org/TR/REC-html40/frameset/dtd">
+<HTML>
+<HEAD>
+<!-- The file this documentation was generated from is:  C:\Novac\NovacMasterProgram\2008_12_19\Configuration\A###CConfigurationSetting+SetupChangeSetting.h -->
+</HEAD>
+<TITLE>
+class CConfigurationSetting+SetupChangeSetting
+</TITLE>
+<LINK REL="stylesheet" TYPE="text/css" HREF="./stylesheet.css" TITLE="Style">
+<BODY BGCOLOR="#FFFFFF">
+
+
+
+<!-- ********************CLASS HEADING INFORMATION******************** -->
+
+<H2><P>class CConfigurationSetting::SetupChangeSetting</H2></P>
+<P></h2><hr size="2"></P>
+
+
+
+<!-- ********************ATTRIBUTE SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2"><B>Attribute Summary</B></FONT></TD>
+</TR>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+SetupChangeSetting.html#automaticSetupChange">automaticSetupChange</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">This is true if we should let the program change the setup of the
+ instrument automatically.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+SetupChangeSetting.html#mode">mode</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">How brave we are on using the scanner, can be either of;
+ CHANGEMODE_FAST or
+ CHANGEMODE_SAFE</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+SetupChangeSetting.html#useCalculatedPlumeParameters">useCalculatedPlumeParameters</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">This is true if we should trust and use the values for
+ wind-direction and plume-height calculated by the program</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+SetupChangeSetting.html#windDirectionTolerance">windDirectionTolerance</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The tolerance for varying wind-directions.</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************CONSTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Constructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CConfigurationSetting+SetupChangeSetting.html#SetupChangeSetting()"><B>SetupChangeSetting</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************DESTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Destructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CConfigurationSetting+SetupChangeSetting.html#~SetupChangeSetting()"><B>~SetupChangeSetting</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************METHOD SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2">
+<B>Method Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CConfigurationSetting+SetupChangeSetting.html#Clear()"><B>Clear</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Resets all values to default</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">SetupChangeSetting&</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CConfigurationSetting+SetupChangeSetting.html#operator=(const SetupChangeSetting &ws2)"><B>operator=</B></A>(const SetupChangeSetting &ws2)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Assignment operator</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR>
+
+
+
+<!-- ********************ATTRIBUTE DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Attribute Detail</B></FONT></TD>
+</TR></TABLE>
+
+<A NAME="automaticSetupChange"><!-- --></A>
+<H3>automaticSetupChange</H3>
+<P>
+<CODE>public int <B>automaticSetupChange</B></CODE>
+<BLOCKQUOTE>
+This is true if we should let the program change the setup of the
+ instrument automatically. This only works for Heidelberg(V-II) instruments
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="mode"><!-- --></A>
+<H3>mode</H3>
+<P>
+<CODE>public int <B>mode</B></CODE>
+<BLOCKQUOTE>
+How brave we are on using the scanner, can be either of;
+ CHANGEMODE_FAST or
+ CHANGEMODE_SAFE
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="useCalculatedPlumeParameters"><!-- --></A>
+<H3>useCalculatedPlumeParameters</H3>
+<P>
+<CODE>public int <B>useCalculatedPlumeParameters</B></CODE>
+<BLOCKQUOTE>
+This is true if we should trust and use the values for
+ wind-direction and plume-height calculated by the program
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="windDirectionTolerance"><!-- --></A>
+<H3>windDirectionTolerance</H3>
+<P>
+<CODE>public double <B>windDirectionTolerance</B></CODE>
+<BLOCKQUOTE>
+The tolerance for varying wind-directions. No changes will be done as long
+ as the changes of the wind-direction is less than this value
+</BLOCKQUOTE>
+
+
+
+<!-- ********************CONSTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Constructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="SetupChangeSetting()"><!-- --></A>
+<H3>SetupChangeSetting</H3>
+<P>
+<CODE>public  <B>SetupChangeSetting</B>()</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************DESTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Destructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="~SetupChangeSetting()"><!-- --></A>
+<H3>~SetupChangeSetting</H3>
+<P>
+<CODE>public  <B>~SetupChangeSetting</B>()</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************METHOD DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="Clear()"></A>
+<H3>Clear</H3>
+<P>
+<CODE>public void <B>Clear</B>()</CODE>
+<BLOCKQUOTE>
+Resets all values to default
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="operator=(const SetupChangeSetting &ws2)"></A>
+<H3>operator=</H3>
+<P>
+<CODE>public SetupChangeSetting& <B>operator=</B>(const SetupChangeSetting &ws2)</CODE>
+<BLOCKQUOTE>
+Assignment operator
+</BLOCKQUOTE>
+</BODY>
+</HTML>

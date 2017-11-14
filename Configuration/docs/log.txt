@@ -1,0 +1,154 @@
+Creating stylesheet.css...done
+
+25 classes, structs, and unions documented.
+
+Generating documentation for: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\docs\CConfigurationSetting.html
+CConfigurationSetting
+Found in: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\Configuration.h
+
+Generating documentation for: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\docs\CConfigurationSetting+CExternalCallSettings.html
+CConfigurationSetting+CExternalCallSettings
+Found in: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\A###CConfigurationSetting+CExternalCallSettings.h
+
+Generating documentation for: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\docs\CConfigurationSetting+CFTPSetting.html
+CConfigurationSetting+CFTPSetting
+Found in: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\A###CConfigurationSetting+CFTPSetting.h
+
+Generating documentation for: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\docs\CConfigurationSetting+CWindFieldDataSettings.html
+CConfigurationSetting+CWindFieldDataSettings
+Found in: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\A###CConfigurationSetting+CWindFieldDataSettings.h
+
+Generating documentation for: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\docs\CConfigurationSetting+CommunicationSetting.html
+CConfigurationSetting+CommunicationSetting
+Found in: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\A###CConfigurationSetting+CommunicationSetting.h
+
+Generating documentation for: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\docs\CConfigurationSetting+DarkSettings.html
+CConfigurationSetting+DarkSettings
+Found in: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\A###CConfigurationSetting+DarkSettings.h
+
+Generating documentation for: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\docs\CConfigurationSetting+MotorSetting.html
+CConfigurationSetting+MotorSetting
+Found in: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\A###CConfigurationSetting+MotorSetting.h
+
+Generating documentation for: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\docs\CConfigurationSetting+ScanningInstrumentSetting.html
+CConfigurationSetting+ScanningInstrumentSetting
+Found in: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\A###CConfigurationSetting+ScanningInstrumentSetting.h
+
+Generating documentation for: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\docs\CConfigurationSetting+SetupChangeSetting.html
+CConfigurationSetting+SetupChangeSetting
+Found in: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\A###CConfigurationSetting+SetupChangeSetting.h
+
+Generating documentation for: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\docs\CConfigurationSetting+SpectrometerChannelSetting.html
+CConfigurationSetting+SpectrometerChannelSetting
+Found in: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\A###CConfigurationSetting+SpectrometerChannelSetting.h
+
+Generating documentation for: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\docs\CConfigurationSetting+SpectrometerSetting.html
+CConfigurationSetting+SpectrometerSetting
+Found in: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\A###CConfigurationSetting+SpectrometerSetting.h
+
+Generating documentation for: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\docs\CConfigurationSetting+WebSettings.html
+CConfigurationSetting+WebSettings
+Found in: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\A###CConfigurationSetting+WebSettings.h
+
+Generating documentation for: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\docs\CConfigurationSetting+WindSpeedMeasurementSetting.html
+CConfigurationSetting+WindSpeedMeasurementSetting
+Found in: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\A###CConfigurationSetting+WindSpeedMeasurementSetting.h
+
+Generating documentation for: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\docs\ConfigurationDialog-CAdvancedFTPUploadSettings.html
+ConfigurationDialog-CAdvancedFTPUploadSettings
+Found in: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\AdvancedFTPUploadSettings.h
+
+Generating documentation for: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\docs\ConfigurationDialog-CConfigurationTreeCtrl.html
+ConfigurationDialog-CConfigurationTreeCtrl
+Found in: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\ConfigurationTreeCtrl.h
+
+Generating documentation for: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\docs\ConfigurationDialog-CConfigureCOMPortDlg.html
+ConfigurationDialog-CConfigureCOMPortDlg
+Found in: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\ConfigureCOMPortDlg.h
+
+Generating documentation for: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\docs\ConfigurationDialog-CDarkConfigurationDlg.html
+ConfigurationDialog-CDarkConfigurationDlg
+Found in: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\DarkConfigurationDlg.h
+
+Generating documentation for: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\docs\ConfigurationDialog-CEvaluationConfigurationDlg.html
+ConfigurationDialog-CEvaluationConfigurationDlg
+Found in: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\EvaluationConfigurationDlg.h
+
+Generating documentation for: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\docs\ConfigurationDialog-CGlobalConfiguration.html
+ConfigurationDialog-CGlobalConfiguration
+Found in: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\GlobalConfiguration.h
+
+Generating documentation for: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\docs\ConfigurationDialog-CLocationConfigurationDlg.html
+ConfigurationDialog-CLocationConfigurationDlg
+Found in: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\LocationConfigurationDlg.h
+
+Generating documentation for: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\docs\ConfigurationDialog-CRemoteConfigurationDlg.html
+ConfigurationDialog-CRemoteConfigurationDlg
+Found in: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\RemoteConfigurationDlg.h
+
+Generating documentation for: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\docs\ConfigurationDialog-CScannerConfiguration.html
+ConfigurationDialog-CScannerConfiguration
+Found in: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\ScannerConfiguration.h
+
+Generating documentation for: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\docs\ConfigurationDialog-CSystemConfigurationPage.html
+ConfigurationDialog-CSystemConfigurationPage
+Found in: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\SystemConfigurationPage.h
+
+Generating documentation for: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\docs\ConfigurationDialog-CVIIAdvancedConfigurationDlg.html
+ConfigurationDialog-CVIIAdvancedConfigurationDlg
+Found in: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\VIIAdvancedConfigurationDlg.h
+
+Generating documentation for: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\docs\ConfigurationDialog-CWindConfigurationDlg.html
+ConfigurationDialog-CWindConfigurationDlg
+Found in: 
+C:\Novac\NovacMasterProgram\2008_12_19\Configuration\WindConfigurationDlg.h
+

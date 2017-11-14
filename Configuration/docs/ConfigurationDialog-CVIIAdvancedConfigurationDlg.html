@@ -1,0 +1,521 @@
+<!DOCTYPE HTML PUBLIC"-//W3C//DTD HTML 4.0 Frameset//EN""http://www.w3.org/TR/REC-html40/frameset/dtd">
+<HTML>
+<HEAD>
+<!-- The file this documentation was generated from is:  C:\Novac\NovacMasterProgram\2008_12_19\Configuration\VIIAdvancedConfigurationDlg.h -->
+</HEAD>
+<TITLE>
+class CVIIAdvancedConfigurationDlg
+</TITLE>
+<LINK REL="stylesheet" TYPE="text/css" HREF="./stylesheet.css" TITLE="Style">
+<BODY BGCOLOR="#FFFFFF">
+
+
+
+<!-- ********************CLASS HEADING INFORMATION******************** -->
+
+<H3><p>
+namespace ConfigurationDialog
+</H3>
+<H2><P>class CVIIAdvancedConfigurationDlg</H2></P>
+<P><H4>Inherits:&nbsp;&nbsp;<A HREF="./ConfigurationDialog-CSystemConfigurationPage.html">public CSystemConfigurationPage</A>&nbsp;&nbsp;</H4></P><P></h2><hr size="2"></P>
+
+
+
+<!-- ********************ATTRIBUTE SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2"><B>Attribute Summary</B></FONT></TD>
+</TR>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CVIIAdvancedConfigurationDlg.html#m_automaticSetupChange">m_automaticSetupChange</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">the local copies of the settings</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">CButton</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CVIIAdvancedConfigurationDlg.html#m_checkUseAutoValues">m_checkUseAutoValues</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">CEdit</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CVIIAdvancedConfigurationDlg.html#m_editTolerance">m_editTolerance</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CVIIAdvancedConfigurationDlg.html#m_mode">m_mode</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">CButton </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CVIIAdvancedConfigurationDlg.html#m_radioMode1">m_radioMode1</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">CButton </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CVIIAdvancedConfigurationDlg.html#m_radioMode2">m_radioMode2</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CVIIAdvancedConfigurationDlg.html#m_useCalculatedPlumeParameters">m_useCalculatedPlumeParameters</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CVIIAdvancedConfigurationDlg.html#m_windDirectionTolerance">m_windDirectionTolerance</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************MACRO SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2"><B>Macro Summary</B></FONT></TD>
+</TR>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CVIIAdvancedConfigurationDlg.html#DECLARE_DYNAMIC(CVIIAdvancedConfigurationDlg)">DECLARE_DYNAMIC(CVIIAdvancedConfigurationDlg)</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CVIIAdvancedConfigurationDlg.html#DECLARE_MESSAGE_MAP()">DECLARE_MESSAGE_MAP()</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************ENUM SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2"><B>Enum Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CVIIAdvancedConfigurationDlg.html#enum {  IDD = IDD_CONFIGURE_VII_ADVANCED }">enum </A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************CONSTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Constructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CVIIAdvancedConfigurationDlg.html#CVIIAdvancedConfigurationDlg()"><B>CVIIAdvancedConfigurationDlg</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************DESTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Destructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CVIIAdvancedConfigurationDlg.html#virtual ~CVIIAdvancedConfigurationDlg()"><B>virtual ~CVIIAdvancedConfigurationDlg</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************METHOD SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2">
+<B>Method Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">virtual void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CVIIAdvancedConfigurationDlg.html#DoDataExchange(CDataExchange* pDX)"><B>DoDataExchange</B></A>(CDataExchange* pDX)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CVIIAdvancedConfigurationDlg.html#InitToolTips()"><B>InitToolTips</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Setup the tool tips</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CVIIAdvancedConfigurationDlg.html#OnChangeScanner()"><B>OnChangeScanner</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Called when the user has changed the currently selected scanner</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">virtual BOOL</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CVIIAdvancedConfigurationDlg.html#OnInitDialog()"><B>OnInitDialog</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Initializing the dialog</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">afx_msg void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CVIIAdvancedConfigurationDlg.html#OnOnOff()"><B>OnOnOff</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Called when the automatic measurements have been turned on/off</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">virtual BOOL</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CVIIAdvancedConfigurationDlg.html#PreTranslateMessage(MSG* pMsg)"><B>PreTranslateMessage</B></A>(MSG* pMsg)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Handling the tool tips</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">afx_msg void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CVIIAdvancedConfigurationDlg.html#SaveData()"><B>SaveData</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Saves the data in the dialog</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR>
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD><B>Attributes inherited from </B><A HREF="./ConfigurationDialog-CSystemConfigurationPage.html"><B>ConfigurationDialog-CSystemConfigurationPage</B></A></TD>
+</TR>
+<TR>
+<TD><A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#m_configuration">m_configuration</A>,&nbsp;
+<A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#m_curScanner">m_curScanner</A>,&nbsp;
+<A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#m_curSpec">m_curSpec</A>,&nbsp;
+<A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#m_parent">m_parent</A>,&nbsp;
+<A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#m_scannerTree">m_scannerTree</A>,&nbsp;
+<A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#m_toolTip">m_toolTip</A>
+
+</TD>
+</TR>
+</TABLE><BR>
+
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD><B>Methods inherited from </B><A HREF="./ConfigurationDialog-CSystemConfigurationPage.html"><B>ConfigurationDialog-CSystemConfigurationPage</B></A></TD>
+</TR>
+<TR>
+<TD><A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#GetScanAndSpec(int &scanner, int &spec)">GetScanAndSpec</A>,&nbsp;
+<A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#OnChangeScanner()">OnChangeScanner</A>
+
+</TD>
+</TR>
+</TABLE><BR>
+
+
+
+
+<!-- ********************ATTRIBUTE DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Attribute Detail</B></FONT></TD>
+</TR></TABLE>
+
+<A NAME="m_automaticSetupChange"><!-- --></A>
+<H3>m_automaticSetupChange</H3>
+<P>
+<CODE>protected int <B>m_automaticSetupChange</B></CODE>
+<BLOCKQUOTE>
+the local copies of the settings
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_checkUseAutoValues"><!-- --></A>
+<H3>m_checkUseAutoValues</H3>
+<P>
+<CODE>protected CButton <B>m_checkUseAutoValues</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_editTolerance"><!-- --></A>
+<H3>m_editTolerance</H3>
+<P>
+<CODE>protected CEdit <B>m_editTolerance</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_mode"><!-- --></A>
+<H3>m_mode</H3>
+<P>
+<CODE>protected int <B>m_mode</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_radioMode1"><!-- --></A>
+<H3>m_radioMode1</H3>
+<P>
+<CODE>protected CButton  <B>m_radioMode1</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_radioMode2"><!-- --></A>
+<H3>m_radioMode2</H3>
+<P>
+<CODE>protected CButton  <B>m_radioMode2</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_useCalculatedPlumeParameters"><!-- --></A>
+<H3>m_useCalculatedPlumeParameters</H3>
+<P>
+<CODE>protected int <B>m_useCalculatedPlumeParameters</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_windDirectionTolerance"><!-- --></A>
+<H3>m_windDirectionTolerance</H3>
+<P>
+<CODE>protected double <B>m_windDirectionTolerance</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************ENUM DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Enum Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="enum {  IDD = IDD_CONFIGURE_VII_ADVANCED }"><!-- --></A>
+<H3>enum {  IDD = IDD_CONFIGURE_VII_ADVANCED }</H3>
+<P>
+<CODE>public <B>enum {  IDD = IDD_CONFIGURE_VII_ADVANCED }</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************Macro DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Macro Detail</B></FONT></TD>
+</TR></TABLE>
+
+<A NAME="DECLARE_DYNAMIC(CVIIAdvancedConfigurationDlg)"><!-- --></A>
+<H3>DECLARE_DYNAMIC(CVIIAdvancedConfigurationDlg)</H3>
+<P>
+<CODE>private <B>DECLARE_DYNAMIC(CVIIAdvancedConfigurationDlg)</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="DECLARE_MESSAGE_MAP()"><!-- --></A>
+<H3>DECLARE_MESSAGE_MAP()</H3>
+<P>
+<CODE>protected <B>DECLARE_MESSAGE_MAP()</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************CONSTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Constructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="CVIIAdvancedConfigurationDlg()"><!-- --></A>
+<H3>CVIIAdvancedConfigurationDlg</H3>
+<P>
+<CODE>public  <B>CVIIAdvancedConfigurationDlg</B>()</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************DESTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Destructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="virtual ~CVIIAdvancedConfigurationDlg()"><!-- --></A>
+<H3>virtual ~CVIIAdvancedConfigurationDlg</H3>
+<P>
+<CODE>public  <B>virtual ~CVIIAdvancedConfigurationDlg</B>()</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************METHOD DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="DoDataExchange(CDataExchange* pDX)"></A>
+<H3>DoDataExchange</H3>
+<P>
+<CODE>protected virtual void <B>DoDataExchange</B>(CDataExchange* pDX)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="InitToolTips()"></A>
+<H3>InitToolTips</H3>
+<P>
+<CODE>public void <B>InitToolTips</B>()</CODE>
+<BLOCKQUOTE>
+Setup the tool tips
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnChangeScanner()"></A>
+<H3>OnChangeScanner</H3>
+<P>
+<CODE>public void <B>OnChangeScanner</B>()</CODE>
+<BLOCKQUOTE>
+Called when the user has changed the currently selected scanner
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnInitDialog()"></A>
+<H3>OnInitDialog</H3>
+<P>
+<CODE>public virtual BOOL <B>OnInitDialog</B>()</CODE>
+<BLOCKQUOTE>
+Initializing the dialog
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnOnOff()"></A>
+<H3>OnOnOff</H3>
+<P>
+<CODE>public afx_msg void <B>OnOnOff</B>()</CODE>
+<BLOCKQUOTE>
+Called when the automatic measurements have been turned on/off
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="PreTranslateMessage(MSG* pMsg)"></A>
+<H3>PreTranslateMessage</H3>
+<P>
+<CODE>public virtual BOOL <B>PreTranslateMessage</B>(MSG* pMsg)</CODE>
+<BLOCKQUOTE>
+Handling the tool tips
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="SaveData()"></A>
+<H3>SaveData</H3>
+<P>
+<CODE>public afx_msg void <B>SaveData</B>()</CODE>
+<BLOCKQUOTE>
+Saves the data in the dialog
+</BLOCKQUOTE>
+</BODY>
+</HTML>

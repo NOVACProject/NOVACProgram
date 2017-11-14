@@ -1,0 +1,698 @@
+<!DOCTYPE HTML PUBLIC"-//W3C//DTD HTML 4.0 Frameset//EN""http://www.w3.org/TR/REC-html40/frameset/dtd">
+<HTML>
+<HEAD>
+<!-- The file this documentation was generated from is:  C:\Novac\NovacMasterProgram\2008_12_19\Configuration\EvaluationConfigurationDlg.h -->
+</HEAD>
+<TITLE>
+class CEvaluationConfigurationDlg
+</TITLE>
+<LINK REL="stylesheet" TYPE="text/css" HREF="./stylesheet.css" TITLE="Style">
+<BODY BGCOLOR="#FFFFFF">
+
+
+
+<!-- ********************CLASS HEADING INFORMATION******************** -->
+
+<H3><p>
+namespace ConfigurationDialog
+</H3>
+<H2><P>class CEvaluationConfigurationDlg</H2></P>
+<P><H4>Inherits:&nbsp;&nbsp;<A HREF="./ConfigurationDialog-CSystemConfigurationPage.html">public CSystemConfigurationPage</A>&nbsp;&nbsp;</H4></P><P></h2><hr size="2"></P>
+
+
+
+<!-- ********************ATTRIBUTE SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2"><B>Attribute Summary</B></FONT></TD>
+</TR>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CButton</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CEvaluationConfigurationDlg.html#m_addReferenceBtn">m_addReferenceBtn</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The 'add a reference file' button</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">unsigned int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CEvaluationConfigurationDlg.html#m_channel">m_channel</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The spectrometer channel that this object is modifying</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CStatic</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CEvaluationConfigurationDlg.html#m_editFitFrom">m_editFitFrom</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CStatic</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CEvaluationConfigurationDlg.html#m_editFitTo">m_editFitTo</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">int </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CEvaluationConfigurationDlg.html#m_fitHigh">m_fitHigh</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The fitlow and fit high, from the configuration</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">int </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CEvaluationConfigurationDlg.html#m_fitLow">m_fitLow</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The fitlow and fit high, from the configuration</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CStatic</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CEvaluationConfigurationDlg.html#m_labelFitFrom">m_labelFitFrom</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CStatic</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CEvaluationConfigurationDlg.html#m_labelFitTo">m_labelFitTo</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CReferenceFileControl</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CEvaluationConfigurationDlg.html#m_referenceFileCtrl">m_referenceFileCtrl</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CStatic</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CEvaluationConfigurationDlg.html#m_referenceStatic">m_referenceStatic</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CButton</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CEvaluationConfigurationDlg.html#m_removeReferenceButton">m_removeReferenceButton</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The 'remove a reference file' button</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************MACRO SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2"><B>Macro Summary</B></FONT></TD>
+</TR>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CEvaluationConfigurationDlg.html#DECLARE_DYNAMIC(CEvaluationConfigurationDlg)">DECLARE_DYNAMIC(CEvaluationConfigurationDlg)</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CEvaluationConfigurationDlg.html#DECLARE_MESSAGE_MAP()">DECLARE_MESSAGE_MAP()</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************ENUM SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2"><B>Enum Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CEvaluationConfigurationDlg.html#enum {  IDD = IDD_CONFIGURE_EVALUATION }">enum </A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************CONSTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Constructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CEvaluationConfigurationDlg.html#CEvaluationConfigurationDlg()"><B>CEvaluationConfigurationDlg</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************DESTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Destructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CEvaluationConfigurationDlg.html#virtual ~CEvaluationConfigurationDlg()"><B>virtual ~CEvaluationConfigurationDlg</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************METHOD SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2">
+<B>Method Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">virtual void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CEvaluationConfigurationDlg.html#DoDataExchange(CDataExchange* pDX)"><B>DoDataExchange</B></A>(CDataExchange* pDX)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CEvaluationConfigurationDlg.html#InitReferenceFileControl()"><B>InitReferenceFileControl</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Initialize the reference file control</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CEvaluationConfigurationDlg.html#InitToolTips()"><B>InitToolTips</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Setup the tool tips</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">afx_msg void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CEvaluationConfigurationDlg.html#OnAddReferenceFile()"><B>OnAddReferenceFile</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Adding a reference file</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CEvaluationConfigurationDlg.html#OnChangeScanner()"><B>OnChangeScanner</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Updates the control</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">virtual BOOL</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CEvaluationConfigurationDlg.html#OnInitDialog()"><B>OnInitDialog</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Initializing the dialog</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">virtual BOOL</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CEvaluationConfigurationDlg.html#OnKillActive()"><B>OnKillActive</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Called when this page is no longer the active page</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">afx_msg void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CEvaluationConfigurationDlg.html#OnRemoveReferenceFile()"><B>OnRemoveReferenceFile</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Removing a reference file</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">virtual BOOL</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CEvaluationConfigurationDlg.html#OnSetActive()"><B>OnSetActive</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">afx_msg void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CEvaluationConfigurationDlg.html#OnShowPropertiesWindow()"><B>OnShowPropertiesWindow</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Showing the properties of a reference file</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CEvaluationConfigurationDlg.html#PopulateReferenceFileControl()"><B>PopulateReferenceFileControl</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Fill up the reference file control with items</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">virtual BOOL</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CEvaluationConfigurationDlg.html#PreTranslateMessage(MSG* pMsg)"><B>PreTranslateMessage</B></A>(MSG* pMsg)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Handling the tool tips</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">afx_msg void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CEvaluationConfigurationDlg.html#SaveData()"><B>SaveData</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Saving the data in the control</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CEvaluationConfigurationDlg.html#UpdateDlg()"><B>UpdateDlg</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Updating the data in the control</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR>
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD><B>Attributes inherited from </B><A HREF="./ConfigurationDialog-CSystemConfigurationPage.html"><B>ConfigurationDialog-CSystemConfigurationPage</B></A></TD>
+</TR>
+<TR>
+<TD><A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#m_configuration">m_configuration</A>,&nbsp;
+<A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#m_curScanner">m_curScanner</A>,&nbsp;
+<A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#m_curSpec">m_curSpec</A>,&nbsp;
+<A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#m_parent">m_parent</A>,&nbsp;
+<A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#m_scannerTree">m_scannerTree</A>,&nbsp;
+<A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#m_toolTip">m_toolTip</A>
+
+</TD>
+</TR>
+</TABLE><BR>
+
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD><B>Methods inherited from </B><A HREF="./ConfigurationDialog-CSystemConfigurationPage.html"><B>ConfigurationDialog-CSystemConfigurationPage</B></A></TD>
+</TR>
+<TR>
+<TD><A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#GetScanAndSpec(int &scanner, int &spec)">GetScanAndSpec</A>,&nbsp;
+<A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#OnChangeScanner()">OnChangeScanner</A>
+
+</TD>
+</TR>
+</TABLE><BR>
+
+
+
+
+<!-- ********************ATTRIBUTE DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Attribute Detail</B></FONT></TD>
+</TR></TABLE>
+
+<A NAME="m_addReferenceBtn"><!-- --></A>
+<H3>m_addReferenceBtn</H3>
+<P>
+<CODE>public CButton <B>m_addReferenceBtn</B></CODE>
+<BLOCKQUOTE>
+The 'add a reference file' button
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_channel"><!-- --></A>
+<H3>m_channel</H3>
+<P>
+<CODE>public unsigned int <B>m_channel</B></CODE>
+<BLOCKQUOTE>
+The spectrometer channel that this object is modifying
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_editFitFrom"><!-- --></A>
+<H3>m_editFitFrom</H3>
+<P>
+<CODE>private CStatic <B>m_editFitFrom</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_editFitTo"><!-- --></A>
+<H3>m_editFitTo</H3>
+<P>
+<CODE>private CStatic <B>m_editFitTo</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_fitHigh"><!-- --></A>
+<H3>m_fitHigh</H3>
+<P>
+<CODE>private int  <B>m_fitHigh</B></CODE>
+<BLOCKQUOTE>
+The fitlow and fit high, from the configuration
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_fitLow"><!-- --></A>
+<H3>m_fitLow</H3>
+<P>
+<CODE>private int  <B>m_fitLow</B></CODE>
+<BLOCKQUOTE>
+The fitlow and fit high, from the configuration
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_labelFitFrom"><!-- --></A>
+<H3>m_labelFitFrom</H3>
+<P>
+<CODE>private CStatic <B>m_labelFitFrom</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_labelFitTo"><!-- --></A>
+<H3>m_labelFitTo</H3>
+<P>
+<CODE>private CStatic <B>m_labelFitTo</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_referenceFileCtrl"><!-- --></A>
+<H3>m_referenceFileCtrl</H3>
+<P>
+<CODE>private CReferenceFileControl <B>m_referenceFileCtrl</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_referenceStatic"><!-- --></A>
+<H3>m_referenceStatic</H3>
+<P>
+<CODE>private CStatic <B>m_referenceStatic</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_removeReferenceButton"><!-- --></A>
+<H3>m_removeReferenceButton</H3>
+<P>
+<CODE>public CButton <B>m_removeReferenceButton</B></CODE>
+<BLOCKQUOTE>
+The 'remove a reference file' button
+</BLOCKQUOTE>
+
+
+
+<!-- ********************ENUM DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Enum Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="enum {  IDD = IDD_CONFIGURE_EVALUATION }"><!-- --></A>
+<H3>enum {  IDD = IDD_CONFIGURE_EVALUATION }</H3>
+<P>
+<CODE>public <B>enum {  IDD = IDD_CONFIGURE_EVALUATION }</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************Macro DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Macro Detail</B></FONT></TD>
+</TR></TABLE>
+
+<A NAME="DECLARE_DYNAMIC(CEvaluationConfigurationDlg)"><!-- --></A>
+<H3>DECLARE_DYNAMIC(CEvaluationConfigurationDlg)</H3>
+<P>
+<CODE>private <B>DECLARE_DYNAMIC(CEvaluationConfigurationDlg)</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="DECLARE_MESSAGE_MAP()"><!-- --></A>
+<H3>DECLARE_MESSAGE_MAP()</H3>
+<P>
+<CODE>protected <B>DECLARE_MESSAGE_MAP()</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************CONSTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Constructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="CEvaluationConfigurationDlg()"><!-- --></A>
+<H3>CEvaluationConfigurationDlg</H3>
+<P>
+<CODE>public  <B>CEvaluationConfigurationDlg</B>()</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************DESTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Destructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="virtual ~CEvaluationConfigurationDlg()"><!-- --></A>
+<H3>virtual ~CEvaluationConfigurationDlg</H3>
+<P>
+<CODE>public  <B>virtual ~CEvaluationConfigurationDlg</B>()</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************METHOD DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="DoDataExchange(CDataExchange* pDX)"></A>
+<H3>DoDataExchange</H3>
+<P>
+<CODE>protected virtual void <B>DoDataExchange</B>(CDataExchange* pDX)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="InitReferenceFileControl()"></A>
+<H3>InitReferenceFileControl</H3>
+<P>
+<CODE>private void <B>InitReferenceFileControl</B>()</CODE>
+<BLOCKQUOTE>
+Initialize the reference file control
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="InitToolTips()"></A>
+<H3>InitToolTips</H3>
+<P>
+<CODE>public void <B>InitToolTips</B>()</CODE>
+<BLOCKQUOTE>
+Setup the tool tips
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnAddReferenceFile()"></A>
+<H3>OnAddReferenceFile</H3>
+<P>
+<CODE>public afx_msg void <B>OnAddReferenceFile</B>()</CODE>
+<BLOCKQUOTE>
+Adding a reference file
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnChangeScanner()"></A>
+<H3>OnChangeScanner</H3>
+<P>
+<CODE>public void <B>OnChangeScanner</B>()</CODE>
+<BLOCKQUOTE>
+Updates the control
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnInitDialog()"></A>
+<H3>OnInitDialog</H3>
+<P>
+<CODE>public virtual BOOL <B>OnInitDialog</B>()</CODE>
+<BLOCKQUOTE>
+Initializing the dialog
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnKillActive()"></A>
+<H3>OnKillActive</H3>
+<P>
+<CODE>public virtual BOOL <B>OnKillActive</B>()</CODE>
+<BLOCKQUOTE>
+Called when this page is no longer the active page
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnRemoveReferenceFile()"></A>
+<H3>OnRemoveReferenceFile</H3>
+<P>
+<CODE>public afx_msg void <B>OnRemoveReferenceFile</B>()</CODE>
+<BLOCKQUOTE>
+Removing a reference file
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnSetActive()"></A>
+<H3>OnSetActive</H3>
+<P>
+<CODE>public virtual BOOL <B>OnSetActive</B>()</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnShowPropertiesWindow()"></A>
+<H3>OnShowPropertiesWindow</H3>
+<P>
+<CODE>public afx_msg void <B>OnShowPropertiesWindow</B>()</CODE>
+<BLOCKQUOTE>
+Showing the properties of a reference file
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="PopulateReferenceFileControl()"></A>
+<H3>PopulateReferenceFileControl</H3>
+<P>
+<CODE>private void <B>PopulateReferenceFileControl</B>()</CODE>
+<BLOCKQUOTE>
+Fill up the reference file control with items
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="PreTranslateMessage(MSG* pMsg)"></A>
+<H3>PreTranslateMessage</H3>
+<P>
+<CODE>public virtual BOOL <B>PreTranslateMessage</B>(MSG* pMsg)</CODE>
+<BLOCKQUOTE>
+Handling the tool tips
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="SaveData()"></A>
+<H3>SaveData</H3>
+<P>
+<CODE>public afx_msg void <B>SaveData</B>()</CODE>
+<BLOCKQUOTE>
+Saving the data in the control
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="UpdateDlg()"></A>
+<H3>UpdateDlg</H3>
+<P>
+<CODE>public void <B>UpdateDlg</B>()</CODE>
+<BLOCKQUOTE>
+Updating the data in the control
+</BLOCKQUOTE>
+</BODY>
+</HTML>

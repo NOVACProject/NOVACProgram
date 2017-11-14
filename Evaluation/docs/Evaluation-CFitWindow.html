@@ -1,0 +1,459 @@
+<!DOCTYPE HTML PUBLIC"-//W3C//DTD HTML 4.0 Frameset//EN""http://www.w3.org/TR/REC-html40/frameset/dtd">
+<HTML>
+<HEAD>
+<!-- The file this documentation was generated from is:  C:\Novac\NovacMasterProgram\2008_10_27\Evaluation\FitWindow.h -->
+</HEAD>
+<TITLE>
+class CFitWindow
+</TITLE>
+<LINK REL="stylesheet" TYPE="text/css" HREF="./stylesheet.css" TITLE="Style">
+<BODY BGCOLOR="#FFFFFF">
+
+
+
+<!-- ********************CLASS HEADING INFORMATION******************** -->
+
+<H3><p>
+namespace Evaluation
+</H3>
+<H2><P>class CFitWindow</H2></P>
+<P><b>CFitWindow</b> is a class for describing the settings
+ used for evaluation of a spectral region. Each CFitWindow object
+ contains settings such as the lower and higher edge of the fit-region,
+ which references to use, the length of the spectra, how the spectra were
+ collected from the spectrometer (i.e. if it's a whole spectrum/partial spectrum)
+ etc.  
+ </P>
+<P></h2><hr size="2"></P>
+
+
+
+<!-- ********************ATTRIBUTE SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2"><B>Attribute Summary</B></FONT></TD>
+</TR>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">BOOL</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CFitWindow.html#UV">UV</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">'UV' is true if the start wavelength of the spectrum is 290 nm or shorter</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CFitWindow.html#channel">channel</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The channel which is used in this fit window
+ For a normal spectrometer this is equal to 0
+ For the SD2000-spectrometers this can be 0 or 1</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">BOOL</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CFitWindow.html#findOptimalShift">findOptimalShift</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">True if the scan should be twice, once for finding the highest column value.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CFitWindow.html#fitHigh">fitHigh</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The upper edge of the fit window(in pixels)</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CFitWindow.html#fitLow">fitLow</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The lower edge of the fit window(in pixels)</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">FIT_TYPE</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CFitWindow.html#fitType">fitType</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The type of fit</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CReferenceFile</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CFitWindow.html#fraunhoferRef">fraunhoferRef</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The Fraunhofer-reference spectrum which we can use
+ to determine the shift(&squeeze) between the measured
+ spectra and the reference-files.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CFitWindow.html#interlaceStep">interlaceStep</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">Larger than 1 if the spectra are read out in an interlaced way.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CFitWindow.html#nRef">nRef</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The number of references to use</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CString</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CFitWindow.html#name">name</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The name of the fit window</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CFitWindow.html#polyOrder">polyOrder</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The order of the polynomial that will also be fitted</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CReferenceFile</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CFitWindow.html#ref[MAX_N_REFERENCES]">ref[MAX_N_REFERENCES]</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The reference files to use</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">BOOL</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CFitWindow.html#shiftSky">shiftSky</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">true if the sky-spectrum should be allowed to shift.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CFitWindow.html#specLength">specLength</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The length of the spectra</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CFitWindow.html#startChannel">startChannel</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The pixel number that corresponds to the first data point in the spectrum
+ (this is normally 0 but for the OceanOptics spectrometers it is possible
+ to read out only a small part of the pixels, e.g.</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************CONSTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Constructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CFitWindow.html#CFitWindow(void)"><B>CFitWindow</B></A>(void)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************DESTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Destructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CFitWindow.html#~CFitWindow(void)"><B>~CFitWindow</B></A>(void)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************METHOD SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2">
+<B>Method Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CFitWindow</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CFitWindow.html#&operator=(const CFitWindow &w2)"><B>&operator=</B></A>(const CFitWindow &w2)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Assignment operator</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CFitWindow.html#Clear()"><B>Clear</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Clearing the settings do default values</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR>
+
+
+
+<!-- ********************ATTRIBUTE DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Attribute Detail</B></FONT></TD>
+</TR></TABLE>
+
+<A NAME="UV"><!-- --></A>
+<H3>UV</H3>
+<P>
+<CODE>public BOOL <B>UV</B></CODE>
+<BLOCKQUOTE>
+'UV' is true if the start wavelength of the spectrum is 290 nm or shorter
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="channel"><!-- --></A>
+<H3>channel</H3>
+<P>
+<CODE>public int <B>channel</B></CODE>
+<BLOCKQUOTE>
+The channel which is used in this fit window
+ For a normal spectrometer this is equal to 0
+ For the SD2000-spectrometers this can be 0 or 1
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="findOptimalShift"><!-- --></A>
+<H3>findOptimalShift</H3>
+<P>
+<CODE>public BOOL <B>findOptimalShift</B></CODE>
+<BLOCKQUOTE>
+True if the scan should be twice, once for finding the highest column value.
+ The spectrum with the highest column value is then evluated again with
+ the shift of all references set to free and the optimum shift value is found.
+ The scan is then evaluated again using this shift value.
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="fitHigh"><!-- --></A>
+<H3>fitHigh</H3>
+<P>
+<CODE>public int <B>fitHigh</B></CODE>
+<BLOCKQUOTE>
+The upper edge of the fit window(in pixels)
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="fitLow"><!-- --></A>
+<H3>fitLow</H3>
+<P>
+<CODE>public int <B>fitLow</B></CODE>
+<BLOCKQUOTE>
+The lower edge of the fit window(in pixels)
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="fitType"><!-- --></A>
+<H3>fitType</H3>
+<P>
+<CODE>public FIT_TYPE <B>fitType</B></CODE>
+<BLOCKQUOTE>
+The type of fit
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="fraunhoferRef"><!-- --></A>
+<H3>fraunhoferRef</H3>
+<P>
+<CODE>public CReferenceFile <B>fraunhoferRef</B></CODE>
+<BLOCKQUOTE>
+The Fraunhofer-reference spectrum which we can use
+ to determine the shift(&squeeze) between the measured
+ spectra and the reference-files.
+ It is necessary that the wavelength calibration of the 'fraunhoferRef'
+ is same as the wavelength calibration of each reference file.
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="interlaceStep"><!-- --></A>
+<H3>interlaceStep</H3>
+<P>
+<CODE>public int <B>interlaceStep</B></CODE>
+<BLOCKQUOTE>
+Larger than 1 if the spectra are read out in an interlaced way.
+ This parameter works in the same way as the CSpectrumInfo::m_interlaceStep
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="nRef"><!-- --></A>
+<H3>nRef</H3>
+<P>
+<CODE>public int <B>nRef</B></CODE>
+<BLOCKQUOTE>
+The number of references to use
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="name"><!-- --></A>
+<H3>name</H3>
+<P>
+<CODE>public CString <B>name</B></CODE>
+<BLOCKQUOTE>
+The name of the fit window
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="polyOrder"><!-- --></A>
+<H3>polyOrder</H3>
+<P>
+<CODE>public int <B>polyOrder</B></CODE>
+<BLOCKQUOTE>
+The order of the polynomial that will also be fitted
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="ref[MAX_N_REFERENCES]"><!-- --></A>
+<H3>ref[MAX_N_REFERENCES]</H3>
+<P>
+<CODE>public CReferenceFile <B>ref[MAX_N_REFERENCES]</B></CODE>
+<BLOCKQUOTE>
+The reference files to use
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="shiftSky"><!-- --></A>
+<H3>shiftSky</H3>
+<P>
+<CODE>public BOOL <B>shiftSky</B></CODE>
+<BLOCKQUOTE>
+true if the sky-spectrum should be allowed to shift.
+ only useful if fitType is FIT_HP_SUB or FIT_POLY
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="specLength"><!-- --></A>
+<H3>specLength</H3>
+<P>
+<CODE>public int <B>specLength</B></CODE>
+<BLOCKQUOTE>
+The length of the spectra
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="startChannel"><!-- --></A>
+<H3>startChannel</H3>
+<P>
+<CODE>public int <B>startChannel</B></CODE>
+<BLOCKQUOTE>
+The pixel number that corresponds to the first data point in the spectrum
+ (this is normally 0 but for the OceanOptics spectrometers it is possible
+ to read out only a small part of the pixels, e.g. a spectrum that is
+ the values in the pixels 321 to 470)
+</BLOCKQUOTE>
+
+
+
+<!-- ********************CONSTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Constructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="CFitWindow(void)"><!-- --></A>
+<H3>CFitWindow</H3>
+<P>
+<CODE>public  <B>CFitWindow</B>(void)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************DESTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Destructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="~CFitWindow(void)"><!-- --></A>
+<H3>~CFitWindow</H3>
+<P>
+<CODE>public  <B>~CFitWindow</B>(void)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************METHOD DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="&operator=(const CFitWindow &w2)"></A>
+<H3>&operator=</H3>
+<P>
+<CODE>public CFitWindow <B>&operator=</B>(const CFitWindow &w2)</CODE>
+<BLOCKQUOTE>
+Assignment operator
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="Clear()"></A>
+<H3>Clear</H3>
+<P>
+<CODE>public void <B>Clear</B>()</CODE>
+<BLOCKQUOTE>
+Clearing the settings do default values
+</BLOCKQUOTE>
+</BODY>
+</HTML>

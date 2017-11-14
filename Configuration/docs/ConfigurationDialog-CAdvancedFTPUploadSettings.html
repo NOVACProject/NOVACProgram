@@ -1,0 +1,426 @@
+<!DOCTYPE HTML PUBLIC"-//W3C//DTD HTML 4.0 Frameset//EN""http://www.w3.org/TR/REC-html40/frameset/dtd">
+<HTML>
+<HEAD>
+<!-- The file this documentation was generated from is:  C:\Novac\NovacMasterProgram\2008_12_19\Configuration\AdvancedFTPUploadSettings.h -->
+</HEAD>
+<TITLE>
+class CAdvancedFTPUploadSettings
+</TITLE>
+<LINK REL="stylesheet" TYPE="text/css" HREF="./stylesheet.css" TITLE="Style">
+<BODY BGCOLOR="#FFFFFF">
+
+
+
+<!-- ********************CLASS HEADING INFORMATION******************** -->
+
+<H3><p>
+namespace ConfigurationDialog
+</H3>
+<H2><P>class CAdvancedFTPUploadSettings</H2></P>
+<P><H4>Inherits:&nbsp;&nbsp;public CDialog</A>&nbsp;&nbsp;</H4></P>
+<P></h2><hr size="2"></P>
+
+
+
+<!-- ********************ATTRIBUTE SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2"><B>Attribute Summary</B></FONT></TD>
+</TR>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CConfigurationSetting*</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CAdvancedFTPUploadSettings.html#m_configuration">m_configuration</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">the actual configuration</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CAdvancedFTPUploadSettings.html#m_startHr">m_startHr</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The time when to start uploading</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CAdvancedFTPUploadSettings.html#m_startMin">m_startMin</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The time when to start uploading</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CAdvancedFTPUploadSettings.html#m_startSec">m_startSec</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The time when to start uploading</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CAdvancedFTPUploadSettings.html#m_stopHr">m_stopHr</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The time when to stop uploading</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CAdvancedFTPUploadSettings.html#m_stopMin">m_stopMin</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The time when to stop uploading</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CAdvancedFTPUploadSettings.html#m_stopSec">m_stopSec</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The time when to stop uploading</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************MACRO SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2"><B>Macro Summary</B></FONT></TD>
+</TR>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CAdvancedFTPUploadSettings.html#DECLARE_DYNAMIC(CAdvancedFTPUploadSettings)">DECLARE_DYNAMIC(CAdvancedFTPUploadSettings)</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CAdvancedFTPUploadSettings.html#DECLARE_MESSAGE_MAP()">DECLARE_MESSAGE_MAP()</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************ENUM SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2"><B>Enum Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CAdvancedFTPUploadSettings.html#enum {  IDD = IDD_CONFIGURATION_ADVANCED_FTP_UPLOAD }">enum </A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************CONSTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Constructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CAdvancedFTPUploadSettings.html#CAdvancedFTPUploadSettings(CWnd* pParent = NULL)"><B>CAdvancedFTPUploadSettings</B></A>(CWnd* pParent = NULL)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************DESTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Destructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CAdvancedFTPUploadSettings.html#virtual ~CAdvancedFTPUploadSettings()"><B>virtual ~CAdvancedFTPUploadSettings</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************METHOD SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2">
+<B>Method Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">virtual void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CAdvancedFTPUploadSettings.html#DoDataExchange(CDataExchange* pDX)"><B>DoDataExchange</B></A>(CDataExchange* pDX)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CAdvancedFTPUploadSettings.html#GetNecessaryComponentSize(CWnd *wnd, CString &str, int &width, int &height)"><B>GetNecessaryComponentSize</B></A>(CWnd *wnd, CString &str, int &width, int &height)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Returns the width of the supplied component to be able to fit in
+ the supplied string</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">virtual BOOL</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CAdvancedFTPUploadSettings.html#OnInitDialog()"><B>OnInitDialog</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Initialzing the dialog</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">virtual void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CAdvancedFTPUploadSettings.html#OnOK()"><B>OnOK</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Called when the user presses the 'OK'-button.</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR>
+
+
+
+<!-- ********************ATTRIBUTE DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Attribute Detail</B></FONT></TD>
+</TR></TABLE>
+
+<A NAME="m_configuration"><!-- --></A>
+<H3>m_configuration</H3>
+<P>
+<CODE>public CConfigurationSetting* <B>m_configuration</B></CODE>
+<BLOCKQUOTE>
+the actual configuration
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_startHr"><!-- --></A>
+<H3>m_startHr</H3>
+<P>
+<CODE>public int  <B>m_startHr</B></CODE>
+<BLOCKQUOTE>
+The time when to start uploading
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_startMin"><!-- --></A>
+<H3>m_startMin</H3>
+<P>
+<CODE>public int  <B>m_startMin</B></CODE>
+<BLOCKQUOTE>
+The time when to start uploading
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_startSec"><!-- --></A>
+<H3>m_startSec</H3>
+<P>
+<CODE>public int  <B>m_startSec</B></CODE>
+<BLOCKQUOTE>
+The time when to start uploading
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_stopHr"><!-- --></A>
+<H3>m_stopHr</H3>
+<P>
+<CODE>public int  <B>m_stopHr</B></CODE>
+<BLOCKQUOTE>
+The time when to stop uploading
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_stopMin"><!-- --></A>
+<H3>m_stopMin</H3>
+<P>
+<CODE>public int  <B>m_stopMin</B></CODE>
+<BLOCKQUOTE>
+The time when to stop uploading
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_stopSec"><!-- --></A>
+<H3>m_stopSec</H3>
+<P>
+<CODE>public int  <B>m_stopSec</B></CODE>
+<BLOCKQUOTE>
+The time when to stop uploading
+</BLOCKQUOTE>
+
+
+
+<!-- ********************ENUM DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Enum Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="enum {  IDD = IDD_CONFIGURATION_ADVANCED_FTP_UPLOAD }"><!-- --></A>
+<H3>enum {  IDD = IDD_CONFIGURATION_ADVANCED_FTP_UPLOAD }</H3>
+<P>
+<CODE>public <B>enum {  IDD = IDD_CONFIGURATION_ADVANCED_FTP_UPLOAD }</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************Macro DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Macro Detail</B></FONT></TD>
+</TR></TABLE>
+
+<A NAME="DECLARE_DYNAMIC(CAdvancedFTPUploadSettings)"><!-- --></A>
+<H3>DECLARE_DYNAMIC(CAdvancedFTPUploadSettings)</H3>
+<P>
+<CODE>private <B>DECLARE_DYNAMIC(CAdvancedFTPUploadSettings)</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="DECLARE_MESSAGE_MAP()"><!-- --></A>
+<H3>DECLARE_MESSAGE_MAP()</H3>
+<P>
+<CODE>protected <B>DECLARE_MESSAGE_MAP()</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************CONSTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Constructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="CAdvancedFTPUploadSettings(CWnd* pParent = NULL)"><!-- --></A>
+<H3>CAdvancedFTPUploadSettings</H3>
+<P>
+<CODE>public  <B>CAdvancedFTPUploadSettings</B>(CWnd* pParent = NULL)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************DESTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Destructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="virtual ~CAdvancedFTPUploadSettings()"><!-- --></A>
+<H3>virtual ~CAdvancedFTPUploadSettings</H3>
+<P>
+<CODE>public  <B>virtual ~CAdvancedFTPUploadSettings</B>()</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************METHOD DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="DoDataExchange(CDataExchange* pDX)"></A>
+<H3>DoDataExchange</H3>
+<P>
+<CODE>protected virtual void <B>DoDataExchange</B>(CDataExchange* pDX)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetNecessaryComponentSize(CWnd *wnd, CString &str, int &width, int &height)"></A>
+<H3>GetNecessaryComponentSize</H3>
+<P>
+<CODE>protected void <B>GetNecessaryComponentSize</B>(CWnd *wnd, CString &str, int &width, int &height)</CODE>
+<BLOCKQUOTE>
+Returns the width of the supplied component to be able to fit in
+ the supplied string
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnInitDialog()"></A>
+<H3>OnInitDialog</H3>
+<P>
+<CODE>public virtual BOOL <B>OnInitDialog</B>()</CODE>
+<BLOCKQUOTE>
+Initialzing the dialog
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnOK()"></A>
+<H3>OnOK</H3>
+<P>
+<CODE>public virtual void <B>OnOK</B>()</CODE>
+<BLOCKQUOTE>
+Called when the user presses the 'OK'-button.
+ Saves the filled in data in the dialog
+</BLOCKQUOTE>
+</BODY>
+</HTML>

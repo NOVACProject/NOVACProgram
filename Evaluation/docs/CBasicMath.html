@@ -1,0 +1,785 @@
+<!DOCTYPE HTML PUBLIC"-//W3C//DTD HTML 4.0 Frameset//EN""http://www.w3.org/TR/REC-html40/frameset/dtd">
+<HTML>
+<HEAD>
+<!-- The file this documentation was generated from is:  C:\Novac\NovacMasterProgram\2008_10_27\Evaluation\BasicMath.h -->
+</HEAD>
+<TITLE>
+class CBasicMath
+</TITLE>
+<LINK REL="stylesheet" TYPE="text/css" HREF="./stylesheet.css" TITLE="Style">
+<BODY BGCOLOR="#FFFFFF">
+
+
+
+<!-- ********************CLASS HEADING INFORMATION******************** -->
+
+<H2><P>class CBasicMath</H2></P>
+<P></h2><hr size="2"></P>
+
+
+
+<!-- ********************ATTRIBUTE SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2"><B>Attribute Summary</B></FONT></TD>
+</TR>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">static bool</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CBasicMath.html#mDoNotUseMathLimits">mDoNotUseMathLimits</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************ENUM SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2"><B>Enum Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CBasicMath.html#enum{  NOWEIGHT = 0, SCANWEIGHT, TIMEWEIGHT }">enum</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************CONSTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Constructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CBasicMath.html#CBasicMath()"><B>CBasicMath</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************DESTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Destructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CBasicMath.html#virtual ~CBasicMath()"><B>virtual ~CBasicMath</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************METHOD SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2">
+<B>Method Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CBasicMath.html#Add(double* fFirst, double* fSec, int iSize, double fFactor = 0.0)"><B>Add</B></A>(double* fFirst, double* fSec, int iSize, double fFactor = 0.0)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CBasicMath.html#Add(double* fFirst, int iSize, double fConst)"><B>Add</B></A>(double* fFirst, int iSize, double fConst)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CBasicMath.html#BiasAdjust(double* fData, int iSize)"><B>BiasAdjust</B></A>(double* fData, int iSize)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CBasicMath.html#CalcExposureTime(double fSaturation, double fEOffsetExpTime, double fCurrentExpTime, double fCurrentAvg, double fBackExpTime, double fBackAvg, double fIntTime)"><B>CalcExposureTime</B></A>(double fSaturation, double fEOffsetExpTime, double fCurrentExpTime, double fCurrentAvg, double fBackExpTime, double fBackAvg, double fIntTime)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">double*</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CBasicMath.html#CalcMeasuredSpec(double* fRes, double* fMea, int iMeaScans, double fMeaExpTime, double* fLamp, int iLampScans, double fLampExpTime, double* fBack, int iBackScans, double fBackExpTime, double fOffset, double fOffsetExpTime, int iSize)"><B>CalcMeasuredSpec</B></A>(double* fRes, double* fMea, int iMeaScans, double fMeaExpTime, double* fLamp, int iLampScans, double fLampExpTime, double* fBack, int iBackScans, double fBackExpTime, double fOffset, double fOffsetExpTime, int iSize)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CBasicMath.html#Convolute(double* fFirst, int iSize, double* fCore, int iCoreSize)"><B>Convolute</B></A>(double* fFirst, int iSize, double* fCore, int iCoreSize)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CBasicMath.html#CrossCorrelate(double *fFirst, int iLengthFirst, double *fSec, int iLengthSec)"><B>CrossCorrelate</B></A>(double *fFirst, int iLengthFirst, double *fSec, int iLengthSec)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CBasicMath.html#DFourier(double data[], unsigned long nn, int isign)"><B>DFourier</B></A>(double data[], unsigned long nn, int isign)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">double*</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CBasicMath.html#Delog(double* fData, int iSize)"><B>Delog</B></A>(double* fData, int iSize)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CBasicMath.html#Div(double* fFirst, double* fSec, int iSize, double fFactor = 0.0)"><B>Div</B></A>(double* fFirst, double* fSec, int iSize, double fFactor = 0.0)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CBasicMath.html#Div(double* fFirst, int iSize, double fConst)"><B>Div</B></A>(double* fFirst, int iSize, double fConst)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CBasicMath.html#FFT(double* fData, double* fReal, double* fImaginary, int iLength)"><B>FFT</B></A>(double* fData, double* fReal, double* fImaginary, int iLength)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CBasicMath.html#FillGauss(double* fData, int iSize, double fA, double fSigma, double fScale = 0)"><B>FillGauss</B></A>(double* fData, int iSize, double fA, double fSigma, double fScale = 0)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CBasicMath.html#FillRandom(double* fData, int iLength, double fVariance)"><B>FillRandom</B></A>(double* fData, int iLength, double fVariance)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CBasicMath.html#FitRes2MicroGrammPerCubicMeter(double fFitResult, double fLightPathLength, double fMolecularWeight)"><B>FitRes2MicroGrammPerCubicMeter</B></A>(double fFitResult, double fLightPathLength, double fMolecularWeight)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CBasicMath.html#FitRes2ppb(double fFitResult, double fLightPathLength, double fTemperature, double fPreasure)"><B>FitRes2ppb</B></A>(double fFitResult, double fLightPathLength, double fTemperature, double fPreasure)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">bool</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CBasicMath.html#GaussFit(double *fXData, int iNXValues, double *fYData, double& fCenter, double& fSigma, double& fScale)"><B>GaussFit</B></A>(double *fXData, int iNXValues, double *fYData, double& fCenter, double& fSigma, double& fScale)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">double*</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CBasicMath.html#HighPassBinomial(double* fData, int iSize, int iNIterations)"><B>HighPassBinomial</B></A>(double* fData, int iSize, int iNIterations)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CBasicMath.html#InverseFFT(double* fReal, double* fImaginary, double* fData, int iLength)"><B>InverseFFT</B></A>(double* fReal, double* fImaginary, double* fData, int iLength)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CBasicMath.html#Invert(double* fData, int iSize)"><B>Invert</B></A>(double* fData, int iSize)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">double*</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CBasicMath.html#Log(double* fData, int iSize)"><B>Log</B></A>(double* fData, int iSize)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">double*</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CBasicMath.html#LowPassBinomial(double* fData, int iSize, int iNIterations)"><B>LowPassBinomial</B></A>(double* fData, int iSize, int iNIterations)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CBasicMath.html#Mul(double* fFirst, double* fSec, int iSize, double fFactor = 0.0)"><B>Mul</B></A>(double* fFirst, double* fSec, int iSize, double fFactor = 0.0)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CBasicMath.html#Mul(double* fFirst, int iSize, double fConst)"><B>Mul</B></A>(double* fFirst, int iSize, double fConst)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CBasicMath.html#NormalizeAmplitude(double* fData, int iSize, double fMaxAmplitude)"><B>NormalizeAmplitude</B></A>(double* fData, int iSize, double fMaxAmplitude)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CBasicMath.html#NormalizeEnergy(double* fData, int iSize, double fEnergy)"><B>NormalizeEnergy</B></A>(double* fData, int iSize, double fEnergy)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">bool</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CBasicMath.html#PolynomialFit(double *fXData, int iNXValues, double *fYData, double *fCoeff, int iOrder)"><B>PolynomialFit</B></A>(double *fXData, int iNXValues, double *fYData, double *fCoeff, int iOrder)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CBasicMath.html#Reciprocal(double* fData, int iSize)"><B>Reciprocal</B></A>(double* fData, int iSize)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CBasicMath.html#Reverse(double* fData, int iSize)"><B>Reverse</B></A>(double* fData, int iSize)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">bool</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CBasicMath.html#ShiftAndSqueeze(CVector& vXData, CVector& vYData, double fOrigin, double fShift, double fSqueeze)"><B>ShiftAndSqueeze</B></A>(CVector& vXData, CVector& vYData, double fOrigin, double fShift, double fSqueeze)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CBasicMath.html#Sub(double* fFirst, double* fSec, int iSize, double fFactor = 0.0)"><B>Sub</B></A>(double* fFirst, double* fSec, int iSize, double fFactor = 0.0)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CBasicMath.html#Sub(double* fFirst, int iSize, double fConst)"><B>Sub</B></A>(double* fFirst, int iSize, double fConst)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CBasicMath.html#Zero(double* fData, int iSize, double fZeroLimit)"><B>Zero</B></A>(double* fData, int iSize, double fZeroLimit)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR>
+
+
+
+<!-- ********************ATTRIBUTE DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Attribute Detail</B></FONT></TD>
+</TR></TABLE>
+
+<A NAME="mDoNotUseMathLimits"><!-- --></A>
+<H3>mDoNotUseMathLimits</H3>
+<P>
+<CODE>private static bool <B>mDoNotUseMathLimits</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************ENUM DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Enum Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="enum{  NOWEIGHT = 0, SCANWEIGHT, TIMEWEIGHT }"><!-- --></A>
+<H3>enum{  NOWEIGHT = 0, SCANWEIGHT, TIMEWEIGHT }</H3>
+<P>
+<CODE>public <B>enum{  NOWEIGHT = 0, SCANWEIGHT, TIMEWEIGHT }</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************CONSTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Constructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="CBasicMath()"><!-- --></A>
+<H3>CBasicMath</H3>
+<P>
+<CODE>public  <B>CBasicMath</B>()</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************DESTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Destructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="virtual ~CBasicMath()"><!-- --></A>
+<H3>virtual ~CBasicMath</H3>
+<P>
+<CODE>public  <B>virtual ~CBasicMath</B>()</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************METHOD DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="Add(double* fFirst, double* fSec, int iSize, double fFactor = 0.0)"></A>
+<H3>Add</H3>
+<P>
+<CODE>public void <B>Add</B>(double* fFirst, double* fSec, int iSize, double fFactor = 0.0)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="Add(double* fFirst, int iSize, double fConst)"></A>
+<H3>Add</H3>
+<P>
+<CODE>public void <B>Add</B>(double* fFirst, int iSize, double fConst)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="BiasAdjust(double* fData, int iSize)"></A>
+<H3>BiasAdjust</H3>
+<P>
+<CODE>public void <B>BiasAdjust</B>(double* fData, int iSize)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="CalcExposureTime(double fSaturation, double fEOffsetExpTime, double fCurrentExpTime, double fCurrentAvg, double fBackExpTime, double fBackAvg, double fIntTime)"></A>
+<H3>CalcExposureTime</H3>
+<P>
+<CODE>public double <B>CalcExposureTime</B>(double fSaturation, double fEOffsetExpTime, double fCurrentExpTime, double fCurrentAvg, double fBackExpTime, double fBackAvg, double fIntTime)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="CalcMeasuredSpec(double* fRes, double* fMea, int iMeaScans, double fMeaExpTime, double* fLamp, int iLampScans, double fLampExpTime, double* fBack, int iBackScans, double fBackExpTime, double fOffset, double fOffsetExpTime, int iSize)"></A>
+<H3>CalcMeasuredSpec</H3>
+<P>
+<CODE>public double* <B>CalcMeasuredSpec</B>(double* fRes, double* fMea, int iMeaScans, double fMeaExpTime, double* fLamp, int iLampScans, double fLampExpTime, double* fBack, int iBackScans, double fBackExpTime, double fOffset, double fOffsetExpTime, int iSize)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="Convolute(double* fFirst, int iSize, double* fCore, int iCoreSize)"></A>
+<H3>Convolute</H3>
+<P>
+<CODE>public void <B>Convolute</B>(double* fFirst, int iSize, double* fCore, int iCoreSize)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="CrossCorrelate(double *fFirst, int iLengthFirst, double *fSec, int iLengthSec)"></A>
+<H3>CrossCorrelate</H3>
+<P>
+<CODE>public void <B>CrossCorrelate</B>(double *fFirst, int iLengthFirst, double *fSec, int iLengthSec)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="DFourier(double data[], unsigned long nn, int isign)"></A>
+<H3>DFourier</H3>
+<P>
+<CODE>private void <B>DFourier</B>(double data[], unsigned long nn, int isign)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="Delog(double* fData, int iSize)"></A>
+<H3>Delog</H3>
+<P>
+<CODE>public double* <B>Delog</B>(double* fData, int iSize)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="Div(double* fFirst, double* fSec, int iSize, double fFactor = 0.0)"></A>
+<H3>Div</H3>
+<P>
+<CODE>public void <B>Div</B>(double* fFirst, double* fSec, int iSize, double fFactor = 0.0)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="Div(double* fFirst, int iSize, double fConst)"></A>
+<H3>Div</H3>
+<P>
+<CODE>public void <B>Div</B>(double* fFirst, int iSize, double fConst)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="FFT(double* fData, double* fReal, double* fImaginary, int iLength)"></A>
+<H3>FFT</H3>
+<P>
+<CODE>public void <B>FFT</B>(double* fData, double* fReal, double* fImaginary, int iLength)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="FillGauss(double* fData, int iSize, double fA, double fSigma, double fScale = 0)"></A>
+<H3>FillGauss</H3>
+<P>
+<CODE>public void <B>FillGauss</B>(double* fData, int iSize, double fA, double fSigma, double fScale = 0)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="FillRandom(double* fData, int iLength, double fVariance)"></A>
+<H3>FillRandom</H3>
+<P>
+<CODE>public void <B>FillRandom</B>(double* fData, int iLength, double fVariance)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="FitRes2MicroGrammPerCubicMeter(double fFitResult, double fLightPathLength, double fMolecularWeight)"></A>
+<H3>FitRes2MicroGrammPerCubicMeter</H3>
+<P>
+<CODE>public double <B>FitRes2MicroGrammPerCubicMeter</B>(double fFitResult, double fLightPathLength, double fMolecularWeight)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="FitRes2ppb(double fFitResult, double fLightPathLength, double fTemperature, double fPreasure)"></A>
+<H3>FitRes2ppb</H3>
+<P>
+<CODE>public double <B>FitRes2ppb</B>(double fFitResult, double fLightPathLength, double fTemperature, double fPreasure)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GaussFit(double *fXData, int iNXValues, double *fYData, double& fCenter, double& fSigma, double& fScale)"></A>
+<H3>GaussFit</H3>
+<P>
+<CODE>public bool <B>GaussFit</B>(double *fXData, int iNXValues, double *fYData, double& fCenter, double& fSigma, double& fScale)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="HighPassBinomial(double* fData, int iSize, int iNIterations)"></A>
+<H3>HighPassBinomial</H3>
+<P>
+<CODE>public double* <B>HighPassBinomial</B>(double* fData, int iSize, int iNIterations)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="InverseFFT(double* fReal, double* fImaginary, double* fData, int iLength)"></A>
+<H3>InverseFFT</H3>
+<P>
+<CODE>public void <B>InverseFFT</B>(double* fReal, double* fImaginary, double* fData, int iLength)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="Invert(double* fData, int iSize)"></A>
+<H3>Invert</H3>
+<P>
+<CODE>public void <B>Invert</B>(double* fData, int iSize)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="Log(double* fData, int iSize)"></A>
+<H3>Log</H3>
+<P>
+<CODE>public double* <B>Log</B>(double* fData, int iSize)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="LowPassBinomial(double* fData, int iSize, int iNIterations)"></A>
+<H3>LowPassBinomial</H3>
+<P>
+<CODE>public double* <B>LowPassBinomial</B>(double* fData, int iSize, int iNIterations)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="Mul(double* fFirst, double* fSec, int iSize, double fFactor = 0.0)"></A>
+<H3>Mul</H3>
+<P>
+<CODE>public void <B>Mul</B>(double* fFirst, double* fSec, int iSize, double fFactor = 0.0)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="Mul(double* fFirst, int iSize, double fConst)"></A>
+<H3>Mul</H3>
+<P>
+<CODE>public void <B>Mul</B>(double* fFirst, int iSize, double fConst)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="NormalizeAmplitude(double* fData, int iSize, double fMaxAmplitude)"></A>
+<H3>NormalizeAmplitude</H3>
+<P>
+<CODE>public void <B>NormalizeAmplitude</B>(double* fData, int iSize, double fMaxAmplitude)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="NormalizeEnergy(double* fData, int iSize, double fEnergy)"></A>
+<H3>NormalizeEnergy</H3>
+<P>
+<CODE>public void <B>NormalizeEnergy</B>(double* fData, int iSize, double fEnergy)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="PolynomialFit(double *fXData, int iNXValues, double *fYData, double *fCoeff, int iOrder)"></A>
+<H3>PolynomialFit</H3>
+<P>
+<CODE>public bool <B>PolynomialFit</B>(double *fXData, int iNXValues, double *fYData, double *fCoeff, int iOrder)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="Reciprocal(double* fData, int iSize)"></A>
+<H3>Reciprocal</H3>
+<P>
+<CODE>public void <B>Reciprocal</B>(double* fData, int iSize)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="Reverse(double* fData, int iSize)"></A>
+<H3>Reverse</H3>
+<P>
+<CODE>public void <B>Reverse</B>(double* fData, int iSize)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="ShiftAndSqueeze(CVector& vXData, CVector& vYData, double fOrigin, double fShift, double fSqueeze)"></A>
+<H3>ShiftAndSqueeze</H3>
+<P>
+<CODE>public bool <B>ShiftAndSqueeze</B>(CVector& vXData, CVector& vYData, double fOrigin, double fShift, double fSqueeze)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="Sub(double* fFirst, double* fSec, int iSize, double fFactor = 0.0)"></A>
+<H3>Sub</H3>
+<P>
+<CODE>public void <B>Sub</B>(double* fFirst, double* fSec, int iSize, double fFactor = 0.0)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="Sub(double* fFirst, int iSize, double fConst)"></A>
+<H3>Sub</H3>
+<P>
+<CODE>public void <B>Sub</B>(double* fFirst, int iSize, double fConst)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="Zero(double* fData, int iSize, double fZeroLimit)"></A>
+<H3>Zero</H3>
+<P>
+<CODE>public void <B>Zero</B>(double* fData, int iSize, double fZeroLimit)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+</BODY>
+</HTML>

@@ -1,0 +1,431 @@
+<!DOCTYPE HTML PUBLIC"-//W3C//DTD HTML 4.0 Frameset//EN""http://www.w3.org/TR/REC-html40/frameset/dtd">
+<HTML>
+<HEAD>
+<!-- The file this documentation was generated from is:  C:\Novac\NovacMasterProgram\2008_12_19\Configuration\A###CConfigurationSetting+CommunicationSetting.h -->
+</HEAD>
+<TITLE>
+class CConfigurationSetting+CommunicationSetting
+</TITLE>
+<LINK REL="stylesheet" TYPE="text/css" HREF="./stylesheet.css" TITLE="Style">
+<BODY BGCOLOR="#FFFFFF">
+
+
+
+<!-- ********************CLASS HEADING INFORMATION******************** -->
+
+<H2><P>class CConfigurationSetting::CommunicationSetting</H2></P>
+<P></h2><hr size="2"></P>
+
+
+
+<!-- ********************ATTRIBUTE SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2"><B>Attribute Summary</B></FONT></TD>
+</TR>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">long</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+CommunicationSetting.html#baudrate">baudrate</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The baudrate to use for communication, only useful if connection type is serial</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+CommunicationSetting.html#connectionType">connectionType</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">What type of connection is it to the instrument</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+CommunicationSetting.html#flowControl">flowControl</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">Which type of flow control to use, only useful if connection type is serial</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CString</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+CommunicationSetting.html#ftpAdminPassword">ftpAdminPassword</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The administrator-password at the scanning instrument</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CString</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+CommunicationSetting.html#ftpAdminUserName">ftpAdminUserName</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The administrator-username at the scanning instrument</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">BYTE</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+CommunicationSetting.html#ftpIP[4]">ftpIP[4]</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The IP-number of the scanning instrument</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CString</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+CommunicationSetting.html#ftpPassword">ftpPassword</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The password at the scanning instrument</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CString</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+CommunicationSetting.html#ftpUserName">ftpUserName</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The username at the scanning instrument</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+CommunicationSetting.html#medium">medium</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The medium through which the communciation occurs.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">long</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+CommunicationSetting.html#port">port</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The port number to use, only useful if connection type is serial</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">long</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+CommunicationSetting.html#queryPeriod">queryPeriod</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">How often the scanning Instrument should be queried for new data</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CString</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+CommunicationSetting.html#radioID">radioID</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The RadioID OR callbook number</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">struct timeStruct</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+CommunicationSetting.html#sleepTime">sleepTime</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">Time to start sleeping</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">long</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+CommunicationSetting.html#timeout">timeout</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The timeout for communication</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">struct timeStruct</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+CommunicationSetting.html#wakeupTime">wakeupTime</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">Time to wake up</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************CONSTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Constructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CConfigurationSetting+CommunicationSetting.html#CommunicationSetting()"><B>CommunicationSetting</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************DESTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Destructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CConfigurationSetting+CommunicationSetting.html#~CommunicationSetting()"><B>~CommunicationSetting</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************METHOD SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2">
+<B>Method Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CommunicationSetting</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CConfigurationSetting+CommunicationSetting.html#&operator=(const CommunicationSetting &comm2)"><B>&operator=</B></A>(const CommunicationSetting &comm2)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Assignment operator</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CConfigurationSetting+CommunicationSetting.html#Clear()"><B>Clear</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Resets all values to default</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR>
+
+
+
+<!-- ********************ATTRIBUTE DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Attribute Detail</B></FONT></TD>
+</TR></TABLE>
+
+<A NAME="baudrate"><!-- --></A>
+<H3>baudrate</H3>
+<P>
+<CODE>public long <B>baudrate</B></CODE>
+<BLOCKQUOTE>
+The baudrate to use for communication, only useful if connection type is serial
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="connectionType"><!-- --></A>
+<H3>connectionType</H3>
+<P>
+<CODE>public int <B>connectionType</B></CODE>
+<BLOCKQUOTE>
+What type of connection is it to the instrument
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="flowControl"><!-- --></A>
+<H3>flowControl</H3>
+<P>
+<CODE>public int <B>flowControl</B></CODE>
+<BLOCKQUOTE>
+Which type of flow control to use, only useful if connection type is serial
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="ftpAdminPassword"><!-- --></A>
+<H3>ftpAdminPassword</H3>
+<P>
+<CODE>public CString <B>ftpAdminPassword</B></CODE>
+<BLOCKQUOTE>
+The administrator-password at the scanning instrument
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="ftpAdminUserName"><!-- --></A>
+<H3>ftpAdminUserName</H3>
+<P>
+<CODE>public CString <B>ftpAdminUserName</B></CODE>
+<BLOCKQUOTE>
+The administrator-username at the scanning instrument
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="ftpIP[4]"><!-- --></A>
+<H3>ftpIP[4]</H3>
+<P>
+<CODE>public BYTE <B>ftpIP[4]</B></CODE>
+<BLOCKQUOTE>
+The IP-number of the scanning instrument
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="ftpPassword"><!-- --></A>
+<H3>ftpPassword</H3>
+<P>
+<CODE>public CString <B>ftpPassword</B></CODE>
+<BLOCKQUOTE>
+The password at the scanning instrument
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="ftpUserName"><!-- --></A>
+<H3>ftpUserName</H3>
+<P>
+<CODE>public CString <B>ftpUserName</B></CODE>
+<BLOCKQUOTE>
+The username at the scanning instrument
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="medium"><!-- --></A>
+<H3>medium</H3>
+<P>
+<CODE>public int <B>medium</B></CODE>
+<BLOCKQUOTE>
+The medium through which the communciation occurs.
+ MEDIUM_CABLE corresponds to a cable,
+ MEDIUM_FREEWAVE_SERIAL_MODEM corresponds to a Freewave radio modem.
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="port"><!-- --></A>
+<H3>port</H3>
+<P>
+<CODE>public long <B>port</B></CODE>
+<BLOCKQUOTE>
+The port number to use, only useful if connection type is serial
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="queryPeriod"><!-- --></A>
+<H3>queryPeriod</H3>
+<P>
+<CODE>public long <B>queryPeriod</B></CODE>
+<BLOCKQUOTE>
+How often the scanning Instrument should be queried for new data
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="radioID"><!-- --></A>
+<H3>radioID</H3>
+<P>
+<CODE>public CString <B>radioID</B></CODE>
+<BLOCKQUOTE>
+The RadioID OR callbook number
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="sleepTime"><!-- --></A>
+<H3>sleepTime</H3>
+<P>
+<CODE>public struct timeStruct <B>sleepTime</B></CODE>
+<BLOCKQUOTE>
+Time to start sleeping
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="timeout"><!-- --></A>
+<H3>timeout</H3>
+<P>
+<CODE>public long <B>timeout</B></CODE>
+<BLOCKQUOTE>
+The timeout for communication
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="wakeupTime"><!-- --></A>
+<H3>wakeupTime</H3>
+<P>
+<CODE>public struct timeStruct <B>wakeupTime</B></CODE>
+<BLOCKQUOTE>
+Time to wake up
+</BLOCKQUOTE>
+
+
+
+<!-- ********************CONSTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Constructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="CommunicationSetting()"><!-- --></A>
+<H3>CommunicationSetting</H3>
+<P>
+<CODE>public  <B>CommunicationSetting</B>()</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************DESTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Destructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="~CommunicationSetting()"><!-- --></A>
+<H3>~CommunicationSetting</H3>
+<P>
+<CODE>public  <B>~CommunicationSetting</B>()</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************METHOD DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="&operator=(const CommunicationSetting &comm2)"></A>
+<H3>&operator=</H3>
+<P>
+<CODE>public CommunicationSetting <B>&operator=</B>(const CommunicationSetting &comm2)</CODE>
+<BLOCKQUOTE>
+Assignment operator
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="Clear()"></A>
+<H3>Clear</H3>
+<P>
+<CODE>public void <B>Clear</B>()</CODE>
+<BLOCKQUOTE>
+Resets all values to default
+</BLOCKQUOTE>
+</BODY>
+</HTML>

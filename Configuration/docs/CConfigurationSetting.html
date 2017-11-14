@@ -1,0 +1,471 @@
+<!DOCTYPE HTML PUBLIC"-//W3C//DTD HTML 4.0 Frameset//EN""http://www.w3.org/TR/REC-html40/frameset/dtd">
+<HTML>
+<HEAD>
+<!-- The file this documentation was generated from is:  C:\Novac\NovacMasterProgram\2008_12_19\Configuration\Configuration.h -->
+</HEAD>
+<TITLE>
+class CConfigurationSetting
+</TITLE>
+<LINK REL="stylesheet" TYPE="text/css" HREF="./stylesheet.css" TITLE="Style">
+<BODY BGCOLOR="#FFFFFF">
+
+
+
+<!-- ********************CLASS HEADING INFORMATION******************** -->
+
+<H2><P>class CConfigurationSetting</H2></P>
+<P>The <b>CCConfigurationSetting</b> holds the configuration of the scanning Instruments
+ that is found in the configuration.xml-file.  
+ </P>
+<P></h2><hr size="2"></P>
+
+
+
+<!-- ********************ATTRIBUTE SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2"><B>Attribute Summary</B></FONT></TD>
+</TR>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">static const int STARTUP_MANUAL =</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting.html#0">0</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">static const int CHANGEMODE_SAFE =</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting.html#0">0</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">static const int STARTUP_AUTOMATIC =</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting.html#1">1</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">static const int CHANGEMODE_FAST =</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting.html#1">1</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CExternalCallSettings</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting.html#externalSetting">externalSetting</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The settings for calling of external programs</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CFTPSetting</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting.html#ftpSetting">ftpSetting</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The ftp server setting</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CString</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting.html#outputDirectory">outputDirectory</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The output directory</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">unsigned long</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting.html#scannerNum">scannerNum</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">How many scanning instruments that are defined</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">ScanningInstrumentSetting</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting.html#scanner[MAX_NUMBER_OF_SCANNING_INSTRUMENTS]">scanner[MAX_NUMBER_OF_SCANNING_INSTRUMENTS]</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The configured scanning instruments</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting.html#startup">startup</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">Startup method</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">WebSettings</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting.html#webSettings">webSettings</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">Settings for web - publishing the results</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CWindFieldDataSettings</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting.html#windSourceSettings">windSourceSettings</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The settings for retrieving the wind-field from external sources</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************NESTED CLASS SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2"><B>Nested Class Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="5%">nested class</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+CExternalCallSettings.html">CExternalCallSettings</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">Settings for calling of external programs when receiving scans</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="5%">nested class</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+CFTPSetting.html">CFTPSetting</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">FTP server's setting</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="5%">nested class</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+CWindFieldDataSettings.html">CWindFieldDataSettings</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">Settings for retrieval of the wind-field from external sources</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="5%">nested class</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+CommunicationSetting.html">CommunicationSetting</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="5%">nested class</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+DarkSettings.html">DarkSettings</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="5%">nested class</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+MotorSetting.html">MotorSetting</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="5%">nested class</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+ScanningInstrumentSetting.html">ScanningInstrumentSetting</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="5%">nested class</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+SetupChangeSetting.html">SetupChangeSetting</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="5%">nested class</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+SpectrometerChannelSetting.html">SpectrometerChannelSetting</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="5%">nested class</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+SpectrometerSetting.html">SpectrometerSetting</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="5%">nested class</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+WebSettings.html">WebSettings</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">Settings for publishing the results on a web - page</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="5%">nested class</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+WindSpeedMeasurementSetting.html">WindSpeedMeasurementSetting</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************CONSTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Constructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CConfigurationSetting.html#CConfigurationSetting(void)"><B>CConfigurationSetting</B></A>(void)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************DESTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Destructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CConfigurationSetting.html#~CConfigurationSetting(void)"><B>~CConfigurationSetting</B></A>(void)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************METHOD SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2">
+<B>Method Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CConfigurationSetting.html#Clear()"><B>Clear</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Resets all values to default</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR>
+
+
+
+<!-- ********************ATTRIBUTE DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Attribute Detail</B></FONT></TD>
+</TR></TABLE>
+
+<A NAME="0"><!-- --></A>
+<H3>0</H3>
+<P>
+<CODE>public static const int STARTUP_MANUAL = <B>0</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="0"><!-- --></A>
+<H3>0</H3>
+<P>
+<CODE>public static const int CHANGEMODE_SAFE = <B>0</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="1"><!-- --></A>
+<H3>1</H3>
+<P>
+<CODE>public static const int STARTUP_AUTOMATIC = <B>1</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="1"><!-- --></A>
+<H3>1</H3>
+<P>
+<CODE>public static const int CHANGEMODE_FAST = <B>1</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="externalSetting"><!-- --></A>
+<H3>externalSetting</H3>
+<P>
+<CODE>public CExternalCallSettings <B>externalSetting</B></CODE>
+<BLOCKQUOTE>
+The settings for calling of external programs
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="ftpSetting"><!-- --></A>
+<H3>ftpSetting</H3>
+<P>
+<CODE>public CFTPSetting <B>ftpSetting</B></CODE>
+<BLOCKQUOTE>
+The ftp server setting
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="outputDirectory"><!-- --></A>
+<H3>outputDirectory</H3>
+<P>
+<CODE>public CString <B>outputDirectory</B></CODE>
+<BLOCKQUOTE>
+The output directory
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="scannerNum"><!-- --></A>
+<H3>scannerNum</H3>
+<P>
+<CODE>public unsigned long <B>scannerNum</B></CODE>
+<BLOCKQUOTE>
+How many scanning instruments that are defined
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="scanner[MAX_NUMBER_OF_SCANNING_INSTRUMENTS]"><!-- --></A>
+<H3>scanner[MAX_NUMBER_OF_SCANNING_INSTRUMENTS]</H3>
+<P>
+<CODE>public ScanningInstrumentSetting <B>scanner[MAX_NUMBER_OF_SCANNING_INSTRUMENTS]</B></CODE>
+<BLOCKQUOTE>
+The configured scanning instruments
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="startup"><!-- --></A>
+<H3>startup</H3>
+<P>
+<CODE>public int <B>startup</B></CODE>
+<BLOCKQUOTE>
+Startup method
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="webSettings"><!-- --></A>
+<H3>webSettings</H3>
+<P>
+<CODE>public WebSettings <B>webSettings</B></CODE>
+<BLOCKQUOTE>
+Settings for web - publishing the results
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="windSourceSettings"><!-- --></A>
+<H3>windSourceSettings</H3>
+<P>
+<CODE>public CWindFieldDataSettings <B>windSourceSettings</B></CODE>
+<BLOCKQUOTE>
+The settings for retrieving the wind-field from external sources
+</BLOCKQUOTE>
+
+
+
+<!-- ********************CONSTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Constructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="CConfigurationSetting(void)"><!-- --></A>
+<H3>CConfigurationSetting</H3>
+<P>
+<CODE>public  <B>CConfigurationSetting</B>(void)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************DESTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Destructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="~CConfigurationSetting(void)"><!-- --></A>
+<H3>~CConfigurationSetting</H3>
+<P>
+<CODE>public  <B>~CConfigurationSetting</B>(void)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************METHOD DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="Clear()"></A>
+<H3>Clear</H3>
+<P>
+<CODE>public void <B>Clear</B>()</CODE>
+<BLOCKQUOTE>
+Resets all values to default
+</BLOCKQUOTE>
+</BODY>
+</HTML>

@@ -1,0 +1,344 @@
+<!DOCTYPE HTML PUBLIC"-//W3C//DTD HTML 4.0 Frameset//EN""http://www.w3.org/TR/REC-html40/frameset/dtd">
+<HTML>
+<HEAD>
+<!-- The file this documentation was generated from is:  C:\Novac\NovacMasterProgram\2008_12_19\Configuration\SystemConfigurationPage.h -->
+</HEAD>
+<TITLE>
+class CSystemConfigurationPage
+</TITLE>
+<LINK REL="stylesheet" TYPE="text/css" HREF="./stylesheet.css" TITLE="Style">
+<BODY BGCOLOR="#FFFFFF">
+
+
+
+<!-- ********************CLASS HEADING INFORMATION******************** -->
+
+<H3><p>
+namespace ConfigurationDialog
+</H3>
+<H2><P>class CSystemConfigurationPage</H2></P>
+<P><H4>Inherits:&nbsp;&nbsp;public CPropertyPage</A>&nbsp;&nbsp;</H4></P>
+<P>The <b>CSystemConfigurationPage</b> is a class that handles the common parts of:
+ CLocationConfigurationDlg
+ CRemoteConfigurationDlg
+ CEvaluationConfigurationDlg
+ CConfigureCOMPortDlg
+ 
+ </P>
+<P></h2><hr size="2"></P>
+
+
+
+<!-- ********************ATTRIBUTE SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2"><B>Attribute Summary</B></FONT></TD>
+</TR>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CConfigurationSetting*</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#m_configuration">m_configuration</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">the actual configuration</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CConfigurationSetting::ScanningInstrumentSetting*</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#m_curScanner">m_curScanner</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">A pointer to the currently selected scanner</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CConfigurationSetting::SpectrometerSetting*</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#m_curSpec">m_curSpec</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">A pointer to the currently selected spectrometer</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CWnd*</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#m_parent">m_parent</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">A handle to the parent window</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CConfigurationTreeCtrl*</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#m_scannerTree">m_scannerTree</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The scanner list</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CToolTipCtrl</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#m_toolTip">m_toolTip</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The tooltip control</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************MACRO SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2"><B>Macro Summary</B></FONT></TD>
+</TR>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#DECLARE_DYNAMIC(CSystemConfigurationPage)">DECLARE_DYNAMIC(CSystemConfigurationPage)</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************CONSTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Constructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#CSystemConfigurationPage(UINT nIDTemplate)"><B>CSystemConfigurationPage</B></A>(UINT nIDTemplate)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#CSystemConfigurationPage(void)"><B>CSystemConfigurationPage</B></A>(void)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************DESTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Destructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#~CSystemConfigurationPage(void)"><B>~CSystemConfigurationPage</B></A>(void)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************METHOD SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2">
+<B>Method Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#GetScanAndSpec(int &scanner, int &spec)"><B>GetScanAndSpec</B></A>(int &scanner, int &spec)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Gets the currently selected scanner and spectrometer</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">virtual void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#OnChangeScanner()"><B>OnChangeScanner</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Called by the CScannerConfigurationDlg when the user wants to change
+ the currently selected scanner.</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR>
+
+
+
+<!-- ********************ATTRIBUTE DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Attribute Detail</B></FONT></TD>
+</TR></TABLE>
+
+<A NAME="m_configuration"><!-- --></A>
+<H3>m_configuration</H3>
+<P>
+<CODE>public CConfigurationSetting* <B>m_configuration</B></CODE>
+<BLOCKQUOTE>
+the actual configuration
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_curScanner"><!-- --></A>
+<H3>m_curScanner</H3>
+<P>
+<CODE>public CConfigurationSetting::ScanningInstrumentSetting* <B>m_curScanner</B></CODE>
+<BLOCKQUOTE>
+A pointer to the currently selected scanner
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_curSpec"><!-- --></A>
+<H3>m_curSpec</H3>
+<P>
+<CODE>public CConfigurationSetting::SpectrometerSetting* <B>m_curSpec</B></CODE>
+<BLOCKQUOTE>
+A pointer to the currently selected spectrometer
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_parent"><!-- --></A>
+<H3>m_parent</H3>
+<P>
+<CODE>public CWnd* <B>m_parent</B></CODE>
+<BLOCKQUOTE>
+A handle to the parent window
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_scannerTree"><!-- --></A>
+<H3>m_scannerTree</H3>
+<P>
+<CODE>public CConfigurationTreeCtrl* <B>m_scannerTree</B></CODE>
+<BLOCKQUOTE>
+The scanner list
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_toolTip"><!-- --></A>
+<H3>m_toolTip</H3>
+<P>
+<CODE>public CToolTipCtrl <B>m_toolTip</B></CODE>
+<BLOCKQUOTE>
+The tooltip control
+</BLOCKQUOTE>
+
+
+
+<!-- ********************Macro DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Macro Detail</B></FONT></TD>
+</TR></TABLE>
+
+<A NAME="DECLARE_DYNAMIC(CSystemConfigurationPage)"><!-- --></A>
+<H3>DECLARE_DYNAMIC(CSystemConfigurationPage)</H3>
+<P>
+<CODE>private <B>DECLARE_DYNAMIC(CSystemConfigurationPage)</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************CONSTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Constructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="CSystemConfigurationPage(UINT nIDTemplate)"><!-- --></A>
+<H3>CSystemConfigurationPage</H3>
+<P>
+<CODE>public  <B>CSystemConfigurationPage</B>(UINT nIDTemplate)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="CSystemConfigurationPage(void)"><!-- --></A>
+<H3>CSystemConfigurationPage</H3>
+<P>
+<CODE>public  <B>CSystemConfigurationPage</B>(void)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************DESTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Destructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="~CSystemConfigurationPage(void)"><!-- --></A>
+<H3>~CSystemConfigurationPage</H3>
+<P>
+<CODE>public  <B>~CSystemConfigurationPage</B>(void)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************METHOD DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="GetScanAndSpec(int &scanner, int &spec)"></A>
+<H3>GetScanAndSpec</H3>
+<P>
+<CODE>public void <B>GetScanAndSpec</B>(int &scanner, int &spec)</CODE>
+<BLOCKQUOTE>
+Gets the currently selected scanner and spectrometer
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnChangeScanner()"></A>
+<H3>OnChangeScanner</H3>
+<P>
+<CODE>public virtual void <B>OnChangeScanner</B>()</CODE>
+<BLOCKQUOTE>
+Called by the CScannerConfigurationDlg when the user wants to change
+ the currently selected scanner.
+</BLOCKQUOTE>
+</BODY>
+</HTML>

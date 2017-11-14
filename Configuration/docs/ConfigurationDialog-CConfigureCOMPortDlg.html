@@ -1,0 +1,1127 @@
+<!DOCTYPE HTML PUBLIC"-//W3C//DTD HTML 4.0 Frameset//EN""http://www.w3.org/TR/REC-html40/frameset/dtd">
+<HTML>
+<HEAD>
+<!-- The file this documentation was generated from is:  C:\Novac\NovacMasterProgram\2008_12_19\Configuration\ConfigureCOMPortDlg.h -->
+</HEAD>
+<TITLE>
+class CConfigureCOMPortDlg
+</TITLE>
+<LINK REL="stylesheet" TYPE="text/css" HREF="./stylesheet.css" TITLE="Style">
+<BODY BGCOLOR="#FFFFFF">
+
+
+
+<!-- ********************CLASS HEADING INFORMATION******************** -->
+
+<H3><p>
+namespace ConfigurationDialog
+</H3>
+<H2><P>class CConfigureCOMPortDlg</H2></P>
+<P><H4>Inherits:&nbsp;&nbsp;<A HREF="./ConfigurationDialog-CSystemConfigurationPage.html">public CSystemConfigurationPage</A>&nbsp;&nbsp;</H4></P><P></h2><hr size="2"></P>
+
+
+
+<!-- ********************ATTRIBUTE SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2"><B>Attribute Summary</B></FONT></TD>
+</TR>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CIPAddressCtrl</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#m_IPAddress">m_IPAddress</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The ip-address for the FTP-settings</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#m_availableBaudrates[5]">m_availableBaudrates[5]</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">A list of the available baudrates</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CComboBox </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#m_baudrate">m_baudrate</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CComboBox </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#m_comPort">m_comPort</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">CStatic</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#m_connectionIntervalLabel">m_connectionIntervalLabel</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#m_curSetting">m_curSetting</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The current selection of settings
+ 0 == Serial Cable
+ 1 == Freewave Serial Radio modem
+ 2 == FTP - Communication</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CEdit </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#m_editPassword">m_editPassword</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The login information for the FTP-settings</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CEdit</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#m_editRadioID">m_editRadioID</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The edit for callbooknumber/RadioID</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CEdit </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#m_editSleepHr">m_editSleepHr</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CEdit </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#m_editSleepMin">m_editSleepMin</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CEdit </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#m_editSleepSec">m_editSleepSec</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CEdit</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#m_editTimeOut">m_editTimeOut</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The control for the timeout- edit</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CEdit </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#m_editUserName">m_editUserName</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The login information for the FTP-settings</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CEdit </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#m_editWakeHr">m_editWakeHr</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CEdit </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#m_editWakeMin">m_editWakeMin</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CEdit </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#m_editWakeSec">m_editWakeSec</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">CString</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#m_ftpPassword">m_ftpPassword</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">FTP - Password</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">CString</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#m_ftpUserName">m_ftpUserName</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">FTP - UserName</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CComboBox </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#m_handshake">m_handshake</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#m_intervalHr">m_intervalHr</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The Connection Interval</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#m_intervalMin">m_intervalMin</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#m_intervalSec">m_intervalSec</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CStatic </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#m_label1">m_label1</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CStatic </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#m_label2">m_label2</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CStatic </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#m_label3">m_label3</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CStatic </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#m_label4">m_label4</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CStatic </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#m_label5">m_label5</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CStatic </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#m_labelRadioID">m_labelRadioID</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CStatic </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#m_labelSleepFrom">m_labelSleepFrom</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CStatic </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#m_labelSleepTo">m_labelSleepTo</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CString</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#m_radioID">m_radioID</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The radio ID</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#m_sleepHr">m_sleepHr</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">Sleep time</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#m_sleepMin">m_sleepMin</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#m_sleepSec">m_sleepSec</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#m_timeout">m_timeout</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The time out</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#m_wakeHr">m_wakeHr</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">Wake up time</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#m_wakeMin">m_wakeMin</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#m_wakeSec">m_wakeSec</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************MACRO SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2"><B>Macro Summary</B></FONT></TD>
+</TR>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#DECLARE_DYNAMIC(CConfigureCOMPortDlg)">DECLARE_DYNAMIC(CConfigureCOMPortDlg)</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#DECLARE_MESSAGE_MAP()">DECLARE_MESSAGE_MAP()</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************ENUM SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2"><B>Enum Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#enum {  IDD = IDD_CONFIGURE_COM_PORT }">enum </A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************CONSTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Constructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#CConfigureCOMPortDlg()"><B>CConfigureCOMPortDlg</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************DESTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Destructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#virtual ~CConfigureCOMPortDlg()"><B>virtual ~CConfigureCOMPortDlg</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************METHOD SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2">
+<B>Method Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">virtual void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#DoDataExchange(CDataExchange* pDX)"><B>DoDataExchange</B></A>(CDataExchange* pDX)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#InitToolTips()"><B>InitToolTips</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Initializing the tooltips</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">afx_msg void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#OnChangeMethod()"><B>OnChangeMethod</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Changing the communication protocol</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#OnChangeScanner()"><B>OnChangeScanner</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Called when the current selection changes</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">virtual BOOL</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#OnInitDialog()"><B>OnInitDialog</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Initializing the dialog</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">virtual BOOL</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#OnSetActive()"><B>OnSetActive</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Called when the current page becomes the active one</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">virtual BOOL</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#PreTranslateMessage(MSG* pMsg)"><B>PreTranslateMessage</B></A>(MSG* pMsg)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Handling the tool tips</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">afx_msg void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#SaveData()"><B>SaveData</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Saving the data in the control</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#ShowFTP()"><B>ShowFTP</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Showing the settings for connecting using FTP-Protocol</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#ShowFreewaveSerial()"><B>ShowFreewaveSerial</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Showing the settings for connecting using a Freewave serial modem</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#ShowSerialCable()"><B>ShowSerialCable</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Showing the settings for connecting through a serial cable</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">afx_msg void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CConfigureCOMPortDlg.html#UpdateDlg()"><B>UpdateDlg</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Updating the data in the control</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR>
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD><B>Attributes inherited from </B><A HREF="./ConfigurationDialog-CSystemConfigurationPage.html"><B>ConfigurationDialog-CSystemConfigurationPage</B></A></TD>
+</TR>
+<TR>
+<TD><A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#m_configuration">m_configuration</A>,&nbsp;
+<A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#m_curScanner">m_curScanner</A>,&nbsp;
+<A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#m_curSpec">m_curSpec</A>,&nbsp;
+<A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#m_parent">m_parent</A>,&nbsp;
+<A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#m_scannerTree">m_scannerTree</A>,&nbsp;
+<A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#m_toolTip">m_toolTip</A>
+
+</TD>
+</TR>
+</TABLE><BR>
+
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD><B>Methods inherited from </B><A HREF="./ConfigurationDialog-CSystemConfigurationPage.html"><B>ConfigurationDialog-CSystemConfigurationPage</B></A></TD>
+</TR>
+<TR>
+<TD><A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#GetScanAndSpec(int &scanner, int &spec)">GetScanAndSpec</A>,&nbsp;
+<A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#OnChangeScanner()">OnChangeScanner</A>
+
+</TD>
+</TR>
+</TABLE><BR>
+
+
+
+
+<!-- ********************ATTRIBUTE DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Attribute Detail</B></FONT></TD>
+</TR></TABLE>
+
+<A NAME="m_IPAddress"><!-- --></A>
+<H3>m_IPAddress</H3>
+<P>
+<CODE>private CIPAddressCtrl <B>m_IPAddress</B></CODE>
+<BLOCKQUOTE>
+The ip-address for the FTP-settings
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_availableBaudrates[5]"><!-- --></A>
+<H3>m_availableBaudrates[5]</H3>
+<P>
+<CODE>private int <B>m_availableBaudrates[5]</B></CODE>
+<BLOCKQUOTE>
+A list of the available baudrates
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_baudrate"><!-- --></A>
+<H3>m_baudrate</H3>
+<P>
+<CODE>private CComboBox  <B>m_baudrate</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_comPort"><!-- --></A>
+<H3>m_comPort</H3>
+<P>
+<CODE>private CComboBox  <B>m_comPort</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_connectionIntervalLabel"><!-- --></A>
+<H3>m_connectionIntervalLabel</H3>
+<P>
+<CODE>protected CStatic <B>m_connectionIntervalLabel</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_curSetting"><!-- --></A>
+<H3>m_curSetting</H3>
+<P>
+<CODE>private int <B>m_curSetting</B></CODE>
+<BLOCKQUOTE>
+The current selection of settings
+ 0 == Serial Cable
+ 1 == Freewave Serial Radio modem
+ 2 == FTP - Communication
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_editPassword"><!-- --></A>
+<H3>m_editPassword</H3>
+<P>
+<CODE>private CEdit  <B>m_editPassword</B></CODE>
+<BLOCKQUOTE>
+The login information for the FTP-settings
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_editRadioID"><!-- --></A>
+<H3>m_editRadioID</H3>
+<P>
+<CODE>private CEdit <B>m_editRadioID</B></CODE>
+<BLOCKQUOTE>
+The edit for callbooknumber/RadioID
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_editSleepHr"><!-- --></A>
+<H3>m_editSleepHr</H3>
+<P>
+<CODE>private CEdit  <B>m_editSleepHr</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_editSleepMin"><!-- --></A>
+<H3>m_editSleepMin</H3>
+<P>
+<CODE>private CEdit  <B>m_editSleepMin</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_editSleepSec"><!-- --></A>
+<H3>m_editSleepSec</H3>
+<P>
+<CODE>private CEdit  <B>m_editSleepSec</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_editTimeOut"><!-- --></A>
+<H3>m_editTimeOut</H3>
+<P>
+<CODE>private CEdit <B>m_editTimeOut</B></CODE>
+<BLOCKQUOTE>
+The control for the timeout- edit
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_editUserName"><!-- --></A>
+<H3>m_editUserName</H3>
+<P>
+<CODE>private CEdit  <B>m_editUserName</B></CODE>
+<BLOCKQUOTE>
+The login information for the FTP-settings
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_editWakeHr"><!-- --></A>
+<H3>m_editWakeHr</H3>
+<P>
+<CODE>private CEdit  <B>m_editWakeHr</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_editWakeMin"><!-- --></A>
+<H3>m_editWakeMin</H3>
+<P>
+<CODE>private CEdit  <B>m_editWakeMin</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_editWakeSec"><!-- --></A>
+<H3>m_editWakeSec</H3>
+<P>
+<CODE>private CEdit  <B>m_editWakeSec</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_ftpPassword"><!-- --></A>
+<H3>m_ftpPassword</H3>
+<P>
+<CODE>protected CString <B>m_ftpPassword</B></CODE>
+<BLOCKQUOTE>
+FTP - Password
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_ftpUserName"><!-- --></A>
+<H3>m_ftpUserName</H3>
+<P>
+<CODE>protected CString <B>m_ftpUserName</B></CODE>
+<BLOCKQUOTE>
+FTP - UserName
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_handshake"><!-- --></A>
+<H3>m_handshake</H3>
+<P>
+<CODE>private CComboBox  <B>m_handshake</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_intervalHr"><!-- --></A>
+<H3>m_intervalHr</H3>
+<P>
+<CODE>protected int <B>m_intervalHr</B></CODE>
+<BLOCKQUOTE>
+The Connection Interval
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_intervalMin"><!-- --></A>
+<H3>m_intervalMin</H3>
+<P>
+<CODE>protected int <B>m_intervalMin</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_intervalSec"><!-- --></A>
+<H3>m_intervalSec</H3>
+<P>
+<CODE>protected int <B>m_intervalSec</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_label1"><!-- --></A>
+<H3>m_label1</H3>
+<P>
+<CODE>private CStatic  <B>m_label1</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_label2"><!-- --></A>
+<H3>m_label2</H3>
+<P>
+<CODE>private CStatic  <B>m_label2</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_label3"><!-- --></A>
+<H3>m_label3</H3>
+<P>
+<CODE>private CStatic  <B>m_label3</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_label4"><!-- --></A>
+<H3>m_label4</H3>
+<P>
+<CODE>private CStatic  <B>m_label4</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_label5"><!-- --></A>
+<H3>m_label5</H3>
+<P>
+<CODE>private CStatic  <B>m_label5</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_labelRadioID"><!-- --></A>
+<H3>m_labelRadioID</H3>
+<P>
+<CODE>private CStatic  <B>m_labelRadioID</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_labelSleepFrom"><!-- --></A>
+<H3>m_labelSleepFrom</H3>
+<P>
+<CODE>private CStatic  <B>m_labelSleepFrom</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_labelSleepTo"><!-- --></A>
+<H3>m_labelSleepTo</H3>
+<P>
+<CODE>private CStatic  <B>m_labelSleepTo</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_radioID"><!-- --></A>
+<H3>m_radioID</H3>
+<P>
+<CODE>private CString <B>m_radioID</B></CODE>
+<BLOCKQUOTE>
+The radio ID
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_sleepHr"><!-- --></A>
+<H3>m_sleepHr</H3>
+<P>
+<CODE>protected int <B>m_sleepHr</B></CODE>
+<BLOCKQUOTE>
+Sleep time
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_sleepMin"><!-- --></A>
+<H3>m_sleepMin</H3>
+<P>
+<CODE>protected int <B>m_sleepMin</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_sleepSec"><!-- --></A>
+<H3>m_sleepSec</H3>
+<P>
+<CODE>protected int <B>m_sleepSec</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_timeout"><!-- --></A>
+<H3>m_timeout</H3>
+<P>
+<CODE>private int <B>m_timeout</B></CODE>
+<BLOCKQUOTE>
+The time out
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_wakeHr"><!-- --></A>
+<H3>m_wakeHr</H3>
+<P>
+<CODE>protected int <B>m_wakeHr</B></CODE>
+<BLOCKQUOTE>
+Wake up time
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_wakeMin"><!-- --></A>
+<H3>m_wakeMin</H3>
+<P>
+<CODE>protected int <B>m_wakeMin</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_wakeSec"><!-- --></A>
+<H3>m_wakeSec</H3>
+<P>
+<CODE>protected int <B>m_wakeSec</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************ENUM DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Enum Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="enum {  IDD = IDD_CONFIGURE_COM_PORT }"><!-- --></A>
+<H3>enum {  IDD = IDD_CONFIGURE_COM_PORT }</H3>
+<P>
+<CODE>public <B>enum {  IDD = IDD_CONFIGURE_COM_PORT }</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************Macro DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Macro Detail</B></FONT></TD>
+</TR></TABLE>
+
+<A NAME="DECLARE_DYNAMIC(CConfigureCOMPortDlg)"><!-- --></A>
+<H3>DECLARE_DYNAMIC(CConfigureCOMPortDlg)</H3>
+<P>
+<CODE>private <B>DECLARE_DYNAMIC(CConfigureCOMPortDlg)</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="DECLARE_MESSAGE_MAP()"><!-- --></A>
+<H3>DECLARE_MESSAGE_MAP()</H3>
+<P>
+<CODE>protected <B>DECLARE_MESSAGE_MAP()</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************CONSTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Constructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="CConfigureCOMPortDlg()"><!-- --></A>
+<H3>CConfigureCOMPortDlg</H3>
+<P>
+<CODE>public  <B>CConfigureCOMPortDlg</B>()</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************DESTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Destructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="virtual ~CConfigureCOMPortDlg()"><!-- --></A>
+<H3>virtual ~CConfigureCOMPortDlg</H3>
+<P>
+<CODE>public  <B>virtual ~CConfigureCOMPortDlg</B>()</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************METHOD DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="DoDataExchange(CDataExchange* pDX)"></A>
+<H3>DoDataExchange</H3>
+<P>
+<CODE>protected virtual void <B>DoDataExchange</B>(CDataExchange* pDX)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="InitToolTips()"></A>
+<H3>InitToolTips</H3>
+<P>
+<CODE>public void <B>InitToolTips</B>()</CODE>
+<BLOCKQUOTE>
+Initializing the tooltips
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnChangeMethod()"></A>
+<H3>OnChangeMethod</H3>
+<P>
+<CODE>public afx_msg void <B>OnChangeMethod</B>()</CODE>
+<BLOCKQUOTE>
+Changing the communication protocol
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnChangeScanner()"></A>
+<H3>OnChangeScanner</H3>
+<P>
+<CODE>public void <B>OnChangeScanner</B>()</CODE>
+<BLOCKQUOTE>
+Called when the current selection changes
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnInitDialog()"></A>
+<H3>OnInitDialog</H3>
+<P>
+<CODE>public virtual BOOL <B>OnInitDialog</B>()</CODE>
+<BLOCKQUOTE>
+Initializing the dialog
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnSetActive()"></A>
+<H3>OnSetActive</H3>
+<P>
+<CODE>public virtual BOOL <B>OnSetActive</B>()</CODE>
+<BLOCKQUOTE>
+Called when the current page becomes the active one
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="PreTranslateMessage(MSG* pMsg)"></A>
+<H3>PreTranslateMessage</H3>
+<P>
+<CODE>public virtual BOOL <B>PreTranslateMessage</B>(MSG* pMsg)</CODE>
+<BLOCKQUOTE>
+Handling the tool tips
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="SaveData()"></A>
+<H3>SaveData</H3>
+<P>
+<CODE>public afx_msg void <B>SaveData</B>()</CODE>
+<BLOCKQUOTE>
+Saving the data in the control
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="ShowFTP()"></A>
+<H3>ShowFTP</H3>
+<P>
+<CODE>private void <B>ShowFTP</B>()</CODE>
+<BLOCKQUOTE>
+Showing the settings for connecting using FTP-Protocol
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="ShowFreewaveSerial()"></A>
+<H3>ShowFreewaveSerial</H3>
+<P>
+<CODE>private void <B>ShowFreewaveSerial</B>()</CODE>
+<BLOCKQUOTE>
+Showing the settings for connecting using a Freewave serial modem
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="ShowSerialCable()"></A>
+<H3>ShowSerialCable</H3>
+<P>
+<CODE>private void <B>ShowSerialCable</B>()</CODE>
+<BLOCKQUOTE>
+Showing the settings for connecting through a serial cable
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="UpdateDlg()"></A>
+<H3>UpdateDlg</H3>
+<P>
+<CODE>public afx_msg void <B>UpdateDlg</B>()</CODE>
+<BLOCKQUOTE>
+Updating the data in the control
+</BLOCKQUOTE>
+</BODY>
+</HTML>

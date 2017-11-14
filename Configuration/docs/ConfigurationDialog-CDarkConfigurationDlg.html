@@ -1,0 +1,922 @@
+<!DOCTYPE HTML PUBLIC"-//W3C//DTD HTML 4.0 Frameset//EN""http://www.w3.org/TR/REC-html40/frameset/dtd">
+<HTML>
+<HEAD>
+<!-- The file this documentation was generated from is:  C:\Novac\NovacMasterProgram\2008_12_19\Configuration\DarkConfigurationDlg.h -->
+</HEAD>
+<TITLE>
+class CDarkConfigurationDlg
+</TITLE>
+<LINK REL="stylesheet" TYPE="text/css" HREF="./stylesheet.css" TITLE="Style">
+<BODY BGCOLOR="#FFFFFF">
+
+
+
+<!-- ********************CLASS HEADING INFORMATION******************** -->
+
+<H3><p>
+namespace ConfigurationDialog
+</H3>
+<H2><P>class CDarkConfigurationDlg</H2></P>
+<P><H4>Inherits:&nbsp;&nbsp;<A HREF="./ConfigurationDialog-CSystemConfigurationPage.html">public CSystemConfigurationPage</A>&nbsp;&nbsp;</H4></P><P></h2><hr size="2"></P>
+
+
+
+<!-- ********************ATTRIBUTE SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2"><B>Attribute Summary</B></FONT></TD>
+</TR>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CButton </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CDarkConfigurationDlg.html#m_btnMasterDC">m_btnMasterDC</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CButton </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CDarkConfigurationDlg.html#m_btnMasterOff">m_btnMasterOff</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The buttons</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CButton </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CDarkConfigurationDlg.html#m_btnSlaveDC">m_btnSlaveDC</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CButton </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CDarkConfigurationDlg.html#m_btnSlaveOff">m_btnSlaveOff</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The buttons</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CComboBox </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CDarkConfigurationDlg.html#m_comboDC">m_comboDC</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The combo-boxes</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CComboBox </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CDarkConfigurationDlg.html#m_comboOffset">m_comboOffset</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The combo-boxes</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CDarkConfigurationDlg.html#m_darkSpecOption">m_darkSpecOption</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The option for how to get the dark spectrum</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CString </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CDarkConfigurationDlg.html#m_dcPath1">m_dcPath1</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The paths for the dark-current spectra</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CString </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CDarkConfigurationDlg.html#m_dcPath2">m_dcPath2</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The paths for the dark-current spectra</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CDarkConfigurationDlg.html#m_dcSpecOption">m_dcSpecOption</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The option for how to use the dark-current spectrum</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CStatic </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CDarkConfigurationDlg.html#m_editDC1">m_editDC1</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CStatic </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CDarkConfigurationDlg.html#m_editDC2">m_editDC2</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CStatic </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CDarkConfigurationDlg.html#m_editOffset1">m_editOffset1</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The edit-boxes</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CStatic </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CDarkConfigurationDlg.html#m_editOffset2">m_editOffset2</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The edit-boxes</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">bool</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CDarkConfigurationDlg.html#m_initialized">m_initialized</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">True when all the things in the dialog have been initialized</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CStatic</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CDarkConfigurationDlg.html#m_labelDarkOffsetCorr">m_labelDarkOffsetCorr</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CStatic </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CDarkConfigurationDlg.html#m_labelMaster1">m_labelMaster1</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The labels</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CStatic </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CDarkConfigurationDlg.html#m_labelMaster2">m_labelMaster2</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The labels</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CStatic </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CDarkConfigurationDlg.html#m_labelSlave1">m_labelSlave1</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CStatic </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CDarkConfigurationDlg.html#m_labelSlave2">m_labelSlave2</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CString </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CDarkConfigurationDlg.html#m_offsetPath1">m_offsetPath1</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The paths for the offset spectra</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CString </TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CDarkConfigurationDlg.html#m_offsetPath2">m_offsetPath2</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The paths for the offset spectra</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CDarkConfigurationDlg.html#m_offsetSpecOption">m_offsetSpecOption</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The option for how to use the offset spectrum</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************MACRO SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2"><B>Macro Summary</B></FONT></TD>
+</TR>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CDarkConfigurationDlg.html#DECLARE_DYNAMIC(CDarkConfigurationDlg)">DECLARE_DYNAMIC(CDarkConfigurationDlg)</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CDarkConfigurationDlg.html#DECLARE_MESSAGE_MAP()">DECLARE_MESSAGE_MAP()</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************ENUM SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2"><B>Enum Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CDarkConfigurationDlg.html#enum {  IDD = IDD_CONFIGURE_DARK }">enum </A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************CONSTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Constructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CDarkConfigurationDlg.html#CDarkConfigurationDlg()"><B>CDarkConfigurationDlg</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************DESTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Destructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CDarkConfigurationDlg.html#virtual ~CDarkConfigurationDlg()"><B>virtual ~CDarkConfigurationDlg</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************METHOD SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2">
+<B>Method Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CDarkConfigurationDlg.html#BrowseFile(int editBox)"><B>BrowseFile</B></A>(int editBox)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Browsing for a file, the result will be saved in the edit box 'editbox'</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">virtual void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CDarkConfigurationDlg.html#DoDataExchange(CDataExchange* pDX)"><B>DoDataExchange</B></A>(CDataExchange* pDX)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CDarkConfigurationDlg.html#InitToolTips()"><B>InitToolTips</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Setup the tool tips</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">afx_msg void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CDarkConfigurationDlg.html#OnBrowseDC1()"><B>OnBrowseDC1</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">afx_msg void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CDarkConfigurationDlg.html#OnBrowseDC2()"><B>OnBrowseDC2</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">afx_msg void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CDarkConfigurationDlg.html#OnBrowseOffset1()"><B>OnBrowseOffset1</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">afx_msg void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CDarkConfigurationDlg.html#OnBrowseOffset2()"><B>OnBrowseOffset2</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CDarkConfigurationDlg.html#OnChangeDarkSpecOption()"><B>OnChangeDarkSpecOption</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Caled when the user has changed the way the dark-spectrum
+ should be collected</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CDarkConfigurationDlg.html#OnChangeScanner()"><B>OnChangeScanner</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Called when the user has changed the currently selected scanner</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">virtual BOOL</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CDarkConfigurationDlg.html#OnInitDialog()"><B>OnInitDialog</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Initializing the dialog</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">virtual BOOL</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CDarkConfigurationDlg.html#OnKillActive()"><B>OnKillActive</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Called when this page is no longer the active page</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">virtual BOOL</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CDarkConfigurationDlg.html#PreTranslateMessage(MSG* pMsg)"><B>PreTranslateMessage</B></A>(MSG* pMsg)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Handling the tool tips</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">afx_msg void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CDarkConfigurationDlg.html#SaveData()"><B>SaveData</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Saving the data in the dialog</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">afx_msg void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CDarkConfigurationDlg.html#UpdateControls()"><B>UpdateControls</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Updating the status of the controls</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">afx_msg void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CDarkConfigurationDlg.html#UpdateDlg()"><B>UpdateDlg</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Updating the data in the dialog</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR>
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD><B>Attributes inherited from </B><A HREF="./ConfigurationDialog-CSystemConfigurationPage.html"><B>ConfigurationDialog-CSystemConfigurationPage</B></A></TD>
+</TR>
+<TR>
+<TD><A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#m_configuration">m_configuration</A>,&nbsp;
+<A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#m_curScanner">m_curScanner</A>,&nbsp;
+<A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#m_curSpec">m_curSpec</A>,&nbsp;
+<A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#m_parent">m_parent</A>,&nbsp;
+<A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#m_scannerTree">m_scannerTree</A>,&nbsp;
+<A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#m_toolTip">m_toolTip</A>
+
+</TD>
+</TR>
+</TABLE><BR>
+
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD><B>Methods inherited from </B><A HREF="./ConfigurationDialog-CSystemConfigurationPage.html"><B>ConfigurationDialog-CSystemConfigurationPage</B></A></TD>
+</TR>
+<TR>
+<TD><A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#GetScanAndSpec(int &scanner, int &spec)">GetScanAndSpec</A>,&nbsp;
+<A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#OnChangeScanner()">OnChangeScanner</A>
+
+</TD>
+</TR>
+</TABLE><BR>
+
+
+
+
+<!-- ********************ATTRIBUTE DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Attribute Detail</B></FONT></TD>
+</TR></TABLE>
+
+<A NAME="m_btnMasterDC"><!-- --></A>
+<H3>m_btnMasterDC</H3>
+<P>
+<CODE>private CButton  <B>m_btnMasterDC</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_btnMasterOff"><!-- --></A>
+<H3>m_btnMasterOff</H3>
+<P>
+<CODE>private CButton  <B>m_btnMasterOff</B></CODE>
+<BLOCKQUOTE>
+The buttons
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_btnSlaveDC"><!-- --></A>
+<H3>m_btnSlaveDC</H3>
+<P>
+<CODE>private CButton  <B>m_btnSlaveDC</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_btnSlaveOff"><!-- --></A>
+<H3>m_btnSlaveOff</H3>
+<P>
+<CODE>private CButton  <B>m_btnSlaveOff</B></CODE>
+<BLOCKQUOTE>
+The buttons
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_comboDC"><!-- --></A>
+<H3>m_comboDC</H3>
+<P>
+<CODE>private CComboBox  <B>m_comboDC</B></CODE>
+<BLOCKQUOTE>
+The combo-boxes
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_comboOffset"><!-- --></A>
+<H3>m_comboOffset</H3>
+<P>
+<CODE>private CComboBox  <B>m_comboOffset</B></CODE>
+<BLOCKQUOTE>
+The combo-boxes
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_darkSpecOption"><!-- --></A>
+<H3>m_darkSpecOption</H3>
+<P>
+<CODE>private int <B>m_darkSpecOption</B></CODE>
+<BLOCKQUOTE>
+The option for how to get the dark spectrum
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_dcPath1"><!-- --></A>
+<H3>m_dcPath1</H3>
+<P>
+<CODE>private CString  <B>m_dcPath1</B></CODE>
+<BLOCKQUOTE>
+The paths for the dark-current spectra
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_dcPath2"><!-- --></A>
+<H3>m_dcPath2</H3>
+<P>
+<CODE>private CString  <B>m_dcPath2</B></CODE>
+<BLOCKQUOTE>
+The paths for the dark-current spectra
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_dcSpecOption"><!-- --></A>
+<H3>m_dcSpecOption</H3>
+<P>
+<CODE>private int <B>m_dcSpecOption</B></CODE>
+<BLOCKQUOTE>
+The option for how to use the dark-current spectrum
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_editDC1"><!-- --></A>
+<H3>m_editDC1</H3>
+<P>
+<CODE>private CStatic  <B>m_editDC1</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_editDC2"><!-- --></A>
+<H3>m_editDC2</H3>
+<P>
+<CODE>private CStatic  <B>m_editDC2</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_editOffset1"><!-- --></A>
+<H3>m_editOffset1</H3>
+<P>
+<CODE>private CStatic  <B>m_editOffset1</B></CODE>
+<BLOCKQUOTE>
+The edit-boxes
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_editOffset2"><!-- --></A>
+<H3>m_editOffset2</H3>
+<P>
+<CODE>private CStatic  <B>m_editOffset2</B></CODE>
+<BLOCKQUOTE>
+The edit-boxes
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_initialized"><!-- --></A>
+<H3>m_initialized</H3>
+<P>
+<CODE>private bool <B>m_initialized</B></CODE>
+<BLOCKQUOTE>
+True when all the things in the dialog have been initialized
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_labelDarkOffsetCorr"><!-- --></A>
+<H3>m_labelDarkOffsetCorr</H3>
+<P>
+<CODE>private CStatic <B>m_labelDarkOffsetCorr</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_labelMaster1"><!-- --></A>
+<H3>m_labelMaster1</H3>
+<P>
+<CODE>private CStatic  <B>m_labelMaster1</B></CODE>
+<BLOCKQUOTE>
+The labels
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_labelMaster2"><!-- --></A>
+<H3>m_labelMaster2</H3>
+<P>
+<CODE>private CStatic  <B>m_labelMaster2</B></CODE>
+<BLOCKQUOTE>
+The labels
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_labelSlave1"><!-- --></A>
+<H3>m_labelSlave1</H3>
+<P>
+<CODE>private CStatic  <B>m_labelSlave1</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_labelSlave2"><!-- --></A>
+<H3>m_labelSlave2</H3>
+<P>
+<CODE>private CStatic  <B>m_labelSlave2</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_offsetPath1"><!-- --></A>
+<H3>m_offsetPath1</H3>
+<P>
+<CODE>private CString  <B>m_offsetPath1</B></CODE>
+<BLOCKQUOTE>
+The paths for the offset spectra
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_offsetPath2"><!-- --></A>
+<H3>m_offsetPath2</H3>
+<P>
+<CODE>private CString  <B>m_offsetPath2</B></CODE>
+<BLOCKQUOTE>
+The paths for the offset spectra
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_offsetSpecOption"><!-- --></A>
+<H3>m_offsetSpecOption</H3>
+<P>
+<CODE>private int <B>m_offsetSpecOption</B></CODE>
+<BLOCKQUOTE>
+The option for how to use the offset spectrum
+</BLOCKQUOTE>
+
+
+
+<!-- ********************ENUM DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Enum Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="enum {  IDD = IDD_CONFIGURE_DARK }"><!-- --></A>
+<H3>enum {  IDD = IDD_CONFIGURE_DARK }</H3>
+<P>
+<CODE>public <B>enum {  IDD = IDD_CONFIGURE_DARK }</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************Macro DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Macro Detail</B></FONT></TD>
+</TR></TABLE>
+
+<A NAME="DECLARE_DYNAMIC(CDarkConfigurationDlg)"><!-- --></A>
+<H3>DECLARE_DYNAMIC(CDarkConfigurationDlg)</H3>
+<P>
+<CODE>private <B>DECLARE_DYNAMIC(CDarkConfigurationDlg)</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="DECLARE_MESSAGE_MAP()"><!-- --></A>
+<H3>DECLARE_MESSAGE_MAP()</H3>
+<P>
+<CODE>protected <B>DECLARE_MESSAGE_MAP()</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************CONSTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Constructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="CDarkConfigurationDlg()"><!-- --></A>
+<H3>CDarkConfigurationDlg</H3>
+<P>
+<CODE>public  <B>CDarkConfigurationDlg</B>()</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************DESTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Destructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="virtual ~CDarkConfigurationDlg()"><!-- --></A>
+<H3>virtual ~CDarkConfigurationDlg</H3>
+<P>
+<CODE>public  <B>virtual ~CDarkConfigurationDlg</B>()</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************METHOD DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="BrowseFile(int editBox)"></A>
+<H3>BrowseFile</H3>
+<P>
+<CODE>public void <B>BrowseFile</B>(int editBox)</CODE>
+<BLOCKQUOTE>
+Browsing for a file, the result will be saved in the edit box 'editbox'
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="DoDataExchange(CDataExchange* pDX)"></A>
+<H3>DoDataExchange</H3>
+<P>
+<CODE>protected virtual void <B>DoDataExchange</B>(CDataExchange* pDX)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="InitToolTips()"></A>
+<H3>InitToolTips</H3>
+<P>
+<CODE>public void <B>InitToolTips</B>()</CODE>
+<BLOCKQUOTE>
+Setup the tool tips
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnBrowseDC1()"></A>
+<H3>OnBrowseDC1</H3>
+<P>
+<CODE>public afx_msg void <B>OnBrowseDC1</B>()</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnBrowseDC2()"></A>
+<H3>OnBrowseDC2</H3>
+<P>
+<CODE>public afx_msg void <B>OnBrowseDC2</B>()</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnBrowseOffset1()"></A>
+<H3>OnBrowseOffset1</H3>
+<P>
+<CODE>public afx_msg void <B>OnBrowseOffset1</B>()</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnBrowseOffset2()"></A>
+<H3>OnBrowseOffset2</H3>
+<P>
+<CODE>public afx_msg void <B>OnBrowseOffset2</B>()</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnChangeDarkSpecOption()"></A>
+<H3>OnChangeDarkSpecOption</H3>
+<P>
+<CODE>public void <B>OnChangeDarkSpecOption</B>()</CODE>
+<BLOCKQUOTE>
+Caled when the user has changed the way the dark-spectrum
+ should be collected
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnChangeScanner()"></A>
+<H3>OnChangeScanner</H3>
+<P>
+<CODE>public void <B>OnChangeScanner</B>()</CODE>
+<BLOCKQUOTE>
+Called when the user has changed the currently selected scanner
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnInitDialog()"></A>
+<H3>OnInitDialog</H3>
+<P>
+<CODE>public virtual BOOL <B>OnInitDialog</B>()</CODE>
+<BLOCKQUOTE>
+Initializing the dialog
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnKillActive()"></A>
+<H3>OnKillActive</H3>
+<P>
+<CODE>public virtual BOOL <B>OnKillActive</B>()</CODE>
+<BLOCKQUOTE>
+Called when this page is no longer the active page
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="PreTranslateMessage(MSG* pMsg)"></A>
+<H3>PreTranslateMessage</H3>
+<P>
+<CODE>public virtual BOOL <B>PreTranslateMessage</B>(MSG* pMsg)</CODE>
+<BLOCKQUOTE>
+Handling the tool tips
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="SaveData()"></A>
+<H3>SaveData</H3>
+<P>
+<CODE>public afx_msg void <B>SaveData</B>()</CODE>
+<BLOCKQUOTE>
+Saving the data in the dialog
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="UpdateControls()"></A>
+<H3>UpdateControls</H3>
+<P>
+<CODE>public afx_msg void <B>UpdateControls</B>()</CODE>
+<BLOCKQUOTE>
+Updating the status of the controls
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="UpdateDlg()"></A>
+<H3>UpdateDlg</H3>
+<P>
+<CODE>public afx_msg void <B>UpdateDlg</B>()</CODE>
+<BLOCKQUOTE>
+Updating the data in the dialog
+</BLOCKQUOTE>
+</BODY>
+</HTML>

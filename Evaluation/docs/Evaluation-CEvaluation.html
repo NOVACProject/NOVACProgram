@@ -1,0 +1,837 @@
+<!DOCTYPE HTML PUBLIC"-//W3C//DTD HTML 4.0 Frameset//EN""http://www.w3.org/TR/REC-html40/frameset/dtd">
+<HTML>
+<HEAD>
+<!-- The file this documentation was generated from is:  C:\Novac\NovacMasterProgram\2008_10_27\Evaluation\Evaluation.h -->
+</HEAD>
+<TITLE>
+class CEvaluation
+</TITLE>
+<LINK REL="stylesheet" TYPE="text/css" HREF="./stylesheet.css" TITLE="Style">
+<BODY BGCOLOR="#FFFFFF">
+
+
+
+<!-- ********************CLASS HEADING INFORMATION******************** -->
+
+<H3><p>
+namespace Evaluation
+</H3>
+<H2><P>class CEvaluation</H2></P>
+<P><H4>Inherits:&nbsp;&nbsp;<A HREF="./CBasicMath.html">public CBasicMath</A>&nbsp;&nbsp;</H4></P><P>An object of the <b>CEvaluation</b>-class contains the settings to evaluate
+ spectra from <b>one</b> spectrometer. The class contains the parameters
+ necessary to define the fit and a function to perform the actual evaluation.
+ 
+ </P>
+<P></h2><hr size="2"></P>
+
+
+
+<!-- ********************ATTRIBUTE SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2"><B>Attribute Summary</B></FONT></TD>
+</TR>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CVector</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CEvaluation.html#m_fitResult[MAX_N_REFERENCES + 2]">m_fitResult[MAX_N_REFERENCES + 2]</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The scaled reference spectra.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CEvaluation.html#m_numberOfReferencesToUse">m_numberOfReferencesToUse</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The number of reference spectra that will be used for a call to 'Evaluate(CSpe...)'</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CVector</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CEvaluation.html#m_referenceData[MAX_N_REFERENCES]">m_referenceData[MAX_N_REFERENCES]</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The reference files</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CEvaluation.html#m_referenceNum">m_referenceNum</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The number of reference spectra that has been read in</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CVector</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CEvaluation.html#m_residual">m_residual</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The residual of the latest fit</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CEvaluationResult</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CEvaluation.html#m_result">m_result</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The result</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CVector</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CEvaluation.html#m_solarSpectrumData">m_solarSpectrumData</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The solar spectrum data</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CFitWindow</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CEvaluation.html#m_window">m_window</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The fit window, defines the parameters for the fit</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CReferenceSpectrumFunction*</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CEvaluation.html#ref[MAX_N_REFERENCES]">ref[MAX_N_REFERENCES]</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CReferenceSpectrumFunction*</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CEvaluation.html#solarSpec">solarSpec</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CVector</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CEvaluation.html#vXData">vXData</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">Simple vector for holding the channel number information</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************CONSTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Constructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluation.html#CEvaluation()"><B>CEvaluation</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Default constructor</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluation.html#CEvaluation(const CEvaluation &eval2)"><B>CEvaluation</B></A>(const CEvaluation &eval2)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Copy constructor</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************DESTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Destructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluation.html#virtual ~CEvaluation()"><B>virtual ~CEvaluation</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Default destructor</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************METHOD SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2">
+<B>Method Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluation.html#CreateReferenceSpectrum(const CFitWindow &window, int startChannel)"><B>CreateReferenceSpectrum</B></A>(const CFitWindow &window, int startChannel)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluation.html#Evaluate(const CSpectrum &sky, const CSpectrum &measured, const CFitWindow &window, int numSteps = 400)"><B>Evaluate</B></A>(const CSpectrum &sky, const CSpectrum &measured, const CFitWindow &window, int numSteps = 400)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Evaluate using the parameters set the supplied fit window
+
+</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluation.html#Evaluate(const CSpectrum &sky, const CSpectrum &measured, int numSteps = 1000)"><B>Evaluate</B></A>(const CSpectrum &sky, const CSpectrum &measured, int numSteps = 1000)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Evaluate using the parameters set in the local parameter 'm_window'.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluation.html#EvaluateShift(const CSpectrum &measured, const CFitWindow &window, double &shift, double &shiftError, double &squeeze, double &squeezeError)"><B>EvaluateShift</B></A>(const CSpectrum &measured, const CFitWindow &window, double &shift, double &shiftError, double &squeeze, double &squeezeError)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Evaluate the supplied spectrum using the solarReference found in 'window'
+
+</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">const CEvaluationResult&</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluation.html#GetEvaluationResult() const"><B>GetEvaluationResult</B></A>() const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Returns the evaluation result for the last spectrum
+
+</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">double*</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluation.html#GetPolynomial()"><B>GetPolynomial</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Returns the polynomial that was fitted in the last evaluation</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">BOOL</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluation.html#IncludeAsReference(double *array, int sumChn, int refNum = -1)"><B>IncludeAsReference</B></A>(double *array, int sumChn, int refNum = -1)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Includes an array as a reference file</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluation.html#InitializeVectors(int sumChn)"><B>InitializeVectors</B></A>(int sumChn)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Simple function for initializing the vectors used in the evaluation</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluation.html#NumberOfReferences() const"><B>NumberOfReferences</B></A>() const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Returns the number of references that are read in</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluation.html#PrepareSpectra(double *sky, double *meas, const CFitWindow &window)"><B>PrepareSpectra</B></A>(double *sky, double *meas, const CFitWindow &window)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluation.html#PrepareSpectra_HP_Div(double *sky, double *meas, const CFitWindow &window)"><B>PrepareSpectra_HP_Div</B></A>(double *sky, double *meas, const CFitWindow &window)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluation.html#PrepareSpectra_HP_Sub(double *sky, double *meas, const CFitWindow &window)"><B>PrepareSpectra_HP_Sub</B></A>(double *sky, double *meas, const CFitWindow &window)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluation.html#PrepareSpectra_Poly(double *sky, double *meas, const CFitWindow &window)"><B>PrepareSpectra_Poly</B></A>(double *sky, double *meas, const CFitWindow &window)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">BOOL</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluation.html#ReadRefList(CString* refFileList, CString *solarSpecFile, int iNumFile,int sumChn)"><B>ReadRefList</B></A>(CString* refFileList, CString *solarSpecFile, int iNumFile,int sumChn)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Read the set of reference files.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">BOOL</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluation.html#ReadReferences()"><B>ReadReferences</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Reads the references defined in the parameter 'm_window'.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluation.html#RemoveOffset(double *spectrum, int sumChn, BOOL UV = TRUE)"><B>RemoveOffset</B></A>(double *spectrum, int sumChn, BOOL UV = TRUE)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Removes the offset from the supplied spectrum</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CEvaluation &</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluation.html#operator =(const CEvaluation &e2)"><B>operator =</B></A>(const CEvaluation &e2)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Assignment operator</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR>
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD><B>Enums inherited from </B><A HREF="./CBasicMath.html"><B>CBasicMath</B></A></TD>
+</TR>
+<TR>
+<TD><A HREF="./CBasicMath.html#enum{  NOWEIGHT = 0, SCANWEIGHT, TIMEWEIGHT }">enum</A>
+
+</TD>
+</TR>
+</TABLE><BR>
+
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD><B>Methods inherited from </B><A HREF="./CBasicMath.html"><B>CBasicMath</B></A></TD>
+</TR>
+<TR>
+<TD><A HREF="./CBasicMath.html#Add(double* fFirst, double* fSec, int iSize, double fFactor = 0.0)">Add</A>,&nbsp;
+<A HREF="./CBasicMath.html#Add(double* fFirst, int iSize, double fConst)">Add</A>,&nbsp;
+<A HREF="./CBasicMath.html#BiasAdjust(double* fData, int iSize)">BiasAdjust</A>,&nbsp;
+<A HREF="./CBasicMath.html#CalcExposureTime(double fSaturation, double fEOffsetExpTime, double fCurrentExpTime, double fCurrentAvg, double fBackExpTime, double fBackAvg, double fIntTime)">CalcExposureTime</A>,&nbsp;
+<A HREF="./CBasicMath.html#CalcMeasuredSpec(double* fRes, double* fMea, int iMeaScans, double fMeaExpTime, double* fLamp, int iLampScans, double fLampExpTime, double* fBack, int iBackScans, double fBackExpTime, double fOffset, double fOffsetExpTime, int iSize)">CalcMeasuredSpec</A>,&nbsp;
+<A HREF="./CBasicMath.html#Convolute(double* fFirst, int iSize, double* fCore, int iCoreSize)">Convolute</A>,&nbsp;
+<A HREF="./CBasicMath.html#CrossCorrelate(double *fFirst, int iLengthFirst, double *fSec, int iLengthSec)">CrossCorrelate</A>,&nbsp;
+<A HREF="./CBasicMath.html#DFourier(double data[], unsigned long nn, int isign)">DFourier</A>,&nbsp;
+<A HREF="./CBasicMath.html#Delog(double* fData, int iSize)">Delog</A>,&nbsp;
+<A HREF="./CBasicMath.html#Div(double* fFirst, double* fSec, int iSize, double fFactor = 0.0)">Div</A>,&nbsp;
+<A HREF="./CBasicMath.html#Div(double* fFirst, int iSize, double fConst)">Div</A>,&nbsp;
+<A HREF="./CBasicMath.html#FFT(double* fData, double* fReal, double* fImaginary, int iLength)">FFT</A>,&nbsp;
+<A HREF="./CBasicMath.html#FillGauss(double* fData, int iSize, double fA, double fSigma, double fScale = 0)">FillGauss</A>,&nbsp;
+<A HREF="./CBasicMath.html#FillRandom(double* fData, int iLength, double fVariance)">FillRandom</A>,&nbsp;
+<A HREF="./CBasicMath.html#FitRes2MicroGrammPerCubicMeter(double fFitResult, double fLightPathLength, double fMolecularWeight)">FitRes2MicroGrammPerCubicMeter</A>,&nbsp;
+<A HREF="./CBasicMath.html#FitRes2ppb(double fFitResult, double fLightPathLength, double fTemperature, double fPreasure)">FitRes2ppb</A>,&nbsp;
+<A HREF="./CBasicMath.html#GaussFit(double *fXData, int iNXValues, double *fYData, double& fCenter, double& fSigma, double& fScale)">GaussFit</A>,&nbsp;
+<A HREF="./CBasicMath.html#HighPassBinomial(double* fData, int iSize, int iNIterations)">HighPassBinomial</A>,&nbsp;
+<A HREF="./CBasicMath.html#InverseFFT(double* fReal, double* fImaginary, double* fData, int iLength)">InverseFFT</A>,&nbsp;
+<A HREF="./CBasicMath.html#Invert(double* fData, int iSize)">Invert</A>,&nbsp;
+<A HREF="./CBasicMath.html#Log(double* fData, int iSize)">Log</A>,&nbsp;
+<A HREF="./CBasicMath.html#LowPassBinomial(double* fData, int iSize, int iNIterations)">LowPassBinomial</A>,&nbsp;
+<A HREF="./CBasicMath.html#Mul(double* fFirst, double* fSec, int iSize, double fFactor = 0.0)">Mul</A>,&nbsp;
+<A HREF="./CBasicMath.html#Mul(double* fFirst, int iSize, double fConst)">Mul</A>,&nbsp;
+<A HREF="./CBasicMath.html#NormalizeAmplitude(double* fData, int iSize, double fMaxAmplitude)">NormalizeAmplitude</A>,&nbsp;
+<A HREF="./CBasicMath.html#NormalizeEnergy(double* fData, int iSize, double fEnergy)">NormalizeEnergy</A>,&nbsp;
+<A HREF="./CBasicMath.html#PolynomialFit(double *fXData, int iNXValues, double *fYData, double *fCoeff, int iOrder)">PolynomialFit</A>,&nbsp;
+<A HREF="./CBasicMath.html#Reciprocal(double* fData, int iSize)">Reciprocal</A>,&nbsp;
+<A HREF="./CBasicMath.html#Reverse(double* fData, int iSize)">Reverse</A>,&nbsp;
+<A HREF="./CBasicMath.html#ShiftAndSqueeze(CVector& vXData, CVector& vYData, double fOrigin, double fShift, double fSqueeze)">ShiftAndSqueeze</A>,&nbsp;
+<A HREF="./CBasicMath.html#Sub(double* fFirst, double* fSec, int iSize, double fFactor = 0.0)">Sub</A>,&nbsp;
+<A HREF="./CBasicMath.html#Sub(double* fFirst, int iSize, double fConst)">Sub</A>,&nbsp;
+<A HREF="./CBasicMath.html#Zero(double* fData, int iSize, double fZeroLimit)">Zero</A>
+
+</TD>
+</TR>
+</TABLE><BR>
+
+
+
+
+<!-- ********************ATTRIBUTE DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Attribute Detail</B></FONT></TD>
+</TR></TABLE>
+
+<A NAME="m_fitResult[MAX_N_REFERENCES + 2]"><!-- --></A>
+<H3>m_fitResult[MAX_N_REFERENCES + 2]</H3>
+<P>
+<CODE>public CVector <B>m_fitResult[MAX_N_REFERENCES + 2]</B></CODE>
+<BLOCKQUOTE>
+The scaled reference spectra. The first reference spectrum is the fitted
+ polynomial and the following 'MAX_N_REFERENCES + 1' are the scaled references.
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_numberOfReferencesToUse"><!-- --></A>
+<H3>m_numberOfReferencesToUse</H3>
+<P>
+<CODE>private int <B>m_numberOfReferencesToUse</B></CODE>
+<BLOCKQUOTE>
+The number of reference spectra that will be used for a call to 'Evaluate(CSpe...)'
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_referenceData[MAX_N_REFERENCES]"><!-- --></A>
+<H3>m_referenceData[MAX_N_REFERENCES]</H3>
+<P>
+<CODE>private CVector <B>m_referenceData[MAX_N_REFERENCES]</B></CODE>
+<BLOCKQUOTE>
+The reference files
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_referenceNum"><!-- --></A>
+<H3>m_referenceNum</H3>
+<P>
+<CODE>private int <B>m_referenceNum</B></CODE>
+<BLOCKQUOTE>
+The number of reference spectra that has been read in
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_residual"><!-- --></A>
+<H3>m_residual</H3>
+<P>
+<CODE>public CVector <B>m_residual</B></CODE>
+<BLOCKQUOTE>
+The residual of the latest fit
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_result"><!-- --></A>
+<H3>m_result</H3>
+<P>
+<CODE>private CEvaluationResult <B>m_result</B></CODE>
+<BLOCKQUOTE>
+The result
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_solarSpectrumData"><!-- --></A>
+<H3>m_solarSpectrumData</H3>
+<P>
+<CODE>private CVector <B>m_solarSpectrumData</B></CODE>
+<BLOCKQUOTE>
+The solar spectrum data
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_window"><!-- --></A>
+<H3>m_window</H3>
+<P>
+<CODE>public CFitWindow <B>m_window</B></CODE>
+<BLOCKQUOTE>
+The fit window, defines the parameters for the fit
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="ref[MAX_N_REFERENCES]"><!-- --></A>
+<H3>ref[MAX_N_REFERENCES]</H3>
+<P>
+<CODE>private CReferenceSpectrumFunction* <B>ref[MAX_N_REFERENCES]</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="solarSpec"><!-- --></A>
+<H3>solarSpec</H3>
+<P>
+<CODE>private CReferenceSpectrumFunction* <B>solarSpec</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="vXData"><!-- --></A>
+<H3>vXData</H3>
+<P>
+<CODE>private CVector <B>vXData</B></CODE>
+<BLOCKQUOTE>
+Simple vector for holding the channel number information
+</BLOCKQUOTE>
+
+
+
+<!-- ********************CONSTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Constructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="CEvaluation()"><!-- --></A>
+<H3>CEvaluation</H3>
+<P>
+<CODE>public  <B>CEvaluation</B>()</CODE>
+<BLOCKQUOTE>
+Default constructor
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="CEvaluation(const CEvaluation &eval2)"><!-- --></A>
+<H3>CEvaluation</H3>
+<P>
+<CODE>public  <B>CEvaluation</B>(const CEvaluation &eval2)</CODE>
+<BLOCKQUOTE>
+Copy constructor
+</BLOCKQUOTE>
+
+
+
+<!-- ********************DESTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Destructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="virtual ~CEvaluation()"><!-- --></A>
+<H3>virtual ~CEvaluation</H3>
+<P>
+<CODE>public  <B>virtual ~CEvaluation</B>()</CODE>
+<BLOCKQUOTE>
+Default destructor
+</BLOCKQUOTE>
+
+
+
+<!-- ********************METHOD DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="CreateReferenceSpectrum(const CFitWindow &window, int startChannel)"></A>
+<H3>CreateReferenceSpectrum</H3>
+<P>
+<CODE>private int <B>CreateReferenceSpectrum</B>(const CFitWindow &window, int startChannel)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="Evaluate(const CSpectrum &sky, const CSpectrum &measured, const CFitWindow &window, int numSteps = 400)"></A>
+<H3>Evaluate</H3>
+<P>
+<CODE>public int <B>Evaluate</B>(const CSpectrum &sky, const CSpectrum &measured, const CFitWindow &window, int numSteps = 400)</CODE>
+<BLOCKQUOTE>
+Evaluate using the parameters set the supplied fit window
+
+<P>
+<B>Parameters:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>sky&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - The Fraunhofer reference
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>measured&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - The spectrum to evaluate
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>window&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - A CFitWindow object, defines the parameters for the fit
+</TD>
+</TR>
+</TABLE>
+<P>
+<B>Returns:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">0 if all is ok.
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">1 if any error occured.</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="Evaluate(const CSpectrum &sky, const CSpectrum &measured, int numSteps = 1000)"></A>
+<H3>Evaluate</H3>
+<P>
+<CODE>public int <B>Evaluate</B>(const CSpectrum &sky, const CSpectrum &measured, int numSteps = 1000)</CODE>
+<BLOCKQUOTE>
+Evaluate using the parameters set in the local parameter 'm_window'.
+
+<P>
+<B>Returns:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">0 if all is ok.
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">1 if any error occured, or if the window is not defined.</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="EvaluateShift(const CSpectrum &measured, const CFitWindow &window, double &shift, double &shiftError, double &squeeze, double &squeezeError)"></A>
+<H3>EvaluateShift</H3>
+<P>
+<CODE>public int <B>EvaluateShift</B>(const CSpectrum &measured, const CFitWindow &window, double &shift, double &shiftError, double &squeeze, double &squeezeError)</CODE>
+<BLOCKQUOTE>
+Evaluate the supplied spectrum using the solarReference found in 'window'
+
+<P>
+<B>Parameters:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>measured&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the spectrum for which to determine the shift & squeeze
+ relative to the solarReference-spectrum found in 'window'
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>window&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the settings for the fit. The shift and squeeze between
+ the measured spectrum and the solarReference-spectrum will be determined
+ for the pixel-range 'window.fitLow' and 'window.fitHigh'
+</TD>
+</TR>
+</TABLE>
+<P>
+<B>Returns:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">0 if the fit succeeds and the shift & squeeze could be determined
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">1 if any error occured.</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetEvaluationResult() const"></A>
+<H3>GetEvaluationResult</H3>
+<P>
+<CODE>public const CEvaluationResult& <B>GetEvaluationResult</B>() const</CODE>
+<BLOCKQUOTE>
+Returns the evaluation result for the last spectrum
+
+<P>
+<B>Returns:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">a reference to a 'CEvaluationResult' - data structure which holds the information from the last evaluation</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetPolynomial()"></A>
+<H3>GetPolynomial</H3>
+<P>
+<CODE>public double* <B>GetPolynomial</B>()</CODE>
+<BLOCKQUOTE>
+Returns the polynomial that was fitted in the last evaluation
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="IncludeAsReference(double *array, int sumChn, int refNum = -1)"></A>
+<H3>IncludeAsReference</H3>
+<P>
+<CODE>public BOOL <B>IncludeAsReference</B>(double *array, int sumChn, int refNum = -1)</CODE>
+<BLOCKQUOTE>
+Includes an array as a reference file
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="InitializeVectors(int sumChn)"></A>
+<H3>InitializeVectors</H3>
+<P>
+<CODE>private void <B>InitializeVectors</B>(int sumChn)</CODE>
+<BLOCKQUOTE>
+Simple function for initializing the vectors used in the evaluation
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="NumberOfReferences() const"></A>
+<H3>NumberOfReferences</H3>
+<P>
+<CODE>public int <B>NumberOfReferences</B>() const</CODE>
+<BLOCKQUOTE>
+Returns the number of references that are read in
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="PrepareSpectra(double *sky, double *meas, const CFitWindow &window)"></A>
+<H3>PrepareSpectra</H3>
+<P>
+<CODE>private void <B>PrepareSpectra</B>(double *sky, double *meas, const CFitWindow &window)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="PrepareSpectra_HP_Div(double *sky, double *meas, const CFitWindow &window)"></A>
+<H3>PrepareSpectra_HP_Div</H3>
+<P>
+<CODE>private void <B>PrepareSpectra_HP_Div</B>(double *sky, double *meas, const CFitWindow &window)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="PrepareSpectra_HP_Sub(double *sky, double *meas, const CFitWindow &window)"></A>
+<H3>PrepareSpectra_HP_Sub</H3>
+<P>
+<CODE>private void <B>PrepareSpectra_HP_Sub</B>(double *sky, double *meas, const CFitWindow &window)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="PrepareSpectra_Poly(double *sky, double *meas, const CFitWindow &window)"></A>
+<H3>PrepareSpectra_Poly</H3>
+<P>
+<CODE>private void <B>PrepareSpectra_Poly</B>(double *sky, double *meas, const CFitWindow &window)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="ReadRefList(CString* refFileList, CString *solarSpecFile, int iNumFile,int sumChn)"></A>
+<H3>ReadRefList</H3>
+<P>
+<CODE>public BOOL <B>ReadRefList</B>(CString* refFileList, CString *solarSpecFile, int iNumFile,int sumChn)</CODE>
+<BLOCKQUOTE>
+Read the set of reference files. Make sure that this function is called only once.
+ If it is called a second time, the reference files are not re-read.
+ If the reference file is longer than 'sumChn', only the first 'sumChn' numbers are read.
+
+<P>
+<B>Parameters:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>refFileList&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - an array of CStrings containing the filenames of the reference files to be read
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>iNumFile&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - The number of reference files in the file list. <b>Must not exceed MAX_N_REFERENCES</b>
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>sumChn&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - The number of datapoints in each reference file to read at most. <b>Must not exced MAX_SPECTRUM_LENGTH</b>.
+</TD>
+</TR>
+</TABLE>
+<P>
+<B>Returns:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">FALSE if any error occurs.
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">TRUE if all is ok
+ The spectra to be evaluated must have the same length as the read reference files</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="ReadReferences()"></A>
+<H3>ReadReferences</H3>
+<P>
+<CODE>public BOOL <B>ReadReferences</B>()</CODE>
+<BLOCKQUOTE>
+Reads the references defined in the parameter 'm_window'.
+
+<P>
+<B>Returns:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">FALSE if any error occurs,(eg. no references defined in 'm_window')
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">TRUE if all is ok.</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="RemoveOffset(double *spectrum, int sumChn, BOOL UV = TRUE)"></A>
+<H3>RemoveOffset</H3>
+<P>
+<CODE>public void <B>RemoveOffset</B>(double *spectrum, int sumChn, BOOL UV = TRUE)</CODE>
+<BLOCKQUOTE>
+Removes the offset from the supplied spectrum
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="operator =(const CEvaluation &e2)"></A>
+<H3>operator =</H3>
+<P>
+<CODE>public CEvaluation & <B>operator =</B>(const CEvaluation &e2)</CODE>
+<BLOCKQUOTE>
+Assignment operator
+</BLOCKQUOTE>
+</BODY>
+</HTML>

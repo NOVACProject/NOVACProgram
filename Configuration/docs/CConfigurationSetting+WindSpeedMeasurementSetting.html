@@ -1,0 +1,321 @@
+<!DOCTYPE HTML PUBLIC"-//W3C//DTD HTML 4.0 Frameset//EN""http://www.w3.org/TR/REC-html40/frameset/dtd">
+<HTML>
+<HEAD>
+<!-- The file this documentation was generated from is:  C:\Novac\NovacMasterProgram\2008_12_19\Configuration\A###CConfigurationSetting+WindSpeedMeasurementSetting.h -->
+</HEAD>
+<TITLE>
+class CConfigurationSetting+WindSpeedMeasurementSetting
+</TITLE>
+<LINK REL="stylesheet" TYPE="text/css" HREF="./stylesheet.css" TITLE="Style">
+<BODY BGCOLOR="#FFFFFF">
+
+
+
+<!-- ********************CLASS HEADING INFORMATION******************** -->
+
+<H2><P>class CConfigurationSetting::WindSpeedMeasurementSetting</H2></P>
+<P></h2><hr size="2"></P>
+
+
+
+<!-- ********************ATTRIBUTE SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2"><B>Attribute Summary</B></FONT></TD>
+</TR>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">bool</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+WindSpeedMeasurementSetting.html#automaticWindMeasurements">automaticWindMeasurements</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">True if this system is supposed to make wind speed measurements automatically</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+WindSpeedMeasurementSetting.html#desiredAngle">desiredAngle</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The desired angle [degrees] between the two measurement directions
+ OR the desired distance [meters] between the two measurements at plume-height.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+WindSpeedMeasurementSetting.html#duration">duration</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The preferred duration of each measurement [in seconds]</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+WindSpeedMeasurementSetting.html#interval">interval</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The preferred interval between each measurement [in seconds]</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+WindSpeedMeasurementSetting.html#maxAngle">maxAngle</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">Measurements will only be performed if the centre of the
+ plume is within +-maxAngle from zenith</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+WindSpeedMeasurementSetting.html#minPeakColumn">minPeakColumn</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">Measurements will only be performed if the peak-column(minus the offset)
+ is larger than 'minPeakColumn' ppmm</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+WindSpeedMeasurementSetting.html#stablePeriod">stablePeriod</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">Measurements will only be performed if the centre of the plume
+ is relatively stable over the last 'stablePeriod' number of scans</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+WindSpeedMeasurementSetting.html#useCalculatedPlumeParameters">useCalculatedPlumeParameters</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">This is true if we should trust and use the values for
+ wind-direction and plume-height calculated by the program</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************CONSTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Constructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CConfigurationSetting+WindSpeedMeasurementSetting.html#WindSpeedMeasurementSetting()"><B>WindSpeedMeasurementSetting</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************DESTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Destructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CConfigurationSetting+WindSpeedMeasurementSetting.html#~WindSpeedMeasurementSetting()"><B>~WindSpeedMeasurementSetting</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************METHOD SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2">
+<B>Method Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CConfigurationSetting+WindSpeedMeasurementSetting.html#Clear()"><B>Clear</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Resets all values to default</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">WindSpeedMeasurementSetting&</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CConfigurationSetting+WindSpeedMeasurementSetting.html#operator=(const WindSpeedMeasurementSetting &ws2)"><B>operator=</B></A>(const WindSpeedMeasurementSetting &ws2)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Assignment operator</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR>
+
+
+
+<!-- ********************ATTRIBUTE DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Attribute Detail</B></FONT></TD>
+</TR></TABLE>
+
+<A NAME="automaticWindMeasurements"><!-- --></A>
+<H3>automaticWindMeasurements</H3>
+<P>
+<CODE>public bool <B>automaticWindMeasurements</B></CODE>
+<BLOCKQUOTE>
+True if this system is supposed to make wind speed measurements automatically
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="desiredAngle"><!-- --></A>
+<H3>desiredAngle</H3>
+<P>
+<CODE>public double <B>desiredAngle</B></CODE>
+<BLOCKQUOTE>
+The desired angle [degrees] between the two measurement directions
+ OR the desired distance [meters] between the two measurements at plume-height.
+ The value is an angle if > 0 and a distance if < 0
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="duration"><!-- --></A>
+<H3>duration</H3>
+<P>
+<CODE>public int <B>duration</B></CODE>
+<BLOCKQUOTE>
+The preferred duration of each measurement [in seconds]
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="interval"><!-- --></A>
+<H3>interval</H3>
+<P>
+<CODE>public int <B>interval</B></CODE>
+<BLOCKQUOTE>
+The preferred interval between each measurement [in seconds]
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="maxAngle"><!-- --></A>
+<H3>maxAngle</H3>
+<P>
+<CODE>public double <B>maxAngle</B></CODE>
+<BLOCKQUOTE>
+Measurements will only be performed if the centre of the
+ plume is within +-maxAngle from zenith
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="minPeakColumn"><!-- --></A>
+<H3>minPeakColumn</H3>
+<P>
+<CODE>public double <B>minPeakColumn</B></CODE>
+<BLOCKQUOTE>
+Measurements will only be performed if the peak-column(minus the offset)
+ is larger than 'minPeakColumn' ppmm
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="stablePeriod"><!-- --></A>
+<H3>stablePeriod</H3>
+<P>
+<CODE>public int <B>stablePeriod</B></CODE>
+<BLOCKQUOTE>
+Measurements will only be performed if the centre of the plume
+ is relatively stable over the last 'stablePeriod' number of scans
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="useCalculatedPlumeParameters"><!-- --></A>
+<H3>useCalculatedPlumeParameters</H3>
+<P>
+<CODE>public int <B>useCalculatedPlumeParameters</B></CODE>
+<BLOCKQUOTE>
+This is true if we should trust and use the values for
+ wind-direction and plume-height calculated by the program
+</BLOCKQUOTE>
+
+
+
+<!-- ********************CONSTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Constructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="WindSpeedMeasurementSetting()"><!-- --></A>
+<H3>WindSpeedMeasurementSetting</H3>
+<P>
+<CODE>public  <B>WindSpeedMeasurementSetting</B>()</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************DESTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Destructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="~WindSpeedMeasurementSetting()"><!-- --></A>
+<H3>~WindSpeedMeasurementSetting</H3>
+<P>
+<CODE>public  <B>~WindSpeedMeasurementSetting</B>()</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************METHOD DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="Clear()"></A>
+<H3>Clear</H3>
+<P>
+<CODE>public void <B>Clear</B>()</CODE>
+<BLOCKQUOTE>
+Resets all values to default
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="operator=(const WindSpeedMeasurementSetting &ws2)"></A>
+<H3>operator=</H3>
+<P>
+<CODE>public WindSpeedMeasurementSetting& <B>operator=</B>(const WindSpeedMeasurementSetting &ws2)</CODE>
+<BLOCKQUOTE>
+Assignment operator
+</BLOCKQUOTE>
+</BODY>
+</HTML>

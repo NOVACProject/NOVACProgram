@@ -1,0 +1,488 @@
+<!DOCTYPE HTML PUBLIC"-//W3C//DTD HTML 4.0 Frameset//EN""http://www.w3.org/TR/REC-html40/frameset/dtd">
+<HTML>
+<HEAD>
+<!-- The file this documentation was generated from is:  C:\Novac\NovacMasterProgram\2008_10_27\Evaluation\EvaluationResult.h -->
+</HEAD>
+<TITLE>
+class CEvaluationResult
+</TITLE>
+<LINK REL="stylesheet" TYPE="text/css" HREF="./stylesheet.css" TITLE="Style">
+<BODY BGCOLOR="#FFFFFF">
+
+
+
+<!-- ********************CLASS HEADING INFORMATION******************** -->
+
+<H3><p>
+namespace Evaluation
+</H3>
+<H2><P>class CEvaluationResult</H2></P>
+<P><b>CEvaluationResult</b> is a generic class to describe the results after evaluating
+ a single spectrum. It contains an array of CReferenceFitResult:s - one for each
+ reference spectrum that was included in the fit, and other information about the fit -
+ such as Delta, ChiSquare, the number of iterations required and the fitted polynomial.  
+ </P>
+<P></h2><hr size="2"></P>
+
+
+
+<!-- ********************ATTRIBUTE SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2"><B>Attribute Summary</B></FONT></TD>
+</TR>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CEvaluationResult.html#m_chiSquare">m_chiSquare</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The Chi-square of the fit</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CArray &lt;CColumnCorrection, CColumnCorrection&&gt;</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CEvaluationResult.html#m_correction">m_correction</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The Corrections applied to each of the evaluation results</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CEvaluationResult.html#m_delta">m_delta</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The delta of the fit</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CEvaluationResult.html#m_evaluationStatus">m_evaluationStatus</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The status of the evaluation.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CEvaluationResult.html#m_polynomial[6]">m_polynomial[6]</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The result for the polynomial.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CArray&lt;CReferenceFitResult, CReferenceFitResult&&gt;</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CEvaluationResult.html#m_ref">m_ref</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The evaluated result for the reference files</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">unsigned long</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CEvaluationResult.html#m_speciesNum">m_speciesNum</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The number of species that was used in the evaluation</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">long</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CEvaluationResult.html#m_stepNum">m_stepNum</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The number of steps required to make the fitting</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************CONSTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Constructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluationResult.html#CEvaluationResult(const CEvaluationResult &b)"><B>CEvaluationResult</B></A>(const CEvaluationResult &b)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Copy constructor</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluationResult.html#CEvaluationResult(void)"><B>CEvaluationResult</B></A>(void)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Default constructor</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************DESTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Destructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluationResult.html#~CEvaluationResult(void)"><B>~CEvaluationResult</B></A>(void)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Default destructor</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************METHOD SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2">
+<B>Method Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CEvaluationResult</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluationResult.html#&operator=(const CEvaluationResult &b)"><B>&operator=</B></A>(const CEvaluationResult &b)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">bool</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluationResult.html#CheckGoodnessOfFit(const CSpectrumInfo& info, float chi2Limit = -1, float upperLimit = -1, float lowerLimit = -1)"><B>CheckGoodnessOfFit</B></A>(const CSpectrumInfo& info, float chi2Limit = -1, float upperLimit = -1, float lowerLimit = -1)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Checks the goodness of fit for this spectrum.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">RETURN_CODE</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluationResult.html#InsertSpecie(const CString &name)"><B>InsertSpecie</B></A>(const CString &name)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluationResult.html#IsBad() const"><B>IsBad</B></A>() const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Returns false if this spectrum is judges as being a bad spectrum</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluationResult.html#IsDeleted() const"><B>IsDeleted</B></A>() const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Returns true if this spectrum is judges as being an ok spectrum</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluationResult.html#IsOK() const"><B>IsOK</B></A>() const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Returns true if this spectrum is judges as being an ok spectrum</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">RETURN_CODE</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluationResult.html#MarkAs(int MARK_FLAG)"><B>MarkAs</B></A>(int MARK_FLAG)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Marks the current spectrum with the supplied mark_flag.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">RETURN_CODE</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluationResult.html#RemoveMark(int MARK_FLAG)"><B>RemoveMark</B></A>(int MARK_FLAG)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Removes the current mark from the desired spectrum
+ Mark flag must be MARK_BAD_EVALUATION, or MARK_DELETED
+
+</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR>
+
+
+
+<!-- ********************ATTRIBUTE DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Attribute Detail</B></FONT></TD>
+</TR></TABLE>
+
+<A NAME="m_chiSquare"><!-- --></A>
+<H3>m_chiSquare</H3>
+<P>
+<CODE>public double <B>m_chiSquare</B></CODE>
+<BLOCKQUOTE>
+The Chi-square of the fit
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_correction"><!-- --></A>
+<H3>m_correction</H3>
+<P>
+<CODE>public CArray &lt;CColumnCorrection, CColumnCorrection&&gt; <B>m_correction</B></CODE>
+<BLOCKQUOTE>
+The Corrections applied to each of the evaluation results
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_delta"><!-- --></A>
+<H3>m_delta</H3>
+<P>
+<CODE>public double <B>m_delta</B></CODE>
+<BLOCKQUOTE>
+The delta of the fit
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_evaluationStatus"><!-- --></A>
+<H3>m_evaluationStatus</H3>
+<P>
+<CODE>public int <B>m_evaluationStatus</B></CODE>
+<BLOCKQUOTE>
+The status of the evaluation.
+ if(m_evaluationStatus & BAD_EVALUATION) then the spectrum is marked as a bad evaluation
+ if(m_evaluationStatus & DELETED) then the spectrum is marked as deleted(used in post-flux calculations)
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_polynomial[6]"><!-- --></A>
+<H3>m_polynomial[6]</H3>
+<P>
+<CODE>public double <B>m_polynomial[6]</B></CODE>
+<BLOCKQUOTE>
+The result for the polynomial. The polynomial is stored so that m_polynomial[i] is
+ the i:th order term
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_ref"><!-- --></A>
+<H3>m_ref</H3>
+<P>
+<CODE>public CArray&lt;CReferenceFitResult, CReferenceFitResult&&gt; <B>m_ref</B></CODE>
+<BLOCKQUOTE>
+The evaluated result for the reference files
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_speciesNum"><!-- --></A>
+<H3>m_speciesNum</H3>
+<P>
+<CODE>public unsigned long <B>m_speciesNum</B></CODE>
+<BLOCKQUOTE>
+The number of species that was used in the evaluation
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_stepNum"><!-- --></A>
+<H3>m_stepNum</H3>
+<P>
+<CODE>public long <B>m_stepNum</B></CODE>
+<BLOCKQUOTE>
+The number of steps required to make the fitting
+</BLOCKQUOTE>
+
+
+
+<!-- ********************CONSTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Constructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="CEvaluationResult(const CEvaluationResult &b)"><!-- --></A>
+<H3>CEvaluationResult</H3>
+<P>
+<CODE>public  <B>CEvaluationResult</B>(const CEvaluationResult &b)</CODE>
+<BLOCKQUOTE>
+Copy constructor
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="CEvaluationResult(void)"><!-- --></A>
+<H3>CEvaluationResult</H3>
+<P>
+<CODE>public  <B>CEvaluationResult</B>(void)</CODE>
+<BLOCKQUOTE>
+Default constructor
+</BLOCKQUOTE>
+
+
+
+<!-- ********************DESTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Destructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="~CEvaluationResult(void)"><!-- --></A>
+<H3>~CEvaluationResult</H3>
+<P>
+<CODE>public  <B>~CEvaluationResult</B>(void)</CODE>
+<BLOCKQUOTE>
+Default destructor
+</BLOCKQUOTE>
+
+
+
+<!-- ********************METHOD DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="&operator=(const CEvaluationResult &b)"></A>
+<H3>&operator=</H3>
+<P>
+<CODE>public CEvaluationResult <B>&operator=</B>(const CEvaluationResult &b)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="CheckGoodnessOfFit(const CSpectrumInfo& info, float chi2Limit = -1, float upperLimit = -1, float lowerLimit = -1)"></A>
+<H3>CheckGoodnessOfFit</H3>
+<P>
+<CODE>public bool <B>CheckGoodnessOfFit</B>(const CSpectrumInfo& info, float chi2Limit = -1, float upperLimit = -1, float lowerLimit = -1)</CODE>
+<BLOCKQUOTE>
+Checks the goodness of fit for this spectrum.
+
+<P>
+<B>Parameters:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>info&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the information about this spectrum
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>chi2Limit&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> -(optional) the limit of chi2 to use
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>upperLimit&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> -(optional) the upper limit to use on the saturation level
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>lowerLimit&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> -(optional) the lower limit to use on the saturation level</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="InsertSpecie(const CString &name)"></A>
+<H3>InsertSpecie</H3>
+<P>
+<CODE>public RETURN_CODE <B>InsertSpecie</B>(const CString &name)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="IsBad() const"></A>
+<H3>IsBad</H3>
+<P>
+<CODE>public int <B>IsBad</B>() const</CODE>
+<BLOCKQUOTE>
+Returns false if this spectrum is judges as being a bad spectrum
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="IsDeleted() const"></A>
+<H3>IsDeleted</H3>
+<P>
+<CODE>public int <B>IsDeleted</B>() const</CODE>
+<BLOCKQUOTE>
+Returns true if this spectrum is judges as being an ok spectrum
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="IsOK() const"></A>
+<H3>IsOK</H3>
+<P>
+<CODE>public int <B>IsOK</B>() const</CODE>
+<BLOCKQUOTE>
+Returns true if this spectrum is judges as being an ok spectrum
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="MarkAs(int MARK_FLAG)"></A>
+<H3>MarkAs</H3>
+<P>
+<CODE>public RETURN_CODE <B>MarkAs</B>(int MARK_FLAG)</CODE>
+<BLOCKQUOTE>
+Marks the current spectrum with the supplied mark_flag.
+ Mark flag must be MARK_BAD_EVALUATION, or MARK_DELETED
+
+<P>
+<B>Returns:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">SUCCESS on success.</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="RemoveMark(int MARK_FLAG)"></A>
+<H3>RemoveMark</H3>
+<P>
+<CODE>public RETURN_CODE <B>RemoveMark</B>(int MARK_FLAG)</CODE>
+<BLOCKQUOTE>
+Removes the current mark from the desired spectrum
+ Mark flag must be MARK_BAD_EVALUATION, or MARK_DELETED
+
+<P>
+<B>Returns:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">SUCCESS on success.</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+</BODY>
+</HTML>

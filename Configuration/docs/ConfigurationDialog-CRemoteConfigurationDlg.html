@@ -1,0 +1,961 @@
+<!DOCTYPE HTML PUBLIC"-//W3C//DTD HTML 4.0 Frameset//EN""http://www.w3.org/TR/REC-html40/frameset/dtd">
+<HTML>
+<HEAD>
+<!-- The file this documentation was generated from is:  C:\Novac\NovacMasterProgram\2008_12_19\Configuration\RemoteConfigurationDlg.h -->
+</HEAD>
+<TITLE>
+class CRemoteConfigurationDlg
+</TITLE>
+<LINK REL="stylesheet" TYPE="text/css" HREF="./stylesheet.css" TITLE="Style">
+<BODY BGCOLOR="#FFFFFF">
+
+
+
+<!-- ********************CLASS HEADING INFORMATION******************** -->
+
+<H3><p>
+namespace ConfigurationDialog
+</H3>
+<H2><P>class CRemoteConfigurationDlg</H2></P>
+<P><H4>Inherits:&nbsp;&nbsp;<A HREF="./ConfigurationDialog-CSystemConfigurationPage.html">public CSystemConfigurationPage</A>&nbsp;&nbsp;</H4></P><P></h2><hr size="2"></P>
+
+
+
+<!-- ********************ATTRIBUTE SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2"><B>Attribute Summary</B></FONT></TD>
+</TR>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CSerialControllerWithTx*</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CRemoteConfigurationDlg.html#m_SerialController">m_SerialController</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">object of serial controller</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CSerialControllerWithTx*</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CRemoteConfigurationDlg.html#m_SerialControllerWithTx">m_SerialControllerWithTx</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">object of serial controller</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CString</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CRemoteConfigurationDlg.html#m_cfgFile">m_cfgFile</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The full filename and path of the(local) configuration file</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CString</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CRemoteConfigurationDlg.html#m_cfgLog">m_cfgLog</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">cfg log path*</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CString</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CRemoteConfigurationDlg.html#m_cfgPath">m_cfgPath</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">configuration file path</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CEdit</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CRemoteConfigurationDlg.html#m_channelStart">m_channelStart</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The first channel to transfer</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CEdit</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CRemoteConfigurationDlg.html#m_channelStop">m_channelStop</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The last channel to transfer</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CRemoteConfigurationDlg.html#m_currentScanner">m_currentScanner</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The index of the currently selected scanner</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CButton</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CRemoteConfigurationDlg.html#m_downConfiguration">m_downConfiguration</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The 'download configuration file' button</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CEdit</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CRemoteConfigurationDlg.html#m_exposureTimeMax">m_exposureTimeMax</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The maximum exposure time</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CEdit</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CRemoteConfigurationDlg.html#m_exposureTimePercent">m_exposureTimePercent</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The exposure level of the spectra</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CIPAddressCtrl</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CRemoteConfigurationDlg.html#m_ftpServerIp">m_ftpServerIp</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The ip-address of the ftp-server</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CEdit</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CRemoteConfigurationDlg.html#m_ftpServerPassword">m_ftpServerPassword</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The password of the ftp-server</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CEdit</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CRemoteConfigurationDlg.html#m_ftpServerUserName">m_ftpServerUserName</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The user name of the ftp-server</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CMeasGrid</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CRemoteConfigurationDlg.html#m_measGrid">m_measGrid</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The measurement grid</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CStatic</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CRemoteConfigurationDlg.html#m_measurementFrame">m_measurementFrame</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The frame for the measurement</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CEdit</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CRemoteConfigurationDlg.html#m_motorDelay">m_motorDelay</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The delay between each motor step(in ms)</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CEdit</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CRemoteConfigurationDlg.html#m_motorStepComp">m_motorStepComp</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The position of the motor switch</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CEdit</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CRemoteConfigurationDlg.html#m_motorStepsPerRound">m_motorStepsPerRound</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The number of steps in one round of the motor</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CButton</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CRemoteConfigurationDlg.html#m_realTime">m_realTime</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">Should the spectra be evaluate one at a time or one scan at a time?</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">RemoteConfiguration</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CRemoteConfigurationDlg.html#m_remoteConf">m_remoteConf</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CButton</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CRemoteConfigurationDlg.html#m_uploadConfiguration">m_uploadConfiguration</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The 'upload configuration file' button</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************MACRO SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2"><B>Macro Summary</B></FONT></TD>
+</TR>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CRemoteConfigurationDlg.html#DECLARE_DYNAMIC(CRemoteConfigurationDlg)">DECLARE_DYNAMIC(CRemoteConfigurationDlg)</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CRemoteConfigurationDlg.html#DECLARE_MESSAGE_MAP()">DECLARE_MESSAGE_MAP()</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************TYPEDEF SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2"><B>Typedef Summary</B></FONT></TD>
+</TR>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">struct RemoteConfiguration</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CRemoteConfigurationDlg.html# RemoteConfiguration;"> RemoteConfiguration;</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************ENUM SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2"><B>Enum Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CRemoteConfigurationDlg.html#enum {  IDD = IDD_CONFIGURATION_REMOTE }">enum </A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************NESTED CLASS SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2"><B>Nested Class Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="5%">nested class</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./A###ConfigurationDialog-CRemoteConfigurationDlg+CMeasurement.html">CMeasurement</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">the datastructrue to store measurements</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************CONSTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Constructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CRemoteConfigurationDlg.html#CRemoteConfigurationDlg()"><B>CRemoteConfigurationDlg</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************DESTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Destructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CRemoteConfigurationDlg.html#virtual ~CRemoteConfigurationDlg()"><B>virtual ~CRemoteConfigurationDlg</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************METHOD SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2">
+<B>Method Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">virtual void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CRemoteConfigurationDlg.html#DoDataExchange(CDataExchange* pDX)"><B>DoDataExchange</B></A>(CDataExchange* pDX)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CRemoteConfigurationDlg.html#GetComSetting()"><B>GetComSetting</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">get com port setting</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CRemoteConfigurationDlg.html#InitMeasGrid()"><B>InitMeasGrid</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Initialize the measurement table</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CRemoteConfigurationDlg.html#OnChangeScanner()"><B>OnChangeScanner</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Called when the user has changed the currently selected scanner</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">afx_msg void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CRemoteConfigurationDlg.html#OnDeleteMeasurement()"><B>OnDeleteMeasurement</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Deleting one row into the measurement table</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">afx_msg void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CRemoteConfigurationDlg.html#OnDownloadRemoteCfg()"><B>OnDownloadRemoteCfg</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Downloading the configuration file</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">virtual BOOL</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CRemoteConfigurationDlg.html#OnInitDialog()"><B>OnInitDialog</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Initializing the dialog</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">afx_msg void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CRemoteConfigurationDlg.html#OnInsertMeasurement()"><B>OnInsertMeasurement</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Inserting one row into the measurement table</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">afx_msg void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CRemoteConfigurationDlg.html#OnUploadRemoteCfg()"><B>OnUploadRemoteCfg</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Uploading the configuration file</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CRemoteConfigurationDlg.html#PopulateMeasGrid()"><B>PopulateMeasGrid</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Fill in the items in the measurement table</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">virtual BOOL</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CRemoteConfigurationDlg.html#PreTranslateMessage(MSG* pMsg)"><B>PreTranslateMessage</B></A>(MSG* pMsg)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Handling the tool tips</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CRemoteConfigurationDlg.html#ReadCfg(const CString &fileName)"><B>ReadCfg</B></A>(const CString &fileName)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Reads a cfg.txt - file</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CRemoteConfigurationDlg.html#SaveMeasGrid()"><B>SaveMeasGrid</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Save the items in the measurement table</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CRemoteConfigurationDlg.html#WriteALineInFile(CString filename, CString line)"><B>WriteALineInFile</B></A>(CString filename, CString line)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">write a line in one file</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CRemoteConfigurationDlg.html#WriteCfg(const CString &fileName, bool append = false)"><B>WriteCfg</B></A>(const CString &fileName, bool append = false)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Write cfg.txt file to upload</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR>
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD><B>Attributes inherited from </B><A HREF="./ConfigurationDialog-CSystemConfigurationPage.html"><B>ConfigurationDialog-CSystemConfigurationPage</B></A></TD>
+</TR>
+<TR>
+<TD><A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#m_configuration">m_configuration</A>,&nbsp;
+<A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#m_curScanner">m_curScanner</A>,&nbsp;
+<A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#m_curSpec">m_curSpec</A>,&nbsp;
+<A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#m_parent">m_parent</A>,&nbsp;
+<A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#m_scannerTree">m_scannerTree</A>,&nbsp;
+<A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#m_toolTip">m_toolTip</A>
+
+</TD>
+</TR>
+</TABLE><BR>
+
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD><B>Methods inherited from </B><A HREF="./ConfigurationDialog-CSystemConfigurationPage.html"><B>ConfigurationDialog-CSystemConfigurationPage</B></A></TD>
+</TR>
+<TR>
+<TD><A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#GetScanAndSpec(int &scanner, int &spec)">GetScanAndSpec</A>,&nbsp;
+<A HREF="./ConfigurationDialog-CSystemConfigurationPage.html#OnChangeScanner()">OnChangeScanner</A>
+
+</TD>
+</TR>
+</TABLE><BR>
+
+
+
+
+<!-- ********************ATTRIBUTE DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Attribute Detail</B></FONT></TD>
+</TR></TABLE>
+
+<A NAME="m_SerialController"><!-- --></A>
+<H3>m_SerialController</H3>
+<P>
+<CODE>public CSerialControllerWithTx* <B>m_SerialController</B></CODE>
+<BLOCKQUOTE>
+object of serial controller
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_SerialControllerWithTx"><!-- --></A>
+<H3>m_SerialControllerWithTx</H3>
+<P>
+<CODE>public CSerialControllerWithTx* <B>m_SerialControllerWithTx</B></CODE>
+<BLOCKQUOTE>
+object of serial controller
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_cfgFile"><!-- --></A>
+<H3>m_cfgFile</H3>
+<P>
+<CODE>public CString <B>m_cfgFile</B></CODE>
+<BLOCKQUOTE>
+The full filename and path of the(local) configuration file
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_cfgLog"><!-- --></A>
+<H3>m_cfgLog</H3>
+<P>
+<CODE>public CString <B>m_cfgLog</B></CODE>
+<BLOCKQUOTE>
+cfg log path*
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_cfgPath"><!-- --></A>
+<H3>m_cfgPath</H3>
+<P>
+<CODE>public CString <B>m_cfgPath</B></CODE>
+<BLOCKQUOTE>
+configuration file path
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_channelStart"><!-- --></A>
+<H3>m_channelStart</H3>
+<P>
+<CODE>public CEdit <B>m_channelStart</B></CODE>
+<BLOCKQUOTE>
+The first channel to transfer
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_channelStop"><!-- --></A>
+<H3>m_channelStop</H3>
+<P>
+<CODE>public CEdit <B>m_channelStop</B></CODE>
+<BLOCKQUOTE>
+The last channel to transfer
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_currentScanner"><!-- --></A>
+<H3>m_currentScanner</H3>
+<P>
+<CODE>public int <B>m_currentScanner</B></CODE>
+<BLOCKQUOTE>
+The index of the currently selected scanner
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_downConfiguration"><!-- --></A>
+<H3>m_downConfiguration</H3>
+<P>
+<CODE>public CButton <B>m_downConfiguration</B></CODE>
+<BLOCKQUOTE>
+The 'download configuration file' button
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_exposureTimeMax"><!-- --></A>
+<H3>m_exposureTimeMax</H3>
+<P>
+<CODE>public CEdit <B>m_exposureTimeMax</B></CODE>
+<BLOCKQUOTE>
+The maximum exposure time
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_exposureTimePercent"><!-- --></A>
+<H3>m_exposureTimePercent</H3>
+<P>
+<CODE>public CEdit <B>m_exposureTimePercent</B></CODE>
+<BLOCKQUOTE>
+The exposure level of the spectra
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_ftpServerIp"><!-- --></A>
+<H3>m_ftpServerIp</H3>
+<P>
+<CODE>public CIPAddressCtrl <B>m_ftpServerIp</B></CODE>
+<BLOCKQUOTE>
+The ip-address of the ftp-server
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_ftpServerPassword"><!-- --></A>
+<H3>m_ftpServerPassword</H3>
+<P>
+<CODE>public CEdit <B>m_ftpServerPassword</B></CODE>
+<BLOCKQUOTE>
+The password of the ftp-server
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_ftpServerUserName"><!-- --></A>
+<H3>m_ftpServerUserName</H3>
+<P>
+<CODE>public CEdit <B>m_ftpServerUserName</B></CODE>
+<BLOCKQUOTE>
+The user name of the ftp-server
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_measGrid"><!-- --></A>
+<H3>m_measGrid</H3>
+<P>
+<CODE>public CMeasGrid <B>m_measGrid</B></CODE>
+<BLOCKQUOTE>
+The measurement grid
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_measurementFrame"><!-- --></A>
+<H3>m_measurementFrame</H3>
+<P>
+<CODE>public CStatic <B>m_measurementFrame</B></CODE>
+<BLOCKQUOTE>
+The frame for the measurement
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_motorDelay"><!-- --></A>
+<H3>m_motorDelay</H3>
+<P>
+<CODE>public CEdit <B>m_motorDelay</B></CODE>
+<BLOCKQUOTE>
+The delay between each motor step(in ms)
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_motorStepComp"><!-- --></A>
+<H3>m_motorStepComp</H3>
+<P>
+<CODE>public CEdit <B>m_motorStepComp</B></CODE>
+<BLOCKQUOTE>
+The position of the motor switch
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_motorStepsPerRound"><!-- --></A>
+<H3>m_motorStepsPerRound</H3>
+<P>
+<CODE>public CEdit <B>m_motorStepsPerRound</B></CODE>
+<BLOCKQUOTE>
+The number of steps in one round of the motor
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_realTime"><!-- --></A>
+<H3>m_realTime</H3>
+<P>
+<CODE>public CButton <B>m_realTime</B></CODE>
+<BLOCKQUOTE>
+Should the spectra be evaluate one at a time or one scan at a time?
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_remoteConf"><!-- --></A>
+<H3>m_remoteConf</H3>
+<P>
+<CODE>public RemoteConfiguration <B>m_remoteConf</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_uploadConfiguration"><!-- --></A>
+<H3>m_uploadConfiguration</H3>
+<P>
+<CODE>public CButton <B>m_uploadConfiguration</B></CODE>
+<BLOCKQUOTE>
+The 'upload configuration file' button
+</BLOCKQUOTE>
+
+
+
+<!-- ********************TYPEDEF DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Typedef Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME=" RemoteConfiguration;"><!-- --></A>
+<H3> RemoteConfiguration;</H3>
+<P>
+<CODE>public struct RemoteConfiguration <B> RemoteConfiguration;</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************ENUM DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Enum Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="enum {  IDD = IDD_CONFIGURATION_REMOTE }"><!-- --></A>
+<H3>enum {  IDD = IDD_CONFIGURATION_REMOTE }</H3>
+<P>
+<CODE>public <B>enum {  IDD = IDD_CONFIGURATION_REMOTE }</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************Macro DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Macro Detail</B></FONT></TD>
+</TR></TABLE>
+
+<A NAME="DECLARE_DYNAMIC(CRemoteConfigurationDlg)"><!-- --></A>
+<H3>DECLARE_DYNAMIC(CRemoteConfigurationDlg)</H3>
+<P>
+<CODE>private <B>DECLARE_DYNAMIC(CRemoteConfigurationDlg)</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="DECLARE_MESSAGE_MAP()"><!-- --></A>
+<H3>DECLARE_MESSAGE_MAP()</H3>
+<P>
+<CODE>protected <B>DECLARE_MESSAGE_MAP()</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************CONSTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Constructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="CRemoteConfigurationDlg()"><!-- --></A>
+<H3>CRemoteConfigurationDlg</H3>
+<P>
+<CODE>public  <B>CRemoteConfigurationDlg</B>()</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************DESTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Destructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="virtual ~CRemoteConfigurationDlg()"><!-- --></A>
+<H3>virtual ~CRemoteConfigurationDlg</H3>
+<P>
+<CODE>public  <B>virtual ~CRemoteConfigurationDlg</B>()</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************METHOD DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="DoDataExchange(CDataExchange* pDX)"></A>
+<H3>DoDataExchange</H3>
+<P>
+<CODE>protected virtual void <B>DoDataExchange</B>(CDataExchange* pDX)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetComSetting()"></A>
+<H3>GetComSetting</H3>
+<P>
+<CODE>private int <B>GetComSetting</B>()</CODE>
+<BLOCKQUOTE>
+get com port setting
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="InitMeasGrid()"></A>
+<H3>InitMeasGrid</H3>
+<P>
+<CODE>private void <B>InitMeasGrid</B>()</CODE>
+<BLOCKQUOTE>
+Initialize the measurement table
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnChangeScanner()"></A>
+<H3>OnChangeScanner</H3>
+<P>
+<CODE>public void <B>OnChangeScanner</B>()</CODE>
+<BLOCKQUOTE>
+Called when the user has changed the currently selected scanner
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnDeleteMeasurement()"></A>
+<H3>OnDeleteMeasurement</H3>
+<P>
+<CODE>public afx_msg void <B>OnDeleteMeasurement</B>()</CODE>
+<BLOCKQUOTE>
+Deleting one row into the measurement table
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnDownloadRemoteCfg()"></A>
+<H3>OnDownloadRemoteCfg</H3>
+<P>
+<CODE>public afx_msg void <B>OnDownloadRemoteCfg</B>()</CODE>
+<BLOCKQUOTE>
+Downloading the configuration file
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnInitDialog()"></A>
+<H3>OnInitDialog</H3>
+<P>
+<CODE>public virtual BOOL <B>OnInitDialog</B>()</CODE>
+<BLOCKQUOTE>
+Initializing the dialog
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnInsertMeasurement()"></A>
+<H3>OnInsertMeasurement</H3>
+<P>
+<CODE>public afx_msg void <B>OnInsertMeasurement</B>()</CODE>
+<BLOCKQUOTE>
+Inserting one row into the measurement table
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnUploadRemoteCfg()"></A>
+<H3>OnUploadRemoteCfg</H3>
+<P>
+<CODE>public afx_msg void <B>OnUploadRemoteCfg</B>()</CODE>
+<BLOCKQUOTE>
+Uploading the configuration file
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="PopulateMeasGrid()"></A>
+<H3>PopulateMeasGrid</H3>
+<P>
+<CODE>private void <B>PopulateMeasGrid</B>()</CODE>
+<BLOCKQUOTE>
+Fill in the items in the measurement table
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="PreTranslateMessage(MSG* pMsg)"></A>
+<H3>PreTranslateMessage</H3>
+<P>
+<CODE>public virtual BOOL <B>PreTranslateMessage</B>(MSG* pMsg)</CODE>
+<BLOCKQUOTE>
+Handling the tool tips
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="ReadCfg(const CString &fileName)"></A>
+<H3>ReadCfg</H3>
+<P>
+<CODE>public int <B>ReadCfg</B>(const CString &fileName)</CODE>
+<BLOCKQUOTE>
+Reads a cfg.txt - file
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="SaveMeasGrid()"></A>
+<H3>SaveMeasGrid</H3>
+<P>
+<CODE>private void <B>SaveMeasGrid</B>()</CODE>
+<BLOCKQUOTE>
+Save the items in the measurement table
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="WriteALineInFile(CString filename, CString line)"></A>
+<H3>WriteALineInFile</H3>
+<P>
+<CODE>private void <B>WriteALineInFile</B>(CString filename, CString line)</CODE>
+<BLOCKQUOTE>
+write a line in one file
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="WriteCfg(const CString &fileName, bool append = false)"></A>
+<H3>WriteCfg</H3>
+<P>
+<CODE>public int <B>WriteCfg</B>(const CString &fileName, bool append = false)</CODE>
+<BLOCKQUOTE>
+Write cfg.txt file to upload
+</BLOCKQUOTE>
+</BODY>
+</HTML>

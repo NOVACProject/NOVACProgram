@@ -1,0 +1,240 @@
+<!DOCTYPE HTML PUBLIC"-//W3C//DTD HTML 4.0 Frameset//EN""http://www.w3.org/TR/REC-html40/frameset/dtd">
+<HTML>
+<HEAD>
+<!-- The file this documentation was generated from is:  C:\Novac\NovacMasterProgram\2008_10_27\Evaluation\FitWindowFileHandler.h -->
+</HEAD>
+<TITLE>
+class CFitWindowFileHandler
+</TITLE>
+<LINK REL="stylesheet" TYPE="text/css" HREF="./stylesheet.css" TITLE="Style">
+<BODY BGCOLOR="#FFFFFF">
+
+
+
+<!-- ********************CLASS HEADING INFORMATION******************** -->
+
+<H3><p>
+namespace FileHandler
+</H3>
+<H2><P>class CFitWindowFileHandler</H2></P>
+<P><H4>Inherits:&nbsp;&nbsp;public CXMLFileReader</A>&nbsp;&nbsp;</H4></P>
+<P>A <b>CFitWindowFileHandler</b> object is capable of reading
+ and writing fit windows from a .nfw (NovacFitWindow) file.  
+ </P>
+<P></h2><hr size="2"></P>
+
+
+
+<!-- ********************CONSTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Constructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./FileHandler-CFitWindowFileHandler.html#CFitWindowFileHandler(void)"><B>CFitWindowFileHandler</B></A>(void)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************DESTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Destructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./FileHandler-CFitWindowFileHandler.html#~CFitWindowFileHandler(void)"><B>~CFitWindowFileHandler</B></A>(void)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************METHOD SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2">
+<B>Method Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">RETURN_CODE</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./FileHandler-CFitWindowFileHandler.html#Parse_FitWindow(Evaluation::CFitWindow &window)"><B>Parse_FitWindow</B></A>(Evaluation::CFitWindow &window)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Parses a fit-window section of the .nfs file</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">RETURN_CODE</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./FileHandler-CFitWindowFileHandler.html#Parse_Reference(Evaluation::CFitWindow &window)"><B>Parse_Reference</B></A>(Evaluation::CFitWindow &window)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Parses a reference-file section of the .nfs file</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">RETURN_CODE</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./FileHandler-CFitWindowFileHandler.html#ReadFitWindow(Evaluation::CFitWindow &window, const CString &fileName, int index = 0)"><B>ReadFitWindow</B></A>(Evaluation::CFitWindow &window, const CString &fileName, int index = 0)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Reads the desired fit window from the file.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">RETURN_CODE</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./FileHandler-CFitWindowFileHandler.html#WriteFitWindow(const Evaluation::CFitWindow &window, const CString &fileName, bool overWrite)"><B>WriteFitWindow</B></A>(const Evaluation::CFitWindow &window, const CString &fileName, bool overWrite)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Writes the supplied fit-window to a file.</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR>
+
+
+
+<!-- ********************CONSTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Constructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="CFitWindowFileHandler(void)"><!-- --></A>
+<H3>CFitWindowFileHandler</H3>
+<P>
+<CODE>public  <B>CFitWindowFileHandler</B>(void)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************DESTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Destructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="~CFitWindowFileHandler(void)"><!-- --></A>
+<H3>~CFitWindowFileHandler</H3>
+<P>
+<CODE>public  <B>~CFitWindowFileHandler</B>(void)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************METHOD DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="Parse_FitWindow(Evaluation::CFitWindow &window)"></A>
+<H3>Parse_FitWindow</H3>
+<P>
+<CODE>protected RETURN_CODE <B>Parse_FitWindow</B>(Evaluation::CFitWindow &window)</CODE>
+<BLOCKQUOTE>
+Parses a fit-window section of the .nfs file
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="Parse_Reference(Evaluation::CFitWindow &window)"></A>
+<H3>Parse_Reference</H3>
+<P>
+<CODE>protected RETURN_CODE <B>Parse_Reference</B>(Evaluation::CFitWindow &window)</CODE>
+<BLOCKQUOTE>
+Parses a reference-file section of the .nfs file
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="ReadFitWindow(Evaluation::CFitWindow &window, const CString &fileName, int index = 0)"></A>
+<H3>ReadFitWindow</H3>
+<P>
+<CODE>public RETURN_CODE <B>ReadFitWindow</B>(Evaluation::CFitWindow &window, const CString &fileName, int index = 0)</CODE>
+<BLOCKQUOTE>
+Reads the desired fit window from the file.
+
+<P>
+<B>Parameters:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>window&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - will be filled with the read fit-window settings if successfull
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>fileName&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the name and path of the file to read from
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>index&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the zero-based index of the fit window to read(each .nfw file
+ can contain several fit-windows)
+</TD>
+</TR>
+</TABLE>
+<P>
+<B>Returns:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">SUCCESS on success</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="WriteFitWindow(const Evaluation::CFitWindow &window, const CString &fileName, bool overWrite)"></A>
+<H3>WriteFitWindow</H3>
+<P>
+<CODE>public RETURN_CODE <B>WriteFitWindow</B>(const Evaluation::CFitWindow &window, const CString &fileName, bool overWrite)</CODE>
+<BLOCKQUOTE>
+Writes the supplied fit-window to a file.
+
+<P>
+<B>Parameters:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>window&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the fit window to be written to file
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>fileName&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the name and path of the file to which to write
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>overWrite&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - if true the file will be overwritten, if false, the file will be appended</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+</BODY>
+</HTML>

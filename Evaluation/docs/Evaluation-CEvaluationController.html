@@ -1,0 +1,1140 @@
+<!DOCTYPE HTML PUBLIC"-//W3C//DTD HTML 4.0 Frameset//EN""http://www.w3.org/TR/REC-html40/frameset/dtd">
+<HTML>
+<HEAD>
+<!-- The file this documentation was generated from is:  C:\Novac\NovacMasterProgram\2008_10_27\Evaluation\EvaluationController.h -->
+</HEAD>
+<TITLE>
+class CEvaluationController
+</TITLE>
+<LINK REL="stylesheet" TYPE="text/css" HREF="./stylesheet.css" TITLE="Style">
+<BODY BGCOLOR="#FFFFFF">
+
+
+
+<!-- ********************CLASS HEADING INFORMATION******************** -->
+
+<H3><p>
+namespace Evaluation
+</H3>
+<H2><P>class CEvaluationController</H2></P>
+<P><H4>Inherits:&nbsp;&nbsp;private CWinThread</A>&nbsp;&nbsp;</H4></P>
+<P><b>CEvaluationController</b> is the master controller of the evaluation 
+ of the spectra. The class is run as a separate thread and
+ recives messages on incoming spectra that should be evaluated
+ and dispatches the spectra to the correct evaluator.
+ 
+ </P>
+<P></h2><hr size="2"></P>
+
+
+
+<!-- ********************ATTRIBUTE SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2"><B>Attribute Summary</B></FONT></TD>
+</TR>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CArray&lt;CSpectrometer*, CSpectrometer*</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CEvaluationController.html#&gt;m_spectrometer">&gt;m_spectrometer</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">An array of spectrometers that we know of and that we can evaluate
+ spectra from.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">const static int EVALUATION_LOG =</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CEvaluationController.html#0">0</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">Defining which of the result logs is the evaluation log</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">const static int FLUX_LOG =</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CEvaluationController.html#1">1</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">Defining which of the result logs is the flux log</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">Common</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CEvaluationController.html#m_common">m_common</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">A common-object, for doing common tasks.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">unsigned short</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CEvaluationController.html#m_date[3]">m_date[3]</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The date when the output directories were changed last
+ (initialized when 'InitializeOutput' is called).</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CString</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CEvaluationController.html#m_fluxSpecie">m_fluxSpecie</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The specie for which the flux should be calculated.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CScanResult*</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CEvaluationController.html#m_lastResult">m_lastResult</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">A scan-result, for sharing evaluated data with the rest of the
+ program.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">FileHandler::CLogFileWriter</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CEvaluationController.html#m_logFileWriter">m_logFileWriter</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">A log-file writer to handle the output of the program.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">bool</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CEvaluationController.html#m_realTime">m_realTime</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">Determines if the evaluation should be done in real-time or if we should
+ wait until a full scan has arrived.</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************MACRO SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2"><B>Macro Summary</B></FONT></TD>
+</TR>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CEvaluationController.html#DECLARE_MESSAGE_MAP()">DECLARE_MESSAGE_MAP()</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************CONSTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Constructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluationController.html#CEvaluationController(void)"><B>CEvaluationController</B></A>(void)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Default constructor</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************DESTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Destructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluationController.html#~CEvaluationController(void)"><B>~CEvaluationController</B></A>(void)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Default destructor</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************METHOD SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2">
+<B>Method Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">RETURN_CODE</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluationController.html#CalculateFlux(CScanResult *result, const CSpectrometer *spectrometer, int volcanoIndex, CWindField &windField)"><B>CalculateFlux</B></A>(CScanResult *result, const CSpectrometer *spectrometer, int volcanoIndex, CWindField &windField)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Calculates the flux from the provided scan using the information given in 'scan'
+
+</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%"></TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluationController.html#DECLARE_DYNCREATE(CEvaluationController)"><B>DECLARE_DYNCREATE(CEvaluationController)</B></A></TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">RETURN_CODE</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluationController.html#EvaluateScan(const CString &fileName, int volcanoIndex)"><B>EvaluateScan</B></A>(const CString &fileName, int volcanoIndex)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Evaluates a scan.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">RETURN_CODE</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluationController.html#EvaluateSpectrum(const CString &fileName, int spectrumIndex, CScanResult *result)"><B>EvaluateSpectrum</B></A>(const CString &fileName, int spectrumIndex, CScanResult *result)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Evaluates a single spectrum in a scan-file.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluationController.html#ExecuteScript_FullScan(const CString &param1, const CString &param2)"><B>ExecuteScript_FullScan</B></A>(const CString &param1, const CString &param2)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Executes a shell-command with the defined parameters</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">RETURN_CODE</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluationController.html#GetArchivingfileName(CString &pakFile, CString &txtFile, const CString &temporaryScanFile)"><B>GetArchivingfileName</B></A>(CString &pakFile, CString &txtFile, const CString &temporaryScanFile)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Gets the filename under which the scan-file should be stored.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluationController.html#GetSpectrumInformation(CSpectrometer *spectrometer, const CString &fileName)"><B>GetSpectrumInformation</B></A>(CSpectrometer *spectrometer, const CString &fileName)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Retrieves information from the spectrum-file and saves it</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">RETURN_CODE</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluationController.html#GetWind(CWindField &wind, const CSpectrometer &spectrometer, const CDateTime &dt)"><B>GetWind</B></A>(CWindField &wind, const CSpectrometer &spectrometer, const CDateTime &dt)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Tries to retrieve the local wind field when the scan was collected.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CSpectrometer*</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluationController.html#HandleUnIdentifiedSpectrometer(const CString &serialNumber, const FileHandler::CScanFileHandler *scan)"><B>HandleUnIdentifiedSpectrometer</B></A>(const CString &serialNumber, const FileHandler::CScanFileHandler *scan)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Handles the connection of a un-identified spectrometer to the network.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CSpectrometer*</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluationController.html#IdentifySpectrometer(const FileHandler::CScanFileHandler *scan)"><B>IdentifySpectrometer</B></A>(const FileHandler::CScanFileHandler *scan)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Indentifies the scanning instrument from which this scan was generated.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">virtual BOOL</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluationController.html#InitInstance()"><B>InitInstance</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Called when the thread is starting</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">RETURN_CODE</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluationController.html#InitializeOutput()"><B>InitializeOutput</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Initializes the output logs that are generated.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">RETURN_CODE</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluationController.html#InitializeSpectrometers()"><B>InitializeSpectrometers</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Initialize the spectrometers according to the settings i 'g_settings'.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">RETURN_CODE</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluationController.html#MakeGeometryCalculations(const CString &fileName, int volcanoIndex)"><B>MakeGeometryCalculations</B></A>(const CString &fileName, int volcanoIndex)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Sends a command to the GeometryEvaluator thread to use the supplied
+ evaluation-log file for geometry calculations.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">RETURN_CODE</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluationController.html#MakeGeometryCalculations_Heidelberg(CSpectrometer *spectrometer)"><B>MakeGeometryCalculations_Heidelberg</B></A>(CSpectrometer *spectrometer)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Makes calculations of the geometrical setup using the given
+ Heidelberg(V-II) instrument and the last evaluation result</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">RETURN_CODE</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluationController.html#MakeWindMeasurement(const CString &fileName, int volcanoIndex)"><B>MakeWindMeasurement</B></A>(const CString &fileName, int volcanoIndex)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Sends a command to the WindEvaluator thread to use the supplied
+ evaluation-log file for correlation.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">afx_msg void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluationController.html#OnArrivedSpectra(WPARAM wp, LPARAM lp)"><B>OnArrivedSpectra</B></A>(WPARAM wp, LPARAM lp)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Handling the appearance of a new pak-file one scan which should be evaluated
+
+</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">virtual BOOL</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluationController.html#OnIdle(LONG lCount)"><B>OnIdle</B></A>(LONG lCount)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Called when the message queue is empty</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">afx_msg void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluationController.html#OnQuit(WPARAM wp, LPARAM lp)"><B>OnQuit</B></A>(WPARAM wp, LPARAM lp)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Called when the thread is to be stopped</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">afx_msg void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluationController.html#OnTestEvaluation(WPARAM wp, LPARAM lp)"><B>OnTestEvaluation</B></A>(WPARAM wp, LPARAM lp)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Used to test the evaluation.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluationController.html#Output_ArrivedScan(const CSpectrometer *spec)"><B>Output_ArrivedScan</B></A>(const CSpectrometer *spec)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Shows information that we have recieved a new scan</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluationController.html#Output_EmptyScan(const CSpectrometer *spectrometer)"><B>Output_EmptyScan</B></A>(const CSpectrometer *spectrometer)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Shows information about an arrival of a scan without any spectra in it</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluationController.html#Output_FitFailure(const CSpectrum &spec)"><B>Output_FitFailure</B></A>(const CSpectrum &spec)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Shows information about a fit failure</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluationController.html#Output_FluxFailure(const CScanResult *result, const CSpectrometer *spec)"><B>Output_FluxFailure</B></A>(const CScanResult *result, const CSpectrometer *spec)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Shows the information about a failure in the flux calculation</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluationController.html#Output_SpectrometerNotIdentified()"><B>Output_SpectrometerNotIdentified</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Shows information about errors in identifying the spectrometer</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluationController.html#Output_TimingOfScanEvaluation(int spectrumNum, const CString &serial, double timeElapsed)"><B>Output_TimingOfScanEvaluation</B></A>(int spectrumNum, const CString &serial, double timeElapsed)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Shows the timing information from evaluating a scan</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluationController.html#UpdateOutputDirectories()"><B>UpdateOutputDirectories</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Checks today's date and if necessary updates the output directories</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">RETURN_CODE</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluationController.html#WriteEvaluationResult(const CScanResult *result, const FileHandler::CScanFileHandler *scan, const CSpectrometer &spectrometer, CWindField &windField)"><B>WriteEvaluationResult</B></A>(const CScanResult *result, const FileHandler::CScanFileHandler *scan, const CSpectrometer &spectrometer, CWindField &windField)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Appends the evaluation result to the appropriate log file.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">RETURN_CODE</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CEvaluationController.html#WriteFluxResult(const CScanResult *result, const CSpectrometer &spectrometer, const CWindField &windField, int volcanoIndex)"><B>WriteFluxResult</B></A>(const CScanResult *result, const CSpectrometer &spectrometer, const CWindField &windField, int volcanoIndex)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Appends the evaluated flux to the appropriate log file.</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR>
+
+
+
+<!-- ********************ATTRIBUTE DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Attribute Detail</B></FONT></TD>
+</TR></TABLE>
+
+<A NAME="&gt;m_spectrometer"><!-- --></A>
+<H3>&gt;m_spectrometer</H3>
+<P>
+<CODE>private CArray&lt;CSpectrometer*, CSpectrometer* <B>&gt;m_spectrometer</B></CODE>
+<BLOCKQUOTE>
+An array of spectrometers that we know of and that we can evaluate
+ spectra from. This object contains information on which scanning instrument
+ the spectrometer is connected to and where it is situated and what
+ reference files, and settings, that should be used to evaluate spectra
+ from each spectrometer.
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="0"><!-- --></A>
+<H3>0</H3>
+<P>
+<CODE>private const static int EVALUATION_LOG = <B>0</B></CODE>
+<BLOCKQUOTE>
+Defining which of the result logs is the evaluation log
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="1"><!-- --></A>
+<H3>1</H3>
+<P>
+<CODE>private const static int FLUX_LOG = <B>1</B></CODE>
+<BLOCKQUOTE>
+Defining which of the result logs is the flux log
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_common"><!-- --></A>
+<H3>m_common</H3>
+<P>
+<CODE>private Common <B>m_common</B></CODE>
+<BLOCKQUOTE>
+A common-object, for doing common tasks.
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_date[3]"><!-- --></A>
+<H3>m_date[3]</H3>
+<P>
+<CODE>private unsigned short <B>m_date[3]</B></CODE>
+<BLOCKQUOTE>
+The date when the output directories were changed last
+ (initialized when 'InitializeOutput' is called).
+ This is compared to the current date every time 'EvaluateScan' is
+ called, and if the dates are different, the output directories are initialized again.
+ (m_date[0] is the year, m_date[1] is the month(1-12), and m_date[2] is the day(1-31)
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_fluxSpecie"><!-- --></A>
+<H3>m_fluxSpecie</H3>
+<P>
+<CODE>private CString <B>m_fluxSpecie</B></CODE>
+<BLOCKQUOTE>
+The specie for which the flux should be calculated. E.g. "SO2"
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_lastResult"><!-- --></A>
+<H3>m_lastResult</H3>
+<P>
+<CODE>public CScanResult* <B>m_lastResult</B></CODE>
+<BLOCKQUOTE>
+A scan-result, for sharing evaluated data with the rest of the
+ program. This is updated after every evaluation of a full scan.
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_logFileWriter"><!-- --></A>
+<H3>m_logFileWriter</H3>
+<P>
+<CODE>private FileHandler::CLogFileWriter <B>m_logFileWriter</B></CODE>
+<BLOCKQUOTE>
+A log-file writer to handle the output of the program.
+ This is not used for any output which can be connected to a single
+ spectrometer, that is handled by the logFileHandler in each
+ 'm_spectrometer' item. This is used only for describing the
+ state of the program.
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_realTime"><!-- --></A>
+<H3>m_realTime</H3>
+<P>
+<CODE>private bool <B>m_realTime</B></CODE>
+<BLOCKQUOTE>
+Determines if the evaluation should be done in real-time or if we should
+ wait until a full scan has arrived. if m_realTime is true then the spectra will
+ be evaluated as they arrive, if m_realTime is false then they will not be evaluated
+ until a full scan has arrived. THIS IS NOT FULLY IMPLEMENTED YET.
+</BLOCKQUOTE>
+
+
+
+<!-- ********************Macro DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Macro Detail</B></FONT></TD>
+</TR></TABLE>
+
+<A NAME="DECLARE_MESSAGE_MAP()"><!-- --></A>
+<H3>DECLARE_MESSAGE_MAP()</H3>
+<P>
+<CODE>public <B>DECLARE_MESSAGE_MAP()</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************CONSTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Constructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="CEvaluationController(void)"><!-- --></A>
+<H3>CEvaluationController</H3>
+<P>
+<CODE>public  <B>CEvaluationController</B>(void)</CODE>
+<BLOCKQUOTE>
+Default constructor
+</BLOCKQUOTE>
+
+
+
+<!-- ********************DESTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Destructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="~CEvaluationController(void)"><!-- --></A>
+<H3>~CEvaluationController</H3>
+<P>
+<CODE>public  <B>~CEvaluationController</B>(void)</CODE>
+<BLOCKQUOTE>
+Default destructor
+</BLOCKQUOTE>
+
+
+
+<!-- ********************METHOD DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="CalculateFlux(CScanResult *result, const CSpectrometer *spectrometer, int volcanoIndex, CWindField &windField)"></A>
+<H3>CalculateFlux</H3>
+<P>
+<CODE>private RETURN_CODE <B>CalculateFlux</B>(CScanResult *result, const CSpectrometer *spectrometer, int volcanoIndex, CWindField &windField)</CODE>
+<BLOCKQUOTE>
+Calculates the flux from the provided scan using the information given in 'scan'
+
+<P>
+<B>Parameters:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>scan&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - The scan, including evaluated results of the scan, this will be updated with information on the flux.
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>spectrometer&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - reference to a spectrometer giving information on geometry.
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>volcanoIndex&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the index into the global array 'g_volcanoes' which defines which volcano this flux originates from
+</TD>
+</TR>
+</TABLE>
+<P>
+<B>Returns:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">SUCCESS if operation completed sucessfully.
+ if operation is not successful - evalResult will be undefined.</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="DECLARE_DYNCREATE(CEvaluationController)"></A>
+<H3>DECLARE_DYNCREATE(CEvaluationController)</H3>
+<P>
+<CODE>public  <B>DECLARE_DYNCREATE(CEvaluationController)</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="EvaluateScan(const CString &fileName, int volcanoIndex)"></A>
+<H3>EvaluateScan</H3>
+<P>
+<CODE>public RETURN_CODE <B>EvaluateScan</B>(const CString &fileName, int volcanoIndex)</CODE>
+<BLOCKQUOTE>
+Evaluates a scan. TODO: THIS FUNCTION ASSUMES THAT THE FIRST SPECTRUM
+ IN THE SPECTRUM FILE IS THE SKY-REFERENCE, THE SECOND IS A DARK MEASUREMENT
+ AND THE FOLLOWING SPECTRA ARE THE ACTUAL MEASUREMENT MAKING UP THE SCAN.
+
+<P>
+<B>Parameters:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>fileName&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - The name of the pak-file in which the spectra are stored.
+ All files in this pak-file will be evaluated as if they are one scan.
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>volcanoIndex&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the index into the 'g_volcanoes'-list that identifies
+ the volcano that the supplied scan comes from.
+</TD>
+</TR>
+</TABLE>
+<P>
+<B>Returns:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">SUCCESS if the evaluation is sucessful</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="EvaluateSpectrum(const CString &fileName, int spectrumIndex, CScanResult *result)"></A>
+<H3>EvaluateSpectrum</H3>
+<P>
+<CODE>public RETURN_CODE <B>EvaluateSpectrum</B>(const CString &fileName, int spectrumIndex, CScanResult *result)</CODE>
+<BLOCKQUOTE>
+Evaluates a single spectrum in a scan-file. THIS FUNCTION ASSUMES
+ THAT THE FIRST SPECTRUM IN THE FILE IS THE SKY SPECTRUM, THE SECOND IS THE
+ DARK, AND THE INDEX IS A ZERO-BASED INDEX OF MEASURED SPECTRA(NOT INCLUDING SKY AND DARK)
+
+<P>
+<B>Parameters:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>fileName&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - The name of the pak-file in which the spectra are stored.
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>spectrumIndex&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - The spectrum to evaluate.
+</TD>
+</TR>
+</TABLE>
+<P>
+<B>Returns:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">SUCCESS if the evaluation is sucessful</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="ExecuteScript_FullScan(const CString &param1, const CString &param2)"></A>
+<H3>ExecuteScript_FullScan</H3>
+<P>
+<CODE>private void <B>ExecuteScript_FullScan</B>(const CString &param1, const CString &param2)</CODE>
+<BLOCKQUOTE>
+Executes a shell-command with the defined parameters
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetArchivingfileName(CString &pakFile, CString &txtFile, const CString &temporaryScanFile)"></A>
+<H3>GetArchivingfileName</H3>
+<P>
+<CODE>private RETURN_CODE <B>GetArchivingfileName</B>(CString &pakFile, CString &txtFile, const CString &temporaryScanFile)</CODE>
+<BLOCKQUOTE>
+Gets the filename under which the scan-file should be stored.
+
+<P>
+<B>Returns:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">SUCCESS if a filename is found.</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetSpectrumInformation(CSpectrometer *spectrometer, const CString &fileName)"></A>
+<H3>GetSpectrumInformation</H3>
+<P>
+<CODE>private void <B>GetSpectrumInformation</B>(CSpectrometer *spectrometer, const CString &fileName)</CODE>
+<BLOCKQUOTE>
+Retrieves information from the spectrum-file and saves it
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetWind(CWindField &wind, const CSpectrometer &spectrometer, const CDateTime &dt)"></A>
+<H3>GetWind</H3>
+<P>
+<CODE>private RETURN_CODE <B>GetWind</B>(CWindField &wind, const CSpectrometer &spectrometer, const CDateTime &dt)</CODE>
+<BLOCKQUOTE>
+Tries to retrieve the local wind field when the scan was collected.
+
+<P>
+<B>Parameters:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>wind&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - a wind field structure that will be filled with the wind field data.
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>scan&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the scan for which we want to know the wind field.
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>spectrometer&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the spectrometer which collected the scan.
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>dt&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the time and day for which we want to get the wind-field
+</TD>
+</TR>
+</TABLE>
+<P>
+<B>Returns:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">SUCESS if all is ok.</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">FAIL if any error occurs.</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="HandleUnIdentifiedSpectrometer(const CString &serialNumber, const FileHandler::CScanFileHandler *scan)"></A>
+<H3>HandleUnIdentifiedSpectrometer</H3>
+<P>
+<CODE>private CSpectrometer* <B>HandleUnIdentifiedSpectrometer</B>(const CString &serialNumber, const FileHandler::CScanFileHandler *scan)</CODE>
+<BLOCKQUOTE>
+Handles the connection of a un-identified spectrometer to the network.
+
+<P>
+<B>Parameters:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>serialNumber&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the serial number of the newly connected spectrometer.
+</TD>
+</TR>
+</TABLE>
+<P>
+<B>Returns:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">a pointer to the newly connected spectrometer.
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">NULL upon failure.</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="IdentifySpectrometer(const FileHandler::CScanFileHandler *scan)"></A>
+<H3>IdentifySpectrometer</H3>
+<P>
+<CODE>private CSpectrometer* <B>IdentifySpectrometer</B>(const FileHandler::CScanFileHandler *scan)</CODE>
+<BLOCKQUOTE>
+Indentifies the scanning instrument from which this scan was generated.
+
+<P>
+<B>Parameters:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>scan&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> a reference to a scan that should be identified.
+</TD>
+</TR>
+</TABLE>
+<P>
+<B>Returns:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">a pointer to the spectrometer.</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">NULL if no spectrometer found</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="InitInstance()"></A>
+<H3>InitInstance</H3>
+<P>
+<CODE>public virtual BOOL <B>InitInstance</B>()</CODE>
+<BLOCKQUOTE>
+Called when the thread is starting
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="InitializeOutput()"></A>
+<H3>InitializeOutput</H3>
+<P>
+<CODE>private RETURN_CODE <B>InitializeOutput</B>()</CODE>
+<BLOCKQUOTE>
+Initializes the output logs that are generated. One error-log, one status-log, and one
+ result-log for every spectrometer, and a similar set for the evaluationController as a whole.
+
+<P>
+<B>Returns:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">SUCCESS if everything works.</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="InitializeSpectrometers()"></A>
+<H3>InitializeSpectrometers</H3>
+<P>
+<CODE>private RETURN_CODE <B>InitializeSpectrometers</B>()</CODE>
+<BLOCKQUOTE>
+Initialize the spectrometers according to the settings i 'g_settings'.
+ This is needed when the program starts and every time the configuration file is reloaded.
+
+<P>
+<B>Returns:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">SUCCESS if everything works.</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="MakeGeometryCalculations(const CString &fileName, int volcanoIndex)"></A>
+<H3>MakeGeometryCalculations</H3>
+<P>
+<CODE>private RETURN_CODE <B>MakeGeometryCalculations</B>(const CString &fileName, int volcanoIndex)</CODE>
+<BLOCKQUOTE>
+Sends a command to the GeometryEvaluator thread to use the supplied
+ evaluation-log file for geometry calculations.
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="MakeGeometryCalculations_Heidelberg(CSpectrometer *spectrometer)"></A>
+<H3>MakeGeometryCalculations_Heidelberg</H3>
+<P>
+<CODE>private RETURN_CODE <B>MakeGeometryCalculations_Heidelberg</B>(CSpectrometer *spectrometer)</CODE>
+<BLOCKQUOTE>
+Makes calculations of the geometrical setup using the given
+ Heidelberg(V-II) instrument and the last evaluation result
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="MakeWindMeasurement(const CString &fileName, int volcanoIndex)"></A>
+<H3>MakeWindMeasurement</H3>
+<P>
+<CODE>private RETURN_CODE <B>MakeWindMeasurement</B>(const CString &fileName, int volcanoIndex)</CODE>
+<BLOCKQUOTE>
+Sends a command to the WindEvaluator thread to use the supplied
+ evaluation-log file for correlation.
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnArrivedSpectra(WPARAM wp, LPARAM lp)"></A>
+<H3>OnArrivedSpectra</H3>
+<P>
+<CODE>public afx_msg void <B>OnArrivedSpectra</B>(WPARAM wp, LPARAM lp)</CODE>
+<BLOCKQUOTE>
+Handling the appearance of a new pak-file one scan which should be evaluated
+
+<P>
+<B>Parameters:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>wp&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> is a pointer to a CString object telling the filename of the pak-file.
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>lp&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - unused.</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnIdle(LONG lCount)"></A>
+<H3>OnIdle</H3>
+<P>
+<CODE>public virtual BOOL <B>OnIdle</B>(LONG lCount)</CODE>
+<BLOCKQUOTE>
+Called when the message queue is empty
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnQuit(WPARAM wp, LPARAM lp)"></A>
+<H3>OnQuit</H3>
+<P>
+<CODE>public afx_msg void <B>OnQuit</B>(WPARAM wp, LPARAM lp)</CODE>
+<BLOCKQUOTE>
+Called when the thread is to be stopped
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnTestEvaluation(WPARAM wp, LPARAM lp)"></A>
+<H3>OnTestEvaluation</H3>
+<P>
+<CODE>public afx_msg void <B>OnTestEvaluation</B>(WPARAM wp, LPARAM lp)</CODE>
+<BLOCKQUOTE>
+Used to test the evaluation.
+
+<P>
+<B>Parameters:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>wp&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> is a pointer to a CString object telling the filename of the pak-file.
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>lp&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - unused.</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="Output_ArrivedScan(const CSpectrometer *spec)"></A>
+<H3>Output_ArrivedScan</H3>
+<P>
+<CODE>private void <B>Output_ArrivedScan</B>(const CSpectrometer *spec)</CODE>
+<BLOCKQUOTE>
+Shows information that we have recieved a new scan
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="Output_EmptyScan(const CSpectrometer *spectrometer)"></A>
+<H3>Output_EmptyScan</H3>
+<P>
+<CODE>private void <B>Output_EmptyScan</B>(const CSpectrometer *spectrometer)</CODE>
+<BLOCKQUOTE>
+Shows information about an arrival of a scan without any spectra in it
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="Output_FitFailure(const CSpectrum &spec)"></A>
+<H3>Output_FitFailure</H3>
+<P>
+<CODE>private void <B>Output_FitFailure</B>(const CSpectrum &spec)</CODE>
+<BLOCKQUOTE>
+Shows information about a fit failure
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="Output_FluxFailure(const CScanResult *result, const CSpectrometer *spec)"></A>
+<H3>Output_FluxFailure</H3>
+<P>
+<CODE>private void <B>Output_FluxFailure</B>(const CScanResult *result, const CSpectrometer *spec)</CODE>
+<BLOCKQUOTE>
+Shows the information about a failure in the flux calculation
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="Output_SpectrometerNotIdentified()"></A>
+<H3>Output_SpectrometerNotIdentified</H3>
+<P>
+<CODE>private void <B>Output_SpectrometerNotIdentified</B>()</CODE>
+<BLOCKQUOTE>
+Shows information about errors in identifying the spectrometer
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="Output_TimingOfScanEvaluation(int spectrumNum, const CString &serial, double timeElapsed)"></A>
+<H3>Output_TimingOfScanEvaluation</H3>
+<P>
+<CODE>private void <B>Output_TimingOfScanEvaluation</B>(int spectrumNum, const CString &serial, double timeElapsed)</CODE>
+<BLOCKQUOTE>
+Shows the timing information from evaluating a scan
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="UpdateOutputDirectories()"></A>
+<H3>UpdateOutputDirectories</H3>
+<P>
+<CODE>private void <B>UpdateOutputDirectories</B>()</CODE>
+<BLOCKQUOTE>
+Checks today's date and if necessary updates the output directories
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="WriteEvaluationResult(const CScanResult *result, const FileHandler::CScanFileHandler *scan, const CSpectrometer &spectrometer, CWindField &windField)"></A>
+<H3>WriteEvaluationResult</H3>
+<P>
+<CODE>private RETURN_CODE <B>WriteEvaluationResult</B>(const CScanResult *result, const FileHandler::CScanFileHandler *scan, const CSpectrometer &spectrometer, CWindField &windField)</CODE>
+<BLOCKQUOTE>
+Appends the evaluation result to the appropriate log file.
+
+<P>
+<B>Parameters:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>result&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - a CScanResult holding information about the result
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>scan&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the scan itself, also containing information about the evaluation and the flux.
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>scanningInstrument&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - information about the scanning instrument that generated the scan.
+</TD>
+</TR>
+</TABLE>
+<P>
+<B>Returns:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">SUCCESS if operation completed sucessfully.</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="WriteFluxResult(const CScanResult *result, const CSpectrometer &spectrometer, const CWindField &windField, int volcanoIndex)"></A>
+<H3>WriteFluxResult</H3>
+<P>
+<CODE>private RETURN_CODE <B>WriteFluxResult</B>(const CScanResult *result, const CSpectrometer &spectrometer, const CWindField &windField, int volcanoIndex)</CODE>
+<BLOCKQUOTE>
+Appends the evaluated flux to the appropriate log file.
+
+<P>
+<B>Parameters:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>scan&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the scan itself, also containing information about the evaluation and the flux.
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>spectrometer&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - information about the scanning instrument that generated the scan.
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>volcanoIndex&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - identifies the volcano that this flux comes from
+</TD>
+</TR>
+</TABLE>
+<P>
+<B>Returns:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">SUCCESS if operation completed sucessfully.</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+</BODY>
+</HTML>

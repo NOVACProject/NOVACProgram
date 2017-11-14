@@ -1,0 +1,683 @@
+<!DOCTYPE HTML PUBLIC"-//W3C//DTD HTML 4.0 Frameset//EN""http://www.w3.org/TR/REC-html40/frameset/dtd">
+<HTML>
+<HEAD>
+<!-- The file this documentation was generated from is:  C:\Novac\NovacMasterProgram\2008_12_19\Configuration\ScannerConfiguration.h -->
+</HEAD>
+<TITLE>
+class CScannerConfiguration
+</TITLE>
+<LINK REL="stylesheet" TYPE="text/css" HREF="./stylesheet.css" TITLE="Style">
+<BODY BGCOLOR="#FFFFFF">
+
+
+
+<!-- ********************CLASS HEADING INFORMATION******************** -->
+
+<H3><p>
+namespace ConfigurationDialog
+</H3>
+<H2><P>class CScannerConfiguration</H2></P>
+<P><H4>Inherits:&nbsp;&nbsp;public CPropertyPage</A>&nbsp;&nbsp;</H4></P>
+<P></h2><hr size="2"></P>
+
+
+
+<!-- ********************ATTRIBUTE SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2"><B>Attribute Summary</B></FONT></TD>
+</TR>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CButton</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CScannerConfiguration.html#m_addScannerBtn">m_addScannerBtn</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The add scanner button</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CConfigurationSetting*</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CScannerConfiguration.html#m_configuration">m_configuration</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">the actual configuration</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CStatic</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CScannerConfiguration.html#m_frame">m_frame</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CConfigureCOMPortDlg</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CScannerConfiguration.html#m_pageCommunication">m_pageCommunication</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The communication configuration</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CDarkConfigurationDlg</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CScannerConfiguration.html#m_pageDark">m_pageDark</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The dark configuration</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CEvaluationConfigurationDlg</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CScannerConfiguration.html#m_pageEvaluation[MAX_CHANNEL_NUM]">m_pageEvaluation[MAX_CHANNEL_NUM]</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">the evaluation configuration</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CLocationConfigurationDlg</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CScannerConfiguration.html#m_pageLocation">m_pageLocation</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The location configuration</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CRemoteConfigurationDlg</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CScannerConfiguration.html#m_pageRemote">m_pageRemote</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The remote configuration</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CVIIAdvancedConfigurationDlg</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CScannerConfiguration.html#m_pageVII">m_pageVII</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">the advanced settings for the Version-II instrument</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CWindConfigurationDlg</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CScannerConfiguration.html#m_pageWind">m_pageWind</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">the automatic wind speed measurements page</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CButton</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CScannerConfiguration.html#m_removeScannerBtn">m_removeScannerBtn</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The remove scanner button</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CConfigurationTreeCtrl</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CScannerConfiguration.html#m_scannerTree">m_scannerTree</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The scanner tree-list</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CPropertySheet</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CScannerConfiguration.html#m_sheet">m_sheet</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">bool</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CScannerConfiguration.html#m_showEvalPage[MAX_CHANNEL_NUM]">m_showEvalPage[MAX_CHANNEL_NUM]</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">m_showEvalPage[i] is true if m_pageEvaluation[i] is visible</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">bool</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CScannerConfiguration.html#m_showVIIPage">m_showVIIPage</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">m_showVIIPage is true if the Version-II configuration page is visible</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">bool</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CScannerConfiguration.html#m_showWindPage">m_showWindPage</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">m_showWindPage is true if the wind configration page is visible</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CToolTipCtrl</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CScannerConfiguration.html#m_toolTip">m_toolTip</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The tooltip control</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************MACRO SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2"><B>Macro Summary</B></FONT></TD>
+</TR>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CScannerConfiguration.html#DECLARE_DYNAMIC(CScannerConfiguration)">DECLARE_DYNAMIC(CScannerConfiguration)</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CScannerConfiguration.html#DECLARE_MESSAGE_MAP()">DECLARE_MESSAGE_MAP()</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************ENUM SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2"><B>Enum Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CScannerConfiguration.html#enum {  IDD = IDD_CONFIGURATION_SCANNER }">enum </A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************CONSTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Constructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CScannerConfiguration.html#CScannerConfiguration()"><B>CScannerConfiguration</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************DESTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Destructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CScannerConfiguration.html#virtual ~CScannerConfiguration()"><B>virtual ~CScannerConfiguration</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************METHOD SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2">
+<B>Method Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">virtual void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CScannerConfiguration.html#DoDataExchange(CDataExchange* pDX)"><B>DoDataExchange</B></A>(CDataExchange* pDX)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CScannerConfiguration.html#GetScannerAndSpec(int &curScanner, int &curSpec)"><B>GetScannerAndSpec</B></A>(int &curScanner, int &curSpec)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Returns the index of the currently selected scanner and spectrometer.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">afx_msg void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CScannerConfiguration.html#OnAddScanner()"><B>OnAddScanner</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Called when the user has clicked the button 'Add Scanner'</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CScannerConfiguration.html#OnChangeScanner()"><B>OnChangeScanner</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Used to update the window after the selection of scanner has changed</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">virtual BOOL</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CScannerConfiguration.html#OnInitDialog()"><B>OnInitDialog</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Initializing the dialog</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">afx_msg void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CScannerConfiguration.html#OnRemoveScanner()"><B>OnRemoveScanner</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Called when the user has clicked the button 'Remove Scanner'</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CScannerConfiguration.html#OnScannerSelectionChange(NMHDR* pNMHDR, LRESULT* pResult)"><B>OnScannerSelectionChange</B></A>(NMHDR* pNMHDR, LRESULT* pResult)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Called when the selection of scanner has changed</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">afx_msg void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CScannerConfiguration.html#PopulateScannerList()"><B>PopulateScannerList</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Called to fill in all the items in the scanner list</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">virtual BOOL</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CScannerConfiguration.html#PreTranslateMessage(MSG* pMsg)"><B>PreTranslateMessage</B></A>(MSG* pMsg)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Handling the tool tips</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR>
+
+
+
+<!-- ********************ATTRIBUTE DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Attribute Detail</B></FONT></TD>
+</TR></TABLE>
+
+<A NAME="m_addScannerBtn"><!-- --></A>
+<H3>m_addScannerBtn</H3>
+<P>
+<CODE>private CButton <B>m_addScannerBtn</B></CODE>
+<BLOCKQUOTE>
+The add scanner button
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_configuration"><!-- --></A>
+<H3>m_configuration</H3>
+<P>
+<CODE>public CConfigurationSetting* <B>m_configuration</B></CODE>
+<BLOCKQUOTE>
+the actual configuration
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_frame"><!-- --></A>
+<H3>m_frame</H3>
+<P>
+<CODE>public CStatic <B>m_frame</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_pageCommunication"><!-- --></A>
+<H3>m_pageCommunication</H3>
+<P>
+<CODE>private CConfigureCOMPortDlg <B>m_pageCommunication</B></CODE>
+<BLOCKQUOTE>
+The communication configuration
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_pageDark"><!-- --></A>
+<H3>m_pageDark</H3>
+<P>
+<CODE>private CDarkConfigurationDlg <B>m_pageDark</B></CODE>
+<BLOCKQUOTE>
+The dark configuration
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_pageEvaluation[MAX_CHANNEL_NUM]"><!-- --></A>
+<H3>m_pageEvaluation[MAX_CHANNEL_NUM]</H3>
+<P>
+<CODE>private CEvaluationConfigurationDlg <B>m_pageEvaluation[MAX_CHANNEL_NUM]</B></CODE>
+<BLOCKQUOTE>
+the evaluation configuration
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_pageLocation"><!-- --></A>
+<H3>m_pageLocation</H3>
+<P>
+<CODE>private CLocationConfigurationDlg <B>m_pageLocation</B></CODE>
+<BLOCKQUOTE>
+The location configuration
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_pageRemote"><!-- --></A>
+<H3>m_pageRemote</H3>
+<P>
+<CODE>private CRemoteConfigurationDlg <B>m_pageRemote</B></CODE>
+<BLOCKQUOTE>
+The remote configuration
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_pageVII"><!-- --></A>
+<H3>m_pageVII</H3>
+<P>
+<CODE>private CVIIAdvancedConfigurationDlg <B>m_pageVII</B></CODE>
+<BLOCKQUOTE>
+the advanced settings for the Version-II instrument
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_pageWind"><!-- --></A>
+<H3>m_pageWind</H3>
+<P>
+<CODE>private CWindConfigurationDlg <B>m_pageWind</B></CODE>
+<BLOCKQUOTE>
+the automatic wind speed measurements page
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_removeScannerBtn"><!-- --></A>
+<H3>m_removeScannerBtn</H3>
+<P>
+<CODE>private CButton <B>m_removeScannerBtn</B></CODE>
+<BLOCKQUOTE>
+The remove scanner button
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_scannerTree"><!-- --></A>
+<H3>m_scannerTree</H3>
+<P>
+<CODE>public CConfigurationTreeCtrl <B>m_scannerTree</B></CODE>
+<BLOCKQUOTE>
+The scanner tree-list
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_sheet"><!-- --></A>
+<H3>m_sheet</H3>
+<P>
+<CODE>public CPropertySheet <B>m_sheet</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_showEvalPage[MAX_CHANNEL_NUM]"><!-- --></A>
+<H3>m_showEvalPage[MAX_CHANNEL_NUM]</H3>
+<P>
+<CODE>public bool <B>m_showEvalPage[MAX_CHANNEL_NUM]</B></CODE>
+<BLOCKQUOTE>
+m_showEvalPage[i] is true if m_pageEvaluation[i] is visible
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_showVIIPage"><!-- --></A>
+<H3>m_showVIIPage</H3>
+<P>
+<CODE>public bool <B>m_showVIIPage</B></CODE>
+<BLOCKQUOTE>
+m_showVIIPage is true if the Version-II configuration page is visible
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_showWindPage"><!-- --></A>
+<H3>m_showWindPage</H3>
+<P>
+<CODE>public bool <B>m_showWindPage</B></CODE>
+<BLOCKQUOTE>
+m_showWindPage is true if the wind configration page is visible
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_toolTip"><!-- --></A>
+<H3>m_toolTip</H3>
+<P>
+<CODE>public CToolTipCtrl <B>m_toolTip</B></CODE>
+<BLOCKQUOTE>
+The tooltip control
+</BLOCKQUOTE>
+
+
+
+<!-- ********************ENUM DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Enum Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="enum {  IDD = IDD_CONFIGURATION_SCANNER }"><!-- --></A>
+<H3>enum {  IDD = IDD_CONFIGURATION_SCANNER }</H3>
+<P>
+<CODE>public <B>enum {  IDD = IDD_CONFIGURATION_SCANNER }</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************Macro DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Macro Detail</B></FONT></TD>
+</TR></TABLE>
+
+<A NAME="DECLARE_DYNAMIC(CScannerConfiguration)"><!-- --></A>
+<H3>DECLARE_DYNAMIC(CScannerConfiguration)</H3>
+<P>
+<CODE>private <B>DECLARE_DYNAMIC(CScannerConfiguration)</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="DECLARE_MESSAGE_MAP()"><!-- --></A>
+<H3>DECLARE_MESSAGE_MAP()</H3>
+<P>
+<CODE>protected <B>DECLARE_MESSAGE_MAP()</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************CONSTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Constructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="CScannerConfiguration()"><!-- --></A>
+<H3>CScannerConfiguration</H3>
+<P>
+<CODE>public  <B>CScannerConfiguration</B>()</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************DESTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Destructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="virtual ~CScannerConfiguration()"><!-- --></A>
+<H3>virtual ~CScannerConfiguration</H3>
+<P>
+<CODE>public  <B>virtual ~CScannerConfiguration</B>()</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************METHOD DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="DoDataExchange(CDataExchange* pDX)"></A>
+<H3>DoDataExchange</H3>
+<P>
+<CODE>protected virtual void <B>DoDataExchange</B>(CDataExchange* pDX)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetScannerAndSpec(int &curScanner, int &curSpec)"></A>
+<H3>GetScannerAndSpec</H3>
+<P>
+<CODE>public void <B>GetScannerAndSpec</B>(int &curScanner, int &curSpec)</CODE>
+<BLOCKQUOTE>
+Returns the index of the currently selected scanner and spectrometer.
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnAddScanner()"></A>
+<H3>OnAddScanner</H3>
+<P>
+<CODE>private afx_msg void <B>OnAddScanner</B>()</CODE>
+<BLOCKQUOTE>
+Called when the user has clicked the button 'Add Scanner'
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnChangeScanner()"></A>
+<H3>OnChangeScanner</H3>
+<P>
+<CODE>public void <B>OnChangeScanner</B>()</CODE>
+<BLOCKQUOTE>
+Used to update the window after the selection of scanner has changed
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnInitDialog()"></A>
+<H3>OnInitDialog</H3>
+<P>
+<CODE>public virtual BOOL <B>OnInitDialog</B>()</CODE>
+<BLOCKQUOTE>
+Initializing the dialog
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnRemoveScanner()"></A>
+<H3>OnRemoveScanner</H3>
+<P>
+<CODE>private afx_msg void <B>OnRemoveScanner</B>()</CODE>
+<BLOCKQUOTE>
+Called when the user has clicked the button 'Remove Scanner'
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnScannerSelectionChange(NMHDR* pNMHDR, LRESULT* pResult)"></A>
+<H3>OnScannerSelectionChange</H3>
+<P>
+<CODE>private void <B>OnScannerSelectionChange</B>(NMHDR* pNMHDR, LRESULT* pResult)</CODE>
+<BLOCKQUOTE>
+Called when the selection of scanner has changed
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="PopulateScannerList()"></A>
+<H3>PopulateScannerList</H3>
+<P>
+<CODE>public afx_msg void <B>PopulateScannerList</B>()</CODE>
+<BLOCKQUOTE>
+Called to fill in all the items in the scanner list
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="PreTranslateMessage(MSG* pMsg)"></A>
+<H3>PreTranslateMessage</H3>
+<P>
+<CODE>public virtual BOOL <B>PreTranslateMessage</B>(MSG* pMsg)</CODE>
+<BLOCKQUOTE>
+Handling the tool tips
+</BLOCKQUOTE>
+</BODY>
+</HTML>

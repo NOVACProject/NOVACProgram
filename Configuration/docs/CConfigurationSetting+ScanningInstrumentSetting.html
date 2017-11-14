@@ -1,0 +1,430 @@
+<!DOCTYPE HTML PUBLIC"-//W3C//DTD HTML 4.0 Frameset//EN""http://www.w3.org/TR/REC-html40/frameset/dtd">
+<HTML>
+<HEAD>
+<!-- The file this documentation was generated from is:  C:\Novac\NovacMasterProgram\2008_12_19\Configuration\A###CConfigurationSetting+ScanningInstrumentSetting.h -->
+</HEAD>
+<TITLE>
+class CConfigurationSetting+ScanningInstrumentSetting
+</TITLE>
+<LINK REL="stylesheet" TYPE="text/css" HREF="./stylesheet.css" TITLE="Style">
+<BODY BGCOLOR="#FFFFFF">
+
+
+
+<!-- ********************CLASS HEADING INFORMATION******************** -->
+
+<H2><P>class CConfigurationSetting::ScanningInstrumentSetting</H2></P>
+<P></h2><hr size="2"></P>
+
+
+
+<!-- ********************ATTRIBUTE SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2"><B>Attribute Summary</B></FONT></TD>
+</TR>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CommunicationSetting</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+ScanningInstrumentSetting.html#comm">comm</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The communication settings for the scanning instrument</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+ScanningInstrumentSetting.html#compass">compass</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The direction in which the instrument points(in degrees from north)</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+ScanningInstrumentSetting.html#coneAngle">coneAngle</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The opening angle of the cone that the scanner measures in(in degrees).</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">ELECTRONICS_BOX</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+ScanningInstrumentSetting.html#electronicsBox">electronicsBox</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The type of the electronics box</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CGPSData</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+ScanningInstrumentSetting.html#gps">gps</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The gps-coordinates for the scanning instrument</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">INSTRUMENT_TYPE</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+ScanningInstrumentSetting.html#instrumentType">instrumentType</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The type of this instrument</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">MotorSetting</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+ScanningInstrumentSetting.html#motor[2]">motor[2]</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The settings for the motor(s)</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CString</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+ScanningInstrumentSetting.html#observatory">observatory</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The observatory which owns the scanning instrument</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">SetupChangeSetting</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+ScanningInstrumentSetting.html#scSettings">scSettings</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The settings for automatically changing the parameters of the scan</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CString</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+ScanningInstrumentSetting.html#site">site</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The site at which the scanning instrument is situated</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">unsigned long</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+ScanningInstrumentSetting.html#specNum">specNum</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The number of spectrometers configured</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">SpectrometerSetting</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+ScanningInstrumentSetting.html#spec[MAX_SPECTROMETERS_PER_SCANNER]">spec[MAX_SPECTROMETERS_PER_SCANNER]</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The spectrometer inside the scanning instrument</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+ScanningInstrumentSetting.html#tilt">tilt</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The tilt of the system, in the direction of the scanner.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CString</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+ScanningInstrumentSetting.html#volcano">volcano</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The volcano on which the instrument is measuring</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">WindSpeedMeasurementSetting</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./CConfigurationSetting+ScanningInstrumentSetting.html#windSettings">windSettings</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The settings for automatic wind speed measurements</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************CONSTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Constructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CConfigurationSetting+ScanningInstrumentSetting.html#ScanningInstrumentSetting()"><B>ScanningInstrumentSetting</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************DESTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Destructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CConfigurationSetting+ScanningInstrumentSetting.html#~ScanningInstrumentSetting()"><B>~ScanningInstrumentSetting</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************METHOD SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2">
+<B>Method Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CConfigurationSetting+ScanningInstrumentSetting.html#Clear()"><B>Clear</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Resets all values to default</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">ScanningInstrumentSetting&</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./CConfigurationSetting+ScanningInstrumentSetting.html#operator=(const ScanningInstrumentSetting &scanner2)"><B>operator=</B></A>(const ScanningInstrumentSetting &scanner2)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Assignment operator</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR>
+
+
+
+<!-- ********************ATTRIBUTE DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Attribute Detail</B></FONT></TD>
+</TR></TABLE>
+
+<A NAME="comm"><!-- --></A>
+<H3>comm</H3>
+<P>
+<CODE>public CommunicationSetting <B>comm</B></CODE>
+<BLOCKQUOTE>
+The communication settings for the scanning instrument
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="compass"><!-- --></A>
+<H3>compass</H3>
+<P>
+<CODE>public double <B>compass</B></CODE>
+<BLOCKQUOTE>
+The direction in which the instrument points(in degrees from north)
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="coneAngle"><!-- --></A>
+<H3>coneAngle</H3>
+<P>
+<CODE>public double <B>coneAngle</B></CODE>
+<BLOCKQUOTE>
+The opening angle of the cone that the scanner measures in(in degrees).
+ This is 90 degrees for the old scanner, and typically 30 or 45 degrees for the new.
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="electronicsBox"><!-- --></A>
+<H3>electronicsBox</H3>
+<P>
+<CODE>public ELECTRONICS_BOX <B>electronicsBox</B></CODE>
+<BLOCKQUOTE>
+The type of the electronics box
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="gps"><!-- --></A>
+<H3>gps</H3>
+<P>
+<CODE>public CGPSData <B>gps</B></CODE>
+<BLOCKQUOTE>
+The gps-coordinates for the scanning instrument
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="instrumentType"><!-- --></A>
+<H3>instrumentType</H3>
+<P>
+<CODE>public INSTRUMENT_TYPE <B>instrumentType</B></CODE>
+<BLOCKQUOTE>
+The type of this instrument
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="motor[2]"><!-- --></A>
+<H3>motor[2]</H3>
+<P>
+<CODE>public MotorSetting <B>motor[2]</B></CODE>
+<BLOCKQUOTE>
+The settings for the motor(s)
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="observatory"><!-- --></A>
+<H3>observatory</H3>
+<P>
+<CODE>public CString <B>observatory</B></CODE>
+<BLOCKQUOTE>
+The observatory which owns the scanning instrument
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="scSettings"><!-- --></A>
+<H3>scSettings</H3>
+<P>
+<CODE>public SetupChangeSetting <B>scSettings</B></CODE>
+<BLOCKQUOTE>
+The settings for automatically changing the parameters of the scan
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="site"><!-- --></A>
+<H3>site</H3>
+<P>
+<CODE>public CString <B>site</B></CODE>
+<BLOCKQUOTE>
+The site at which the scanning instrument is situated
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="specNum"><!-- --></A>
+<H3>specNum</H3>
+<P>
+<CODE>public unsigned long <B>specNum</B></CODE>
+<BLOCKQUOTE>
+The number of spectrometers configured
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="spec[MAX_SPECTROMETERS_PER_SCANNER]"><!-- --></A>
+<H3>spec[MAX_SPECTROMETERS_PER_SCANNER]</H3>
+<P>
+<CODE>public SpectrometerSetting <B>spec[MAX_SPECTROMETERS_PER_SCANNER]</B></CODE>
+<BLOCKQUOTE>
+The spectrometer inside the scanning instrument
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="tilt"><!-- --></A>
+<H3>tilt</H3>
+<P>
+<CODE>public double <B>tilt</B></CODE>
+<BLOCKQUOTE>
+The tilt of the system, in the direction of the scanner.
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="volcano"><!-- --></A>
+<H3>volcano</H3>
+<P>
+<CODE>public CString <B>volcano</B></CODE>
+<BLOCKQUOTE>
+The volcano on which the instrument is measuring
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="windSettings"><!-- --></A>
+<H3>windSettings</H3>
+<P>
+<CODE>public WindSpeedMeasurementSetting <B>windSettings</B></CODE>
+<BLOCKQUOTE>
+The settings for automatic wind speed measurements
+</BLOCKQUOTE>
+
+
+
+<!-- ********************CONSTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Constructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="ScanningInstrumentSetting()"><!-- --></A>
+<H3>ScanningInstrumentSetting</H3>
+<P>
+<CODE>public  <B>ScanningInstrumentSetting</B>()</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************DESTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Destructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="~ScanningInstrumentSetting()"><!-- --></A>
+<H3>~ScanningInstrumentSetting</H3>
+<P>
+<CODE>public  <B>~ScanningInstrumentSetting</B>()</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************METHOD DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="Clear()"></A>
+<H3>Clear</H3>
+<P>
+<CODE>public void <B>Clear</B>()</CODE>
+<BLOCKQUOTE>
+Resets all values to default
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="operator=(const ScanningInstrumentSetting &scanner2)"></A>
+<H3>operator=</H3>
+<P>
+<CODE>public ScanningInstrumentSetting& <B>operator=</B>(const ScanningInstrumentSetting &scanner2)</CODE>
+<BLOCKQUOTE>
+Assignment operator
+</BLOCKQUOTE>
+</BODY>
+</HTML>

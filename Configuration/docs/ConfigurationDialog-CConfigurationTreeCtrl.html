@@ -1,0 +1,303 @@
+<!DOCTYPE HTML PUBLIC"-//W3C//DTD HTML 4.0 Frameset//EN""http://www.w3.org/TR/REC-html40/frameset/dtd">
+<HTML>
+<HEAD>
+<!-- The file this documentation was generated from is:  C:\Novac\NovacMasterProgram\2008_12_19\Configuration\ConfigurationTreeCtrl.h -->
+</HEAD>
+<TITLE>
+class CConfigurationTreeCtrl
+</TITLE>
+<LINK REL="stylesheet" TYPE="text/css" HREF="./stylesheet.css" TITLE="Style">
+<BODY BGCOLOR="#FFFFFF">
+
+
+
+<!-- ********************CLASS HEADING INFORMATION******************** -->
+
+<H3><p>
+namespace ConfigurationDialog
+</H3>
+<H2><P>class CConfigurationTreeCtrl</H2></P>
+<P><H4>Inherits:&nbsp;&nbsp;public CTreeCtrl</A>&nbsp;&nbsp;</H4></P>
+<P></h2><hr size="2"></P>
+
+
+
+<!-- ********************ATTRIBUTE SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2"><B>Attribute Summary</B></FONT></TD>
+</TR>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">const CConfigurationSetting*</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigurationTreeCtrl.html#m_configuration">m_configuration</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The local copy of the configuration list</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************MACRO SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2"><B>Macro Summary</B></FONT></TD>
+</TR>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigurationTreeCtrl.html#DECLARE_DYNAMIC(CConfigurationTreeCtrl)">DECLARE_DYNAMIC(CConfigurationTreeCtrl)</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CConfigurationTreeCtrl.html#DECLARE_MESSAGE_MAP()">DECLARE_MESSAGE_MAP()</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************CONSTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Constructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CConfigurationTreeCtrl.html#CConfigurationTreeCtrl()"><B>CConfigurationTreeCtrl</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************DESTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Destructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CConfigurationTreeCtrl.html#virtual ~CConfigurationTreeCtrl()"><B>virtual ~CConfigurationTreeCtrl</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************METHOD SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2">
+<B>Method Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CConfigurationTreeCtrl.html#GetCurScanAndSpec(int &curScan, int &curSpec)"><B>GetCurScanAndSpec</B></A>(int &curScan, int &curSpec)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Retrieves the currently selected scanner and spectrometer</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CConfigurationTreeCtrl.html#GetScan(int &curScan, const CString &volcanoName)"><B>GetScan</B></A>(int &curScan, const CString &volcanoName)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CConfigurationTreeCtrl.html#GetSpec(int &curScan, int &curSpec, const CString &serial)"><B>GetSpec</B></A>(int &curScan, int &curSpec, const CString &serial)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CConfigurationTreeCtrl.html#PopulateTreeControl()"><B>PopulateTreeControl</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Fills in the configuration tree control</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CConfigurationTreeCtrl.html#UpdateTree()"><B>UpdateTree</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Updates the tree control</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR>
+
+
+
+<!-- ********************ATTRIBUTE DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Attribute Detail</B></FONT></TD>
+</TR></TABLE>
+
+<A NAME="m_configuration"><!-- --></A>
+<H3>m_configuration</H3>
+<P>
+<CODE>public const CConfigurationSetting* <B>m_configuration</B></CODE>
+<BLOCKQUOTE>
+The local copy of the configuration list
+</BLOCKQUOTE>
+
+
+
+<!-- ********************Macro DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Macro Detail</B></FONT></TD>
+</TR></TABLE>
+
+<A NAME="DECLARE_DYNAMIC(CConfigurationTreeCtrl)"><!-- --></A>
+<H3>DECLARE_DYNAMIC(CConfigurationTreeCtrl)</H3>
+<P>
+<CODE>private <B>DECLARE_DYNAMIC(CConfigurationTreeCtrl)</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="DECLARE_MESSAGE_MAP()"><!-- --></A>
+<H3>DECLARE_MESSAGE_MAP()</H3>
+<P>
+<CODE>protected <B>DECLARE_MESSAGE_MAP()</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************CONSTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Constructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="CConfigurationTreeCtrl()"><!-- --></A>
+<H3>CConfigurationTreeCtrl</H3>
+<P>
+<CODE>public  <B>CConfigurationTreeCtrl</B>()</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************DESTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Destructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="virtual ~CConfigurationTreeCtrl()"><!-- --></A>
+<H3>virtual ~CConfigurationTreeCtrl</H3>
+<P>
+<CODE>public  <B>virtual ~CConfigurationTreeCtrl</B>()</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************METHOD DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="GetCurScanAndSpec(int &curScan, int &curSpec)"></A>
+<H3>GetCurScanAndSpec</H3>
+<P>
+<CODE>public void <B>GetCurScanAndSpec</B>(int &curScan, int &curSpec)</CODE>
+<BLOCKQUOTE>
+Retrieves the currently selected scanner and spectrometer
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetScan(int &curScan, const CString &volcanoName)"></A>
+<H3>GetScan</H3>
+<P>
+<CODE>protected void <B>GetScan</B>(int &curScan, const CString &volcanoName)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetSpec(int &curScan, int &curSpec, const CString &serial)"></A>
+<H3>GetSpec</H3>
+<P>
+<CODE>protected void <B>GetSpec</B>(int &curScan, int &curSpec, const CString &serial)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="PopulateTreeControl()"></A>
+<H3>PopulateTreeControl</H3>
+<P>
+<CODE>public void <B>PopulateTreeControl</B>()</CODE>
+<BLOCKQUOTE>
+Fills in the configuration tree control
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="UpdateTree()"></A>
+<H3>UpdateTree</H3>
+<P>
+<CODE>public void <B>UpdateTree</B>()</CODE>
+<BLOCKQUOTE>
+Updates the tree control
+</BLOCKQUOTE>
+</BODY>
+</HTML>

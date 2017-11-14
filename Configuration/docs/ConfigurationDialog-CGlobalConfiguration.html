@@ -1,0 +1,683 @@
+<!DOCTYPE HTML PUBLIC"-//W3C//DTD HTML 4.0 Frameset//EN""http://www.w3.org/TR/REC-html40/frameset/dtd">
+<HTML>
+<HEAD>
+<!-- The file this documentation was generated from is:  C:\Novac\NovacMasterProgram\2008_12_19\Configuration\GlobalConfiguration.h -->
+</HEAD>
+<TITLE>
+class CGlobalConfiguration
+</TITLE>
+<LINK REL="stylesheet" TYPE="text/css" HREF="./stylesheet.css" TITLE="Style">
+<BODY BGCOLOR="#FFFFFF">
+
+
+
+<!-- ********************CLASS HEADING INFORMATION******************** -->
+
+<H3><p>
+namespace ConfigurationDialog
+</H3>
+<H2><P>class CGlobalConfiguration</H2></P>
+<P><H4>Inherits:&nbsp;&nbsp;public CPropertyPage</A>&nbsp;&nbsp;</H4></P>
+<P></h2><hr size="2"></P>
+
+
+
+<!-- ********************ATTRIBUTE SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2"><B>Attribute Summary</B></FONT></TD>
+</TR>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CConfigurationSetting*</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CGlobalConfiguration.html#m_configuration">m_configuration</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">the actual configuration</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CButton</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CGlobalConfiguration.html#m_ftpDirRadio">m_ftpDirRadio</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CEdit</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CGlobalConfiguration.html#m_ftpPassword">m_ftpPassword</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">Controlling the behaviour of the ftp-url - password</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CStatic</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CGlobalConfiguration.html#m_ftpPasswordLabel">m_ftpPasswordLabel</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CEdit</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CGlobalConfiguration.html#m_ftpURL">m_ftpURL</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">Controlling the behaviour of the ftp-url - edit</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CStatic</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CGlobalConfiguration.html#m_ftpURLLabel">m_ftpURLLabel</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CStatic</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CGlobalConfiguration.html#m_ftpUploadServer">m_ftpUploadServer</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CEdit</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CGlobalConfiguration.html#m_ftpUserName">m_ftpUserName</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">Controlling the behaviour of the ftp-url - username</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CStatic</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CGlobalConfiguration.html#m_ftpUserNameLabel">m_ftpUserNameLabel</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CComboBox</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CGlobalConfiguration.html#m_imageFormatCombo">m_imageFormatCombo</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">Controlling the behaviour of the image-format combo-box</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CEdit</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CGlobalConfiguration.html#m_localDir">m_localDir</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">Controlling the behaviour of the local-directory edit</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CButton</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CGlobalConfiguration.html#m_localDirRadio">m_localDirRadio</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">Controlling the behaviour of the local/ftp radio-button</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CEdit</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CGlobalConfiguration.html#m_outputDir">m_outputDir</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">Controlling the behaviour of the output-edit</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CStatic</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CGlobalConfiguration.html#m_outputDirectory">m_outputDirectory</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CStatic</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CGlobalConfiguration.html#m_startup">m_startup</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">CToolTipCtrl</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CGlobalConfiguration.html#m_toolTip">m_toolTip</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">the tool tips</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CGlobalConfiguration.html#m_useLocalDirectory">m_useLocalDirectory</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************MACRO SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2"><B>Macro Summary</B></FONT></TD>
+</TR>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CGlobalConfiguration.html#DECLARE_DYNAMIC(CGlobalConfiguration)">DECLARE_DYNAMIC(CGlobalConfiguration)</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CGlobalConfiguration.html#DECLARE_MESSAGE_MAP()">DECLARE_MESSAGE_MAP()</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************ENUM SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2"><B>Enum Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./ConfigurationDialog-CGlobalConfiguration.html#enum {  IDD = IDD_CONFIGURATION_GLOBAL }">enum </A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************CONSTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Constructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CGlobalConfiguration.html#CGlobalConfiguration()"><B>CGlobalConfiguration</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************DESTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Destructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CGlobalConfiguration.html#virtual ~CGlobalConfiguration()"><B>virtual ~CGlobalConfiguration</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************METHOD SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2">
+<B>Method Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">protected</TD>
+<TD WIDTH="10%">virtual void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CGlobalConfiguration.html#DoDataExchange(CDataExchange* pDX)"><B>DoDataExchange</B></A>(CDataExchange* pDX)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CGlobalConfiguration.html#InitToolTips()"><B>InitToolTips</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Setup the tool tips</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">afx_msg void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CGlobalConfiguration.html#OnAdvancedFTPSettings()"><B>OnAdvancedFTPSettings</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Opening the dialog for advanced FTP-options</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">afx_msg void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CGlobalConfiguration.html#OnBrowseOutputPath()"><B>OnBrowseOutputPath</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Browsing for a new output directory</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">afx_msg void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CGlobalConfiguration.html#OnBrowseWindFieldFile()"><B>OnBrowseWindFieldFile</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Browsing for a wind-field file</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">afx_msg void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CGlobalConfiguration.html#OnChangePublish()"><B>OnChangePublish</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Called when the user changes whether we should publish the data or not</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">virtual BOOL</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CGlobalConfiguration.html#OnInitDialog()"><B>OnInitDialog</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Initializing the dialog</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">virtual BOOL</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CGlobalConfiguration.html#PreTranslateMessage(MSG* pMsg)"><B>PreTranslateMessage</B></A>(MSG* pMsg)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Handling the tool tips</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">afx_msg void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./ConfigurationDialog-CGlobalConfiguration.html#SaveData()"><B>SaveData</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Saves the data in the form</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR>
+
+
+
+<!-- ********************ATTRIBUTE DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Attribute Detail</B></FONT></TD>
+</TR></TABLE>
+
+<A NAME="m_configuration"><!-- --></A>
+<H3>m_configuration</H3>
+<P>
+<CODE>public CConfigurationSetting* <B>m_configuration</B></CODE>
+<BLOCKQUOTE>
+the actual configuration
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_ftpDirRadio"><!-- --></A>
+<H3>m_ftpDirRadio</H3>
+<P>
+<CODE>public CButton <B>m_ftpDirRadio</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_ftpPassword"><!-- --></A>
+<H3>m_ftpPassword</H3>
+<P>
+<CODE>public CEdit <B>m_ftpPassword</B></CODE>
+<BLOCKQUOTE>
+Controlling the behaviour of the ftp-url - password
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_ftpPasswordLabel"><!-- --></A>
+<H3>m_ftpPasswordLabel</H3>
+<P>
+<CODE>public CStatic <B>m_ftpPasswordLabel</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_ftpURL"><!-- --></A>
+<H3>m_ftpURL</H3>
+<P>
+<CODE>public CEdit <B>m_ftpURL</B></CODE>
+<BLOCKQUOTE>
+Controlling the behaviour of the ftp-url - edit
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_ftpURLLabel"><!-- --></A>
+<H3>m_ftpURLLabel</H3>
+<P>
+<CODE>public CStatic <B>m_ftpURLLabel</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_ftpUploadServer"><!-- --></A>
+<H3>m_ftpUploadServer</H3>
+<P>
+<CODE>public CStatic <B>m_ftpUploadServer</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_ftpUserName"><!-- --></A>
+<H3>m_ftpUserName</H3>
+<P>
+<CODE>public CEdit <B>m_ftpUserName</B></CODE>
+<BLOCKQUOTE>
+Controlling the behaviour of the ftp-url - username
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_ftpUserNameLabel"><!-- --></A>
+<H3>m_ftpUserNameLabel</H3>
+<P>
+<CODE>public CStatic <B>m_ftpUserNameLabel</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_imageFormatCombo"><!-- --></A>
+<H3>m_imageFormatCombo</H3>
+<P>
+<CODE>public CComboBox <B>m_imageFormatCombo</B></CODE>
+<BLOCKQUOTE>
+Controlling the behaviour of the image-format combo-box
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_localDir"><!-- --></A>
+<H3>m_localDir</H3>
+<P>
+<CODE>public CEdit <B>m_localDir</B></CODE>
+<BLOCKQUOTE>
+Controlling the behaviour of the local-directory edit
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_localDirRadio"><!-- --></A>
+<H3>m_localDirRadio</H3>
+<P>
+<CODE>public CButton <B>m_localDirRadio</B></CODE>
+<BLOCKQUOTE>
+Controlling the behaviour of the local/ftp radio-button
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_outputDir"><!-- --></A>
+<H3>m_outputDir</H3>
+<P>
+<CODE>public CEdit <B>m_outputDir</B></CODE>
+<BLOCKQUOTE>
+Controlling the behaviour of the output-edit
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_outputDirectory"><!-- --></A>
+<H3>m_outputDirectory</H3>
+<P>
+<CODE>public CStatic <B>m_outputDirectory</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_startup"><!-- --></A>
+<H3>m_startup</H3>
+<P>
+<CODE>public CStatic <B>m_startup</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_toolTip"><!-- --></A>
+<H3>m_toolTip</H3>
+<P>
+<CODE>protected CToolTipCtrl <B>m_toolTip</B></CODE>
+<BLOCKQUOTE>
+the tool tips
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_useLocalDirectory"><!-- --></A>
+<H3>m_useLocalDirectory</H3>
+<P>
+<CODE>public int <B>m_useLocalDirectory</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************ENUM DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Enum Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="enum {  IDD = IDD_CONFIGURATION_GLOBAL }"><!-- --></A>
+<H3>enum {  IDD = IDD_CONFIGURATION_GLOBAL }</H3>
+<P>
+<CODE>public <B>enum {  IDD = IDD_CONFIGURATION_GLOBAL }</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************Macro DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Macro Detail</B></FONT></TD>
+</TR></TABLE>
+
+<A NAME="DECLARE_DYNAMIC(CGlobalConfiguration)"><!-- --></A>
+<H3>DECLARE_DYNAMIC(CGlobalConfiguration)</H3>
+<P>
+<CODE>private <B>DECLARE_DYNAMIC(CGlobalConfiguration)</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="DECLARE_MESSAGE_MAP()"><!-- --></A>
+<H3>DECLARE_MESSAGE_MAP()</H3>
+<P>
+<CODE>protected <B>DECLARE_MESSAGE_MAP()</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************CONSTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Constructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="CGlobalConfiguration()"><!-- --></A>
+<H3>CGlobalConfiguration</H3>
+<P>
+<CODE>public  <B>CGlobalConfiguration</B>()</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************DESTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Destructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="virtual ~CGlobalConfiguration()"><!-- --></A>
+<H3>virtual ~CGlobalConfiguration</H3>
+<P>
+<CODE>public  <B>virtual ~CGlobalConfiguration</B>()</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************METHOD DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="DoDataExchange(CDataExchange* pDX)"></A>
+<H3>DoDataExchange</H3>
+<P>
+<CODE>protected virtual void <B>DoDataExchange</B>(CDataExchange* pDX)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="InitToolTips()"></A>
+<H3>InitToolTips</H3>
+<P>
+<CODE>public void <B>InitToolTips</B>()</CODE>
+<BLOCKQUOTE>
+Setup the tool tips
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnAdvancedFTPSettings()"></A>
+<H3>OnAdvancedFTPSettings</H3>
+<P>
+<CODE>public afx_msg void <B>OnAdvancedFTPSettings</B>()</CODE>
+<BLOCKQUOTE>
+Opening the dialog for advanced FTP-options
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnBrowseOutputPath()"></A>
+<H3>OnBrowseOutputPath</H3>
+<P>
+<CODE>public afx_msg void <B>OnBrowseOutputPath</B>()</CODE>
+<BLOCKQUOTE>
+Browsing for a new output directory
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnBrowseWindFieldFile()"></A>
+<H3>OnBrowseWindFieldFile</H3>
+<P>
+<CODE>public afx_msg void <B>OnBrowseWindFieldFile</B>()</CODE>
+<BLOCKQUOTE>
+Browsing for a wind-field file
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnChangePublish()"></A>
+<H3>OnChangePublish</H3>
+<P>
+<CODE>public afx_msg void <B>OnChangePublish</B>()</CODE>
+<BLOCKQUOTE>
+Called when the user changes whether we should publish the data or not
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="OnInitDialog()"></A>
+<H3>OnInitDialog</H3>
+<P>
+<CODE>public virtual BOOL <B>OnInitDialog</B>()</CODE>
+<BLOCKQUOTE>
+Initializing the dialog
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="PreTranslateMessage(MSG* pMsg)"></A>
+<H3>PreTranslateMessage</H3>
+<P>
+<CODE>public virtual BOOL <B>PreTranslateMessage</B>(MSG* pMsg)</CODE>
+<BLOCKQUOTE>
+Handling the tool tips
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="SaveData()"></A>
+<H3>SaveData</H3>
+<P>
+<CODE>public afx_msg void <B>SaveData</B>()</CODE>
+<BLOCKQUOTE>
+Saves the data in the form
+</BLOCKQUOTE>
+</BODY>
+</HTML>

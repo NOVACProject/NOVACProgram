@@ -1,0 +1,2597 @@
+<!DOCTYPE HTML PUBLIC"-//W3C//DTD HTML 4.0 Frameset//EN""http://www.w3.org/TR/REC-html40/frameset/dtd">
+<HTML>
+<HEAD>
+<!-- The file this documentation was generated from is:  C:\Novac\NovacMasterProgram\2008_10_27\Evaluation\ScanResult.h -->
+</HEAD>
+<TITLE>
+class CScanResult
+</TITLE>
+<LINK REL="stylesheet" TYPE="text/css" HREF="./stylesheet.css" TITLE="Style">
+<BODY BGCOLOR="#FFFFFF">
+
+
+
+<!-- ********************CLASS HEADING INFORMATION******************** -->
+
+<H3><p>
+namespace Evaluation
+</H3>
+<H2><P>class CScanResult</H2></P>
+<P><b>CScanResult</b> is a class designed to handle the results
+ from evaluating a set of spectra (e.g. a scan). It contains a set of
+ CEvaluationResult's which describes the result of evaluating each spectrum.
+ The CScanResult also handles information about the whole set
+ of evaluation results such as the offset or the calculated flux of the scan,
+ or a judgement wheather each evaluated spectrum is judged to be an ok
+ spectrum or not.  
+ </P>
+<P></h2><hr size="2"></P>
+
+
+
+<!-- ********************ATTRIBUTE SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2"><B>Attribute Summary</B></FONT></TD>
+</TR>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CScanResult.html#m_corruptedNum">m_corruptedNum</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CArray &lt;unsigned int, unsigned int &&gt;</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CScanResult.html#m_corruptedSpectra">m_corruptedSpectra</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">A list of which spectra were corrupted and could not be evaluated</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CSpectrumInfo</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CScanResult.html#m_darkCurSpecInfo">m_darkCurSpecInfo</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">information about the dark-current spectrum used, if any</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CSpectrumInfo</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CScanResult.html#m_darkSpecInfo">m_darkSpecInfo</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">information about the dark-spectrum used, if any</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CFluxResult</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CScanResult.html#m_flux">m_flux</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The calculated flux and the parameters used to
+ calculate the flux</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CScanResult.html#m_geomError">m_geomError</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The estimated error(in percent) in the geometrical setup for
+ this flux-calculation.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">INSTRUMENT_TYPE</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CScanResult.html#m_instrumentType">m_instrumentType</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The type of the instrument used for this scan</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">MEASUREMENT_MODE</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CScanResult.html#m_measurementMode">m_measurementMode</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">Flag to signal if this is a wind measurement, a scan, or something else.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">SpecData</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CScanResult.html#m_offset">m_offset</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The offset in the measurement</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CSpectrumInfo</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CScanResult.html#m_offsetSpecInfo">m_offsetSpecInfo</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">information about the offset-spectrum used, if any</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CScanResult.html#m_plumeCentre[2]">m_plumeCentre[2]</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The scan-angle for the calculated plume-centre.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CScanResult.html#m_plumeCompleteness">m_plumeCompleteness</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The calculated completness of the plume.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CScanResult.html#m_plumeEdge[2]">m_plumeEdge[2]</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The calculated edges of the plume.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CScanResult.html#m_scatteringError">m_scatteringError</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The estimated error(in percent) due to scattering inside or below the
+ plume for this flux-calculation</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CSpectrumInfo</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CScanResult.html#m_skySpecInfo">m_skySpecInfo</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">information about the sky-spectrum used</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CArray&lt;CEvaluationResult, CEvaluationResult&&gt;</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CScanResult.html#m_spec">m_spec</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">result of evaluating the spectra</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">CArray&lt;CSpectrumInfo, CSpectrumInfo&&gt;</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CScanResult.html#m_specInfo">m_specInfo</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">information about the collected spectra</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">unsigned long</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CScanResult.html#m_specNum">m_specNum</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The number of evaluations</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CScanResult.html#m_spectroscopyError">m_spectroscopyError</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The estimated error(in percent) of the spectral results due
+ to incertainties in cross-sections, slit-functions, stray-light etc.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><B><A HREF="./Evaluation-CScanResult.html#m_windDirection">m_windDirection</A></B></TD></TR>
+<TR><TD CLASS="marginIncrease">The calculated wind-direction.</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************CONSTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Constructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#CScanResult(void)"><B>CScanResult</B></A>(void)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#void CScanResult::GetSkyStartTime(CDateTime &t) const"><B>void CScanResult::GetSkyStartTime</B></A>(CDateTime &t) const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">returns the time and date(UMT) when the sky-spectrum was started.</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************DESTRUCTOR SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="2"><FONT SIZE="+2">
+<B>Destructor Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#~CScanResult(void)"><B>~CScanResult</B></A>(void)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+
+
+<!-- ********************METHOD SUMMARY******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD COLSPAN="3"><FONT SIZE="+2">
+<B>Method Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">const CSpectrumInfo</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#&GetDarkSpectrumInfo() const"><B>&GetDarkSpectrumInfo</B></A>() const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Returns a reference to the spectrum info-structure of the dark-spectrum used</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">const CSpectrumInfo</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#&GetSkySpectrumInfo() const"><B>&GetSkySpectrumInfo</B></A>() const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Returns a reference to the spectrum info-structure of the sky-spectrum used</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">const CSpectrumInfo</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#&GetSpectrumInfo(unsigned long index) const"><B>&GetSpectrumInfo</B></A>(unsigned long index) const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Returns a reference to the desired spectrum info-structure</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CScanResult</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#&operator=(const CScanResult &s2)"><B>&operator=</B></A>(const CScanResult &s2)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Assignment operator</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#AppendResult(const CEvaluationResult &evalRes, const CSpectrumInfo &specInfo)"><B>AppendResult</B></A>(const CEvaluationResult &evalRes, const CSpectrumInfo &specInfo)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Appends the result to the list of calculated results</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#ApplyCorrection(CORRECTION correctionToApply, double *parameters, long nParameters, CString *specie = NULL)"><B>ApplyCorrection</B></A>(CORRECTION correctionToApply, double *parameters, long nParameters, CString *specie = NULL)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Applies the given correction to all or some evaluated references.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#CalculateFlux(const CString &specie, const CWindField &wind, double compass, double coneAngle = 90.0, double tilt = 0.0)"><B>CalculateFlux</B></A>(const CString &specie, const CWindField &wind, double compass, double coneAngle = 90.0, double tilt = 0.0)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Calculate the flux in this scan, using the supplied compass direction
+ and coneAngle.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#CalculateOffset(const CString &specie)"><B>CalculateOffset</B></A>(const CString &specie)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Gets the offset of the scan.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">bool</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#CalculatePlumeCentre(const CString &specie)"><B>CalculatePlumeCentre</B></A>(const CString &specie)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Tries to find a plume in the last scan result.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">bool</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#CalculatePlumeCentre(const CString &specie, double &plumeCentre_alpha, double &plumeCentre_phi, double &plumeWidth, double &plumeCompleteness, double &plumeEdge_low, double &plumeEdge_high)"><B>CalculatePlumeCentre</B></A>(const CString &specie, double &plumeCentre_alpha, double &plumeCentre_phi, double &plumeWidth, double &plumeCompleteness, double &plumeEdge_low, double &plumeEdge_high)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Tries to find a plume in the last scan result.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">bool</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#CalculateWindDirection(double plumeCentre, double plumeHeight = -1)"><B>CalculateWindDirection</B></A>(double plumeCentre, double plumeHeight = -1)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Tries to calculate the local wind-direction when this scan was collected.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">bool</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#CheckGoodnessOfFit(const CSpectrumInfo& info, float chi2Limit = -1, float upperLimit = -1, float lowerLimit = -1)"><B>CheckGoodnessOfFit</B></A>(const CSpectrumInfo& info, float chi2Limit = -1, float upperLimit = -1, float lowerLimit = -1)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Check the last spectrum point for goodness of fit.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">bool</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#CheckGoodnessOfFit(const CSpectrumInfo& info, int index, float chi2Limit = -1, float upperLimit = -1, float lowerLimit = -1)"><B>CheckGoodnessOfFit</B></A>(const CSpectrumInfo& info, int index, float chi2Limit = -1, float upperLimit = -1, float lowerLimit = -1)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Check spectrum number 'index' for goodness of fit.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">MEASUREMENT_MODE</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#CheckMeasurementMode()"><B>CheckMeasurementMode</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Checks the kind of measurement that we have here and sets the
+ flag 'm_measurementMode' to the appropriate value...</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetAltitude() const"><B>GetAltitude</B></A>() const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Returns the altitude of the system</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">float</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetBatteryVoltage() const"><B>GetBatteryVoltage</B></A>() const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Returns the battery-voltage of the sky spectrum</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetCalculatedPlumeCentre(int motor = 0) const"><B>GetCalculatedPlumeCentre</B></A>(int motor = 0) const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Returns the calculated plume-centre position</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetCalculatedPlumeCompleteness() const"><B>GetCalculatedPlumeCompleteness</B></A>() const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Returns the calculated plume-completeness</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetCalculatedPlumeEdges(double &lowEdge, double &highEdge) const"><B>GetCalculatedPlumeEdges</B></A>(double &lowEdge, double &highEdge) const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Returns the calculated plume edges</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetCalculatedWindDirection() const"><B>GetCalculatedWindDirection</B></A>() const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Returns the calculated wind-direction</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetChiSquare(unsigned long spectrumNum) const"><B>GetChiSquare</B></A>(unsigned long spectrumNum) const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetColumn(unsigned long spectrumNum, unsigned long specieNum) const"><B>GetColumn</B></A>(unsigned long spectrumNum, unsigned long specieNum) const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">returns the evaluated column for specie number 'specieNum' and
+ spectrum number 'specNum'
+
+</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetColumnError(unsigned long spectrumNum, unsigned long specieNum) const"><B>GetColumnError</B></A>(unsigned long spectrumNum, unsigned long specieNum) const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">returns the error for the evaluated column for specie number
+ 'specieNum' and spectrum number 'specNum'
+
+</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetCompass() const"><B>GetCompass</B></A>() const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Returns the compass-direction of the system</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetConeAngle() const"><B>GetConeAngle</B></A>() const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Returns the cone angle of the scanning instrument</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetCorruptedNum() const"><B>GetCorruptedNum</B></A>() const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Retrieves how many spectra are corrupted in the scan</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">RETURN_CODE</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetDate(unsigned long index, unsigned short date[3]) const"><B>GetDate</B></A>(unsigned long index, unsigned short date[3]) const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">returns the date(UMT) when the evaluated spectrum number 'index'
+ was collected
+
+</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetDelta(unsigned long spectrumNum) const"><B>GetDelta</B></A>(unsigned long spectrumNum) const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease"></TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">float</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetElectronicOffset(unsigned long spectrumNum) const"><B>GetElectronicOffset</B></A>(unsigned long spectrumNum) const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">returns the electronic offset in spectrum number 'spectrumNum'</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">long</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetEvaluatedNum() const"><B>GetEvaluatedNum</B></A>() const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">returns the number of spectra evaluated</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">long</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetExposureTime(unsigned long spectrumNum) const"><B>GetExposureTime</B></A>(unsigned long spectrumNum) const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">returns the expsure time of evaluated spectrum number 'spectrumNum'
+ in ms</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">float</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetFitIntensity(unsigned long spectrumNum) const"><B>GetFitIntensity</B></A>(unsigned long spectrumNum) const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">returns the fit intensity of evaluated spectrum number 'spectrumNum'
+ (the maximum intensity int the fit region of the spectrum).</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetFitParameter(unsigned long spectrumNum, unsigned long specieIndex, FIT_PARAMETER parameter) const"><B>GetFitParameter</B></A>(unsigned long spectrumNum, unsigned long specieIndex, FIT_PARAMETER parameter) const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">makes a sanity check of the parameters and returns fit parameter number 'index'.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetFlux() const"><B>GetFlux</B></A>() const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Returns the calculated flux</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetGeometricalError() const"><B>GetGeometricalError</B></A>() const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Getting the estimated geometrical error</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">INSTRUMENT_TYPE</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetInstrumentType() const"><B>GetInstrumentType</B></A>() const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Returns the type of the instrument used</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetLatitude() const"><B>GetLatitude</B></A>() const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Returns the latitude of the system</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetLongitude() const"><B>GetLongitude</B></A>() const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Returns the longitude of the system</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetMaxColumn(const CString &specie) const"><B>GetMaxColumn</B></A>(const CString &specie) const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Calculates the maximum good column value in the scan,
+ corrected for the offset.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CString</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetName(int index) const"><B>GetName</B></A>(int index) const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Returns the name of the requested spectrum</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">SpecData</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetOffset() const"><B>GetOffset</B></A>() const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">returns the offset of the measurement</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">float</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetPeakIntensity(unsigned long spectrumNum) const"><B>GetPeakIntensity</B></A>(unsigned long spectrumNum) const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">returns the peak intensity of evaluated spectrum number 'spectrumNum'
+ (the maximum intensity of the whole spectrum).</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetPitch() const"><B>GetPitch</B></A>() const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Returns the pitch(tilt) of the scanning instrument</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">const CEvaluationResult*</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetResult(unsigned int specIndex) const"><B>GetResult</B></A>(unsigned int specIndex) const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Retrieves the evaluation result for spectrum number
+ 'specIndex' from the list of calculated results.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetRoll() const"><B>GetRoll</B></A>() const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Returns the roll(scan-angle offset) of the scanning instrument</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">float</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetScanAngle(unsigned long index) const"><B>GetScanAngle</B></A>(unsigned long index) const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">returns the scan angle of evaluated spectrum number 'index'.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">float</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetScanAngle2(unsigned long index) const"><B>GetScanAngle2</B></A>(unsigned long index) const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">returns the azimuth angle(the angle of the second motor) of
+ evaluated spectrum number 'index'.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetScatteringError() const"><B>GetScatteringError</B></A>() const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Getting the scattering Error</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">CString</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetSerial() const"><B>GetSerial</B></A>() const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Returns the serial-number of the spectrometer that collected this scan</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetShift(unsigned long spectrumNum, unsigned long specieNum) const"><B>GetShift</B></A>(unsigned long spectrumNum, unsigned long specieNum) const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">returns the SHIFT parameter for specie number 'specieNum' and
+ spectrum number 'specNum'
+
+</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetShiftError(unsigned long spectrumNum, unsigned long specieNum) const"><B>GetShiftError</B></A>(unsigned long spectrumNum, unsigned long specieNum) const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">returns the error for the SHIFT parameter for specie number
+ 'specieNum' and spectrum number 'specNum'
+
+</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">long</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetSpecNum(unsigned long spectrumNum) const"><B>GetSpecNum</B></A>(unsigned long spectrumNum) const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">returns the number of spectra averaged to get evaluated
+ spectrum number 'spectrumNum'
+
+</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetSpecieIndex(const CString &specie) const"><B>GetSpecieIndex</B></A>(const CString &specie) const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Returns the index, i, into 'm_evaluated[x].m_ref[i]' that corresponds to the gas 'specie'
+
+</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">const CString</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetSpecieName(unsigned long spectrumNum, unsigned long specieNum) const"><B>GetSpecieName</B></A>(unsigned long spectrumNum, unsigned long specieNum) const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">returns the specie name</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetSpecieNum(unsigned long spectrumNum) const"><B>GetSpecieNum</B></A>(unsigned long spectrumNum) const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">returns the number of species that were used in the evaluation of a
+ given spectrum</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetSpectroscopicalError() const"><B>GetSpectroscopicalError</B></A>() const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Getting the spectroscopical error</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetSqueeze(unsigned long spectrumNum, unsigned long specieNum) const"><B>GetSqueeze</B></A>(unsigned long spectrumNum, unsigned long specieNum) const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">returns the SQUEEZE parameter for specie number 'specieNum' and
+ spectrum number 'specNum'
+
+</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetSqueezeError(unsigned long spectrumNum, unsigned long specieNum) const"><B>GetSqueezeError</B></A>(unsigned long spectrumNum, unsigned long specieNum) const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">returns the error for the SQUEEZE parameter for specie number
+ 'specieNum' and spectrum number 'specNum'
+
+</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">const CSpectrumTime*</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetStartTime(unsigned long index) const"><B>GetStartTime</B></A>(unsigned long index) const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">returns the time(UMT) when evaluated spectrum number 'index' was started.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">RETURN_CODE</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetStartTime(unsigned long index, CDateTime &time) const"><B>GetStartTime</B></A>(unsigned long index, CDateTime &time) const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">returns the time and date(UMT) when evaluated spectrum number
+ 'index' was started.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">const CSpectrumTime*</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetStopTime(unsigned long index) const"><B>GetStopTime</B></A>(unsigned long index) const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">return the time(UMT) when evaluated spectrum number 'index' was stopped
+
+</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">RETURN_CODE</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetStopTime(unsigned long index, CDateTime &time) const"><B>GetStopTime</B></A>(unsigned long index, CDateTime &time) const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">returns the time and date(UMT) when evaluated spectrum number 'index'
+ was stopped.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">double</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#GetTemperature() const"><B>GetTemperature</B></A>() const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">returns the temperature of the system at the time of the measurement</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#InitializeArrays(long specNum)"><B>InitializeArrays</B></A>(long specNum)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Intializes the memory arrays to have, initially, space for
+ 'specNum' spectra.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#IsBad(unsigned long index) const"><B>IsBad</B></A>(unsigned long index) const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">returns the goodness of fit for the fitting of the evaluated
+ spectrum number 'index'.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">bool</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#IsCompositionMeasurement() const"><B>IsCompositionMeasurement</B></A>() const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Returns true if this is a composition mode measurement</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#IsDeleted(unsigned long index) const"><B>IsDeleted</B></A>(unsigned long index) const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">returns true if the evaluated spectrum number 'index' is marked
+ as deleted</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">bool</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#IsDirectSunMeasurement() const"><B>IsDirectSunMeasurement</B></A>() const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Returns true if this is a direct-sun mode measurement</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">bool</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#IsEvaluatedSpecie(const CString &specie) const"><B>IsEvaluatedSpecie</B></A>(const CString &specie) const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">returns true if the spectra have been evaluated for the supplied specie.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">bool</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#IsFluxMeasurement()"><B>IsFluxMeasurement</B></A>()</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Returns true if this is a flux measurement</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">bool</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#IsFluxOk() const"><B>IsFluxOk</B></A>() const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Returns true if the automatic judgment considers this flux
+ measurement to be a good measurement</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#IsOk(unsigned long index) const"><B>IsOk</B></A>(unsigned long index) const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">returns the goodness of fit for the fitting of the evaluated
+ spectrum number 'index'.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">bool</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#IsStratosphereMeasurement() const"><B>IsStratosphereMeasurement</B></A>() const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Returns true if this is a stratospheric mode measurement</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">private</TD>
+<TD WIDTH="10%">inline bool</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#IsValidSpectrumIndex(unsigned long spectrumNum) const"><B>IsValidSpectrumIndex</B></A>(unsigned long spectrumNum) const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">returns true if the given index is a valid spectrum index</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">bool</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#IsWindMeasurement() const"><B>IsWindMeasurement</B></A>() const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Returns true if this is a wind-speed measurement</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">bool</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#IsWindMeasurement_Gothenburg() const"><B>IsWindMeasurement_Gothenburg</B></A>() const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Returns true if this is a wind-speed measurement of Gothenburg type</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">bool</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#IsWindMeasurement_Heidelberg() const"><B>IsWindMeasurement_Heidelberg</B></A>() const</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Returns true if this is a wind-speed measurement of Heidelberg type</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">RETURN_CODE</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#MarkAs(unsigned long index, int MARK_FLAG)"><B>MarkAs</B></A>(unsigned long index, int MARK_FLAG)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Marks the desired spectrum with the supplied mark_flag.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#MarkAsCorrupted(unsigned int specIndex)"><B>MarkAsCorrupted</B></A>(unsigned int specIndex)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Adds spectrum number 'specIndex' into the list of spectra in the .pak -file
+ which are corrupted and could not be evaluated</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">RETURN_CODE</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#RemoveMark(unsigned long index, int MARK_FLAG)"><B>RemoveMark</B></A>(unsigned long index, int MARK_FLAG)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Removes the desired mark from the desired spectrum
+ Mark flag must be MARK_BAD_EVALUATION, or MARK_DELETED
+
+</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">int</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#RemoveResult(unsigned int specIndex)"><B>RemoveResult</B></A>(unsigned int specIndex)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Removes the spectrum number 'specIndex' from the list of calcualted results</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#SetDarkCurrentSpecInfo(const CSpectrumInfo &darkCurSpecInfo)"><B>SetDarkCurrentSpecInfo</B></A>(const CSpectrumInfo &darkCurSpecInfo)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Stores the information about the dark-current-spectrum used</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#SetDarkSpecInfo(const CSpectrumInfo &darkSpecInfo)"><B>SetDarkSpecInfo</B></A>(const CSpectrumInfo &darkSpecInfo)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Stores the information about the dark-spectrum used</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#SetFlux(double flux)"><B>SetFlux</B></A>(double flux)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Set the flux to the given value.</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#SetGeometricalError(double err)"><B>SetGeometricalError</B></A>(double err)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Getting the estimated geometrical error</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#SetInstrumentType(INSTRUMENT_TYPE type)"><B>SetInstrumentType</B></A>(INSTRUMENT_TYPE type)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Sets the type of the instrument used</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#SetOffset(double offset)"><B>SetOffset</B></A>(double offset)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Sets the offset of the measurement</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#SetOffsetSpecInfo(const CSpectrumInfo &offsetSpecInfo)"><B>SetOffsetSpecInfo</B></A>(const CSpectrumInfo &offsetSpecInfo)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Stores the information about the offset-spectrum used</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#SetScatteringError(double err)"><B>SetScatteringError</B></A>(double err)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Getting the scattering Error</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#SetSkySpecInfo(const CSpectrumInfo &skySpecInfo)"><B>SetSkySpecInfo</B></A>(const CSpectrumInfo &skySpecInfo)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Stores the information about the sky-spectrum used</TD></TR>
+</TABLE></TD>
+</TR>
+
+<TR>
+<TD WIDTH="5%">public</TD>
+<TD WIDTH="10%">void</TD>
+<TD><TABLE BORDER="0"><TR><TD><A HREF="./Evaluation-CScanResult.html#SetSpectroscopicalError(double err)"><B>SetSpectroscopicalError</B></A>(double err)</TD>
+</TR>
+<TR><TD CLASS="marginIncrease">Getting the spectroscopical error</TD></TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<BR>
+
+
+
+<!-- ********************ATTRIBUTE DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Attribute Detail</B></FONT></TD>
+</TR></TABLE>
+
+<A NAME="m_corruptedNum"><!-- --></A>
+<H3>m_corruptedNum</H3>
+<P>
+<CODE>private int <B>m_corruptedNum</B></CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_corruptedSpectra"><!-- --></A>
+<H3>m_corruptedSpectra</H3>
+<P>
+<CODE>private CArray &lt;unsigned int, unsigned int &&gt; <B>m_corruptedSpectra</B></CODE>
+<BLOCKQUOTE>
+A list of which spectra were corrupted and could not be evaluated
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_darkCurSpecInfo"><!-- --></A>
+<H3>m_darkCurSpecInfo</H3>
+<P>
+<CODE>private CSpectrumInfo <B>m_darkCurSpecInfo</B></CODE>
+<BLOCKQUOTE>
+information about the dark-current spectrum used, if any
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_darkSpecInfo"><!-- --></A>
+<H3>m_darkSpecInfo</H3>
+<P>
+<CODE>private CSpectrumInfo <B>m_darkSpecInfo</B></CODE>
+<BLOCKQUOTE>
+information about the dark-spectrum used, if any
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_flux"><!-- --></A>
+<H3>m_flux</H3>
+<P>
+<CODE>private CFluxResult <B>m_flux</B></CODE>
+<BLOCKQUOTE>
+The calculated flux and the parameters used to
+ calculate the flux
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_geomError"><!-- --></A>
+<H3>m_geomError</H3>
+<P>
+<CODE>private double <B>m_geomError</B></CODE>
+<BLOCKQUOTE>
+The estimated error(in percent) in the geometrical setup for
+ this flux-calculation.
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_instrumentType"><!-- --></A>
+<H3>m_instrumentType</H3>
+<P>
+<CODE>private INSTRUMENT_TYPE <B>m_instrumentType</B></CODE>
+<BLOCKQUOTE>
+The type of the instrument used for this scan
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_measurementMode"><!-- --></A>
+<H3>m_measurementMode</H3>
+<P>
+<CODE>private MEASUREMENT_MODE <B>m_measurementMode</B></CODE>
+<BLOCKQUOTE>
+Flag to signal if this is a wind measurement, a scan, or something else.
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_offset"><!-- --></A>
+<H3>m_offset</H3>
+<P>
+<CODE>private SpecData <B>m_offset</B></CODE>
+<BLOCKQUOTE>
+The offset in the measurement
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_offsetSpecInfo"><!-- --></A>
+<H3>m_offsetSpecInfo</H3>
+<P>
+<CODE>private CSpectrumInfo <B>m_offsetSpecInfo</B></CODE>
+<BLOCKQUOTE>
+information about the offset-spectrum used, if any
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_plumeCentre[2]"><!-- --></A>
+<H3>m_plumeCentre[2]</H3>
+<P>
+<CODE>private double <B>m_plumeCentre[2]</B></CODE>
+<BLOCKQUOTE>
+The scan-angle for the calculated plume-centre. Set to -999 if unknown
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_plumeCompleteness"><!-- --></A>
+<H3>m_plumeCompleteness</H3>
+<P>
+<CODE>private double <B>m_plumeCompleteness</B></CODE>
+<BLOCKQUOTE>
+The calculated completness of the plume. Set to -999 if unknown
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_plumeEdge[2]"><!-- --></A>
+<H3>m_plumeEdge[2]</H3>
+<P>
+<CODE>private double <B>m_plumeEdge[2]</B></CODE>
+<BLOCKQUOTE>
+The calculated edges of the plume. Set to -999 if unknown
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_scatteringError"><!-- --></A>
+<H3>m_scatteringError</H3>
+<P>
+<CODE>private double <B>m_scatteringError</B></CODE>
+<BLOCKQUOTE>
+The estimated error(in percent) due to scattering inside or below the
+ plume for this flux-calculation
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_skySpecInfo"><!-- --></A>
+<H3>m_skySpecInfo</H3>
+<P>
+<CODE>private CSpectrumInfo <B>m_skySpecInfo</B></CODE>
+<BLOCKQUOTE>
+information about the sky-spectrum used
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_spec"><!-- --></A>
+<H3>m_spec</H3>
+<P>
+<CODE>private CArray&lt;CEvaluationResult, CEvaluationResult&&gt; <B>m_spec</B></CODE>
+<BLOCKQUOTE>
+result of evaluating the spectra
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_specInfo"><!-- --></A>
+<H3>m_specInfo</H3>
+<P>
+<CODE>private CArray&lt;CSpectrumInfo, CSpectrumInfo&&gt; <B>m_specInfo</B></CODE>
+<BLOCKQUOTE>
+information about the collected spectra
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_specNum"><!-- --></A>
+<H3>m_specNum</H3>
+<P>
+<CODE>private unsigned long <B>m_specNum</B></CODE>
+<BLOCKQUOTE>
+The number of evaluations
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_spectroscopyError"><!-- --></A>
+<H3>m_spectroscopyError</H3>
+<P>
+<CODE>private double <B>m_spectroscopyError</B></CODE>
+<BLOCKQUOTE>
+The estimated error(in percent) of the spectral results due
+ to incertainties in cross-sections, slit-functions, stray-light etc.
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="m_windDirection"><!-- --></A>
+<H3>m_windDirection</H3>
+<P>
+<CODE>private double <B>m_windDirection</B></CODE>
+<BLOCKQUOTE>
+The calculated wind-direction. This is set to -999 if unknown
+</BLOCKQUOTE>
+
+
+
+<!-- ********************CONSTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Constructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="CScanResult(void)"><!-- --></A>
+<H3>CScanResult</H3>
+<P>
+<CODE>public  <B>CScanResult</B>(void)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="void CScanResult::GetSkyStartTime(CDateTime &t) const"><!-- --></A>
+<H3>void CScanResult::GetSkyStartTime</H3>
+<P>
+<CODE>public  <B>void CScanResult::GetSkyStartTime</B>(CDateTime &t) const</CODE>
+<BLOCKQUOTE>
+returns the time and date(UMT) when the sky-spectrum was started.
+</BLOCKQUOTE>
+
+
+
+<!-- ********************DESTRUCTOR DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Destructor Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="~CScanResult(void)"><!-- --></A>
+<H3>~CScanResult</H3>
+<P>
+<CODE>public  <B>~CScanResult</B>(void)</CODE>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+
+
+<!-- ********************METHOD DETAILS******************** -->
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR CLASS="TableHeadingColor">
+<TD><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TD>
+</TR></TABLE>
+<A NAME="&GetDarkSpectrumInfo() const"></A>
+<H3>&GetDarkSpectrumInfo</H3>
+<P>
+<CODE>public const CSpectrumInfo <B>&GetDarkSpectrumInfo</B>() const</CODE>
+<BLOCKQUOTE>
+Returns a reference to the spectrum info-structure of the dark-spectrum used
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="&GetSkySpectrumInfo() const"></A>
+<H3>&GetSkySpectrumInfo</H3>
+<P>
+<CODE>public const CSpectrumInfo <B>&GetSkySpectrumInfo</B>() const</CODE>
+<BLOCKQUOTE>
+Returns a reference to the spectrum info-structure of the sky-spectrum used
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="&GetSpectrumInfo(unsigned long index) const"></A>
+<H3>&GetSpectrumInfo</H3>
+<P>
+<CODE>public const CSpectrumInfo <B>&GetSpectrumInfo</B>(unsigned long index) const</CODE>
+<BLOCKQUOTE>
+Returns a reference to the desired spectrum info-structure
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="&operator=(const CScanResult &s2)"></A>
+<H3>&operator=</H3>
+<P>
+<CODE>public CScanResult <B>&operator=</B>(const CScanResult &s2)</CODE>
+<BLOCKQUOTE>
+Assignment operator
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="AppendResult(const CEvaluationResult &evalRes, const CSpectrumInfo &specInfo)"></A>
+<H3>AppendResult</H3>
+<P>
+<CODE>public int <B>AppendResult</B>(const CEvaluationResult &evalRes, const CSpectrumInfo &specInfo)</CODE>
+<BLOCKQUOTE>
+Appends the result to the list of calculated results
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="ApplyCorrection(CORRECTION correctionToApply, double *parameters, long nParameters, CString *specie = NULL)"></A>
+<H3>ApplyCorrection</H3>
+<P>
+<CODE>public int <B>ApplyCorrection</B>(CORRECTION correctionToApply, double *parameters, long nParameters, CString *specie = NULL)</CODE>
+<BLOCKQUOTE>
+Applies the given correction to all or some evaluated references.
+
+<P>
+<B>Parameters:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>corretionToApply&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the correction to apply...
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>parameters&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - The parameters for the corrections
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>nParameters&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the number of parameters(i.e. the
+ length of the array 'parameters')
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>specie&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - The name of the specie for which to
+ apply the correction, if NULL then correction will be
+ applied to all species.
+</TD>
+</TR>
+</TABLE>
+<P>
+<B>Returns:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">zero if all is ok, otherwise a non-zero value</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="CalculateFlux(const CString &specie, const CWindField &wind, double compass, double coneAngle = 90.0, double tilt = 0.0)"></A>
+<H3>CalculateFlux</H3>
+<P>
+<CODE>public int <B>CalculateFlux</B>(const CString &specie, const CWindField &wind, double compass, double coneAngle = 90.0, double tilt = 0.0)</CODE>
+<BLOCKQUOTE>
+Calculate the flux in this scan, using the supplied compass direction
+ and coneAngle.
+ The result is saved in the private parameter 'm_flux', whose vale can be
+ retrieved by a call to 'GetFlux()'
+
+<P>
+<B>Parameters:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>spec&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the spectrometer with which the scan was collected.
+</TD>
+</TR>
+</TABLE>
+<P>
+<B>Returns:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">0 if all is ok.</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">1 if any error occurs.</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="CalculateOffset(const CString &specie)"></A>
+<H3>CalculateOffset</H3>
+<P>
+<CODE>public int <B>CalculateOffset</B>(const CString &specie)</CODE>
+<BLOCKQUOTE>
+Gets the offset of the scan. The offset is calculated as the average of the
+ three lowest columns values(bad values are skipped). After this function has
+ been called the actual offset can be retrieved by a call to 'GetOffset'.
+
+<P>
+<B>Parameters:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>specie&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - The name of the specie for which the offset should be found.
+</TD>
+</TR>
+</TABLE>
+<P>
+<B>Returns:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">0 on success.</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">1 - if any error occurs.</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="CalculatePlumeCentre(const CString &specie)"></A>
+<H3>CalculatePlumeCentre</H3>
+<P>
+<CODE>public bool <B>CalculatePlumeCentre</B>(const CString &specie)</CODE>
+<BLOCKQUOTE>
+Tries to find a plume in the last scan result. If the plume is found
+ this function returns true. The result of the calculations is stored in
+ the member-variables 'm_plumeCentre' and 'm_plumeCompleteness'
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="CalculatePlumeCentre(const CString &specie, double &plumeCentre_alpha, double &plumeCentre_phi, double &plumeWidth, double &plumeCompleteness, double &plumeEdge_low, double &plumeEdge_high)"></A>
+<H3>CalculatePlumeCentre</H3>
+<P>
+<CODE>public bool <B>CalculatePlumeCentre</B>(const CString &specie, double &plumeCentre_alpha, double &plumeCentre_phi, double &plumeWidth, double &plumeCompleteness, double &plumeEdge_low, double &plumeEdge_high)</CODE>
+<BLOCKQUOTE>
+Tries to find a plume in the last scan result. If the plume is found
+ this function returns true, and the centre of the plume(in scanAngles)
+ is given in 'plumeCentre', the width of the plume(in scanAngles)
+ is given in 'plumeWidth' and the estimated completeness of the plume
+ is given in 'plumeCompleteness'(ranging from 0.0 to 1.0)
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="CalculateWindDirection(double plumeCentre, double plumeHeight = -1)"></A>
+<H3>CalculateWindDirection</H3>
+<P>
+<CODE>public bool <B>CalculateWindDirection</B>(double plumeCentre, double plumeHeight = -1)</CODE>
+<BLOCKQUOTE>
+Tries to calculate the local wind-direction when this scan was collected.
+ If succesful, this function returns 'true' and the result is saved
+ in 'm_windDirection'
+ If plumeHeight is specified, this value will be used as plume-height
+ otherwise the plume height will be taken from the default
+ wind-field for this volcano.
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="CheckGoodnessOfFit(const CSpectrumInfo& info, float chi2Limit = -1, float upperLimit = -1, float lowerLimit = -1)"></A>
+<H3>CheckGoodnessOfFit</H3>
+<P>
+<CODE>public bool <B>CheckGoodnessOfFit</B>(const CSpectrumInfo& info, float chi2Limit = -1, float upperLimit = -1, float lowerLimit = -1)</CODE>
+<BLOCKQUOTE>
+Check the last spectrum point for goodness of fit.
+ The parameters 'deltaLimit', 'upperLimit' and 'lowerLimit' are for
+ development purposes only.
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="CheckGoodnessOfFit(const CSpectrumInfo& info, int index, float chi2Limit = -1, float upperLimit = -1, float lowerLimit = -1)"></A>
+<H3>CheckGoodnessOfFit</H3>
+<P>
+<CODE>public bool <B>CheckGoodnessOfFit</B>(const CSpectrumInfo& info, int index, float chi2Limit = -1, float upperLimit = -1, float lowerLimit = -1)</CODE>
+<BLOCKQUOTE>
+Check spectrum number 'index' for goodness of fit.
+ The parameters 'deltaLimit', 'upperLimit' and 'lowerLimit' are for
+ development purposes only.
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="CheckMeasurementMode()"></A>
+<H3>CheckMeasurementMode</H3>
+<P>
+<CODE>public MEASUREMENT_MODE <B>CheckMeasurementMode</B>()</CODE>
+<BLOCKQUOTE>
+Checks the kind of measurement that we have here and sets the
+ flag 'm_measurementMode' to the appropriate value...
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetAltitude() const"></A>
+<H3>GetAltitude</H3>
+<P>
+<CODE>public double <B>GetAltitude</B>() const</CODE>
+<BLOCKQUOTE>
+Returns the altitude of the system
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetBatteryVoltage() const"></A>
+<H3>GetBatteryVoltage</H3>
+<P>
+<CODE>public float <B>GetBatteryVoltage</B>() const</CODE>
+<BLOCKQUOTE>
+Returns the battery-voltage of the sky spectrum
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetCalculatedPlumeCentre(int motor = 0) const"></A>
+<H3>GetCalculatedPlumeCentre</H3>
+<P>
+<CODE>public double <B>GetCalculatedPlumeCentre</B>(int motor = 0) const</CODE>
+<BLOCKQUOTE>
+Returns the calculated plume-centre position
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetCalculatedPlumeCompleteness() const"></A>
+<H3>GetCalculatedPlumeCompleteness</H3>
+<P>
+<CODE>public double <B>GetCalculatedPlumeCompleteness</B>() const</CODE>
+<BLOCKQUOTE>
+Returns the calculated plume-completeness
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetCalculatedPlumeEdges(double &lowEdge, double &highEdge) const"></A>
+<H3>GetCalculatedPlumeEdges</H3>
+<P>
+<CODE>public void <B>GetCalculatedPlumeEdges</B>(double &lowEdge, double &highEdge) const</CODE>
+<BLOCKQUOTE>
+Returns the calculated plume edges
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetCalculatedWindDirection() const"></A>
+<H3>GetCalculatedWindDirection</H3>
+<P>
+<CODE>public double <B>GetCalculatedWindDirection</B>() const</CODE>
+<BLOCKQUOTE>
+Returns the calculated wind-direction
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetChiSquare(unsigned long spectrumNum) const"></A>
+<H3>GetChiSquare</H3>
+<P>
+<CODE>public double <B>GetChiSquare</B>(unsigned long spectrumNum) const</CODE>
+<BLOCKQUOTE>
+
+<P>
+<B>Returns:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">the chi-square of the fit for spectrum number 'spectrumNum'
+</TD>
+</TR></TABLE>
+<P>
+<B>Parameters:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>spectrumNum&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the spectrum number(zero-based) for
+ which the delta value is desired</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetColumn(unsigned long spectrumNum, unsigned long specieNum) const"></A>
+<H3>GetColumn</H3>
+<P>
+<CODE>public double <B>GetColumn</B>(unsigned long spectrumNum, unsigned long specieNum) const</CODE>
+<BLOCKQUOTE>
+returns the evaluated column for specie number 'specieNum' and
+ spectrum number 'specNum'
+
+<P>
+<B>Parameters:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>specieNum&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the zero based index into the list of species
+ to evaluate for
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>spectrumNum&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the zero based index into the list of evaluated
+ spectra.</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetColumnError(unsigned long spectrumNum, unsigned long specieNum) const"></A>
+<H3>GetColumnError</H3>
+<P>
+<CODE>public double <B>GetColumnError</B>(unsigned long spectrumNum, unsigned long specieNum) const</CODE>
+<BLOCKQUOTE>
+returns the error for the evaluated column for specie number
+ 'specieNum' and spectrum number 'specNum'
+
+<P>
+<B>Parameters:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>specieNum&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the zero based index into the list of species
+ to evaluate for
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>spectrumNum&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the zero based index into the list of evaluated
+ spectra.</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetCompass() const"></A>
+<H3>GetCompass</H3>
+<P>
+<CODE>public double <B>GetCompass</B>() const</CODE>
+<BLOCKQUOTE>
+Returns the compass-direction of the system
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetConeAngle() const"></A>
+<H3>GetConeAngle</H3>
+<P>
+<CODE>public double <B>GetConeAngle</B>() const</CODE>
+<BLOCKQUOTE>
+Returns the cone angle of the scanning instrument
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetCorruptedNum() const"></A>
+<H3>GetCorruptedNum</H3>
+<P>
+<CODE>public int <B>GetCorruptedNum</B>() const</CODE>
+<BLOCKQUOTE>
+Retrieves how many spectra are corrupted in the scan
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetDate(unsigned long index, unsigned short date[3]) const"></A>
+<H3>GetDate</H3>
+<P>
+<CODE>public RETURN_CODE <B>GetDate</B>(unsigned long index, unsigned short date[3]) const</CODE>
+<BLOCKQUOTE>
+returns the date(UMT) when the evaluated spectrum number 'index'
+ was collected
+
+<P>
+<B>Parameters:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>index&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the zero-based index into the list of evaluated spectra.</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetDelta(unsigned long spectrumNum) const"></A>
+<H3>GetDelta</H3>
+<P>
+<CODE>public double <B>GetDelta</B>(unsigned long spectrumNum) const</CODE>
+<BLOCKQUOTE>
+
+<P>
+<B>Returns:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">the delta of the fit for spectrum number 'spectrumNum'
+</TD>
+</TR></TABLE>
+<P>
+<B>Parameters:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>spectrumNum&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the spectrum number(zero-based) for
+ which the delta value is desired</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetElectronicOffset(unsigned long spectrumNum) const"></A>
+<H3>GetElectronicOffset</H3>
+<P>
+<CODE>public float <B>GetElectronicOffset</B>(unsigned long spectrumNum) const</CODE>
+<BLOCKQUOTE>
+returns the electronic offset in spectrum number 'spectrumNum'
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetEvaluatedNum() const"></A>
+<H3>GetEvaluatedNum</H3>
+<P>
+<CODE>public long <B>GetEvaluatedNum</B>() const</CODE>
+<BLOCKQUOTE>
+returns the number of spectra evaluated
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetExposureTime(unsigned long spectrumNum) const"></A>
+<H3>GetExposureTime</H3>
+<P>
+<CODE>public long <B>GetExposureTime</B>(unsigned long spectrumNum) const</CODE>
+<BLOCKQUOTE>
+returns the expsure time of evaluated spectrum number 'spectrumNum'
+ in ms
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetFitIntensity(unsigned long spectrumNum) const"></A>
+<H3>GetFitIntensity</H3>
+<P>
+<CODE>public float <B>GetFitIntensity</B>(unsigned long spectrumNum) const</CODE>
+<BLOCKQUOTE>
+returns the fit intensity of evaluated spectrum number 'spectrumNum'
+ (the maximum intensity int the fit region of the spectrum).
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetFitParameter(unsigned long spectrumNum, unsigned long specieIndex, FIT_PARAMETER parameter) const"></A>
+<H3>GetFitParameter</H3>
+<P>
+<CODE>private double <B>GetFitParameter</B>(unsigned long spectrumNum, unsigned long specieIndex, FIT_PARAMETER parameter) const</CODE>
+<BLOCKQUOTE>
+makes a sanity check of the parameters and returns fit parameter number 'index'.
+
+<P>
+<B>Parameters:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>specIndex&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the zero based into the list of evaluated spectra.
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>specieIndex&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the zero based into the list of species to evaluate for.
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>fitParameter&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - a parameter to return.
+</TD>
+</TR>
+</TABLE>
+<P>
+<B>Returns:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">NaN if any parameter is wrong</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetFlux() const"></A>
+<H3>GetFlux</H3>
+<P>
+<CODE>public double <B>GetFlux</B>() const</CODE>
+<BLOCKQUOTE>
+Returns the calculated flux
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetGeometricalError() const"></A>
+<H3>GetGeometricalError</H3>
+<P>
+<CODE>public double <B>GetGeometricalError</B>() const</CODE>
+<BLOCKQUOTE>
+Getting the estimated geometrical error
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetInstrumentType() const"></A>
+<H3>GetInstrumentType</H3>
+<P>
+<CODE>public INSTRUMENT_TYPE <B>GetInstrumentType</B>() const</CODE>
+<BLOCKQUOTE>
+Returns the type of the instrument used
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetLatitude() const"></A>
+<H3>GetLatitude</H3>
+<P>
+<CODE>public double <B>GetLatitude</B>() const</CODE>
+<BLOCKQUOTE>
+Returns the latitude of the system
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetLongitude() const"></A>
+<H3>GetLongitude</H3>
+<P>
+<CODE>public double <B>GetLongitude</B>() const</CODE>
+<BLOCKQUOTE>
+Returns the longitude of the system
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetMaxColumn(const CString &specie) const"></A>
+<H3>GetMaxColumn</H3>
+<P>
+<CODE>public double <B>GetMaxColumn</B>(const CString &specie) const</CODE>
+<BLOCKQUOTE>
+Calculates the maximum good column value in the scan,
+ corrected for the offset.
+ NB!! The function 'CalculateOffset' must have been called
+ before this function is called.
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetName(int index) const"></A>
+<H3>GetName</H3>
+<P>
+<CODE>public CString <B>GetName</B>(int index) const</CODE>
+<BLOCKQUOTE>
+Returns the name of the requested spectrum
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetOffset() const"></A>
+<H3>GetOffset</H3>
+<P>
+<CODE>public SpecData <B>GetOffset</B>() const</CODE>
+<BLOCKQUOTE>
+returns the offset of the measurement
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetPeakIntensity(unsigned long spectrumNum) const"></A>
+<H3>GetPeakIntensity</H3>
+<P>
+<CODE>public float <B>GetPeakIntensity</B>(unsigned long spectrumNum) const</CODE>
+<BLOCKQUOTE>
+returns the peak intensity of evaluated spectrum number 'spectrumNum'
+ (the maximum intensity of the whole spectrum).
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetPitch() const"></A>
+<H3>GetPitch</H3>
+<P>
+<CODE>public double <B>GetPitch</B>() const</CODE>
+<BLOCKQUOTE>
+Returns the pitch(tilt) of the scanning instrument
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetResult(unsigned int specIndex) const"></A>
+<H3>GetResult</H3>
+<P>
+<CODE>public const CEvaluationResult* <B>GetResult</B>(unsigned int specIndex) const</CODE>
+<BLOCKQUOTE>
+Retrieves the evaluation result for spectrum number
+ 'specIndex' from the list of calculated results.
+
+<P>
+<B>Returns:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">- NULL if specIndex is out of bounds...</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetRoll() const"></A>
+<H3>GetRoll</H3>
+<P>
+<CODE>public double <B>GetRoll</B>() const</CODE>
+<BLOCKQUOTE>
+Returns the roll(scan-angle offset) of the scanning instrument
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetScanAngle(unsigned long index) const"></A>
+<H3>GetScanAngle</H3>
+<P>
+<CODE>public float <B>GetScanAngle</B>(unsigned long index) const</CODE>
+<BLOCKQUOTE>
+returns the scan angle of evaluated spectrum number 'index'.
+
+<P>
+<B>Parameters:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>index&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the zero based index into the list of evaluated spectra</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetScanAngle2(unsigned long index) const"></A>
+<H3>GetScanAngle2</H3>
+<P>
+<CODE>public float <B>GetScanAngle2</B>(unsigned long index) const</CODE>
+<BLOCKQUOTE>
+returns the azimuth angle(the angle of the second motor) of
+ evaluated spectrum number 'index'.
+
+<P>
+<B>Parameters:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>index&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the zero based index into the list of evaluated spectra</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetScatteringError() const"></A>
+<H3>GetScatteringError</H3>
+<P>
+<CODE>public double <B>GetScatteringError</B>() const</CODE>
+<BLOCKQUOTE>
+Getting the scattering Error
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetSerial() const"></A>
+<H3>GetSerial</H3>
+<P>
+<CODE>public CString <B>GetSerial</B>() const</CODE>
+<BLOCKQUOTE>
+Returns the serial-number of the spectrometer that collected this scan
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetShift(unsigned long spectrumNum, unsigned long specieNum) const"></A>
+<H3>GetShift</H3>
+<P>
+<CODE>public double <B>GetShift</B>(unsigned long spectrumNum, unsigned long specieNum) const</CODE>
+<BLOCKQUOTE>
+returns the SHIFT parameter for specie number 'specieNum' and
+ spectrum number 'specNum'
+
+<P>
+<B>Parameters:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>specieNum&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the zero based index into the list of species
+ to evaluate for
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>spectrumNum&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the zero based index into the list of
+ evaluated spectra.</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetShiftError(unsigned long spectrumNum, unsigned long specieNum) const"></A>
+<H3>GetShiftError</H3>
+<P>
+<CODE>public double <B>GetShiftError</B>(unsigned long spectrumNum, unsigned long specieNum) const</CODE>
+<BLOCKQUOTE>
+returns the error for the SHIFT parameter for specie number
+ 'specieNum' and spectrum number 'specNum'
+
+<P>
+<B>Parameters:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>specieNum&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the zero based index into the list of species
+ to evaluate for
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>spectrumNum&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the zero based index into the list of
+ evaluated spectra.</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetSpecNum(unsigned long spectrumNum) const"></A>
+<H3>GetSpecNum</H3>
+<P>
+<CODE>public long <B>GetSpecNum</B>(unsigned long spectrumNum) const</CODE>
+<BLOCKQUOTE>
+returns the number of spectra averaged to get evaluated
+ spectrum number 'spectrumNum'
+
+<P>
+<B>Returns:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">the number of spectra averaged.</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetSpecieIndex(const CString &specie) const"></A>
+<H3>GetSpecieIndex</H3>
+<P>
+<CODE>private int <B>GetSpecieIndex</B>(const CString &specie) const</CODE>
+<BLOCKQUOTE>
+Returns the index, i, into 'm_evaluated[x].m_ref[i]' that corresponds to the gas 'specie'
+
+<P>
+<B>Parameters:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>specie&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the gas to search for e.g. SO2(case insensitive).
+</TD>
+</TR>
+</TABLE>
+<P>
+<B>Returns:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">the zero-based index of the specie.
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">-1 if specie not found.</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetSpecieName(unsigned long spectrumNum, unsigned long specieNum) const"></A>
+<H3>GetSpecieName</H3>
+<P>
+<CODE>public const CString <B>GetSpecieName</B>(unsigned long spectrumNum, unsigned long specieNum) const</CODE>
+<BLOCKQUOTE>
+returns the specie name
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetSpecieNum(unsigned long spectrumNum) const"></A>
+<H3>GetSpecieNum</H3>
+<P>
+<CODE>public int <B>GetSpecieNum</B>(unsigned long spectrumNum) const</CODE>
+<BLOCKQUOTE>
+returns the number of species that were used in the evaluation of a
+ given spectrum
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetSpectroscopicalError() const"></A>
+<H3>GetSpectroscopicalError</H3>
+<P>
+<CODE>public double <B>GetSpectroscopicalError</B>() const</CODE>
+<BLOCKQUOTE>
+Getting the spectroscopical error
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetSqueeze(unsigned long spectrumNum, unsigned long specieNum) const"></A>
+<H3>GetSqueeze</H3>
+<P>
+<CODE>public double <B>GetSqueeze</B>(unsigned long spectrumNum, unsigned long specieNum) const</CODE>
+<BLOCKQUOTE>
+returns the SQUEEZE parameter for specie number 'specieNum' and
+ spectrum number 'specNum'
+
+<P>
+<B>Parameters:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>specieNum&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the zero based index into the list of species
+ to evaluate for
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>spectrumNum&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the zero based index into the list of
+ evaluated spectra.</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetSqueezeError(unsigned long spectrumNum, unsigned long specieNum) const"></A>
+<H3>GetSqueezeError</H3>
+<P>
+<CODE>public double <B>GetSqueezeError</B>(unsigned long spectrumNum, unsigned long specieNum) const</CODE>
+<BLOCKQUOTE>
+returns the error for the SQUEEZE parameter for specie number
+ 'specieNum' and spectrum number 'specNum'
+
+<P>
+<B>Parameters:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>specieNum&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the zero based index into the list of species
+ to evaluate for
+</TD>
+</TR>
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>spectrumNum&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the zero based index into the list of
+ evaluated spectra.</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetStartTime(unsigned long index) const"></A>
+<H3>GetStartTime</H3>
+<P>
+<CODE>public const CSpectrumTime* <B>GetStartTime</B>(unsigned long index) const</CODE>
+<BLOCKQUOTE>
+returns the time(UMT) when evaluated spectrum number 'index' was started.
+
+<P>
+<B>Parameters:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>index&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the zero based index into the list of evaluated spectra</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetStartTime(unsigned long index, CDateTime &time) const"></A>
+<H3>GetStartTime</H3>
+<P>
+<CODE>public RETURN_CODE <B>GetStartTime</B>(unsigned long index, CDateTime &time) const</CODE>
+<BLOCKQUOTE>
+returns the time and date(UMT) when evaluated spectrum number
+ 'index' was started.
+
+<P>
+<B>Parameters:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>index&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the zero based index into the list of evaluated spectra.
+</TD>
+</TR>
+</TABLE>
+<P>
+<B>Returns:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">SUCCESS if the index is valid</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetStopTime(unsigned long index) const"></A>
+<H3>GetStopTime</H3>
+<P>
+<CODE>public const CSpectrumTime* <B>GetStopTime</B>(unsigned long index) const</CODE>
+<BLOCKQUOTE>
+return the time(UMT) when evaluated spectrum number 'index' was stopped
+
+<P>
+<B>Parameters:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>index&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the zero based index into the list of evaluated spectra</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetStopTime(unsigned long index, CDateTime &time) const"></A>
+<H3>GetStopTime</H3>
+<P>
+<CODE>public RETURN_CODE <B>GetStopTime</B>(unsigned long index, CDateTime &time) const</CODE>
+<BLOCKQUOTE>
+returns the time and date(UMT) when evaluated spectrum number 'index'
+ was stopped.
+
+<P>
+<B>Parameters:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>index&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - the zero based index into the list of evaluated spectra.
+</TD>
+</TR>
+</TABLE>
+<P>
+<B>Returns:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">SUCCESS if the index is valid</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="GetTemperature() const"></A>
+<H3>GetTemperature</H3>
+<P>
+<CODE>public double <B>GetTemperature</B>() const</CODE>
+<BLOCKQUOTE>
+returns the temperature of the system at the time of the measurement
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="InitializeArrays(long specNum)"></A>
+<H3>InitializeArrays</H3>
+<P>
+<CODE>public void <B>InitializeArrays</B>(long specNum)</CODE>
+<BLOCKQUOTE>
+Intializes the memory arrays to have, initially, space for
+ 'specNum' spectra.
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="IsBad(unsigned long index) const"></A>
+<H3>IsBad</H3>
+<P>
+<CODE>public int <B>IsBad</B>(unsigned long index) const</CODE>
+<BLOCKQUOTE>
+returns the goodness of fit for the fitting of the evaluated
+ spectrum number 'index'.
+ This function is the complementary of IsOK(unsigned long index).
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="IsCompositionMeasurement() const"></A>
+<H3>IsCompositionMeasurement</H3>
+<P>
+<CODE>public bool <B>IsCompositionMeasurement</B>() const</CODE>
+<BLOCKQUOTE>
+Returns true if this is a composition mode measurement
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="IsDeleted(unsigned long index) const"></A>
+<H3>IsDeleted</H3>
+<P>
+<CODE>public int <B>IsDeleted</B>(unsigned long index) const</CODE>
+<BLOCKQUOTE>
+returns true if the evaluated spectrum number 'index' is marked
+ as deleted
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="IsDirectSunMeasurement() const"></A>
+<H3>IsDirectSunMeasurement</H3>
+<P>
+<CODE>public bool <B>IsDirectSunMeasurement</B>() const</CODE>
+<BLOCKQUOTE>
+Returns true if this is a direct-sun mode measurement
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="IsEvaluatedSpecie(const CString &specie) const"></A>
+<H3>IsEvaluatedSpecie</H3>
+<P>
+<CODE>public bool <B>IsEvaluatedSpecie</B>(const CString &specie) const</CODE>
+<BLOCKQUOTE>
+returns true if the spectra have been evaluated for the supplied specie.
+
+<P>
+<B>Parameters:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease"><CODE>specie&nbsp;-</CODE></TD>
+<TD CLASS="marginIncrease"> - a string containing the name of the specie to
+ search for, e.g. "SO2"(case insensitive)</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="IsFluxMeasurement()"></A>
+<H3>IsFluxMeasurement</H3>
+<P>
+<CODE>public bool <B>IsFluxMeasurement</B>()</CODE>
+<BLOCKQUOTE>
+Returns true if this is a flux measurement
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="IsFluxOk() const"></A>
+<H3>IsFluxOk</H3>
+<P>
+<CODE>public bool <B>IsFluxOk</B>() const</CODE>
+<BLOCKQUOTE>
+Returns true if the automatic judgment considers this flux
+ measurement to be a good measurement
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="IsOk(unsigned long index) const"></A>
+<H3>IsOk</H3>
+<P>
+<CODE>public int <B>IsOk</B>(unsigned long index) const</CODE>
+<BLOCKQUOTE>
+returns the goodness of fit for the fitting of the evaluated
+ spectrum number 'index'.
+ This function is the complementary of IsBad(unsigned long index)
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="IsStratosphereMeasurement() const"></A>
+<H3>IsStratosphereMeasurement</H3>
+<P>
+<CODE>public bool <B>IsStratosphereMeasurement</B>() const</CODE>
+<BLOCKQUOTE>
+Returns true if this is a stratospheric mode measurement
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="IsValidSpectrumIndex(unsigned long spectrumNum) const"></A>
+<H3>IsValidSpectrumIndex</H3>
+<P>
+<CODE>private inline bool <B>IsValidSpectrumIndex</B>(unsigned long spectrumNum) const</CODE>
+<BLOCKQUOTE>
+returns true if the given index is a valid spectrum index
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="IsWindMeasurement() const"></A>
+<H3>IsWindMeasurement</H3>
+<P>
+<CODE>public bool <B>IsWindMeasurement</B>() const</CODE>
+<BLOCKQUOTE>
+Returns true if this is a wind-speed measurement
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="IsWindMeasurement_Gothenburg() const"></A>
+<H3>IsWindMeasurement_Gothenburg</H3>
+<P>
+<CODE>public bool <B>IsWindMeasurement_Gothenburg</B>() const</CODE>
+<BLOCKQUOTE>
+Returns true if this is a wind-speed measurement of Gothenburg type
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="IsWindMeasurement_Heidelberg() const"></A>
+<H3>IsWindMeasurement_Heidelberg</H3>
+<P>
+<CODE>public bool <B>IsWindMeasurement_Heidelberg</B>() const</CODE>
+<BLOCKQUOTE>
+Returns true if this is a wind-speed measurement of Heidelberg type
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="MarkAs(unsigned long index, int MARK_FLAG)"></A>
+<H3>MarkAs</H3>
+<P>
+<CODE>public RETURN_CODE <B>MarkAs</B>(unsigned long index, int MARK_FLAG)</CODE>
+<BLOCKQUOTE>
+Marks the desired spectrum with the supplied mark_flag.
+ Mark flag must be MARK_BAD_EVALUATION, or MARK_DELETED
+
+<P>
+<B>Returns:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">SUCCESS on success.</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="MarkAsCorrupted(unsigned int specIndex)"></A>
+<H3>MarkAsCorrupted</H3>
+<P>
+<CODE>public void <B>MarkAsCorrupted</B>(unsigned int specIndex)</CODE>
+<BLOCKQUOTE>
+Adds spectrum number 'specIndex' into the list of spectra in the .pak -file
+ which are corrupted and could not be evaluated
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="RemoveMark(unsigned long index, int MARK_FLAG)"></A>
+<H3>RemoveMark</H3>
+<P>
+<CODE>public RETURN_CODE <B>RemoveMark</B>(unsigned long index, int MARK_FLAG)</CODE>
+<BLOCKQUOTE>
+Removes the desired mark from the desired spectrum
+ Mark flag must be MARK_BAD_EVALUATION, or MARK_DELETED
+
+<P>
+<B>Returns:</B>
+<TABLE BORDER="0" CELLPADDING="0">
+<TR>
+<TD VALIGN="TOP" CLASS="marginIncrease">SUCCESS on success.</TD>
+</TR></TABLE>
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="RemoveResult(unsigned int specIndex)"></A>
+<H3>RemoveResult</H3>
+<P>
+<CODE>public int <B>RemoveResult</B>(unsigned int specIndex)</CODE>
+<BLOCKQUOTE>
+Removes the spectrum number 'specIndex' from the list of calcualted results
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="SetDarkCurrentSpecInfo(const CSpectrumInfo &darkCurSpecInfo)"></A>
+<H3>SetDarkCurrentSpecInfo</H3>
+<P>
+<CODE>public void <B>SetDarkCurrentSpecInfo</B>(const CSpectrumInfo &darkCurSpecInfo)</CODE>
+<BLOCKQUOTE>
+Stores the information about the dark-current-spectrum used
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="SetDarkSpecInfo(const CSpectrumInfo &darkSpecInfo)"></A>
+<H3>SetDarkSpecInfo</H3>
+<P>
+<CODE>public void <B>SetDarkSpecInfo</B>(const CSpectrumInfo &darkSpecInfo)</CODE>
+<BLOCKQUOTE>
+Stores the information about the dark-spectrum used
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="SetFlux(double flux)"></A>
+<H3>SetFlux</H3>
+<P>
+<CODE>public void <B>SetFlux</B>(double flux)</CODE>
+<BLOCKQUOTE>
+Set the flux to the given value. ONLY USED FOR READING EVALUATION-LOGS
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="SetGeometricalError(double err)"></A>
+<H3>SetGeometricalError</H3>
+<P>
+<CODE>public void <B>SetGeometricalError</B>(double err)</CODE>
+<BLOCKQUOTE>
+Getting the estimated geometrical error
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="SetInstrumentType(INSTRUMENT_TYPE type)"></A>
+<H3>SetInstrumentType</H3>
+<P>
+<CODE>public void <B>SetInstrumentType</B>(INSTRUMENT_TYPE type)</CODE>
+<BLOCKQUOTE>
+Sets the type of the instrument used
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="SetOffset(double offset)"></A>
+<H3>SetOffset</H3>
+<P>
+<CODE>public void <B>SetOffset</B>(double offset)</CODE>
+<BLOCKQUOTE>
+Sets the offset of the measurement
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="SetOffsetSpecInfo(const CSpectrumInfo &offsetSpecInfo)"></A>
+<H3>SetOffsetSpecInfo</H3>
+<P>
+<CODE>public void <B>SetOffsetSpecInfo</B>(const CSpectrumInfo &offsetSpecInfo)</CODE>
+<BLOCKQUOTE>
+Stores the information about the offset-spectrum used
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="SetScatteringError(double err)"></A>
+<H3>SetScatteringError</H3>
+<P>
+<CODE>public void <B>SetScatteringError</B>(double err)</CODE>
+<BLOCKQUOTE>
+Getting the scattering Error
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="SetSkySpecInfo(const CSpectrumInfo &skySpecInfo)"></A>
+<H3>SetSkySpecInfo</H3>
+<P>
+<CODE>public void <B>SetSkySpecInfo</B>(const CSpectrumInfo &skySpecInfo)</CODE>
+<BLOCKQUOTE>
+Stores the information about the sky-spectrum used
+</BLOCKQUOTE>
+<HR SIZE="2">
+
+<A NAME="SetSpectroscopicalError(double err)"></A>
+<H3>SetSpectroscopicalError</H3>
+<P>
+<CODE>public void <B>SetSpectroscopicalError</B>(double err)</CODE>
+<BLOCKQUOTE>
+Getting the spectroscopical error
+</BLOCKQUOTE>
+</BODY>
+</HTML>
