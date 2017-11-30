@@ -78,8 +78,9 @@ bool CFTPHandler::PollScanner()
 //download pak files listed in m_fileInfoList
 bool CFTPHandler::DownloadPakFiles(const CString& folder)
 {
-	CString fileName,workPak;
+	CString fileName,workPak, uploadPak;
 	workPak.Format("WORK.PAK");
+	uploadPak.Format("upload.pak");
 	bool downloadResult = false;
 	CScannerFileInfo* fileInfo = new CScannerFileInfo();
 
@@ -104,7 +105,7 @@ bool CFTPHandler::DownloadPakFiles(const CString& folder)
 		}
 		m_remoteFileSize = fileInfo->fileSize;
 
-		if(Equals(fileName, workPak) && folder.GetLength() == 0)
+		if((Equals(fileName, workPak) || Equals(fileName, uploadPak)) && folder.GetLength() == 0)
 		{
 			m_fileInfoList.RemoveTail();
 			continue;
