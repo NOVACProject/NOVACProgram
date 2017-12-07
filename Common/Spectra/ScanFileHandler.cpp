@@ -217,6 +217,8 @@ int CScanFileHandler::GetNextSpectrum(CSpectrum &spec){
 		spec.m_info.m_specModel = HR4000;
 	}else if(strstr(spec.m_info.m_device, "QE")){
 		spec.m_info.m_specModel = QE65000;
+	}else if (strstr(spec.m_info.m_device, "MAYAPRO")) {
+		spec.m_info.m_specModel = MAYAPRO;
 	}
 
 	return 1;
