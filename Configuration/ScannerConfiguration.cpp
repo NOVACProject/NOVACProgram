@@ -153,13 +153,15 @@ BOOL CScannerConfiguration::OnInitDialog()
 	tabPtr->GetItemRect(1, &rect);
 	m_toolTip.AddTool(tabPtr, IDD_CONFIGURE_EVALUATION, &rect, IDD_CONFIGURE_EVALUATION);
 	tabPtr->GetItemRect(2, &rect);
-	m_toolTip.AddTool(tabPtr, IDD_CONFIGURE_EVALUATION, &rect, IDD_CONFIGURE_EVALUATION);
-	tabPtr->GetItemRect(3, &rect);
-	m_toolTip.AddTool(tabPtr, IDD_CONFIGURE_WIND, &rect, IDD_CONFIGURE_WIND);
-	tabPtr->GetItemRect(4, &rect);
 	m_toolTip.AddTool(tabPtr, IDD_CONFIGURE_COM_PORT, &rect, IDD_CONFIGURE_COM_PORT);
-	tabPtr->GetItemRect(5, &rect);
-	m_toolTip.AddTool(tabPtr, ID_CONFIGURATION_REMOTE, &rect, ID_CONFIGURATION_REMOTE);
+
+	//m_toolTip.AddTool(tabPtr, IDD_CONFIGURE_EVALUATION, &rect, IDD_CONFIGURE_EVALUATION);
+	//tabPtr->GetItemRect(3, &rect);
+	//m_toolTip.AddTool(tabPtr, IDD_CONFIGURE_WIND, &rect, IDD_CONFIGURE_WIND);
+	//tabPtr->GetItemRect(4, &rect);
+	//m_toolTip.AddTool(tabPtr, IDD_CONFIGURE_COM_PORT, &rect, IDD_CONFIGURE_COM_PORT);
+	//tabPtr->GetItemRect(5, &rect);
+	//m_toolTip.AddTool(tabPtr, ID_CONFIGURATION_REMOTE, &rect, ID_CONFIGURATION_REMOTE);
 
 	tabPtr->SetToolTips(&m_toolTip);
 	tabPtr->EnableToolTips(TRUE);

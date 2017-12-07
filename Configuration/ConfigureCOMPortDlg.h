@@ -109,9 +109,10 @@ namespace ConfigurationDialog
 		CStatic m_label1, m_label2, m_label3, m_label4, m_label5, m_labelRadioID;
 
 		/** The current selection of settings
-				0 == Serial Cable 
-				1 == Freewave Serial Radio modem
-				2 == FTP - Communication */
+				0 == FTP - Communication
+				1 == Serial Cable 
+				2 == Freewave Serial Radio modem
+		*/
 		int m_curSetting;
 
 		/** Showing the settings for connecting through a serial cable */
