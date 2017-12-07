@@ -45,7 +45,7 @@ void CLocationConfigurationDlg::DoDataExchange(CDataExchange* pDX)
 
 	// The edits (only used for showing tooltips);
 	DDX_Control(pDX, IDC_EDIT_SITE,						m_editSite);
-	//DDX_Control(pDX, IDC_EDIT_OBSERVATORY,			m_editObservatory);
+	DDX_Control(pDX, IDC_EDIT_OBSERVATORY,				m_editObservatory);
 	DDX_Control(pDX, IDC_EDIT_SERIALNUMBER,				m_editSerial);
 
 	DDX_Control(pDX, IDC_EDIT_STEPSPERROUND1,			m_editSPR1);
@@ -56,25 +56,24 @@ void CLocationConfigurationDlg::DoDataExchange(CDataExchange* pDX)
 
 	// The combo boxes
 	DDX_Control(pDX, IDC_COMBO_VOLCANO,					m_comboVolcano);
-	DDX_Control(pDX, IDC_COMBO_OBSERVATORY,				m_comboObservatory);
 	DDX_Control(pDX, IDC_COMBO_INSTRUMENTTYPE,			m_comboInstrumentType);
 	DDX_Control(pDX, IDC_COMBO_SPECTROMETERMODEL,		m_comboSpectrometerModel);
 	DDX_Control(pDX, IDC_COMBO_CHANNELS,				m_comboSpectrometerChannels);
 
 	if(m_curScanner != NULL){
 		DDX_Text(pDX, IDC_EDIT_SITE,					m_curScanner->site);
-		//DDX_Text(pDX, IDC_EDIT_OBSERVATORY,			m_curScanner->observatory);
+		DDX_Text(pDX, IDC_EDIT_OBSERVATORY,			m_curScanner->observatory);
 		DDX_Text(pDX, IDC_EDIT_SERIALNUMBER,			m_curScanner->spec[0].serialNumber);
 
-		DDX_Text(pDX, IDC_EDIT_STEPSPERROUND1,			m_curScanner->motor[0].stepsPerRound);
-		DDX_Text(pDX, IDC_EDIT_STEPSPERROUND2,			m_curScanner->motor[1].stepsPerRound);
-		DDX_Text(pDX, IDC_EDIT_MOTORSTEPSCOMPENSATION1,	m_curScanner->motor[0].motorStepsComp);
-		DDX_Text(pDX, IDC_EDIT_MOTORSTEPSCOMPENSATION2,	m_curScanner->motor[1].motorStepsComp);
+		//DDX_Text(pDX, IDC_EDIT_STEPSPERROUND1,			m_curScanner->motor[0].stepsPerRound);
+		//DDX_Text(pDX, IDC_EDIT_STEPSPERROUND2,			m_curScanner->motor[1].stepsPerRound);
+		//DDX_Text(pDX, IDC_EDIT_MOTORSTEPSCOMPENSATION1,	m_curScanner->motor[0].motorStepsComp);
+		//DDX_Text(pDX, IDC_EDIT_MOTORSTEPSCOMPENSATION2,	m_curScanner->motor[1].motorStepsComp);
 
 	}else{
 		CString site, observatory, serialNumber;
 		DDX_Text(pDX, IDC_EDIT_SITE,					site);
-		//DDX_Text(pDX, IDC_EDIT_OBSERVATORY,			observatory);
+		DDX_Text(pDX, IDC_EDIT_OBSERVATORY,			observatory);
 		DDX_Text(pDX, IDC_EDIT_SERIALNUMBER,			serialNumber);
 	}
 }
@@ -83,7 +82,7 @@ void CLocationConfigurationDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CLocationConfigurationDlg, CPropertyPage)
 	// immediately save all changes made in the dialog
 	ON_EN_CHANGE(IDC_EDIT_SITE,											SaveData)
-	//ON_EN_CHANGE(IDC_EDIT_OBSERVATORY,				SaveData)
+	ON_EN_CHANGE(IDC_EDIT_OBSERVATORY,				SaveData)
 	ON_EN_CHANGE(IDC_EDIT_SERIALNUMBER,					SaveData)
 	ON_EN_CHANGE(IDC_EDIT_STEPSPERROUND1,				SaveData)
 	ON_EN_CHANGE(IDC_EDIT_STEPSPERROUND2,				SaveData)
@@ -92,7 +91,7 @@ BEGIN_MESSAGE_MAP(CLocationConfigurationDlg, CPropertyPage)
 
 	ON_CBN_SELCHANGE(IDC_COMBO_VOLCANO,					OnChangeVolcano)
 	ON_CBN_SELCHANGE(IDC_COMBO_SPECTROMETERMODEL,		OnChangeModel)
-	ON_CBN_SELCHANGE(IDC_COMBO_OBSERVATORY,				SaveData)
+	//ON_CBN_SELCHANGE(IDC_COMBO_OBSERVATORY,				SaveData)
 	ON_CBN_SELCHANGE(IDC_COMBO_CHANNELS,				OnChangeChannelNum)
 	ON_CBN_SELCHANGE(IDC_COMBO_INSTRUMENTTYPE,			OnChangeType)
 END_MESSAGE_MAP()
@@ -161,7 +160,7 @@ void CLocationConfigurationDlg::InitToolTips(){
 	m_toolTip.AddTool(&m_labelSite,						IDC_EDIT_SITE);
 	m_toolTip.AddTool(&m_editSite,						IDC_EDIT_SITE);
 	m_toolTip.AddTool(&m_labelObservatory,				IDC_EDIT_OBSERVATORY);
-	//m_toolTip.AddTool(&m_editObservatory,				IDC_EDIT_OBSERVATORY);
+	m_toolTip.AddTool(&m_editObservatory,				IDC_EDIT_OBSERVATORY);
 	m_toolTip.AddTool(&m_comboSpectrometerModel,		IDC_COMBO_SPECTROMETERMODEL);
 	m_toolTip.AddTool(&m_comboSpectrometerChannels,		IDC_COMBO_CHANNELS);
 	m_toolTip.AddTool(&m_editSerial,					IDC_EDIT_SERIALNUMBER);
@@ -205,12 +204,13 @@ void CLocationConfigurationDlg::SaveData(){
 
 	// save the observatory-name
 	if(m_curScanner != NULL){
-		int sel = m_comboObservatory.GetCurSel();
+		m_curScanner->observatory.Format("%s", g_observatories.m_name[sel]);
+		/*int sel = m_comboObservatory.GetCurSel();
 		if(sel >= 0){
 			m_curScanner->observatory.Format("%s", g_observatories.m_name[sel]);
 		}else{
 			m_curScanner->observatory.Format("chalmers");
-		}
+		}*/
 	}else{
 		
 	}
@@ -222,18 +222,19 @@ void CLocationConfigurationDlg::UpdateDlg(){
 
 /** Updating the name of the observatory in the combo-box */
 void CLocationConfigurationDlg::UpdateObservatoryName(){
+	SetDlgItemText(IDC_EDIT_OBSERVATORY, m_curScanner->observatory);
 	// update the observatory-name
-	if(m_curScanner != NULL){
-		// find the index of the observatory
-		for(unsigned int k = 0; k < g_observatories.m_observatoryNum; ++k){
-			if(Equals(g_observatories.m_name[k], m_curScanner->observatory)){
-				m_comboObservatory.SetCurSel(k);
-				return;
-			}
-		}
-	}else{
-		
-	}
+	//if(m_curScanner != NULL){
+	//	// find the index of the observatory
+	//	for(unsigned int k = 0; k < g_observatories.m_observatoryNum; ++k){
+	//		if(Equals(g_observatories.m_name[k], m_curScanner->observatory)){
+	//			m_comboObservatory.SetCurSel(k);
+	//			return;
+	//		}
+	//	}
+	//}else{
+	//	
+	//}
 }
 
 BOOL CLocationConfigurationDlg::PreTranslateMessage(MSG* pMsg){

@@ -68,13 +68,13 @@ namespace ConfigurationDialog
 
 
 		// The edit controls on the screen.
-		CStatic m_editSite, m_labelSPR;
+		CStatic m_editSite, m_editObservatory, m_labelSPR;
 		CEdit   m_editSPR1, m_editSPR2, m_editMSC1, m_editMSC2;
 		CStatic m_editSerial;
 
 		// The combo controls on the screen
 		CComboBox	m_comboVolcano;
-		CComboBox	m_comboObservatory;
+		//CComboBox	m_comboObservatory;
 		CComboBox	m_comboInstrumentType;
 		CComboBox	m_comboSpectrometerModel;
 		CComboBox	m_comboSpectrometerChannels;
