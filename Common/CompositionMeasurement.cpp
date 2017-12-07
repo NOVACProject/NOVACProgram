@@ -285,9 +285,9 @@ void	CCompositionMeasurement::StartCompositionMeasurement(const Evaluation::CSpe
 	if(spec->m_scanner.instrumentType == INSTR_GOTHENBURG){
 
 		// 3e. Write the motor information
-		fprintf(f, "%% StepsPerRound defines the number of steps the steppermotor divides one round into\n");
-		fprintf(f, "STEPSPERROUND=%d\n",	stepsPerRound);
-		fprintf(f, "MOTORSTEPCOMP=%d\n",	spec->m_scanner.motor[0].motorStepsComp);
+		//fprintf(f, "%% StepsPerRound defines the number of steps the steppermotor divides one round into\n");
+		//fprintf(f, "STEPSPERROUND=%d\n",	stepsPerRound);
+		//fprintf(f, "MOTORSTEPCOMP=%d\n",	spec->m_scanner.motor[0].motorStepsComp);
 		fprintf(f, "%% If Skipmotor=1 then the scanner will not be used. ONLY FOR TESTING PURPOSES\n");
 		fprintf(f, "SKIPMOTOR=0\n");
 		if(spec->m_scanner.coneAngle == 90.0)
@@ -351,9 +351,9 @@ void	CCompositionMeasurement::StartCompositionMeasurement(const Evaluation::CSpe
 		fprintf (f, "SPECTROMETERTYPE=%s\n\n", spectrometerType);  //can spectrometertype be retrieved automatically from configuration?
 
 		// 3e. Write the motor information
-		fprintf(f, "%% StepsPerRound defines the number of steps the steppermotor divides one round into\n");
-		fprintf(f, "STEPSPERROUND=%d %d\n",	-stepsPerRound1, -stepsPerRound2); //2 motors HD
-		fprintf(f, "MOTORSTEPSCOMP=%d %d\n",	int (round(spec->m_scanner.motor[0].motorStepsComp)), int (round(spec->m_scanner.motor[1].motorStepsComp))); //2 motors HD
+		//fprintf(f, "%% StepsPerRound defines the number of steps the steppermotor divides one round into\n");
+		//fprintf(f, "STEPSPERROUND=%d %d\n",	-stepsPerRound1, -stepsPerRound2); //2 motors HD
+		//fprintf(f, "MOTORSTEPSCOMP=%d %d\n",	int (round(spec->m_scanner.motor[0].motorStepsComp)), int (round(spec->m_scanner.motor[1].motorStepsComp))); //2 motors HD
 		fprintf(f, "%% If Skipmotor=1 then the scanner will not be used. ONLY FOR TESTING PURPOSES\n");
 		fprintf(f, "SKIPMOTOR=2\n");
 		fprintf(f, "DELAY=%d\n\n",	 2); // what is an appropriate value

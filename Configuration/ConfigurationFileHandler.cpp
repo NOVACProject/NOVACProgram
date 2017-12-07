@@ -373,26 +373,26 @@ int CConfigurationFileHandler::WriteConfigurationFile(CConfigurationSetting &con
 		}
 
 		// Write the motor information	
-		{
-			indent.Format("\t\t\t\t");
-			fprintf(f, TEXT("\t\t\t<motor>\n"));
+		//{
+		//	indent.Format("\t\t\t\t");
+		//	fprintf(f, TEXT("\t\t\t<motor>\n"));
 
-			str.Format("%s<stepsperround1>%d</stepsperround1>\n", indent, conf->scanner[i].motor[0].stepsPerRound);
-			fprintf(f, str);
+		//	str.Format("%s<stepsperround1>%d</stepsperround1>\n", indent, conf->scanner[i].motor[0].stepsPerRound);
+		//	fprintf(f, str);
 
-			str.Format("%s<motorstepscomp1>%d</motorstepscomp1>\n", indent, conf->scanner[i].motor[0].motorStepsComp);
-			fprintf(f, str);
+		//	str.Format("%s<motorstepscomp1>%d</motorstepscomp1>\n", indent, conf->scanner[i].motor[0].motorStepsComp);
+		//	fprintf(f, str);
 
-			if(conf->scanner[i].instrumentType == INSTR_HEIDELBERG){
-				str.Format("%s<stepsperround2>%d</stepsperround2>\n", indent, conf->scanner[i].motor[1].stepsPerRound);
-				fprintf(f, str);
+		//	if(conf->scanner[i].instrumentType == INSTR_HEIDELBERG){
+		//		str.Format("%s<stepsperround2>%d</stepsperround2>\n", indent, conf->scanner[i].motor[1].stepsPerRound);
+		//		fprintf(f, str);
 
-				str.Format("%s<motorstepscomp2>%d</motorstepscomp2>\n", indent, conf->scanner[i].motor[1].motorStepsComp);
-				fprintf(f, str);
-			}
+		//		str.Format("%s<motorstepscomp2>%d</motorstepscomp2>\n", indent, conf->scanner[i].motor[1].motorStepsComp);
+		//		fprintf(f, str);
+		//	}
 
-			fprintf(f, TEXT("\t\t\t</motor>\n"));
-		}
+		//	fprintf(f, TEXT("\t\t\t</motor>\n"));
+		//}
 
 		// .. Third: write the wind measurement settings, if applicable
 		bool doWindMeasurements	= (hasDoubleSpectrometer || conf->scanner[i].instrumentType == INSTR_HEIDELBERG)&& conf->scanner[i].windSettings.automaticWindMeasurements;
@@ -590,9 +590,9 @@ int CConfigurationFileHandler::Parse_ScanningInstrument(){
 		}
 
 		// a motor section
-		if(Equals(szToken, "motor")){
-			Parse_Motor();
-		}
+		//if(Equals(szToken, "motor")){
+		//	Parse_Motor();
+		//}
 
 		// a windmeasurement section
 		if(Equals(szToken, "windmeasurement")){
@@ -1180,11 +1180,11 @@ int	CConfigurationFileHandler::Parse_WindMeasurement(){
 		}
 		// found the motor steps comp - THIS IS OUTDATED, THE PARAMETER IS NOW
 		//	STORED IN THE MOTOR-PROPERTIES OF EACH OF THE SCANNERS
-		if(Equals(szToken, "motorstepscomp")){
-			if(wind != NULL)
-				Parse_IntItem("/motorstepscomp", curScanner->motor[0].motorStepsComp);
-			continue;
-		}
+		//if(Equals(szToken, "motorstepscomp")){
+		//	if(wind != NULL)
+		//		Parse_IntItem("/motorstepscomp", curScanner->motor[0].motorStepsComp);
+		//	continue;
+		//}
 
 	}
 	return 0;
@@ -1382,49 +1382,49 @@ int CConfigurationFileHandler::CheckSettings(){
 	return 0;
 }
 
-int CConfigurationFileHandler::Parse_Motor(){
-
-	// the actual reading loop
-	while(szToken = NextToken()){
-
-		// no use to parse empty lines
-		if(strlen(szToken) < 3)
-			continue;
-
-		// ignore comments
-		if(Equals(szToken, "!--", 3)){
-			continue;
-		}
-
-		// the end of the motor section
-		if(Equals(szToken, "/motor")){
-			return 0;
-		}
-
-		// the number of steps per round for motor 1
-		if(Equals(szToken, "stepsperround1")){
-			Parse_IntItem("/stepsperround1", curScanner->motor[0].stepsPerRound);
-			continue;
-		}
-
-		// the number of steps per round for motor 2
-		if(Equals(szToken, "stepsperround2")){
-			Parse_IntItem("/stepsperround2", curScanner->motor[1].stepsPerRound);
-			continue;
-		}
-
-		// the motor steps compensation for motor 1
-		if(Equals(szToken, "motorstepscomp1")){
-			Parse_IntItem("/motorstepscomp1", curScanner->motor[0].motorStepsComp);
-			continue;
-		}
-
-		// the motor steps compensation for motor 2
-		if(Equals(szToken, "motorstepscomp2")){
-			Parse_IntItem("/motorstepscomp2", curScanner->motor[1].motorStepsComp);
-			continue;
-		}
-	}
-
-	return 0;
-}
+//int CConfigurationFileHandler::Parse_Motor(){
+//
+//	// the actual reading loop
+//	while(szToken = NextToken()){
+//
+//		// no use to parse empty lines
+//		if(strlen(szToken) < 3)
+//			continue;
+//
+//		// ignore comments
+//		if(Equals(szToken, "!--", 3)){
+//			continue;
+//		}
+//
+//		// the end of the motor section
+//		if(Equals(szToken, "/motor")){
+//			return 0;
+//		}
+//
+//		// the number of steps per round for motor 1
+//		if(Equals(szToken, "stepsperround1")){
+//			Parse_IntItem("/stepsperround1", curScanner->motor[0].stepsPerRound);
+//			continue;
+//		}
+//
+//		// the number of steps per round for motor 2
+//		if(Equals(szToken, "stepsperround2")){
+//			Parse_IntItem("/stepsperround2", curScanner->motor[1].stepsPerRound);
+//			continue;
+//		}
+//
+//		// the motor steps compensation for motor 1
+//		if(Equals(szToken, "motorstepscomp1")){
+//			Parse_IntItem("/motorstepscomp1", curScanner->motor[0].motorStepsComp);
+//			continue;
+//		}
+//
+//		// the motor steps compensation for motor 2
+//		if(Equals(szToken, "motorstepscomp2")){
+//			Parse_IntItem("/motorstepscomp2", curScanner->motor[1].motorStepsComp);
+//			continue;
+//		}
+//	}
+//
+//	return 0;
+//}
