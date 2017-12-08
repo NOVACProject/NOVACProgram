@@ -14,7 +14,7 @@
 using namespace ConfigurationDialog;
 
 extern CVolcanoInfo			g_volcanoes;
-extern CObservatoryInfo g_observatories;
+//extern CObservatoryInfo g_observatories;
 
 // CLocationConfigurationDlg dialog
 
@@ -56,6 +56,7 @@ void CLocationConfigurationDlg::DoDataExchange(CDataExchange* pDX)
 
 	// The combo boxes
 	DDX_Control(pDX, IDC_COMBO_VOLCANO,					m_comboVolcano);
+	DDX_Control(pDX, IDC_COMBO_ELECTRONICS,				m_comboElectronics);
 	DDX_Control(pDX, IDC_COMBO_INSTRUMENTTYPE,			m_comboInstrumentType);
 	DDX_Control(pDX, IDC_COMBO_SPECTROMETERMODEL,		m_comboSpectrometerModel);
 	DDX_Control(pDX, IDC_COMBO_CHANNELS,				m_comboSpectrometerChannels);
@@ -94,6 +95,7 @@ BEGIN_MESSAGE_MAP(CLocationConfigurationDlg, CPropertyPage)
 	//ON_CBN_SELCHANGE(IDC_COMBO_OBSERVATORY,				SaveData)
 	ON_CBN_SELCHANGE(IDC_COMBO_CHANNELS,				OnChangeChannelNum)
 	ON_CBN_SELCHANGE(IDC_COMBO_INSTRUMENTTYPE,			OnChangeType)
+	ON_CBN_SELCHANGE(IDC_COMBO_ELECTRONICS, &CLocationConfigurationDlg::OnChangeElectronics)
 END_MESSAGE_MAP()
 
 
@@ -108,11 +110,11 @@ BOOL CLocationConfigurationDlg::OnInitDialog()
 	UpdateVolcanoList();
 
 	// The observatories - combo box 
-	m_comboObservatory.ResetContent();
-	for(unsigned int k = 0; k < g_observatories.m_observatoryNum; ++k){
-		str.Format("%s", g_observatories.m_name[k]);
-		m_comboObservatory.AddString(str);
-	}
+	//m_comboObservatory.ResetContent();
+	//for(unsigned int k = 0; k < g_observatories.m_observatoryNum; ++k){
+	//	str.Format("%s", g_observatories.m_name[k]);
+	//	m_comboObservatory.AddString(str);
+	//}
 
 	// The spectrometer models combo box
 	m_comboSpectrometerModel.ResetContent();
@@ -128,10 +130,15 @@ BOOL CLocationConfigurationDlg::OnInitDialog()
 		m_comboSpectrometerChannels.AddString(str);
 	}
 
+	// The electronics combo-box
+	m_comboElectronics.ResetContent();
+	m_comboElectronics.AddString("Version 1");
+	m_comboElectronics.AddString("Version 2");
+
 	// The instrument-type combo-box
 	m_comboInstrumentType.ResetContent();
 	m_comboInstrumentType.AddString("Gothenburg");
-	m_comboInstrumentType.AddString("Heidelberg");
+	//m_comboInstrumentType.AddString("Heidelberg");
 
 	UpdateData(FALSE);
 
@@ -203,38 +210,20 @@ void CLocationConfigurationDlg::SaveData(){
 	UpdateData(TRUE);
 
 	// save the observatory-name
-	if(m_curScanner != NULL){
-		m_curScanner->observatory.Format("%s", g_observatories.m_name[sel]);
-		/*int sel = m_comboObservatory.GetCurSel();
-		if(sel >= 0){
-			m_curScanner->observatory.Format("%s", g_observatories.m_name[sel]);
-		}else{
-			m_curScanner->observatory.Format("chalmers");
-		}*/
-	}else{
-		
-	}
-}
-
-void CLocationConfigurationDlg::UpdateDlg(){
-	UpdateData(FALSE);
-}
-
-/** Updating the name of the observatory in the combo-box */
-void CLocationConfigurationDlg::UpdateObservatoryName(){
-	SetDlgItemText(IDC_EDIT_OBSERVATORY, m_curScanner->observatory);
-	// update the observatory-name
 	//if(m_curScanner != NULL){
-	//	// find the index of the observatory
-	//	for(unsigned int k = 0; k < g_observatories.m_observatoryNum; ++k){
-	//		if(Equals(g_observatories.m_name[k], m_curScanner->observatory)){
-	//			m_comboObservatory.SetCurSel(k);
-	//			return;
-	//		}
+	//	int sel = m_comboObservatory.GetCurSel();
+	//	if(sel >= 0){
+	//		m_curScanner->observatory.Format("%s", g_observatories.m_name[sel]);
+	//	}else{
+	//		m_curScanner->observatory.Format("chalmers");
 	//	}
 	//}else{
 	//	
 	//}
+}
+
+void CLocationConfigurationDlg::UpdateDlg(){
+	UpdateData(FALSE);
 }
 
 BOOL CLocationConfigurationDlg::PreTranslateMessage(MSG* pMsg){
@@ -261,14 +250,14 @@ void CLocationConfigurationDlg::OnChangeScanner(){
 			}
 		}
 
-		// Update the observatory combo-box
-		UpdateObservatoryName();
-
 		// Then update the spectrometer model
 		m_comboSpectrometerModel.SetCurSel((int)m_curScanner->spec[0].model);
 
 		// Then update the channel numbers
 		m_comboSpectrometerChannels.SetCurSel(m_curScanner->spec[0].channelNum - 1);
+		
+		// Update the electronics
+		m_comboElectronics.SetCurSel((int)m_curScanner->electronicsBox);
 
 		// Update the instrument-type
 		m_comboInstrumentType.SetCurSel((int)m_curScanner->instrumentType);
@@ -454,4 +443,17 @@ void CLocationConfigurationDlg::UpdateVolcanoList(){
 		m_comboVolcano.AddString(str);
 	}
 	m_comboVolcano.AddString("Other...");
+}
+
+
+void CLocationConfigurationDlg::OnChangeElectronics()
+{
+	if (m_curScanner == NULL)
+		return;
+
+	int curSel = m_comboElectronics.GetCurSel();
+	if (curSel < 0)
+		return;
+
+	m_curScanner->electronicsBox = (ELECTRONICS_BOX)curSel;
 }

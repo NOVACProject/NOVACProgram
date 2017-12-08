@@ -664,9 +664,9 @@ int CConfigurationFileHandler::Parse_ScanningInstrument(){
 		if(Equals(szToken, "electronics")){
 			Parse_IntItem(TEXT("/electronics"), tmpInt);
 			if(tmpInt == 0){
-				curScanner->electronicsBox = BOX_BECK;
+				curScanner->electronicsBox = BOX_VERSION_1;
 			}else{
-				curScanner->electronicsBox = BOX_AXIS;
+				curScanner->electronicsBox = BOX_VERSION_2;
 			}
 			continue;
 		}

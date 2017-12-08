@@ -33,7 +33,7 @@ CConfigurationSetting::CommunicationSetting::CommunicationSetting(){
 
 	// Serial settings
 	this->baudrate = 115200;
-	this->connectionType = 1;
+	this->connectionType = FTP_CONNECTION;
 	this->flowControl = 1;
 	this->port = 1;
 	medium = MEDIUM_CABLE;
@@ -69,7 +69,7 @@ void CConfigurationSetting::CommunicationSetting::Clear(){
 	// initialize the communication
 	// Serial settings
 	this->baudrate = 57600;
-	this->connectionType = 1;
+	this->connectionType = FTP_CONNECTION;
 	this->flowControl = 1;
 	this->port = 1;
 	medium = MEDIUM_CABLE;
@@ -132,7 +132,7 @@ void CConfigurationSetting::ScanningInstrumentSetting::Clear(){
 	specNum = 0;
 	volcano.Format("");
 	instrumentType = INSTR_GOTHENBURG;
-	electronicsBox = BOX_BECK;
+	electronicsBox = BOX_VERSION_2;
 	for(int i = 0; i < MAX_SPECTROMETERS_PER_SCANNER; ++i)
 		spec[i].Clear();
 

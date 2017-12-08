@@ -113,7 +113,7 @@ namespace ConfigurationDialog
 				1 == Serial Cable 
 				2 == Freewave Serial Radio modem
 		*/
-		int m_curSetting;
+		int m_curSetting = 2;
 
 		/** Showing the settings for connecting through a serial cable */
 		void ShowSerialCable();

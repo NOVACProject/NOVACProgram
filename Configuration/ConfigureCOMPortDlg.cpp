@@ -16,7 +16,7 @@ CConfigureCOMPortDlg::CConfigureCOMPortDlg()
 {
 	m_configuration = NULL;
 
-	m_curSetting = 0;
+	m_curSetting = 2;
 
 	m_availableBaudrates[0] = 9600;
 	m_availableBaudrates[1] = 19200;
@@ -43,7 +43,7 @@ void CConfigureCOMPortDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CPropertyPage::DoDataExchange(pDX);
 
-	DDX_Radio(pDX, IDC_RADIO_FTP, m_curSetting);
+	DDX_Radio(pDX, IDC_RADIO_SERIAL, m_curSetting);
 
 	// The ftp-settings
 	DDX_Control(pDX, IDC_FTP_IPADDRESS, m_IPAddress);
@@ -160,7 +160,7 @@ BOOL ConfigurationDialog::CConfigureCOMPortDlg::OnInitDialog()
 	Common common;
 
 	// Default is to use FTP connection
-	m_curSetting = 0;
+	m_curSetting = 2;
 	ShowFTP();
 
 	/** Initialize the controls */
@@ -233,11 +233,11 @@ void CConfigureCOMPortDlg::UpdateDlg(){
 
 	// 1d. The communication medium
 	if(comm.connectionType == FTP_CONNECTION){
-		m_curSetting = 0;
+		m_curSetting = 2;
 	}else{
 		switch(comm.medium){
-			case MEDIUM_CABLE: m_curSetting = 1; break;
-			case MEDIUM_FREEWAVE_SERIAL_MODEM: m_curSetting = 2; break;
+			case MEDIUM_CABLE: m_curSetting = 0; break;
+			case MEDIUM_FREEWAVE_SERIAL_MODEM: m_curSetting = 1; break;
 		}
 	}
 
@@ -284,9 +284,9 @@ void CConfigureCOMPortDlg::OnChangeMethod(){
 	SaveData(); // <-- Save the remaining data in the dialog
 
 	switch(m_curSetting){
-		case 0:	ShowFTP(); break;
-		case 1:	ShowSerialCable(); break;
-		case 2:	ShowFreewaveSerial(); break;
+		case 0:	ShowSerialCable(); break;
+		case 1:	ShowFreewaveSerial(); break;
+		case 2:	ShowFTP(); break;
 		default: ShowFTP();
 	}
 
@@ -325,14 +325,17 @@ void CConfigureCOMPortDlg::SaveData(){
 		// 1d. The communication medium
 		switch(m_curSetting){
 			case 0:
-				comm.connectionType = FTP_CONNECTION;
-				break; 
-			case 1:
 				comm.connectionType = SERIAL_CONNECTION;
 				comm.medium = MEDIUM_CABLE; break;
-			case 2:
+			case 1:
 				comm.connectionType = SERIAL_CONNECTION;
 				comm.medium = MEDIUM_FREEWAVE_SERIAL_MODEM; break;
+			case 2:
+				comm.connectionType = FTP_CONNECTION;
+				break;
+			default:
+				comm.connectionType = FTP_CONNECTION;
+				break;
 		}
 
 		// 2. The Freewave - radiomodem settings

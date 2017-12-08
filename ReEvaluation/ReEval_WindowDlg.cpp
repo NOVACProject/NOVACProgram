@@ -112,7 +112,7 @@ BOOL CReEval_WindowDlg::OnInitDialog()
 
 	// Initialize the types of instruments
 	m_instrumentTypeCombo.AddString("Gothenburg");
-	m_instrumentTypeCombo.AddString("Heidelberg");
+	//m_instrumentTypeCombo.AddString("Heidelberg");
 	m_instrumentTypeCombo.SetCurSel(0);
 
 	// Initialize the reference grid control

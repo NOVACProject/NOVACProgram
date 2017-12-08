@@ -53,9 +53,6 @@ namespace ConfigurationDialog
 		/** Updating the data in the dialog */
 		afx_msg void UpdateDlg();
 
-		/** Updating the name of the observatory in the combo-box */
-		void UpdateObservatoryName();
-
 		/** Called when the user has changed the currently selected scanner */
 		void OnChangeScanner();
 
@@ -75,6 +72,7 @@ namespace ConfigurationDialog
 		// The combo controls on the screen
 		CComboBox	m_comboVolcano;
 		//CComboBox	m_comboObservatory;
+		CComboBox	m_comboElectronics;
 		CComboBox	m_comboInstrumentType;
 		CComboBox	m_comboSpectrometerModel;
 		CComboBox	m_comboSpectrometerChannels;
@@ -87,5 +85,6 @@ namespace ConfigurationDialog
 
 	public:
 		virtual BOOL OnSetActive();
+		afx_msg void OnChangeElectronics();
 	};
 }

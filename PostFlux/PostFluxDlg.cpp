@@ -238,7 +238,7 @@ BOOL CPostFluxDlg::OnInitDialog()
 	// Initialize the list of available instrument-types
 	m_instrumentTypeCombo.ResetContent();
 	m_instrumentTypeCombo.AddString("Gothenburg");
-	m_instrumentTypeCombo.AddString("Heidelberg");
+	//m_instrumentTypeCombo.AddString("Heidelberg");
 	m_instrumentTypeCombo.SetCurSel(0);
 
 	// Initialize the unit to use
