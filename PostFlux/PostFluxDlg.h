@@ -78,7 +78,7 @@ public:
 	CComboBox m_coneangleCombo;
 
 	/** The instrument-type combo */
-	CComboBox m_instrumentTypeCombo;
+	//CComboBox m_instrumentTypeCombo;
 
 	/** The flux-errors */
 	Dialogs::CFluxErrorDlg	m_fluxErrorDlg;
