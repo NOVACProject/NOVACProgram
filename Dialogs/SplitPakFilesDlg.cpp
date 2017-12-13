@@ -67,7 +67,7 @@ BOOL CSplitPakFilesDlg::OnInitDialog()
 
 /** Called to let the user browse for .pak files to split */
 void CSplitPakFilesDlg::OnBrowsePakFiles(){
-  TCHAR filter[] = "Pak Files | *.pak";
+  TCHAR filter[] = _T("Pak Files|*.pak|All Files|*.*||");
   CString str;
 
 	// The file-dialog

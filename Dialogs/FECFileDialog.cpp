@@ -202,10 +202,12 @@ void CFECFileDialog::OnFileNameChange()
     TCHAR dummy_buffer;
     
     // Get the required size for the 'files' buffer
-    UINT nfiles = CommDlg_OpenSave_GetSpec(GetParent()->m_hWnd, &dummy_buffer, 1);
+    //UINT nfiles = CommDlg_OpenSave_GetSpec(GetParent()->m_hWnd, &dummy_buffer, 1);
+	UINT nfiles = CommDlg_OpenSave_GetSpec(m_hWnd, &dummy_buffer, 1);
 
     // Get the required size for the 'folder' buffer
-    UINT nfolder = CommDlg_OpenSave_GetFolderPath(GetParent()->m_hWnd, &dummy_buffer, 1);
+    //UINT nfolder = CommDlg_OpenSave_GetFolderPath(GetParent()->m_hWnd, &dummy_buffer, 1);
+	UINT nfolder = CommDlg_OpenSave_GetFolderPath(m_hWnd, &dummy_buffer, 1);
 
     // Check if lpstrFile and nMaxFile are large enough
     if (nfiles + nfolder > m_ofn.nMaxFile)
@@ -214,12 +216,14 @@ void CFECFileDialog::OnFileNameChange()
         if (Files)
             delete[] Files;
         Files = new TCHAR[nfiles + 1];
-        CommDlg_OpenSave_GetSpec(GetParent()->m_hWnd, Files, nfiles);
+        //CommDlg_OpenSave_GetSpec(GetParent()->m_hWnd, Files, nfiles);
+		CommDlg_OpenSave_GetSpec(m_hWnd, Files, nfiles);
 
         if (Folder)
             delete[] Folder;
         Folder = new TCHAR[nfolder + 1];
-        CommDlg_OpenSave_GetFolderPath(GetParent()->m_hWnd, Folder, nfolder);
+        //CommDlg_OpenSave_GetFolderPath(GetParent()->m_hWnd, Folder, nfolder);
+		CommDlg_OpenSave_GetFolderPath(m_hWnd, Folder, nfolder);
     }
     else if (Files)
     {

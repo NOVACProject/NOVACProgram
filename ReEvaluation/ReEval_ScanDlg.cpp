@@ -56,7 +56,8 @@ END_MESSAGE_MAP()
 void CReEval_ScanDlg::OnBnClickedBtnBrowsescanfile()
 {
 	CString str;
-	TCHAR filter[] = "Pak Files | *.pak";
+
+	TCHAR filter[] = _T("Pak Files|*.pak|All Files|*.*||");
 
 	// save the contents in the dialog
 	UpdateData(TRUE);
