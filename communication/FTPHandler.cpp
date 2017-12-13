@@ -609,7 +609,7 @@ bool CFTPHandler::SendCommand(char* cmd)
 {
 	CString localFileFullPath,remoteFile;
 	remoteFile = _T("command.txt");
-	localFileFullPath.Format("%sCOMMAND.TXT", m_storageDirectory);
+	localFileFullPath.Format("%scommand.txt", m_storageDirectory);
 	if(false == MakeCommandFile(cmd))
 		return false;
 
@@ -632,7 +632,7 @@ bool CFTPHandler::SendCommand(char* cmd)
 
 void CFTPHandler::GotoSleep()
 {
-	CString cmdFile = TEXT("COMMAND.TXT");
+	CString cmdFile = TEXT("command.txt");
 	if(0 == DeleteRemoteFile(cmdFile)){
 		//		ShowMessage("Remote File command.txt could not be removed");
 	}
@@ -649,9 +649,9 @@ void CFTPHandler::WakeUp()
 	bool success = false;
 	int iterations = 0;
 
-	CString cmdFile = TEXT("COMMAND.TXT");
+	CString cmdFile = TEXT("command.txt");
 	if(0 == DeleteRemoteFile(cmdFile)){
-		//		ShowMessage("Remote File command.txt could not be removed");
+		//	ShowMessage("Remote File command.txt could not be removed");
 	}
 	success = SendCommand("poweron\nresume");
 
@@ -676,7 +676,7 @@ void CFTPHandler::WakeUp()
 
 void CFTPHandler::Reboot()
 {
-	CString cmdFile = TEXT("COMMAND.TXT");
+	CString cmdFile = TEXT("command.txt");
 	if(0 == DeleteRemoteFile(cmdFile)){
 		//		ShowMessage("Remote File command.txt could not be removed");
 	}
