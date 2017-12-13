@@ -16,7 +16,7 @@ CConfigureCOMPortDlg::CConfigureCOMPortDlg()
 {
 	m_configuration = NULL;
 
-	m_curSetting = 0;
+	m_curSetting = 2;
 
 	m_availableBaudrates[0] = 9600;
 	m_availableBaudrates[1] = 19200;
@@ -45,6 +45,13 @@ void CConfigureCOMPortDlg::DoDataExchange(CDataExchange* pDX)
 
 	DDX_Radio(pDX, IDC_RADIO_SERIAL, m_curSetting);
 
+	// The ftp-settings
+	DDX_Control(pDX, IDC_FTP_IPADDRESS, m_IPAddress);
+	DDX_Text(pDX, IDC_FTP_USERNAME, m_ftpUserName);
+	DDX_Control(pDX, IDC_FTP_USERNAME, m_editUserName);
+	DDX_Text(pDX, IDC_FTP_PASSWORD, m_ftpPassword);
+	DDX_Control(pDX, IDC_FTP_PASSWORD, m_editPassword);
+
 	// The serial settings
 	DDX_Control(pDX, IDC_COMPORT_COMBO, m_comPort);
 	DDX_Control(pDX, IDC_BAUDRATE_COMBO, m_baudrate);
@@ -54,12 +61,6 @@ void CConfigureCOMPortDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT_RADIOID, m_editRadioID);
 	DDX_Text(pDX, IDC_EDIT_RADIOID, m_radioID);
 
-	// The ftp-settings
-	DDX_Control(pDX, IDC_FTP_IPADDRESS, m_IPAddress);
-	DDX_Text(pDX, IDC_FTP_USERNAME, m_ftpUserName);
-	DDX_Control(pDX, IDC_FTP_USERNAME, m_editUserName);
-	DDX_Text(pDX, IDC_FTP_PASSWORD, m_ftpPassword);
-	DDX_Control(pDX, IDC_FTP_PASSWORD, m_editPassword);
 
 	// The time out
 	DDX_Text(pDX, IDC_TIMEOUT_EDIT, m_timeout);
@@ -142,9 +143,9 @@ BEGIN_MESSAGE_MAP(CConfigureCOMPortDlg, CPropertyPage)
 	ON_EN_CHANGE(IDC_FTP_USERNAME, SaveData)
 	ON_EN_CHANGE(IDC_FTP_PASSWORD, SaveData)
 
-	// The cable/radio/FTP radio-box
-	ON_BN_CLICKED(IDC_RADIO_SERIAL, OnChangeMethod)
+	// The FTP/cable/radio radio-box
 	ON_BN_CLICKED(IDC_RADIO_FTP, OnChangeMethod)
+	ON_BN_CLICKED(IDC_RADIO_SERIAL, OnChangeMethod)
 	ON_BN_CLICKED(IDC_RADIO_FREEWAVE_SERIAL, OnChangeMethod)
 END_MESSAGE_MAP()
 
@@ -158,9 +159,9 @@ BOOL ConfigurationDialog::CConfigureCOMPortDlg::OnInitDialog()
 	CString port, bdr;
 	Common common;
 
-	// Default is to use serial connection
-	m_curSetting = 0;
-	ShowSerialCable();
+	// Default is to use FTP connection
+	m_curSetting = 2;
+	ShowFTP();
 
 	/** Initialize the controls */
 	for(int i = 1; i < 22; ++i){
@@ -286,7 +287,7 @@ void CConfigureCOMPortDlg::OnChangeMethod(){
 		case 0:	ShowSerialCable(); break;
 		case 1:	ShowFreewaveSerial(); break;
 		case 2:	ShowFTP(); break;
-		default: ShowSerialCable();
+		default: ShowFTP();
 	}
 
 	UpdateDlg();
@@ -323,13 +324,16 @@ void CConfigureCOMPortDlg::SaveData(){
 
 		// 1d. The communication medium
 		switch(m_curSetting){
-			case 0: 
+			case 0:
 				comm.connectionType = SERIAL_CONNECTION;
 				comm.medium = MEDIUM_CABLE; break;
 			case 1:
 				comm.connectionType = SERIAL_CONNECTION;
 				comm.medium = MEDIUM_FREEWAVE_SERIAL_MODEM; break;
 			case 2:
+				comm.connectionType = FTP_CONNECTION;
+				break;
+			default:
 				comm.connectionType = FTP_CONNECTION;
 				break;
 		}

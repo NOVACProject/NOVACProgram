@@ -307,7 +307,7 @@ public:
 			MotorSetting motor[2];
 
 			/** The type of this instrument */
-			INSTRUMENT_TYPE instrumentType;
+			INSTRUMENT_TYPE instrumentType = INSTR_GOTHENBURG;
 
 			/** The type of the electronics box */
 			ELECTRONICS_BOX electronicsBox;

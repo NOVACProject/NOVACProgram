@@ -92,7 +92,7 @@ enum	DARK_MODEL_OPTION { MEASURED, USER_SUPPLIED };
 const enum INSTRUMENT_TYPE {INSTR_GOTHENBURG, INSTR_HEIDELBERG};
 
 // The list of electronics boxes available
-const enum ELECTRONICS_BOX {BOX_BECK, BOX_AXIS};
+const enum ELECTRONICS_BOX {BOX_VERSION_1, BOX_VERSION_2};
 
 // The list of possible units for the flux
 const enum FLUX_UNIT {UNIT_KGS, UNIT_TONDAY};

@@ -101,15 +101,15 @@ BOOL CScannerConfiguration::OnInitDialog()
 	m_pageCommunication.m_scannerTree		= &m_scannerTree;
 
 	// the dark configuration
-	m_pageDark.Construct(IDD_CONFIGURE_DARK);
-	m_pageDark.m_configuration				= m_configuration;
-	m_pageDark.m_scannerTree				= &m_scannerTree;
+	//m_pageDark.Construct(IDD_CONFIGURE_DARK);
+	//m_pageDark.m_configuration				= m_configuration;
+	//m_pageDark.m_scannerTree				= &m_scannerTree;
 	
 	// the remote configuration
-	m_pageRemote.Construct(IDD_CONFIGURATION_REMOTE);
-	m_pageRemote.m_configuration        = m_configuration;
-	m_pageRemote.m_scannerTree          = &m_scannerTree;
-	m_pageRemote.m_pPSP->dwFlags		|= PSP_PREMATURE;
+	//m_pageRemote.Construct(IDD_CONFIGURATION_REMOTE);
+	//m_pageRemote.m_configuration        = m_configuration;
+	//m_pageRemote.m_scannerTree          = &m_scannerTree;
+	//m_pageRemote.m_pPSP->dwFlags		|= PSP_PREMATURE;
 
 	// add the pages to the sheet
 	m_sheet.AddPage(&m_pageLocation);
@@ -118,8 +118,8 @@ BOOL CScannerConfiguration::OnInitDialog()
 	m_sheet.AddPage(&m_pageWind);
 	m_sheet.AddPage(&m_pageVII);
 	m_sheet.AddPage(&m_pageCommunication);
-	m_sheet.AddPage(&m_pageDark);
-	m_sheet.AddPage(&m_pageRemote);
+	//m_sheet.AddPage(&m_pageDark);
+	//m_sheet.AddPage(&m_pageRemote);
 
 	// find the position of the sheet
 	CRect rect, rect2;
@@ -153,13 +153,15 @@ BOOL CScannerConfiguration::OnInitDialog()
 	tabPtr->GetItemRect(1, &rect);
 	m_toolTip.AddTool(tabPtr, IDD_CONFIGURE_EVALUATION, &rect, IDD_CONFIGURE_EVALUATION);
 	tabPtr->GetItemRect(2, &rect);
-	m_toolTip.AddTool(tabPtr, IDD_CONFIGURE_EVALUATION, &rect, IDD_CONFIGURE_EVALUATION);
-	tabPtr->GetItemRect(3, &rect);
-	m_toolTip.AddTool(tabPtr, IDD_CONFIGURE_WIND, &rect, IDD_CONFIGURE_WIND);
-	tabPtr->GetItemRect(4, &rect);
 	m_toolTip.AddTool(tabPtr, IDD_CONFIGURE_COM_PORT, &rect, IDD_CONFIGURE_COM_PORT);
-	tabPtr->GetItemRect(5, &rect);
-	m_toolTip.AddTool(tabPtr, ID_CONFIGURATION_REMOTE, &rect, ID_CONFIGURATION_REMOTE);
+
+	//m_toolTip.AddTool(tabPtr, IDD_CONFIGURE_EVALUATION, &rect, IDD_CONFIGURE_EVALUATION);
+	//tabPtr->GetItemRect(3, &rect);
+	//m_toolTip.AddTool(tabPtr, IDD_CONFIGURE_WIND, &rect, IDD_CONFIGURE_WIND);
+	//tabPtr->GetItemRect(4, &rect);
+	//m_toolTip.AddTool(tabPtr, IDD_CONFIGURE_COM_PORT, &rect, IDD_CONFIGURE_COM_PORT);
+	//tabPtr->GetItemRect(5, &rect);
+	//m_toolTip.AddTool(tabPtr, ID_CONFIGURATION_REMOTE, &rect, ID_CONFIGURATION_REMOTE);
 
 	tabPtr->SetToolTips(&m_toolTip);
 	tabPtr->EnableToolTips(TRUE);
@@ -251,17 +253,17 @@ void CScannerConfiguration::OnChangeScanner(){
 	if(change){
 		int active = m_sheet.GetActiveIndex();
 		m_sheet.RemovePage(&m_pageCommunication);
-		m_sheet.RemovePage(&m_pageDark);
-		m_sheet.RemovePage(&m_pageRemote);
+		//m_sheet.RemovePage(&m_pageDark);
+		//m_sheet.RemovePage(&m_pageRemote);
 		m_sheet.AddPage(&m_pageCommunication);
-		m_sheet.AddPage(&m_pageDark);
-		m_sheet.AddPage(&m_pageRemote);
+		//m_sheet.AddPage(&m_pageDark);
+		//m_sheet.AddPage(&m_pageRemote);
 		m_sheet.SetActivePage(active);
 	}
 
 	// Tell all windows that we've changed scanner
 	m_pageCommunication.OnChangeScanner();
-	m_pageDark.OnChangeScanner();
+	//m_pageDark.OnChangeScanner();
 	m_pageLocation.OnChangeScanner();
 	for(int k = 0; k < MAX_CHANNEL_NUM; ++k){
 		if(m_showEvalPage[k])
@@ -271,7 +273,7 @@ void CScannerConfiguration::OnChangeScanner(){
 		m_pageVII.OnChangeScanner();
 	if(m_showWindPage)
 		m_pageWind.OnChangeScanner();
-	m_pageRemote.OnChangeScanner();
+	//m_pageRemote.OnChangeScanner();
 }
 
 /** Called when the user has clicked the button 'Add Scanner' */

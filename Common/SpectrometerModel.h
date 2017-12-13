@@ -13,6 +13,7 @@ enum SPECTROMETER_MODEL {
 	HR2000,
 	HR4000, 
 	QE65000, 
+	MAYAPRO,
 	UNKNOWN_SPECTROMETER, 
 	NUM_CONF_SPEC_MODELS // the number of spectrometers that are configured
 };

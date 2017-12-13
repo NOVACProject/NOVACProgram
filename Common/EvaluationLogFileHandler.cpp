@@ -827,6 +827,8 @@ void CEvaluationLogFileHandler::ParseScanInformation(CSpectrumInfo &scanInfo, do
 				scanInfo.m_specModel = HR4000;
 			}else if(strstr(scanInfo.m_device, "QE")){
 				scanInfo.m_specModel = QE65000;
+			}else if (strstr(scanInfo.m_device, "MAYAPRO")) {
+				scanInfo.m_specModel = MAYAPRO;
 			}
 
 			continue;
@@ -1140,6 +1142,7 @@ RETURN_CODE CEvaluationLogFileHandler::WriteEvaluationLog(const CString fileName
 			case HR2000:			string.AppendFormat("\tspectrometer=hr2000\n");	break;
 			case HR4000:			string.AppendFormat("\tspectrometer=hr4000\n");	break;
 			case QE65000:			string.AppendFormat("\tspectrometer=qe65000\n");	break;
+			case MAYAPRO:			string.AppendFormat("\tspectrometer=mayapro\n");	break;
 			default:					string.AppendFormat("\tspectrometer=s2000\n");	break;
 		}
 		string.AppendFormat("\tchannel=%d\n",							m_specInfo.m_channel);

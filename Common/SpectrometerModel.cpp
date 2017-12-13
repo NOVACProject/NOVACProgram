@@ -22,6 +22,7 @@ double  CSpectrometerModel::GetMaxIntensity(const SPECTROMETER_MODEL modelNumber
 		case HR2000:	return 4095;
 		case HR4000:	return 16535;
 		case QE65000:	return 65535;
+		case MAYAPRO:	return 65535;
 		default:	return 4095;
 	}
 }
@@ -52,6 +53,10 @@ RETURN_CODE CSpectrometerModel::ToString(SPECTROMETER_MODEL model, CString &str)
 		str.Format("QE65000");
 		return SUCCESS;
 	}
+	if(MAYAPRO == model) {
+		str.Format("MAYAPRO");
+		return SUCCESS;
+	}
 
 	str.Format("Unknown");
 	return FAIL;
@@ -71,6 +76,8 @@ SPECTROMETER_MODEL CSpectrometerModel::GetModel(const CString &str){
 		return USB4000;
 	if(Equals(str, "QE65000"))
 		return QE65000;
+	if (Equals(str, "MAYAPRO"))
+		return MAYAPRO;
 
 	// not defined
 	return UNKNOWN_SPECTROMETER;

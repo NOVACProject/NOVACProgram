@@ -37,8 +37,11 @@ namespace ReEvaluation
 		/** The fit window list */
 		CFitWindowListBox m_windowList;
 
+		/** The electronic combo-box */
+		CComboBox m_electronicCombo;
+
 		/** The instrument-type combo-box */
-		CComboBox m_instrumentTypeCombo;
+		//CComboBox m_instrumentTypeCombo;
 
 		/** The frame for defining the size of the reference file control */ 
 		CStatic m_referenceFrame;

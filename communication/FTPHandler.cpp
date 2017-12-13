@@ -12,7 +12,7 @@ CFTPHandler::CFTPHandler(void)
 {
 	m_pakFileHandler = new FileHandler::CPakFileHandler();
 	m_dataSpeed = 4.0;
-	m_electronicsBox = BOX_BECK;
+	m_electronicsBox = BOX_VERSION_1;
 }
 
 CFTPHandler::CFTPHandler(ELECTRONICS_BOX box)
@@ -98,7 +98,7 @@ bool CFTPHandler::DownloadPakFiles(const CString& folder)
 	while(m_fileInfoList.GetCount() > 0)
 	{
 		fileInfo = &m_fileInfoList.GetTail();
-		if(m_electronicsBox == BOX_AXIS){
+		if(m_electronicsBox == BOX_VERSION_2){
 			fileName.Format("%s.pak", fileInfo->fileName);	
 		}else{
 			fileName.Format("%s.PAK", fileInfo->fileName);	
@@ -209,7 +209,7 @@ bool CFTPHandler::DownloadOldPak(long interval)
 	m_remoteFileSize = pakFileInfo->fileSize;
 	estimatedTime = (int)((m_remoteFileSize * 1024.0) / m_dataSpeed);
 	time(&startTime);
-	if(this->m_electronicsBox == BOX_AXIS){
+	if(this->m_electronicsBox == BOX_VERSION_2){
 		fileFullName.Format("%s.pak",pakFileInfo->fileName);
 	}else{
 		fileFullName.Format("%s.PAK",pakFileInfo->fileName);
@@ -246,8 +246,8 @@ long CFTPHandler::GetPakFileList(CString& folder)
 	// While we're at it, check the brand of the electronics box in the 
 	//	login-response from the FTP-server
 	if(ftpSocket->m_serverMsg.Find("AXIS") >= 0){
-		m_electronicsBox = BOX_AXIS;
-		g_settings.scanner[m_mainIndex].electronicsBox = BOX_AXIS;
+		m_electronicsBox = BOX_VERSION_2;
+		g_settings.scanner[m_mainIndex].electronicsBox = BOX_VERSION_2;
 	}
 
 	Sleep(100);
@@ -441,9 +441,9 @@ void CFTPHandler::ParseFileInfo(CString line, char disk)
 	if(Equals(fileName, "..") || Equals(fileName, "."))
 		return; // no use with these
 
-	if(m_electronicsBox == BOX_BECK && fileSubfix == _T("PAK"))	
+	if(m_electronicsBox == BOX_VERSION_1 && fileSubfix == _T("PAK"))	
 		m_fileInfoList.AddTail(CScannerFileInfo(disk, fileName,fileSubfix,fileSize,mmdd,time));
-	if(m_electronicsBox == BOX_AXIS && fileSubfix == _T("pak"))	
+	if(m_electronicsBox == BOX_VERSION_2 && fileSubfix == _T("pak"))	
 		m_fileInfoList.AddTail(CScannerFileInfo(disk, fileName,fileSubfix,fileSize,mmdd,time));
 
 }
@@ -524,7 +524,7 @@ BOOL CFTPHandler::DeleteRemoteFile(const CString& remoteFile)
 			return FALSE;
 		}
 	}
-	if(m_electronicsBox != BOX_AXIS){
+	if(m_electronicsBox != BOX_VERSION_2){
 		localCopyOfRemoteFileName.Format(remoteFile);
 		if(!FindFile(localCopyOfRemoteFileName)) // This does not work with the axis-system, for some reason...
 		{
@@ -714,14 +714,14 @@ int CFTPHandler::DownloadCfgTxt(){
 	if(0 == cfgTxtReader.ReadCfgTxt(localFileName)){
 		return 0;
 	}
-	if(cfgTxtReader.m_motorStepsComp[0] != 0){ // If we've found a motor steps comp...
-		g_settings.scanner[m_mainIndex].motor[0].motorStepsComp = cfgTxtReader.m_motorStepsComp[0];
-		g_settings.scanner[m_mainIndex].motor[0].stepsPerRound = cfgTxtReader.m_motorStepsPerRound[0];
-		if(cfgTxtReader.m_nMotors == 2){
-			g_settings.scanner[m_mainIndex].motor[1].motorStepsComp = cfgTxtReader.m_motorStepsComp[1];
-			g_settings.scanner[m_mainIndex].motor[1].stepsPerRound = cfgTxtReader.m_motorStepsPerRound[1];
-		}
-	}
+	//if(cfgTxtReader.m_motorStepsComp[0] != 0){ // If we've found a motor steps comp...
+	//	g_settings.scanner[m_mainIndex].motor[0].motorStepsComp = cfgTxtReader.m_motorStepsComp[0];
+	//	g_settings.scanner[m_mainIndex].motor[0].stepsPerRound = cfgTxtReader.m_motorStepsPerRound[0];
+	//	if(cfgTxtReader.m_nMotors == 2){
+	//		g_settings.scanner[m_mainIndex].motor[1].motorStepsComp = cfgTxtReader.m_motorStepsComp[1];
+	//		g_settings.scanner[m_mainIndex].motor[1].stepsPerRound = cfgTxtReader.m_motorStepsPerRound[1];
+	//	}
+	//}
 
 	// if todays date is dividable by 7 then try to upload the file
 	int todaysDate = Common::GetDay();
