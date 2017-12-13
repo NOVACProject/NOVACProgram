@@ -48,7 +48,7 @@ END_MESSAGE_MAP()
 void CExportSpectraDlg::OnBrowsePakFile()
 {
 	CString str, longString;
-  TCHAR filter[] = "Pak Files | *.pak";
+    TCHAR filter[] = _T("Pak Files|*.pak|All Files|*.*||");
 	int nPakFiles = 0;
 
 	// The file-dialog
