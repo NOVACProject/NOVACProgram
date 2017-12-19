@@ -771,13 +771,18 @@
 #define IDC_CHECK_USE_AUTOMATIC_PLUMEPARAM2 1342
 #define IDC_LABEL_SWITCHRANGE           1343
 #define ID_CONTROL_START                32771
+#define ID_VIEW_PEAKINTENSITY_BD        32779
+#define ID_VIEW_FITINTENSITY_BD         32780
+#define ID_VIEW_COLUMNERROR_BD          32781
+#define ID_VIEW_DELTA_BD                32782
+#define ID_VIEW_CHISQUARE_BD            32783
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        298
-#define _APS_NEXT_COMMAND_VALUE         32777
+#define _APS_NEXT_COMMAND_VALUE         32784
 #define _APS_NEXT_CONTROL_VALUE         1344
 #define _APS_NEXT_SYMED_VALUE           104
 #endif

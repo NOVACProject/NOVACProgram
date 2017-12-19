@@ -1613,9 +1613,9 @@ void CPostFluxDlg::OnInitMenuPopup(CMenu *pPopupMenu, UINT nIndex,BOOL bSysMenu)
 void CPostFluxDlg::OnUpdateViewPeakintensity(CCmdUI *pCmdUI)
 {
 	if(m_show.peakIntensity)
-		pCmdUI->SetCheck(1);
+		pCmdUI->SetCheck(BST_CHECKED);
 	else
-		pCmdUI->SetCheck(0);
+		pCmdUI->SetCheck(BST_UNCHECKED);
 }
 void CPostFluxDlg::OnUpdateViewFitintensity(CCmdUI *pCmdUI)
 {

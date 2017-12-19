@@ -1982,11 +1982,11 @@ BEGIN
         MENUITEM "&Previous Scan",              173
         MENUITEM "&Next Scan",                  172
         MENUITEM SEPARATOR
-        MENUITEM "Peak &Intensity",             168
-        MENUITEM "&Fit Intensity",              211
-        MENUITEM "Column &Error",               169
-        MENUITEM "&Delta",                      170
-        MENUITEM "&ChiSquare",                  188
+        MENUITEM "Peak &Intensity",             ID_VIEW_PEAKINTENSITY_BD
+        MENUITEM "&Fit Intensity",              ID_VIEW_FITINTENSITY_BD
+        MENUITEM "Column &Error",               ID_VIEW_COLUMNERROR_BD
+        MENUITEM "&Delta",                      ID_VIEW_DELTA_BD
+        MENUITEM "&ChiSquare",                  ID_VIEW_CHISQUARE_BD
     END
 END
 

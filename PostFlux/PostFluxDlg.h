@@ -174,7 +174,7 @@ public:
 	afx_msg void OnChangeGas();
 
 	/** Called when the user changes the type of instrument used */
-	afx_msg void OnChangeInstrumentType();
+	//afx_msg void OnChangeInstrumentType();
 
 	/** Called when the user changes the cone-angle */
 	afx_msg void OnChangeConeAngle();
