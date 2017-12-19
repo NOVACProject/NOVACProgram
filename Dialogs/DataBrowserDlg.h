@@ -109,6 +109,16 @@ namespace Dialogs{
 		afx_msg void OnViewColumnError();
 		afx_msg void OnViewDelta();
 		afx_msg void OnViewChiSquare();
+		afx_msg void OnUpdateViewPeakintensity(CCmdUI *pCmdUI);
+		afx_msg void OnUpdateViewFitintensity(CCmdUI *pCmdUI);
+		afx_msg void OnUpdateViewColumnError(CCmdUI *pCmdUI);
+		afx_msg void OnUpdateViewChiSquare(CCmdUI *pCmdUI);
+		afx_msg void OnUpdateViewDelta(CCmdUI *pCmdUI);
+
+		/** Initializes the menu somehow, necessary otherwise it is not possible to
+		update the status of the menu due to a bug in Microsoft MFC, see:
+		http://support.microsoft.com/kb/242577 */
+		void OnInitMenuPopup(CMenu *pPopupMenu, UINT nIndex, BOOL bSysMenu);
 
 		/** Called when the user presses one of the buttons of the m_scanSpinCtrl,
 				leads to the selection of another scan with redrawing of the controls. */

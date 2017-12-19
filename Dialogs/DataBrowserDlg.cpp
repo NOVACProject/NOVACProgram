@@ -81,11 +81,23 @@ BEGIN_MESSAGE_MAP(CDataBrowserDlg, CDialog)
 	ON_COMMAND(ID_VIEW_NEXTSCAN,							OnShowNextScan)
 
 	// Change the options for what to show in the column-plot
-	ON_COMMAND(ID_VIEW_PEAKINTENSITY,		OnViewPeakIntensity)
-	ON_COMMAND(ID_VIEW_FITINTENSITY,		OnViewFitIntensity)
-	ON_COMMAND(ID_VIEW_COLUMNERROR,			OnViewColumnError)
-	ON_COMMAND(ID_VIEW_DELTA,						OnViewDelta)
-	ON_COMMAND(ID_VIEW_CHISQUARE,				OnViewChiSquare)
+	ON_COMMAND(ID_VIEW_PEAKINTENSITY_BD,		OnViewPeakIntensity)
+	ON_COMMAND(ID_VIEW_FITINTENSITY_BD,		OnViewFitIntensity)
+	ON_COMMAND(ID_VIEW_COLUMNERROR_BD,			OnViewColumnError)
+	ON_COMMAND(ID_VIEW_DELTA_BD,						OnViewDelta)
+	ON_COMMAND(ID_VIEW_CHISQUARE_BD,				OnViewChiSquare)
+
+	// Updating the interface
+	ON_UPDATE_COMMAND_UI(ID_VIEW_PEAKINTENSITY_BD, OnUpdateViewPeakintensity)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_FITINTENSITY_BD, OnUpdateViewFitintensity)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_COLUMNERROR_BD, OnUpdateViewColumnError)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_DELTA_BD, OnUpdateViewDelta)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_CHISQUARE_BD, OnUpdateViewChiSquare)
+
+	// Updating the interface, notice that this has to be here due to a bug in Microsoft MFC
+	//	http://support.microsoft.com/kb/242577
+	ON_WM_INITMENUPOPUP()
+
 END_MESSAGE_MAP()
 
 
@@ -613,6 +625,10 @@ void CDataBrowserDlg::OnViewFitIntensity(){
 }
 void CDataBrowserDlg::OnViewColumnError(){
 	m_show.columnError = !m_show.columnError;
+	int show = (m_show.columnError) ? SW_SHOW : SW_HIDE;
+	m_legendColumn.ShowWindow(show);
+	m_legendColumn.SetBackgroundColor(m_color.fitIntensity);
+	m_labelColumn.ShowWindow(show);
 	DrawScan();
 }
 
@@ -688,4 +704,122 @@ void CDataBrowserDlg::OnChangeSelectedScan(NMHDR *pNMHDR, LRESULT *pResult)
 		OnShowPreviousScan();
 
 	*pResult = 0;
+}
+
+
+void CDataBrowserDlg::OnUpdateViewPeakintensity(CCmdUI *pCmdUI)
+{
+	if (m_show.peakIntensity)
+		pCmdUI->SetCheck(1);
+	else
+		pCmdUI->SetCheck(0);
+}
+void CDataBrowserDlg::OnUpdateViewFitintensity(CCmdUI *pCmdUI)
+{
+	if (m_show.fitIntensity)
+		pCmdUI->SetCheck(1);
+	else
+		pCmdUI->SetCheck(0);
+}
+void CDataBrowserDlg::OnUpdateViewChiSquare(CCmdUI *pCmdUI)
+{
+	if (m_show.chiSquare)
+		pCmdUI->SetCheck(1);
+	else
+		pCmdUI->SetCheck(0);
+}
+void CDataBrowserDlg::OnUpdateViewDelta(CCmdUI *pCmdUI)
+{
+	if (m_show.delta)
+		pCmdUI->SetCheck(1);
+	else
+		pCmdUI->SetCheck(0);
+}
+void CDataBrowserDlg::OnUpdateViewColumnError(CCmdUI *pCmdUI)
+{
+	if (m_show.columnError)
+		pCmdUI->SetCheck(1);
+	else
+		pCmdUI->SetCheck(0);
+}
+
+void CDataBrowserDlg::OnInitMenuPopup(CMenu *pPopupMenu, UINT nIndex, BOOL bSysMenu)
+{
+	ASSERT(pPopupMenu != NULL);
+	// Check the enabled state of various menu items.
+
+	CCmdUI state;
+	state.m_pMenu = pPopupMenu;
+	ASSERT(state.m_pOther == NULL);
+	ASSERT(state.m_pParentMenu == NULL);
+
+	// Determine if menu is popup in top-level menu and set m_pOther to
+	// it if so (m_pParentMenu == NULL indicates that it is secondary popup).
+	HMENU hParentMenu;
+	if (AfxGetThreadState()->m_hTrackingMenu == pPopupMenu->m_hMenu)
+		state.m_pParentMenu = pPopupMenu;		// Parent == child for tracking popup.
+	else if ((hParentMenu = ::GetMenu(m_hWnd)) != NULL)
+	{
+		CWnd* pParent = this;
+		// Child windows don't have menus--need to go to the top!
+		if (pParent != NULL &&
+			(hParentMenu = ::GetMenu(pParent->m_hWnd)) != NULL)
+		{
+			int nIndexMax = ::GetMenuItemCount(hParentMenu);
+			for (int nIndex = 0; nIndex < nIndexMax; nIndex++)
+			{
+				if (::GetSubMenu(hParentMenu, nIndex) == pPopupMenu->m_hMenu)
+				{
+					// When popup is found, m_pParentMenu is containing menu.
+					state.m_pParentMenu = CMenu::FromHandle(hParentMenu);
+					break;
+				}
+			}
+		}
+	}
+
+	state.m_nIndexMax = pPopupMenu->GetMenuItemCount();
+	for (state.m_nIndex = 0; state.m_nIndex < state.m_nIndexMax;
+		state.m_nIndex++)
+	{
+		state.m_nID = pPopupMenu->GetMenuItemID(state.m_nIndex);
+		if (state.m_nID == 0)
+			continue; // Menu separator or invalid cmd - ignore it.
+
+		ASSERT(state.m_pOther == NULL);
+		ASSERT(state.m_pMenu != NULL);
+		if (state.m_nID == (UINT)-1)
+		{
+			// Possibly a popup menu, route to first item of that popup.
+			state.m_pSubMenu = pPopupMenu->GetSubMenu(state.m_nIndex);
+			if (state.m_pSubMenu == NULL ||
+				(state.m_nID = state.m_pSubMenu->GetMenuItemID(0)) == 0 ||
+				state.m_nID == (UINT)-1)
+			{
+				continue;			 // First item of popup can't be routed to.
+			}
+			state.DoUpdate(this, TRUE);	 // Popups are never auto disabled.
+		}
+		else
+		{
+			// Normal menu item.
+			// Auto enable/disable if frame window has m_bAutoMenuEnable
+			// set and command is _not_ a system command.
+			state.m_pSubMenu = NULL;
+			state.DoUpdate(this, FALSE);
+		}
+
+		// Adjust for menu deletions and additions.
+		UINT nCount = pPopupMenu->GetMenuItemCount();
+		if (nCount < state.m_nIndexMax)
+		{
+			state.m_nIndex -= (state.m_nIndexMax - nCount);
+			while (state.m_nIndex < nCount &&
+				pPopupMenu->GetMenuItemID(state.m_nIndex) == state.m_nID)
+			{
+				state.m_nIndex++;
+			}
+		}
+		state.m_nIndexMax = nCount;
+	}
 }
