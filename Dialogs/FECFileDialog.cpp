@@ -199,39 +199,73 @@ POSITION CFECFileDialog::GetStartPosition()
 
 void CFECFileDialog::OnFileNameChange()
 {
-    TCHAR dummy_buffer;
-    
-    // Get the required size for the 'files' buffer
-    //UINT nfiles = CommDlg_OpenSave_GetSpec(GetParent()->m_hWnd, &dummy_buffer, 1);
-	UINT nfiles = CommDlg_OpenSave_GetSpec(m_hWnd, &dummy_buffer, 1);
+	DWORD dwReqBuffSize = _CalcRequiredBuffSize();
+	if (dwReqBuffSize > GetOFN().nMaxFile)
+	{
+		_SetExtBuffer(dwReqBuffSize);
+	}
 
-    // Get the required size for the 'folder' buffer
-    //UINT nfolder = CommDlg_OpenSave_GetFolderPath(GetParent()->m_hWnd, &dummy_buffer, 1);
-	UINT nfolder = CommDlg_OpenSave_GetFolderPath(m_hWnd, &dummy_buffer, 1);
+	CFileDialog::OnFileNameChange();
+}
 
-    // Check if lpstrFile and nMaxFile are large enough
-    if (nfiles + nfolder > m_ofn.nMaxFile)
-    {
-        bParsed = FALSE;
-        if (Files)
-            delete[] Files;
-        Files = new TCHAR[nfiles + 1];
-        //CommDlg_OpenSave_GetSpec(GetParent()->m_hWnd, Files, nfiles);
-		CommDlg_OpenSave_GetSpec(m_hWnd, Files, nfiles);
+void CFECFileDialog::_SetExtBuffer(DWORD dwReqBuffSize)
+{
+	try
+	{
+		GetOFN().nMaxFile = dwReqBuffSize;
+		delete[]m_pFileBuff;
+		m_pFileBuff = new TCHAR[dwReqBuffSize];
+		GetOFN().lpstrFile = m_pFileBuff;
+	}
+	catch (CException* e)
+	{
+		e->ReportError();
+		e->Delete();
+	}
+}
 
-        if (Folder)
-            delete[] Folder;
-        Folder = new TCHAR[nfolder + 1];
-        //CommDlg_OpenSave_GetFolderPath(GetParent()->m_hWnd, Folder, nfolder);
-		CommDlg_OpenSave_GetFolderPath(m_hWnd, Folder, nfolder);
-    }
-    else if (Files)
-    {
-        delete[] Files;
-        Files = NULL;
-        delete[] Folder;
-        Folder = NULL;
-    }
+DWORD CFECFileDialog::_CalcRequiredBuffSize()
+{
+	DWORD dwRet = 0;
+	IFileOpenDialog* pFileOpen = GetIFileOpenDialog();
+	ASSERT(NULL != pFileOpen);
 
-    CFileDialog::OnFileNameChange();
+	CComPtr<IShellItemArray> pIItemArray;
+	HRESULT hr = pFileOpen->GetSelectedItems(&pIItemArray);
+	DWORD dwItemCount = 0;
+	if (SUCCEEDED(hr))
+	{
+		hr = pIItemArray->GetCount(&dwItemCount);
+		if (SUCCEEDED(hr))
+		{
+			for (DWORD dwItem = 0; dwItem < dwItemCount; dwItem++)
+			{
+				CComPtr<IShellItem> pItem;
+				hr = pIItemArray->GetItemAt(dwItem, &pItem);
+				if (SUCCEEDED(hr))
+				{
+					LPWSTR pszName = NULL;
+					if (dwItem == 0)
+					{
+						// get full path and file name
+						hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszName);
+					}
+					else
+					{
+						// get file name
+						hr = pItem->GetDisplayName(SIGDN_NORMALDISPLAY, &pszName);
+					}
+					if (SUCCEEDED(hr))
+					{
+						dwRet += wcslen(pszName) + 1;
+						::CoTaskMemFree(pszName);
+					}
+				}
+			}
+		}
+	}
+	dwRet += 1; // add an extra character
+				// release the IFileOpenDialog pointer
+	pFileOpen->Release();
+	return dwRet;
 }
