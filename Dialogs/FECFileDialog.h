@@ -12,6 +12,11 @@ namespace Dialogs{
 	class CFECFileDialog : public CFileDialog
 	{
 			DECLARE_DYNAMIC(CFECFileDialog)
+			
+	private:
+		LPTSTR m_pFileBuff = new TCHAR[0];;
+		DWORD _CalcRequiredBuffSize();
+		void _SetExtBuffer(DWORD dwReqBuffSize);
 
 	public:
 			CFECFileDialog(BOOL bOpenFileDialog, // TRUE for FileOpen, FALSE for FileSaveAs
