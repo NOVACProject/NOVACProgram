@@ -370,10 +370,15 @@ void CFTPSocket::WriteVectorFile(CString fileName, const TByteVector& vBuffer, l
 	localFile = fopen(fileName,"w");
 	if(localFile < (FILE*)1)
 	{
-		ShowMessage("fileList.txt can not be written");
+		CString message;
+		message.Format("%s cannot be written", fileName);
+		ShowMessage(message);
+		//ShowMessage("fileList.txt can not be written");
 		return;
 	}
-	fwrite(&(*vBuffer.begin()), receivedBytes,1,localFile);
+	if (!vBuffer.empty()) {
+		fwrite(&(*vBuffer.begin()), receivedBytes, 1, localFile);
+	}
 	fclose(localFile);
 	m_vDataBuffer.clear();
 }
