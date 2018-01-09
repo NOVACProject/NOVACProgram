@@ -8,6 +8,7 @@
 #include "../Common/ReferenceFile.h"
 #include "../Dialogs/SelectionDialog.h"
 #include "../Dialogs/ReferencePropertiesDlg.h"
+#include "../Dialogs/ReferencePlotDlg.h"
 #include "../VolcanoInfo.h"
 
 using namespace ConfigurationDialog;
@@ -72,6 +73,7 @@ BEGIN_MESSAGE_MAP(CEvaluationConfigurationDlg, CSystemConfigurationPage)
 	// immediately save all changes made in the dialog
 	ON_EN_CHANGE(IDC_EDIT_FITLOW, SaveData)
 	ON_EN_CHANGE(IDC_EDIT_FITHIGH, SaveData)
+	ON_BN_CLICKED(IDC_BUTTON_VIEW, &CEvaluationConfigurationDlg::OnShowReferenceGraph)
 END_MESSAGE_MAP()
 
 
@@ -407,4 +409,27 @@ void CEvaluationConfigurationDlg::OnShowPropertiesWindow(){
 	}
 
 	delete ref;
+}
+
+void ConfigurationDialog::CEvaluationConfigurationDlg::OnShowReferenceGraph()
+{
+
+	if (m_curSpec == NULL)
+		return;
+
+	// save the data in the dialog
+	UpdateData(TRUE);
+
+	// Get the currently selected fit window
+	CFitWindow &window = m_curSpec->channel[m_channel].fitWindow;
+
+	// if there's no reference file, then there's nothing to show
+	if (window.nRef <= 0) {
+		return;
+	}
+
+	// Open the dialog
+	Dialogs::CReferencePlotDlg dlg;
+	dlg.m_window = &m_curSpec->channel[m_channel].fitWindow;
+	dlg.DoModal();
 }
