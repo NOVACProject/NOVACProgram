@@ -256,6 +256,7 @@
     <ClCompile Include="ReEvaluation\ReEval_MiscSettingsDlg.cpp" />
     <ClCompile Include="ReEvaluation\ReEval_ScanDlg.cpp" />
     <ClCompile Include="ReEvaluation\ReEval_WindowDlg.cpp" />
+    <ClCompile Include="Dialogs\ReferencePlotDlg.cpp" />
     <ClCompile Include="ScannerFileInfo.cpp" />
     <ClCompile Include="ScannerFolderInfo.cpp" />
     <ClCompile Include="StatusFileReader.cpp" />
@@ -449,6 +450,7 @@
     <ClInclude Include="ReEvaluation\ReEval_MiscSettingsDlg.h" />
     <ClInclude Include="ReEvaluation\ReEval_ScanDlg.h" />
     <ClInclude Include="ReEvaluation\ReEval_WindowDlg.h" />
+    <ClInclude Include="Dialogs\ReferencePlotDlg.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ScannerFileInfo.h" />
     <ClInclude Include="ScannerFolderInfo.h" />
