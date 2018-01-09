@@ -236,6 +236,7 @@
 #define IDR_MENU_SHOWFIT_CONTEXT        295
 #define ID__SAVEASASCII                 296
 #define ID__SAVEASBITMAP                297
+#define IDD_REFERENCE_PLOT_DLG          299
 #define IDC_STATIC_VERSIONNUMBER        1000
 #define IDC_STATIC_COPYRIGHT            1001
 #define IDC_BUTTON_TEST                 1002
@@ -276,6 +277,7 @@
 #define IDC_BUTTON_REMOVEREFERENCE2     1034
 #define IDC_BUTTON_PROPERTIES           1034
 #define IDC_BAUDRATE_COMBO              1035
+#define IDC_BUTTON_VIEW                 1035
 #define IDC_HANDSHAKE_COMBO             1036
 #define IDC_TIMEOUT_EDIT                1037
 #define IDC_INTERVAL_HR                 1038
@@ -781,7 +783,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        298
+#define _APS_NEXT_RESOURCE_VALUE        301
 #define _APS_NEXT_COMMAND_VALUE         32784
 #define _APS_NEXT_CONTROL_VALUE         1344
 #define _APS_NEXT_SYMED_VALUE           104

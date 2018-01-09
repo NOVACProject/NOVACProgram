@@ -55,6 +55,9 @@ namespace ConfigurationDialog
 		/** Showing the properties of a reference file */
 		afx_msg void OnShowPropertiesWindow();
 
+		/** Showing the fit graphs of reference files */
+		afx_msg void OnShowReferenceGraph();
+
 		/** Saving the data in the control */
 		afx_msg void SaveData();
 

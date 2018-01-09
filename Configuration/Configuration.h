@@ -135,8 +135,8 @@ public:
 			/** The fit settings that are defined for this spectrometer */
 			Evaluation::CFitWindow fitWindow;
 
-				/** The settings for how to get the dark-spectrum */
-				DarkSettings m_darkSettings;
+			/** The settings for how to get the dark-spectrum */
+			DarkSettings m_darkSettings;
 
 				/** Assignment operator */
 			SpectrometerChannelSetting& operator=(const SpectrometerChannelSetting &spec2);
