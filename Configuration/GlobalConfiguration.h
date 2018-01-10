@@ -27,6 +27,9 @@ namespace ConfigurationDialog
 		/** Browsing for a wind-field file */
 		afx_msg void OnBrowseWindFieldFile();
 
+		/** Update whether to read wind field file or not */
+		afx_msg void OnChangeWindFileUpdate();
+
 		/** Opening the dialog for advanced FTP-options */
 		afx_msg void OnAdvancedFTPSettings();
 

@@ -144,8 +144,9 @@ int CConfigurationFileHandler::WriteConfigurationFile(CConfigurationSetting &con
 	// 4h. If there is a wind-field file which should be re-read every now and then
 	if(conf->windSourceSettings.windFieldFile.GetLength() > 3){
 		str.Format("\t<windImport>\n");
-		str.AppendFormat("\t\t<path>%s</path>\n",											conf->windSourceSettings.windFieldFile);
+		str.AppendFormat("\t\t<path>%s</path>\n",						conf->windSourceSettings.windFieldFile);
 		str.AppendFormat("\t\t<reloadInterval>%d</reloadInterval>\n",	conf->windSourceSettings.windFileReloadInterval);
+		str.AppendFormat("\t\t<enabled>%d</enabled>\n", conf->windSourceSettings.enabled);
 		str.AppendFormat("\t</windImport>\n");
 		fprintf(f, str);
 	}
@@ -1334,20 +1335,26 @@ int CConfigurationFileHandler::Parse_WindImport(){
 			continue;
 		}
 
-		// the end of the volcano-info section
+		// the end of the windImport section
 		if(Equals(szToken, "/windImport")){
 			return 0;
 		}
 
-		// found the name of the source
+		// found the name of the wind-field file
 		if(Equals(szToken, "path")){
 			Parse_StringItem("/path", conf->windSourceSettings.windFieldFile);
 			continue;
 		}
 
-		// found the latitude of the source
+		// found the reload interval of the wind-field file
 		if(Equals(szToken, "reloadInterval")){
 			Parse_LongItem("/reloadInterval", conf->windSourceSettings.windFileReloadInterval);
+			continue;
+		}
+
+		// found the enabled flag wind-field file
+		if (Equals(szToken, "enabled")) {
+			Parse_IntItem("/enabled", conf->windSourceSettings.enabled);
 			continue;
 		}
 	}

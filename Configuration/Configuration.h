@@ -174,7 +174,7 @@ public:
 			void Clear();
 
 			/** True if this system is supposed to make wind speed measurements automatically */
-			bool	automaticWindMeasurements;
+			bool automaticWindMeasurements;
 
 			/** The preferred interval between each measurement [in seconds] */
 			int	interval;
@@ -355,8 +355,9 @@ public:
 	public:
 		CWindFieldDataSettings();
 		~CWindFieldDataSettings();
-		CString		windFieldFile;					// the path and file-name of the file which is the source of the wind-field data
+		CString		windFieldFile;			// the path and file-name of the file which is the source of the wind-field data
 		long		windFileReloadInterval;	// the reload inteval of the wind-field fiel (in minutes) - zero corresponds to never reload the file
+		int		enabled;					// 1 if enabled; 0 if not
 	};
 
 public:
