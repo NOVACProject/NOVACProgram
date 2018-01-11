@@ -372,47 +372,46 @@ void CScannerConfiguration::OnAddScanner(){
 }
 
 /** Called when the user has clicked the button 'Remove Scanner' */
-void CScannerConfiguration::OnRemoveScanner(){
+void CScannerConfiguration::OnRemoveScanner() {
 	int currentScanner, currentSpec;
 	GetScannerAndSpec(currentScanner, currentSpec);
 
 	// The currently selected item in the tree
-	HTREEITEM hTree			= m_scannerTree.GetSelectedItem();
+	HTREEITEM hTree = m_scannerTree.GetSelectedItem();
 
 	m_configuration->scannerNum -= 1;
 
 	// Move the focus to the next sibling in the tree. This lets the 
 	// dialogs update their data before we delete anything
 	HTREEITEM parent = m_scannerTree.GetParentItem(hTree);
-	if(parent == NULL){
-		HTREEITEM sibling = m_scannerTree.GetNextSiblingItem(hTree);
-		if(sibling == NULL)
-			sibling = m_scannerTree.GetPrevSiblingItem(hTree);
-		m_scannerTree.SelectItem(sibling);
-	}else{
-		HTREEITEM sibling = m_scannerTree.GetNextSiblingItem(parent);
-		if(sibling == NULL)
-			sibling = m_scannerTree.GetPrevSiblingItem(parent);
+	HTREEITEM sibling = m_scannerTree.GetNextSiblingItem(hTree);
+	if (sibling == NULL)
+		sibling = m_scannerTree.GetPrevSiblingItem(hTree);
+	if (sibling == NULL) {
+		m_scannerTree.SelectItem(parent);
+	}
+	else {
 		m_scannerTree.SelectItem(sibling);
 	}
 
 	CString message;
 	message.Format("Are you sure you want to remove scanner: %s from the list?", m_configuration->scanner[currentScanner].spec[currentSpec].serialNumber);
 	int answer = MessageBox(message, NULL, MB_YESNO);
-	if(IDNO == answer){
+	if (IDNO == answer) {
 		m_configuration->scannerNum += 1;
 		return;
 	}
 
 	/** remove the scanner from the list */
-	for(int i = currentScanner; i < MAX_NUMBER_OF_SCANNING_INSTRUMENTS-1; ++i){
-		m_configuration->scanner[i] = m_configuration->scanner[i+1];
+	for (int i = currentScanner; i < MAX_NUMBER_OF_SCANNING_INSTRUMENTS - 1; ++i) {
+		m_configuration->scanner[i] = m_configuration->scanner[i + 1];
 	}
 
 	/** Update the scanner list */
 	m_scannerTree.DeleteItem(hTree);
-	if(parent != NULL)
-	  m_scannerTree.DeleteItem(parent);
+	if (parent != NULL && sibling == NULL) {
+		m_scannerTree.DeleteItem(parent);
+	}
 
 	/** Update the dialog */
 	UpdateData(FALSE);
