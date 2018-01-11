@@ -38,7 +38,7 @@ void CWindFileController::OnQuit(WPARAM wp, LPARAM lp)
 
 void CWindFileController::OnTimer(UINT nIDEvent, LPARAM lp){
 	// Try to find and read in a wind-field file, if any can be found...
-	if(g_settings.windSourceSettings.windFieldFile.GetLength() > 0){
+	if(g_settings.windSourceSettings.enabled == 1 && g_settings.windSourceSettings.windFieldFile.GetLength() > 0){
 
 		// If the file is a local file...
 		if(IsExistingFile(g_settings.windSourceSettings.windFieldFile)){
@@ -66,7 +66,7 @@ BOOL CWindFileController::InitInstance(){
 
 	// Check the global settings if we are to be re-loading the wind-field file
 	//	every now and then then set the timer
-	if(g_settings.windSourceSettings.windFileReloadInterval > 0 && g_settings.windSourceSettings.windFieldFile.GetLength() > 3){
+	if(g_settings.windSourceSettings.enabled = 1 && g_settings.windSourceSettings.windFileReloadInterval > 0 && g_settings.windSourceSettings.windFieldFile.GetLength() > 3){
 
 		// Read the log-file now
 		OnTimer(NULL, NULL);

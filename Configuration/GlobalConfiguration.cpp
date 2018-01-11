@@ -31,7 +31,8 @@ void CGlobalConfiguration::DoDataExchange(CDataExchange* pDX)
 
 	// The wind-field source
 	DDX_Text(pDX, IDC_EDIT_WINDFIELDFILE,	m_configuration->windSourceSettings.windFieldFile);
-	DDX_Text(pDX, IDC_EDIT_RELOADWINDFILEDFILE,	m_configuration->windSourceSettings.windFileReloadInterval);
+	DDX_Text(pDX, IDC_EDIT_RELOADWINDFIELDFILE,	m_configuration->windSourceSettings.windFileReloadInterval);
+	DDX_Check(pDX, IDC_CHECK_WINDFIELDFILE_ENABLED, m_configuration->windSourceSettings.enabled);
 
 	// Automatic/manual startup
 	DDX_Radio(pDX, IDC_STARTUP_MANUAL, m_configuration->startup);
@@ -80,11 +81,12 @@ BEGIN_MESSAGE_MAP(CGlobalConfiguration, CPropertyPage)
 	ON_EN_CHANGE(IDC_EDIT_LOCALDIRECTORY,			SaveData)
 	ON_EN_CHANGE(IDC_EDIT_SHELL_EXCECUTE,			SaveData)
 	ON_EN_CHANGE(IDC_EDIT_SHELL_EXCECUTE_IMAGE,		SaveData)
-	ON_EN_CHANGE(IDC_EDIT_RELOADWINDFILEDFILE,		SaveData)
+	ON_EN_CHANGE(IDC_EDIT_RELOADWINDFIELDFILE,		SaveData)
 	ON_EN_CHANGE(IDC_EDIT_WINDFIELDFILE,			SaveData)
 	ON_LBN_SELCHANGE(IDC_COMBO_IMAGEFORMAT,			SaveData)
 
 	ON_BN_CLICKED(IDC_CHECK_PUBLISH,				OnChangePublish)
+	ON_BN_CLICKED(IDC_CHECK_WINDFIELDFILE_ENABLED, OnChangeWindFileUpdate)
 END_MESSAGE_MAP()
 
 
@@ -157,7 +159,7 @@ BOOL ConfigurationDialog::CGlobalConfiguration::OnInitDialog()
 
 	// Set which controls should be enabled and which should be disabled
 	OnChangePublish();
-
+	OnChangeWindFileUpdate();
 	return TRUE;	// return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -208,4 +210,20 @@ void ConfigurationDialog::CGlobalConfiguration::OnAdvancedFTPSettings(){
 	CAdvancedFTPUploadSettings advDialog;
 	advDialog.m_configuration = m_configuration;
 	advDialog.DoModal();
+}
+
+void ConfigurationDialog::CGlobalConfiguration::OnChangeWindFileUpdate()
+{
+	CButton *m_ctlCheck = (CButton*)GetDlgItem(IDC_CHECK_WINDFIELDFILE_ENABLED);
+	m_configuration->windSourceSettings.enabled = m_ctlCheck->GetCheck();
+	if (m_configuration->windSourceSettings.enabled == 0) {
+		GetDlgItem(IDC_BUTTON_BROWSE_WINDFIELDFILE)->EnableWindow(FALSE);
+		GetDlgItem(IDC_EDIT_WINDFIELDFILE)->EnableWindow(FALSE);
+		GetDlgItem(IDC_EDIT_RELOADWINDFIELDFILE)->EnableWindow(FALSE);
+	}
+	else {
+		GetDlgItem(IDC_BUTTON_BROWSE_WINDFIELDFILE)->EnableWindow(TRUE);
+		GetDlgItem(IDC_EDIT_WINDFIELDFILE)->EnableWindow(TRUE);
+		GetDlgItem(IDC_EDIT_RELOADWINDFIELDFILE)->EnableWindow(TRUE);
+	}
 }

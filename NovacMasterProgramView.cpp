@@ -294,7 +294,7 @@ void CNovacMasterProgramView::OnInitialUpdate()
 	}
 
 	// Try to find and read in a wind-field file, if any can be found...
-	if(g_settings.windSourceSettings.windFieldFile.GetLength() > 0 && IsExistingFile(g_settings.windSourceSettings.windFieldFile)){
+	if(g_settings.windSourceSettings.enabled == 1 && g_settings.windSourceSettings.windFieldFile.GetLength() > 0 && IsExistingFile(g_settings.windSourceSettings.windFieldFile)){
 		if(0 == g_metData.ReadWindFieldFromFile(g_settings.windSourceSettings.windFieldFile)){
 			ShowMessage("Successfully read in wind-field from file");
 			this->PostMessage(WM_NEW_WINDFIELD, NULL, NULL);

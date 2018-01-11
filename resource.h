@@ -530,6 +530,7 @@
 #define IDC_EDIT_WINDERROR              1121
 #define IDC_CHECK_SHOW_VOLCANO2         1121
 #define IDC_CHECK_VARYING_SIZE          1121
+#define IDC_CHECK_WINDFIELDFILE_ENABLED 1121
 #define IDC_EDIT_                       1122
 #define IDC_EDIT_MOTORSTEPSCOMP         1122
 #define IDC_EDIT_STOP_MIN               1122
@@ -751,7 +752,7 @@
 #define IDC_LABEL_CONEANGLE             1322
 #define IDC_LABEL_TILT                  1323
 #define IDC_EDIT_WINDFIELDFILE          1324
-#define IDC_EDIT_RELOADWINDFILEDFILE    1326
+#define IDC_EDIT_RELOADWINDFIELDFILE    1326
 #define IDC_RADIO_ANGLE1                1328
 #define IDC_RADIO_ANGLE2                1329
 #define IDC_LABEL_DEGREES               1330
@@ -783,7 +784,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        301
+#define _APS_NEXT_RESOURCE_VALUE        304
 #define _APS_NEXT_COMMAND_VALUE         32784
 #define _APS_NEXT_CONTROL_VALUE         1344
 #define _APS_NEXT_SYMED_VALUE           104
