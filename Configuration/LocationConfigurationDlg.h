@@ -53,6 +53,9 @@ namespace ConfigurationDialog
 		/** Updating the data in the dialog */
 		afx_msg void UpdateDlg();
 
+		/** Adds a volcano to the list of volcanoes */
+		void	AddAVolcano();
+
 		/** Called when the user has changed the currently selected scanner */
 		void OnChangeScanner();
 
@@ -76,9 +79,6 @@ namespace ConfigurationDialog
 		CComboBox	m_comboInstrumentType;
 		CComboBox	m_comboSpectrometerModel;
 		CComboBox	m_comboSpectrometerChannels;
-
-		/** Adds a volcano to the list of volcanoes */
-		void	AddAVolcano();
 
 		/** (Re-)initializes the list of volcanoes */
 		void UpdateVolcanoList();
