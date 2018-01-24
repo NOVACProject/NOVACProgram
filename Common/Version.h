@@ -9,8 +9,8 @@ public:
 
 
 	/** The major version number */
-	static const int majorNumber = 1;
+	static const int majorNumber = 2;
 
 	/** The minor version number */
-	static const int minorNumber = 82;
+	static const int minorNumber = 0;
 };

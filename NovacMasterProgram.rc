@@ -189,7 +189,7 @@ BEGIN
     LTEXT           "Reload this file every:",IDC_STATIC,14,72,71,8
     EDITTEXT        IDC_EDIT_RELOADWINDFIELDFILE,90,72,53,12,ES_AUTOHSCROLL
     LTEXT           "minutes",IDC_STATIC,149,72,26,8
-    CONTROL         "Enabled", IDC_CHECK_WINDFIELDFILE_ENABLED,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,365,72,41,10
+    CONTROL         "Enabled",IDC_CHECK_WINDFIELDFILE_ENABLED,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,365,72,41,10
 END
 
 IDD_CONFIGURATION_SCANNER DIALOGEX 0, 0, 553, 273
@@ -712,12 +712,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Optical Remote Sensing group, Chalmers University of Technology"
             VALUE "FileDescription", "NovacProgram"
-            VALUE "FileVersion", "1.82"
+            VALUE "FileVersion", "2.0"
             VALUE "InternalName", "NovacProgram.exe"
             VALUE "LegalCopyright", "(c) Chalmers University of Technology.  All rights reserved."
             VALUE "OriginalFilename", "NovacProgram.exe"
             VALUE "ProductName", "NovacProgram"
-            VALUE "ProductVersion", "1.82"
+            VALUE "ProductVersion", "2.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -1001,7 +1001,6 @@ BEGIN
         MENUITEM "&Setup",                      ID_ANALYSIS_SETUP
         MENUITEM "&Wind",                       ID_ANALYSIS_WIND
         MENUITEM SEPARATOR
-        MENUITEM "Summarize Flux Data",         ID_ANALYSIS_SUMMARIZEFLUXDATA
         MENUITEM "&View Measured Data",         ID_ANALYSIS_BROWSEMEASUREDDATA
     END
     POPUP "&Help"
