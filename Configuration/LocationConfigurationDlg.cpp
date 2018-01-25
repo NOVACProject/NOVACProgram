@@ -133,7 +133,7 @@ BOOL CLocationConfigurationDlg::OnInitDialog()
 	// The electronics combo-box
 	m_comboElectronics.ResetContent();
 	m_comboElectronics.AddString("Version 1");
-	m_comboElectronics.AddString("Version 2");
+	m_comboElectronics.AddString("Version 3");
 
 	// The instrument-type combo-box
 	m_comboInstrumentType.ResetContent();

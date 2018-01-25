@@ -5,6 +5,7 @@
 #include "../NovacMasterProgram.h"
 #include "ReEval_WindowDlg.h"
 #include "../Dialogs/ReferencePropertiesDlg.h"
+#include "../Dialogs/ReferencePlotDlg.h"
 
 using namespace ReEvaluation;
 using namespace Evaluation;
@@ -96,6 +97,7 @@ BEGIN_MESSAGE_MAP(CReEval_WindowDlg, CPropertyPage)
 	ON_BN_CLICKED(IDC_FIT_HP_SUB,					SaveData)
 	ON_BN_CLICKED(IDC_FIT_POLY,						SaveData)
 
+	ON_BN_CLICKED(IDC_BUTTON_REFERENCE_VIEW, &CReEval_WindowDlg::OnShowReferenceGraph)
 END_MESSAGE_MAP()
 
 
@@ -373,8 +375,10 @@ void CReEval_WindowDlg::OnShowPropertiesWindow(){
 		minRow = cellRange.GetMinRow() - 1;
 		nRows = cellRange.GetRowSpan();
 
-		if(nRows <= 0 || nRows > 1) /* nothing selected or several lines selected */
+		if (nRows <= 0 || nRows > 1) { /* nothing selected or several lines selected */
+			MessageBox("Please select a single reference file.", "Properties");
 			return;
+		}
 	}
 
 	// The selected referencefile
@@ -388,6 +392,27 @@ void CReEval_WindowDlg::OnShowPropertiesWindow(){
 	}
 
 	delete ref;
+}
+
+void ReEvaluation::CReEval_WindowDlg::OnShowReferenceGraph()
+{
+		// save the data in the dialog
+	UpdateData(TRUE);
+	
+	// Get the currently selected fit window
+	int curSel = m_windowList.GetCurSel();
+	if (curSel < 0)
+		curSel = 0;
+	CFitWindow &window = m_reeval->m_window[curSel];
+
+	// if there's no reference file, then there's nothing to remove
+	if (window.nRef <= 0)
+		return;
+
+	// Open the dialog
+	Dialogs::CReferencePlotDlg dlg;
+	dlg.m_window = m_reeval->m_window;
+	dlg.DoModal();
 }
 
 //void CReEval_WindowDlg::OnChangeInstrumentType(){
@@ -439,3 +464,5 @@ void CReEval_WindowDlg::OnBrowseSolarSpectrum(){
 	UpdateData(FALSE);
 
 }
+
+

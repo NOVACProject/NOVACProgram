@@ -366,6 +366,7 @@
 #define IDC_DNLDCFGBTN                  1066
 #define IDC_BUTTON_BROWSE_DARKCURRENT2  1066
 #define IDC_BTN_BROWSEEVALLOG4          1066
+#define IDC_BUTTON_REFERENCE_VIEW       1066
 #define IDC_GEOM_COMPASS                1067
 #define IDC_GEOM_ROLL                   1068
 #define IDC_PF_WINDSPEED                1069

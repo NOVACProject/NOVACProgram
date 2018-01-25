@@ -90,6 +90,9 @@ namespace ReEvaluation
 		/** Called when the user wants to inspect the properties of a reference file */
 		afx_msg void OnShowPropertiesWindow();
 
+		/** Called when the user wants to view reference graph */
+		afx_msg void OnShowReferenceGraph();
+
 		/** Saves the data the user typed in to the user interface */
 		afx_msg void SaveData();
 

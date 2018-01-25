@@ -388,14 +388,19 @@ void CEvaluationConfigurationDlg::OnShowPropertiesWindow(){
 		nRows = cellRange.GetRowSpan();
 
 		if(nRows <= 0){
-			if(m_curSpec->channel[m_channel].fitWindow.nRef > 1)
+			if (m_curSpec->channel[m_channel].fitWindow.nRef > 1) {
+				MessageBox("Please select a reference file.", "Properties");
 				return;   /* nothing selected*/
+
+			}
 			else
 				minRow = 0; /* if there's only one reference file, assume that the user want's to remove it, even though it's not marked*/
 		}
 
-		if(nRows > 1)
+		if (nRows > 1) {
+			MessageBox("Please select a single reference file.", "Properties");
 			return; // <-- Several lines selected
+		}
 	}
 
 	// The selected referencefile
