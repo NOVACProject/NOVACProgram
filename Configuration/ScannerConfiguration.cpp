@@ -278,7 +278,6 @@ void CScannerConfiguration::OnChangeScanner(){
 
 /** Called when the user has clicked the button 'Add Scanner' */
 void CScannerConfiguration::OnAddScanner(){
-	unsigned int k;
 
 	// 1. Check if there's any space to insert any scanner
 	if(MAX_NUMBER_OF_SCANNING_INSTRUMENTS == m_configuration->scannerNum){
@@ -289,14 +288,20 @@ void CScannerConfiguration::OnAddScanner(){
 	// 2. Ask the user for the volcano where the scanner should be placed
 	Dialogs::CSelectionDialog volcanoDialog;
 	CString volcano;
-	for(k = 0; k < g_volcanoes.m_volcanoNum; ++k)
+	for(int k = 0; k < g_volcanoes.m_volcanoNum; ++k)
 		volcanoDialog.m_option[k].Format(g_volcanoes.m_name[k]);
+	volcanoDialog.m_option[g_volcanoes.m_volcanoNum].Format("Other");
 	volcanoDialog.m_windowText.Format("What's the volcano name?");
 	volcanoDialog.m_currentSelection = &volcano;
 	INT_PTR ret = volcanoDialog.DoModal();
 
 	if(IDCANCEL == ret) // if the user clicked 'cancel' then don't insert anything
 		return;
+
+	if (volcano == "Other") {
+		m_pageLocation.AddAVolcano();
+		volcano = g_volcanoes.m_name[g_volcanoes.m_volcanoNum-1];
+	}
 
 	// 3. Ask the user for the serial number
 	Dialogs::CQueryStringDialog serialNumberDialog;
@@ -311,8 +316,9 @@ void CScannerConfiguration::OnAddScanner(){
 	// 4. Ask the user for the number of channels on the spectrometer
 	Dialogs::CSelectionDialog channelsDialog;
 	CString channel;
-	for(k = 0; k < MAX_CHANNEL_NUM; ++k)
-		channelsDialog.m_option[k].Format("%d", k+1);
+	for (int k = 0; k < MAX_CHANNEL_NUM; ++k) {
+		channelsDialog.m_option[k].Format("%d", k + 1);
+	}
 	channelsDialog.m_windowText.Format("How many channels are there on this spectrometer?");
 	channelsDialog.m_currentSelection = &channel;
 	ret = channelsDialog.DoModal();

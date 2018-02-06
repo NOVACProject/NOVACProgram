@@ -262,6 +262,8 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, CEvaluation *eval, b
 					pView->PostMessage(WM_GOTO_SLEEP);
 				thread->SuspendThread();
 				*m_sleeping = false;
+			}else{
+				Sleep(200);
 			}
 
 		} // end while(1)

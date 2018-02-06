@@ -632,7 +632,7 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *resu
 	double maxIntensity = max(spectrometer.GetMaxIntensity(), 1.0);
 
 	// Finally, the version of the file and the version of the program
-	string.AppendFormat("\tversion=2.2\n");
+	string.AppendFormat("\tversion=3.0\n");
 	string.AppendFormat("\tsoftwareversion=%d.%02d\n",	CVersion::majorNumber, CVersion::minorNumber);
 	string.AppendFormat("\tcompiledate=%s\n",			__DATE__);
 
@@ -668,6 +668,52 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *resu
 	string.AppendFormat("\tplumeedge1=%.2lf\n",			plumeEdge1);
 	string.AppendFormat("\tplumeedge2=%.2lf\n",			plumeEdge2);
 	string.AppendFormat("</fluxinfo>\n");
+
+	// 0.2	Write spectrometer settings to file
+
+	string.AppendFormat("<spectrometer>\n");
+	string.AppendFormat("\t<serialNumber>%s</serialNumber>\n", settings.serialNumber);
+	string.AppendFormat("\t<model>%s</model>\n", specModel);
+	for (int i = 0; i < settings.channelNum; i++) {
+		string.AppendFormat("\t<channel number='%d'>\n", i);
+		const Evaluation::CFitWindow &fitWindow = settings.channel[i].fitWindow;
+		for (int k = 0; k < fitWindow.nRef; k++) {
+			const CReferenceFile &ref = fitWindow.ref[k];
+			string.AppendFormat("\t\t<Reference>\n");
+			string.AppendFormat("\t\t\t<name>%s</name>\n",ref.m_specieName);
+			string.AppendFormat("\t\t\t<path>%s</path>\n", ref.m_path);
+
+			CString shiftString;
+			if (ref.m_shiftOption == Evaluation::SHIFT_FIX)
+				shiftString.Format("fix to %.2lf", ref.m_shiftValue);
+			else if (ref.m_shiftOption == Evaluation::SHIFT_FREE)
+				shiftString.Format("free");
+			else if (ref.m_shiftOption == Evaluation::SHIFT_LIMIT)
+				shiftString.Format("limit from %.2lf to %.2lf", ref.m_shiftValue, ref.m_shiftMaxValue);
+			else if (ref.m_shiftOption == Evaluation::SHIFT_LINK)
+				shiftString.Format("link to %.0lf", ref.m_shiftValue);
+			string.AppendFormat("\t\t\t<shift>%s</shift>\n", shiftString);
+
+			CString squeezeString;
+			if (ref.m_squeezeOption == Evaluation::SHIFT_FIX)
+				squeezeString.Format("fix to %.2lf", ref.m_squeezeValue);
+			else if (ref.m_squeezeOption == Evaluation::SHIFT_FREE)
+				squeezeString.Format("free");
+			else if (ref.m_squeezeOption == Evaluation::SHIFT_LIMIT)
+				squeezeString.Format("limit from %.2lf to %.2lf", ref.m_squeezeValue, ref.m_squeezeMaxValue);
+			else if (ref.m_squeezeOption == Evaluation::SHIFT_LINK)
+				squeezeString.Format("link to %.0lf", ref.m_squeezeValue);
+			string.AppendFormat("\t\t\t<squeeze>%s</squeeze>\n", squeezeString);
+
+			string.AppendFormat("\t\t</Reference>\n");
+		}
+		string.AppendFormat("\t\t<fitLow>%d</fitLow>\n", fitWindow.fitLow);
+		string.AppendFormat("\t\t<fitHigh>%d</fitHigh>\n", fitWindow.fitHigh);
+		string.AppendFormat("\t\t<Reference>\n");
+
+		string.AppendFormat("\t</channel>\n");
+	}
+	string.AppendFormat("</spectrometer>\n");
 
 	// 1. write the header
 	const Evaluation::CFitWindow &window = settings.channel[0].fitWindow;
