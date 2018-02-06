@@ -2,6 +2,7 @@ NOVAC Program Release Notes
 -----------------------------------------------------
 Version 2.0 (February 2018)
 
+* Sleep between re-eval of scans to prevent program crashing (#19)
 * Remove Summarize Flux Data menu item (#32)
 * Fix bug where removing one spectrometer removes all spectrometer under a volcano (#30)
 * Fix bug where re-evaluation scan browse files button does not open all files (#25)

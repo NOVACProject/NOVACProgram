@@ -263,7 +263,7 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, CEvaluation *eval, b
 				thread->SuspendThread();
 				*m_sleeping = false;
 			}else{
-				Sleep(150);
+				Sleep(200);
 			}
 
 		} // end while(1)
