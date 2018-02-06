@@ -377,60 +377,6 @@ void CScannerConfiguration::OnAddScanner(){
 	UpdateData(FALSE);
 }
 
-/** Adds a volcano to the list of volcanoes */
-//CString CScannerConfiguration::AddAVolcano() {
-//	CString name, tempStr;
-//	Common common;
-//	double latitude, longitude;
-//	long	altitude;
-//
-//	// 1. Ask the user about the name of the volcano
-//	Dialogs::CQueryStringDialog nameDlg;
-//	nameDlg.m_windowText.Format("What is the name of the volcano/source?");
-//	nameDlg.m_inputString = &name;
-//	INT_PTR ret = nameDlg.DoModal();
-//
-//	if (IDCANCEL == ret)
-//		return "";
-//
-//	// 2. Ask the user about the latitude, longitude and altitude of the source
-//	nameDlg.m_windowText.Format("The latitude of the source?");
-//	nameDlg.m_inputString = &tempStr;
-//	tempStr.Format("0.0");
-//	ret = nameDlg.DoModal();
-//
-//	if (IDCANCEL == ret || 1 != sscanf(tempStr, "%lf", &latitude))
-//		return "";
-//
-//	nameDlg.m_windowText.Format("The longitude of the source?");
-//	tempStr.Format("0.0");
-//	ret = nameDlg.DoModal();
-//
-//	if (IDCANCEL == ret || 1 != sscanf(tempStr, "%lf", &longitude))
-//		return "";
-//
-//	nameDlg.m_windowText.Format("The altitude of the source?");
-//	tempStr.Format("0");
-//	ret = nameDlg.DoModal();
-//
-//	if (IDCANCEL == ret || 1 != sscanf(tempStr, "%ld", &altitude))
-//		return "";
-//
-//	// 3. Add the user-given source to the list of volcanoes
-//	int index = g_volcanoes.m_volcanoNum;
-//	g_volcanoes.m_name[index].Format(name);
-//	g_volcanoes.m_simpleName[index].Format(common.SimplifyString(name));
-//	g_volcanoes.m_peakLatitude[index] = latitude;
-//	g_volcanoes.m_peakLongitude[index] = longitude;
-//	g_volcanoes.m_peakHeight[index] = altitude;
-//	g_volcanoes.m_hoursToGMT[index] = 0;
-//	g_volcanoes.m_observatory[index] = 1;
-//	++g_volcanoes.m_volcanoNum;
-//		
-//	return name;
-//}
-
-
 /** Called when the user has clicked the button 'Remove Scanner' */
 void CScannerConfiguration::OnRemoveScanner() {
 	int currentScanner, currentSpec;
