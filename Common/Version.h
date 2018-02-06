@@ -9,7 +9,7 @@ public:
 
 
 	/** The major version number */
-	static const int majorNumber = 2;
+	static const int majorNumber = 3;
 
 	/** The minor version number */
 	static const int minorNumber = 0;
