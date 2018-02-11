@@ -2,6 +2,8 @@
 
 #include "Evaluation.h"
 #include "ScanResult.h"
+#include <memory>
+#include <mutex>
 
 #include "../Common/Common.h"
 #include "../Common/Spectra/ScanFileHandler.h"
@@ -47,9 +49,6 @@ namespace Evaluation
 				MAX_N_REFERENCES + 1 spectra are the scaled reference spectra used in the fit. */
 		CSpectrum m_spec[MAX_N_REFERENCES + 4];
 
-		/** The evaluation results from the last scan evaluated */
-		CScanResult *m_result;
-
 		/** Called to evaluate one scan.
 				@return the number of spectra evaluated. */
 		long EvaluateScan(const CString &scanfile, CEvaluation *evaluator, bool *fRun = NULL, const CConfigurationSetting::DarkSettings *darkSettings = NULL);
@@ -66,7 +65,20 @@ namespace Evaluation
 
 		/** Setting the option for wheather the spectra are averaged or not. */
 		void SetOption_AveragedSpectra(bool averaged);
+
+		/** @return a copy of the scan result */
+		std::unique_ptr<CScanResult> GetResult();
+
+		/** @return true if a result has been produced here */
+		bool HasResult();
+
 	private:
+
+		/** The evaluation results from the last scan evaluated */
+		std::shared_ptr<CScanResult> m_result;
+	
+		/** A mutex to protect the scan result from bein updated/deleted/altered from two threads simultaneously */
+		std::mutex m_resultMutex;
 
 		// ----------------------- PRIVATE METHODS ---------------------------
 

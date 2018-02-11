@@ -171,7 +171,10 @@ bool CReEvaluator::DoEvaluation(){
 
 			// get the result of the evaluation and write them to file
 			if(success)
-				AppendResultToEvaluationLog(ev->m_result, scan);
+			{
+				std::unique_ptr<CScanResult> res = ev->GetResult();
+				AppendResultToEvaluationLog(res.get(), scan);
+			}
 
 		}//end for m_curWindow...
 		m_curWindow = 0;

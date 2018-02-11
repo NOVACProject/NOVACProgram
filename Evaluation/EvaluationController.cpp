@@ -53,7 +53,7 @@ CEvaluationController::CEvaluationController(void)
 	m_fluxSpecie.Format("SO2");
 	m_realTime = false;
 	m_date[0] = m_date[1] = m_date[2] = 0;
-	m_lastResult = NULL;
+	m_lastResult = nullptr;
 }
 
 CEvaluationController::~CEvaluationController(void)
@@ -64,7 +64,6 @@ CEvaluationController::~CEvaluationController(void)
 			m_spectrometer[i] = NULL;
 		}
 	}
-	this->m_lastResult = NULL;
 }
 
 /** Quits the thread */
@@ -75,7 +74,7 @@ void CEvaluationController::OnQuit(WPARAM wp, LPARAM lp){
 			m_spectrometer[i] = NULL;
 		}
 	}
-	this->m_lastResult = NULL;
+	this->m_lastResult.reset();
 }
 
 /** This function is to test the evaluation */
@@ -268,13 +267,8 @@ RETURN_CODE CEvaluationController::EvaluateScan(const CString &fileName, int vol
 	long spectrumNum = ev->EvaluateScan(fileName, spectrometer->m_evaluator[0], NULL, darkSettings);
 
 	// 6. Get the result from the evaluation
-	if(ev != NULL && ev->m_result != NULL){
-		if(m_lastResult != NULL){
-			delete m_lastResult;
-		}
-		m_lastResult = new CScanResult(); 
-		*m_lastResult = *ev->m_result;
-
+	if(ev != nullptr && ev->HasResult()){
+		m_lastResult = ev->GetResult();
 		m_lastResult->SetInstrumentType(spectrometer->m_scanner.instrumentType);
 	}
 
@@ -316,14 +310,14 @@ RETURN_CODE CEvaluationController::EvaluateScan(const CString &fileName, int vol
 		}
 
 		// 10c. Calculate the flux...
-		if(SUCCESS != CalculateFlux(m_lastResult, spectrometer, volcanoIndex, windField)){
-			Output_FluxFailure(m_lastResult, spectrometer);
+		if(SUCCESS != CalculateFlux(m_lastResult.get(), spectrometer, volcanoIndex, windField)){
+			Output_FluxFailure(m_lastResult.get(), spectrometer);
 			sucess = false;
 		}
 	}
 
 	// 11. Append the result to the log file of the corresponding scanningInstrument
-	if(SUCCESS != WriteEvaluationResult(m_lastResult, scan, *spectrometer, windField)){
+	if(SUCCESS != WriteEvaluationResult(m_lastResult.get(), scan, *spectrometer, windField)){
 		spectrometer->m_logFileHandler.WriteErrorMessage(TEXT("Could not write result to file"));
 	}
 
@@ -1020,9 +1014,13 @@ void CEvaluationController::Output_FitFailure(const CSpectrum &spec){
 void CEvaluationController::Output_FluxFailure(const CScanResult *result, const CSpectrometer *spec){
 	spec->m_logFileHandler.WriteErrorMessage(TEXT("Could not calculate the flux"));
 
-	if(result != m_lastResult)
+	if(result != m_lastResult.get()) {
 		*m_lastResult = *result;
-	pView->PostMessage(WM_EVAL_FAILURE, (WPARAM)&(spec->m_settings.serialNumber), (LPARAM)m_lastResult);
+	}
+
+	CScanResult* copiedResult = (nullptr != result) ? new CScanResult(*result) : nullptr;
+
+	pView->PostMessage(WM_EVAL_FAILURE, (WPARAM)&(spec->m_settings.serialNumber), (LPARAM)copiedResult);
 }
 
 /** Shows the timing information from evaluating a scan */

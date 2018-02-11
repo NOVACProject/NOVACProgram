@@ -228,10 +228,10 @@ LRESULT CReEval_DoEvaluationDlg::OnEvaluatedSpectrum(WPARAM wp, LPARAM lp){
 
 	int lastWindowUsed = 0; // which window in the re-evaluator was used last time we received an evaluated spectrum?
 	CSpectrum *spec = (CSpectrum *)wp;
-	if(m_result != NULL)
+	if(m_result != nullptr) {
 		delete m_result;
-	m_result = new CScanResult();
-	*m_result = *(CScanResult *)lp;
+	}
+	m_result = (CScanResult *)lp;
 	int i;
 
 	// a handle to the fit window

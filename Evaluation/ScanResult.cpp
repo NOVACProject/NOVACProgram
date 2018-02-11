@@ -32,6 +32,40 @@ CScanResult::CScanResult(void)
 	m_corruptedNum				= 0;
 }
 
+CScanResult::CScanResult(const CScanResult& other)
+{
+	// The calculated flux and offset
+	this->m_flux = other.m_flux;
+	this->m_offset = other.m_offset;
+
+	// The errors
+	m_geomError = other.m_geomError;
+	m_scatteringError = other.m_scatteringError;
+	m_spectroscopyError = other.m_spectroscopyError;
+
+	// The calculated wind-direction and plume-centre
+	this->m_windDirection = other.m_windDirection;
+	this->m_plumeCentre[0] = other.m_plumeCentre[0];
+	this->m_plumeCentre[1] = other.m_plumeCentre[1];
+	this->m_plumeEdge[0] = other.m_plumeEdge[0];
+	this->m_plumeEdge[1] = other.m_plumeEdge[1];
+	this->m_plumeCompleteness = other.m_plumeCompleteness;
+
+	this->m_spec.Copy(other.m_spec);
+	this->m_specInfo.Copy(other.m_specInfo);
+	this->m_corruptedSpectra.Copy(other.m_corruptedSpectra);
+	this->m_corruptedNum = other.m_corruptedNum;
+	this->m_specNum = other.m_specNum;
+
+	this->m_skySpecInfo = other.m_skySpecInfo;
+	this->m_darkSpecInfo = other.m_darkSpecInfo;
+	this->m_offsetSpecInfo = other.m_offsetSpecInfo;
+	this->m_darkCurSpecInfo = other.m_darkCurSpecInfo;
+
+	this->m_measurementMode = other.m_measurementMode;
+	this->m_instrumentType = other.m_instrumentType;
+}
+
 CScanResult::~CScanResult(void)
 {
 	m_spec.RemoveAll();
@@ -536,6 +570,8 @@ CScanResult &CScanResult::operator=(const CScanResult &s2){
 
 	this->m_skySpecInfo   = s2.m_skySpecInfo;
 	this->m_darkSpecInfo  = s2.m_darkSpecInfo;
+	this->m_offsetSpecInfo = s2.m_offsetSpecInfo;
+	this->m_darkCurSpecInfo = s2.m_darkCurSpecInfo;
 
 	this->m_measurementMode = s2.m_measurementMode;
 	this->m_instrumentType  = s2.m_instrumentType;

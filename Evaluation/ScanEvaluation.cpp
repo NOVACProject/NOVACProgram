@@ -10,7 +10,7 @@ using namespace Evaluation;
 
 CScanEvaluation::CScanEvaluation(void)
 {
-	m_result    = NULL;
+	m_result    = nullptr;
 	pView       = NULL;
 	m_skyOption = SKY_FIRST;
 	m_skyIndex  = 0;
@@ -27,11 +27,27 @@ CScanEvaluation::CScanEvaluation(void)
 
 CScanEvaluation::~CScanEvaluation(void)
 {
-	if(m_result != NULL){
-		delete(m_result);
-		m_result = NULL;
-	}
 	pView = NULL;
+}
+
+std::unique_ptr<CScanResult> CScanEvaluation::GetResult()
+{
+	std::lock_guard<std::mutex> lock{ m_resultMutex };
+	std::unique_ptr<CScanResult> copiedResult;
+
+	if(nullptr != m_result.get())
+	{
+		copiedResult.reset(new CScanResult(*m_result.get()));
+	}
+
+	return copiedResult;
+}
+
+bool CScanEvaluation::HasResult()
+{
+	std::lock_guard<std::mutex> lock{ m_resultMutex };
+
+	return (nullptr != m_result.get());
 }
 
 /** Called to evaluate one scan */
@@ -42,6 +58,7 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, CEvaluation *eval, b
 	CMemoryState newMem, oldMem, diffMem;
 	oldMem.Checkpoint();
 #endif
+
 	CString message;	// used for ShowMessage messages
 	int	index = 0;		// keeping track of the index of the current spectrum into the .pak-file
 	double highestColumn = 0.0;	// the highest column-value in the evaluation
@@ -55,17 +72,17 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, CEvaluation *eval, b
 	m_fitHigh = eval->m_window.fitHigh;
 
 	// Check so that the file exists
-	if(!IsExistingFile(scanfile))
+	if(!IsExistingFile(scanfile)) {
 		return 0;
+	}
 
 	// The CScanFileHandler is a structure for reading the spectral information 
 	//  from the scan-file
-	FileHandler::CScanFileHandler *scan = new FileHandler::CScanFileHandler();  
+	FileHandler::CScanFileHandler scan;  
 
 	// Check the scan file, make sure it's correct and that the file
 	//	actually contains spectra
-	if(SUCCESS != scan->CheckScanFile(&scanfile)){
-		delete scan;
+	if(SUCCESS != scan.CheckScanFile(&scanfile)){
 		return 0;
 	}
 
@@ -86,18 +103,16 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, CEvaluation *eval, b
 
 	// Get the sky and dark spectra and divide them by the number of 
 	//     co-added spectra in it
-	if(SUCCESS != GetSky(scan, sky)){
+	if(SUCCESS != GetSky(&scan, sky)){
 		//if(logFileWriter != NULL)
 		//	logFileWriter->WriteErrorMessage("Error in evaluation: Cannot read sky spectrum from file");
-		delete scan;
 		return 0;
 	}
 	CSpectrum original_sky = sky; // original_sky is the sky-spectrum without dark-spectrum corrections...
 
 	if(m_skyOption != SKY_USER){
 		// Get the dark-spectrum and remove it from the sky
-		if(SUCCESS != GetDark(scan, sky, dark, darkSettings)){
-			delete scan;
+		if(SUCCESS != GetDark(&scan, sky, dark, darkSettings)){
 			return 0;
 		}
 		sky.Sub(dark);
@@ -110,9 +125,9 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, CEvaluation *eval, b
 
 	// Get some important information about the spectra, like
 	//	interlace steps, spectrum length and start-channel
-	eval->m_window.interlaceStep	= scan->GetInterlaceSteps();
-	eval->m_window.specLength		= scan->GetSpectrumLength() * eval->m_window.interlaceStep;
-	eval->m_window.startChannel		= scan->GetStartChannel();
+	eval->m_window.interlaceStep	= scan.GetInterlaceSteps();
+	eval->m_window.specLength		= scan.GetSpectrumLength() * eval->m_window.interlaceStep;
+	eval->m_window.startChannel		= scan.GetStartChannel();
 
 	// Adjust the fit-low and fit-high parameters according to the spectra
 	m_fitLow  = eval->m_window.fitLow  - eval->m_window.startChannel;
@@ -121,13 +136,16 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, CEvaluation *eval, b
 	// If we have a solar-spectrum that we can use to determine the shift
 	//	& squeeze then fit that first so that we know the wavelength calibration
 	if(eval->m_window.fraunhoferRef.m_path.GetLength() > 4){
-		FindOptimumShiftAndSqueeze_Fraunhofer(eval, scan);
+		FindOptimumShiftAndSqueeze_Fraunhofer(eval, &scan);
 	}
 
 	// if wanted, include the sky spectrum into the fit
 	if(eval->m_window.fitType == FIT_HP_SUB || eval->m_window.fitType == FIT_POLY){
 		IncludeSkySpecInFit(eval, sky, eval->m_window);
 	}
+
+	// the data structure to keep track of the evaluation results
+	std::shared_ptr<CScanResult> newResult = std::make_shared<CScanResult>();
 
 	// Check weather we are to find an optimal shift and squeeze
 	int nIt = (eval->m_window.findOptimalShift == FALSE) ? 1 : 2;
@@ -138,22 +156,18 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, CEvaluation *eval, b
 		index = -1; // we're at spectrum number 0 in the .pak-file
 		m_indexOfMostAbsorbingSpectrum = -1;	// as far as we know, there's no absorption in any spectrum...
 
-		// the data structure to keep track of the evaluation results
-		if(m_result != NULL)
-			delete m_result;
-		m_result = new CScanResult();
-		m_result->SetSkySpecInfo(original_sky.m_info);
-		m_result->SetDarkSpecInfo(dark.m_info);
+		newResult->SetSkySpecInfo(original_sky.m_info);
+		newResult->SetDarkSpecInfo(dark.m_info);
 
 		// Make sure that we'll start with the first spectrum in the scan
-		scan->ResetCounter();
+		scan.ResetCounter();
 
 		// Evaluate all the spectra in the scan.
 		while(1){
 			success = true; // assume that we will succeed in evaluating this spectrum
 
 			// If the user wants to exit this thread then do so.
-			if(fRun != NULL && *fRun == false){
+			if(fRun != nullptr && *fRun == false){
 				ShowMessage("Scan Evaluation cancelled by user");
 				return 0;
 			}
@@ -162,17 +176,17 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, CEvaluation *eval, b
 			int	spectrumIndex = current.ScanIndex();
 
 			// a. Read the next spectrum from the file
-			int ret = scan->GetNextSpectrum(current);
+			int ret = scan.GetNextSpectrum(current);
 
 			if(ret == 0){
 				// if something went wrong when reading the spectrum
-				if(scan->m_lastError == SpectrumIO::CSpectrumIO::ERROR_SPECTRUM_NOT_FOUND || scan->m_lastError == SpectrumIO::CSpectrumIO::ERROR_EOF){
+				if(scan.m_lastError == SpectrumIO::CSpectrumIO::ERROR_SPECTRUM_NOT_FOUND || scan.m_lastError == SpectrumIO::CSpectrumIO::ERROR_EOF){
 					// at the end of the file, quit the 'while' loop
 					break;
 				}else{
 					CString errMsg;
 					errMsg.Format("Faulty spectrum found in %s", scanfile);
-					switch(scan->m_lastError){
+					switch(scan.m_lastError){
 						case SpectrumIO::CSpectrumIO::ERROR_CHECKSUM_MISMATCH:
 							errMsg.AppendFormat(", Checksum mismatch. Spectrum ignored"); break;
 						case SpectrumIO::CSpectrumIO::ERROR_DECOMPRESS:
@@ -182,7 +196,7 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, CEvaluation *eval, b
 					}
 					ShowMessage(errMsg);
 					// remember that this spectrum is corrupted
-					m_result->MarkAsCorrupted(spectrumIndex);
+					newResult->MarkAsCorrupted(spectrumIndex);
 					continue;
 				}
 			}
@@ -200,8 +214,7 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, CEvaluation *eval, b
 				current.InterpolateSpectrum();
 
 			// b. Get the dark spectrum for this measured spectrum
-			if(SUCCESS != GetDark(scan, current, dark, darkSettings)){
-				delete scan;
+			if(SUCCESS != GetDark(&scan, current, dark, darkSettings)){
 				return 0;
 			}
 
@@ -217,7 +230,7 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, CEvaluation *eval, b
 
 			// d. Check if this spectrum is worth evaluating
 			if(Ignore(current, eval->m_window)){
-				message.Format("Ignoring spectrum %d in scan %s.", current.ScanIndex(), scan->GetFileName());
+				message.Format("Ignoring spectrum %d in scan %s.", current.ScanIndex(), scan.GetFileName());
 				ShowMessage(message);
 				continue;
 			}
@@ -238,20 +251,23 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, CEvaluation *eval, b
 			}
 
 			// e. Save the evaluation result
-			m_result->AppendResult(eval->GetEvaluationResult(), current.m_info);
+			newResult->AppendResult(eval->GetEvaluationResult(), current.m_info);
 
 			// f. Check if this was an ok data point (CScanResult)
-			m_result->CheckGoodnessOfFit(current.m_info);
+			newResult->CheckGoodnessOfFit(current.m_info);
 
 			// g. If it is ok, then check if the value is higher than any of the previous ones
-			if(m_result->IsOk(m_result->GetEvaluatedNum()-1) && fabs(m_result->GetColumn(m_result->GetEvaluatedNum()-1, 0)) > highestColumn){
-				highestColumn = fabs(m_result->GetColumn(m_result->GetEvaluatedNum()-1, 0));
+			if(newResult->IsOk(newResult->GetEvaluatedNum()-1) && fabs(newResult->GetColumn(newResult->GetEvaluatedNum()-1, 0)) > highestColumn){
+				highestColumn = fabs(newResult->GetColumn(newResult->GetEvaluatedNum()-1, 0));
 				m_indexOfMostAbsorbingSpectrum	= index;
 			}
 
 			// h. Update the screen (if any)
 			if(success && pView != NULL){
-				ShowResult(current, eval, index, scan->GetSpectrumNumInFile());
+				std::lock_guard<std::mutex> lock{ m_resultMutex };
+				m_result = newResult;
+
+				ShowResult(current, eval, index, scan.GetSpectrumNumInFile());
 			}
 
 			// i. If the user wants us to sleep between each evaluation. Do so...
@@ -262,24 +278,18 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, CEvaluation *eval, b
 					pView->PostMessage(WM_GOTO_SLEEP);
 				thread->SuspendThread();
 				*m_sleeping = false;
-			}else{
-				Sleep(200);
 			}
-
 		} // end while(1)
 
 		// end of scan...
 		if((iteration == 0) && (eval->m_window.findOptimalShift == TRUE)){
-			FindOptimumShiftAndSqueeze(eval, scan, m_result);
+			FindOptimumShiftAndSqueeze(eval, &scan, newResult.get());
 		}
 
 	}//
 
 	// restore the fit window
 	eval->m_window = backupWindow;
-
-	// Clean up
-	delete scan;
 
 #ifdef _DEBUG
 	// this is for searching for memory leaks
@@ -289,6 +299,7 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, CEvaluation *eval, b
 //    diffMem.DumpAllObjectsSince();
 	}
 #endif
+
 	return m_result->GetEvaluatedNum();
 }
 
@@ -364,7 +375,10 @@ void CScanEvaluation::ShowResult(const CSpectrum &spec, const CEvaluation *eval,
 		}
 	}
 
-	pView->PostMessage(WM_EVAL_SUCCESS, (WPARAM)&m_spec[0], (LPARAM)m_result);
+	{
+		CScanResult* copiedResult = new CScanResult(*m_result.get());
+		pView->PostMessage(WM_EVAL_SUCCESS, (WPARAM)&m_spec[0], (LPARAM)copiedResult);
+	}
 
 	m_prog_SpecCur = curSpecIndex;
 	m_prog_SpecNum = specNum;
