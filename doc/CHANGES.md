@@ -1,6 +1,6 @@
 NOVAC Program Release Notes
 -----------------------------------------------------
-Version 2.0 (February 2018)
+Version 3.0 (February 2018)
 
 * Sleep between re-eval of scans to prevent program crashing (#19)
 * Remove Summarize Flux Data menu item (#32)
