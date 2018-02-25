@@ -138,8 +138,9 @@ void UploadToNOVACServer(const CString &fileName, int volcanoIndex, bool deleteF
 	CString message;
 
 	// The uploading thread is not running, quit it...
-	if(g_ftp == NULL)
+	if(g_ftp == NULL) {
 		return;
+	}
 
 	// The file-name
 	fileNameBuffer = new CString();
@@ -1012,11 +1013,11 @@ double Common::CalculateFlux_ConeFormula(const double *scanAngle, const double *
 	coneAngle			*= DEGREETORAD;
 
 	// local-data buffer to store the intermediate calculations
-	double	*alpha					= new double[nDataPoints];
-	double	*scd					= new double[nDataPoints];
-	double	*columnCorrection		= new double[nDataPoints];
-	double	*x						= new double[nDataPoints];
-	double	*y						= new double[nDataPoints];
+	std::vector<double> alpha(nDataPoints);
+	std::vector<double> scd(nDataPoints);
+	std::vector<double> columnCorrection(nDataPoints);
+	std::vector<double> x(nDataPoints);
+	std::vector<double> y(nDataPoints);
 
 	// Temporary variables, to do less computations
 	double	tan_coneAngle	= tan(coneAngle);
@@ -1083,8 +1084,6 @@ double Common::CalculateFlux_ConeFormula(const double *scanAngle, const double *
 
 	}
 
-	delete[] alpha, scd, columnCorrection, x, y;
-
 	return fabs(flux);
 }
 
@@ -1110,13 +1109,12 @@ double Common::CalculateFlux_HeidelbergFormula(const double *scanAngle1, const d
 	// local-data buffer to store the intermediate calculations
 	// double	*alpha							= new double[nDataPoints];
 	
-	double	*elev							= new double[nDataPoints];
-	double	*azim							= new double[nDataPoints];
-	
-	double	*scd							= new double[nDataPoints];
-	double	*columnCorrection				= new double[nDataPoints];
-	double	*x								= new double[nDataPoints];
-	double	*y								= new double[nDataPoints];
+	std::vector<double> elev(nDataPoints);
+	std::vector<double> azim(nDataPoints);
+	std::vector<double> scd(nDataPoints);
+	std::vector<double> columnCorrection(nDataPoints);
+	std::vector<double> x(nDataPoints);
+	std::vector<double> y(nDataPoints);
 
 	// First prepare the buffers before we calculate anything
 	for(int i = 0; i < nDataPoints - 1; ++i){
@@ -1179,13 +1177,11 @@ double Common::CalculateFlux_HeidelbergFormula(const double *scanAngle1, const d
 #endif
 
 	}
-	//HD constants are to be deleted as well
-	delete[] scd, columnCorrection, x, y, elev, azim;
 
 	return fabs(flux);
 }
 
-double Common::CalculateOffset(const double *columns, const bool *badEvaluation, long numPoints){
+double Common::CalculateOffset(const std::vector<double>& columns, const std::vector<bool>& badEvaluation, long numPoints){
 //  SpecData m[3] = {1e6, 1e6, 1e6}; 
 	SpecData avg;
 	Common common;
@@ -1194,7 +1190,7 @@ double Common::CalculateOffset(const double *columns, const bool *badEvaluation,
 	// calculate the offset as the average of the three lowest column values 
 	//    that are not considered as 'bad' values
 
-	double *testColumns = new double[numPoints];
+	std::vector<double> testColumns(numPoints);
 
 	int numColumns = 0;
 	for(i = 0; i < numPoints; ++i){
@@ -1205,24 +1201,17 @@ double Common::CalculateOffset(const double *columns, const bool *badEvaluation,
 	}
 
 	if(numColumns <= 5){
-		delete[] testColumns;
 		return 0.0;
 	}
 
 	// Find the N lowest column values
 	int N = (int)(0.2 * numColumns);
-	SpecData *m = new SpecData[N];
-	memset(m, (int)1e6, N * sizeof(SpecData));
-	if(FindNLowest(testColumns, numColumns, m, N)){
-		avg = Average(m, N);
+	std::vector<SpecData> m(N, 1e6);
+	if(FindNLowest(testColumns.data(), numColumns, m.data(), N)){
+		avg = Average(m.data(), N);
 //		avg = (m[0] + m[1] + m[2]) / 3;
-		delete[] testColumns;
-		delete[] m;
 		return avg;
 	}
-
-	delete[] testColumns;
-	delete[] m;
 
 	// could not calculate a good offset.
 	return 0;
@@ -1240,17 +1229,18 @@ double Common::CalculateOffset(const double *columns, const bool *badEvaluation,
 			which hits the centre of the plume
 		@param plumeWidth - will on successful return be filled with the 
 			width of the plume (same unit as the scanAngles)	*/
-bool Common::FindPlume(const double *scanAngles, const double *phi, const double *columns, const double *columnErrors, const bool *badEvaluation, long numPoints, double &plumeCentre_alpha, double &plumeCentre_phi, double &plumeEdge_low, double &plumeEdge_high){
+bool Common::FindPlume(const std::vector<double>& scanAngles, const std::vector<double>& phi, const std::vector<double>& columns, const std::vector<double>& columnErrors, const std::vector<bool>& badEvaluation, long numPoints, double &plumeCentre_alpha, double &plumeCentre_phi, double &plumeEdge_low, double &plumeEdge_high){
 	Common common;
 
 	// There is a plume iff there is a region, where the column-values are considerably
 	//	much higher than in the rest of the scan
 	
 	// Make a local copy of the values, picking out only the good ones
-	double *col		= new double[numPoints];
-	double *colE	= new double[numPoints];
-	double *angle	= new double[numPoints];
-	double *p		= new double[numPoints];
+	std::vector<double> col(numPoints);
+	std::vector<double> colE(numPoints);
+	std::vector<double> angle(numPoints);
+	std::vector<double> p(numPoints);
+
 	int		nCol	= 0; // <-- the number of ok column values
 	for(int k = 0; k < numPoints; ++k){
 		if(!badEvaluation[k]){
@@ -1262,7 +1252,6 @@ bool Common::FindPlume(const double *scanAngles, const double *phi, const double
 		}
 	}
 	if(nCol <= 5){ // <-- if too few ok points, then there's no plume
-		delete[] col;		delete[] colE;		delete[] angle;	delete[] p;
 		return false;
 	}
 
@@ -1278,10 +1267,10 @@ bool Common::FindPlume(const double *scanAngles, const double *phi, const double
 				continue; 
 
 			// the average column value in the region we're testing
-			double avgInRegion = Average(col + low, high - low); 
+			double avgInRegion = Average(col.data() + low, high - low); 
 
 			// the average column value outside of the region we're testing
-			double avgOutRegion= (Average(col, low) + Average(col + high, nCol - high)) * 0.5;
+			double avgOutRegion= (Average(col.data(), low) + Average(col.data() + high, nCol - high)) * 0.5;
 
 			if(avgInRegion - avgOutRegion > highestDifference){
 				highestDifference = avgInRegion - avgOutRegion;
@@ -1292,7 +1281,7 @@ bool Common::FindPlume(const double *scanAngles, const double *phi, const double
 	}
 
 	// Calculate the average column error, for the good measurement points
-	double avgColError = Average(colE, nCol);
+	double avgColError = Average(colE.data(), nCol);
 
 	if(highestDifference > 5 * avgColError){
 		// the plume centre is the average of the scan-angles in the 'plume-region'
@@ -1309,8 +1298,8 @@ bool Common::FindPlume(const double *scanAngles, const double *phi, const double
 		// The edges of the plume
 		plumeEdge_low  = angle[0];
 		plumeEdge_high = angle[nCol-1];
-		double minCol = Min(col, nCol);
-		double maxCol_div_e = (Max(col, nCol) - minCol) * 0.3679;
+		double minCol = Min(col.data(), nCol);
+		double maxCol_div_e = (Max(col.data(), nCol) - minCol) * 0.3679;
 		for(int k = 0; k < nCol; ++k){
 			if(angle[k] > plumeCentre_alpha){
 				break;
@@ -1326,12 +1315,8 @@ bool Common::FindPlume(const double *scanAngles, const double *phi, const double
 			}
 		}
 
-		delete[] col;	delete[] colE;
-		delete[] angle; delete[] p;
 		return true;
 	}else {
-		delete[] col;	delete[] colE;
-		delete[] angle; delete[] p;
 		return false;
 	}
 }
@@ -1348,7 +1333,7 @@ bool Common::FindPlume(const double *scanAngles, const double *phi, const double
 		@param numPoints - the number of points in the scan. Must also be the length 
 			of the vectors 'columns', 'columnErrors', and 'badEvaluation'
 		@param completeness - Will on successful return be filled with the completeness of the plume */
-bool Common::CalculatePlumeCompleteness(const double *scanAngles, const double *phi, const double *columns, const double *columnErrors, const bool *badEvaluation, double offset, long numPoints, double &completeness){
+bool Common::CalculatePlumeCompleteness(const std::vector<double>& scanAngles, const std::vector<double>& phi, const std::vector<double>& columns, const std::vector<double>& columnErrors, const std::vector<bool>& badEvaluation, double offset, long numPoints, double &completeness) {
 	double plumeCentre_alpha, plumeCentre_phi;
 	double plumeEdge_low, plumeEdge_high;
 

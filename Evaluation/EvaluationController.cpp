@@ -344,8 +344,7 @@ RETURN_CODE CEvaluationController::EvaluateScan(const CString &fileName, int vol
 
 	// 16. Share the results with the rest of the program
 	if(sucess){
-		CScanResult *newResult = new CScanResult();
-		*newResult = *m_lastResult;
+		CScanResult *newResult = new CScanResult(*m_lastResult);
 		pView->PostMessage(WM_EVAL_SUCCESS, (WPARAM)&(spectrometer->SerialNumber()), (LPARAM)newResult);
 	}
 

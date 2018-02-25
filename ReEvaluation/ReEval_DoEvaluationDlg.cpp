@@ -223,16 +223,27 @@ void CReEval_DoEvaluationDlg::OnCancelEvaluation()
 
 LRESULT CReEval_DoEvaluationDlg::OnEvaluatedSpectrum(WPARAM wp, LPARAM lp){
 	// if the reevaluator stopped, don't do anything
-	if(!m_reeval->fRun)
+	if(!m_reeval->fRun) {
+		CSpectrum* spec = (CSpectrum *)wp;
+		CScanResult * result = (CScanResult *)lp;
+
+		// Clean up the pointers which we were given
+		delete m_result;
+		delete[] spec;
+
 		return 0;
+	}
 
 	int lastWindowUsed = 0; // which window in the re-evaluator was used last time we received an evaluated spectrum?
-	CSpectrum *spec = (CSpectrum *)wp;
+
+	// Capture the spectrum (remember to delete this later)
+	CSpectrum* spec = (CSpectrum *)wp;
+
 	if(m_result != nullptr) {
 		delete m_result;
 	}
+
 	m_result = (CScanResult *)lp;
-	int i;
 
 	// a handle to the fit window
 	CFitWindow &window = m_reeval->m_window[m_reeval->m_curWindow];
@@ -240,7 +251,7 @@ LRESULT CReEval_DoEvaluationDlg::OnEvaluatedSpectrum(WPARAM wp, LPARAM lp){
 	int fitHigh = window.fitHigh	- spec->m_info.m_startChannel;
 
 	// If the fit-window has changed, then change the list of references
-	if(m_reeval->m_curWindow != lastWindowUsed){
+	if(m_reeval->m_curWindow != lastWindowUsed) {
 		PopulateRefList();
 	}
 	lastWindowUsed = m_reeval->m_curWindow;
@@ -249,14 +260,14 @@ LRESULT CReEval_DoEvaluationDlg::OnEvaluatedSpectrum(WPARAM wp, LPARAM lp){
 	{
 		// copy the fitted cross-sections to a local variable
 		for(int k = 0; k < m_result->GetSpecieNum(0); ++k){
-			for(i  = fitLow; i < fitHigh; ++i){
+			for(int i  = fitLow; i < fitHigh; ++i){
 				m_GraphRef.m_fitResult[k][i] = spec[k + 3].m_data[i];			// fit result is the scaled cross section of the chosen specie
 			}
 			m_GraphRef.m_specieName[k].Format(m_result->GetSpecieName(0, k));
 		}
 
 		// also copy the residual
-		for(i = fitLow; i < fitHigh; ++i){
+		for(int i = fitLow; i < fitHigh; ++i){
 			m_GraphRef.m_residual[i] = spec[1].m_data[i];
 		}
 
@@ -266,17 +277,21 @@ LRESULT CReEval_DoEvaluationDlg::OnEvaluatedSpectrum(WPARAM wp, LPARAM lp){
 	// 2. Draws the whole fit
 	if(m_showFit == 0){
 		// copy the spectrum to the local variable
-		for(i = 0; i < window.specLength; ++i)
-		spectrum[i] = spec[0].m_data[i];
-
+		for(int i = 0; i < window.specLength; ++i) {
+			spectrum[i] = spec[0].m_data[i];
+		}
 		DrawFit();
 	}else{
 		// copy the residual to the local variable
-		for(i = fitLow; i < fitHigh; ++i)
+		for(int i = fitLow; i < fitHigh; ++i) {
 			residual[i] = spec[1].m_data[i];
+		}
 
 		DrawResidual();
 	}
+
+	// Clean up the pointer which we were given
+	delete [] spec;
 
 	return 0;
 }
@@ -447,30 +462,29 @@ LRESULT CReEval_DoEvaluationDlg::OnDone(WPARAM wp, LPARAM lp){
 }
 
 LRESULT CReEval_DoEvaluationDlg::OnProgress(WPARAM wp, LPARAM lp){
-	if(!m_reeval->fRun) // Check if the evaluation is still running
-		return 0;
-		
-	double progress = *(double *)wp;
-
-	m_progressBar.SetPos((int)(progress * 1000.0));
+	if(m_reeval->fRun) // Check if the evaluation is still running
+	{
+		double progress = (double)wp;
+		m_progressBar.SetPos((int)(progress * 1000.0));
+	}
 
 	return 0;
 }
 
 LRESULT CReEval_DoEvaluationDlg::OnProgress2(WPARAM wp, LPARAM lp){
-	if(!m_reeval->fRun) // Check if the evaluation is still running
-		return 0;
+	if(m_reeval->fRun) // Check if the evaluation is still running
+	{
+		long curFileIndex	= (long)wp;
+		long fileNum		= (long)lp;
 
-	long curFileIndex = *(long *)wp;
-	long fileNum			= *(long *)lp;
-	CString msg;
+		float progress = (curFileIndex + 1) / (float)fileNum;
 
-	float progress = (curFileIndex + 1) / (float)fileNum;
+		m_progressBar2.SetPos((int)(progress * 1000.0f));
 
-	m_progressBar2.SetPos((int)(progress * 1000.0f));
-
-	msg.Format("spec %ld out of %ld", curFileIndex + 1, fileNum);
-	SetDlgItemText(IDC_REEVAL_STATUSBAR2, msg);
+		CString msg;
+		msg.Format("spec %ld out of %ld", curFileIndex + 1, fileNum);
+		SetDlgItemText(IDC_REEVAL_STATUSBAR2, msg);
+	}
 
 	return 0;
 }
