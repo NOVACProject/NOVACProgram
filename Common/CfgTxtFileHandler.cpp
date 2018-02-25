@@ -72,8 +72,9 @@ int CCfgTxtFileHandler::ReadCfgTxt(const CString &fileName){
 
 	// Open the cfg.txt - file
 	FILE *f = fopen(fileName, "r");
-	if(f <= 0)
+	if(f == nullptr) {
 		return 0;
+    }
 
 	while(fgets(txt,sizeof(txt)-1, f)){
 		if(strlen(txt)>4 && txt[0]!='%'){

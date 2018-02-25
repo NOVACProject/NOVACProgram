@@ -75,12 +75,13 @@ int CStatusFileReader::CheckStatus(unsigned char status)
 void CStatusFileReader::ConvertStatusFile(CString fileFullName)
 {
 	int i;
-	unsigned short last,first,*p;
-	FILE *f;
+	unsigned short last = 0;
+    unsigned short first = 0;
+
 	char txt[1024];
-	p = (unsigned short*)txt;
-	f=fopen(fileFullName,"rb");
-	if(f>(FILE *)0)
+	unsigned short *p = (unsigned short*)txt;
+	FILE* f = fopen(fileFullName,"rb");
+	if(f != nullptr)
 	{
 		fread(p,1024,1,f);
 		fclose(f);
@@ -189,14 +190,14 @@ void CStatusFileReader::RecordStatus(char* txt)
 void CStatusFileReader::Reorder()
 {	
 	int i;
-	unsigned short last,first,*p;
-	FILE *f;
+	unsigned short last = 0;
+    unsigned short first = 0;
 	char txt[1024];
 	memset(txt,0,sizeof(char)*1024);
-	p = (unsigned short*)txt;
+	unsigned short* p = (unsigned short*)txt;
 	CString fileFullName;
 	fileFullName.Format("%sstatus.dat",m_workingPath);
-	f=fopen(fileFullName,"rb");
+	FILE* f = fopen(fileFullName,"rb");
 	if(f>(FILE *)0)
 	{
 		fread(p,1024,1,f);

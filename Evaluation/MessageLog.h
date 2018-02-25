@@ -437,7 +437,7 @@ public:
 //					break;
 //				}
 //#endif
-				delete(szOut);
+				delete [] szOut;
 			}
 		}
 
@@ -475,9 +475,10 @@ public:
 				}
 			}
 			
-			delete(szMsg);
-			delete(szOut);
+			delete [] szOut;
 		}
+
+        delete [] szMsg;
 
 		return(true);
 	}

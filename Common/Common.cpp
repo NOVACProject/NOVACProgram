@@ -1787,17 +1787,16 @@ void Common::HorizontalCoordinates(double lat, double H, double dec, double &ele
 	double lat_rad	=lat * DEGREETORAD;
 	double dec_rad	=dec * DEGREETORAD;
 
-	double elev_rad,azim_rad,cazim_rad,sazim_rad;
-
 	// The elevation angle
-	elev_rad		=	asin(cos(H_rad)*cos(dec_rad)*cos(lat_rad)+sin(dec_rad)*sin(lat_rad));
+	double elev_rad		=	asin(cos(H_rad)*cos(dec_rad)*cos(lat_rad)+sin(dec_rad)*sin(lat_rad));
 
 	// The cosine of the azimuth - angle
-	cazim_rad		=	(cos(H_rad)*cos(dec_rad)*sin(lat_rad)-sin(dec_rad)*cos(lat_rad))/cos(elev_rad);
+	double cazim_rad		=	(cos(H_rad)*cos(dec_rad)*sin(lat_rad)-sin(dec_rad)*cos(lat_rad))/cos(elev_rad);
 
 	// The sine of the azimuth - angle
-	sazim_rad		=	(sin(H_rad)*cos(dec_rad))/cos(elev_rad);
+	double sazim_rad		=	(sin(H_rad)*cos(dec_rad))/cos(elev_rad);
 
+	double azim_rad = 0.0;
 	if(cazim_rad > 0 && sazim_rad > 0)
 		azim_rad	=	asin(sazim_rad);						// azim is in the range 0 - 90 degrees
 	else if(cazim_rad < 0 && sazim_rad > 0)

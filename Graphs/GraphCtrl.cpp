@@ -1001,7 +1001,7 @@ void CGraphCtrl::BarChart2(double *xPosition, double *yValues1, double *yValues2
 	// Pick out the extreme-values (the ones to draw first and the ones
 	//	to scale the graph after)
 	double *extreme			= new double[pointSum];
-	double *extremeErr	= new double[pointSum];
+	double *extremeErr	    = new double[pointSum];
 	double *smallV			= new double[pointSum];
 	double *smallVErr		= new double[pointSum];
 	for(i = 0; i < pointSum; ++i){
@@ -1114,10 +1114,10 @@ void CGraphCtrl::BarChart2(double *xPosition, double *yValues1, double *yValues2
 	FinishPlot();
 
 	// Remember to clean up
-	delete extreme;
-	delete extremeErr;
-	delete smallV;
-	delete smallVErr;
+	delete [] extreme;
+	delete [] extremeErr;
+	delete [] smallV;
+	delete [] smallVErr;
 }
 
 
