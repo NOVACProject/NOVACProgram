@@ -17,6 +17,7 @@
 //#include "windoastools.h"
 //#include "DoubleMonitoredArrayData.h"
 #include <math.h>
+#include <vector>
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -45,9 +46,9 @@ CBasicMath::~CBasicMath()
 
 double* CBasicMath::LowPassBinomial(double *fData, int iSize, int iNIterations)
 {
-	double *fBuffer = new double[iSize];
+	std::vector<double> fBuffer(iSize);
 	double *fOut = fData;
-	double *fIn = fBuffer;
+	double *fIn = fBuffer.data();
 	const int iLast = iSize - 1;
 	const int iFirst = 0;
 
@@ -76,10 +77,10 @@ double* CBasicMath::LowPassBinomial(double *fData, int iSize, int iNIterations)
 			fOut[i] = 0.5 * lMid + 0.25 * lLeft + 0.25 * lRight;
 		}
 	}
-	if(fOut != fData)
+	if(fOut != fData) {
 		memcpy(fData, fOut, sizeof(double) * iSize);
-	delete(fBuffer);
-
+    }
+    
 	return(fData);
 }
 

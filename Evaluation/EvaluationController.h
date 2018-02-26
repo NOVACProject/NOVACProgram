@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../resource.h"
+#include <memory>
 
 #include "Spectrometer.h"
 #include "ScanResult.h"
@@ -49,7 +50,7 @@ namespace Evaluation
 
 		/** A scan-result, for sharing evaluated data with the rest of the
 			program. This is updated after every evaluation of a full scan. */
-		CScanResult *m_lastResult;
+		std::unique_ptr<CScanResult> m_lastResult;
 
 		// ----------------------------------------------------------------------
 		// --------------------- PUBLIC METHODS ---------------------------------

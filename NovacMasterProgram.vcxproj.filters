@@ -525,6 +525,9 @@
     <ClCompile Include="Graphs\OScopeCtrl.cpp">
       <Filter>Source Files\Graphs</Filter>
     </ClCompile>
+    <ClCompile Include="Dialogs\ReferencePlotDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Configuration\AdvancedFTPUploadSettings.h">
@@ -1093,6 +1096,9 @@
     </ClInclude>
     <ClInclude Include="Graphs\OScopeCtrl.h">
       <Filter>Header Files\Graphs</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialogs\ReferencePlotDlg.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

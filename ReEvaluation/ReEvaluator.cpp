@@ -80,45 +80,47 @@ bool CReEvaluator::DoEvaluation(){
 
 	/* Check the settings before we start */
 	if(!MakeInitialSanityCheck())
+	{
 		return false;
+	}
 
 	/** Prepare everything for evaluating */
 	if(!PrepareEvaluation())
+	{
 		return false;
+	}
 
 	/* evaluate the spectra */
 	m_progress = 0;
 
 	// The CScanEvaluation-object handles the evaluation of one single scan.
-	CScanEvaluation *ev = new CScanEvaluation();
-	ev->pView						= this->pView;
-	ev->m_pause					= &m_pause;
-	ev->m_sleeping			= &m_sleeping;
+	CScanEvaluation ev;
+	ev.pView		= this->pView;
+	ev.m_pause		= &m_pause;
+	ev.m_sleeping	= &m_sleeping;
 
 	// Set the options for the CScanEvaluation object
-	ev->SetOption_Sky(m_skyOption, m_skyIndex, &m_skySpectrum);
-	ev->SetOption_Ignore(m_ignore_Lower, m_ignore_Upper);
-	ev->SetOption_AveragedSpectra(m_averagedSpectra);
+	ev.SetOption_Sky(m_skyOption, m_skyIndex, &m_skySpectrum);
+	ev.SetOption_Ignore(m_ignore_Lower, m_ignore_Upper);
+	ev.SetOption_AveragedSpectra(m_averagedSpectra);
 
 	// loop through all the scan files
-	for(m_curScanFile = 0; m_curScanFile < m_scanFileNum; ++m_curScanFile){
-
+	for(m_curScanFile = 0; m_curScanFile < m_scanFileNum; ++m_curScanFile)
+	{
 		m_progress = m_curScanFile / (double)m_scanFileNum;
-		if(pView != NULL){
-			pView->PostMessage(WM_PROGRESS, (WPARAM)&m_progress);
+		if(pView != nullptr)
+		{
+			pView->PostMessage(WM_PROGRESS, (WPARAM)m_progress);
 		}
 
-		// The CScanFileHandler is a structure for reading the spectral information 
-		//		from the scan-file
-		FileHandler::CScanFileHandler *scan = new FileHandler::CScanFileHandler(); 
+		// The CScanFileHandler is a structure for reading the spectral information from the scan-file
+		FileHandler::CScanFileHandler scan;
 
 		// Check the scan file
-		if(SUCCESS != scan->CheckScanFile(&m_scanFile[m_curScanFile])){
+		if(SUCCESS != scan.CheckScanFile(&m_scanFile[m_curScanFile])){
 			CString errStr;
 			errStr.Format("Could not read scan-file %s", m_scanFile[m_curScanFile]);
 			MessageBox(NULL, errStr, "Error", MB_OK);
-			delete scan;
-			scan = NULL;
 			continue;
 		}
 
@@ -132,25 +134,31 @@ bool CReEvaluator::DoEvaluation(){
 
 			// Check the interlace steps
 			CSpectrum skySpec;
-			scan->GetSky(skySpec);
-			if(skySpec.Channel() > MAX_CHANNEL_NUM){
-				// We should use an interlaced window instead
-				if(-1 == Common::GetInterlaceSteps(skySpec.Channel(), skySpec.m_info.m_interlaceStep))
-					return 0; // WRONG!!
+			scan.GetSky(skySpec);
 
-				thisWindow.interlaceStep  = skySpec.m_info.m_interlaceStep;
-				thisWindow.specLength			= skySpec.m_length * skySpec.m_info.m_interlaceStep;
+			if(skySpec.Channel() > MAX_CHANNEL_NUM) {
+				// We should use an interlaced window instead
+				if(-1 == Common::GetInterlaceSteps(skySpec.Channel(), skySpec.m_info.m_interlaceStep)) {
+					return 0; // WRONG!!
+				}
+
+				thisWindow.interlaceStep	= skySpec.m_info.m_interlaceStep;
+				thisWindow.specLength		= skySpec.m_length * skySpec.m_info.m_interlaceStep;
 			}
-			if(skySpec.m_info.m_startChannel > 0 || skySpec.m_length != thisWindow.specLength / thisWindow.interlaceStep){
+
+			if(skySpec.m_info.m_startChannel > 0 || skySpec.m_length != thisWindow.specLength / thisWindow.interlaceStep) {
 				// If the spectra are too short or the start channel is not zero
 				//	then they are read out as partial spectra. Lets adapt the evaluator to that
 				thisWindow.specLength		= skySpec.m_length;
-				thisWindow.startChannel	= skySpec.m_info.m_startChannel;
+				thisWindow.startChannel		= skySpec.m_info.m_startChannel;
 			}
-			if(skySpec.m_info.m_interlaceStep > 1)
+
+			if(skySpec.m_info.m_interlaceStep > 1) {
 				skySpec.InterpolateSpectrum();
+			}
+
 			// check the quality of the sky-spectrum
-			if(skySpec.AverageValue(thisWindow.fitLow, thisWindow.fitHigh) >= 4090 * skySpec.NumSpectra()){
+			if(skySpec.AverageValue(thisWindow.fitLow, thisWindow.fitHigh) >= 4090 * skySpec.NumSpectra()) {
 				if(skySpec.NumSpectra() > 0){
 					message.Format("It seems like the sky-spectrum is saturated in the fit-region. Continue?");
 					if(IDNO == MessageBox(NULL, message, "Saturated sky spectrum?", MB_YESNO)){
@@ -160,30 +168,29 @@ bool CReEvaluator::DoEvaluation(){
 			}
 		
 			// Evaluate the scan-file
-			int success = ev->EvaluateScan(m_scanFile[m_curScanFile], &m_evaluator[m_curWindow], &fRun, &m_darkSettings);
+			int success = ev.EvaluateScan(m_scanFile[m_curScanFile], &m_evaluator[m_curWindow], &fRun, &m_darkSettings);
 
 			// Check if the user wants to stop
-			if(!fRun){
-				delete scan;
-				delete ev;
+			if(!fRun) {
 				return true;
 			}
 
 			// get the result of the evaluation and write them to file
-			if(success)
-				AppendResultToEvaluationLog(ev->m_result, scan);
+			if(success) {
+				std::unique_ptr<CScanResult> res = ev.GetResult();
+				AppendResultToEvaluationLog(res.get(), &scan);
+			}
 
 		}//end for m_curWindow...
 		m_curWindow = 0;
 
-		delete scan;
-		scan = NULL;
 	} // end for(m_curScanFile...
 
 	if(pView != NULL)
+	{
 		pView->PostMessage(WM_DONE);
+	}
 
-	delete ev;
 	fRun = false;
 
 #ifdef _DEBUG

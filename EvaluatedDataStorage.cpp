@@ -310,7 +310,7 @@ void CEvaluatedDataStorage::GetFluxRange(const CString &serial, double &minFlux,
 	}
 
 	// The unit conversion
-	double unitConversionFactor;
+	double unitConversionFactor = 1.0;
 	if(g_userSettings.m_fluxUnit == UNIT_KGS)
 		unitConversionFactor = 1.0;
 	else if(g_userSettings.m_fluxUnit == UNIT_TONDAY)
@@ -340,7 +340,7 @@ void CEvaluatedDataStorage::GetColumnRange(const CString &serial, double &minCol
 	}
 
 	// The unit conversion
-	double unitConversionFactor;
+	double unitConversionFactor = 1.0;
 	if(g_userSettings.m_columnUnit == UNIT_PPMM)
 		unitConversionFactor = 1.0;
 	else if(g_userSettings.m_columnUnit == UNIT_MOLEC_CM2)
@@ -700,7 +700,7 @@ double CEvaluatedDataStorage::GetOffset(const CString &serial){
 		return 0;
 
 	// The unit conversion
-	double unitConversionFactor;
+	double unitConversionFactor = 1.0;
 	if(g_userSettings.m_columnUnit == UNIT_PPMM)
 		unitConversionFactor = 1.0;
 	else if(g_userSettings.m_columnUnit == UNIT_MOLEC_CM2)
