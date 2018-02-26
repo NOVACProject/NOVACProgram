@@ -32,6 +32,40 @@ CScanResult::CScanResult(void)
 	m_corruptedNum				= 0;
 }
 
+CScanResult::CScanResult(const CScanResult& other)
+{
+	// The calculated flux and offset
+	this->m_flux = other.m_flux;
+	this->m_offset = other.m_offset;
+
+	// The errors
+	m_geomError = other.m_geomError;
+	m_scatteringError = other.m_scatteringError;
+	m_spectroscopyError = other.m_spectroscopyError;
+
+	// The calculated wind-direction and plume-centre
+	this->m_windDirection = other.m_windDirection;
+	this->m_plumeCentre[0] = other.m_plumeCentre[0];
+	this->m_plumeCentre[1] = other.m_plumeCentre[1];
+	this->m_plumeEdge[0] = other.m_plumeEdge[0];
+	this->m_plumeEdge[1] = other.m_plumeEdge[1];
+	this->m_plumeCompleteness = other.m_plumeCompleteness;
+
+	this->m_spec.Copy(other.m_spec);
+	this->m_specInfo.Copy(other.m_specInfo);
+	this->m_corruptedSpectra.Copy(other.m_corruptedSpectra);
+	this->m_corruptedNum = other.m_corruptedNum;
+	this->m_specNum = other.m_specNum;
+
+	this->m_skySpecInfo = other.m_skySpecInfo;
+	this->m_darkSpecInfo = other.m_darkSpecInfo;
+	this->m_offsetSpecInfo = other.m_offsetSpecInfo;
+	this->m_darkCurSpecInfo = other.m_darkCurSpecInfo;
+
+	this->m_measurementMode = other.m_measurementMode;
+	this->m_instrumentType = other.m_instrumentType;
+}
+
 CScanResult::~CScanResult(void)
 {
 	m_spec.RemoveAll();
@@ -142,8 +176,8 @@ int CScanResult::CalculateOffset(const CString &specie){
 		return 1;
 	}
 
-	double  *columns = new double[m_specNum];
-	bool    *badEval = new bool[m_specNum];
+	std::vector<double> columns(m_specNum);
+	std::vector<bool> badEval(m_specNum);
 
 	// We then need to rearrange the column data a little bit. 
 	for(unsigned int i = 0; i < m_specNum; ++i){
@@ -151,17 +185,17 @@ int CScanResult::CalculateOffset(const CString &specie){
 
 		// The spectrum is considered as bad if the goodness-of-fit checking
 		//	has marked it as bad or the user has marked it as deleted
-		if(m_spec[i].IsBad() || m_spec[i].IsDeleted())
+		if(m_spec[i].IsBad() || m_spec[i].IsDeleted()) {
 			badEval[i] = true;
-		else
+		}
+		else {
 			badEval[i] = false;
+		}
 	}
 
 	// Calculate the offset
 	this->m_offset = Common::CalculateOffset(columns, badEval, m_specNum);
 
-	delete [] columns;
-	delete [] badEval;
 	return 0;
 }
 
@@ -302,11 +336,12 @@ bool CScanResult::CalculatePlumeCentre(const CString &specie, double &plumeCentr
 	}
 
 	// pull out the good data points out of the measurement and ignore the bad points
-	double *scanAngle		= new double[m_specNum];
-	double *phi				= new double[m_specNum];
-	double *column			= new double[m_specNum];
-	double *columnError		= new double[m_specNum];
-	bool	 *badEval		= new bool[m_specNum];
+	std::vector<double> scanAngle(m_specNum);
+	std::vector<double> phi(m_specNum);
+	std::vector<double> column(m_specNum);
+	std::vector<double> columnError(m_specNum);
+	std::vector<bool> badEval(m_specNum);
+
 	for(i = 0; i < m_specNum; ++i){
 		if(m_spec[i].IsBad() || m_spec[i].IsDeleted()){
 			badEval[i] = true;
@@ -345,12 +380,6 @@ bool CScanResult::CalculatePlumeCentre(const CString &specie, double &plumeCentr
 		// If there's no plume, then the flux is probably not very good
 		m_flux.m_fluxOk = false;
 	}
-
-	delete[] scanAngle;
-	delete[] phi;
-	delete[] column;
-	delete[] columnError;
-	delete[] badEval;
 
 	return ret;
 }
@@ -536,6 +565,8 @@ CScanResult &CScanResult::operator=(const CScanResult &s2){
 
 	this->m_skySpecInfo   = s2.m_skySpecInfo;
 	this->m_darkSpecInfo  = s2.m_darkSpecInfo;
+	this->m_offsetSpecInfo = s2.m_offsetSpecInfo;
+	this->m_darkCurSpecInfo = s2.m_darkCurSpecInfo;
 
 	this->m_measurementMode = s2.m_measurementMode;
 	this->m_instrumentType  = s2.m_instrumentType;

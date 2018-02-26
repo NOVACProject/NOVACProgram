@@ -7,6 +7,7 @@
 #define COMMON_H
 
 #include <math.h>
+#include <vector>
 
 #include <afxtempl.h>
 
@@ -560,7 +561,7 @@ public:
 	// ------------- CALCULATING OFFSET FOR A SCAN ------------------------
 	// --------------------------------------------------------------------
 
-	static double CalculateOffset(const double *columns, const bool *badEvaluation, long numPoints);
+	static double CalculateOffset(const std::vector<double>& columns, const std::vector<bool>& badEvaluation, long numPoints);
 
 	// --------------------------------------------------------------------
 	// -------------- CALCULATING IF WE SEE THE PLUME ---------------------
@@ -582,7 +583,7 @@ public:
 				lower edge  of the plume (same unit as the scanAngles)
 			@param plumeEdge_high - will on successful return be filled with the 
 				higher edge  of the plume (same unit as the scanAngles)	*/
-	static bool FindPlume(const double *scanAngles, const double *phi, const double *columns, const double *columnErrors, const bool *badEvaluation, long numPoints, double &plumeCentre_alpha, double &plumeCentre_phi, double &plumeEdge_low, double &plumeEdge_high);
+	static bool FindPlume(const std::vector<double>& scanAngles, const std::vector<double>& phi, const std::vector<double>& columns, const std::vector<double>& columnErrors, const std::vector<bool>& badEvaluation, long numPoints, double &plumeCentre_alpha, double &plumeCentre_phi, double &plumeEdge_low, double &plumeEdge_high);
 
 	/** Tries to calculate the completeness of the given scan.
 			The completeness is 1.0 if the entire plume can be seen and 0.0 if the plume
@@ -596,7 +597,7 @@ public:
 			@param numPoints - the number of points in the scan. Must also be the length 
 				of the vectors 'columns', 'columnErrors', and 'badEvaluation'
 			@param completeness - Will on successful return be filled with the completeness of the plume */
-	static bool CalculatePlumeCompleteness(const double *scanAngles, const double *phi, const double *columns, const double *columnErrors, const bool *badEvaluation, double offset, long numPoints, double &completeness);
+	static bool CalculatePlumeCompleteness(const std::vector<double>& scanAngles, const std::vector<double>& phi, const std::vector<double>& columns, const std::vector<double>& columnErrors, const std::vector<bool>& badEvaluation, double offset, long numPoints, double &completeness);
 
 	// ---------------------------- MISC ----------------------------------
 

@@ -20,8 +20,10 @@ namespace Evaluation
 	class CScanResult
 	{
 	public:
-		CScanResult(void);
-		~CScanResult(void);
+		CScanResult();
+		CScanResult(const CScanResult& other);
+
+		~CScanResult();
 
 		// ----------------------------------------------------------------------
 		// ---------------------- PUBLIC DATA -----------------------------------
