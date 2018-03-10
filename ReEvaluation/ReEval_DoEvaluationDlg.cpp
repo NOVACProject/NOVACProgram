@@ -26,7 +26,7 @@ CReEval_DoEvaluationDlg::CReEval_DoEvaluationDlg()
 
 	pReEvalThread = NULL;
 
-	m_result = NULL;
+	m_result = nullptr;
 }
 
 CReEval_DoEvaluationDlg::~CReEval_DoEvaluationDlg()
@@ -34,7 +34,7 @@ CReEval_DoEvaluationDlg::~CReEval_DoEvaluationDlg()
 	m_reeval = NULL;
 	pReEvalThread = NULL;
 
-	m_result = NULL;
+	m_result = nullptr;
 }
 
 void CReEval_DoEvaluationDlg::DoDataExchange(CDataExchange* pDX)
@@ -228,7 +228,8 @@ LRESULT CReEval_DoEvaluationDlg::OnEvaluatedSpectrum(WPARAM wp, LPARAM lp){
 		CScanResult * result = (CScanResult *)lp;
 
 		// Clean up the pointers which we were given
-		delete m_result;
+		m_result.reset();
+		delete result;
 		delete[] spec;
 
 		return 0;
@@ -239,11 +240,7 @@ LRESULT CReEval_DoEvaluationDlg::OnEvaluatedSpectrum(WPARAM wp, LPARAM lp){
 	// Capture the spectrum (remember to delete this later)
 	CSpectrum* spec = (CSpectrum *)wp;
 
-	if(m_result != nullptr) {
-		delete m_result;
-	}
-
-	m_result = (CScanResult *)lp;
+	m_result.reset((CScanResult *)lp);
 
 	// a handle to the fit window
 	CFitWindow &window = m_reeval->m_window[m_reeval->m_curWindow];
@@ -325,7 +322,7 @@ void CReEval_DoEvaluationDlg::DrawReference(){
 	m_GraphRef.DrawFit(refIndex);
 
 	// update the labels
-	if(m_result != NULL){
+	if(m_result != nullptr){
 		CString columnStr, shiftStr, squeezeStr, deltaStr, chi2Str;
 
 		int specIndex       = m_result->GetEvaluatedNum() - 1;
