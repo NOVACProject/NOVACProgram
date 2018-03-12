@@ -2,7 +2,7 @@
 
 #include "ReEvaluator.h"
 #include "afxwin.h"
-
+#include <memory>
 #include "../Graphs/OScopeCtrl.h"
 #include "../Graphs/DoasFitGraph.h"
 #include "afxcmn.h"
@@ -143,7 +143,7 @@ namespace ReEvaluation
 		double spectrum[MAX_SPECTRUM_LENGTH];
 
 		/** A pointer to the result-set */
-		Evaluation::CScanResult *m_result;
+		std::unique_ptr<Evaluation::CScanResult> m_result;
 
 	public:
 		afx_msg void OnBnClickedReevalCheckPause();
