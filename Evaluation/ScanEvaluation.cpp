@@ -296,6 +296,9 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, CEvaluation *eval, b
 				thread->SuspendThread();
 				*m_sleeping = false;
 			}
+			else {
+				Sleep(20);
+			}
 		} // end while(1)
 
 		// end of scan...
