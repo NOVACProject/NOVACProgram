@@ -21,11 +21,13 @@ CRealTimeWind::~CRealTimeWind(void)
 		@return true if a wind-speed measurement should be started else return false */
 bool	CRealTimeWind::IsTimeForWindMeasurement(const Evaluation::CSpectrometer *spectrometer){
 	unsigned int k;
-	CString debugFile, dateStr, timeStr;
+	CString debugFile;
+	CString dateStr;
+	CString timeStr;
 	Common common;
 	common.GetDateText(dateStr);
 	common.GetTimeText(timeStr);
-	debugFile.Format("%sOutput\\%s\\Debug_WindSpeedMeas.txt", g_settings.outputDirectory, dateStr);
+	debugFile.Format("%sOutput\\%s\\Debug_WindSpeedMeas.txt", (LPCTSTR)g_settings.outputDirectory, (LPCTSTR)dateStr);
 
 	//// -1. This checking should only be performed on master-channel spectrometers...
 	//if(spectrometer->m_channel != 0)
@@ -55,7 +57,7 @@ bool	CRealTimeWind::IsTimeForWindMeasurement(const Evaluation::CSpectrometer *sp
 	if(nScans < windSettings->stablePeriod){ // <-- there must be enough scans received from the instrument today for us to make any wind-measurement
 		FILE *f = fopen(debugFile, "a+");
 		if(f != NULL){
-			fprintf(f, "%s\t No measurement: Too few scans today\n", timeStr); 
+			fprintf(f, "%s\t No measurement: Too few scans today\n", (LPCTSTR)timeStr);
 			fclose(f); 
 		}
 		return false; // <-- too few scans recieved today
@@ -66,7 +68,7 @@ bool	CRealTimeWind::IsTimeForWindMeasurement(const Evaluation::CSpectrometer *sp
 	if(sPassed > 0 && sPassed < windSettings->interval){
 		FILE *f = fopen(debugFile, "a+");
 		if(f != NULL){ 
-			fprintf(f, "%s\t No measurement: Little time since last measurement\n", timeStr);
+			fprintf(f, "%s\t No measurement: Little time since last measurement\n", (LPCTSTR)timeStr);
 			fclose(f);
 		}
 		return false;
@@ -83,7 +85,7 @@ bool	CRealTimeWind::IsTimeForWindMeasurement(const Evaluation::CSpectrometer *sp
 	if(false == spectrometer->m_history->GetPlumeCentreVariation(windSettings->stablePeriod, 0, centreMin, centreMax)){
 		FILE *f = fopen(debugFile, "a+");
 		if(f != NULL){ 
-			fprintf(f, "%s\t No measurement: At least one of the last %d scans has missed the plume\n", timeStr, windSettings->stablePeriod); 
+			fprintf(f, "%s\t No measurement: At least one of the last %d scans has missed the plume\n", (LPCTSTR)timeStr, windSettings->stablePeriod);
 			fclose(f);
 		}
 		return false;
@@ -94,7 +96,7 @@ bool	CRealTimeWind::IsTimeForWindMeasurement(const Evaluation::CSpectrometer *sp
 	if(fabs(centreMax - centreMin) > 30){
 		FILE *f = fopen(debugFile, "a+");
 		if(f != NULL){ 
-			fprintf(f, "%s\t No measurement: Too large variation in plume centre\n", timeStr); 
+			fprintf(f, "%s\t No measurement: Too large variation in plume centre\n", (LPCTSTR)timeStr);
 			fclose(f);
 		}
 		return false;
@@ -106,7 +108,7 @@ bool	CRealTimeWind::IsTimeForWindMeasurement(const Evaluation::CSpectrometer *sp
 	if(fabs(plumeCentre) > fabs(windSettings->maxAngle)){
 		FILE *f = fopen(debugFile, "a+");
 		if(f != NULL){ 
-			fprintf(f, "%s\t No measurement: Plume centre too low\n", timeStr); 
+			fprintf(f, "%s\t No measurement: Plume centre too low\n", (LPCTSTR)timeStr);
 			fclose(f);
 		}
 		return false;
@@ -118,7 +120,7 @@ bool	CRealTimeWind::IsTimeForWindMeasurement(const Evaluation::CSpectrometer *sp
 	if(maxColumn < windSettings->minPeakColumn){
 		FILE *f = fopen(debugFile, "a+");
 		if(f != NULL){ 
-			fprintf(f, "%s\t No measurement: Plume too weak\n", timeStr); 
+			fprintf(f, "%s\t No measurement: Plume too weak\n", (LPCTSTR)timeStr);
 			fclose(f);
 		}
 		return false;
@@ -130,7 +132,7 @@ bool	CRealTimeWind::IsTimeForWindMeasurement(const Evaluation::CSpectrometer *sp
 	if(expTime < 0 || (expTime > 600 && spectrometer->m_scanner.instrumentType == INSTR_GOTHENBURG)){
 		FILE *f = fopen(debugFile, "a+");
 		if(f != NULL){ 
-			fprintf(f, "%s\t No measurement: Too long exposure times\n", timeStr); 
+			fprintf(f, "%s\t No measurement: Too long exposure times\n", (LPCTSTR)timeStr);
 			fclose(f); 
 		}
 		return false;
@@ -138,7 +140,7 @@ bool	CRealTimeWind::IsTimeForWindMeasurement(const Evaluation::CSpectrometer *sp
 
 	FILE *f = fopen(debugFile, "a+");
 	if(f != NULL){ 
-		fprintf(f, "%s\t Ok to do wind-speed measurement!!\n", timeStr); 
+		fprintf(f, "%s\t Ok to do wind-speed measurement!!\n", (LPCTSTR)timeStr);
 		fclose(f);
 	}
 
@@ -156,11 +158,11 @@ void CRealTimeWind::StartWindSpeedMeasurement(const Evaluation::CSpectrometer *s
 	int readOutTime		= 100; // time to read out one spectrum from the detector
 	int stablePeriod	= spec->m_scanner.windSettings.stablePeriod;
 	double plumeCentre	= spec->m_history->GetPlumeCentre(stablePeriod);
-	int motorPosition	= (plumeCentre / 2) * (stepsPerRound / 360.0);
+	int motorPosition	= (int)((plumeCentre / 2) * (stepsPerRound / 360.0));
 	double avgExpTime	= min(fabs(spec->m_history->GetExposureTime(stablePeriod)), maxExpTime);
-	int sum1			= min(max(1000.0 / (avgExpTime + readOutTime), 1), 15); // <-- calculate the number of co-adds assuming 100ms to read out each spectrum
+	int sum1			= (int)min(max(1000.0 / (avgExpTime + readOutTime), 1), 15); // <-- calculate the number of co-adds assuming 100ms to read out each spectrum
 
-	int	repetitions		= spec->m_scanner.windSettings.duration / (sum1 * (avgExpTime + readOutTime) / 1000 );
+	int	repetitions		= (int)(spec->m_scanner.windSettings.duration / (sum1 * (avgExpTime + readOutTime) / 1000 ));
 	repetitions			= max(min(repetitions, 800), 400);
 
 	// 0. Simple error checking...
@@ -178,16 +180,16 @@ void CRealTimeWind::StartWindSpeedMeasurement(const Evaluation::CSpectrometer *s
 
 	// 2. Get the directory where to temporarily store the cfgonce.txt
 	if(strlen(g_settings.outputDirectory) > 0){
-		directory.Format("%sTemp\\%s\\", g_settings.outputDirectory, serialNumber);
+		directory.Format("%sTemp\\%s\\", (LPCTSTR)g_settings.outputDirectory, (LPCTSTR)serialNumber);
 		if(CreateDirectoryStructure(directory)){
 			common.GetExePath();
-			fileName->Format("%s\\cfgonce.txt", common.m_exePath);
+			fileName->Format("%s\\cfgonce.txt", (LPCTSTR)common.m_exePath);
 		}else{
-			fileName->Format("%scfgonce.txt", directory);
+			fileName->Format("%scfgonce.txt", (LPCTSTR)directory);
 		}
 	}else{
 		common.GetExePath();
-		fileName->Format("%s\\cfgonce.txt", common.m_exePath);
+		fileName->Format("%s\\cfgonce.txt", (LPCTSTR)common.m_exePath);
 	}
 
 	FILE *f = fopen(*fileName, "w");
@@ -200,7 +202,7 @@ void CRealTimeWind::StartWindSpeedMeasurement(const Evaluation::CSpectrometer *s
 
 	// 3a. A small header 
 	common.GetDateTimeText(dateTime);
-	fprintf(f, "%%-------------Modified at %s------------\n\n",dateTime);
+	fprintf(f, "%%-------------Modified at %s------------\n\n", (LPCTSTR)dateTime);
 	fprintf(f, "%% Questions? email\n%% mattias.johansson@chalmers.se\n\n");
 
 	if(spec->m_scanner.instrumentType == INSTR_GOTHENBURG){
@@ -278,16 +280,16 @@ void CRealTimeWind::StartWindSpeedMeasurement(const Evaluation::CSpectrometer *s
 		int second_motorPosition2	=	int (round(stepsPerDegree2*round(phi_2)));
 
 		double avgExpTime	= fabs(spec->m_history->GetExposureTime(stablePeriod));
-		int sum1			= min(max(1000.0 / (avgExpTime + readOutTime), 1), 15); // <-- calculate the number of co-adds assuming 100ms to read out each spectrum
+		int sum1			= (int)min(max(1000.0 / (avgExpTime + readOutTime), 1), 15); // <-- calculate the number of co-adds assuming 100ms to read out each spectrum
 
-		int	repetitions		= spec->m_scanner.windSettings.duration / (sum1 * (avgExpTime + readOutTime) / 1000 );
+		int	repetitions		= (int)(spec->m_scanner.windSettings.duration / (sum1 * (avgExpTime + readOutTime) / 1000 ));
 		repetitions			= max(min(repetitions, 800), 400);
 
 		// 4b. The instrument-type
 		if(SUCCESS != CSpectrometerModel::ToString(spec->m_scanner.spec[0].model, spectrometerType)){
 			spectrometerType.Format("HR2000");
 		}
-		fprintf (f, "SPECTROMETERTYPE=%s\n\n", spectrometerType);  //can spectrometertype be retrieved automatically from configuration?
+		fprintf (f, "SPECTROMETERTYPE=%s\n\n", (LPCTSTR)spectrometerType);  //can spectrometertype be retrieved automatically from configuration?
 
 		// 3c. Write the Spectrum transfer information
 		fprintf(f, "%% STARTCHN and STOPCHN define which channels in the spectra will be transferred\n");
@@ -352,7 +354,7 @@ void CRealTimeWind::StartWindSpeedMeasurement(const Evaluation::CSpectrometer *s
 		g_comm->PostThreadMessage(WM_STATUS_UPLOAD, (WPARAM)serialNumber, (LPARAM)fileName);
 
 		// 4b. Tell the user what we've done...
-		message.Format("Telling spectrometer %s to perform wind-measurement", serialNumber);
+		message.Format("Telling spectrometer %s to perform wind-measurement", (LPCTSTR)serialNumber);
 		ShowMessage(message);
 	}
 }

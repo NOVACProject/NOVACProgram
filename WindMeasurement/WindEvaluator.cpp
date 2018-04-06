@@ -86,7 +86,7 @@ void CWindEvaluator::OnEvaluatedWindMeasurement(WPARAM wp, LPARAM lp){
 	//		then it does not have to be matched with any other log-file
 	//		the wind-speed can be calculated directly.
 	FileHandler::CEvaluationLogFileHandler reader;
-	reader.m_evaluationLog.Format("%s", fileName);
+	reader.m_evaluationLog.Format("%s", (LPCTSTR)fileName);
 	if(SUCCESS != reader.ReadEvaluationLog())
 		return;
 	const CString &serialNumber = reader.m_scan[0].GetSerial();
@@ -154,7 +154,7 @@ int	CWindEvaluator::FindMatchingEvalLog(const CString &evalLog, CString match[MA
 
 		// 1c. The left-overs should match
 		if(Equals(name, fileName)){
-			match[nFound++].Format("%s", m_evalLogs.GetAt(pos));
+			match[nFound++].Format("%s", (LPCSTR)m_evalLogs.GetAt(pos).fileName);
 			if(nFound == MAX_MATCHING_FILES)
 				return nFound;
 		}
@@ -180,8 +180,8 @@ RETURN_CODE CWindEvaluator::CalculateCorrelation(const CString &evalLog1, const 
 	unsigned short date[3];
 
 	// 1. Read the evaluation-logs
-	reader[0].m_evaluationLog.Format("%s", evalLog1);
-	reader[1].m_evaluationLog.Format("%s", evalLog2);
+	reader[0].m_evaluationLog.Format("%s", (LPCTSTR)evalLog1);
+	reader[1].m_evaluationLog.Format("%s", (LPCTSTR)evalLog2);
 	if(SUCCESS != reader[0].ReadEvaluationLog())
 		return FAIL;
 	if(SUCCESS != reader[1].ReadEvaluationLog())
@@ -301,7 +301,7 @@ RETURN_CODE CWindEvaluator::CalculateCorrelation_Heidelberg(const CString &evalL
 	double delay;
 
 	// 1. Read the evaluation-log
-	reader.m_evaluationLog.Format("%s", evalLog);
+	reader.m_evaluationLog.Format("%s", (LPCSTR)evalLog);
 	if(SUCCESS != reader.ReadEvaluationLog())
 		return FAIL;
 
@@ -412,7 +412,7 @@ void CWindEvaluator::WriteWindMeasurementLog(const CWindSpeedCalculator &calc, c
 	commonName = commonName.Left(commonName.ReverseFind('_'));
 
 	// 3. Get the filename of the wind-speed log-file
-	fileName.Format("%s%s_WindMeasurement_%04d.%02d.%02d.txt", directory, commonName, startTime.year, startTime.month, startTime.day);
+	fileName.Format("%s%s_WindMeasurement_%04d.%02d.%02d.txt", (LPCTSTR)directory, (LPCTSTR)commonName, startTime.year, startTime.month, startTime.day);
 
 	// 4. Make sure that we can open and write to the log-file
 	FILE *f = fopen(fileName, "w");

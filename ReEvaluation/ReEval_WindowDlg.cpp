@@ -280,13 +280,13 @@ void CReEval_WindowDlg::OnInsertReference(){
 	// The user has selected a new reference file, insert it into the list
 
 	// 1. Set the path
-	window.ref[window.nRef].m_path.Format("%s", fileName);
+	window.ref[window.nRef].m_path.Format("%s", (LPCTSTR)fileName);
 
 	// 2. make a guess of the specie name
 	CString specie;
 	Common::GuessSpecieName(fileName, specie);
 	if(strlen(specie) != 0){
-		window.ref[window.nRef].m_specieName.Format("%s", specie);
+		window.ref[window.nRef].m_specieName.Format("%s", (LPCTSTR)specie);
 	}
 
 	// 3. update the number of references
@@ -295,7 +295,7 @@ void CReEval_WindowDlg::OnInsertReference(){
 	// If this is the first reference inserted, also make a guess for the window name
 	//	 (if the user has not already given the window a name)
 	if(window.nRef == 1 && strlen(specie) != 0 && Equals(window.name, "SO2")){
-		window.name.Format("%s", specie);
+		window.name.Format("%s", (LPCTSTR)specie);
 		m_windowList.PopulateList();
 		m_windowList.SetCurSel(0);
 	}

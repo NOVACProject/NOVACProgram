@@ -34,7 +34,7 @@ void CReferenceFileControl::OnEndEditCell(int nRow, int nCol, CString str){
 
   // If the name was changed
   if(nCol == 0){
-    ref.m_specieName.Format("%s", str);
+    ref.m_specieName.Format("%s", (LPCSTR)str);
   }
 
   // If the path was changed
@@ -42,7 +42,7 @@ void CReferenceFileControl::OnEndEditCell(int nRow, int nCol, CString str){
     if(strlen(str) != 0){
       FILE *f = fopen(str, "r");
       if(f != 0){
-        ref.m_path.Format("%s", str);
+        ref.m_path.Format("%s", (LPCSTR)str);
         m_window->nRef = max(m_window->nRef, index+1);    // update the number of references, if necessary
         fclose(f);
       }else{
@@ -89,7 +89,7 @@ void CReferenceFileControl::ParseShiftOption(Evaluation::SHIFT_TYPE &option, dou
   char tmpStr[512];
   char txt[512];
   str.MakeLower();
-  sprintf(txt, "%s", str);
+  sprintf(txt, "%s", (LPCSTR)str);
   char *pt = 0;
 
   // 1. Shift Fixed 

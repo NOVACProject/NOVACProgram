@@ -171,10 +171,10 @@ void	CRealTimeSetupChanger::ChangeCfg(const Evaluation::CSpectrometer *spec, dou
 
 	// 2. Get the directory where to temporarily store the cfg.txt
 	if(strlen(g_settings.outputDirectory) > 0){
-		fileName->Format("%s\\Temp\\cfg.txt", g_settings.outputDirectory);
+		fileName->Format("%s\\Temp\\cfg.txt", (LPCSTR)g_settings.outputDirectory);
 	}else{
 		common.GetExePath();
-		fileName->Format("%s\\cfg.txt", common.m_exePath);
+		fileName->Format("%s\\cfg.txt", (LPCSTR)common.m_exePath);
 	}
 	FILE *f = fopen(*fileName, "w");
 	if(f == NULL){
@@ -185,11 +185,11 @@ void	CRealTimeSetupChanger::ChangeCfg(const Evaluation::CSpectrometer *spec, dou
 
 	// 4a. A small header 
 	common.GetDateTimeText(dateTime);
-	fprintf(f, "%%-------------Modified at %s------------\n\n",dateTime);
+	fprintf(f, "%%-------------Modified at %s------------\n\n", (LPCSTR)dateTime);
 	fprintf(f, "%% Questions? email\n%% mattias.johansson@chalmers.se\n\n");
 
 	// 4b. The instrument-type
-  fprintf (f, "SPECTROMETERTYPE=%s\n\n", spectrometerType);
+    fprintf (f, "SPECTROMETERTYPE=%s\n\n", (LPCSTR)spectrometerType);
   
 	// 4c. Write the Spectrum transfer information
 	fprintf(f, "%%  STARTCHN and STOPCHN define which channels in the spectra will be transferred\n");
@@ -334,7 +334,7 @@ double original_alpha_max	=	alpha_max;
 		g_comm->PostThreadMessage(WM_STATUS_UPLOAD, (WPARAM)serialNumber, (LPARAM)fileName);
 
 		// 4b. Tell the user what we've done...
-		message.Format("Uploading new cfg.txt to spectrometer %s", serialNumber);
+		message.Format("Uploading new cfg.txt to spectrometer %s", (LPCSTR)serialNumber);
 		ShowMessage(message);
 	}
 }

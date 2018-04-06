@@ -1154,13 +1154,12 @@ namespace MathFit
 			memset(iPivotDone, 0, sizeof(int) * iCols);
 			int iR, iC;
 
-			int i, j;
-			for(i = 0; i < iCols; i++)
+			for(int i = 0; i < iCols; i++)
 			{
 				// find pivot
 				iR = iC = i;
 				TFitData fMag = 0;
-				for(j = 0; j < iRows; j++)
+				for(int j = 0; j < iRows; j++)
 				{
 					if(iPivotDone[j] != 1)
 					{
@@ -1179,9 +1178,9 @@ namespace MathFit
 							else if(iPivotDone[k] > 1)
 							{
 								// this pivot was selected more than once. Shit!!
-								delete(iPivotDone);
-								delete(iIndexRow);
-								delete(iIndexCol);
+								delete[] iPivotDone;
+								delete[] iIndexRow;
+								delete[] iIndexCol;
 
 								throw(EXCEPTION(CMatrixSolveFailedException));
 							}
@@ -1208,9 +1207,9 @@ namespace MathFit
 				if(fMag == 0)
 				{
 					// zero pivot => not a singular matrix
-					delete(iPivotDone);
-					delete(iIndexRow);
-					delete(iIndexCol);
+					delete[] iPivotDone;
+					delete[] iIndexRow;
+					delete[] iIndexCol;
 
 					throw(EXCEPTION(CMatrixSolveFailedException));
 				}
@@ -1220,8 +1219,7 @@ namespace MathFit
 				mBeta.GetRow(iC).Div(fMag);
 
 				// eliminate pivot row component from other rows
-				int i2;
-				for(i2 = 0; i2 < iRows; i2++)
+				for(int i2 = 0; i2 < iRows; i2++)
 				{
 					if(i2 == iC)
 						continue;
@@ -1235,14 +1233,15 @@ namespace MathFit
 			}
 
 			// reorder matrix
-			int l;
-			for(l = iRows - 1; l >= 0; l--)
-				if(iIndexRow[l] != iIndexCol[l])
+			for (int l = iRows - 1; l >= 0; l--) {
+				if (iIndexRow[l] != iIndexCol[l]) {
 					ExchangeCols(iIndexRow[l], iIndexCol[l]);
+				}
+			}
 
-			delete(iPivotDone);
-			delete(iIndexRow);
-			delete(iIndexCol);
+			delete[] iPivotDone;
+			delete[] iIndexRow;
+			delete[] iIndexCol;
 
 			return mBeta;
 		}
@@ -1581,9 +1580,11 @@ namespace MathFit
 			mDoublePtr = new double[GetNoColumns() * GetNoRows()];
 
 			int i, j;
-			for(i = 0; i < GetNoRows(); i++)
-				for(j = 0; j < GetNoColumns(); j++)
-				mDoublePtr[i * GetNoColumns() + j] = (double)GetAt(i, j);
+			for (i = 0; i < GetNoRows(); i++) {
+				for (j = 0; j < GetNoColumns(); j++) {
+					mDoublePtr[i * GetNoColumns() + j] = (double)GetAt(i, j);
+				}
+			}
 
 			return mDoublePtr;
 		}

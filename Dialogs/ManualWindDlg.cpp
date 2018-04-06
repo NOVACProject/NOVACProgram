@@ -124,13 +124,17 @@ void CManualWindDlg::OnSend(){
 			break;
 		}
 	}
+	if (!scanner) {
+		MessageBox("Could not get scanner properties. Upload failed!!", "Error");
+		return;
+	}
 
 	// 3. Get the directory where to temporarily store the cfgonce.txt
 	if(strlen(g_settings.outputDirectory) > 0){
-		fileName->Format("%s\\Temp\\cfgonce.txt", g_settings.outputDirectory);
+		fileName->Format("%s\\Temp\\cfgonce.txt", (LPCSTR)g_settings.outputDirectory);
 	}else{
 		common.GetExePath();
-		fileName->Format("%s\\cfgonce.txt", common.m_exePath);
+		fileName->Format("%s\\cfgonce.txt", (LPCSTR)common.m_exePath);
 	}
 	FILE *f = fopen(*fileName, "w");
 	if(f == NULL){
@@ -142,7 +146,7 @@ void CManualWindDlg::OnSend(){
 
 	// 4a. A small header 
 	common.GetDateTimeText(dateTime);
-	fprintf(f, "%% -------------Modified at %s------------%\n\n",dateTime);
+	fprintf(f, "%% -------------Modified at %s------------\n\n",(LPCSTR)dateTime);
 	fprintf(f, "%% Questions? email\n%% mattias.johansson@chalmers.se\n\n");
 
 	if(scanner->instrumentType == INSTR_GOTHENBURG){
@@ -166,7 +170,7 @@ void CManualWindDlg::OnSend(){
 
 		// 4f. Write the geometry (compass, tilt...)
 		fprintf(f, "%% The geometry: compassDirection  tiltX(=roll)  tiltY(=pitch)  temperature\n");
-		fprintf(f, "COMPASS=%.1lf %.1lf %.1lf\n\n", m_compass, 0, 0);
+		fprintf(f, "COMPASS=%.1lf %.1lf %.1lf\n\n", m_compass, 0.0, 0.0);
 
 		// 4g. Write other things
 		fprintf(f, "%% Percent defines how big part of the spectrometers dynamic range we want to use\n");
@@ -174,7 +178,7 @@ void CManualWindDlg::OnSend(){
 		fprintf(f, "%% The maximum integration time that we allow the spectrometer to use. In milli seconds\n");
 		fprintf(f,	"MAXINTTIME=%.0lf\n\n",	m_maxExpTime);
 		fprintf(f, "%% The pixel where we want to measure the intensity of the spectra \n");
-		fprintf(f,	"CHANNEL=%.0lf\n\n",			670);
+		fprintf(f,	"CHANNEL=%.0lf\n\n",			670.0);
 		fprintf(f, "%% The debug-level, the higher number the more output will be created\n");
 		fprintf(f,  "DEBUG=1\n\n");
 
@@ -241,10 +245,10 @@ void CManualWindDlg::OnSend(){
 		fprintf(f, "MEAS=0 %d -1 15 1 0 sky 1 0\n", m_motorPosition[1]);
 
 		// 3j. The dark-measurement
-		fprintf(f, "MEAS=%d %d 0 15 1 0 dark 1 0\n", 180*stepsPerDegree1, m_motorPosition[1]);
+		fprintf(f, "MEAS=%d %d 0 15 1 0 dark 1 0\n", (int)(180*stepsPerDegree1), m_motorPosition[1]);
 		
 		// 3k. The actual measurement
-		fprintf(f, "MEAS=%d %d %d 1 0 wind 1 0\n", m_motorPosition[0], m_motorPosition[1], m_sum1, m_repetitions);
+		fprintf(f, "MEAS=%d %d %d 1 0 wind 1 0\n", m_motorPosition[0], m_motorPosition[1], m_sum1);
 		
 	  //these two lines need to be repeated 'm_repetitions' times.
 		{
@@ -253,7 +257,7 @@ void CManualWindDlg::OnSend(){
 		}
 
 		// 3l. Another dark-measurement
-		fprintf(f, "MEAS=%d %d 0 15 1 0 dark 1 0\n", 180*stepsPerDegree1, m_motorPosition[1]);
+		fprintf(f, "MEAS=%d %d 0 15 1 0 dark 1 0\n", (int)(180*stepsPerDegree1), m_motorPosition[1]);
 	}
 
 	// Close the file
@@ -286,13 +290,16 @@ void CManualWindDlg::OnChangeSpectrometer(){
 			break;
 		}
 	}
+	if (!scanner) {
+		return;
+	}
 
 	if(scanner->instrumentType == INSTR_GOTHENBURG){
 		// If this is an gothenburg type of instrument
 		m_editMotorPosition2.ShowWindow(FALSE);
 		m_editStepsPerRound2.ShowWindow(FALSE);
 		m_editMotorStepsComp2.ShowWindow(FALSE);
-	}else{
+	}else{ // Note: As of version 6 heidelberg type is no longer supported
 		// If this is an heidelberg type of instrument
 		m_editMotorPosition2.ShowWindow(TRUE);
 		m_editStepsPerRound2.ShowWindow(TRUE);

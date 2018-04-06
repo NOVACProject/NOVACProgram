@@ -43,7 +43,7 @@ RETURN_CODE CScanFileHandler::CheckScanFile(const CString *fileName){
 	bool error = false;
 	CSpectrum tempSpec;
 
-	m_fileName.Format("%s", *fileName);
+	m_fileName.Format("%s", (LPCSTR)*fileName);
 
 	// Count the number of spectra in the .pak-file
 	m_specNum = reader.ScanSpectrumFile(m_fileName, strings, 6, indices);
@@ -57,7 +57,7 @@ RETURN_CODE CScanFileHandler::CheckScanFile(const CString *fileName){
 				if(SUCCESS == reader.ReadNextSpectrum(f, tempSpec)){
 					m_spectrumBuffer.SetAtGrow(k, tempSpec);
 				}else{
-					errMsg.Format("Could not read spectrum from file: %s", *fileName);
+					errMsg.Format("Could not read spectrum from file: %s", (LPCSTR)*fileName);
 					ShowMessage(errMsg);
 					this->m_lastError = reader.m_lastError;
 					fclose(f);
@@ -86,7 +86,7 @@ RETURN_CODE CScanFileHandler::CheckScanFile(const CString *fileName){
 		error = true;
 	}
 	if(error){
-		errMsg.Format("Could not read sky-spectrum in file: %s", *fileName);
+		errMsg.Format("Could not read sky-spectrum in file: %s", (LPCSTR)*fileName);
 		ShowMessage(errMsg);
 		this->m_lastError = reader.m_lastError;
 		return FAIL;
@@ -107,7 +107,7 @@ RETURN_CODE CScanFileHandler::CheckScanFile(const CString *fileName){
 		}
 	}
 	if(error){
-		errMsg.Format("Could not read dark-spectrum in file: %s", *fileName);
+		errMsg.Format("Could not read dark-spectrum in file: %s", (LPCSTR)*fileName);
 		ShowMessage(errMsg);
 		this->m_lastError = reader.m_lastError;
 		return FAIL;
@@ -116,7 +116,7 @@ RETURN_CODE CScanFileHandler::CheckScanFile(const CString *fileName){
 	// --------------- read the offset spectrum (if any) ----------------------
 	if(indices[3] != -1){
 		if(SUCCESS != reader.ReadSpectrum(m_fileName, indices[3], m_offset)){
-			errMsg.Format("Could not read offset-spectrum in file: %s", *fileName);
+			errMsg.Format("Could not read offset-spectrum in file: %s", (LPCSTR)*fileName);
 			ShowMessage(errMsg);
 			this->m_lastError = reader.m_lastError;
 			return FAIL;
@@ -126,7 +126,7 @@ RETURN_CODE CScanFileHandler::CheckScanFile(const CString *fileName){
 	// --------------- read the dark-current spectrum (if any) ----------------------
 	if(indices[4] != -1){
 		if(SUCCESS != reader.ReadSpectrum(m_fileName, indices[4], m_darkCurrent)){
-			errMsg.Format("Could not read offset-spectrum in file: %s", *fileName);
+			errMsg.Format("Could not read offset-spectrum in file: %s", (LPCSTR)*fileName);
 			ShowMessage(errMsg);
 			this->m_lastError = reader.m_lastError;
 			return FAIL;
@@ -134,7 +134,7 @@ RETURN_CODE CScanFileHandler::CheckScanFile(const CString *fileName){
 	}
 	if(indices[5] != -1){
 		if(SUCCESS != reader.ReadSpectrum(m_fileName, indices[5], m_darkCurrent)){
-			errMsg.Format("Could not read offset-spectrum in file: %s", *fileName);
+			errMsg.Format("Could not read offset-spectrum in file: %s", (LPCSTR)*fileName);
 			ShowMessage(errMsg);
 			this->m_lastError = reader.m_lastError;
 			return FAIL;

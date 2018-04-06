@@ -391,8 +391,8 @@ bool CGeometryCalculator::CalculateGeometry(const CString &evalLog1, int scanInd
 	int k;
 
 	// 1. Read the evaluation-logs
-	reader[0].m_evaluationLog.Format("%s", evalLog1);
-	reader[1].m_evaluationLog.Format("%s", evalLog2);
+	reader[0].m_evaluationLog.Format("%s", (LPCSTR)evalLog1);
+	reader[1].m_evaluationLog.Format("%s", (LPCSTR)evalLog2);
 	if(SUCCESS != reader[0].ReadEvaluationLog())
 		return false;
 	if(SUCCESS != reader[1].ReadEvaluationLog())

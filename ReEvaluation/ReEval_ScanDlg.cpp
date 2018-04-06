@@ -268,7 +268,7 @@ void CReEval_ScanDlg::UpdateInfo(){
 	SetDlgItemText(IDC_NUMSPEC_LABEL, status);
 
 	// Show the name of the spectrometer
-	deviceStr.Format("Device: %s", info.m_device);
+	deviceStr.Format("Device: %s", (LPCTSTR)info.m_device);
 	SetDlgItemText(IDC_LBL_DEVICE, deviceStr);
 
 	// Show the date the spectrum was collected

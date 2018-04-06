@@ -148,7 +148,7 @@ void CWindFileController::DownloadFileByFTP(){
 	}
 
 	// 6. Download the file!
-	localFileName.Format("%sTemp\\WindField.txt", g_settings.outputDirectory);
+	localFileName.Format("%sTemp\\WindField.txt", (LPCTSTR)g_settings.outputDirectory);
 	if(IsExistingFile(localFileName)){
 		if(0 == DeleteFile(localFileName)){
 			m_ftp->Disconnect();
@@ -162,7 +162,7 @@ void CWindFileController::DownloadFileByFTP(){
 		return;
 	}
 
-	msg.Format("Downloaded %s", g_settings.windSourceSettings.windFieldFile);
+	msg.Format("Downloaded %s", (LPCTSTR)g_settings.windSourceSettings.windFieldFile);
 	ShowMessage(msg);
 
 	// 7. Disconnect!

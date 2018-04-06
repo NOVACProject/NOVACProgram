@@ -22,10 +22,10 @@ RETURN_CODE CFluxLogFileHandler::ReadFluxLog(){
 	bool fReadingScan = false;
 	double flux = 0.0;
 	Evaluation::CFluxResult curResult;
-	CSpectrumInfo						curScanInfo;
-	curScanInfo.m_batteryVoltage	= -999.0;
-	curScanInfo.m_temperature			= -999;
-	curScanInfo.m_exposureTime		= -999;
+	CSpectrumInfo curScanInfo;
+	curScanInfo.m_batteryVoltage = -999.0;
+	curScanInfo.m_temperature = -999;
+	curScanInfo.m_exposureTime = -999;
 
 	// If no flux log selected, quit
 	if(strlen(m_fluxLog) <= 1)
@@ -89,33 +89,42 @@ RETURN_CODE CFluxLogFileHandler::ReadFluxLog(){
 
 			// First check the starttime
 			if(curCol == m_col.starttime){
-				int fValue1, fValue2, fValue3;
-				if(strstr(szToken, ":"))
-					sscanf(szToken, "%d:%d:%d", &fValue1, &fValue2, &fValue3);
-				else
-					sscanf(szToken, "%d.%d.%d", &fValue1, &fValue2, &fValue3);
-				curResult.m_startTime.hour		= fValue1;
-				curResult.m_startTime.minute	= fValue2;
-				curResult.m_startTime.second	= fValue3;
-				szToken = NULL;
-				++nColumnsParsed;
+				int fValue1, fValue2, fValue3, ret;
+				if (strstr(szToken, ":")) {
+					ret = sscanf(szToken, "%d:%d:%d", &fValue1, &fValue2, &fValue3);
+				}
+				else {
+					ret = sscanf(szToken, "%d.%d.%d", &fValue1, &fValue2, &fValue3);
+				}
+				if (ret == 3) {
+					curResult.m_startTime.hour = fValue1;
+					curResult.m_startTime.minute = fValue2;
+					curResult.m_startTime.second = fValue3;
+					szToken = NULL;
+					++nColumnsParsed;
+				}
 				continue;
 			}
 
 			// Then check the date
 			if(curCol == m_col.date){
-				int fValue1, fValue2, fValue3;
-				if(strstr(szToken, ":"))
-					sscanf(szToken, "%d:%d:%d", &fValue1, &fValue2, &fValue3);
-				else if(strstr(szToken, "-"))
-					sscanf(szToken, "%d-%d-%d", &fValue1, &fValue2, &fValue3);
-				else
-					sscanf(szToken, "%d.%d.%d", &fValue1, &fValue2, &fValue3);
-				curResult.m_startTime.year		= fValue1;
-				curResult.m_startTime.month		= fValue2;
-				curResult.m_startTime.day		= fValue3;
-				szToken = NULL;
-				++nColumnsParsed;
+				int fValue1, fValue2, fValue3, ret;
+				if (strstr(szToken, ":")) {
+					ret = sscanf(szToken, "%d:%d:%d", &fValue1, &fValue2, &fValue3);
+				}
+				else if (strstr(szToken, "-")) {
+					ret = sscanf(szToken, "%d-%d-%d", &fValue1, &fValue2, &fValue3);
+				}
+				else {
+					ret = sscanf(szToken, "%d.%d.%d", &fValue1, &fValue2, &fValue3);
+				}
+				if (ret == 3) {
+					curResult.m_startTime.year = fValue1;
+					curResult.m_startTime.month = fValue2;
+					curResult.m_startTime.day = fValue3;
+					szToken = NULL;
+					++nColumnsParsed;
+				}
 				continue;
 			}
 		
@@ -216,7 +225,7 @@ RETURN_CODE CFluxLogFileHandler::ReadFluxLog(){
 				szToken = NULL;
 				++nColumnsParsed;
 				continue;
-				}
+			}
 
 			// The tilt
 			if(curCol == m_col.tilt){
@@ -224,7 +233,7 @@ RETURN_CODE CFluxLogFileHandler::ReadFluxLog(){
 				szToken = NULL;
 				++nColumnsParsed;
 				continue;
-				}
+			}
 
 			// The battery voltage
 			if(curCol == m_col.batteryVoltage){
@@ -232,7 +241,7 @@ RETURN_CODE CFluxLogFileHandler::ReadFluxLog(){
 				szToken = NULL;
 				++nColumnsParsed;
 				continue;
-				}
+			}
 
 			// The temperature
 			if(curCol == m_col.temperature){
@@ -299,105 +308,105 @@ void CFluxLogFileHandler::ParseScanHeader(const char szLine[8192]){
 		++curCol;
 
 		// The scan date
-		if(0 == strnicmp(szToken, scanDate, strlen(scanDate))){
+		if(0 == _strnicmp(szToken, scanDate, strlen(scanDate))){
 			m_col.date = curCol;
 		szToken = NULL;
 		continue;
 		}
 
 		// The start time
-		if(0 == strnicmp(szToken, starttime, strlen(starttime))){
+		if(0 == _strnicmp(szToken, starttime, strlen(starttime))){
 			m_col.starttime = curCol;
 		szToken = NULL;
 		continue;
 		}
 
 		// The flux
-		if(0 == strnicmp(szToken, flux, strlen(flux))){
+		if(0 == _strnicmp(szToken, flux, strlen(flux))){
 			m_col.flux = curCol;
 		szToken = NULL;
 		continue;
 		}
 
 		// The quality of the flux data
-		if(0 == strnicmp(szToken, fluxOk, strlen(fluxOk))){
+		if(0 == _strnicmp(szToken, fluxOk, strlen(fluxOk))){
 			m_col.fluxOk = curCol;
 		szToken = NULL;
 		continue;
 		}
 
 		// The windspeed
-		if(0 == strnicmp(szToken, windspeed, strlen(windspeed))){
+		if(0 == _strnicmp(szToken, windspeed, strlen(windspeed))){
 			m_col.windSpeed = curCol;
 		szToken = NULL;
 		continue;
 		}
 
 		// The winddirection
-		if(0 == strnicmp(szToken, winddir, strlen(winddir))){
+		if(0 == _strnicmp(szToken, winddir, strlen(winddir))){
 			m_col.windDirection = curCol;
 		szToken = NULL;
 		continue;
 		}
 
 		// The wind-data source
-		if(0 == strnicmp(szToken, winddatasrc, strlen(winddatasrc))){
+		if(0 == _strnicmp(szToken, winddatasrc, strlen(winddatasrc))){
 			m_col.windDataSrc	= curCol;
 		szToken = NULL;
 		continue;
 		}
 
 		// The plumeheight
-		if(0 == strnicmp(szToken, plumeheight, strlen(plumeheight))){
+		if(0 == _strnicmp(szToken, plumeheight, strlen(plumeheight))){
 			m_col.plumeHeight = curCol;
 		szToken = NULL;
 		continue;
 		}
 
 		// The plumeheight source
-		if(0 == strnicmp(szToken, plumeheightsrc, strlen(plumeheightsrc))){
+		if(0 == _strnicmp(szToken, plumeheightsrc, strlen(plumeheightsrc))){
 			m_col.plumeHeightSrc = curCol;
 		szToken = NULL;
 		continue;
 		}
 
 		// The compass
-		if(0 == strnicmp(szToken, compass, strlen(compass))){
+		if(0 == _strnicmp(szToken, compass, strlen(compass))){
 			m_col.compass = curCol;
 		szToken = NULL;
 		continue;
 		}
 
 		// The coneangle
-		if(0 == strnicmp(szToken, coneangle, strlen(coneangle))){
+		if(0 == _strnicmp(szToken, coneangle, strlen(coneangle))){
 			m_col.compass = curCol;
 		szToken = NULL;
 		continue;
 		}
 
 		// The tilt
-		if(0 == strnicmp(szToken, tilt, strlen(tilt))){
+		if(0 == _strnicmp(szToken, tilt, strlen(tilt))){
 			m_col.tilt = curCol;
 		szToken = NULL;
 		continue;
 		}
 
 		// The battery voltage
-		if(0 == strnicmp(szToken, batteryVolt, strlen(batteryVolt))){
+		if(0 == _strnicmp(szToken, batteryVolt, strlen(batteryVolt))){
 			m_col.batteryVoltage = curCol;
 		szToken = NULL;
 		continue;
 		}
 
 		// The temperature
-		if(0 == strnicmp(szToken, temperature, strlen(temperature))){
+		if(0 == _strnicmp(szToken, temperature, strlen(temperature))){
 			m_col.temperature = curCol;
 		szToken = NULL;
 		continue;
 		}
 
 		// The exposure-time
-		if(0 == strnicmp(szToken, exposureTime, strlen(exposureTime))){
+		if(0 == _strnicmp(szToken, exposureTime, strlen(exposureTime))){
 			m_col.expTime = curCol;
 		szToken = NULL;
 		continue;

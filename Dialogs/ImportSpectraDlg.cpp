@@ -190,9 +190,9 @@ void	CImportSpectraDlg::SearchForSpectrumFiles(const CString &dir, bool includeS
 
 	/** Go through the filenames */
 	if(includeSubDir)
-		sprintf(fileToFind, "%s\\*", dir);
+		sprintf(fileToFind, "%s\\*", (LPCSTR)dir);
 	else
-		sprintf(fileToFind, "%s\\*.std", dir);
+		sprintf(fileToFind, "%s\\*.std", (LPCSTR)dir);
 
 	// Search for files
   HANDLE hFile = FindFirstFile(fileToFind, &FindFileData);
@@ -203,7 +203,7 @@ void	CImportSpectraDlg::SearchForSpectrumFiles(const CString &dir, bool includeS
 
 	do{
     CString fileName, fullFileName;
-    fullFileName.Format("%s\\%s", dir, FindFileData.cFileName);
+    fullFileName.Format("%s\\%s", (LPCSTR)dir, (LPCSTR)FindFileData.cFileName);
 		fileName.Format("%s", FindFileData.cFileName);
 
 		// don't include the current and the parent directories
@@ -344,7 +344,7 @@ void CImportSpectraDlg::SaveScanAngles(){
 
 	// Get the text in the edit-box
 	GetDlgItemText(IDC_EDIT_SCANANGLES, str);
-	sprintf(buffer, "%s", str);
+	sprintf(buffer, "%s", (LPCSTR)str);
 	
   // reset the selection list
 	m_nScanAngles = 0;
@@ -435,7 +435,7 @@ UINT ImportScanDOASSpectra( LPVOID pParam ){
 	// 1 Find all unique directories in the list of files
 	for(k = 0; k < wnd->m_nSpecFiles; ++k){
 		// Extract the directory for the current file
-		directory.Format("%s", *wnd->m_spectrumFiles.GetAt(k));
+		directory.Format("%s", (LPCSTR)*wnd->m_spectrumFiles.GetAt(k));
 		Common::GetDirectory(directory);
 
 		// Check if we have this directory already in the list
@@ -491,7 +491,7 @@ UINT ImportScanDOASSpectra( LPVOID pParam ){
 			spectrumFiles.SetSize(wnd->m_nSpecFiles / nDirectories); // Initial guess of the number of spectrum files
 			int nSpectrumFiles = 0;
 			for(k = 0; k < wnd->m_nSpecFiles; ++k){
-				directory.Format("%s", *wnd->m_spectrumFiles.GetAt(k));
+				directory.Format("%s", (LPCSTR)*wnd->m_spectrumFiles.GetAt(k));
 				Common::GetDirectory(directory);
 				if(Equals(directory, curDirectory)){
 					spectrumFiles.SetAtGrow(nSpectrumFiles++, wnd->m_spectrumFiles.GetAt(k));
@@ -529,7 +529,7 @@ int	 ImportScanDOASSpectraInDirectory(const CArray<CString *, CString *>	&m_spec
 	int currentYear					= Common::GetYear();
 
 	if(changeSerial){
-		serialNumber.Format("%s", wnd->m_userGivenSerial);
+		serialNumber.Format("%s", (LPCSTR)wnd->m_userGivenSerial);
 		serialNumber.MakeUpper();
 	}
 
@@ -566,8 +566,8 @@ int	 ImportScanDOASSpectraInDirectory(const CArray<CString *, CString *>	&m_spec
 		dark.m_info.m_name.Format("dark");
 
 		// Set the serial-number information
-		sky.m_info.m_device.Format("%s", serialNumber);
-		dark.m_info.m_device.Format("%s", serialNumber);
+		sky.m_info.m_device.Format("%s", (LPCSTR)serialNumber);
+		dark.m_info.m_device.Format("%s", (LPCSTR)serialNumber);
 	
 		// Correct the date
 		if(sky.m_info.m_date[0] > currentYear){
@@ -608,16 +608,16 @@ int	 ImportScanDOASSpectraInDirectory(const CArray<CString *, CString *>	&m_spec
 		// Get the file name for the .pak-file to save
 		CSpectrumInfo &info = sky.m_info;
 		if(!changeSerial){
-			serialNumber.Format("%s", info.m_device);
+			serialNumber.Format("%s", (LPCSTR)info.m_device);
 			if(0 == serialNumber.Compare(".........."))
-				serialNumber.Format("%s", info.m_name);
+				serialNumber.Format("%s", (LPCSTR)info.m_name);
 		}
 		scanDate.Format("%02d%02d%02d", info.m_date[0], info.m_date[1], info.m_date[2]);
 		scanTime.Format("%02d%02d", info.m_startTime.hr, info.m_startTime.m);
-		pakFile.Format("%s\\%s_%s_%s.pak", wnd->m_outputDir, serialNumber, scanDate, scanTime);
+		pakFile.Format("%s\\%s_%s_%s.pak", (LPCSTR)wnd->m_outputDir, (LPCSTR)serialNumber, (LPCSTR)scanDate, (LPCSTR)scanTime);
 		int it = 1;
 		while(IsExistingFile(pakFile)){
-			pakFile.Format("%s\\%s_%s_%s_v%d.pak", wnd->m_outputDir, serialNumber, scanDate, scanTime, it++);
+			pakFile.Format("%s\\%s_%s_%s_v%d.pak", (LPCSTR)wnd->m_outputDir, (LPCSTR)serialNumber, (LPCSTR)scanDate, (LPCSTR)scanTime, it++);
 		}
 
 		// Add them to the output file
@@ -656,7 +656,7 @@ int	 ImportScanDOASSpectraInDirectory(const CArray<CString *, CString *>	&m_spec
 			}
 
 			// Set the serial-number...
-			spec.m_info.m_device.Format("%s", serialNumber);
+			spec.m_info.m_device.Format("%s", (LPCSTR)serialNumber);
 
 			// Set the name of the measurement
 			spec.m_info.m_name.Format("scan");
@@ -699,32 +699,36 @@ bool FindFirst(const CArray<CString *, CString *>	&spectrumFiles, int nSpecFiles
 	for(int i = 0; i < nSpecFiles; ++i){
 		str = spectrumFiles.GetAt(i);
 		int lastBackslash = str->ReverseFind('\\');
-		sprintf(buffer, "%s", str->Right((int)strlen(*str) - lastBackslash - 1));
+		sprintf(buffer, "%s", (LPCSTR)str->Right((int)strlen(*str) - lastBackslash - 1));
 
 		// this is a dark spectrum
 		if(strstr(buffer, "dark")){
 			// get the number
-			sscanf(buffer, "dark%ud_%ud.STD", &tmpInt1, &tmpInt2);
-			if(tmpInt1 < darkIndex)
-				darkIndex = tmpInt1;
-
-			continue;
+			if (sscanf(buffer, "dark%ud_%ud.STD", &tmpInt1, &tmpInt2) == 2) {
+				if (tmpInt1 < darkIndex) {
+					darkIndex = tmpInt1;
+				}
+				continue;
+			}
 		}
 
 		// this is a sky spectrum
 		if(strstr(buffer, "sky")){
 			// get the number
-			sscanf(buffer, "sky%ud_%ud.STD", &tmpInt1, &tmpInt2);
-			if(tmpInt1 < skyIndex)
-				skyIndex = tmpInt1;
-
-			continue;
+			if (sscanf(buffer, "sky%ud_%ud.STD", &tmpInt1, &tmpInt2) == 2) {
+				if (tmpInt1 < skyIndex) {
+					skyIndex = tmpInt1;
+				}
+				continue;
+			}
 		}
 
 		// this is a common spectrum
-		sscanf(buffer, "%ud_%ud.STD", &tmpInt1, &tmpInt2);
-		if(tmpInt1 < specIndex)
-			specIndex = tmpInt1;
+		if (sscanf(buffer, "%ud_%ud.STD", &tmpInt1, &tmpInt2) == 2) {
+			if (tmpInt1 < specIndex) {
+				specIndex = tmpInt1;
+			}
+		}
 	}
 
 	return true;

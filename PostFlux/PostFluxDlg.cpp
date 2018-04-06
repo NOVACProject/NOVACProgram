@@ -243,9 +243,9 @@ BOOL CPostFluxDlg::OnInitDialog()
 
 	// Initialize the unit to use
 	if(g_userSettings.m_columnUnit == UNIT_MOLEC_CM2)
-		columnAxisLabel.Format("%s [molec/cm²]", common.GetString(AXIS_COLUMN));
+		columnAxisLabel.Format("%s [molec/cm²]", (LPCTSTR)common.GetString(AXIS_COLUMN));
 	else
-		columnAxisLabel.Format("%s [ppmm]", common.GetString(AXIS_COLUMN));
+		columnAxisLabel.Format("%s [ppmm]", (LPCTSTR)common.GetString(AXIS_COLUMN));
 
 	// Initialize the scan graph
 	this->m_scanGraphFrame.GetWindowRect(rect);
@@ -331,7 +331,7 @@ void CPostFluxDlg::OnBrowseEvallog()
 		m_calculator = new CPostFluxCalculator();
 
 		// set the path
-		m_calculator->m_evaluationLog.Format("%s", evLog);
+		m_calculator->m_evaluationLog.Format("%s", (LPCTSTR)evLog);
 
 		// Read the evaluation log
 		m_calculator->ReadEvaluationLog();
@@ -376,9 +376,9 @@ void CPostFluxDlg::DrawScan(){
 
 	// Set the unit of the plot
 	if(g_userSettings.m_columnUnit == UNIT_MOLEC_CM2)
-		columnAxisLabel.Format("%s [molec/cm²]", common.GetString(AXIS_COLUMN));
+		columnAxisLabel.Format("%s [molec/cm²]", (LPCTSTR)common.GetString(AXIS_COLUMN));
 	else
-		columnAxisLabel.Format("%s [ppmm]", common.GetString(AXIS_COLUMN));
+		columnAxisLabel.Format("%s [ppmm]", (LPCTSTR)common.GetString(AXIS_COLUMN));
 	m_scanGraph.SetYUnits(columnAxisLabel);
 
 	// If no ev.log has been opened yet.
@@ -840,7 +840,7 @@ void CPostFluxDlg::UpdateSelectionList(){
 			divisor					= scan.GetSpectrumInfo(0).m_numSpec;
 		}else{
 			double maxIntensity = 0.0;
-			for(int i = 0; i < scan.GetEvaluatedNum(); ++i){
+			for(unsigned long i = 0; i < scan.GetEvaluatedNum(); ++i){
 				maxIntensity = max(maxIntensity, scan.GetPeakIntensity(i));
 			}
 			divisor					= floor(maxIntensity / 4095);
@@ -857,7 +857,7 @@ void CPostFluxDlg::UpdateSelectionList(){
 	str.Format("");
 
 	// Update the list with currently selected spectra
-	for(int i = 0; i < scan.GetEvaluatedNum(); ++i){
+	for(unsigned long i = 0; i < scan.GetEvaluatedNum(); ++i){
 		if(scan.GetPeakIntensity(i)/divisor < selectedIntensity){
 			if(m_selectedNum == 0)
 				str.AppendFormat("%d", i);
@@ -880,7 +880,7 @@ void CPostFluxDlg::OnChangeSelectionList()
 {
 	CString str;
 	char buffer[16384];
-	int i;
+	unsigned long i;
 
 	// If no ev.log has been opened yet
 	if(m_calculator == NULL)
@@ -894,7 +894,7 @@ void CPostFluxDlg::OnChangeSelectionList()
 
 	// Get the list of selected items
 	this->GetDlgItemText(IDC_EDIT_SELECTEDPOINTS, str);
-	sprintf(buffer, "%s", str);
+	sprintf(buffer, "%s", (LPCTSTR)str);
 
 	// reset the selection list
 	m_selectedNum = 0;
@@ -929,9 +929,15 @@ void	CPostFluxDlg::RetrieveWindField(){
 		GetDlgItemText(IDC_PF_WINDSPEED, ws);
 		GetDlgItemText(IDC_PF_WINDDIRECTION, wd);
 		GetDlgItemText(IDC_PF_PLUMEHEIGHT, ph);
-		sscanf(ws, "%lf", &tmpDouble);	m_calculator->m_wind.SetWindSpeed(tmpDouble, MET_USER);
-		sscanf(wd, "%lf", &tmpDouble);	m_calculator->m_wind.SetWindDirection(tmpDouble, MET_USER);
-		sscanf(ph, "%lf", &tmpDouble);	m_calculator->m_wind.SetPlumeHeight(tmpDouble, MET_USER);
+		if (sscanf(ws, "%lf", &tmpDouble) == 1) {
+			m_calculator->m_wind.SetWindSpeed(tmpDouble, MET_USER);
+		}
+		if (sscanf(wd, "%lf", &tmpDouble) == 1) {
+			m_calculator->m_wind.SetWindDirection(tmpDouble, MET_USER);
+		}
+		if (sscanf(ph, "%lf", &tmpDouble) == 1) {
+			m_calculator->m_wind.SetPlumeHeight(tmpDouble, MET_USER);
+		}
 	}else{
 		// Find the time 
 		CDateTime dt;
@@ -947,7 +953,7 @@ void	CPostFluxDlg::RetrieveWindField(){
 			SetDlgItemText(IDC_PF_WINDSPEED,			ws);
 		}else{
 			GetDlgItemText(IDC_PF_WINDSPEED, ws);
-			sscanf(ws, "%lf", &tmpDouble);	m_calculator->m_wind.SetWindSpeed(tmpDouble, MET_USER);
+			int ret = sscanf(ws, "%lf", &tmpDouble);	m_calculator->m_wind.SetWindSpeed(tmpDouble, MET_USER);
 		}
 
 		if(m_wfReader->m_containsWindDirection){
@@ -955,7 +961,7 @@ void	CPostFluxDlg::RetrieveWindField(){
 			SetDlgItemText(IDC_PF_WINDDIRECTION,	wd);
 		}else{
 			GetDlgItemText(IDC_PF_WINDDIRECTION, wd);
-			sscanf(wd, "%lf", &tmpDouble);	m_calculator->m_wind.SetWindDirection(tmpDouble, MET_USER);
+			int ret = sscanf(wd, "%lf", &tmpDouble);	m_calculator->m_wind.SetWindDirection(tmpDouble, MET_USER);
 		}
 
 		if(m_wfReader->m_containsPlumeHeight){
@@ -963,7 +969,7 @@ void	CPostFluxDlg::RetrieveWindField(){
 			SetDlgItemText(IDC_PF_PLUMEHEIGHT,	ph);
 		}else{
 			GetDlgItemText(IDC_PF_PLUMEHEIGHT, ph);
-			sscanf(ph, "%lf", &tmpDouble);	m_calculator->m_wind.SetPlumeHeight(tmpDouble, MET_USER);
+			int ret = sscanf(ph, "%lf", &tmpDouble);	m_calculator->m_wind.SetPlumeHeight(tmpDouble, MET_USER);
 		}
 	}
 }
@@ -972,6 +978,7 @@ void CPostFluxDlg::OnCalcFlux()
 {
 	CString compass, ph, coneAngle, str, tilt;
 //	double tmpDouble;
+	int ret; // return value from sscanf
 
 #ifdef _DEBUG
 	// this is for searching for memory leaks
@@ -995,7 +1002,7 @@ void CPostFluxDlg::OnCalcFlux()
 
 	// Get the compass-direction
 	GetDlgItemText(IDC_PF_COMPASS, compass);
-	sscanf(compass, "%f", &m_calculator->m_compass);
+	ret = sscanf(compass, "%f", &m_calculator->m_compass);
 
 	// The cone-angle
 	if(m_coneangleCombo.GetCurSel() == -1)
@@ -1005,7 +1012,7 @@ void CPostFluxDlg::OnCalcFlux()
 
 	// The tilt
 	GetDlgItemText(IDC_PF_TILT, tilt);
-	sscanf(tilt, "%f", &m_calculator->m_tilt);
+	ret = sscanf(tilt, "%f", &m_calculator->m_tilt);
 
 	// The instrument-type
 	//if(m_instrumentTypeCombo.GetCurSel() == 0)
@@ -1084,8 +1091,6 @@ void CPostFluxDlg::OnDeleteSelectedPoints()
 
 void CPostFluxDlg::OnResetDeletion()
 {
-	int i;
-
 	// If no ev.log has been opened yet
 	if(m_calculator == NULL)
 		return;
@@ -1094,7 +1099,7 @@ void CPostFluxDlg::OnResetDeletion()
 	Evaluation::CScanResult &scan = m_calculator->m_scan[m_curScan];
 
 	// Mark the selected data points as deleted
-	for(i = 0; i < scan.GetEvaluatedNum(); ++i){
+	for(unsigned long i = 0; i < scan.GetEvaluatedNum(); ++i){
 		scan.RemoveMark(i, MARK_DELETED);
 	}
 
@@ -1296,6 +1301,7 @@ void CPostFluxDlg::OnCalculateFlux_AllScansInPlume()
 {
 	CString compass, ph, coneAngle, str;
 	double tmpDouble;
+	int ret; // return value from sscanf
 
 	// If no ev.log has been opened yet
 	if(m_calculator == NULL)
@@ -1316,11 +1322,11 @@ void CPostFluxDlg::OnCalculateFlux_AllScansInPlume()
 
 	// Get the plume height
 	GetDlgItemText(IDC_PF_PLUMEHEIGHT, ph);
-	sscanf(ph, "%lf", &tmpDouble);	m_calculator->m_wind.SetPlumeHeight(tmpDouble, MET_USER);
+	ret = sscanf(ph, "%lf", &tmpDouble);	m_calculator->m_wind.SetPlumeHeight(tmpDouble, MET_USER);
 
 	// Get the compass-direction
 	GetDlgItemText(IDC_PF_COMPASS, compass);
-	sscanf(compass, "%f", &m_calculator->m_compass);
+	ret = sscanf(compass, "%f", &m_calculator->m_compass);
 
 	// The cone-angle
 	if(m_coneangleCombo.GetCurSel() == -1)
@@ -1386,6 +1392,7 @@ void CPostFluxDlg::OnCalculateWinddirection()
 	double assumedPlumeHeight, coneAngle, compass, plumeCentre, plumeCompleteness, tilt, tmp;
 	double plumeEdge_low, plumeEdge_high;
 	CGPSData source, scannerPos;
+	int ret; // return values from sscanf
 
 	// If no ev.log has been opened yet.
 	if(m_calculator == NULL)
@@ -1396,11 +1403,11 @@ void CPostFluxDlg::OnCalculateWinddirection()
 
 	// 1. Get the assumed plume-height
 	GetDlgItemText(IDC_PF_PLUMEHEIGHT, phStr);
-	sscanf(phStr, "%lf", &assumedPlumeHeight);
+	ret = sscanf(phStr, "%lf", &assumedPlumeHeight);
 
 	// 2. Get the assumed compass-direction
 	GetDlgItemText(IDC_PF_COMPASS, compStr);
-	sscanf(compStr, "%lf", &compass);
+	ret = sscanf(compStr, "%lf", &compass);
 
 	// 3. Get the nearest volcano
 	double sLat = scan.GetLatitude();
@@ -1465,20 +1472,20 @@ void CPostFluxDlg::OnSaveEvalLog(){
 	}
 
 	// Get the directory of the currently open evaluation-log file
-	directory.Format("%s", m_calculator->m_evaluationLog);
+	directory.Format("%s", (LPCTSTR)m_calculator->m_evaluationLog);
 	Common::GetDirectory(directory);
 
 	// The file-name of the new evaluation-log file
 	Common::GetDateText(dateStr);
 	Common::GetTimeText(timeStr, "_");
-	fileName.Format("%sEvaluationLog_%s_%s.txt", directory, dateStr, timeStr);
+	fileName.Format("%sEvaluationLog_%s_%s.txt", (LPCTSTR)directory, (LPCTSTR)dateStr, (LPCTSTR)timeStr);
 
 	// Save the log-file
 	if(SUCCESS == m_calculator->WriteEvaluationLog(fileName)){
-		message.Format("Evaluation log file copied to %s", fileName);
+		message.Format("Evaluation log file copied to %s", (LPCTSTR)fileName);
 		MessageBox(message, "Success", MB_OK);
 	}else{
-		message.Format("Failed to write %s", fileName);
+		message.Format("Failed to write %s", (LPCTSTR)fileName);
 		MessageBox(message, "Fail", MB_OK);
 	}
 }

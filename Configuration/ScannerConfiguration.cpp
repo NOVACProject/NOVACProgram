@@ -288,8 +288,9 @@ void CScannerConfiguration::OnAddScanner(){
 	// 2. Ask the user for the volcano where the scanner should be placed
 	Dialogs::CSelectionDialog volcanoDialog;
 	CString volcano;
-	for(int k = 0; k < g_volcanoes.m_volcanoNum; ++k)
+	for (unsigned int k = 0; k < g_volcanoes.m_volcanoNum; ++k) {
 		volcanoDialog.m_option[k].Format(g_volcanoes.m_name[k]);
+	}
 	volcanoDialog.m_option[g_volcanoes.m_volcanoNum].Format("Other");
 	volcanoDialog.m_windowText.Format("What's the volcano name?");
 	volcanoDialog.m_currentSelection = &volcano;
@@ -300,7 +301,8 @@ void CScannerConfiguration::OnAddScanner(){
 
 	if (volcano == "Other") {
 		m_pageLocation.AddAVolcano();
-		volcano = g_volcanoes.m_name[g_volcanoes.m_volcanoNum-1];
+		unsigned int idx = g_volcanoes.m_volcanoNum - 1;
+		volcano = g_volcanoes.m_name[idx];
 	}
 
 	// 3. Ask the user for the serial number
@@ -328,7 +330,7 @@ void CScannerConfiguration::OnAddScanner(){
 
 	// 4b. Get the number of channels chosen
 	int nChannels;
-	sscanf(channel, "%d", &nChannels);
+	int sret = sscanf(channel, "%d", &nChannels);
 
 	// 5. Make a guess for the observatory name
 	if(m_configuration->scannerNum >= 1){
@@ -345,9 +347,9 @@ void CScannerConfiguration::OnAddScanner(){
 	}
 
 	// 6. insert the new scanning instrument
-	m_configuration->scanner[m_configuration->scannerNum].spec[0].serialNumber.Format("%s", serialNumber);
+	m_configuration->scanner[m_configuration->scannerNum].spec[0].serialNumber.Format("%s", (LPCSTR)serialNumber);
 	m_configuration->scanner[m_configuration->scannerNum].spec[0].channelNum = nChannels;
-	m_configuration->scanner[m_configuration->scannerNum].volcano.Format("%s", volcano);
+	m_configuration->scanner[m_configuration->scannerNum].volcano.Format("%s", (LPCSTR)volcano);
 	m_configuration->scanner[m_configuration->scannerNum].specNum = 1;
 	m_configuration->scannerNum += 1;
 
@@ -365,7 +367,7 @@ void CScannerConfiguration::OnAddScanner(){
 	// 8. Update the name of the file that the program should read from the server...
 	for(unsigned int i = 0; i < g_volcanoes.m_volcanoNum; ++i){
 		if(Equals(g_volcanoes.m_name[i], volcano)){
-			m_configuration->windSourceSettings.windFieldFile.Format("ftp://129.16.35.206/wind/wind_%s.txt", g_volcanoes.m_simpleName[i]);
+			m_configuration->windSourceSettings.windFieldFile.Format("ftp://129.16.35.206/wind/wind_%s.txt", (LPCSTR)g_volcanoes.m_simpleName[i]);
 		}
 	}
 
@@ -401,7 +403,7 @@ void CScannerConfiguration::OnRemoveScanner() {
 	}
 
 	CString message;
-	message.Format("Are you sure you want to remove scanner: %s from the list?", m_configuration->scanner[currentScanner].spec[currentSpec].serialNumber);
+	message.Format("Are you sure you want to remove scanner: %s from the list?", (LPCSTR)m_configuration->scanner[currentScanner].spec[currentSpec].serialNumber);
 	int answer = MessageBox(message, NULL, MB_YESNO);
 	if (IDNO == answer) {
 		m_configuration->scannerNum += 1;

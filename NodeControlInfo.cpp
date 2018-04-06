@@ -12,8 +12,8 @@ CNodeControlInfo::CControlInfo::CControlInfo(int mainIndex,int mode,CString spec
 {
 	m_mainIndex				= mainIndex;
 	m_mode						= mode;
-	m_spectrometerID.Format("%s", spectrometerID);
-	m_cfgFilePath.Format("%s", cfgFilePath);
+	m_spectrometerID.Format("%s", (LPCTSTR)spectrometerID);
+	m_cfgFilePath.Format("%s", (LPCTSTR)cfgFilePath);
 }
 //---------------------------class CNodeControlInfo------------------//
 CNodeControlInfo::CNodeControlInfo(void)

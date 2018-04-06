@@ -58,7 +58,7 @@ double CPostFluxCalculator::CalculateOffset(int scanNr, const CString & specie, 
 
 	Evaluation::CScanResult &scan = m_scan[scanNr];
 
-	for(int k = 0; k < scan.GetEvaluatedNum(); ++k){
+	for(unsigned long k = 0; k < scan.GetEvaluatedNum(); ++k){
 		// Check the goodness of fit using the supplied parameters
 		scan.CheckGoodnessOfFit(scan.GetSpectrumInfo(k), k, chi2Limit, intensBelow, intensAbove);
 	}
@@ -87,9 +87,9 @@ void  CPostFluxCalculator::WriteFluxLogHeader(int scanNr){
 	serial = (scanNr < 0) ? m_scan[0].GetSerial() : m_scan[scanNr].GetSerial();
 
 	if(CString::StringLength(serial) == 0)
-	  m_logFile.Format("%sPostFluxLog.txt", fluxFilePath);
+	  m_logFile.Format("%sPostFluxLog.txt", (LPCTSTR)fluxFilePath);
 	else
-		m_logFile.Format("%sPostFluxLog_%s.txt", fluxFilePath, serial);
+		m_logFile.Format("%sPostFluxLog_%s.txt", (LPCTSTR)fluxFilePath, (LPCTSTR)serial);
 
 	if(IsExistingFile(m_logFile))
 		return; // if the file already exists, then we don't need to add anything...
@@ -108,7 +108,7 @@ void  CPostFluxCalculator::WriteFluxLogHeader(int scanNr){
 		fclose(f);
 	}else{
 		CString msg;
-		msg.Format("Could not create the following post-flux log-file for writing: %s", m_logFile);
+		msg.Format("Could not create the following post-flux log-file for writing: %s", (LPCTSTR)m_logFile);
 		MessageBox(NULL, msg, "Error", MB_OK);
 	}
 }
@@ -147,8 +147,8 @@ void  CPostFluxCalculator::AppendToFluxLog(int scanNr){
 		str.AppendFormat("%.2lf\t", m_flux*3.6*24.0);	// <-- the flux in ton/day
 
 		// 5. Wind speed and direction
-		str.AppendFormat("%.2lf\t%s\t", m_wind.GetWindSpeed(), wsSrc);
-		str.AppendFormat("%.2lf\t%s\t", m_wind.GetWindDirection(), wdSrc);
+		str.AppendFormat("%.2lf\t%s\t", m_wind.GetWindSpeed(), (LPCTSTR)wsSrc);
+		str.AppendFormat("%.2lf\t%s\t", m_wind.GetWindDirection(), (LPCTSTR)wdSrc);
 
 		// 6. Compass direction of the scanning instrument
 		str.AppendFormat("%.2lf\t", m_compass);
@@ -160,7 +160,7 @@ void  CPostFluxCalculator::AppendToFluxLog(int scanNr){
 		str.AppendFormat("%.2lf\t", m_tilt);
 
 		// 9. Plume height
-		str.AppendFormat("%.2lf\t%s\t", m_wind.GetPlumeHeight(), phSrc);
+		str.AppendFormat("%.2lf\t%s\t", m_wind.GetPlumeHeight(), (LPCTSTR)phSrc);
 
 		// 10. Offset
 		str.AppendFormat("%.2lf\t", m_scan[scanNr].GetOffset());

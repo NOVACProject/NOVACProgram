@@ -97,7 +97,7 @@ void CGlobalConfiguration::OnBrowseOutputPath(){
 	CString folderName;
 
 	if(common.BrowseForDirectory(folderName))
-		this->m_configuration->outputDirectory.Format("%s", folderName);
+		this->m_configuration->outputDirectory.Format("%s", (LPCSTR)folderName);
 
 	UpdateData(FALSE);
 }

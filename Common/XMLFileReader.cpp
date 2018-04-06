@@ -110,11 +110,15 @@ int CXMLFileReader::Parse_IPNumber(const CString &label, BYTE &ip0, BYTE &ip1, B
 		if(Equals(szToken, label))
 		return 1;
 
-		sscanf(szToken, "%d.%d.%d.%d", &i0, &i1, &i2, &i3);
-		ip0 = i0;
-		ip1 = i1;
-		ip2 = i2;
-		ip3 = i3;
+		if (sscanf(szToken, "%d.%d.%d.%d", &i0, &i1, &i2, &i3) == 4) {
+			ip0 = i0;
+			ip1 = i1;
+			ip2 = i2;
+			ip3 = i3;
+		}
+		else {
+			return 1;
+		}
 	}
 
 	return 0;

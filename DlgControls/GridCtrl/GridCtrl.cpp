@@ -155,33 +155,33 @@ UINT GetMouseScrollLines()
 {
     int nScrollLines = 3;            // reasonable default
 
-#ifndef _WIN32_WCE
-    // Do things the hard way in win95
-    OSVERSIONINFO VersionInfo;
-    VersionInfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-    if (!GetVersionEx(&VersionInfo) || 
-        (VersionInfo.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS && VersionInfo.dwMinorVersion == 0))
-    {
-        HKEY hKey;
-        if (RegOpenKeyEx(HKEY_CURRENT_USER,  _T("Control Panel\\Desktop"),
-            0, KEY_QUERY_VALUE, &hKey) == ERROR_SUCCESS)
-        {
-            TCHAR szData[128];
-            DWORD dwKeyDataType;
-            DWORD dwDataBufSize = sizeof(szData);
-            
-            if (RegQueryValueEx(hKey, _T("WheelScrollLines"), NULL, &dwKeyDataType,
-                (LPBYTE) &szData, &dwDataBufSize) == ERROR_SUCCESS)
-            {
-                nScrollLines = _tcstoul(szData, NULL, 10);
-            }
-            RegCloseKey(hKey);
-        }
-    }
-    // win98 or greater
-    else
-           SystemParametersInfo (SPI_GETWHEELSCROLLLINES, 0, &nScrollLines, 0);
-#endif
+//#ifndef _WIN32_WCE
+//    // Do things the hard way in win95
+//    OSVERSIONINFO VersionInfo;
+//    VersionInfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+//    if (!GetVersionEx(&VersionInfo) || 
+//        (VersionInfo.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS && VersionInfo.dwMinorVersion == 0))
+//    {
+//        HKEY hKey;
+//        if (RegOpenKeyEx(HKEY_CURRENT_USER,  _T("Control Panel\\Desktop"),
+//            0, KEY_QUERY_VALUE, &hKey) == ERROR_SUCCESS)
+//        {
+//            TCHAR szData[128];
+//            DWORD dwKeyDataType;
+//            DWORD dwDataBufSize = sizeof(szData);
+//            
+//            if (RegQueryValueEx(hKey, _T("WheelScrollLines"), NULL, &dwKeyDataType,
+//                (LPBYTE) &szData, &dwDataBufSize) == ERROR_SUCCESS)
+//            {
+//                nScrollLines = _tcstoul(szData, NULL, 10);
+//            }
+//            RegCloseKey(hKey);
+//        }
+//    }
+//    // win98 or greater
+//    else
+//           SystemParametersInfo (SPI_GETWHEELSCROLLLINES, 0, &nScrollLines, 0);
+//#endif
 
     return nScrollLines;
 }
@@ -2380,7 +2380,7 @@ BOOL CGridCtrl::PasteTextToGrid(CCellID cell, COleDataObject* pDataObject,
     // Now store in generic TCHAR form so we no longer have to deal with
     // ANSI/UNICODE problems
     CString strText = szBuffer;
-    delete szBuffer;
+    delete[] szBuffer;
 
     // Parse text data and set in cells...
     strText.LockBuffer();
@@ -3845,6 +3845,9 @@ BOOL CGridCtrl::SetCellType(int nRow, int nCol, CRuntimeClass* pRuntimeClass)
 BOOL CGridCtrl::SetDefaultCellType( CRuntimeClass* pRuntimeClass)
 {
     ASSERT( pRuntimeClass != NULL );
+	if (!pRuntimeClass) {
+		return FALSE;
+	}
     if (!pRuntimeClass->IsDerivedFrom(RUNTIME_CLASS(CGridCellBase)))
     {
         ASSERT( FALSE);

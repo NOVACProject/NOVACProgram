@@ -40,7 +40,6 @@ void CConfigurationTreeCtrl::UpdateTree(){
 }
 
 void CConfigurationTreeCtrl::PopulateTreeControl(){
-	unsigned int i, j, k;
 
 	if(m_configuration == NULL)
 		return;
@@ -65,9 +64,9 @@ void CConfigurationTreeCtrl::PopulateTreeControl(){
 	}else{
 		// Compare each volcano-name to the names in the list,
 		//	if this scanner monitors a volcano not in the list - then insert it
-		for(i = 1; i < m_configuration->scannerNum; ++i){
+		for(unsigned long i = 1; i < m_configuration->scannerNum; ++i){
 			bool found = false;
-			for(j = 0; j <= nVolcanoes; ++j){
+			for(int j = 0; j <= nVolcanoes; ++j){
 				if(Equals(m_configuration->scanner[i].volcano, volcanoes[j])){
 					found = true;
 					scanners[i] = j;
@@ -90,12 +89,12 @@ void CConfigurationTreeCtrl::PopulateTreeControl(){
 	int first = true;
 	// now loop through each of the volcanoes and for each, insert the 
 	//	scanners that belong to this volcano
-	for(i = 0; i < nVolcanoes; ++i){
+	for(int i = 0; i < nVolcanoes; ++i){
 		hTree = InsertItem(volcanoes[i]);
 		
-		for(j = 0; j < m_configuration->scannerNum; ++j){
+		for(unsigned long j = 0; j < m_configuration->scannerNum; ++j){
 			if(scanners[j] == i){
-				for (k = 0; k < m_configuration->scanner[j].specNum; ++k) {
+				for (unsigned long k = 0; k < m_configuration->scanner[j].specNum; ++k) {
 					HTREEITEM item = InsertItem(m_configuration->scanner[j].spec[k].serialNumber, hTree);
 					if (first) {
 						firstItem = &item;

@@ -139,7 +139,7 @@ void CMasterController::Start(){
 	// Check if there's any old pak-files lying around that should be taken care of
 	AfxBeginThread(CheckForOldSpectra, NULL, THREAD_PRIORITY_NORMAL, 0, 0, NULL);
 
-	message.Format("%s. Compile date: %s", m_common.GetString(MSG_PROGRAM_STARTED_SUCESSFULLY), __DATE__);
+	message.Format("%s. Compile date: %s", (LPCTSTR)m_common.GetString(MSG_PROGRAM_STARTED_SUCESSFULLY), __DATE__);
 	ShowMessage(message);
 }
 
@@ -179,9 +179,9 @@ UINT CheckForOldSpectra(LPVOID pParam){
 
 	// 1. check for spectra in the output\\temp - directory
 	if(strlen(g_settings.outputDirectory) == 0){
-		path.Format("%sTemp", common.m_exePath);
+		path.Format("%sTemp", (LPCTSTR)common.m_exePath);
 	}else{
-		path.Format("%sTemp", g_settings.outputDirectory);
+		path.Format("%sTemp", (LPCTSTR)g_settings.outputDirectory);
 	}
 	CheckForSpectraInDir(path, fileNames);
 
@@ -190,18 +190,18 @@ UINT CheckForOldSpectra(LPVOID pParam){
 		serial.Format(g_settings.scanner[i].spec[0].serialNumber);
 
 		if(strlen(g_settings.outputDirectory) == 0){
-			path.Format("%sTemp\\%s", common.m_exePath, serial);
+			path.Format("%sTemp\\%s", (LPCTSTR)common.m_exePath, (LPCTSTR)serial);
 		}else{
-			path.Format("%sTemp\\%s", g_settings.outputDirectory, serial);
+			path.Format("%sTemp\\%s", (LPCTSTR)g_settings.outputDirectory, (LPCTSTR)serial);
 		}
 		CheckForSpectraInDir(path, fileNames);
 	}
 
 	// 3. Check for spectra in the output\\temp\\RXYZ - directory(-ies)
 	if(strlen(g_settings.outputDirectory) == 0){
-		path.Format("%sTemp\\", common.m_exePath);
+		path.Format("%sTemp\\", (LPCTSTR)common.m_exePath);
 	}else{
-		path.Format("%sTemp\\", g_settings.outputDirectory);
+		path.Format("%sTemp\\", (LPCTSTR)g_settings.outputDirectory);
 	}
 	CheckForSpectraInHexDir(path, fileNames);
 
@@ -228,7 +228,7 @@ void CheckForSpectraInDir(const CString &path, CList <CString, CString&> &fileLi
 
 	// Find all .pak-files in the specified directory
 
-	sprintf(fileToFind, "%s\\?????????.pak", path);
+	sprintf(fileToFind, "%s\\?????????.pak", (LPCTSTR)path);
 
 	// Search for the file
 	HANDLE hFile = FindFirstFile(fileToFind, &FindFileData);
@@ -238,7 +238,7 @@ void CheckForSpectraInDir(const CString &path, CList <CString, CString&> &fileLi
 
 	do{
 		CString fileName;
-		fileName.Format("%s\\%s", path, FindFileData.cFileName);
+		fileName.Format("%s\\%s", (LPCTSTR)path, FindFileData.cFileName);
 
 		if(!Equals(FindFileData.cFileName, "Upload.pak")){
 			// Tell the user that we've found one scan which hasn't been evaluated
@@ -276,7 +276,7 @@ bool CMasterController::CheckSettings(){
 				for(n  = 0; n < window->nRef; ++n){
 					f  =  fopen(window->ref[n].m_path, "r");
 					if(NULL == f){
-						message.Format("Cannot read reference file: %s", window->ref[n].m_path);
+						message.Format("Cannot read reference file: %s", (LPCTSTR)window->ref[n].m_path);
 						MessageBox(NULL, message, "Error in settings", MB_OK);
 						return true;
 					}
@@ -296,7 +296,7 @@ void CheckForSpectraInHexDir(const CString &path, CList <CString, CString&> &fil
 	CString pathName;
 
 	// Find all RXYZ - directories...
-	sprintf(fileToFind, "%s\\R???", path);
+	sprintf(fileToFind, "%s\\R???", (LPCTSTR)path);
 
 	// Search for the directories
 	HANDLE hFile = FindFirstFile(fileToFind, &FindFileData);
@@ -304,7 +304,7 @@ void CheckForSpectraInHexDir(const CString &path, CList <CString, CString&> &fil
 	if(hFile == INVALID_HANDLE_VALUE)
 		return; // no directories found
 	do{
-		pathName.Format("%s\\%s", path, FindFileData.cFileName);
+		pathName.Format("%s\\%s", (LPCTSTR)path, (LPCTSTR)FindFileData.cFileName);
 
 		if(FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY){
 			// This is a directory, add it to the list of directories to check...
@@ -337,6 +337,7 @@ void SetThreadName(DWORD dwThreadID, LPCTSTR szThreadName) {
 	__try { 
 		RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(DWORD), (DWORD *)&info); 
 	} 
-	__except (EXCEPTION_CONTINUE_EXECUTION){ 
+	__except (GetExceptionCode() == EXCEPTION_ACCESS_VIOLATION ?
+		EXCEPTION_EXECUTE_HANDLER : EXCEPTION_CONTINUE_SEARCH){
 	} 
 } 

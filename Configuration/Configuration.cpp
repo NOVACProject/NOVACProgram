@@ -226,7 +226,7 @@ CConfigurationSetting::SpectrometerSetting &CConfigurationSetting::SpectrometerS
 	for(int i = 0; i < MAX_CHANNEL_NUM; ++i)
 		channel[i] = spec2.channel[i];
 
-	serialNumber.Format("%s", spec2.serialNumber);
+	serialNumber.Format("%s", (LPCSTR)spec2.serialNumber);
 	model = spec2.model;
 
 	return *this;
@@ -239,14 +239,14 @@ CConfigurationSetting::ScanningInstrumentSetting &CConfigurationSetting::Scannin
 	coneAngle	= scanner2.coneAngle;
 	gps			= scanner2.gps;
 
-	observatory.Format("%s", scanner2.observatory);
-	site.Format("%s", scanner2.site);
+	observatory.Format("%s", (LPCSTR)scanner2.observatory);
+	site.Format("%s", (LPCSTR)scanner2.site);
 
 	for(int i = 0; i < MAX_SPECTROMETERS_PER_SCANNER; ++i)
 		spec[i] = scanner2.spec[i];
 
 	specNum		= scanner2.specNum;
-	volcano.Format("%s", scanner2.volcano);
+	volcano.Format("%s", (LPCSTR)scanner2.volcano);
 
 	instrumentType = scanner2.instrumentType;
 
@@ -267,15 +267,15 @@ CConfigurationSetting::CommunicationSetting &CConfigurationSetting::Communicatio
 	this->medium				= comm2.medium;
 
 	// Freewave radio modems
-	radioID.Format("%s", comm2.radioID);
+	radioID.Format("%s", (LPCSTR)comm2.radioID);
 
 	// FTP - Settings
 	ftpIP[0] = comm2.ftpIP[0];
 	ftpIP[1] = comm2.ftpIP[1];
 	ftpIP[2] = comm2.ftpIP[2];
 	ftpIP[3] = comm2.ftpIP[3];
-	ftpUserName.Format("%s", comm2.ftpUserName);
-	ftpPassword.Format("%s", comm2.ftpPassword);
+	ftpUserName.Format("%s", (LPCSTR)comm2.ftpUserName);
+	ftpPassword.Format("%s", (LPCSTR)comm2.ftpPassword);
 
 	// General Settings
 	this->queryPeriod			= comm2.queryPeriod;

@@ -135,7 +135,7 @@ RETURN_CODE ConfigurationDialog::CConfigurationDlg::CheckSettings(){
 				for(k = 0; k < window.nRef; ++k){
 					FILE *f = fopen(window.ref[k].m_path, "r");
 					if(f == NULL){
-						message.Format("Cannot read reference file %s", window.ref[k].m_path);
+						message.Format("Cannot read reference file %s", (LPCSTR)window.ref[k].m_path);
 						pass = false;
 						break;
 					}
@@ -145,7 +145,7 @@ RETURN_CODE ConfigurationDialog::CConfigurationDlg::CheckSettings(){
 
 			if(!pass){
 				CString str;
-				str.Format("Please check settings for spectrometer %s. ", m_configuration.scanner[i].spec[j].serialNumber);
+				str.Format("Please check settings for spectrometer %s. ", (LPCSTR)m_configuration.scanner[i].spec[j].serialNumber);
 				str.AppendFormat(message);
 				MessageBox(str);
 				return FAIL;

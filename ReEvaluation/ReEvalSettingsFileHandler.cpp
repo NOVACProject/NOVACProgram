@@ -45,7 +45,7 @@ RETURN_CODE CReEvalSettingsFileHandler::WriteSettings(const ReEvaluation::CReEva
 	fprintf(f, "\t\t<Option>%d</Option>\n",						(int)reeval.m_skyOption);
 	fprintf(f, "\t\t<Index>%d</Index>\n",							(int)reeval.m_skyIndex);
 	if(reeval.m_skySpectrum.GetLength() > 1){
-		fprintf(f, "\t\t<Path>%s</Path>\n",							reeval.m_skySpectrum);
+		fprintf(f, "\t\t<Path>%s</Path>\n", (LPCTSTR)reeval.m_skySpectrum);
 	}
 	fprintf(f, "\t</SkySpectrum>\n");
 
@@ -56,10 +56,10 @@ RETURN_CODE CReEvalSettingsFileHandler::WriteSettings(const ReEvaluation::CReEva
 	fprintf(f, "\t\t<DCOption>%d</DCOption>\n",					(int)reeval.m_darkSettings.m_darkCurrentOption);
 	fprintf(f, "\t\t<Index>%d</Index>\n",							(int)reeval.m_skyIndex);
 	if(reeval.m_darkSettings.m_offsetSpec.GetLength() > 1){
-		fprintf(f, "\t\t<Offset_Path>%s</Offset_Path>\n",			reeval.m_darkSettings.m_offsetSpec);
+		fprintf(f, "\t\t<Offset_Path>%s</Offset_Path>\n", (LPCTSTR)reeval.m_darkSettings.m_offsetSpec);
 	}
 	if(reeval.m_darkSettings.m_darkCurrentSpec.GetLength() > 1){
-		fprintf(f, "\t\t<DC_Path>%s</DC_Path>\n",							reeval.m_darkSettings.m_darkCurrentSpec);
+		fprintf(f, "\t\t<DC_Path>%s</DC_Path>\n", (LPCTSTR)reeval.m_darkSettings.m_darkCurrentSpec);
 	}
 	fprintf(f, "\t</DarkSpectrum>\n");
 

@@ -119,7 +119,7 @@ void CDOASFitGraph::WriteAsciiFile(const CString &fileName){
 	if(NULL != f){
 		fprintf(f, "Pixel\tResidual\t");
 		for(j = 0; j < m_nReferences; ++j){
-			fprintf(f, "OD(%s)\t", m_specieName[j]);
+			fprintf(f, "OD(%s)\t", (LPCSTR)m_specieName[j]);
 		}
 		fprintf(f, "\n");
 	

@@ -1,5 +1,4 @@
 #include "StdAfx.h"
-
 #include "Common.h"
 
 // include the global settings
@@ -9,6 +8,7 @@
 
 #include "PSAPI.H"
 #include <tlhelp32.h>
+#include <VersionHelpers.h>
 #pragma comment( lib, "PSAPI.LIB" )
 
 extern CFormView *pView;
@@ -59,7 +59,7 @@ int IsExistingFile(const CString &fileName){
 	WIN32_FIND_DATA FindFileData;
 	char fileToFind[MAX_PATH];
 
-	sprintf(fileToFind, "%s", fileName);
+	sprintf(fileToFind, "%s", (LPCSTR)fileName);
 
 	// Search for the file
 	HANDLE hFile = FindFirstFile(fileToFind, &FindFileData);
@@ -144,7 +144,7 @@ void UploadToNOVACServer(const CString &fileName, int volcanoIndex, bool deleteF
 
 	// The file-name
 	fileNameBuffer = new CString();
-	fileNameBuffer->Format("%s", fileName);
+	fileNameBuffer->Format("%s", (LPCSTR)fileName);
 
 	// The options for uploading the file
 	options = new Communication::FTPUploadOptions;
@@ -152,7 +152,7 @@ void UploadToNOVACServer(const CString &fileName, int volcanoIndex, bool deleteF
 	options->deleteFile		= deleteFile;
 
 	// Tell the world about our mission
-	message.Format("Will try to upload %s to NOVAC FTP-Server", fileName);
+	message.Format("Will try to upload %s to NOVAC FTP-Server", (LPCSTR)fileName);
 	ShowMessage(message);
 
 	// Tell the uploading thread to upload this file
@@ -164,7 +164,7 @@ void UploadToNOVACServer(const CString &fileName, int volcanoIndex, bool deleteF
 void UpdateMessage(const CString &message){
 	CString *msg = new CString();
 
-	msg->Format("%s", message);
+	msg->Format("%s", (LPCSTR)message);
 	if(pView != NULL)
 		pView->PostMessage(WM_UPDATE_MESSAGE, (WPARAM)msg, NULL);
 }
@@ -174,7 +174,7 @@ void ShowMessage(const CString &message){
 	CString timeTxt;
 	Common commonObj;
 	commonObj.GetDateTimeText(timeTxt);
-	msg->Format("%s -- %s", message , timeTxt);
+	msg->Format("%s -- %s", (LPCSTR)message , (LPCSTR)timeTxt);
 	if(pView != NULL)
 		pView->PostMessage(WM_SHOW_MESSAGE, (WPARAM)msg, NULL);
 }
@@ -183,7 +183,7 @@ void ShowMessage(const CString &message,CString connectionID){
 	CString timeTxt;
 	Common commonObj;
 	commonObj.GetDateTimeText(timeTxt);
-	msg->Format("<%s> : %s   -- %s", connectionID,message,timeTxt);
+	msg->Format("<%s> : %s   -- %s", (LPCSTR)connectionID, (LPCSTR)message, (LPCSTR)timeTxt);
 	if(pView != NULL)
 		pView->PostMessage(WM_SHOW_MESSAGE, (WPARAM)msg, NULL);
 }
@@ -291,7 +291,7 @@ int IsSerialNumber(const CString &serialNumber){
 // open a browser window and let the user search for a file
 bool Common::BrowseForFile(TCHAR *filter, CString &fileName){
 	TCHAR szFile[4096];
-	sprintf(szFile, "%s", fileName);
+	sprintf(szFile, "%s", (LPCSTR)fileName);
 
 	OPENFILENAME ofn;       // common dialog box structure
 	// Initialize OPENFILENAME
@@ -319,7 +319,7 @@ bool Common::BrowseForFile(TCHAR *filter, CString &fileName){
 // open a browser window and let the user search for a file
 bool Common::BrowseForFile_SaveAs(TCHAR *filter, CString &fileName){
 	TCHAR szFile[4096];
-	sprintf(szFile, "%s", fileName);
+	sprintf(szFile, "%s", (LPCSTR)fileName);
 
 	OPENFILENAME ofn;       // common dialog box structure
 	// Initialize OPENFILENAME
@@ -689,6 +689,7 @@ double Common::JulianDay(const CDateTime &utcTime){
 	case(10): b = utcTime.day + 272;	break;
 	case(11): b = utcTime.day + 303;	break;
 	case(12): b = utcTime.day + 333;	break;	
+	default: return 0.0; // should never be the case
 	}
 	if(utcTime.year % 4 == 0)
 		++b;
@@ -740,7 +741,7 @@ const CString &Common::GetString(const UINT uID){
 	index += 1;
 	index %= 3;
 
-	m_string[index].LoadString(uID);
+	int ret = m_string[index].LoadString(uID);
 	return m_string[index];
 }
 
@@ -753,7 +754,7 @@ CString &Common::SimplifyString(const CString &in){
 	// Make a local copy of the string
 	unsigned long L = (unsigned long)strlen(str);
 	char *buffer		= new char[L + 2];
-	sprintf(buffer, "%s", str);
+	sprintf(buffer, "%s", (LPCSTR)str);
 
 	// Check all characters in the string
 	for(unsigned long i = 0; i < L; ++i){
@@ -806,7 +807,7 @@ CString &Common::SimplifyString(const CString &in){
 
 void Common::CleanString(const CString &in, CString &out){
 	char *buffer = new char[strlen(in) + 2];
-	sprintf(buffer, "%s", in); // make a local copy of the input string
+	sprintf(buffer, "%s", (LPCSTR)in); // make a local copy of the input string
 
 	CleanString(buffer, out);
 	delete [] buffer; // clean up after us
@@ -1408,12 +1409,12 @@ void Common::GuessSpecieName(const CString &fileName, CString &specie){
 		return;
 
 	CString fil;
-	fil.Format("%s", fileName.Right((int)strlen(fileName) - index - 1));
+	fil.Format("%s", (LPCSTR)fileName.Right((int)strlen(fileName) - index - 1));
 	fil.MakeUpper();
 
 	for(int i = 0; i < nSpecies; ++i){
 		if(strstr(fil, spc[i])){
-		specie.Format("%s", spc[i]);
+		specie.Format("%s", (LPCSTR)spc[i]);
 		return;
 		}
 	}
@@ -1428,7 +1429,6 @@ int Common::CheckProcessExistance(CString& exeName,int pid)
 	int ret;
 	CString processPath;
 	DWORD processid[1024],needed,processcount,i;
-	HANDLE hProcess;
 	HMODULE hModule;
 	char path[MAX_PATH] = "";
 
@@ -1436,7 +1436,7 @@ int Common::CheckProcessExistance(CString& exeName,int pid)
 	processcount=needed/sizeof(DWORD);
 	for (i=0;i<processcount;i++)
 	{
-		hProcess=OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ,false,processid[i]);
+		HANDLE hProcess=OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ,false,processid[i]);
 		if (hProcess)
 		{
 			EnumProcessModules(hProcess, &hModule, sizeof(hModule), &needed);
@@ -1464,8 +1464,8 @@ int Common::CheckProcessExistance(CString& exeName,int pid)
 				}
 			}
 		}
+		CloseHandle(hProcess);
 	}
-	CloseHandle(hProcess);
 	
 	//MessageBox(NULL,"CAN NOT find txzm","notice",MB_OK);
 	return -1;
@@ -1480,18 +1480,23 @@ int Common::CheckProcessExistance(CString& exeName,int pid)
 	@return - number of processID found , -1 if no process is found */
 int Common::GetAllProcessIDs(CString& exeName, int pIDs[1024], int startPid){
 	int nPIDsFound = 0;
-	CString processPath;
-	DWORD processid[1024],needed,processcount,i;
-	HANDLE hProcess;
+	DWORD processid[1024];
+	DWORD needed;
 	HMODULE hModule;
-	char path[MAX_PATH] = "";
 	memset(pIDs, -1, 1024*sizeof(int)); // set all values to -1
 
-	EnumProcesses(processid, sizeof(processid), &needed);
-	processcount=needed/sizeof(DWORD);
-	for (i = 0; i < processcount; i++)
+	if (!EnumProcesses(processid, sizeof(processid), &needed)) {
+		return 0;
+	}
+	DWORD processcount=needed/sizeof(DWORD);
+	for (unsigned int i = 0; i < processcount; i++)
 	{
-		hProcess=OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ,false,processid[i]);
+		if (processid[i] == 0) {
+			continue;
+		}
+		CString processPath;
+		char path[MAX_PATH] = "";
+		HANDLE hProcess=OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ,false,processid[i]);
 		if (hProcess)
 		{
 			EnumProcessModules(hProcess, &hModule, sizeof(hModule), &needed);
@@ -1506,8 +1511,8 @@ int Common::GetAllProcessIDs(CString& exeName, int pIDs[1024], int startPid){
 				}
 			}
 		}
+		CloseHandle(hProcess);
 	}
-	CloseHandle(hProcess);
 	
 	return nPIDsFound;
 }
@@ -1525,15 +1530,18 @@ BOOL WINAPI Common::KillProcess(IN DWORD dwProcessId)
 		if (GetLastError() != ERROR_ACCESS_DENIED)
 			return FALSE;
 	 
-	OSVERSIONINFO osvi;
+	//OSVERSIONINFO osvi;
 	 
 	// determine operating system version
-	osvi.dwOSVersionInfoSize = sizeof(osvi);
-	GetVersionEx(&osvi);
+	//osvi.dwOSVersionInfoSize = sizeof(osvi);
+	//GetVersionEx(&osvi);
 	 
 	// we cannot do anything else if this is not Windows NT
-	if (osvi.dwPlatformId != VER_PLATFORM_WIN32_NT)
+	//if (osvi.dwPlatformId != VER_PLATFORM_WIN32_NT)
+	if (!IsWindowsXPOrGreater()) {
+		MessageBox(NULL, "You need at least Windows XP", "Version Not Supported", MB_OK);
 		return SetLastError(ERROR_ACCESS_DENIED), FALSE;
+	}
 	 
 	// enable SE_DEBUG_NAME privilege and try again
 	 
@@ -1643,7 +1651,7 @@ void Common::WriteAFile(const CString& fileName,const CString& msg, char* mode)
 	FILE *f = fopen(fileName, mode);
 	if(f != NULL)
 	{
-		fprintf(f, "%s\n", msg);
+		fprintf(f, "%s\n", (LPCSTR)msg);
 		fclose(f);
 	}
 }
@@ -1715,12 +1723,11 @@ int Common::GetInterlaceSteps(int channel, int &interlaceSteps){
 /** Find the volcano-index that the spectrometer with the supplied 
 		serial-number monitors. If none is found then -1 is returned */
 int	Common::GetMonitoredVolcano(const CString &serialNumber){
-	unsigned int j, k;
-
+	
 	// find the name of the volcano that is monitored
 	CString volcanoName;
-	for(k = 0; k < g_settings.scannerNum; ++k){
-		for(j = 0; j < g_settings.scanner[k].specNum; ++j){
+	for(unsigned int k = 0; k < g_settings.scannerNum; ++k){
+		for(unsigned int j = 0; j < g_settings.scanner[k].specNum; ++j){
 			if(Equals(serialNumber, g_settings.scanner[k].spec[j].serialNumber)){
 				volcanoName.Format(g_settings.scanner[k].volcano);
 				break;
@@ -1732,9 +1739,10 @@ int	Common::GetMonitoredVolcano(const CString &serialNumber){
 	if(strlen(volcanoName) == 0)
 		return -1; // <-- nothing found
 
-	for(k = 0; k < g_volcanoes.m_volcanoNum; ++k){
-		if(Equals(volcanoName, g_volcanoes.m_name[k]))
+	for(unsigned int k = 0; k < g_volcanoes.m_volcanoNum; ++k){
+		if (Equals(volcanoName, g_volcanoes.m_name[k])) {
 			return k;
+		}
 	}
 
 	return -1; // could not find the volcano-name

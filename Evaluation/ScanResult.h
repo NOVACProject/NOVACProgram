@@ -191,7 +191,7 @@ namespace Evaluation
 		void SetOffset(double offset) {m_offset = offset; } 
 
 		/** returns the number of spectra evaluated */
-		long  GetEvaluatedNum() const {return m_specNum; }
+		unsigned long  GetEvaluatedNum() const {return m_specNum; }
 
 		/** Returns the latitude of the system */
 		double	GetLatitude() const;

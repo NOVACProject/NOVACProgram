@@ -56,7 +56,7 @@ BOOL CNovacMasterProgramApp::InitInstance()
 	CString oldFileName = TEXT(common.m_exePath + "\\language.txt");
 
 	// Read the user settings
-	userSettingsFile.Format("%s\\user.ini", common.m_exePath);
+	userSettingsFile.Format("%s\\user.ini", (LPCTSTR)common.m_exePath);
 	g_userSettings.ReadSettings(&userSettingsFile);
 
 	// this portion of code reading 'language.txt' is for

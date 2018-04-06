@@ -266,7 +266,7 @@ BOOL CTitleTip::PreTranslateMessage(MSG* pMsg)
 	{
 	case WM_LBUTTONDOWN:
        // Get tick count since last LButtonDown
-        dwTick = GetTickCount();
+        dwTick = (DWORD)GetTickCount64();
         bDoubleClick = ((dwTick - m_dwLastLButtonDown) <= m_dwDblClickMsecs);
         m_dwLastLButtonDown = dwTick;
         // NOTE: DO NOT ADD break; STATEMENT HERE! Let code fall through

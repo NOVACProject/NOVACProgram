@@ -20,7 +20,7 @@ CRemoteConfigurationDlg::CRemoteConfigurationDlg()
 	m_scannerTree = NULL;
 	m_SerialController = new CSerialControllerWithTx();
 	
-	m_cfgLog.Format("%s\\cfgLog.txt",g_settings.outputDirectory);
+	m_cfgLog.Format("%s\\cfgLog.txt", (LPCSTR)g_settings.outputDirectory);
 
 	m_remoteConf.m_compass = m_remoteConf.m_debugflag = m_remoteConf.m_delay = 0;
 	m_remoteConf.m_ftpIP[0] = m_remoteConf.m_ftpIP[1] = m_remoteConf.m_ftpIP[2] = m_remoteConf.m_ftpIP[3] = 0;
@@ -111,8 +111,8 @@ BOOL CRemoteConfigurationDlg::OnInitDialog(){
 	CDialog::OnInitDialog();
 
 	// the path of the configuration file
-	m_cfgPath.Format("%sTemp\\", g_settings.outputDirectory);
-	m_cfgFile.Format("%s%s", m_cfgPath, CONFIGURATION_FILE);
+	m_cfgPath.Format("%sTemp\\", (LPCSTR)g_settings.outputDirectory);
+	m_cfgFile.Format("%s%s", (LPCSTR)m_cfgPath, CONFIGURATION_FILE);
 
 	// it should not be able to upload a configuration file before a configuration 
 	//	file has been downloaded
@@ -263,7 +263,7 @@ void CRemoteConfigurationDlg::OnUploadRemoteCfg(){
 	CString exeFilePath; //path of txzm.exe
 	Common commonObject;
 	commonObject.GetExePath();
-	exeFilePath.Format("%stxzm.exe",commonObject.m_exePath);
+	exeFilePath.Format("%stxzm.exe", (LPCSTR)commonObject.m_exePath);
 
 	m_SerialController->SetSerialPort(m_currentScanner,
 		g_settings.scanner[m_currentScanner].comm.port,
@@ -275,7 +275,7 @@ void CRemoteConfigurationDlg::OnUploadRemoteCfg(){
 
 	// A local copy of the string is necessary since the GetBuffer-function
 	//		might change the variable
-	cfgFile.Format("%s", m_cfgFile);
+	cfgFile.Format("%s", (LPCSTR)m_cfgFile);
 
 	/**Write cfg.txt*/
 	WriteCfg(m_cfgFile, false);
@@ -359,13 +359,13 @@ int CRemoteConfigurationDlg::WriteCfg(const CString &fileName, bool append)
 	CString dateTime;
 	Common commonObject;
 	commonObject.GetDateTimeText(dateTime);
-	fprintf(f, "%-------------Modified at %s------------%\n\n",dateTime);
+	fprintf(f, "%%-------------Modified at %s------------\n\n", (LPCSTR)dateTime);
 
-	fprintf(f, "%Questions? email\n% mattias.johansson@chalmers.se\n\n");
+	fprintf(f, "%%Questions? email mattias.johansson@chalmers.se\n\n");
 
 	// 2. Write the instrument name
-	fprintf(f, "%% This name will be written in the spectrum-files (maximum 	16 characters)\n%It also defines the name for the file containing the IP number uploaded to the server\n");
-	fprintf(f, "INSTRUMENTNAME=%s\n\n", m_configuration->scanner[m_currentScanner].spec[currentSpec].serialNumber);
+	fprintf(f, "%% This name will be written in the spectrum-files (maximum 16 characters)\nIt also defines the name for the file containing the IP number uploaded to the server\n");
+	fprintf(f, "INSTRUMENTNAME=%s\n\n", (LPCSTR)m_configuration->scanner[m_currentScanner].spec[currentSpec].serialNumber);
 
 
 	// 3. Write the ftp - server information
@@ -374,7 +374,7 @@ int CRemoteConfigurationDlg::WriteCfg(const CString &fileName, bool append)
 	if(byte1 != 0 || byte2 != 0 || byte3 != 0 || byte4 != 0){
 		fprintf(f, "%% The following adress are notified with ftp by our current IP adress at startup\n%% and at every time  our dynamic IP adress is changed.");
 		fprintf(f, "SERVER=%d.%d.%d.%d %s %s\n", byte1, byte2, byte3, byte4, 
-			m_remoteConf.m_ftpUserName, m_remoteConf.m_ftpPassword);
+			(LPCSTR)m_remoteConf.m_ftpUserName, (LPCSTR)m_remoteConf.m_ftpPassword);
 		fprintf(f, "%% timeout in miliseconds for accessing the server\nFTPTIMEOUT=%d\n\n", m_remoteConf.m_ftpTimeOut);
 	}
 
@@ -474,157 +474,184 @@ int CRemoteConfigurationDlg::ReadCfg(const CString &filename){
 		CString log;
 	fil = fopen(filename, "r");
 	if(fil<(FILE *)1){
-		printf("Could not open file %s\n",filename);
+		printf("Could not open file %s\n", (LPCSTR)filename);
 		return 1;
 	}
 
-	while(fgets(txt,sizeof(txt)-1, fil)){
-		if(strlen(txt)>4 && txt[0]!='%'){
-		pt = txt;
-		if(pt = strstr(txt,nl))
-			pt[0]=0;
+	while (fgets(txt, sizeof(txt) - 1, fil)) {
+		if (strlen(txt) > 4 && txt[0] != '%') {
+			pt = txt;
+			if (pt = strstr(txt, nl)) {
+				pt[0] = 0;
+			}
 
-		pt = txt;
-		if(pt = strstr(txt,lf))
-			pt[0] = 0;
+			pt = txt;
+			if (pt = strstr(txt, lf)) {
+				pt[0] = 0;
+			}
 
-		//if(pt = strstr(txt,"INSTRUMENTNAME=")){
-		//  pt = strstr(txt,"=");
-		//  sscanf(&pt[1],"%s",temp);
-		//  strncpy(instrumentname, temp, 16);
-		//}
+			//if(pt = strstr(txt,"INSTRUMENTNAME=")){
+			//  pt = strstr(txt,"=");
+			//  sscanf(&pt[1],"%s",temp);
+			//  strncpy(instrumentname, temp, 16);
+			//}
 
-		if(pt=strstr(txt,"SERVER=")){
-			char username[1024], password[1024];
-			int byte1, byte2, byte3, byte4;
-			pt=strstr(txt,"=");
-			sscanf(&pt[1],"%d.%d.%d.%d %s %s", &byte1, &byte2, &byte3, 
-				&byte4, username, password);
-			// Update the window
-			m_remoteConf.m_ftpIP[0] = byte1;
-			m_remoteConf.m_ftpIP[1] = byte2;
-			m_remoteConf.m_ftpIP[2] = byte3;
-			m_remoteConf.m_ftpIP[3] = byte4;
-			this->m_ftpServerIp.SetAddress(byte1, byte2, byte3, byte4);
-			m_remoteConf.m_ftpUserName.Format("%s", username);
-			m_remoteConf.m_ftpPassword.Format("%s", password);
+			if (pt = strstr(txt, "SERVER=")) {
+				char username[1024], password[1024];
+				int byte1, byte2, byte3, byte4;
+				pt = strstr(txt, "=");
+				if (sscanf(&pt[1], "%d.%d.%d.%d %s %s", &byte1, &byte2, &byte3,
+					&byte4, username, password) == 6) {
+					// Update the window
+					m_remoteConf.m_ftpIP[0] = byte1;
+					m_remoteConf.m_ftpIP[1] = byte2;
+					m_remoteConf.m_ftpIP[2] = byte3;
+					m_remoteConf.m_ftpIP[3] = byte4;
+					this->m_ftpServerIp.SetAddress(byte1, byte2, byte3, byte4);
+					m_remoteConf.m_ftpUserName.Format("%s", username);
+					m_remoteConf.m_ftpPassword.Format("%s", password);
 
-			// Update the log file
-			log.Format("SERVER=%d.%d.%d.%d %s %s",byte1,byte2,byte3,byte4,username,password);
-			WriteALineInFile(m_cfgLog,log);
-		}
+					// Update the log file
+					log.Format("SERVER=%d.%d.%d.%d %s %s", byte1, byte2, byte3, byte4, username, password);
+					WriteALineInFile(m_cfgLog, log);
+				}
+			}
 
-		if(pt=strstr(txt,"FTPTIMEOUT=")){
-			pt=strstr(txt,"=");
-			sscanf(&pt[1],"%d",&m_remoteConf.m_ftpTimeOut);
-			// Update the log file
-			log.Format("FTPTIMEOUT=%d",m_remoteConf.m_ftpTimeOut);
-			WriteALineInFile(m_cfgLog,log);
-		}
+			if (pt = strstr(txt, "FTPTIMEOUT=")) {
+				pt = strstr(txt, "=");
+				if (sscanf(&pt[1], "%d", &m_remoteConf.m_ftpTimeOut) == 1) {
+					// Update the log file
+					log.Format("FTPTIMEOUT=%d", m_remoteConf.m_ftpTimeOut);
+					WriteALineInFile(m_cfgLog, log);
+				}
+			}
 
-		if(pt=strstr(txt,"STEPSPERROUND=")){
-		pt=strstr(txt,"=");
-		sscanf(&pt[1],"%d",&m_remoteConf.m_stepsPerRound);
-			// Update the log file
-			log.Format("STEPSPERROUND=%d",m_remoteConf.m_stepsPerRound);
-			WriteALineInFile(m_cfgLog,log);
-		}
+			if (pt = strstr(txt, "STEPSPERROUND=")) {
+				pt = strstr(txt, "=");
+				if (sscanf(&pt[1], "%d", &m_remoteConf.m_stepsPerRound) == 1) {
+					// Update the log file
+					log.Format("STEPSPERROUND=%d", m_remoteConf.m_stepsPerRound);
+					WriteALineInFile(m_cfgLog, log);
+				}
+			}
 
-		if(pt=strstr(txt,"MOTORSTEPSCOMP=")){
-			pt=strstr(txt,"=");
-			sscanf(&pt[1],"%d",&m_remoteConf.m_motorStepComp);
-			// Update the log file
-			log.Format("MOTORSTEPSCOMP=%d",m_remoteConf.m_motorStepComp);
-			WriteALineInFile(m_cfgLog,log);
-		}
+			if (pt = strstr(txt, "MOTORSTEPSCOMP=")) {
+				pt = strstr(txt, "=");
+				if (sscanf(&pt[1], "%d", &m_remoteConf.m_motorStepComp) == 1) {
+					// Update the log file
+					log.Format("MOTORSTEPSCOMP=%d", m_remoteConf.m_motorStepComp);
+					WriteALineInFile(m_cfgLog, log);
+				}
+			}
 
-		if(pt=strstr(txt,"DELAY=")){
-		pt=strstr(txt,"=");
-		sscanf(&pt[1],"%d",&m_remoteConf.m_delay);
-			// Update the log file
-			log.Format("DELAY=%d",m_remoteConf.m_delay);
-			WriteALineInFile(m_cfgLog,log);
-		}
+			if (pt = strstr(txt, "DELAY=")) {
+				pt = strstr(txt, "=");
+				if (sscanf(&pt[1], "%d", &m_remoteConf.m_delay) == 1) {
+					// Update the log file
+					log.Format("DELAY=%d", m_remoteConf.m_delay);
+					WriteALineInFile(m_cfgLog, log);
+				}
+			}
 
-		if(pt=strstr(txt,"COMPASS=")){
-		pt=strstr(txt,"=");
-		sscanf(&pt[1],"%lf %lf %lf %lf",
-				&m_remoteConf.m_compass, &m_remoteConf.m_roll, &m_remoteConf.m_pitch, &m_remoteConf.m_temp);
-			// Update the log file
-			log.Format("COMPASS=%.1lf %.1lf %.1lf %.1lf ",
-				m_remoteConf.m_compass, m_remoteConf.m_roll, m_remoteConf.m_pitch, m_remoteConf.m_temp);
-			WriteALineInFile(m_cfgLog,log);
-		}
+			if (pt = strstr(txt, "COMPASS=")) {
+				pt = strstr(txt, "=");
+				if (sscanf(&pt[1], "%lf %lf %lf %lf",
+					&m_remoteConf.m_compass, &m_remoteConf.m_roll, &m_remoteConf.m_pitch, &m_remoteConf.m_temp) == 4) {
+					// Update the log file
+					log.Format("COMPASS=%.1lf %.1lf %.1lf %.1lf ",
+						m_remoteConf.m_compass, m_remoteConf.m_roll, m_remoteConf.m_pitch, m_remoteConf.m_temp);
+					WriteALineInFile(m_cfgLog, log);
+				}
+			}
 
-		if(pt=strstr(txt,"STARTCHN=")){
-		pt=strstr(txt,"=");
-		sscanf(&pt[1],"%d",&m_remoteConf.m_startChannel);
-			// Update the log file
-			log.Format("STARTCHN=%d",m_remoteConf.m_startChannel);
-			WriteALineInFile(m_cfgLog,log);
-		}
+			if (pt = strstr(txt, "STARTCHN=")) {
+				pt = strstr(txt, "=");
+				if (sscanf(&pt[1], "%d", &m_remoteConf.m_startChannel) == 1) {
+					// Update the log file
+					log.Format("STARTCHN=%d", m_remoteConf.m_startChannel);
+					WriteALineInFile(m_cfgLog, log);
+				}
+			}
 
-		if(pt=strstr(txt,"STOPCHN=")){
-			pt=strstr(txt,"=");
-			sscanf(&pt[1],"%d",&m_remoteConf.m_stopChannel);
-			// Update the log file
-			log.Format("STOPCHN=%d",m_remoteConf.m_stopChannel);
-			WriteALineInFile(m_cfgLog,log);
-		}
+			if (pt = strstr(txt, "STOPCHN=")) {
+				pt = strstr(txt, "=");
+				if (sscanf(&pt[1], "%d", &m_remoteConf.m_stopChannel) == 1) {
+					// Update the log file
+					log.Format("STOPCHN=%d", m_remoteConf.m_stopChannel);
+					WriteALineInFile(m_cfgLog, log);
+				}
+			}
 
-		if(pt=strstr(txt,"DEBUG=")){
-		pt=strstr(txt,"=");
-			sscanf(&pt[1],"%d",&m_remoteConf.m_debugflag);
-			log.Format("DEBUG=%d",m_remoteConf.m_debugflag);
-			WriteALineInFile(m_cfgLog,log);
-		}
+			if (pt = strstr(txt, "DEBUG=")) {
+				pt = strstr(txt, "=");
+				if (sscanf(&pt[1], "%d", &m_remoteConf.m_debugflag) == 1) {
+					log.Format("DEBUG=%d", m_remoteConf.m_debugflag);
+					WriteALineInFile(m_cfgLog, log);
+				}
+			}
 
-		if(pt=strstr(txt,"REALTIME=")){
-		pt=strstr(txt,"=");
-			sscanf(&pt[1],"%d",&m_remoteConf.m_realTime);
-			// update the log file
-			log.Format("REALTIME=%d",m_remoteConf.m_realTime);
-			WriteALineInFile(m_cfgLog,log);
-		}
+			if (pt = strstr(txt, "REALTIME=")) {
+				pt = strstr(txt, "=");
+				if (sscanf(&pt[1], "%d", &m_remoteConf.m_realTime)) {
+					// update the log file
+					log.Format("REALTIME=%d", m_remoteConf.m_realTime);
+					WriteALineInFile(m_cfgLog, log);
+				}
+			}
 
-		if(pt=strstr(txt,"PERCENT=")){
-		pt = strstr(txt,"=");
-			sscanf(&pt[1],"%lf", &m_remoteConf.m_percent);
-			log.Format("PERCENT=%.3lf",m_remoteConf.m_percent);
-			WriteALineInFile(m_cfgLog,log);
-		}
+			if (pt = strstr(txt, "PERCENT=")) {
+				pt = strstr(txt, "=");
+				if (sscanf(&pt[1], "%lf", &m_remoteConf.m_percent) == 1) {
+					log.Format("PERCENT=%.3lf", m_remoteConf.m_percent);
+					WriteALineInFile(m_cfgLog, log);
+				}
+			}
 
-		if(pt=strstr(txt,"MAXINTTIME="))
-		{
-		pt=strstr(txt,"=");
-			sscanf(&pt[1],"%lf",&m_remoteConf.m_maxExptime);
-			log.Format("MAXINTTIME=%.0lf",m_remoteConf.m_maxExptime);
-			WriteALineInFile(m_cfgLog,log);
-		}
+			if (pt = strstr(txt, "MAXINTTIME="))
+			{
+				pt = strstr(txt, "=");
+				if (pt) {
+					if (sscanf(&pt[1], "%lf", &m_remoteConf.m_maxExptime) == 1) {
+						log.Format("MAXINTTIME=%.0lf", m_remoteConf.m_maxExptime);
+						WriteALineInFile(m_cfgLog, log);
+					}
+				}
+			}
 
-		if(pt=strstr(txt,"MEAS=")){
-		char nameBuffer[2048];
-		pt = strstr(txt,"=");
-		i = m_remoteConf.m_measNum;
-		if(i < 61){
-			m_remoteConf.m_meas[i].rep = 1;
-			flag = 0;
-			sscanf(pt+1,"%d %d %d %d %d %s %d %d" \
-				,&m_remoteConf.m_meas[i].pos, &m_remoteConf.m_meas[i].inttime, &m_remoteConf.m_meas[i].intsum, 
-							&m_remoteConf.m_meas[i].extsum, &m_remoteConf.m_meas[i].chn, nameBuffer, &m_remoteConf.m_meas[i].rep, &flag);
-				log.Format("MEAS=%d %d %d %d %d %s %d %d", 
-				m_remoteConf.m_meas[i].pos, m_remoteConf.m_meas[i].inttime, m_remoteConf.m_meas[i].intsum, 
-							m_remoteConf.m_meas[i].extsum, m_remoteConf.m_meas[i].chn, nameBuffer, m_remoteConf.m_meas[i].rep, flag);
-				WriteALineInFile(m_cfgLog,log);
+			if (pt = strstr(txt, "MEAS=")) {
+				char nameBuffer[2048];
+				pt = strstr(txt, "=");
+				i = m_remoteConf.m_measNum;
+				if (i < 61) {
+					m_remoteConf.m_meas[i].rep = 1;
+					flag = 0;
+					if (pt) {
+						if (sscanf(pt + 1, "%d %d %d %d %hd %s %d %d",
+							&m_remoteConf.m_meas[i].pos,
+							&m_remoteConf.m_meas[i].inttime,
+							&m_remoteConf.m_meas[i].intsum,
+							&m_remoteConf.m_meas[i].extsum,
+							&m_remoteConf.m_meas[i].chn,
+							nameBuffer,
+							&m_remoteConf.m_meas[i].rep,
+							&flag) == 8) {
+							log.Format("MEAS=%d %d %d %d %d %s %d %d",
+								m_remoteConf.m_meas[i].pos, m_remoteConf.m_meas[i].inttime, m_remoteConf.m_meas[i].intsum,
+								m_remoteConf.m_meas[i].extsum, m_remoteConf.m_meas[i].chn, nameBuffer, m_remoteConf.m_meas[i].rep, flag);
+							WriteALineInFile(m_cfgLog, log);
+						}
+					}
 
-			nameBuffer[30] = 0;
-			sprintf(m_remoteConf.m_meas[i].name, "%s", nameBuffer);
-			m_remoteConf.m_meas[i].flag = (unsigned char)flag;
-			++m_remoteConf.m_measNum;
-		}else{
-			puts("Maximum measurements exceeded");
-		}
-		}
+
+					nameBuffer[30] = 0;
+					sprintf(m_remoteConf.m_meas[i].name, "%s", nameBuffer);
+					m_remoteConf.m_meas[i].flag = (unsigned char)flag;
+					++m_remoteConf.m_measNum;
+				}
+				else {
+					puts("Maximum measurements exceeded");
+				}
+			}
 
 			/*if(pt=strstr(txt,"SKIPMOTOR=")){
 			pt=strstr(txt,"=");

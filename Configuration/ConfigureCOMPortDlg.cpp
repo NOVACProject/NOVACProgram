@@ -242,7 +242,7 @@ void CConfigureCOMPortDlg::UpdateDlg(){
 	}
 
 	// 2. The Freewave - radiomodem settings
-	m_radioID.Format("%s", comm.radioID);
+	m_radioID.Format("%s", (LPCSTR)comm.radioID);
 	
 	// 3. The time out
 	m_timeout = comm.timeout / 1000;
@@ -267,8 +267,8 @@ void CConfigureCOMPortDlg::UpdateDlg(){
 	}
 
 	// 7. The FTP-settings
-	m_ftpPassword.Format("%s", comm.ftpPassword);
-	m_ftpUserName.Format("%s", comm.ftpUserName);
+	m_ftpPassword.Format("%s", (LPCSTR)comm.ftpPassword);
+	m_ftpUserName.Format("%s", (LPCSTR)comm.ftpUserName);
 
 	// 8. Update the screen
 	if(m_hWnd != NULL){
@@ -339,12 +339,12 @@ void CConfigureCOMPortDlg::SaveData(){
 		}
 
 		// 2. The Freewave - radiomodem settings
-		comm.radioID.Format("%s", m_radioID);
+		comm.radioID.Format("%s", (LPCSTR)m_radioID);
 		
 		// 3. The FTP-settings
 		m_IPAddress.GetAddress(comm.ftpIP[0], comm.ftpIP[1], comm.ftpIP[2], comm.ftpIP[3]);
-		comm.ftpPassword.Format("%s", m_ftpPassword);
-		comm.ftpUserName.Format("%s", m_ftpUserName);
+		comm.ftpPassword.Format("%s", (LPCSTR)m_ftpPassword);
+		comm.ftpUserName.Format("%s", (LPCSTR)m_ftpUserName);
 
 		// 4. The Timeout
 		comm.timeout = m_timeout * 1000;

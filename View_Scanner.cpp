@@ -138,14 +138,14 @@ BOOL CView_Scanner::OnInitDialog()
 
 	// Initialize the unit to use
 	if(g_userSettings.m_columnUnit == UNIT_MOLEC_CM2){
-		columnAxisLabel.Format("%s [ppmm]", common.GetString(AXIS_COLUMN));
+		columnAxisLabel.Format("%s [ppmm]", (LPCTSTR)common.GetString(AXIS_COLUMN));
 	}else{
-		columnAxisLabel.Format("%s [molec/cm²]", common.GetString(AXIS_COLUMN));
+		columnAxisLabel.Format("%s [molec/cm²]", (LPCTSTR)common.GetString(AXIS_COLUMN));
 	}
 	if(g_userSettings.m_fluxUnit == UNIT_TONDAY){
-		fluxAxisLabel.Format("%s [ton/day]", common.GetString(AXIS_FLUX));
+		fluxAxisLabel.Format("%s [ton/day]", (LPCTSTR)common.GetString(AXIS_FLUX));
 	}else{
-		fluxAxisLabel.Format("%s [kg/s]", common.GetString(AXIS_FLUX));
+		fluxAxisLabel.Format("%s [kg/s]", (LPCTSTR)common.GetString(AXIS_FLUX));
 	}
 
 	// initialize the column plot
@@ -386,7 +386,7 @@ void CView_Scanner::DrawColumn(){
 
 		if(strlen(g_settings.webSettings.localDirectory) > 0){
 			// The directory where to store the images
-			directory.Format("%s\\%s", g_settings.webSettings.localDirectory, sDate);
+			directory.Format("%s\\%s", (LPCTSTR)g_settings.webSettings.localDirectory, (LPCTSTR)sDate);
 			if(CreateDirectoryStructure(directory)){
 				ShowMessage("Could not create storage-directory for images. No image stored.");
 				return; // failed to create directory, no idea to try to continue...
@@ -394,8 +394,12 @@ void CView_Scanner::DrawColumn(){
 
 			// The name of the image-file
 			imageFileName.Format("%s\\%s_%s_%s_%1d%s", 
-				directory, m_serial, sDate, sTime, m_lastScanChannel,
-				g_settings.webSettings.imageFormat);
+				(LPCTSTR)directory, 
+				(LPCTSTR)m_serial, 
+				(LPCTSTR)sDate, 
+				(LPCTSTR)sTime,
+				m_lastScanChannel,
+				(LPCTSTR)g_settings.webSettings.imageFormat);
 
 			// Save the column-plot
 			m_columnPlot.SaveGraph(imageFileName);
@@ -403,7 +407,7 @@ void CView_Scanner::DrawColumn(){
 			// Also save a copy of the column-plot to an additional directory, if this is
 			//		the latest file received
 			if(m_lastScanStart == m_mostRecentScanStart){
-				lastImageFileName.Format("%s\\%s\\", g_settings.webSettings.localDirectory, m_serial);
+				lastImageFileName.Format("%s\\%s\\", (LPCTSTR)g_settings.webSettings.localDirectory, (LPCTSTR)m_serial);
 				if(CreateDirectoryStructure(lastImageFileName)){
 					ShowMessage("Could not create storage-directory for images. No image stored.");
 					return; // failed to create directory, no idea to try to continue...
@@ -413,10 +417,10 @@ void CView_Scanner::DrawColumn(){
 			}
 
 			// Make a small file which contains the name of the last file generated
-			latestInfoFileName.Format("%s\\LastColumnGraph_%s.txt", g_settings.webSettings.localDirectory, m_serial);
+			latestInfoFileName.Format("%s\\LastColumnGraph_%s.txt", (LPCTSTR)g_settings.webSettings.localDirectory, (LPCTSTR)m_serial);
 			FILE *f = fopen(latestInfoFileName, "w");
 			if(f != NULL){
-				fprintf(f, "%s\n", imageFileName);
+				fprintf(f, "%s\n", (LPCTSTR)imageFileName);
 				fclose(f);
 			}
 
@@ -460,9 +464,9 @@ void CView_Scanner::DrawFlux(){
 
 	// Set the unit of the plot
 	if(g_userSettings.m_fluxUnit == UNIT_TONDAY){
-		fluxAxisLabel.Format("%s [ton/day]", common.GetString(AXIS_FLUX));
+		fluxAxisLabel.Format("%s [ton/day]", (LPCTSTR)common.GetString(AXIS_FLUX));
 	}else{
-		fluxAxisLabel.Format("%s [kg/s]", common.GetString(AXIS_FLUX));
+		fluxAxisLabel.Format("%s [kg/s]", (LPCTSTR)common.GetString(AXIS_FLUX));
 	}
 	m_fluxPlot.SetYUnits(fluxAxisLabel);
 
@@ -491,9 +495,10 @@ void CView_Scanner::DrawFlux(){
 		if(strlen(g_settings.webSettings.localDirectory) > 0){
 			CString fileName;
 			fileName.Format("%s\\flux_%s_%s%s", 
-				g_settings.webSettings.localDirectory, 
-				m_serial, sDate, 
-				g_settings.webSettings.imageFormat);
+				(LPCTSTR)g_settings.webSettings.localDirectory,
+				(LPCTSTR)m_serial, 
+				(LPCTSTR)sDate,
+				(LPCTSTR)g_settings.webSettings.imageFormat);
 			m_fluxPlot.SaveGraph(fileName);
 		}
 	}
@@ -544,7 +549,7 @@ LRESULT CView_Scanner::OnUpdateEvalStatus(WPARAM wParam, LPARAM lParam){
 		printf("ojsan");
 	}
 	// update the configuration info
-	txt.Format("%s", g_settings.scanner[m_scannerIndex].spec[0].serialNumber);
+	txt.Format("%s", (LPCTSTR)g_settings.scanner[m_scannerIndex].spec[0].serialNumber);
 	this->SetDlgItemText(IDC_CONFINFO_SERIAL, txt);
 	txt.Format("%.1lf [deg]", fmod(g_settings.scanner[m_scannerIndex].compass, 360.0f));
 	this->SetDlgItemText(IDC_CONFINFO_COMPASS, txt);
@@ -554,10 +559,10 @@ LRESULT CView_Scanner::OnUpdateEvalStatus(WPARAM wParam, LPARAM lParam){
 	this->SetDlgItemText(IDC_CONFINFO_LONGITUDE, txt);
 	if(fabs(g_settings.scanner[m_scannerIndex].coneAngle - 90.0) < 1e-2){
 		// flat scanner
-		txt.Format("%s", common.GetString(STR_FLAT));
+		txt.Format("%s", (LPCTSTR)common.GetString(STR_FLAT));
 	}else{
 		// Cone-scanner
-		txt.Format("%s,%.0lf [deg]", common.GetString(STR_CONE), g_settings.scanner[m_scannerIndex].coneAngle);
+		txt.Format("%s,%.0lf [deg]", (LPCTSTR)common.GetString(STR_CONE), g_settings.scanner[m_scannerIndex].coneAngle);
 	}
 	this->SetDlgItemText(IDC_CONFINFO_CONEORFLAT, txt);
 
@@ -658,7 +663,7 @@ void CView_Scanner::OnBnClickedButtonSetWindfield()
 		//  the following clicks...
 			
 		// tell the user which wind field has been changed
-		message.Format("Set windfield @ %s to: ", m_siteName);
+		message.Format("Set windfield @ %s to: ", (LPCTSTR)m_siteName);
 
 		// tell the user what the wind field is 
 		message.AppendFormat("%.1lf m/s, %.1lf degrees, plume @ %.0lf m above the scanner", 
@@ -681,7 +686,7 @@ void CView_Scanner::OnBnClickedButtonSetWindfield()
 		}
 
 		// tell the user which wind field has been changed
-		message.Format("Set windfield @ %s to: ", curVolcano);
+		message.Format("Set windfield @ %s to: ", (LPCTSTR)curVolcano);
 
 		// tell the user what the wind field is 
 		message.AppendFormat("%.1lf m/s, %.1lf degrees, plume @ %.0lf m above the scanner", 
@@ -715,14 +720,14 @@ void CView_Scanner::ExecuteScript_Image(const CString &imageFile){
 	CString command, filePath, directory;
 
 	// The file to execute
-	filePath.Format("%s", g_settings.externalSetting.imageScript);
+	filePath.Format("%s", (LPCTSTR)g_settings.externalSetting.imageScript);
 
 	// The directory of the executable file
 	directory.Format(filePath);
 	Common::GetDirectory(directory);
 
 	// The parameters to the script
-	command.Format("%s", imageFile);
+	command.Format("%s", (LPCTSTR)imageFile);
 
 	// Call the script
 	int result = (int)ShellExecute(NULL, "open", filePath, command, directory, SW_SHOW);
@@ -765,6 +770,7 @@ void DDX_Text_Formatted(CDataExchange* pDX, int nIDC, double& value, LPCTSTR lps
 
 	DDX_Text(pDX,nIDC,temp);
 
-	if (pDX->m_bSaveAndValidate)
-		sscanf(temp,lpszInFormat,&value);
+	if (pDX->m_bSaveAndValidate) {
+		int ret = sscanf(temp, lpszInFormat, &value);
+	}
 }

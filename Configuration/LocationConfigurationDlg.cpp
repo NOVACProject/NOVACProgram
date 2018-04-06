@@ -306,12 +306,12 @@ void CLocationConfigurationDlg::OnChangeVolcano(){
 	}
 
 	curSel = m_comboVolcano.GetCurSel();
-	m_curScanner->volcano.Format("%s", g_volcanoes.m_name[curSel]);
+	m_curScanner->volcano.Format("%s", (LPCSTR)g_volcanoes.m_name[curSel]);
 
 	m_scannerTree->UpdateTree();
 
 	// Also update the name of the file that the program should read from the server...
-	m_configuration->windSourceSettings.windFieldFile.Format("ftp://129.16.35.206/wind/wind_%s.txt", g_volcanoes.m_simpleName[curSel]);
+	m_configuration->windSourceSettings.windFieldFile.Format("ftp://129.16.35.206/wind/wind_%s.txt", (LPCSTR)g_volcanoes.m_simpleName[curSel]);
 }
 
 /** The user has changed the model of the spectrometer */
@@ -416,7 +416,7 @@ void	CLocationConfigurationDlg::AddAVolcano(){
 		return;
 
 	// 3. Add the user-given source to the list of volcanoes
-	int index = g_volcanoes.m_volcanoNum;
+	unsigned int index = g_volcanoes.m_volcanoNum;
 	g_volcanoes.m_name[index].Format(name);
 	g_volcanoes.m_simpleName[index].Format(common.SimplifyString(name));
 	g_volcanoes.m_peakLatitude[index]		= latitude;
@@ -439,7 +439,7 @@ void CLocationConfigurationDlg::UpdateVolcanoList(){
 
 	m_comboVolcano.ResetContent();
 	for(unsigned int k = 0; k < g_volcanoes.m_volcanoNum; ++k){
-		str.Format("%s", g_volcanoes.m_name[k]);
+		str.Format("%s", (LPCSTR)g_volcanoes.m_name[k]);
 		m_comboVolcano.AddString(str);
 	}
 	m_comboVolcano.AddString("Other...");

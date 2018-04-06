@@ -67,7 +67,7 @@ namespace FileHandler
 		void StatusPrint(unsigned char s);
 		void RecordStatus(char* txt);
 		/**Convert status file status.dat into readable txt file*/
-		void ConvertStatusFile(CString fileFullName);
+		//void ConvertStatusFile(CString fileFullName);
 		void SetWorkingPath(CString path);
 	protected:
 		CString m_workingPath;

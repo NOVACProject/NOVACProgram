@@ -233,12 +233,12 @@ void CNovacMasterProgramView::OnInitialUpdate()
 	m_sheet.Construct("", this);
 
 	// Read the configuration file
-	fileName.Format("%sconfiguration.xml", m_common.m_exePath);
+	fileName.Format("%sconfiguration.xml", (LPCTSTR)m_common.m_exePath);
 	FileHandler::CConfigurationFileHandler reader;
 	reader.ReadConfigurationFile(g_settings, &fileName);
 
 	// Read the user settings
-	userSettingsFile.Format("%s\\user.ini", m_common.m_exePath);
+	userSettingsFile.Format("%s\\user.ini", (LPCTSTR)m_common.m_exePath);
 	g_userSettings.ReadSettings(&userSettingsFile);
 
 	// If there's no output-directory specified
@@ -250,7 +250,12 @@ void CNovacMasterProgramView::OnInitialUpdate()
 	dateStr.Format("%04d.%02d.%02d", m_common.GetYear(), m_common.GetMonth(), m_common.GetDay());
 	for(unsigned int it = 0; it < g_settings.scannerNum; ++it){
 		serialNumber.Format(g_settings.scanner[it].spec[0].serialNumber);
-		path.Format("%sOutput\\%s\\%s\\FluxLog_%s_%s.txt", g_settings.outputDirectory, dateStr, serialNumber, serialNumber, dateStr);
+		path.Format("%sOutput\\%s\\%s\\FluxLog_%s_%s.txt", 
+			(LPCTSTR)g_settings.outputDirectory, 
+			(LPCTSTR)dateStr, 
+			(LPCTSTR)serialNumber,
+			(LPCTSTR)serialNumber,
+			(LPCTSTR)dateStr);
 
 		m_evalDataStorage->AddData(serialNumber, NULL);
 
@@ -333,7 +338,7 @@ void CNovacMasterProgramView::OnInitialUpdate()
 
 		this->OnMenuStartMasterController();
 	}else{
-		message.Format("%s", m_common.GetString(MSG_PLEASE_PRESS_START));
+		message.Format("%s", (LPCTSTR)m_common.GetString(MSG_PLEASE_PRESS_START));
 		ShowMessage(message);
 	}
 
@@ -403,13 +408,13 @@ LRESULT CNovacMasterProgramView::OnShowMessage(WPARAM wParam, LPARAM lParam){
 
 	// add the message to the log file
 	m_common.GetDateText(dateStr);
-	logPath.Format("%sOutput\\%s", g_settings.outputDirectory,dateStr);
+	logPath.Format("%sOutput\\%s", (LPCTSTR)g_settings.outputDirectory, (LPCTSTR)dateStr);
 
 	CreateDirectory(logPath,NULL);
-	logFile.Format("%s\\StatusLog.txt",logPath);
+	logFile.Format("%s\\StatusLog.txt", (LPCTSTR)logPath);
 	FILE *f = fopen(logFile, "a+");
 	if(f != NULL){
-		fprintf(f, "%s\n", *msg);
+		fprintf(f, "%s\n", (LPCTSTR)*msg);
 		fclose(f);
 	}
 
@@ -574,7 +579,7 @@ LRESULT CNovacMasterProgramView::OnEvalSucess(WPARAM wParam, LPARAM lParam){
 	if(m_instrumentView->m_hWnd != NULL){
 		m_instrumentView->PostMessage(WM_EVAL_SUCCESS, wParam, NULL);
 	}
-	for(int i = 0; i < g_settings.scannerNum; ++i){
+	for(unsigned long i = 0; i < g_settings.scannerNum; ++i){
 		if(Equals(*serial, g_settings.scanner[i].spec[0].serialNumber)){
 			if(m_scannerPages[i]->m_hWnd != NULL){
 				Evaluation::CScanResult *copiedResult = new Evaluation::CScanResult();
@@ -758,7 +763,7 @@ void CNovacMasterProgramView::OnMenuStartMasterController(){
 
 	// Check if there's already a NovacProgram running!!
 	m_common.GetExePath();
-	programName.Format("%s", m_common.m_exeFileName);
+	programName.Format("%s", (LPCTSTR)m_common.m_exeFileName);
 	if(1 != Common::GetAllProcessIDs(programName, pids)){
 		// There's more than just this instance of the program running - expect problems!
 		MessageBox("NovacProgram is already running!! \n Please close the other instances of the NovacProgram and restart.", "Error");
@@ -829,8 +834,8 @@ int CNovacMasterProgramView::InitializeControls(){
 			page->m_evalDataStorage = this->m_evalDataStorage;
 			page->m_commDataStorage = this->m_commDataStorage;
 			page->m_scannerIndex	= i;
-			page->m_serial.Format("%s", g_settings.scanner[i].spec[0].serialNumber);
-			page->m_siteName.Format("%s", g_settings.scanner[i].site);
+			page->m_serial.Format("%s", (LPCTSTR)g_settings.scanner[i].spec[0].serialNumber);
+			page->m_siteName.Format("%s", (LPCTSTR)g_settings.scanner[i].site);
 
 			m_sheet.AddPage(page);
 			m_scannerPages.Add(page);
@@ -904,7 +909,7 @@ int CNovacMasterProgramView::InitializeControls(){
 
 			// Set the text in the 'item'. !!!! The serial-string is necessary
 			//	otherwise this function changes the global object !!!!!!!!!!!
-			site.Format("%s", g_settings.scanner[i].site);
+			site.Format("%s", (LPCTSTR)g_settings.scanner[i].site);
 			tcItem.pszText = site.GetBuffer(256);
 			
 			// Update the tab with the updated 'item'
@@ -1089,7 +1094,13 @@ void CNovacMasterProgramView::UploadAuxData(){
 				for(int k = 0; k < g_settings.scanner[it].spec[0].channel[j].fitWindow.nRef; ++k){
 
 					// make a copy of the reference-file
-					fileName[fileNameIndex].Format("%sTemp\\%s_%1d_%s_%s_%s.txt", g_settings.outputDirectory, g_settings.scanner[it].spec[0].serialNumber, j, g_settings.scanner[it].spec[0].channel[j].fitWindow.ref[k].m_specieName, dateStr, timeStr);
+					fileName[fileNameIndex].Format("%sTemp\\%s_%1d_%s_%s_%s.txt", 
+						(LPCTSTR)g_settings.outputDirectory, 
+						(LPCTSTR)g_settings.scanner[it].spec[0].serialNumber,
+						j, 
+						(LPCTSTR)g_settings.scanner[it].spec[0].channel[j].fitWindow.ref[k].m_specieName,
+						(LPCTSTR)dateStr,
+						(LPCTSTR)timeStr);
 					CopyFile(g_settings.scanner[it].spec[0].channel[j].fitWindow.ref[k].m_path, fileName[fileNameIndex], false);
 
 					// upload the copy of the reference-file
@@ -1101,10 +1112,14 @@ void CNovacMasterProgramView::UploadAuxData(){
 		// Also send the configuration.xml - file !
 		for(int k = 0; k < nVolcanoes; ++k){
 			int thisVolcano = monitoredVolcanoes[k];
-			observatoryStr.Format("%s", m_common.SimplifyString(g_settings.scanner[0].observatory));
-			cfgFileName.Format("%sconfiguration.xml", m_common.m_exePath);
+			observatoryStr.Format("%s", (LPCTSTR)m_common.SimplifyString(g_settings.scanner[0].observatory));
+			cfgFileName.Format("%sconfiguration.xml", (LPCTSTR)m_common.m_exePath);
 			fileName[fileNameIndex].Format("%sTemp\\%s\\%s_%s_%s_conf.xml", 
-				g_settings.outputDirectory, g_settings.scanner[it].spec[k].serialNumber, observatoryStr, dateStr, timeStr);
+				(LPCTSTR)g_settings.outputDirectory, 
+				(LPCTSTR)g_settings.scanner[it].spec[k].serialNumber, 
+				(LPCTSTR)observatoryStr, 
+				(LPCTSTR)dateStr, 
+				(LPCTSTR)timeStr);
 			CopyFile(cfgFileName, fileName[fileNameIndex], false);
 			UploadToNOVACServer(fileName[fileNameIndex++], thisVolcano, true);
 		}
@@ -1227,7 +1242,7 @@ void CNovacMasterProgramView::ScanStatusLogFile(){
 	today.SetToNow();
 
 	// The file-name of today's status-log file, if any...
-	fileName.Format("%sOutput\\%04d.%02d.%02d\\StatusLog.txt", g_settings.outputDirectory, today.year, today.month, today.day);
+	fileName.Format("%sOutput\\%04d.%02d.%02d\\StatusLog.txt", (LPCTSTR)g_settings.outputDirectory, today.year, today.month, today.day);
 
 	// Try to open the status-log file
 	FILE *f = fopen(fileName, "r");
@@ -1300,9 +1315,9 @@ LRESULT CNovacMasterProgramView::OnRewriteConfigurationXml(WPARAM wParam, LPARAM
 	if(singleLock.IsLocked()){
 
 		// Write to a temporary file
-		fileName.Format("%stemp_configuration.xml", m_common.m_exePath);
-		oldConfigurationFile.Format("%sconfiguration.xml", m_common.m_exePath);
-		backupFile.Format("%sconfiguration.bak", m_common.m_exePath);
+		fileName.Format("%stemp_configuration.xml", (LPCTSTR)m_common.m_exePath);
+		oldConfigurationFile.Format("%sconfiguration.xml", (LPCTSTR)m_common.m_exePath);
+		backupFile.Format("%sconfiguration.bak", (LPCTSTR)m_common.m_exePath);
 
 		if(0 == writer.WriteConfigurationFile(g_settings, &fileName)){
 			// Make a backup of the old configuration-file

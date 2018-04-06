@@ -121,7 +121,9 @@ long CSerialCOM::ReadSerial(void *receiveBuf,long receiveBufferSize)
 	{
 	}
 	// read data from hComPort file to read buffer
-	ReadFile(hComPort, &bufPointer[readByteNum], receiveBufferSize-readByteNum, &dwRead, NULL);
+	if (!ReadFile(hComPort, &bufPointer[readByteNum], receiveBufferSize - readByteNum, &dwRead, NULL)) {
+		return 0;
+	}
 
 	// total read data length
 	readByteNum+=dwRead;
@@ -153,7 +155,9 @@ int CSerialCOM::CheckSerial(long timeOut)
 
 	// read data from serial port buffer, save data to sourceBuffer.
 	// sourceBufferPointer is the data counter
-	ReadFile(hComPort, sourceBuffer, 1, &dwRead, NULL);
+	if (!ReadFile(hComPort, sourceBuffer, 1, &dwRead, NULL)) {
+		return(0);
+	}
 	if(dwRead == 0)
 		return(0);
 	sourceBufferPointer+=dwRead;

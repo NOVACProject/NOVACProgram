@@ -72,39 +72,39 @@ int CStatusFileReader::CheckStatus(unsigned char status)
 	}	
   return 0;
 }
-void CStatusFileReader::ConvertStatusFile(CString fileFullName)
-{
-	int i;
-	unsigned short last = 0;
-    unsigned short first = 0;
-
-	char txt[1024];
-	unsigned short *p = (unsigned short*)txt;
-	FILE* f = fopen(fileFullName,"rb");
-	if(f != nullptr)
-	{
-		fread(p,1024,1,f);
-		fclose(f);
-		first=p[0];
-		last=p[1];	//last is the latest status
-	}	
-	printf("first = %d, last = %d\n",first, last);
-	printf("first msg is \n");
-	StatusPrint(txt[first]);
-	printf("last msg is \n");
-	StatusPrint(txt[last]);
-	for( i=first;i< 1024;i++)
-	{
-		printf("i = %d\n",i);
-		StatusPrint(txt[i]);
-	}
-	for( i=4;i <= last;i++)
-	{
-		printf("i = %d\n",i);
-		StatusPrint(txt[i]);
-	}
-    
-}
+//void CStatusFileReader::ConvertStatusFile(CString fileFullName)
+//{
+//	int i;
+//	unsigned short last = 0;
+//    unsigned short first = 0;
+//
+//	char txt[1024];
+//	unsigned short *p = (unsigned short*)txt;
+//	FILE* f = fopen(fileFullName,"rb");
+//	if(f != nullptr)
+//	{
+//		fread(p,1024,1,f);
+//		fclose(f);
+//		first=p[0];
+//		last=p[1];	//last is the latest status
+//		StatusPrint(txt[first]);
+//		StatusPrint(txt[last]);
+//	}	
+//	printf("first = %d, last = %d\n",first, last);
+//	printf("first msg is \n");
+//	printf("last msg is \n");
+//	for( i=first;i< 1024;i++)
+//	{
+//		printf("i = %d\n",i);
+//		StatusPrint(txt[i]);
+//	}
+//	for( i=4;i <= last;i++)
+//	{
+//		printf("i = %d\n",i);
+//		StatusPrint(txt[i]);
+//	}
+//    
+//}
 void CStatusFileReader::StatusPrint(unsigned char s)
 {
   switch(s)
@@ -180,7 +180,7 @@ void CStatusFileReader::RecordStatus(char* txt)
 {
 	//puts(txt);
 	CString filePath;
-	filePath.Format("%sstatusDAT.txt",m_workingPath);
+	filePath.Format("%sstatusDAT.txt", (LPCTSTR)m_workingPath);
 	 FILE *f = fopen(filePath, "a+");
   if(f != NULL){
     fprintf(f, "%s\n", txt);
@@ -196,7 +196,7 @@ void CStatusFileReader::Reorder()
 	memset(txt,0,sizeof(char)*1024);
 	unsigned short* p = (unsigned short*)txt;
 	CString fileFullName;
-	fileFullName.Format("%sstatus.dat",m_workingPath);
+	fileFullName.Format("%sstatus.dat", (LPCTSTR)m_workingPath);
 	FILE* f = fopen(fileFullName,"rb");
 	if(f>(FILE *)0)
 	{

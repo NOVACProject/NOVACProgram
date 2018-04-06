@@ -130,8 +130,8 @@ void CExportSpectraDlg::OnExportSpectra()
     // Create the directory where to save the spectra
     pakFileName.Format(pakFile);
     common.GetFileName(pakFileName);
-    pakFileName.Format("%s", pakFileName.Left((int)strlen(pakFileName) - 4));
-    path.Format("%s\\%s", exportDir, pakFileName);
+    pakFileName.Format("%s", (LPCSTR)pakFileName.Left((int)strlen(pakFileName) - 4));
+    path.Format("%s\\%s", (LPCSTR)exportDir, (LPCSTR)pakFileName);
     if(CreateDirectoryStructure(path))
       continue; // could not create output directory.
 
@@ -179,10 +179,10 @@ void CExportSpectraDlg::OnExportSpectra()
 
     if(ret != 0){
       switch(reader.m_lastError){
-        case CSpectrumIO::ERROR_COULD_NOT_OPEN_FILE:   message.Format("Could not open spectrum file %s", pakFileName); break;
-        case CSpectrumIO::ERROR_CHECKSUM_MISMATCH:     message.Format("Spectrum number %d in %s is corrupt - Checksum mismatch",  pakFileName, curSpec); break;
-        case CSpectrumIO::ERROR_SPECTRUM_TOO_LARGE:    message.Format("Spectrum number %d in %s is corrupt - Spectrum too large", pakFileName, curSpec); break;
-        case CSpectrumIO::ERROR_DECOMPRESS:            message.Format("Spectrum number %d in %s is corrupt - Decompression error",pakFileName, curSpec); break;
+        case CSpectrumIO::ERROR_COULD_NOT_OPEN_FILE:   message.Format("Could not open spectrum file %s",(LPCSTR) pakFileName); break;
+        case CSpectrumIO::ERROR_CHECKSUM_MISMATCH:     message.Format("Spectrum number %d in %s is corrupt - Checksum mismatch",  curSpec, (LPCSTR)pakFileName); break;
+        case CSpectrumIO::ERROR_SPECTRUM_TOO_LARGE:    message.Format("Spectrum number %d in %s is corrupt - Spectrum too large", curSpec, (LPCSTR)pakFileName); break;
+        case CSpectrumIO::ERROR_DECOMPRESS:            message.Format("Spectrum number %d in %s is corrupt - Decompression error",curSpec, (LPCSTR)pakFileName); break;
       }
       MessageBox(message, "Error", MB_OK);
       return;
@@ -225,7 +225,7 @@ void CExportSpectraDlg::SaveSpectrum(const CSpectrum &spec, const CString &path)
 
 	if(!isMultiChannelSpec){
 		// Create a filename that describes the spectrum properly
-		filename.Format("%s\\%05d_%d.STD",     path, m_specIndex, channel);
+		filename.Format("%s\\%05d_%d.STD", (LPCSTR)path, m_specIndex, channel);
 
 		// Write the spectrum to file
 		CSTDFile::WriteSpectrum(spec, filename, 1);
@@ -243,7 +243,7 @@ void CExportSpectraDlg::SaveSpectrum(const CSpectrum &spec, const CString &path)
 	int nChn = spec.Split(mSpec);
 
 	for(int k = 0; k < nChn; ++k){
-		filename.Format("%s\\%05d_%d.STD",     path, m_specIndex, k);
+		filename.Format("%s\\%05d_%d.STD", (LPCSTR)path, m_specIndex, k);
 
 		// Write the spectrum to file
 		CSTDFile::WriteSpectrum(mSpec[k], filename, 1);

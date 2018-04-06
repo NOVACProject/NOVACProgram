@@ -27,7 +27,7 @@ CEvaluationResult::CEvaluationResult(const CEvaluationResult &b)
     ref.m_shiftError     = b.m_ref[i].m_shiftError;
     ref.m_squeeze        = b.m_ref[i].m_squeeze;
     ref.m_squeezeError   = b.m_ref[i].m_squeezeError;
-    ref.m_specieName.Format("%s", b.m_ref[i].m_specieName);
+    ref.m_specieName.Format("%s", (LPCSTR)b.m_ref[i].m_specieName);
     this->m_ref.SetAt(i, ref);
   }
   memcpy(this->m_polynomial, b.m_polynomial, 5*sizeof(float));
@@ -55,7 +55,7 @@ CEvaluationResult &CEvaluationResult::operator =(const CEvaluationResult &b){
     ref.m_shiftError     = b.m_ref[i].m_shiftError;
     ref.m_squeeze        = b.m_ref[i].m_squeeze;
     ref.m_squeezeError   = b.m_ref[i].m_squeezeError;
-    ref.m_specieName.Format("%s", b.m_ref[i].m_specieName);
+    ref.m_specieName.Format("%s", (LPCSTR)b.m_ref[i].m_specieName);
     this->m_ref.SetAt(i, ref);
   }
   memcpy(this->m_polynomial, b.m_polynomial, 5*sizeof(float));
@@ -93,7 +93,7 @@ bool CEvaluationResult::CheckGoodnessOfFit(const CSpectrumInfo& info, float chi2
 		if(info.m_numSpec > 0)
 			fitSaturation = info.m_fitIntensity / (maxInt * info.m_numSpec);
 		else{
-			int numSpec = floor(info.m_peakIntensity / maxInt); // a guess for the number of co-adds
+			int numSpec = (int)floor(info.m_peakIntensity / maxInt); // a guess for the number of co-adds
 			fitSaturation = info.m_fitIntensity / (maxInt * numSpec);
 		}
 	}
@@ -103,7 +103,7 @@ bool CEvaluationResult::CheckGoodnessOfFit(const CSpectrumInfo& info, float chi2
 	if(info.m_numSpec > 0){
 		offset	= info.m_offset / (maxInt * info.m_numSpec);
 	}else{
-		int numSpec = floor(info.m_peakIntensity / maxInt); // a guess for the number of co-adds
+		int numSpec = (int)floor(info.m_peakIntensity / maxInt); // a guess for the number of co-adds
 		offset = info.m_offset / (maxInt * numSpec);
 	}
 

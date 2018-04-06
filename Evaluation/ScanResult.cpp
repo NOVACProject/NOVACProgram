@@ -180,7 +180,7 @@ int CScanResult::CalculateOffset(const CString &specie){
 	std::vector<bool> badEval(m_specNum);
 
 	// We then need to rearrange the column data a little bit. 
-	for(unsigned int i = 0; i < m_specNum; ++i){
+	for(unsigned long i = 0; i < m_specNum; ++i){
 		columns[i] = m_spec[i].m_ref[specieIndex].m_column;
 
 		// The spectrum is considered as bad if the goodness-of-fit checking
@@ -201,8 +201,6 @@ int CScanResult::CalculateOffset(const CString &specie){
 
 int CScanResult::GetSpecieIndex(const CString &specie) const
 {
-	unsigned long i; // iterator
-
 	if(m_specNum <= 0) // <-- if there are no spectra, there can be no species
 		return -1;
 
@@ -211,7 +209,7 @@ int CScanResult::GetSpecieIndex(const CString &specie) const
 		return 0;
 
 	// find the index of the interesting specie
-	for(i = 0; i < m_spec[0].m_speciesNum; ++i){
+	for(unsigned long i = 0; i < m_spec[0].m_speciesNum; ++i){
 		if(Equals(m_spec[0].m_ref[i].m_specieName, specie)){
 			return i;
 		}
@@ -221,7 +219,6 @@ int CScanResult::GetSpecieIndex(const CString &specie) const
 }
 
 int CScanResult::CalculateFlux(const CString &specie, const CWindField &wind, double compass, double coneAngle, double tilt){
-	unsigned long i; // iterator
 
 	// If this is a not a flux measurement, then don't calculate any flux
 	if(!IsFluxMeasurement())
@@ -245,7 +242,7 @@ int CScanResult::CalculateFlux(const CString &specie, const CWindField &wind, do
 	double *scanAngle2	= new double[m_specNum];
 	double *column		= new double[m_specNum];
 	unsigned int nDataPoints = 0;
-	for(i = 0; i < m_specNum; ++i){
+	for(unsigned long i = 0; i < m_specNum; ++i){
 		if(m_spec[i].IsBad() || m_spec[i].IsDeleted())
 			continue; // this is a bad measurement
 		if(m_specInfo[i].m_flag >= 64)
@@ -317,7 +314,6 @@ bool CScanResult::CalculatePlumeCentre(const CString &specie){
 		this function returns true, and the centre of the plume (in scanAngles) 
 		is given in 'plumeCentre' */
 bool CScanResult::CalculatePlumeCentre(const CString &specie, double &plumeCentre_alpha, double &plumeCentre_phi, double &plumeCompleteness, double &plumeEdge_low, double &plumeEdge_high){
-	unsigned long i; // iterator
 	m_plumeCentre[0]		= -999.0; // notify that the plume-centre position is unknown
 	m_plumeCentre[1]		= -999.0; // notify that the plume-centre position is unknown
 	m_plumeCompleteness		= -999.0;
@@ -342,7 +338,7 @@ bool CScanResult::CalculatePlumeCentre(const CString &specie, double &plumeCentr
 	std::vector<double> columnError(m_specNum);
 	std::vector<bool> badEval(m_specNum);
 
-	for(i = 0; i < m_specNum; ++i){
+	for(unsigned long i = 0; i < m_specNum; ++i){
 		if(m_spec[i].IsBad() || m_spec[i].IsDeleted()){
 			badEval[i] = true;
 		}else{
@@ -441,7 +437,6 @@ bool CScanResult::CalculateWindDirection(double plumeCentre_alpha, double plumeH
 
 /** Calculates the maximum good column value in the scan, corrected for the offset */
 double CScanResult::GetMaxColumn(const CString &specie) const{
-	unsigned long i; // iterator
 	double maxColumn = 0.0;
 
 	// get the specie index
@@ -451,7 +446,7 @@ double CScanResult::GetMaxColumn(const CString &specie) const{
 	}
 
 	// Go through the column values and pick out the highest
-	for(i = 0; i < m_specNum; ++i){
+	for(unsigned long i = 0; i < m_specNum; ++i){
 		if(m_spec[i].IsBad() || m_spec[i].IsDeleted()){
 			continue;
 		}
@@ -609,7 +604,7 @@ RETURN_CODE CScanResult::GetDate(unsigned long index, unsigned short date[3]) co
 
 /** Returns the latitude of the system */
 double	CScanResult::GetLatitude() const{
-	for(unsigned int k = 0; k < m_specNum; ++k){
+	for(unsigned long k = 0; k < m_specNum; ++k){
 		const CSpectrumInfo &info = m_specInfo.GetAt(k);
 		if(fabs(info.m_gps.m_latitude) > 1e-2)
 			return info.m_gps.m_latitude;
@@ -619,7 +614,7 @@ double	CScanResult::GetLatitude() const{
 
 /** Returns the longitude of the system */
 double	CScanResult::GetLongitude() const{
-	for(unsigned int k = 0; k < m_specNum; ++k){
+	for(unsigned long k = 0; k < m_specNum; ++k){
 		const CSpectrumInfo &info = m_specInfo.GetAt(k);
 		if(fabs(info.m_gps.m_longitude) > 1e-2)
 			return info.m_gps.m_longitude;
@@ -628,7 +623,7 @@ double	CScanResult::GetLongitude() const{
 }
 /** Returns the altitude of the system */
 double	CScanResult::GetAltitude() const{
-	for(unsigned int k = 0; k < m_specNum; ++k){
+	for(unsigned long k = 0; k < m_specNum; ++k){
 		const CSpectrumInfo &info = m_specInfo.GetAt(k);
 		if(fabs(info.m_gps.m_altitude) > 1e-2)
 			return info.m_gps.m_altitude;
@@ -692,7 +687,7 @@ CString CScanResult::GetName(int index) const{
 
 /** Returns the serial-number of the spectrometer that collected this scan */
 CString CScanResult::GetSerial() const{
-	for(unsigned int k = 0; k < m_specNum; ++k){
+	for(unsigned long k = 0; k < m_specNum; ++k){
 		const CSpectrumInfo &info = m_specInfo.GetAt(k);
 		if(strlen(info.m_device) > 0)
 			return info.m_device;
@@ -744,7 +739,7 @@ bool CScanResult::IsStratosphereMeasurement() const{
 	// It is here assumed that the measurement is a stratospheric measurment
 	//	if there are more than 3 repetitions in the zenith positon
 	int nRepetitions	= 0; // <-- the number of repetitions in one position
-	for(unsigned int k = 3; k < m_specNum; ++k){
+	for(unsigned long k = 3; k < m_specNum; ++k){
 		float pos = GetScanAngle(k);
 		if(fabs(pos) < 1e-2)
 			++nRepetitions;
@@ -812,7 +807,7 @@ bool CScanResult::IsWindMeasurement_Gothenburg() const{
 
 	// It is here assumed that the measurement is a wind speed measurment
 	//	if there are more then 50 repetitions in one measurement positon
-	for(unsigned int k = 4; k < m_specNum; ++k){
+	for(unsigned long k = 4; k < m_specNum; ++k){
 		float pos  = GetScanAngle(k);
 		float pos2 = GetScanAngle2(k);
 		if((fabs(pos - lastPos) < 1e-2) && (fabs(pos2 - lastPos2) < 1e-2))
@@ -863,7 +858,7 @@ bool CScanResult::IsWindMeasurement_Heidelberg() const{
 
 	// It is here assumed that the measurement is a wind speed measurement
 	//	if there are more then 50 repetitions in one measurement positon
-	for(unsigned int k = 5; k < m_specNum; ++k){
+	for(unsigned long k = 5; k < m_specNum; ++k){
 		float pos = GetScanAngle(k);
 		float pos2= GetScanAngle2(k);
 
@@ -888,7 +883,7 @@ bool CScanResult::IsDirectSunMeasurement() const{
 
 	// It is here assumed that the measurement is a direct-sun measurment
 	//	if there is at least 5 spectra with the name 'direct_sun'
-	for(unsigned int k = 5; k < m_specNum; ++k){
+	for(unsigned long k = 5; k < m_specNum; ++k){
 		CString &name = GetName(k);
 		if(Equals(name, "direct_sun")){
 			++nFound;
@@ -906,7 +901,7 @@ bool CScanResult::IsLunarMeasurement() const{
 
 	// It is here assumed that the measurement is a lunar measurment
 	//	if there is at least 1 spectrum with the name 'lunar'
-	for(unsigned int k = 5; k < m_specNum; ++k){
+	for(unsigned long k = 5; k < m_specNum; ++k){
 		CString &name = GetName(k);
 		if(Equals(name, "lunar"))
 			++nFound;
@@ -926,7 +921,7 @@ bool CScanResult::IsCompositionMeasurement() const{
 	if(m_specNum > 15)
 		return false;
 
-	for(unsigned int k = 0; k < m_specNum; ++k){
+	for(unsigned long k = 0; k < m_specNum; ++k){
 		CString &name = GetName(k);
 		if(Equals(name, "comp")){
 			return true;
@@ -1035,14 +1030,14 @@ void	CScanResult::SetSpectroscopicalError(double err){
 		@return zero if all is ok, otherwise a non-zero value
 */
 int CScanResult::ApplyCorrection(CORRECTION correctionToApply, double *parameters, long nParameters, CString *specie){
-	unsigned int i, k;
+
 	double f; // the correction factor
 
-	for(i = 0; i < m_specNum; ++i){
+	for(unsigned long i = 0; i < m_specNum; ++i){
 		CEvaluationResult &evalRes = m_spec.GetAt(i); // a handle to the result.
 
 		// Loop through all evaluated species
-		for(k = 0; k < evalRes.m_speciesNum; ++k){
+		for(unsigned long k = 0; k < evalRes.m_speciesNum; ++k){
 			// check if we should apply any correction to this specie
 			if(specie != NULL){
 				if(!Equals(evalRes.m_ref[k].m_specieName, *specie)){

@@ -188,7 +188,7 @@ UINT SplitPakFiles(LPVOID pParam){
 
 		// let the pakfilehandler read the pakfile
 		if(1 == pakFileHandler->ReadDownloadedFile(pakFile, false, false, &dialog->m_outputDir)){
-			errorMsg.Format("Error in reading pakfile: %s", pakFile);
+			errorMsg.Format("Error in reading pakfile: %s", (LPCSTR)pakFile);
 			MessageBox(NULL, errorMsg, "Error", MB_OK);
 			dialog->PostMessage(WM_EVAL_FAILURE); // <-- tell the dialog about the crash!
 			return 1;

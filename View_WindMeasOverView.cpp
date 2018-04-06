@@ -103,7 +103,7 @@ BOOL CView_WindMeasOverView::OnInitDialog()
 
 	// Create the legends
 	int labelNo = -1;
-	for(int index = 0; index < g_settings.scannerNum; ++index){
+	for(unsigned long index = 0; index < g_settings.scannerNum; ++index){
 		if(g_settings.scanner[index].spec[0].channelNum == 2 || g_settings.scanner[index].instrumentType == INSTR_HEIDELBERG){
 			++labelNo;
 			// the size and position of the colored square

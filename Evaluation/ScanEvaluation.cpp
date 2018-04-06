@@ -198,7 +198,7 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, CEvaluation *eval, b
 					break;
 				}else{
 					CString errMsg;
-					errMsg.Format("Faulty spectrum found in %s", scanfile);
+					errMsg.Format("Faulty spectrum found in %s", (LPCSTR)scanfile);
 					switch(scan.m_lastError){
 						case SpectrumIO::CSpectrumIO::ERROR_CHECKSUM_MISMATCH:
 							errMsg.AppendFormat(", Checksum mismatch. Spectrum ignored"); break;
@@ -245,7 +245,7 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, CEvaluation *eval, b
 
 			// d. Check if this spectrum is worth evaluating
 			if(Ignore(current, eval->m_window)) {
-				message.Format("Ignoring spectrum %d in scan %s.", current.ScanIndex(), scan.GetFileName());
+				message.Format("Ignoring spectrum %d in scan %s.", current.ScanIndex(), (LPCSTR)scan.GetFileName());
 				ShowMessage(message);
 				continue;
 			}
@@ -262,7 +262,7 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, CEvaluation *eval, b
 			if(eval->Evaluate(sky, current)){
 				CString str;
 				str.Format("Failed to evaluate spectrum from spectrometer %s. Failure at spectrum %d in scan containing %d spectra",
-					current.m_info.m_device, current.ScanIndex(), current.SpectraPerScan());
+					(LPCSTR)current.m_info.m_device, current.ScanIndex(), current.SpectraPerScan());
 				ShowMessage(str);
 				success = false;
 			}
@@ -280,9 +280,11 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, CEvaluation *eval, b
 			}
 
 			// h. Update the screen (if any)
-			if(success && pView != nullptr) {
+			if (success) {
 				UpdateResult(newResult);
-
+			}
+			if(success && pView != nullptr) {
+				//UpdateResult(newResult);
 				ShowResult(current, eval, index, scan.GetSpectrumNumInFile());
 			}
 
@@ -431,7 +433,7 @@ RETURN_CODE CScanEvaluation::GetDark(FileHandler::CScanFileHandler *scan, const 
 	//		as the second spectrum in the scan.
 	if(darkSettings == NULL || darkSettings->m_darkSpecOption == MEASURE || darkSettings->m_darkSpecOption == MODEL_SOMETIMES){
 		if(0 != scan->GetDark(dark)){
-			message.Format("Could not read dark-spectrum from scan %s", scan->GetFileName());
+			message.Format("Could not read dark-spectrum from scan %s", (LPCSTR)scan->GetFileName());
 			ShowMessage(message);
 			return FAIL;
 		}
@@ -647,7 +649,7 @@ RETURN_CODE CScanEvaluation::GetSky(FileHandler::CScanFileHandler *scan, CSpectr
 /** Setting the option for how to get the sky spectrum */
 void  CScanEvaluation::SetOption_Sky(SKY_OPTION skyOption, long skyIndex, const CString *skySpecPath){
 	if(skySpecPath != NULL)
-		m_userSkySpectrum.Format("%s", *skySpecPath);
+		m_userSkySpectrum.Format("%s", (LPCSTR)*skySpecPath);
 
 	if(skyOption == SKY_USER && skySpecPath == NULL)
 		m_skyOption = SKY_FIRST;
@@ -804,7 +806,7 @@ void CScanEvaluation::FindOptimumShiftAndSqueeze_Fraunhofer(CEvaluation *eval, F
 		fitSaturation	= fitIntensity / (spectrum.NumSpectra() * maxInt);
 	}
 	else {
-		int numSpec		= floor(spectrum.MaxValue() / maxInt); // a guess for the number of co-adds
+		int numSpec		= (int)floor(spectrum.MaxValue() / maxInt); // a guess for the number of co-adds
 		fitSaturation	= fitIntensity / (maxInt * spectrum.NumSpectra());
 	}
 
@@ -823,7 +825,7 @@ void CScanEvaluation::FindOptimumShiftAndSqueeze_Fraunhofer(CEvaluation *eval, F
 		if(spectrum.NumSpectra() > 0){
 			fitSaturation	= fitIntensity / (spectrum.NumSpectra() * maxInt);
 		}else{
-			int numSpec		= floor(spectrum.MaxValue() / maxInt); // a guess for the number of co-adds
+			int numSpec		= (int)floor(spectrum.MaxValue() / maxInt); // a guess for the number of co-adds
 			fitSaturation	= fitIntensity / (maxInt * spectrum.NumSpectra());
 		}
 

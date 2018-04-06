@@ -88,12 +88,13 @@ int CCrossSectionData::ReadCrossSectionFile(const CString &fileName){
 	if(!fileRef.Open(fileName, CFile::modeRead | CFile::typeText, &exceFile))
 	{
 		CString str;
-		str.Format("ERROR: Cannot open reference file: %s", fileName);
+		str.Format("ERROR: Cannot open reference file: %s", (LPCSTR)fileName);
 		ShowMessage(str);
 		return 1; /* Failed to open the file */
 	}
 
 	valuesReadNum = 0;
+	nColumns = 1;
 
 	// read reference spectrum into the 'fValue's array
 	while(fileRef.ReadString(szLine))
@@ -110,6 +111,9 @@ int CCrossSectionData::ReadCrossSectionFile(const CString &fileName){
 		// if we have read as much as we can, return
 		if(valuesReadNum == MAX_SPECTRUM_LENGTH)
 			break;
+	}
+	if (valuesReadNum == 0) {
+		return 1; // failed to read any lines
 	}
 	fileRef.Close();
 
