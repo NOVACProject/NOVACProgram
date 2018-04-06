@@ -541,7 +541,7 @@ int	CGeometryDlg::CalculateIntersectionPoints(int seriesNumber, int scanNumber, 
 	Common common;
 
 	// the number of points
-	int nPoints = (int)min(dataLength, m_evalLogReader[seriesNumber]->m_scan[scanNumber].GetEvaluatedNum());
+	int nPoints = min(dataLength, (int)m_evalLogReader[seriesNumber]->m_scan[scanNumber].GetEvaluatedNum());
 
 	// Get the cone-angle
 	double coneAngle	=	m_evalLogReader[seriesNumber]->m_specInfo.m_coneAngle;
@@ -554,7 +554,7 @@ int	CGeometryDlg::CalculateIntersectionPoints(int seriesNumber, int scanNumber, 
 	if(fabs(coneAngle - 90) < 5){
 		// ----------- FLAT SCANNERS ---------------
 		//for(int k = 0; k < min(dataLength, m_evalLogReader[seriesNumber]->m_scan[scanNumber].GetEvaluatedNum()); ++k){
-		for (int k = 0; k < (int)min(dataLength, m_evalLogReader[seriesNumber]->m_scan[scanNumber].GetEvaluatedNum()); ++k) {
+		for (int k = 0; k < min(dataLength, (int)m_evalLogReader[seriesNumber]->m_scan[scanNumber].GetEvaluatedNum()); ++k) {
 			double scanAngle = m_evalLogReader[seriesNumber]->m_scan[scanNumber].GetScanAngle(k);
 
 			if(fabs(scanAngle) > 85){
@@ -582,7 +582,7 @@ int	CGeometryDlg::CalculateIntersectionPoints(int seriesNumber, int scanNumber, 
 		}
 	}else{
 		// ----------- CONE SCANNERS ---------------
-		for(int k = 0; k < (int)min(dataLength, m_evalLogReader[seriesNumber]->m_scan[scanNumber].GetEvaluatedNum()); ++k){
+		for(int k = 0; k < min(dataLength, (int)m_evalLogReader[seriesNumber]->m_scan[scanNumber].GetEvaluatedNum()); ++k){
 			double scanAngle = m_evalLogReader[seriesNumber]->m_scan[scanNumber].GetScanAngle(k);
 
 			if(fabs(scanAngle) > 85){

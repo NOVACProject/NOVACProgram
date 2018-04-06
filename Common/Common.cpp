@@ -1463,8 +1463,8 @@ int Common::CheckProcessExistance(CString& exeName,int pid)
 					return processid[i];
 				}
 			}
+			CloseHandle(hProcess);
 		}
-		CloseHandle(hProcess);
 	}
 	
 	//MessageBox(NULL,"CAN NOT find txzm","notice",MB_OK);
@@ -1510,8 +1510,8 @@ int Common::GetAllProcessIDs(CString& exeName, int pIDs[1024], int startPid){
 					pIDs[nPIDsFound++] = processid[i];
 				}
 			}
+			CloseHandle(hProcess);
 		}
-		CloseHandle(hProcess);
 	}
 	
 	return nPIDsFound;

@@ -163,9 +163,8 @@ void CEvaluationController::OnArrivedSpectra(WPARAM wp, LPARAM lp){
 	UploadToNOVACServer(storeFileName_txt, volcanoIndex);
 
 	// 8. If this is a wind-speed measurement, tell the wind-evaluation thread about it
-	RETURN_CODE rc;
 	if(measurementMode == MODE_WINDSPEED){
-		rc=MakeWindMeasurement(storeFileName_txt, volcanoIndex);
+		MakeWindMeasurement(storeFileName_txt, volcanoIndex);
 	}else if(measurementMode == MODE_STRATOSPHERE){
 		// TODO!!!
 	}else if(measurementMode == MODE_DIRECT_SUN){
@@ -175,11 +174,7 @@ void CEvaluationController::OnArrivedSpectra(WPARAM wp, LPARAM lp){
 	}else if(measurementMode == MODE_COMPOSITION){
 		// TODO!!!
 	}else{
-		rc=MakeGeometryCalculations(storeFileName_txt, volcanoIndex);
-	}
-	if (!rc) {
-		message.Format("Problems creating %s.", (LPCSTR)storeFileName_txt);
-		ShowMessage(message);
+		MakeGeometryCalculations(storeFileName_txt, volcanoIndex);
 	}
 
 	// 9. Tell the user...

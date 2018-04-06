@@ -542,8 +542,7 @@ int CSerialControllerWithTx::ParseMode(CString string)
 	int result[3]={NOSTDIO,NOSTDIO,NOSTDIO};
 	int modeIndex= NOSTDIO;
 	CString mode[3] = {"Stdio: User","Stdio: Both","Stdio: Shell"};
-	int i;
-	for(i=0;i<3;i++)
+	for(int i=0;i<3;i++)
 	{
 		result[i]=string.Find(mode[i]);
 		//printf("i=%d,result[i]=%d\n",i,result[i]);
@@ -589,7 +588,7 @@ bool CSerialControllerWithTx::Start()
 	
 	Sleep(1000);
 	// download old upload*.pak files if time permitted	
-	interval = g_settings.scanner[m_mainIndex].comm.queryPeriod - stopTime + startTime;
+	interval = g_settings.scanner[m_mainIndex].comm.queryPeriod - static_cast<long>(stopTime + startTime);
 	
 	DownloadOldPak(interval);
 	
@@ -1477,7 +1476,7 @@ bool CSerialControllerWithTx::DownloadOldPak(long interval)
 
 	time(&stopTime);
 	//continue downloading Uxxx.pak files
-	interval = interval + startTime - stopTime;
+	interval = interval + static_cast<long>(startTime - stopTime);
 	//if there is no time to download more files in current folder,return
 	if(interval <= 0)
 	{
@@ -1489,7 +1488,7 @@ bool CSerialControllerWithTx::DownloadOldPak(long interval)
 		downloadResult = DownloadPakFile(folder,interval);
 
 	time(&stopTime);
-	interval = interval + startTime - stopTime;
+	interval = interval + static_cast<long>(startTime - stopTime);
 	//if there is no time to download more folders,return
 	if(interval <= 0)
 	{
@@ -1514,7 +1513,7 @@ bool CSerialControllerWithTx::DownloadOldPak(long interval)
 			continue;
 		}
 		time(&stopTime);
-		interval = interval + startTime - stopTime;
+		interval = interval + static_cast<long>(startTime - stopTime);
 		if(interval <= 0)
 			break;
 		if(DownloadPakFile(folder,interval))
@@ -1567,7 +1566,7 @@ bool CSerialControllerWithTx::DownloadPakFile(CString folderName, long interval)
 			
 			downloadResult = DownloadSpectra(fileFullName);
 			time(&stopTime);
-			interval = interval + startTime - stopTime;
+			interval = interval + static_cast<long>(startTime - stopTime);
 			if(downloadResult)
 				m_oldPakList.RemoveTail();
 			else

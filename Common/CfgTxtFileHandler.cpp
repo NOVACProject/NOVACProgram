@@ -186,7 +186,7 @@ int CCfgTxtFileHandler::ReadCfgTxt(const CString &fileName){
 				int nFields = 0;
 				if(m_nMotors == 1){
 					if (pt) {
-						nFields = sscanf(&pt[1], "%d %d %d %d %hd %d %d %d ",
+						nFields = sscanf(&pt[1], "%d %d %d %d %d %hhd %d %d ",
 							&meas.pos,
 							&meas.expTime,
 							&meas.sum1,

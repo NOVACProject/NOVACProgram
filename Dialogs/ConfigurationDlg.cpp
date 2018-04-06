@@ -147,7 +147,7 @@ RETURN_CODE ConfigurationDialog::CConfigurationDlg::CheckSettings(){
 				CString str;
 				str.Format("Please check settings for spectrometer %s. ", (LPCSTR)m_configuration.scanner[i].spec[j].serialNumber);
 				str.AppendFormat(message);
-				MessageBox(str);
+				MessageBox(str, "Configuration Error");
 				return FAIL;
 			}
 
