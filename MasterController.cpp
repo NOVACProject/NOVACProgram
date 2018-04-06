@@ -257,8 +257,6 @@ void CheckForSpectraInDir(const CString &path, CList <CString, CString&> &fileLi
 
 /** Checks the settings */
 bool CMasterController::CheckSettings(){
-	unsigned int i, j;
-	int k, n;
 	CString message;
 	FILE *f  = NULL;
 
@@ -269,11 +267,11 @@ bool CMasterController::CheckSettings(){
 	}
 
 	// Test the reference files
-	for(i = 0; i < g_settings.scannerNum; ++i){
-		for(j = 0; j < g_settings.scanner[i].specNum; ++j){
-			for(k  = 0; k < g_settings.scanner[i].spec[j].channelNum; ++k){
+	for(unsigned long i = 0; i < g_settings.scannerNum; ++i){
+		for(unsigned long j = 0; j < g_settings.scanner[i].specNum; ++j){
+			for(int k  = 0; k < g_settings.scanner[i].spec[j].channelNum; ++k){
 				Evaluation::CFitWindow *window = &g_settings.scanner[i].spec[j].channel[k].fitWindow;
-				for(n  = 0; n < window->nRef; ++n){
+				for(int n  = 0; n < window->nRef; ++n){
 					f  =  fopen(window->ref[n].m_path, "r");
 					if(NULL == f){
 						message.Format("Cannot read reference file: %s", (LPCTSTR)window->ref[n].m_path);
@@ -337,7 +335,6 @@ void SetThreadName(DWORD dwThreadID, LPCTSTR szThreadName) {
 	__try { 
 		RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(DWORD), (DWORD *)&info); 
 	} 
-	__except (GetExceptionCode() == EXCEPTION_ACCESS_VIOLATION ?
-		EXCEPTION_EXECUTE_HANDLER : EXCEPTION_CONTINUE_SEARCH){
-	} 
+	__except (EXCEPTION_CONTINUE_EXECUTION) {
+	}
 } 
