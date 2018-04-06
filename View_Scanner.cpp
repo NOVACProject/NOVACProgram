@@ -240,7 +240,6 @@ BOOL CView_Scanner::OnInitDialog()
 }
 
 void CView_Scanner::DrawColumn(){
-	int i;
 	Common common;
 	// Strings used for the saving of images
 	CString sDate, sTime, imageFileName, lastImageFileName, directory, latestInfoFileName;
@@ -268,7 +267,7 @@ void CView_Scanner::DrawColumn(){
 		return;
 
 	// Get the ranges for the data
-	m_evalDataStorage->GetAngleRange(	m_serial,	minAngle,		maxAngle);
+	m_evalDataStorage->GetAngleRange(m_serial, minAngle, maxAngle);
 	m_evalDataStorage->GetColumnRange(m_serial, minColumn,	maxColumn);
 
 	// Copy the bad-columns to the 'badColumn' - array
@@ -277,12 +276,14 @@ void CView_Scanner::DrawColumn(){
 	// Check if this is a wind-measurement of if its a normal scan
 	bool isTimeSeries  = fabs(maxAngle - minAngle) < 1e-2;
 	int nRepetitions   = 0;
-	for(i = 2; i < dataLength; ++i){
-		if(angle[i] == angle[i-2])
+	for(int i = 2; i < dataLength; ++i){
+		if (angle[i] == angle[i - 2]) {
 			++nRepetitions;
+		}
 	}
-	if(nRepetitions > 50)
+	if (nRepetitions > 50) {
 		isTimeSeries = true;
+	}
 
 	// Check data ranges
 	minColumn = min(minColumn, 0);
@@ -301,10 +302,11 @@ void CView_Scanner::DrawColumn(){
 	double	plumeCentre = m_evalDataStorage->GetPlumeCentre(m_serial);
 
 	// remove the offset
-	for(i = 0; i < dataLength; ++i){
+	for(int i = 0; i < dataLength; ++i){
 		column[i] = column[i] - offset;
-		if(fabs(badColumn[i]) > 1.0)
+		if (fabs(badColumn[i]) > 1.0) {
 			badColumn[i] -= offset;
+		}
 	}
 
 	minColumn -= offset;
@@ -313,7 +315,7 @@ void CView_Scanner::DrawColumn(){
 	maxColumn = (maxColumn > 0) ? (maxColumn * 1.25) : (maxColumn / 1.5);
 
 	// Convert the saturation ratios to percent
-	for(i = 0; i < dataLength; ++i){
+	for(int i = 0; i < dataLength; ++i){
 		fitSat[i]  *= 100.0;
 		peakSat[i] *= 100.0;
 	}
