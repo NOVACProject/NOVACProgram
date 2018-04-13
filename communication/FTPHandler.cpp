@@ -43,13 +43,13 @@ void CFTPHandler::SetFTPInfo(int mainIndex, CString& IP, CString& userName,CStri
 	m_ftpInfo.userName  = userName;
 	m_ftpInfo.password  = pwd;
 	m_ftpInfo.port      = portNumber;
-	m_spectrometerSerialID.Format("%s", g_settings.scanner[mainIndex].spec[0].serialNumber);
+	m_spectrometerSerialID.Format("%s", (LPCSTR)g_settings.scanner[mainIndex].spec[0].serialNumber);
 
-	m_storageDirectory.Format("%sTemp\\%s\\",g_settings.outputDirectory,m_spectrometerSerialID);
+	m_storageDirectory.Format("%sTemp\\%s\\", (LPCSTR)g_settings.outputDirectory, (LPCSTR)m_spectrometerSerialID);
 	if(CreateDirectoryStructure(m_storageDirectory)){ // Make sure that the storage directory exists
 		GetSysTempFolder(m_storageDirectory);
 		if(CreateDirectoryStructure(m_storageDirectory)){
-			errorMsg.Format("FTPHandler: Could not create temporary-directory for spectrometer; %s", m_spectrometerSerialID);
+			errorMsg.Format("FTPHandler: Could not create temporary-directory for spectrometer; %s", (LPCSTR)m_spectrometerSerialID);
 			ShowMessage(errorMsg);
 			MessageBox(NULL, errorMsg, "Serious error", MB_OK);
 		}
@@ -99,9 +99,9 @@ bool CFTPHandler::DownloadPakFiles(const CString& folder)
 	{
 		fileInfo = &m_fileInfoList.GetTail();
 		if(m_electronicsBox == BOX_VERSION_2){
-			fileName.Format("%s.pak", fileInfo->fileName);	
+			fileName.Format("%s.pak", (LPCSTR)fileInfo->fileName);
 		}else{
-			fileName.Format("%s.PAK", fileInfo->fileName);	
+			fileName.Format("%s.PAK", (LPCSTR)fileInfo->fileName);
 		}
 		m_remoteFileSize = fileInfo->fileSize;
 
@@ -111,7 +111,7 @@ bool CFTPHandler::DownloadPakFiles(const CString& folder)
 			continue;
 		}
 
-		m_statusMsg.Format("Begin to download %s/%s",folder,fileName);
+		m_statusMsg.Format("Begin to download %s/%s", (LPCSTR)folder, (LPCSTR)fileName);
 		downloadResult = DownloadSpectra(fileName, m_storageDirectory);
 
 		if(downloadResult)
@@ -162,7 +162,7 @@ bool CFTPHandler::DownloadAllOldPak()
 			m_fileInfoList.RemoveAll();
 
 			// Get the folder name
-			folder.Format("%s", localFolderList.GetTail());
+			folder.Format("%s", (LPCSTR)localFolderList.GetTail());
 			localFolderList.RemoveTail();
 
 			if(GetPakFileList(folder) < 0)
@@ -210,9 +210,9 @@ bool CFTPHandler::DownloadOldPak(long interval)
 	estimatedTime = (int)((m_remoteFileSize * 1024.0) / m_dataSpeed);
 	time(&startTime);
 	if(this->m_electronicsBox == BOX_VERSION_2){
-		fileFullName.Format("%s.pak",pakFileInfo->fileName);
+		fileFullName.Format("%s.pak", (LPCSTR)pakFileInfo->fileName);
 	}else{
-		fileFullName.Format("%s.PAK",pakFileInfo->fileName);
+		fileFullName.Format("%s.PAK", (LPCSTR)pakFileInfo->fileName);
 	}
 	downloadResult = DownloadSpectra(fileFullName,m_storageDirectory);
 	time(&stopTime);
@@ -230,13 +230,13 @@ long CFTPHandler::GetPakFileList(CString& folder)
 	CString fileList,listFilePath, msg;
 	CFTPSocket* ftpSocket = new CFTPSocket();
 	char ipAddr[16];
-	sprintf(ipAddr,"%s", m_ftpInfo.IPAddress);
+	sprintf(ipAddr,"%s", (LPCSTR)m_ftpInfo.IPAddress);
 
 	// Start with clearing out the list of files...
 	m_fileInfoList.RemoveAll();
 
 	// We save the data to a temporary file on disk....
-	listFilePath.Format("%sfileList.txt",m_storageDirectory);
+	listFilePath.Format("%sfileList.txt", (LPCSTR)m_storageDirectory);
 	ftpSocket->SetLogFileName(listFilePath);
 	
 	// Log in to the instrument's FTP-server
@@ -255,7 +255,7 @@ long CFTPHandler::GetPakFileList(CString& folder)
 	// Enter Rxxx folder
 	if(folder.GetLength() == 4)
 	{
-		msg.Format("<node %d> Getting file-list from folder: %s", m_mainIndex, folder);
+		msg.Format("<node %d> Getting file-list from folder: %s", m_mainIndex, (LPCSTR)folder);
 		ShowMessage(msg);
 
 		if(!ftpSocket->EnterFolder(folder))
@@ -263,7 +263,7 @@ long CFTPHandler::GetPakFileList(CString& folder)
 			ftpSocket->Disconnect();
 			delete ftpSocket;
 
-			msg.Format("<node %d> Failed to enter folder: %s", m_mainIndex, folder);
+			msg.Format("<node %d> Failed to enter folder: %s", m_mainIndex, (LPCSTR)folder);
 			ShowMessage(msg);
 
 			return -2;
@@ -305,8 +305,8 @@ bool CFTPHandler::GetDiskFileList(int disk)
 	CString fileList,listFilePath;
 	CFTPSocket* ftpSocket = new CFTPSocket();
 	char ipAddr[16];
-	sprintf(ipAddr,"%s", m_ftpInfo.IPAddress);
-	listFilePath.Format("%sfileList.txt",m_storageDirectory);
+	sprintf(ipAddr,"%s", (LPCSTR)m_ftpInfo.IPAddress);
+	listFilePath.Format("%sfileList.txt", (LPCSTR)m_storageDirectory);
 	ftpSocket->SetLogFileName(listFilePath);
 
 
@@ -358,7 +358,7 @@ int  CFTPHandler::FillFileList(CString& fileName, char disk)
 	CFileException fileException;
 	if(!file.Open(fileName, CFile::modeRead | CFile::typeText, &fileException))
 	{
-		msg.Format("Can not open %s", fileName);
+		msg.Format("Can not open %s", (LPCSTR)fileName);
 		ShowMessage(msg);
 		return false;
 	}
@@ -390,7 +390,7 @@ void CFTPHandler::AddFolderInfo(CString& line)
 
 	int folderNameLength = 4; // <-- all RXXX folders contains 4 characters!
 
-	folderName.Format("%s", line.Right(folderNameLength));
+	folderName.Format("%s", (LPCSTR)line.Right(folderNameLength));
 	if(folderName.Left(1) != _T("R") && folderName.Left(1) != _T("r"))
 		return; // The folder is not a RXXX - folder, do not insert it into the list!
 
@@ -422,21 +422,21 @@ void CFTPHandler::ParseFileInfo(CString line, char disk)
 			fileSize  = atoi(resToken);
 		}
 		else if(i== 5)
-			month.Format("%s", resToken);
+			month.Format("%s", (LPCSTR)resToken);
 		else if(i== 6)
-			date.Format("%s", resToken);
+			date.Format("%s", (LPCSTR)resToken);
 		else if(i== 7)
-			time.Format("%s", resToken);
+			time.Format("%s", (LPCSTR)resToken);
 		else if(i== 8)
 		{
-			fileName.Format("%s", resToken);
+			fileName.Format("%s", (LPCSTR)resToken);
 			fileName.Remove('\n');
 			fileName.Remove('\r');
-			fileSubfix.Format("%s",fileName);
+			fileSubfix.Format("%s", (LPCSTR)fileName);
 			GetSuffix(fileName,fileSubfix);
 		}
 	}
-	mmdd.Format("%s %s",month,date);
+	mmdd.Format("%s %s", (LPCSTR)month, (LPCSTR)date);
 
 	if(Equals(fileName, "..") || Equals(fileName, "."))
 		return; // no use with these
@@ -460,12 +460,12 @@ void CFTPHandler::GetSuffix(CString& fileName, CString& fileSubfix)
 bool CFTPHandler::DownloadSpectra(const CString &remoteFile, const CString &savetoPath)
 {
 	CString msg;
-	m_localFileFullPath.Format("%s%s", savetoPath, remoteFile);
+	m_localFileFullPath.Format("%s%s", (LPCSTR)savetoPath, (LPCSTR)remoteFile);
 
 	//connect to the ftp server
 	if(!DownloadFile(remoteFile,savetoPath))
 	{
-		m_statusMsg.Format("Can not download file from remote scanner (%s) by FTP", m_ftpInfo.IPAddress);
+		m_statusMsg.Format("Can not download file from remote scanner (%s) by FTP", (LPCSTR)m_ftpInfo.IPAddress);
 		ShowMessage(m_statusMsg);
 		return false;
 	}
@@ -477,7 +477,7 @@ bool CFTPHandler::DownloadSpectra(const CString &remoteFile, const CString &save
 	// Check the contents of the file and make sure it's an ok file
 	if(1 == m_pakFileHandler->ReadDownloadedFile(m_localFileFullPath))
 	{
-		msg.Format("CPakFileHandler found an error with the file %s. Will try to download again", m_localFileFullPath);
+		msg.Format("CPakFileHandler found an error with the file %s. Will try to download again", (LPCSTR)m_localFileFullPath);
 		ShowMessage(msg);
 
 		// Download the file again
@@ -489,7 +489,7 @@ bool CFTPHandler::DownloadSpectra(const CString &remoteFile, const CString &save
 			ShowMessage("The pak file is corrupted");
 			//DELETE remote file
 			if(0 == DeleteRemoteFile(remoteFile)){
-				msg.Format("<node %d> Remote File %s could not be removed", m_mainIndex, remoteFile);
+				msg.Format("<node %d> Remote File %s could not be removed", m_mainIndex, (LPCSTR)remoteFile);
 				ShowMessage(msg);
 			}
 			return false;
@@ -497,10 +497,10 @@ bool CFTPHandler::DownloadSpectra(const CString &remoteFile, const CString &save
 	}
 
 	//DELETE remote file
-	msg.Format("%s has been downloaded", remoteFile);
+	msg.Format("%s has been downloaded", (LPCSTR)remoteFile);
 	ShowMessage(msg);
 	if(0 == DeleteRemoteFile(remoteFile)){
-		msg.Format("<node %d> Remote File %s could not be removed", m_mainIndex, remoteFile);
+		msg.Format("<node %d> Remote File %s could not be removed", m_mainIndex, (LPCSTR)remoteFile);
 		ShowMessage(msg);
 	}
 
@@ -550,14 +550,14 @@ bool CFTPHandler::DownloadFile(const CString &remoteFileName, const CString &sav
 	clock_t timing_Stop, timing_Start; // <-- timing of the upload speed
 
 	// The filename
-	fileFullName.Format("%s%s", savetoPath, remoteFileName);
+	fileFullName.Format("%s%s", (LPCSTR)savetoPath, (LPCSTR)remoteFileName);
 
 	//check local file,if a file with same name exists, delete it
 	if(IsExistingFile(fileFullName)){
 		DeleteFile(fileFullName);
 	}
 	
-	msg.Format("Begin to download file from %s", m_ftpInfo.IPAddress);
+	msg.Format("Begin to download file from %s", (LPCSTR)m_ftpInfo.IPAddress);
 	ShowMessage(msg);
 
 	//show running lamp on interface
@@ -585,7 +585,7 @@ bool CFTPHandler::DownloadFile(const CString &remoteFileName, const CString &sav
 	else
 		m_dataSpeed = m_remoteFileSize / (elapsedTime2 * 1024.0);
 
-	m_statusMsg.Format("Finished downloading file %s from %s @ %.1lf kb/s", fileFullName, m_spectrometerSerialID, m_dataSpeed);
+	m_statusMsg.Format("Finished downloading file %s from %s @ %.1lf kb/s", (LPCSTR)fileFullName, (LPCSTR)m_spectrometerSerialID, m_dataSpeed);
 	ShowMessage(m_statusMsg);
 	
 	return true;
@@ -594,7 +594,7 @@ bool CFTPHandler::DownloadFile(const CString &remoteFileName, const CString &sav
 bool CFTPHandler::MakeCommandFile(char* cmdString)
 {
 	CString fileName;
-	fileName.Format("%scommand.txt",m_storageDirectory);
+	fileName.Format("%scommand.txt", (LPCSTR)m_storageDirectory);
 	FILE *f;
 	f = fopen(fileName,"w");
 	if(f < (FILE*)1)
@@ -609,7 +609,7 @@ bool CFTPHandler::SendCommand(char* cmd)
 {
 	CString localFileFullPath,remoteFile;
 	remoteFile = _T("command.txt");
-	localFileFullPath.Format("%scommand.txt", m_storageDirectory);
+	localFileFullPath.Format("%scommand.txt", (LPCSTR)m_storageDirectory);
 	if(false == MakeCommandFile(cmd))
 		return false;
 
@@ -621,7 +621,7 @@ bool CFTPHandler::SendCommand(char* cmd)
 	if(UploadFile(localFileFullPath,remoteFile) == 0)
 	{
 		Disconnect();
-		m_statusMsg.Format("Can not upload command file to the remote scanner (%s) by FTP", m_ftpInfo.IPAddress);
+		m_statusMsg.Format("Can not upload command file to the remote scanner (%s) by FTP", (LPCSTR)m_ftpInfo.IPAddress);
 		ShowMessage(m_statusMsg);
 		return false;
 	}
@@ -694,7 +694,7 @@ int CFTPHandler::DownloadCfgTxt(){
 
 	// The names of the local and remote files
 	remoteFileName.Format("cfg.txt");
-	localFileName.Format("%scfg.txt", m_storageDirectory);
+	localFileName.Format("%scfg.txt", (LPCSTR)m_storageDirectory);
 	
 	// Download the file.
 	if(!DownloadAFile(remoteFileName, localFileName)){
@@ -703,7 +703,7 @@ int CFTPHandler::DownloadCfgTxt(){
 	}
 	
 	// Tell the user about what we've done!
-	m_statusMsg.Format("Downloaded cfg.txt from %s", m_spectrometerSerialID);
+	m_statusMsg.Format("Downloaded cfg.txt from %s", (LPCSTR)m_spectrometerSerialID);
 	ShowMessage(m_statusMsg);
 	
 	// Remember to Disconnect from the server
@@ -727,7 +727,7 @@ int CFTPHandler::DownloadCfgTxt(){
 	int todaysDate = Common::GetDay();
 	if(todaysDate % 7 == 0){
 		// Copy the file to a new name.
-		copyFileName.Format("%scfg_%s.txt", m_storageDirectory, m_spectrometerSerialID);
+		copyFileName.Format("%scfg_%s.txt", (LPCSTR)m_storageDirectory, (LPCSTR)m_spectrometerSerialID);
 		if(0 != CopyFile(localFileName, copyFileName, FALSE)){
 			// Get the index of this volcano
 			int volcanoIndex = Common::GetMonitoredVolcano(m_spectrometerSerialID);

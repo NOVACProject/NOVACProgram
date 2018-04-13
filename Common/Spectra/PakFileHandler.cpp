@@ -35,25 +35,25 @@ void CPakFileHandler::InitializeDirectories(const CString &serialNumber, const C
 	CString message;
 	if(!m_initializedOutput){
 		if(outputDir == 0 || 0 != CreateDirectoryStructure(*outputDir)){
-			m_tempDir.Format("%sTemp\\%s\\", g_settings.outputDirectory, serialNumber);
-			m_incompleteDir.Format("%s\\IncompleteScans\\", m_tempDir);
-			m_lostDir.Format("%sLost\\%s", g_settings.outputDirectory, serialNumber);
+			m_tempDir.Format("%sTemp\\%s\\", (LPCSTR)g_settings.outputDirectory, (LPCSTR)serialNumber);
+			m_incompleteDir.Format("%s\\IncompleteScans\\", (LPCSTR)m_tempDir);
+			m_lostDir.Format("%sLost\\%s", (LPCSTR)g_settings.outputDirectory, (LPCSTR)serialNumber);
 		}else{
-			m_tempDir.Format("%s\\%s\\", *outputDir, serialNumber);
-			m_incompleteDir.Format("%s\\IncompleteScans\\", m_tempDir);
-			m_lostDir.Format("%s", m_incompleteDir);
+			m_tempDir.Format("%s\\%s\\", (LPCSTR)*outputDir, (LPCSTR)serialNumber);
+			m_incompleteDir.Format("%s\\IncompleteScans\\", (LPCSTR)m_tempDir);
+			m_lostDir.Format("%s", (LPCSTR)m_incompleteDir);
 		}
 
 		if(CreateDirectoryStructure(m_tempDir)){        // create the temporary directory
-			message.Format("Could not create temp-directory; %s", m_tempDir);
+			message.Format("Could not create temp-directory; %s", (LPCSTR)m_tempDir);
 			ShowMessage(message);
 		}
 		if(CreateDirectoryStructure(m_lostDir)){				// create the lost directory
-			message.Format("Could not create lost-directory; %s", m_lostDir);
+			message.Format("Could not create lost-directory; %s", (LPCSTR)m_lostDir);
 			ShowMessage(message);
 		}
 		if(CreateDirectoryStructure(m_incompleteDir)){  // create the incomplete-scans directory
-			message.Format("Could not create incomplete-directory; %s", m_incompleteDir);
+			message.Format("Could not create incomplete-directory; %s", (LPCSTR)m_incompleteDir);
 			ShowMessage(message);
 		}
 
@@ -99,7 +99,7 @@ RETURN_CODE CPakFileHandler::FindNextScanStart(FILE *pakFile, CSpectrum &curSpec
 	int originalSpectrumNumber = m_spectrumNumber;
 
 	// Get the serial-number of the spectrometer
-	serialNumber.Format("%s", curSpec.m_info.m_device);
+	serialNumber.Format("%s", (LPCSTR)curSpec.m_info.m_device);
 
 	// Get the spectrum's position in the scan
 	int scanIndex = curSpec.ScanIndex(); 
@@ -107,7 +107,7 @@ RETURN_CODE CPakFileHandler::FindNextScanStart(FILE *pakFile, CSpectrum &curSpec
 
 	// Save this spectrum in a file in the 'incomplete' - folder
 	CSpectrumTime *starttid = &curSpec.m_info.m_startTime;
-	incompleteFileName.Format("%s\\%s_%02d.%02d.%02d.pak", m_incompleteDir, serialNumber, starttid->hr, starttid->m, starttid->sec);
+	incompleteFileName.Format("%s\\%s_%02d.%02d.%02d.pak", (LPCSTR)m_incompleteDir, (LPCSTR)serialNumber, starttid->hr, starttid->m, starttid->sec);
 
 	// Continue reading spectra until we find one which has scan-index = 0
 	while(scanIndex > 0){
@@ -160,28 +160,28 @@ RETURN_CODE CPakFileHandler::EvaluateScan(const CString &fileName, const CString
 		return FAIL;
 	}
 
-	outputFile.Format("%s\\%09d.pak", m_tempDir, m_tempIndex++);
+	outputFile.Format("%s\\%09d.pak", (LPCSTR)m_tempDir, m_tempIndex++);
 
 	if(CreateDirectoryStructure(m_tempDir)){ // make sure that the directory exists
 		ShowMessage("CPakFileHandler::EvaluateScan could not create temp-directory");
 	}
 
 	while(IsExistingFile(outputFile)){
-		outputFile.Format("%s\\%09d.pak", m_tempDir, m_tempIndex++);
+		outputFile.Format("%s\\%09d.pak", (LPCSTR)m_tempDir, m_tempIndex++);
 	}
 	ASSERT(strlen(outputFile) <= MAX_PATH);
 
 	if(0 == MoveFile(fileName, outputFile)){
-		message.Format("Error in EvaluateScan - could not rename .pak-file to: %s", outputFile);
+		message.Format("Error in EvaluateScan - could not rename .pak-file to: %s", (LPCSTR)outputFile);
 		ShowMessage(message);
 		return FAIL;
 	}
 
-	spectrumFile->Format("%s", outputFile);
+	spectrumFile->Format("%s", (LPCSTR)outputFile);
 	g_eval->PostThreadMessage(WM_ARRIVED_SPECTRA, (WPARAM)spectrumFile, NULL);
 
 	if(pView != NULL){
-		message.Format("Begin Evaluation of Spectrum File: %s", serialNumber);
+		message.Format("Begin Evaluation of Spectrum File: %s", (LPCSTR)serialNumber);
 		ShowMessage(message);
 	}
 
@@ -223,7 +223,7 @@ int CPakFileHandler::ReadDownloadedFile(const CString &fileName, bool deletePakF
 		free(spectrumHeader);
 		return 1;
 	}else{
-		message.Format("Checking downloaded file %s for errors", fileName);
+		message.Format("Checking downloaded file %s for errors", (LPCSTR)fileName);
 		ShowMessage(message);
 	}
 
@@ -239,7 +239,7 @@ int CPakFileHandler::ReadDownloadedFile(const CString &fileName, bool deletePakF
 			ShowMessage("Received file with illegal channel number");
 			channel = 0;
 		}
-		serialNumber.Format("%s", curSpec.m_info.m_device);
+		serialNumber.Format("%s", (LPCSTR)curSpec.m_info.m_device);
 		if(serialNumber.GetLength() < 6 || serialNumber.GetLength() > 11){
 			// There's something wrong with this serial-number
 			serialNumber.Format("NN");
@@ -253,11 +253,11 @@ int CPakFileHandler::ReadDownloadedFile(const CString &fileName, bool deletePakF
 	// 4. Define the file-names that we will/might use
 	for(i = 0; i < MAX_CHANNEL_NUM; ++i){
 		int tmpInt = 0;
-		m_scanFile[i].Format("%s\\Scan_%05d_%1d.pak", m_tempDir, tmpInt++, i); // the file containing the spectra from one channel
+		m_scanFile[i].Format("%s\\Scan_%05d_%1d.pak", (LPCSTR)m_tempDir, tmpInt++, i); // the file containing the spectra from one channel
 		while(IsExistingFile(m_scanFile[i])){
-			m_scanFile[i].Format("%s\\Scan_%05d_%1d.pak", m_tempDir, tmpInt++, i); // the file containing the spectra from one channel
+			m_scanFile[i].Format("%s\\Scan_%05d_%1d.pak", (LPCSTR)m_tempDir, tmpInt++, i); // the file containing the spectra from one channel
 		}
-		lostFile[i].Format("%s\\Incomplete_%s_%1d.pak", m_lostDir, serialNumber, i);
+		lostFile[i].Format("%s\\Incomplete_%s_%1d.pak", (LPCSTR)m_lostDir, (LPCSTR)serialNumber, i);
 		numSpecRead[i]  = 0;
 		nSpecPerScan[i] = 0;
 		mSpec[i] = new CSpectrum();
@@ -276,7 +276,7 @@ int CPakFileHandler::ReadDownloadedFile(const CString &fileName, bool deletePakF
 	memset(repetitions, 0, MAX_CHANNEL_NUM*sizeof(int));
 	FILE *pakFile = fopen(fileName, "rb");
 	if(pakFile == NULL){
-		message.Format("CPakFileHandler: Could not open .pak-file %s", fileName);
+		message.Format("CPakFileHandler: Could not open .pak-file %s", (LPCSTR)fileName);
 		ShowMessage(message);
 	}else{
 		while(1){
@@ -423,7 +423,7 @@ int CPakFileHandler::ReadDownloadedFile(const CString &fileName, bool deletePakF
 		CString incompleteFileName;
 		if(numSpecRead[i] != 0){
 			// 9a. Find a good name for the incomplete-file
-			incompleteFileName.Format("%s\\%s_%1d.pak", m_incompleteDir, serialNumber, i);
+			incompleteFileName.Format("%s\\%s_%1d.pak", (LPCSTR)m_incompleteDir, (LPCSTR)serialNumber, i);
 			
 			// 9b. If there's already an incomplete-file with this filename
 			//      then move it to the 'lost' folder.
@@ -431,7 +431,7 @@ int CPakFileHandler::ReadDownloadedFile(const CString &fileName, bool deletePakF
 				int index = GetSpectrometerIndex(serialNumber);
 				int it = 1 + m_lastLostIndex.GetAt(index);
 				while(IsExistingFile(lostFile[i]))
-					lostFile[i].Format("%s\\Incomplete_%s_%1d_%d.pak", m_lostDir, serialNumber, i, it++);
+					lostFile[i].Format("%s\\Incomplete_%s_%1d_%d.pak", (LPCSTR)m_lostDir, (LPCSTR)serialNumber, i, it++);
 
 				m_lastLostIndex.SetAt(index, it);
 				if(0 == MoveFile(incompleteFileName, lostFile[i])){
@@ -826,7 +826,7 @@ RETURN_CODE	CPakFileHandler::ArchiveScan(const CString &scanFileName){
 	int channel         = info.m_channel;
 
 	// 2. Get the serialNumber of the spectrometer
-	serialNumber.Format("%s", info.m_device);
+	serialNumber.Format("%s", (LPCSTR)info.m_device);
 
 	// 3. Get the time and date when the scan started
 	dateStr.Format("%02d%02d%02d", info.m_date[0] % 1000, info.m_date[1], info.m_date[2]);
@@ -835,7 +835,7 @@ RETURN_CODE	CPakFileHandler::ArchiveScan(const CString &scanFileName){
 	// 5. Write the archiving name of the spectrum file
 	if(channel < 128 && channel > MAX_CHANNEL_NUM)
 		channel = channel % 16;
-	pakFile.Format("%s%s_%s_%s_%1d.pak", m_tempDir, serialNumber, dateStr, timeStr, channel);
+	pakFile.Format("%s%s_%s_%s_%1d.pak", (LPCSTR)m_tempDir, (LPCSTR)serialNumber, (LPCSTR)dateStr, (LPCSTR)timeStr, channel);
 
 	if(strlen(pakFile) > MAX_PATH)
 		return FAIL;
@@ -902,7 +902,7 @@ RETURN_CODE CPakFileHandler::SaveCorruptSpectrum(const CSpectrum &curSpec, int s
 	ShowMessage("Corrupted spectrum found. Saving it in directory for corrupted spectra");
 
 	// Crate the directory
-	directory.Format("%s\\Corrupted\\", m_lostDir);
+	directory.Format("%s\\Corrupted\\", (LPCSTR)m_lostDir);
 	if(CreateDirectoryStructure(directory)){
 		ShowMessage("Could not create directory for corrupted spectra");
 		return FAIL;
@@ -913,9 +913,9 @@ RETURN_CODE CPakFileHandler::SaveCorruptSpectrum(const CSpectrum &curSpec, int s
 	serial.Format(curSpec.m_info.m_device);
 	date.Format("%04d.%02d.%02d", curSpec.m_info.m_date[0], curSpec.m_info.m_date[1], curSpec.m_info.m_date[2]);
 	time.Format("%02d.%02d.%02d", curSpec.m_info.m_startTime.hr, curSpec.m_info.m_startTime.m, curSpec.m_info.m_startTime.sec);
-	fileName.Format("%s%s_%s_%s_%d.pak", directory, serial, date, time, index++);
+	fileName.Format("%s%s_%s_%s_%d.pak", (LPCSTR)directory, (LPCSTR)serial, (LPCSTR)date, (LPCSTR)time, index++);
 	while(IsExistingFile(fileName)){
-		fileName.Format("%s%s_%s_%s_%d.pak", directory, serial, date, time, index++);
+		fileName.Format("%s%s_%s_%s_%d.pak", (LPCSTR)directory, (LPCSTR)serial, (LPCSTR)date, (LPCSTR)time, index++);
 	}
 
 	// Write the spectrum to a file

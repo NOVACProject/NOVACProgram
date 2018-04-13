@@ -119,8 +119,8 @@ void CExportEvallogDlg::OnExportLog()
   fprintf(f, "***ScanDOAS***\nVERSION=3.30\nFILETYPE=Scan Evaluation Log\n");
   fprintf(f, "STEPSPERROUND=200\nGASFACTOR=2.66\n");
   fprintf(f, "PLUME_HEIGHT=1000\nWIND_SPEED=10\nWIND_DIRECTION=180\n");
-  fprintf(f, "%--pos -- time -- sum1 -- sum2 -- chn -- basename\n");
-  for(int k = 0; k < m_scan[0].GetEvaluatedNum(); ++k){
+  fprintf(f, "%%--pos -- time -- sum1 -- sum2 -- chn -- basename\n");
+  for(unsigned long k = 0; k < m_scan[0].GetEvaluatedNum(); ++k){
     fprintf(f, "MEAS=%.0lf\t", m_scan[0].GetScanAngle(k) / 1.8);
     fprintf(f, "100\t"); // time
     fprintf(f, "%d\t1", m_scan[0].GetSpecNum(k)); // sum1 & sum2
@@ -136,7 +136,7 @@ void CExportEvallogDlg::OnExportLog()
     else
       fprintf(f, "GPSTIME\tPOSITION\tORIGIN_COLUMN\tCOLUMN\tCOLUMN_ERROR\tAVERAGE_INTENSITY\tSTDFILE\n");
 
-    for(int specIndex = 0; specIndex < m_scan[scanIndex].GetEvaluatedNum(); ++specIndex){
+    for(unsigned long specIndex = 0; specIndex < m_scan[scanIndex].GetEvaluatedNum(); ++specIndex){
       // The GPS-Time
       const CSpectrumTime *starttime = m_scan[scanIndex].GetStartTime(specIndex);
       fprintf(f, "%02d:%02d:%02d\t", starttime->hr, starttime->m, starttime->sec);

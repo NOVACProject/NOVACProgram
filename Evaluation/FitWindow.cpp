@@ -12,28 +12,28 @@ CFitWindow::~CFitWindow(void)
 {
 }
 
-CFitWindow &CFitWindow::operator =(const CFitWindow &w2){
+CFitWindow &CFitWindow::operator =(const CFitWindow &w2) {
 	this->channel = w2.channel;
-  this->fitHigh					= w2.fitHigh;
-  this->fitLow					= w2.fitLow;
-  this->fitType					= w2.fitType;
-	this->shiftSky				= w2.shiftSky;
-  this->interlaceStep		= w2.interlaceStep;
+	this->fitHigh = w2.fitHigh;
+	this->fitLow = w2.fitLow;
+	this->fitType = w2.fitType;
+	this->shiftSky = w2.shiftSky;
+	this->interlaceStep = w2.interlaceStep;
 
-	this->name.Format("%s", w2.name);
+	this->name.Format("%s", (LPCSTR)w2.name);
 
-	this->nRef						= w2.nRef;
-  this->polyOrder				= w2.polyOrder;
-  this->UV							= w2.UV;
-	this->specLength			= w2.specLength;
-	this->startChannel		= w2.startChannel;
+	this->nRef = w2.nRef;
+	this->polyOrder = w2.polyOrder;
+	this->UV = w2.UV;
+	this->specLength = w2.specLength;
+	this->startChannel = w2.startChannel;
 
-	for(int i = 0; i < w2.nRef; ++i){
-    this->ref[i] = w2.ref[i];
-  }
-	this->fraunhoferRef			= w2.fraunhoferRef;
-  this->findOptimalShift	= w2.findOptimalShift;
-  return *this;
+	for (int i = 0; i < w2.nRef; ++i) {
+		this->ref[i] = w2.ref[i];
+	}
+	this->fraunhoferRef = w2.fraunhoferRef;
+	this->findOptimalShift = w2.findOptimalShift;
+	return *this;
 }
 
 void CFitWindow::Clear(){

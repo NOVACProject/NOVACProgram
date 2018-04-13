@@ -225,9 +225,9 @@ BOOL CPostWindDlg::OnInitDialog()
 
 	// Initialize the unit to use
 	if(g_userSettings.m_columnUnit == UNIT_MOLEC_CM2)
-		columnAxisLabel.Format("%s [ppmm]", common.GetString(AXIS_COLUMN));
+		columnAxisLabel.Format("%s [ppmm]", (LPCTSTR)common.GetString(AXIS_COLUMN));
 	else
-		columnAxisLabel.Format("%s [molec/cm²]", common.GetString(AXIS_COLUMN));
+		columnAxisLabel.Format("%s [molec/cm²]", (LPCTSTR)common.GetString(AXIS_COLUMN));
 
 	// Initialize the column graph
 	CRect rect;

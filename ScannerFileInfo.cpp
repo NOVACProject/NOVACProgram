@@ -16,7 +16,7 @@ CScannerFileInfo::CScannerFileInfo(char pDiskName,CString pFileName,CString pFil
 		fileSize = pFileSize;
 		date = pDate;
 		time = pTime;
-		info.Format("%d bytes, created %s %s", fileSize,date,time);
+		info.Format("%d bytes, created %s %s", fileSize, (LPCTSTR)date, (LPCTSTR)time);
 }
 
 CScannerFileInfo::CScannerFileInfo(const CScannerFileInfo &info2){

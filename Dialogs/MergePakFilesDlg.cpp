@@ -119,7 +119,7 @@ void CMergePakFilesDlg::OnBrowseOutputFile(){
 	if(!common.BrowseForFile_SaveAs(filter, fileName)){
 		return;
 	}
-	m_outputFile.Format("%s", fileName);
+	m_outputFile.Format("%s", (LPCSTR)fileName);
 
 	SetDlgItemText(IDC_EDIT_OUTPUTFILE, m_outputFile);
 

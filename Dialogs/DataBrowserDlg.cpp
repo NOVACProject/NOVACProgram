@@ -114,15 +114,15 @@ BOOL CDataBrowserDlg::OnInitDialog()
 
 	// Initialize the unit to use
 	if(g_userSettings.m_columnUnit == UNIT_MOLEC_CM2){
-		columnAxisLabel.Format("%s [molec/cm²]", common.GetString(AXIS_COLUMN));
+		columnAxisLabel.Format("%s [molec/cm²]", (LPCSTR)common.GetString(AXIS_COLUMN));
 	}else{
-		columnAxisLabel.Format("%s [ppmm]", common.GetString(AXIS_COLUMN));
+		columnAxisLabel.Format("%s [ppmm]", (LPCSTR)common.GetString(AXIS_COLUMN));
 	}
 	
 	if(g_userSettings.m_fluxUnit == UNIT_KGS){
-		fluxAxisLabel.Format("%s [kg/s]", common.GetString(AXIS_FLUX));
+		fluxAxisLabel.Format("%s [kg/s]", (LPCSTR)common.GetString(AXIS_FLUX));
 	}else{
-		fluxAxisLabel.Format("%s [ton/day]", common.GetString(AXIS_FLUX));
+		fluxAxisLabel.Format("%s [ton/day]", (LPCSTR)common.GetString(AXIS_FLUX));
 	}
 
 	// Initialize the scan graph
@@ -254,7 +254,7 @@ void CDataBrowserDlg::OnBrowseEvallog(){
 		m_volcanoIndex = -1;
 
 		// set the path
-		m_calculator->m_evaluationLog.Format("%s", evLog);
+		m_calculator->m_evaluationLog.Format("%s", (LPCSTR)evLog);
 
 		// Read the evaluation log
 		m_calculator->ReadEvaluationLog();
@@ -314,10 +314,10 @@ void CDataBrowserDlg::DrawScan(){
 	// Set the unit of the plot
 	double columnUnitConversionFactor = 1.0;
 	if(g_userSettings.m_columnUnit == UNIT_MOLEC_CM2){
-		columnAxisLabel.Format("%s [molec/cm²]", common.GetString(AXIS_COLUMN));
+		columnAxisLabel.Format("%s [molec/cm²]", (LPCSTR)common.GetString(AXIS_COLUMN));
 		columnUnitConversionFactor = 2.5e15;
 	}else{
-		columnAxisLabel.Format("%s [ppmm]", common.GetString(AXIS_COLUMN));
+		columnAxisLabel.Format("%s [ppmm]", (LPCSTR)common.GetString(AXIS_COLUMN));
 	}
 	m_scanGraph.SetYUnits(columnAxisLabel);
 
@@ -462,10 +462,10 @@ void  CDataBrowserDlg::DrawFlux(){
 	// Set the unit of the plot
 	double fluxUnitConversionFactor = 1.0;
 	if(g_userSettings.m_fluxUnit == UNIT_TONDAY){
-		columnAxisLabel.Format("%s [ton/day]", common.GetString(AXIS_FLUX));
+		columnAxisLabel.Format("%s [ton/day]", (LPCSTR)common.GetString(AXIS_FLUX));
 		fluxUnitConversionFactor = 24*3.6;;
 	}else{
-		columnAxisLabel.Format("%s [kg/s]", common.GetString(AXIS_FLUX));
+		columnAxisLabel.Format("%s [kg/s]", (LPCSTR)common.GetString(AXIS_FLUX));
 	}
 	m_scanGraph.SetYUnits(columnAxisLabel);
 
@@ -541,11 +541,11 @@ void CDataBrowserDlg::UpdateScanInfo(){
 
 	// The volcano
 	const CSpectrumInfo &info = scan.GetSpectrumInfo(0);
-	str.Format("%s", info.m_volcano);
+	str.Format("%s", (LPCSTR)info.m_volcano);
 	m_scanInfoList.SetItemText(index++, 1, str);
 
 	// The site
-	str.Format("%s", info.m_site);
+	str.Format("%s", (LPCSTR)info.m_site);
 	m_scanInfoList.SetItemText(index++, 1, str);
 
 	// The latitude
@@ -565,7 +565,7 @@ void CDataBrowserDlg::UpdateScanInfo(){
 	m_scanInfoList.SetItemText(index++, 1, str);
 
 	// The serial-number of the spectrometer used
-	str.Format("%s", scan.GetSerial());
+	str.Format("%s", (LPCSTR)scan.GetSerial());
 	m_scanInfoList.SetItemText(index++, 1, str);
 
 	// The type of scanner used

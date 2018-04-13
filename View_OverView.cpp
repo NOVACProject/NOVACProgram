@@ -85,9 +85,9 @@ BOOL CView_OverView::OnInitDialog()
 		return TRUE;
 
 	if(g_userSettings.m_fluxUnit == UNIT_TONDAY){
-		fluxAxisLabel.Format("%s [ton/day]", common.GetString(AXIS_FLUX));
+		fluxAxisLabel.Format("%s [ton/day]", (LPCTSTR)common.GetString(AXIS_FLUX));
 	}else{
-		fluxAxisLabel.Format("%s [kg/s]", common.GetString(AXIS_FLUX));
+		fluxAxisLabel.Format("%s [kg/s]", (LPCTSTR)common.GetString(AXIS_FLUX));
 	}
 	
 	// reduce the margin if there are many instruments, to make the page look nicer
@@ -142,7 +142,7 @@ BOOL CView_OverView::OnInitDialog()
 
 		rect2.top = rect.top;
 		rect2.bottom = rect2.top + height;
-		specString[i].Format("%s - %s", g_settings.scanner[i].spec[0].serialNumber, g_settings.scanner[i].site);
+		specString[i].Format("%s - %s", (LPCTSTR)g_settings.scanner[i].spec[0].serialNumber, (LPCTSTR)g_settings.scanner[i].site);
 		label->Create(specString[i], WS_VISIBLE | WS_CHILD, rect2, this);
 		label->SetFont(font);
 		m_specLabel.Add(label);
@@ -163,9 +163,9 @@ BOOL CView_OverView::OnInitDialog()
 		rect2.top    = rect.top + (rect.bottom - rect.top) * 2 / 5;
 		rect2.bottom = rect2.top + 90;
 		if(g_userSettings.m_fluxUnit == UNIT_TONDAY){
-			fluxString[i].Format("%s\tavg: 0 [ton/day]\r\n\tstd: 0 [ton/day]", common.GetString(AXIS_FLUX));
+			fluxString[i].Format("%s\tavg: 0 [ton/day]\r\n\tstd: 0 [ton/day]", (LPCTSTR)common.GetString(AXIS_FLUX));
 		}else{
-			fluxString[i].Format("%s\tavg: 0 [kg/s]\r\n\tstd: 0 [kg/s]", common.GetString(AXIS_FLUX));
+			fluxString[i].Format("%s\tavg: 0 [kg/s]\r\n\tstd: 0 [kg/s]", (LPCTSTR)common.GetString(AXIS_FLUX));
 		}
 		fluxLabel->Create(fluxString[i], WS_VISIBLE | WS_CHILD, rect2, this);
 		fluxLabel->SetFont(font);
@@ -232,9 +232,9 @@ void CView_OverView::DrawFlux(){
 
 		// Set the unit of the plot
 		if(g_userSettings.m_fluxUnit == UNIT_TONDAY){
-			fluxAxisLabel.Format("%s [ton/day]", common.GetString(AXIS_FLUX));
+			fluxAxisLabel.Format("%s [ton/day]", (LPCTSTR)common.GetString(AXIS_FLUX));
 		}else{
-			fluxAxisLabel.Format("%s [kg/s]", common.GetString(AXIS_FLUX));
+			fluxAxisLabel.Format("%s [kg/s]", (LPCTSTR)common.GetString(AXIS_FLUX));
 		}
 		graph->SetYUnits(fluxAxisLabel);
 
@@ -263,9 +263,9 @@ void CView_OverView::DrawFlux(){
 		// 1. Flux
 		m_evalDataStorage->GetFluxStat(serial, avgFlux, stdFlux);
 		if(UNIT_KGS == g_userSettings.m_fluxUnit){
-			tempStr.Format("%s\tavg: %.0lf [kg/s]\r\n\tstd: %.0lf [kg/s]\r\n", common.GetString(AXIS_FLUX), avgFlux, stdFlux);
+			tempStr.Format("%s\tavg: %.0lf [kg/s]\r\n\tstd: %.0lf [kg/s]\r\n", (LPCTSTR)common.GetString(AXIS_FLUX), avgFlux, stdFlux);
 		}else{
-			tempStr.Format("%s\tavg: %.0lf [ton/day]\r\n\tstd: %.0lf [ton/day]\r\n", common.GetString(AXIS_FLUX), avgFlux, stdFlux);
+			tempStr.Format("%s\tavg: %.0lf [ton/day]\r\n\tstd: %.0lf [ton/day]\r\n", (LPCTSTR)common.GetString(AXIS_FLUX), avgFlux, stdFlux);
 		}
 
 		m_fluxLabel.GetAt(i)->SetWindowText(tempStr);

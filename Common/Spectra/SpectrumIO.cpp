@@ -23,7 +23,7 @@ int CSpectrumIO::CountSpectra(const CString &fileName){
 	FILE *f = fopen(fileName, "rb");
 
 	if(f == NULL){
-		errorMessage.Format("Could not open spectrum file: %s", fileName);
+		errorMessage.Format("Could not open spectrum file: %s", (LPCSTR)fileName);
 		ShowMessage(errorMessage);
 		m_lastError = ERROR_COULD_NOT_OPEN_FILE;
 		return(1);
@@ -78,7 +78,7 @@ int CSpectrumIO::ScanSpectrumFile(const CString &fileName, const CString *specNa
 	FILE *f = fopen(fileName, "rb");
 
 	if(f == NULL){
-		errorMessage.Format("Could not open spectrum file: %s", fileName);
+		errorMessage.Format("Could not open spectrum file: %s", (LPCSTR)fileName);
 		ShowMessage(errorMessage);
 		m_lastError = ERROR_COULD_NOT_OPEN_FILE;
 		return(1);
@@ -155,7 +155,7 @@ RETURN_CODE CSpectrumIO::ReadSpectrum(const CString &fileName, const int spectru
 	FILE *f = fopen(fileName, "rb");
 
 	if(f == NULL){
-		errorMessage.Format("Could not open spectrum file: %s", fileName);
+		errorMessage.Format("Could not open spectrum file: %s", (LPCSTR)fileName);
 		ShowMessage(errorMessage);
 		m_lastError = ERROR_COULD_NOT_OPEN_FILE;
 		return FAIL;
@@ -209,7 +209,7 @@ RETURN_CODE CSpectrumIO::ReadSpectrum(const CString &fileName, const int spectru
 
 			if(fread(buffer,1,MKZY.size,f) < MKZY.size) //read compressed info
 			{
-				errorMessage.Format("Error EOF! in %s", fileName);
+				errorMessage.Format("Error EOF! in %s", (LPCSTR)fileName);
 				ShowMessage(errorMessage);
 				fclose(f);
 				m_lastError = ERROR_EOF;
@@ -522,12 +522,12 @@ int CSpectrumIO::AddSpectrumToFile(const CString &fileName, const CSpectrum &spe
 	MKZY.flag           = info.m_flag;
 	MKZY.hdrsize        = sizeof(struct MKZYhdr);
 	MKZY.hdrversion     = hdr_version;
-	sprintf(MKZY.instrumentname, "%.16s", spectrum.m_info.m_device);
+	sprintf(MKZY.instrumentname, "%.16s", (LPCSTR)spectrum.m_info.m_device);
 	MKZY.lat            = spectrum.Latitude();
 	MKZY.lon            = spectrum.Longitude();
 	MKZY.measurecnt     = (char)info.m_scanSpecNum;
 	MKZY.measureidx     = (char)info.m_scanIndex;
-	sprintf(MKZY.name, "%.12s", spectrum.m_info.m_name);
+	sprintf(MKZY.name, "%.12s", (LPCSTR)spectrum.m_info.m_name);
 	MKZY.pixels         = (unsigned short)spectrum.m_length;
 	MKZY.size           = outsiz;
 	MKZY.startc         = info.m_startChannel;
@@ -544,8 +544,8 @@ int CSpectrumIO::AddSpectrumToFile(const CString &fileName, const CSpectrum &spe
 	if(f == NULL) // this will happen if the file does not exist...
 		f = fopen(fileName,"w+b");
 	if(f == NULL){
-		delete sbuf;
-		delete spec;
+		delete[] sbuf;
+		delete[] spec;
 		return 1;
 	}
 
@@ -562,8 +562,8 @@ int CSpectrumIO::AddSpectrumToFile(const CString &fileName, const CSpectrum &spe
 	}
 	fclose(f);
 
-	delete sbuf;
-	delete spec;
+	delete[] sbuf;
+	delete[] spec;
 
 	return 0;
 }

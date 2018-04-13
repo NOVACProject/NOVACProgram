@@ -94,84 +94,84 @@ void CEvaluationLogFileHandler::ParseScanHeader(const char szLine[8192]){
 		++curCol;
 
 		// The scan-angle (previously known as elevation)
-		if(0 == strnicmp(szToken, elevation, strlen(elevation))){
+		if(0 == _strnicmp(szToken, elevation, strlen(elevation))){
 			m_col.position = curCol;
 			szToken = NULL;
 			continue;
 		}
 
 		// The scan-angle (previously known as elevation)
-		if(0 == strnicmp(szToken, scanAngle, strlen(scanAngle))){
+		if(0 == _strnicmp(szToken, scanAngle, strlen(scanAngle))){
 			m_col.position = curCol;
 			szToken = NULL;
 			continue;
 		}
 
 		// The observation-angle (the scan-angle for the heidelberg instrument)
-		if(0 == strnicmp(szToken, obsAngle, strlen(obsAngle))){
+		if(0 == _strnicmp(szToken, obsAngle, strlen(obsAngle))){
 			m_col.position = curCol;
 			szToken = NULL;
 			continue;
 		}
 
 		// The azimuth-angle (defined for the heidelberg instrument)
-		if(0 == strnicmp(szToken, azimuth, strlen(azimuth))){
+		if(0 == _strnicmp(szToken, azimuth, strlen(azimuth))){
 			m_col.position2 = curCol;
 			szToken = NULL;
 			continue;
 		}
 
 		// The exposure time
-		if(0 == strnicmp(szToken, exposureTime, strlen(exposureTime))){
+		if(0 == _strnicmp(szToken, exposureTime, strlen(exposureTime))){
 			m_col.expTime = curCol;
 			szToken = NULL;
 			continue;
 		}
 
 		// The start time
-		if(0 == strnicmp(szToken, starttime, strlen(starttime))){
+		if(0 == _strnicmp(szToken, starttime, strlen(starttime))){
 			m_col.starttime = curCol;
 			szToken = NULL;
 			continue;
 		}
 
 		// The stop time
-		if(0 == strnicmp(szToken, stoptime, strlen(stoptime))){
+		if(0 == _strnicmp(szToken, stoptime, strlen(stoptime))){
 			m_col.stoptime = curCol;
 			szToken = NULL;
 			continue;
 		}
 
 		// The name of the spectrum
-		if(0 == strnicmp(szToken, nameStr, strlen(nameStr))){
+		if(0 == _strnicmp(szToken, nameStr, strlen(nameStr))){
 			m_col.name	= curCol;
 			szToken = NULL;
 			continue;
 		}
 
 		// The number of co-added spectra
-		if(0 == strnicmp(szToken, numSpec, strlen(numSpec))){
+		if(0 == _strnicmp(szToken, numSpec, strlen(numSpec))){
 			m_col.nSpec = curCol;
 			szToken = NULL;
 			continue;
 		}
 
 		// The offset
-		if(0 == strnicmp(szToken, offset, strlen(offset))){
+		if(0 == _strnicmp(szToken, offset, strlen(offset))){
 			m_col.offset = curCol;
 			szToken = NULL;
 			continue;
 		}
 
 		// The column error (must be looked for before 'column')
-		if(0 == strnicmp(szToken, columnError, strlen(columnError))){
+		if(0 == _strnicmp(szToken, columnError, strlen(columnError))){
 			m_col.columnError[m_evResult.m_speciesNum-1] = curCol;
 			szToken = NULL;
 			continue;
 		}
 
 		// The column
-		if(0 == strnicmp(szToken, column, strlen(column))){
+		if(0 == _strnicmp(szToken, column, strlen(column))){
 			CString str;
 			m_col.column[m_evResult.m_speciesNum] = curCol;
 			char *pt = szToken + strlen(column) + 1;
@@ -184,43 +184,43 @@ void CEvaluationLogFileHandler::ParseScanHeader(const char szLine[8192]){
 		}
 
 		// The shift error (must be checked before 'shift')
-		if(0 == strnicmp(szToken, shiftError, strlen(shiftError))){
+		if(0 == _strnicmp(szToken, shiftError, strlen(shiftError))){
 			m_col.shiftError[m_evResult.m_speciesNum-1] = curCol;
 			szToken = NULL;
 			continue;
 		}
 
 		// The shift
-		if(0 == strnicmp(szToken, shift, strlen(shift))){
+		if(0 == _strnicmp(szToken, shift, strlen(shift))){
 			m_col.shift[m_evResult.m_speciesNum-1] = curCol;
 			szToken = NULL;
 			continue;
 		}
 
 		// The squeeze error (must be checked before 'squeeze')
-		if(0 == strnicmp(szToken, squeezeError, strlen(squeezeError))){
+		if(0 == _strnicmp(szToken, squeezeError, strlen(squeezeError))){
 			m_col.squeezeError[m_evResult.m_speciesNum-1] = curCol;
 			szToken = NULL;
 			continue;
 		}
 
 		// The squeeze
-		if(0 == strnicmp(szToken, squeeze, strlen(squeeze))){
+		if(0 == _strnicmp(szToken, squeeze, strlen(squeeze))){
 			m_col.squeeze[m_evResult.m_speciesNum-1] = curCol;
 			szToken = NULL;
 			continue;
 		}
 
 		// The spectrum peak-intensity
-		if(0 == strnicmp(szToken, intensity, strlen(intensity))){
+		if(0 == _strnicmp(szToken, intensity, strlen(intensity))){
 			m_col.intensity = curCol;
 			szToken = NULL;
 			continue;
 		}
 
 		// The spectrum fit-intensity
-		if(0 == strnicmp(szToken, fitIntensity, strlen(fitIntensity)) || 
-		   0 == strnicmp(szToken, fitIntensity2, strlen(fitIntensity2))){
+		if(0 == _strnicmp(szToken, fitIntensity, strlen(fitIntensity)) || 
+		   0 == _strnicmp(szToken, fitIntensity2, strlen(fitIntensity2))){
 
 			m_col.fitIntensity = curCol;
 			szToken = NULL;
@@ -228,28 +228,28 @@ void CEvaluationLogFileHandler::ParseScanHeader(const char szLine[8192]){
 		}
 
 		// The spectrum maximum saturation ratio of the whole spectrum
-		if(0 == strnicmp(szToken, peakSat, strlen(peakSat))){
+		if(0 == _strnicmp(szToken, peakSat, strlen(peakSat))){
 			m_col.peakSaturation = curCol;
 			szToken = NULL;
 			continue;
 		}
 
 		// The spectrum maximum saturation ratio in the fit region
-		if(0 == strnicmp(szToken, fitSat, strlen(fitSat))){
+		if(0 == _strnicmp(szToken, fitSat, strlen(fitSat))){
 			m_col.fitSaturation = curCol;
 			szToken = NULL;
 			continue;
 		}
 
 		// The delta of the fit
-		if(0 == strnicmp(szToken, delta, strlen(delta))){
+		if(0 == _strnicmp(szToken, delta, strlen(delta))){
 			m_col.delta = curCol;
 			szToken = NULL;
 			continue;
 		}
 
 		// The chi-square of the fit
-		if(0 == strnicmp(szToken, chiSquare, strlen(chiSquare))){
+		if(0 == _strnicmp(szToken, chiSquare, strlen(chiSquare))){
 			m_col.chiSquare = curCol;
 			szToken = NULL;
 			continue;
@@ -260,7 +260,7 @@ void CEvaluationLogFileHandler::ParseScanHeader(const char szLine[8192]){
 
 	m_specieNum = m_evResult.m_speciesNum;
 	for(int k = 0; k < m_specieNum; ++k)
-		m_specie[k].Format("%s", m_evResult.m_ref[k].m_specieName);
+		m_specie[k].Format("%s", (LPCSTR)m_evResult.m_ref[k].m_specieName);
 
 	return;
 }
@@ -411,29 +411,37 @@ RETURN_CODE CEvaluationLogFileHandler::ReadEvaluationLog(){
 
 			// First check the starttime
 			if(curCol == m_col.starttime){
-				int fValue1, fValue2, fValue3;
-				if(strstr(szToken, ":"))
-					sscanf(szToken, "%d:%d:%d", &fValue1, &fValue2, &fValue3);
-				else
-					sscanf(szToken, "%d.%d.%d", &fValue1, &fValue2, &fValue3);
-				m_specInfo.m_startTime.hr   = fValue1;
-				m_specInfo.m_startTime.m    = fValue2;
-				m_specInfo.m_startTime.sec  = fValue3;
-				szToken = NULL;
+				int fValue1, fValue2, fValue3, ret;
+				if (strstr(szToken, ":")) {
+					ret = sscanf(szToken, "%d:%d:%d", &fValue1, &fValue2, &fValue3);
+				}
+				else {
+					ret = sscanf(szToken, "%d.%d.%d", &fValue1, &fValue2, &fValue3);
+				}
+				if (ret == 3) {
+					m_specInfo.m_startTime.hr = fValue1;
+					m_specInfo.m_startTime.m = fValue2;
+					m_specInfo.m_startTime.sec = fValue3;
+					szToken = NULL;
+				}
 				continue;
 			}
 
 			// Then check the stoptime
-				if(curCol == m_col.stoptime){
-				int fValue1, fValue2, fValue3;
-				if(strstr(szToken, ":"))
-					sscanf(szToken, "%d:%d:%d", &fValue1, &fValue2, &fValue3);
-				else
-					sscanf(szToken, "%d.%d.%d", &fValue1, &fValue2, &fValue3);
-				m_specInfo.m_stopTime.hr   = fValue1;
-				m_specInfo.m_stopTime.m    = fValue2;
-				m_specInfo.m_stopTime.sec  = fValue3;
-				szToken = NULL;
+			if (curCol == m_col.stoptime) {
+				int fValue1, fValue2, fValue3, ret;
+				if (strstr(szToken, ":")){
+					ret = sscanf(szToken, "%d:%d:%d", &fValue1, &fValue2, &fValue3);
+				}
+				else {
+					ret = sscanf(szToken, "%d.%d.%d", &fValue1, &fValue2, &fValue3);
+				}
+				if (ret == 3) {
+					m_specInfo.m_stopTime.hr = fValue1;
+					m_specInfo.m_stopTime.m = fValue2;
+					m_specInfo.m_stopTime.sec = fValue3;
+					szToken = NULL;
+				}
 				continue;
 			}
 
@@ -735,7 +743,6 @@ void CEvaluationLogFileHandler::ParseScanInformation(CSpectrumInfo &scanInfo, do
 	char *pt = NULL;
 	int tmpInt[3];
 	double tmpDouble;
-	char instrumentType[64];
 
 	// Reset the column- and spectrum info
 	ResetColumns();
@@ -760,10 +767,11 @@ void CEvaluationLogFileHandler::ParseScanInformation(CSpectrumInfo &scanInfo, do
 			continue;
 		}
 		if(pt = strstr(szLine, "date=")){
-			sscanf(pt+5, "%d.%d.%d", &tmpInt[0], &tmpInt[1], &tmpInt[2]);
-			scanInfo.m_date[0] = tmpInt[2];
-			scanInfo.m_date[1] = tmpInt[1];
-			scanInfo.m_date[2] = tmpInt[0];
+			if (3 == sscanf(pt + 5, "%d.%d.%d", &tmpInt[0], &tmpInt[1], &tmpInt[2])) {
+				scanInfo.m_date[0] = tmpInt[2];
+				scanInfo.m_date[1] = tmpInt[1];
+				scanInfo.m_date[2] = tmpInt[0];
+			}
 			continue;
 		}
 		if(pt = strstr(szLine, "starttime=")){
@@ -783,28 +791,34 @@ void CEvaluationLogFileHandler::ParseScanInformation(CSpectrumInfo &scanInfo, do
 			continue;
 		}
 		if(pt = strstr(szLine, "compass=")){
-			sscanf(pt+8, "%lf", &tmpDouble);
-			scanInfo.m_compass = (float)fmod(tmpDouble, 360.0);
+			if (sscanf(pt + 8, "%lf", &tmpDouble) == 1) {
+				scanInfo.m_compass = (float)fmod(tmpDouble, 360.0);
+			}
 			continue;
 		}
 		if(pt = strstr(szLine, "tilt=")){
-			sscanf(pt + 5, "%lf", &tmpDouble);
-			scanInfo.m_pitch = (float)tmpDouble;
+			if (sscanf(pt + 5, "%lf", &tmpDouble) == 1) {
+				scanInfo.m_pitch = (float)tmpDouble;
+			}
+			continue;
 		}
 
 		if(pt = strstr(szLine, "lat=")){
-			sscanf(pt+4, "%lf", &tmpDouble);
-			scanInfo.m_gps.m_latitude = tmpDouble;
+			if (sscanf(pt + 4, "%lf", &tmpDouble) == 1) {
+				scanInfo.m_gps.m_latitude = tmpDouble;
+			}
 			continue;
 		}
 		if(pt = strstr(szLine, "long=")){
-			sscanf(pt+5, "%lf", &tmpDouble);
-			scanInfo.m_gps.m_longitude = tmpDouble;
+			if (sscanf(pt + 5, "%lf", &tmpDouble) == 1) {
+				scanInfo.m_gps.m_longitude = tmpDouble;
+			}
 			continue;
 		}
 		if(pt = strstr(szLine, "alt=")){
-			sscanf(pt+4, "%lf", &tmpDouble);
-			scanInfo.m_gps.m_altitude = (long)tmpDouble;
+			if (sscanf(pt + 4, "%lf", &tmpDouble) == 1) {
+				scanInfo.m_gps.m_altitude = (long)tmpDouble;
+			}
 			continue;
 		}
 		if(pt = strstr(szLine, "serial=")){
@@ -851,33 +865,39 @@ void CEvaluationLogFileHandler::ParseScanInformation(CSpectrumInfo &scanInfo, do
 		}
 
 		if(pt = strstr(szLine, "channel=")){
-			sscanf(pt + 8, "%lf", &tmpDouble);
-			scanInfo.m_channel = (unsigned char)tmpDouble;
+			if (sscanf(pt + 8, "%lf", &tmpDouble) == 1) {
+				scanInfo.m_channel = (unsigned char)tmpDouble;
+			}
 		}
 		if(pt = strstr(szLine, "coneangle=")){
-			sscanf(pt + 10, "%lf", &tmpDouble);
-			scanInfo.m_coneAngle = (float)tmpDouble;
+			if (sscanf(pt + 10, "%lf", &tmpDouble) == 1) {
+				scanInfo.m_coneAngle = (float)tmpDouble;
+			}
 		}
 
 		if(pt = strstr(szLine, "flux=")){
-			sscanf(pt + 5, "%lf", &tmpDouble);
-			flux = tmpDouble;
+			if (sscanf(pt + 5, "%lf", &tmpDouble) == 1) {
+				flux = tmpDouble;
+			}
 		}
 
 		if(pt = strstr(szLine, "battery=")){
-			sscanf(pt + 8, "%f", &scanInfo.m_batteryVoltage);
+			int ret = sscanf(pt + 8, "%f", &scanInfo.m_batteryVoltage);
 		}
 
 		if(pt = strstr(szLine, "temperature")){
-			sscanf(pt + 12, "%f", &scanInfo.m_temperature);
+			int ret = sscanf(pt + 12, "%f", &scanInfo.m_temperature);
 		}
 
 		if(pt = strstr(szLine, "instrumenttype=")){
-			sscanf(pt + 15, "%s", instrumentType);
-			if(Equals(instrumentType, "heidelberg"))
-				m_instrumentType = INSTR_HEIDELBERG;
-			else
-				m_instrumentType = INSTR_GOTHENBURG;
+			m_instrumentType = INSTR_GOTHENBURG;
+			char instrumentType[64];
+			if (sscanf(pt + 15, "%s", instrumentType) == 1) {
+				instrumentType[0] = '\0';
+				if (Equals(instrumentType, "heidelberg")) { // heidelberg no longer supported as of 6.0
+					m_instrumentType = INSTR_HEIDELBERG;
+				}
+			}
 		}
 	}
 }
@@ -902,69 +922,86 @@ void CEvaluationLogFileHandler::ParseFluxInformation(CWindField &windField, doub
 		}
 
 		if(pt = strstr(szLine, "flux=")){
-			sscanf(pt+5, "%lf", &flux);
+			int ret = sscanf(pt+5, "%lf", &flux);
 			continue;
 		}
 
 		if(pt = strstr(szLine, "windspeed=")){
-			sscanf(pt+10, "%lf", &windSpeed);
+			int ret = sscanf(pt+10, "%lf", &windSpeed);
 			continue;
 		}
 
 		if(pt = strstr(szLine, "winddirection=")){
-			sscanf(pt+14, "%lf", &windDirection);
+			int ret = sscanf(pt+14, "%lf", &windDirection);
 			continue;
 		}
 
 		if(pt = strstr(szLine, "plumeheight=")){
-			sscanf(pt+12, "%lf", &plumeHeight);
+			int ret = sscanf(pt+12, "%lf", &plumeHeight);
 			continue;
 		}
 
 		if(pt = strstr(szLine, "windspeedsource=")){
-			sscanf(pt+16, "%s", source);
-			if(strstr(source, "user")){
-				windSpeedSource = MET_USER;
-			}else if(strstr(source, "default")){
-				windSpeedSource = MET_DEFAULT;
-			}else if(strstr(source, "ecmwf_forecast")){
-				windSpeedSource = MET_ECMWF_FORECAST;
-			}else if(strstr(source, "ecmwf_analysis")){
-				windSpeedSource = MET_ECMWF_ANALYSIS;
-			}else if(strstr(source, "dual_beam_measurement")){
-				windSpeedSource = MET_DUAL_BEAM_MEASUREMENT;
+			if (sscanf(pt + 16, "%s", source) == 1) {
+				source[0] = '\0';
+				if (strstr(source, "user")) {
+					windSpeedSource = MET_USER;
+				}
+				else if (strstr(source, "default")) {
+					windSpeedSource = MET_DEFAULT;
+				}
+				else if (strstr(source, "ecmwf_forecast")) {
+					windSpeedSource = MET_ECMWF_FORECAST;
+				}
+				else if (strstr(source, "ecmwf_analysis")) {
+					windSpeedSource = MET_ECMWF_ANALYSIS;
+				}
+				else if (strstr(source, "dual_beam_measurement")) {
+					windSpeedSource = MET_DUAL_BEAM_MEASUREMENT;
+				}
 			}
 			continue;
 		}
 
 		if(pt = strstr(szLine, "winddirectionsource=")){
-			sscanf(pt+20, "%s", source);
-			if(strstr(source, "user")){
-				windDirectionSource = MET_USER;
-			}else if(strstr(source, "default")){
-				windDirectionSource = MET_DEFAULT;
-			}else if(strstr(source, "ecmwf_forecast")){
-				windDirectionSource = MET_ECMWF_FORECAST;
-			}else if(strstr(source, "ecmwf_analysis")){
-				windDirectionSource = MET_ECMWF_ANALYSIS;
-			}else if(strstr(source, "triangulation")){
-				windDirectionSource = MET_GEOMETRY_CALCULATION;
+			if (sscanf(pt + 20, "%s", source) == 1) {
+				source[0] = '\0';
+				if (strstr(source, "user")) {
+					windDirectionSource = MET_USER;
+				}
+				else if (strstr(source, "default")) {
+					windDirectionSource = MET_DEFAULT;
+				}
+				else if (strstr(source, "ecmwf_forecast")) {
+					windDirectionSource = MET_ECMWF_FORECAST;
+				}
+				else if (strstr(source, "ecmwf_analysis")) {
+					windDirectionSource = MET_ECMWF_ANALYSIS;
+				}
+				else if (strstr(source, "triangulation")) {
+					windDirectionSource = MET_GEOMETRY_CALCULATION;
+				}
 			}
 			continue;
 		}
 
 		if(pt = strstr(szLine, "plumeheightsource=")){
-			sscanf(pt+18, "%s", source);
-			if(strstr(source, "user")){
-				plumeHeightSource = MET_USER;
-			}else if(strstr(source, "default")){
-				plumeHeightSource = MET_DEFAULT;
-			}else if(strstr(source, "ecmwf_forecast")){
-				plumeHeightSource = MET_ECMWF_FORECAST;
-			}else if(strstr(source, "ecmwf_analysis")){
-				plumeHeightSource = MET_ECMWF_ANALYSIS;
-			}else if(strstr(source, "triangulation")){
-				plumeHeightSource = MET_GEOMETRY_CALCULATION;
+			if (sscanf(pt + 18, "%s", source) == 1) {
+				if (strstr(source, "user")) {
+					plumeHeightSource = MET_USER;
+				}
+				else if (strstr(source, "default")) {
+					plumeHeightSource = MET_DEFAULT;
+				}
+				else if (strstr(source, "ecmwf_forecast")) {
+					plumeHeightSource = MET_ECMWF_FORECAST;
+				}
+				else if (strstr(source, "ecmwf_analysis")) {
+					plumeHeightSource = MET_ECMWF_ANALYSIS;
+				}
+				else if (strstr(source, "triangulation")) {
+					plumeHeightSource = MET_GEOMETRY_CALCULATION;
+				}
 			}
 			continue;
 		}
@@ -1124,17 +1161,17 @@ RETURN_CODE CEvaluationLogFileHandler::WriteEvaluationLog(const CString fileName
 		string.Format("\n<scaninformation>\n");
 		string.AppendFormat("\tdate=%02d.%02d.%04d\n",			startTime.day, startTime.month, startTime.year);
 		string.AppendFormat("\tstarttime=%02d:%02d:%02d\n", startTime.hour, startTime.minute, startTime.second);
-		string.AppendFormat("\tcompass=%.1lf\n",						scan.GetCompass());
-		string.AppendFormat("\ttilt=%.1lf\n",								scan.GetPitch());
-		string.AppendFormat("\tlat=%.6lf\n",								scan.GetLatitude());
-		string.AppendFormat("\tlong=%.6lf\n",								scan.GetLongitude());
-		string.AppendFormat("\talt=%ld\n",									scan.GetAltitude());
+		string.AppendFormat("\tcompass=%.1lf\n", scan.GetCompass());
+		string.AppendFormat("\ttilt=%.1lf\n", scan.GetPitch());
+		string.AppendFormat("\tlat=%.6lf\n", scan.GetLatitude());
+		string.AppendFormat("\tlong=%.6lf\n", scan.GetLongitude());
+		string.AppendFormat("\talt=%ld\n", (int)scan.GetAltitude());
 
-		string.AppendFormat("\tvolcano=%s\n",								m_specInfo.m_volcano);
-		string.AppendFormat("\tsite=%s\n",									m_specInfo.m_site);
-		string.AppendFormat("\tobservatory=%s\n",						m_specInfo.m_observatory);
+		string.AppendFormat("\tvolcano=%s\n", (LPCSTR)m_specInfo.m_volcano);
+		string.AppendFormat("\tsite=%s\n", (LPCSTR)m_specInfo.m_site);
+		string.AppendFormat("\tobservatory=%s\n", (LPCSTR)m_specInfo.m_observatory);
 
-		string.AppendFormat("\tserial=%s\n",								scan.GetSerial());
+		string.AppendFormat("\tserial=%s\n", (LPCSTR)scan.GetSerial());
 		switch(m_specInfo.m_specModel){
 			case S2000:				string.AppendFormat("\tspectrometer=s2000\n");	break;
 			case USB2000:			string.AppendFormat("\tspectrometer=usb2000\n");	break;
@@ -1192,9 +1229,9 @@ RETURN_CODE CEvaluationLogFileHandler::WriteEvaluationLog(const CString fileName
 		string.AppendFormat("\twindspeed=%.4lf\n",				wind.GetWindSpeed());
 		string.AppendFormat("\twinddirection=%.4lf\n",		wind.GetWindDirection());
 		string.AppendFormat("\tplumeheight=%.2lf\n",			wind.GetPlumeHeight());
-		string.AppendFormat("\twindspeedsource=%s\n",			wsSrc);
-		string.AppendFormat("\twinddirectionsource=%s\n",	wdSrc);
-		string.AppendFormat("\tplumeheightsource=%s\n",		phSrc);
+		string.AppendFormat("\twindspeedsource=%s\n", (LPCSTR)wsSrc);
+		string.AppendFormat("\twinddirectionsource=%s\n", (LPCSTR)wdSrc);
+		string.AppendFormat("\tplumeheightsource=%s\n", (LPCSTR)phSrc);
 		//if(fabs(spectrometer.m_scanner.compass) > 360.0)
 		//	string.AppendFormat("\tcompasssource=compassreading\n");
 		//else
@@ -1211,10 +1248,10 @@ RETURN_CODE CEvaluationLogFileHandler::WriteEvaluationLog(const CString fileName
 		string.AppendFormat("starttime\tstoptime\tname\tspecsaturation\tfitsaturation\tdelta\tchisquare\texposuretime\tnumspec\t");
 
 		for(int itSpecie = 0; itSpecie < scan.GetSpecieNum(0); ++itSpecie){
-			specieName.Format("%s", scan.GetSpecieName(0, itSpecie));
-			string.AppendFormat("column(%s)\tcolumnerror(%s)\t",		specieName, specieName);
-			string.AppendFormat("shift(%s)\tshifterror(%s)\t",			specieName, specieName);
-			string.AppendFormat("squeeze(%s)\tsqueezeerror(%s)\t",	specieName, specieName);
+			specieName.Format("%s", (LPCSTR)scan.GetSpecieName(0, itSpecie));
+			string.AppendFormat("column(%s)\tcolumnerror(%s)\t", (LPCSTR)specieName, (LPCSTR)specieName);
+			string.AppendFormat("shift(%s)\tshifterror(%s)\t", (LPCSTR)specieName, (LPCSTR)specieName);
+			string.AppendFormat("squeeze(%s)\tsqueezeerror(%s)\t", (LPCSTR)specieName, (LPCSTR)specieName);
 		}
 		string.AppendFormat("isgoodpoint\toffset\tflag");
 		string.AppendFormat("\n<spectraldata>\n");
@@ -1223,7 +1260,7 @@ RETURN_CODE CEvaluationLogFileHandler::WriteEvaluationLog(const CString fileName
 
 
 		// ------------------- Then write the parameters for each spectrum ---------------------------
-		for(int itSpectrum = 0; itSpectrum < scan.GetEvaluatedNum(); ++itSpectrum){
+		for(unsigned long itSpectrum = 0; itSpectrum < scan.GetEvaluatedNum(); ++itSpectrum){
 			// 3a. Pretty print the result and the spectral info into a string
 			FormatEvaluationResult(&scan.GetSpectrumInfo(itSpectrum), scan.GetResult(itSpectrum), m_instrumentType, 0.0, scan.GetSpecieNum(itSpectrum), string);
 
@@ -1261,7 +1298,7 @@ RETURN_CODE CEvaluationLogFileHandler::FormatEvaluationResult(const CSpectrumInf
 	string.AppendFormat("%02d:%02d:%02d\t", info->m_stopTime.hr, info->m_stopTime.m, info->m_stopTime.sec);
 
 	// 5 The name of the spectrum
-	string.AppendFormat("%s\t", common.SimplifyString(info->m_name));
+	string.AppendFormat("%s\t", (LPCSTR)common.SimplifyString(info->m_name));
 
 	// 6. The (maximum) saturation ratio of the whole spectrum,
 	//			the (maximum) saturation ratio in the fit-region

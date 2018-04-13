@@ -120,7 +120,7 @@ void CReportWriter::WriteReport(CEvaluatedDataStorage *evalDataStorage, CCommuni
 
 	// The name of the report-file
 	Common::GetDateText(dateStr);
-	reportFileName.Format("%s\\Output\\%s\\DailyReport_%s.html", g_settings.outputDirectory, dateStr, dateStr);
+	reportFileName.Format("%s\\Output\\%s\\DailyReport_%s.html", (LPCSTR)g_settings.outputDirectory, (LPCSTR)dateStr, (LPCSTR)dateStr);
 
 	//// The names of the images
 	//imageDirectory.Format("%sOutput\\%s\\",							g_settings.outputDirectory, dateStr);
@@ -144,7 +144,7 @@ void CReportWriter::WriteReport(CEvaluatedDataStorage *evalDataStorage, CCommuni
 		const CString &serial = g_settings.scanner[instrument].spec[0].serialNumber;
 	
 		// Write a header for this spectrometer
-		fprintf(f, "<h1>%s (%s)</h1>\r\n", g_settings.scanner[instrument].site, serial);
+		fprintf(f, "<h1>%s (%s)</h1>\r\n", (LPCSTR)g_settings.scanner[instrument].site, (LPCSTR)serial);
 
 		// Get the flux data
 		numDataPoints			= evalDataStorage->GetFluxData(serial, timeBuffer, dataBuffer, qualityBuffer, BUF_SIZE);
@@ -169,15 +169,15 @@ void CReportWriter::WriteReport(CEvaluatedDataStorage *evalDataStorage, CCommuni
 		else
 			style.Format("");
 
-		fprintf(f, "<tr><th>Number of good scans</th><td%s>%ld</td><td></td><td></td></tr>\r\n",  style, numGoodDataPoints);
-		fprintf(f, "<tr><th>Number of bad scans</th><td%s>%ld</td><td></td><td></td></tr>\r\n",	 style, numDataPoints - numGoodDataPoints);
+		fprintf(f, "<tr><th>Number of good scans</th><td%s>%ld</td><td></td><td></td></tr>\r\n", (LPCSTR)style, numGoodDataPoints);
+		fprintf(f, "<tr><th>Number of bad scans</th><td%s>%ld</td><td></td><td></td></tr>\r\n", (LPCSTR)style, numDataPoints - numGoodDataPoints);
 
 		fprintf(f, "<tbody>\r\n");
 //		fprintf(f, "<tr><th>Average Flux</th><td>%.1lf</td><td>%s</td><td><img src=\"%s\"></td></tr>\r\n", Average(dataBuffer, numGoodDataPoints), fluxUnitStr, imageFileName_flux);
-		fprintf(f, "<tr><th>Average Flux</th><td>%.1lf</td><td>%s</td><td></tr>\r\n",  Average(dataBuffer, numGoodDataPoints), fluxUnitStr);
-		fprintf(f, "<tr><th>Std Flux</th><td>%.1lf</td><td>%s</td><td></td></tr>\r\n", Std(dataBuffer, numGoodDataPoints), fluxUnitStr);
-		fprintf(f, "<tr><th>Max Flux</th><td>%.1lf</td><td>%s</td><td></td></tr>\r\n", Max(dataBuffer, numGoodDataPoints), fluxUnitStr);
-		fprintf(f, "<tr><th>Min Flux</th><td>%.1lf</td><td>%s</td><td></td></tr>\r\n", Min(dataBuffer, numGoodDataPoints), fluxUnitStr);
+		fprintf(f, "<tr><th>Average Flux</th><td>%.1lf</td><td>%s</td><td></tr>\r\n",  Average(dataBuffer, numGoodDataPoints), (LPCSTR)fluxUnitStr);
+		fprintf(f, "<tr><th>Std Flux</th><td>%.1lf</td><td>%s</td><td></td></tr>\r\n", Std(dataBuffer, numGoodDataPoints), (LPCSTR)fluxUnitStr);
+		fprintf(f, "<tr><th>Max Flux</th><td>%.1lf</td><td>%s</td><td></td></tr>\r\n", Max(dataBuffer, numGoodDataPoints), (LPCSTR)fluxUnitStr);
+		fprintf(f, "<tr><th>Min Flux</th><td>%.1lf</td><td>%s</td><td></td></tr>\r\n", Min(dataBuffer, numGoodDataPoints), (LPCSTR)fluxUnitStr);
 
 		fprintf(f, "</table>\r\n</p>");
 
@@ -288,7 +288,7 @@ void CReportWriter::WriteReportHeader(FILE *f){
 
 	fprintf(f, "<html>\r\n");
 	fprintf(f, "<head>\r\n");
-	fprintf(f, "<title>End of Day Report %s</title>\r\n", dateStr);
+	fprintf(f, "<title>End of Day Report %s</title>\r\n", (LPCSTR)dateStr);
 	fprintf(f, "<style type=\"text/css\">\r\n");
 	fprintf(f, "#warning {font-style: italic; color: red}\r\n");
 	fprintf(f, "</style>\r\n");
@@ -339,7 +339,7 @@ int CReportWriter::WriteDataHistogram(double *data, long nDataPoints, long nBins
 	CRect rect;
 	CString axisStr;
 	CString fileName_WMF, fullFileName;
-	fullFileName.Format("%s%s",			filePath, fileName);
+	fullFileName.Format("%s%s", (LPCSTR)filePath, (LPCSTR)fileName);
 
 	fileName_WMF.Format(fullFileName.Left(CString::StringLength(fullFileName) - 3));
 	fileName_WMF.AppendFormat("wmf");
@@ -353,7 +353,7 @@ int CReportWriter::WriteDataHistogram(double *data, long nDataPoints, long nBins
 	double binSize	= (maxV - minV) / (double)nBins; // the size of each bin
 	binSize					= (binSize == 0.0) ? 0.1 : binSize;
 	for(int k = 0; k < nDataPoints; ++k){
-		curBin = (data[k] - minV) / binSize;
+		curBin = (long)((data[k] - minV) / binSize);
 		if(curBin >= 0 && curBin < nBins){
 			++sortedData[curBin];
 		}else{
@@ -385,20 +385,20 @@ int CReportWriter::WriteDataHistogram(double *data, long nDataPoints, long nBins
 		y1 = imageHeight - axisMargin;
 		y2 = imageHeight - (axisMargin + (imageHeight - axisMargin) * sortedData[k] / maxBinHeight);
 
-		pt[0]	= CPoint(x1, y1);
-		pt[1]	= CPoint(x1, y2);
-		pt[2]	= CPoint(x2, y2);
-		pt[3]	= CPoint(x2, y1);
+		pt[0]	= CPoint((int)x1, (int)y1);
+		pt[1]	= CPoint((int)x1, (int)y2);
+		pt[2]	= CPoint((int)x2, (int)y2);
+		pt[3]	= CPoint((int)x2, (int)y1);
 
 		dc->Polygon(pt, 4);
 	}
 
 	// 2. Draw the axes
-	dc->MoveTo(axisMargin,		axisMargin);
-	dc->LineTo(axisMargin,		imageHeight);
-	dc->LineTo(imageHeight,	imageHeight);
-	dc->LineTo(imageHeight,	axisMargin);
-	dc->LineTo(axisMargin,		axisMargin);
+	dc->MoveTo((int)axisMargin, (int)axisMargin);
+	dc->LineTo((int)axisMargin, (int)imageHeight);
+	dc->LineTo((int)imageHeight, (int)imageHeight);
+	dc->LineTo((int)imageHeight, (int)axisMargin);
+	dc->LineTo((int)axisMargin, (int)axisMargin);
 
 	// 2a. minimum value
 	//rect.left		= axisMargin;
@@ -429,7 +429,7 @@ int CReportWriter::WriteDataHistogram(double *data, long nDataPoints, long nBins
 	dc->Close();
 
 	// Release the memory
-	free(sortedData);
+	delete[] sortedData;
 	delete dc;
 
 	// Make the file a file of the given file-format instead of a .wmf - file

@@ -37,7 +37,7 @@ void CUserSettings::ReadSettings(const CString *fileName){
 	char txt[256];
 
 	if(fileName != NULL){
-		m_userSettingsFile.Format("%s", *fileName);
+		m_userSettingsFile.Format("%s", (LPCTSTR)*fileName);
 	}
 	
 	FILE *f = fopen(m_userSettingsFile, "r");
@@ -47,29 +47,37 @@ void CUserSettings::ReadSettings(const CString *fileName){
 	while(fgets(txt,sizeof(txt)-1, f)){
 		if(strlen(txt)>4 && txt[0]!='%'){
 			pt = txt;
-			if(pt = strstr(txt,nl))
-				pt[0]=0;
+			if (pt = strstr(txt, nl)) {
+				pt[0] = 0;
+			}
 
 			pt = txt;
-			if(pt = strstr(txt,lf))
+			if (pt = strstr(txt, lf)) {
 				pt[0] = 0;
+			}
 
 			// 1. Parse the flux unit
 			if(pt = strstr(txt,"FLUXUNIT=")){
 				pt = strstr(txt,"=");
-				sscanf(&pt[1],"%d",&m_fluxUnit);
+				if (pt) {
+					int ret = sscanf(&pt[1], "%d", &m_fluxUnit);
+				}
 			}
 
 			// 2. Parse the column unit
 			if(pt = strstr(txt,"COLUMNUNIT=")){
 				pt = strstr(txt,"=");
-				sscanf(&pt[1],"%d",&m_columnUnit);
+				if (pt) {
+					int ret = sscanf(&pt[1], "%d", &m_columnUnit);
+				}
 			}
 
 			// 3. Parse the language
 			if(pt = strstr(txt,"LANGUAGE=")){
 				pt = strstr(txt,"=");
-				sscanf(&pt[1],"%d",&m_language);
+				if (pt) {
+					int ret = sscanf(&pt[1], "%d", &m_language);
+				}
 			}
 		}
 	}

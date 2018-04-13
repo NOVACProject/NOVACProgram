@@ -26,8 +26,8 @@ CReferenceFile::~CReferenceFile(void)
 
 /** assignment operator */
 CReferenceFile &CReferenceFile::operator=(const CReferenceFile &ref2){
-	this->m_path.Format("%s", ref2.m_path);
-	this->m_specieName.Format("%s", ref2.m_specieName);
+	this->m_path.Format("%s", (LPCSTR)ref2.m_path);
+	this->m_specieName.Format("%s", (LPCSTR)ref2.m_specieName);
 
 	this->m_columnOption		= ref2.m_columnOption;
 	this->m_columnValue			= ref2.m_columnValue;

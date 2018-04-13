@@ -220,21 +220,21 @@ void CWindFileReader::ParseFileHeader(const char szLine[8192]){
 		++curCol;
 
 		// The time
-		if(0 == strnicmp(szToken, time, strlen(time))){
+		if(0 == _strnicmp(szToken, time, strlen(time))){
 			m_col.time = curCol;
 			szToken = NULL;
 			continue;
 		}
 
 		// The date
-		if(0 == strnicmp(szToken, date, strlen(date))){
+		if(0 == _strnicmp(szToken, date, strlen(date))){
 			m_col.date = curCol;
 			szToken = NULL;
 			continue;
 		}
 
 		// The speed
-		if(0 == strnicmp(szToken, speed, strlen(speed)) || 0 == strnicmp(szToken, speed2, strlen(speed2))){
+		if(0 == _strnicmp(szToken, speed, strlen(speed)) || 0 == _strnicmp(szToken, speed2, strlen(speed2))){
 			m_col.windSpeed = curCol;
 			m_containsWindSpeed = true;
 			szToken = NULL;
@@ -242,16 +242,16 @@ void CWindFileReader::ParseFileHeader(const char szLine[8192]){
 		}
 
 		// The uncertainty in the speed
-		if(0 == strnicmp(szToken, speedErr, strlen(speedErr))){
+		if(0 == _strnicmp(szToken, speedErr, strlen(speedErr))){
 			m_col.windSpeedError = curCol;
 			szToken = NULL;
 			continue;
 		}
 
 		// The direction
-		if(0 == strnicmp(szToken, direction, strlen(direction)) ||
-			 0 == strnicmp(szToken, direction2, strlen(direction2)) ||
-			 0 == strnicmp(szToken, direction3, strlen(direction3))){
+		if(0 == _strnicmp(szToken, direction, strlen(direction)) ||
+			 0 == _strnicmp(szToken, direction2, strlen(direction2)) ||
+			 0 == _strnicmp(szToken, direction3, strlen(direction3))){
 
 			m_col.windDirection = curCol;
 			m_containsWindDirection = true;
@@ -260,16 +260,16 @@ void CWindFileReader::ParseFileHeader(const char szLine[8192]){
 		}
 
 		// The uncertainty in the direction
-		if(0 == strnicmp(szToken, directionErr, strlen(directionErr))){
+		if(0 == _strnicmp(szToken, directionErr, strlen(directionErr))){
 			m_col.windDirectionError = curCol;
 			szToken = NULL;
 			continue;
 		}
 
 		// The plume height
-		if(0 == strnicmp(szToken, height,  strlen(height)) ||
-			 0 == strnicmp(szToken, height2, strlen(height2)) ||
-			 0 == strnicmp(szToken, height3, strlen(height3))){
+		if(0 == _strnicmp(szToken, height,  strlen(height)) ||
+			 0 == _strnicmp(szToken, height2, strlen(height2)) ||
+			 0 == _strnicmp(szToken, height3, strlen(height3))){
 
 			m_col.plumeHeight = curCol;
 			m_containsPlumeHeight = true;
@@ -278,7 +278,7 @@ void CWindFileReader::ParseFileHeader(const char szLine[8192]){
 		}
 
 		// The uncertainty in the plume height
-		if(0 == strnicmp(szToken, heightErr, strlen(heightErr))){
+		if(0 == _strnicmp(szToken, heightErr, strlen(heightErr))){
 			m_col.plumeHeightError = curCol;
 			szToken = NULL;
 			continue;

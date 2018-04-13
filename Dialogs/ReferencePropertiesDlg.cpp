@@ -167,13 +167,13 @@ void CReferencePropertiesDlg::BrowseForReference(){
     return;
 
 	// 2. Set the path
-	m_ref->m_path.Format("%s", fileName);
+	m_ref->m_path.Format("%s", (LPCSTR)fileName);
 
   // 3. make a guess of the specie name
   CString specie;
   Common::GuessSpecieName(fileName, specie);
   if(strlen(specie) != 0){
-    m_ref->m_specieName.Format("%s", specie);
+    m_ref->m_specieName.Format("%s", (LPCSTR)specie);
   }
 
 	UpdateData(FALSE);

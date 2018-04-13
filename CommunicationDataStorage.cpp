@@ -41,7 +41,7 @@ int CCommunicationDataStorage::AddData(const CString &serial)
 		{
       // if the scanner is not in the list then insert it
       scannerIndex = m_serialNum;
-      m_serials[m_serialNum].Format("%s", serial);
+      m_serials[m_serialNum].Format("%s", (LPCSTR)serial);
       ++m_serialNum;
     }
 		else
@@ -86,7 +86,7 @@ int  CCommunicationDataStorage::GetScannerIndex(const CString &serial){
   // If the serial number is different from last time, search for it
   for(i = 0; i < m_serialNum; ++i){
     if(Equals(serial, m_serials[i])){
-      lastSerial.Format("%s", serial);
+      lastSerial.Format("%s", (LPCSTR)serial);
       lastIndex = i;
       return (int)i;
     }

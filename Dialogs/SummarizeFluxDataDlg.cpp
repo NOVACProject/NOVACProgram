@@ -80,7 +80,7 @@ void CSummarizeFluxDataDlg::OnSearchForFluxLogFiles()
 
 	// If the directory is empty, then search in the output-directory
 	if(directory.GetLength() < 4){
-		directory.Format("%sOutput", g_settings.outputDirectory);
+		directory.Format("%sOutput", (LPCSTR)g_settings.outputDirectory);
 	}
 
 	// Search for files in that directory...
@@ -103,12 +103,12 @@ void CSummarizeFluxDataDlg::SearchForFluxLogFiles(const CString &directory){
 
 	/** Go through the filenames */
 	if(m_includeSubDirectories)
-		sprintf(fileToFind, "%s\\*",									directory);
+		sprintf(fileToFind, "%s\\*", (LPCSTR)directory);
 	else{
 		if(m_lookForPostFluxLogs)
-			sprintf(fileToFind, "%s\\PostFluxLog*.txt",	directory);
+			sprintf(fileToFind, "%s\\PostFluxLog*.txt", (LPCSTR)directory);
 		else
-			sprintf(fileToFind, "%s\\FluxLog*.txt",			directory);
+			sprintf(fileToFind, "%s\\FluxLog*.txt", (LPCSTR)directory);
 	}
 
 	// Search for files
@@ -119,7 +119,7 @@ void CSummarizeFluxDataDlg::SearchForFluxLogFiles(const CString &directory){
 	}
 
 	do{
-    fullFileName.Format("%s\\%s", directory, FindFileData.cFileName);
+		fullFileName.Format("%s\\%s", (LPCSTR)directory, (LPCSTR)FindFileData.cFileName);
 		fileName.Format("%s",										 FindFileData.cFileName);
 
 		// don't include the current and the parent directories

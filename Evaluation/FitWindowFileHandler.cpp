@@ -258,41 +258,41 @@ RETURN_CODE CFitWindowFileHandler::WriteFitWindow(const Evaluation::CFitWindow &
 	if(NULL == f)
 		return FAIL;
 
-	fprintf(f, "<fitWindow name=\"%s\">\n", window.name);
+	fprintf(f, "<fitWindow name=\"%s\">\n", (LPCSTR)window.name);
 	indent.Format("\t");
 
-	fprintf(f, "%s<fitLow>%d</fitLow>\n", indent, window.fitLow);
-	fprintf(f, "%s<fitHigh>%d</fitHigh>\n", indent, window.fitHigh);
-	fprintf(f, "%s<polyOrder>%d</polyOrder>\n", indent, window.polyOrder);
-	fprintf(f, "%s<fitType>%d</fitType>\n", indent, window.fitType);
+	fprintf(f, "%s<fitLow>%d</fitLow>\n", (LPCSTR)indent, window.fitLow);
+	fprintf(f, "%s<fitHigh>%d</fitHigh>\n", (LPCSTR)indent, window.fitHigh);
+	fprintf(f, "%s<polyOrder>%d</polyOrder>\n", (LPCSTR)indent, window.polyOrder);
+	fprintf(f, "%s<fitType>%d</fitType>\n", (LPCSTR)indent, window.fitType);
 
-	fprintf(f, "%s<channel>%d</channel>\n", indent, window.channel);
-	fprintf(f, "%s<specLength>%d</specLength>\n", indent, window.specLength);
+	fprintf(f, "%s<channel>%d</channel>\n", (LPCSTR)indent, window.channel);
+	fprintf(f, "%s<specLength>%d</specLength>\n", (LPCSTR)indent, window.specLength);
 
-	fprintf(f, "%s<fOptShift>%d</fOptShift>\n",					indent, window.findOptimalShift);
-	fprintf(f, "%s<UV>%d</UV>\n",												indent, window.UV);
-	fprintf(f, "%s<shiftSky>%d</shiftSky>\n",						indent, window.shiftSky);
-	fprintf(f, "%s<interlaceStep>%d</interlaceStep>\n", indent, window.interlaceStep);
+	fprintf(f, "%s<fOptShift>%d</fOptShift>\n", (LPCSTR)indent, window.findOptimalShift);
+	fprintf(f, "%s<UV>%d</UV>\n", (LPCSTR)indent, window.UV);
+	fprintf(f, "%s<shiftSky>%d</shiftSky>\n", (LPCSTR)indent, window.shiftSky);
+	fprintf(f, "%s<interlaceStep>%d</interlaceStep>\n", (LPCSTR)indent, window.interlaceStep);
 
-	fprintf(f, "%s<nRef>%d</nRef>\n", indent, window.nRef);
+	fprintf(f, "%s<nRef>%d</nRef>\n", (LPCSTR)indent, window.nRef);
 
 	for(int i = 0; i < window.nRef; ++i){
-		fprintf(f, "%s<ref name=\"%s\">\n", indent, window.ref[i].m_specieName);
-		fprintf(f, "%s\t<path>%s</path>\n", indent, window.ref[i].m_path);
+		fprintf(f, "%s<ref name=\"%s\">\n", (LPCSTR)indent, (LPCSTR)window.ref[i].m_specieName);
+		fprintf(f, "%s\t<path>%s</path>\n", (LPCSTR)indent, (LPCSTR)window.ref[i].m_path);
 
-		fprintf(f, "%s\t<shiftOption>%d</shiftOption>\n", indent, window.ref[i].m_shiftOption);
+		fprintf(f, "%s\t<shiftOption>%d</shiftOption>\n", (LPCSTR)indent, window.ref[i].m_shiftOption);
 		if(window.ref[i].m_shiftOption != Evaluation::SHIFT_FREE)
-			fprintf(f, "%s\t<shiftValue>%lf</shiftValue>\n", indent, window.ref[i].m_shiftValue);
+			fprintf(f, "%s\t<shiftValue>%lf</shiftValue>\n", (LPCSTR)indent, window.ref[i].m_shiftValue);
 
-		fprintf(f, "%s\t<squeezeOption>%d</squeezeOption>\n", indent, window.ref[i].m_squeezeOption);
+		fprintf(f, "%s\t<squeezeOption>%d</squeezeOption>\n", (LPCSTR)indent, window.ref[i].m_squeezeOption);
 		if(window.ref[i].m_squeezeOption != Evaluation::SHIFT_FREE)
-			fprintf(f, "%s\t<squeezeValue>%lf</squeezeValue>\n", indent, window.ref[i].m_squeezeValue);
+			fprintf(f, "%s\t<squeezeValue>%lf</squeezeValue>\n", (LPCSTR)indent, window.ref[i].m_squeezeValue);
 
-		fprintf(f, "%s\t<columnOption>%d</columnOption>\n", indent, window.ref[i].m_columnOption);
+		fprintf(f, "%s\t<columnOption>%d</columnOption>\n", (LPCSTR)indent, window.ref[i].m_columnOption);
 		if(window.ref[i].m_columnOption != Evaluation::SHIFT_FREE)
-			fprintf(f, "%s\t<columnValue>%lf</columnValue>\n", indent, window.ref[i].m_columnValue);
+			fprintf(f, "%s\t<columnValue>%lf</columnValue>\n", (LPCSTR)indent, window.ref[i].m_columnValue);
 
-		fprintf(f, "%s</ref>\n", indent);
+		fprintf(f, "%s</ref>\n", (LPCSTR)indent);
 	}
 
 	fprintf(f, "</fitWindow>\n");

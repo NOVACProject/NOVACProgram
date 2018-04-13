@@ -58,7 +58,7 @@ void CSpectrometerHistory::AppendScanResult(const CScanResult &result, const CSt
 	// 2a. Get the range of scan-angles in the scan (typically from -90 to +90)
 	newInfo.alpha[0] = +999.0; 
 	newInfo.alpha[1] = -999.0;
-	for(int k = 0; k < result.GetEvaluatedNum(); ++k){
+	for(unsigned long k = 0; k < result.GetEvaluatedNum(); ++k){
 		newInfo.alpha[0] = min(newInfo.alpha[0], result.GetScanAngle(k));
 		newInfo.alpha[1] = max(newInfo.alpha[1], result.GetScanAngle(k));
 	}

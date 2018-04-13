@@ -99,58 +99,58 @@ int CCfgTxtFileHandler::ReadCfgTxt(const CString &fileName){
 			
 			if(pt = strstr(txt,"DELAY=")){
 				pt = strstr(txt,"=");
-				sscanf(&pt[1],"%d",&m_motorDelay);
+				int ret = sscanf(&pt[1],"%d",&m_motorDelay);
 			}
 
 			if(pt = strstr(txt,"SKIPMOTOR=")){
 				pt = strstr(txt,"=");
-				sscanf(&pt[1],"%d",&m_motorSkip);
+				int ret = sscanf(&pt[1],"%d",&m_motorSkip);
 			}
 			
 			// 2. Parse the channel-settings
 			if(pt = strstr(txt,"STARTCHN=")){
 				pt = strstr(txt,"=");
-				sscanf(&pt[1],"%d",&m_startChn);
+				int ret = sscanf(&pt[1],"%d",&m_startChn);
 			}
 			if(pt = strstr(txt,"STOPCHN=")){
 				pt = strstr(txt,"=");
-				sscanf(&pt[1],"%d",&m_stopChn);
+				int ret = sscanf(&pt[1],"%d",&m_stopChn);
 			}
 
 			// 3. Parse the exposure-time settings
 			if(pt = strstr(txt,"PERCENT=")){
 				pt = strstr(txt,"=");
-				sscanf(&pt[1],"%lf",&m_percent);
+				int ret = sscanf(&pt[1],"%lf",&m_percent);
 			}
 			if(pt = strstr(txt,"MAXINTTIME=")){
 				pt = strstr(txt,"=");
-				sscanf(&pt[1],"%d",&m_maxIntTime);
+				int ret = sscanf(&pt[1],"%d",&m_maxIntTime);
 			}
 			if(pt = strstr(txt,"MININTTIME=")){
 				pt = strstr(txt,"=");
-				sscanf(&pt[1],"%d",&m_minIntTime);
+				int ret = sscanf(&pt[1],"%d",&m_minIntTime);
 			}
 
 			// 4. Parse the stratospheric-measurement settings
 			if(pt = strstr(txt,"STRATOANGLE=")){
 				pt = strstr(txt,"=");
-				sscanf(&pt[1],"%d",&m_stratoAngle);
+				int ret = sscanf(&pt[1],"%d",&m_stratoAngle);
 			}
 
 			// 5. Parse the energy-options...
 			if(pt = strstr(txt,"POWERSAVE=")){
 				pt = strstr(txt,"=");
-				sscanf(&pt[1],"%d",&m_powerSave);
+				int ret = sscanf(&pt[1],"%d",&m_powerSave);
 			}
 			if(pt = strstr(txt,"BATTERYLIMIT=")){
 				pt = strstr(txt,"=");
-				sscanf(&pt[1],"%lf",&m_batteryLimit);
+				int ret = sscanf(&pt[1],"%lf",&m_batteryLimit);
 			}
 			
 			// 6. Parse the FTP-server settings...
 			if(pt = strstr(txt,"FTPTIMEOUT=")){
 				pt = strstr(txt,"=");
-				sscanf(&pt[1],"%d",&m_ftpServerTimeOut);
+				int ret = sscanf(&pt[1],"%d",&m_ftpServerTimeOut);
 			}
 			if(pt=strstr(txt,"SERVER=")){
 				char username[1024], password[1024];
@@ -168,11 +168,15 @@ int CCfgTxtFileHandler::ReadCfgTxt(const CString &fileName){
 			// 6. Parse the geometry
 			if(pt = strstr(txt,"CONEANGLE=")){
 				pt = strstr(txt,"=");
-				sscanf(&pt[1],"%lf",&m_coneAngle);
+				if (pt) {
+					int ret = sscanf(&pt[1], "%lf", &m_coneAngle);
+				}
 			}
 			if(pt = strstr(txt,"COMPASS=")){
 				pt = strstr(txt,"=");
-				sscanf(&pt[1],"%lf %lf %lf",&m_compass, &m_tiltX, &m_tiltY);
+				if (pt) {
+					int ret = sscanf(&pt[1], "%lf %lf %lf", &m_compass, &m_tiltX, &m_tiltY);
+				}
 			}
 			
 			// --- Finally parse the measurement lines ---
@@ -181,12 +185,20 @@ int CCfgTxtFileHandler::ReadCfgTxt(const CString &fileName){
 				CMeasLine meas;
 				int nFields = 0;
 				if(m_nMotors == 1){
-					nFields = sscanf(&pt[1],"%d %d %d %d %d %d %d %d ", &meas.pos, &meas.expTime, &meas.sum1, &meas.sum2, &meas.chn, &meas.baseName, &meas.repetitions, &meas.flag);
+					if (pt) {
+						nFields = sscanf(&pt[1], "%d %d %d %d %d %hhd %d %d ",
+							&meas.pos,
+							&meas.expTime,
+							&meas.sum1,
+							&meas.sum2,
+							&meas.chn,
+							&meas.baseName,
+							&meas.repetitions,
+							&meas.flag);
+					}
 					if(nFields == 8){
 						m_measurements.SetAtGrow(m_measurementNum, meas);
 					}
-				}else if(m_nMotors == 2){
-					// ...
 				}
 			}
 		}

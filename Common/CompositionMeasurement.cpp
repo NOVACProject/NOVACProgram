@@ -28,8 +28,8 @@ bool CCompositionMeasurement::IsTimeForCompositionMeasurement(const Evaluation::
 	common.GetTimeText(timeStr);
 
 	// For debugging...
-	debugFile.Format("%sOutput\\%s\\Debug_CompositionMeas.txt", g_settings.outputDirectory, dateStr);
-	serial.Format("%s", spectrometer->m_scanner.spec[0].serialNumber);
+	debugFile.Format("%sOutput\\%s\\Debug_CompositionMeas.txt", (LPCSTR)g_settings.outputDirectory, (LPCSTR)dateStr);
+	serial.Format("%s", (LPCSTR)spectrometer->m_scanner.spec[0].serialNumber);
 	
 	int thisVolcano = -1;
 	for(unsigned int k = 0; k < g_volcanoes.m_volcanoNum; ++k){
@@ -61,7 +61,7 @@ bool CCompositionMeasurement::IsTimeForCompositionMeasurement(const Evaluation::
 	if(sPassed > 0 && sPassed < interval){
 		FILE *f = fopen(debugFile, "a+");
 		if(f != NULL){
-			fprintf(f, "%s\t%s\tNo measurement: Little time since last measurement\n", timeStr, serial);
+			fprintf(f, "%s\t%s\tNo measurement: Little time since last measurement\n", (LPCSTR)timeStr, (LPCSTR)serial);
 			fclose(f);
 			UploadToNOVACServer(debugFile, thisVolcano, false);
 		}
@@ -79,7 +79,7 @@ bool CCompositionMeasurement::IsTimeForCompositionMeasurement(const Evaluation::
 	if(false == spectrometer->m_history->GetPlumeCentreVariation(stablePeriod, 0, centreMin, centreMax)){
 		FILE *f = fopen(debugFile, "a+");
 		if(f != NULL){
-			fprintf(f, "%s\t%s\tNo measurement: At least one of the last %d scans has missed the plume\n", timeStr, serial, stablePeriod); 
+			fprintf(f, "%s\t%s\tNo measurement: At least one of the last %d scans has missed the plume\n", (LPCSTR)timeStr, (LPCSTR)serial, stablePeriod);
 			fclose(f);
 			UploadToNOVACServer(debugFile, thisVolcano, false);
 		}
@@ -91,7 +91,7 @@ bool CCompositionMeasurement::IsTimeForCompositionMeasurement(const Evaluation::
 	if(fabs(centreMax - centreMin) > 50){
 		FILE *f = fopen(debugFile, "a+");
 		if(f != NULL){
-			fprintf(f, "%s\t%s\tNo measurement: Too large variation in plume centre\n", timeStr, serial); 
+			fprintf(f, "%s\t%s\tNo measurement: Too large variation in plume centre\n", (LPCSTR)timeStr, (LPCSTR)serial);
 			fclose(f);
 			UploadToNOVACServer(debugFile, thisVolcano, false);
 		}
@@ -103,7 +103,7 @@ bool CCompositionMeasurement::IsTimeForCompositionMeasurement(const Evaluation::
 	if(fabs(plumeCentre) > 70){
 		FILE *f = fopen(debugFile, "a+");
 		if(f != NULL){
-			fprintf(f, "%s\t%s\tNo measurement: Too low plume\n", timeStr, serial); 
+			fprintf(f, "%s\t%s\tNo measurement: Too low plume\n", (LPCSTR)timeStr, (LPCSTR)serial);
 			fclose(f);
 			UploadToNOVACServer(debugFile, thisVolcano, false);
 		}
@@ -116,7 +116,7 @@ bool CCompositionMeasurement::IsTimeForCompositionMeasurement(const Evaluation::
 	if(fabs(plumeEdge[0]) > 80 || fabs(plumeEdge[1]) > 80){
 		FILE *f = fopen(debugFile, "a+");
 		if(f != NULL){
-			fprintf(f, "%s\t%s\tNo measurement: Too low plume edges\n", timeStr, serial);
+			fprintf(f, "%s\t%s\tNo measurement: Too low plume edges\n", (LPCSTR)timeStr, (LPCSTR)serial);
 			fclose(f);
 			UploadToNOVACServer(debugFile, thisVolcano, false);
 		}
@@ -128,7 +128,7 @@ bool CCompositionMeasurement::IsTimeForCompositionMeasurement(const Evaluation::
 	if(plumeCompleteness < 0.7){
 		FILE *f = fopen(debugFile, "a+");
 		if(f != NULL){
-			fprintf(f, "%s\t%s\tNo measurement: Plume not complete\n", timeStr, serial);
+			fprintf(f, "%s\t%s\tNo measurement: Plume not complete\n", (LPCSTR)timeStr, (LPCSTR)serial);
 			fclose(f);
 			UploadToNOVACServer(debugFile, thisVolcano, false);
 		}
@@ -141,7 +141,7 @@ bool CCompositionMeasurement::IsTimeForCompositionMeasurement(const Evaluation::
 	if(maxColumn < minColumn){
 		FILE *f = fopen(debugFile, "a+");
 		if(f != NULL){
-			fprintf(f, "%s\t%s\tNo measurement: Too weak plume\n", timeStr, serial);
+			fprintf(f, "%s\t%s\tNo measurement: Too weak plume\n", (LPCSTR)timeStr, (LPCSTR)serial);
 			fclose(f);
 			UploadToNOVACServer(debugFile, thisVolcano, false);
 		}
@@ -155,7 +155,7 @@ bool CCompositionMeasurement::IsTimeForCompositionMeasurement(const Evaluation::
 		if(expTime < 0 || expTime > 300){
 			FILE *f = fopen(debugFile, "a+");
 			if(f != NULL){
-				fprintf(f, "%s\t%s\tNo measurement: Too long exptimes\n", timeStr, serial);
+				fprintf(f, "%s\t%s\tNo measurement: Too long exptimes\n", (LPCSTR)timeStr, (LPCSTR)serial);
 				fclose(f);
 				UploadToNOVACServer(debugFile, thisVolcano, false);
 			}
@@ -165,7 +165,7 @@ bool CCompositionMeasurement::IsTimeForCompositionMeasurement(const Evaluation::
 		if(expTime < 0 || expTime > 1000){
 			FILE *f = fopen(debugFile, "a+");
 			if(f != NULL){
-				fprintf(f, "%s\t%s\tNo measurement: Too long exptimes\n", timeStr, serial);
+				fprintf(f, "%s\t%s\tNo measurement: Too long exptimes\n", (LPCSTR)timeStr, (LPCSTR)serial);
 				fclose(f);
 				UploadToNOVACServer(debugFile, thisVolcano, false);
 			}
@@ -175,7 +175,7 @@ bool CCompositionMeasurement::IsTimeForCompositionMeasurement(const Evaluation::
 
 	FILE *f = fopen(debugFile, "a+");
 	if(f != NULL){
-		fprintf(f, "%s\t%s\tOk to do composition measurement!!\n", timeStr, serial);
+		fprintf(f, "%s\t%s\tOk to do composition measurement!!\n", (LPCSTR)timeStr, (LPCSTR)serial);
 		fclose(f);
 		UploadToNOVACServer(debugFile, thisVolcano, false);
 	}
@@ -216,7 +216,7 @@ void	CCompositionMeasurement::StartCompositionMeasurement(const Evaluation::CSpe
 	spec->m_history->GetPlumeEdges(stablePeriod, plumeEdge[0], plumeEdge[1]);
 	
 	// The number of measurement positions inside the plume...
-	measurementsInPlume	= (plumeEdge[1] - plumeEdge[0]) / stepAngle;
+	measurementsInPlume	= (int)((plumeEdge[1] - plumeEdge[0]) / stepAngle);
 	if(spec->m_scanner.instrumentType == INSTR_GOTHENBURG){
 		if(measurementsInPlume < 5)
 			return; // there's not enough space to make 5 measurements in the plume. Quit!
@@ -247,16 +247,16 @@ void	CCompositionMeasurement::StartCompositionMeasurement(const Evaluation::CSpe
 
 	// 2. Get the directory where to temporarily store the cfgonce.txt
 	if(strlen(g_settings.outputDirectory) > 0){
-		directory.Format("%sTemp\\%s\\", g_settings.outputDirectory, serialNumber);
+		directory.Format("%sTemp\\%s\\", (LPCSTR)g_settings.outputDirectory, (LPCSTR)serialNumber);
 		if(CreateDirectoryStructure(directory)){
 			common.GetExePath();
-			fileName->Format("%s\\cfgonce.txt", common.m_exePath);
+			fileName->Format("%s\\cfgonce.txt", (LPCSTR)common.m_exePath);
 		}else{
-			fileName->Format("%scfgonce.txt", directory);
+			fileName->Format("%scfgonce.txt", (LPCSTR)directory);
 		}
 	}else{
 		common.GetExePath();
-		fileName->Format("%s\\cfgonce.txt", common.m_exePath);
+		fileName->Format("%s\\cfgonce.txt", (LPCSTR)common.m_exePath);
 	}
 	
 	FILE *f = fopen(*fileName, "w");
@@ -269,8 +269,8 @@ void	CCompositionMeasurement::StartCompositionMeasurement(const Evaluation::CSpe
 
 	// 3a. A small header 
 	common.GetDateTimeText(dateTime);
-	fprintf(f, "%%-------------Modified at %s------------%\n\n",dateTime);
-	fprintf(f, "%%Questions? email\n% mattias.johansson@chalmers.se\n\n");
+	fprintf(f, "%%-------------Modified at %s------------\n\n", (LPCSTR)dateTime);
+	fprintf(f, "%%Questions? email mattias.johansson@chalmers.se\n\n");
 
 	// 3c. Write the Spectrum transfer information
 	fprintf(f, "%% The following channels defines which channels in the spectra that will be transferred\n");
@@ -348,7 +348,7 @@ void	CCompositionMeasurement::StartCompositionMeasurement(const Evaluation::CSpe
 		if(SUCCESS != CSpectrometerModel::ToString(spec->m_scanner.spec[0].model, spectrometerType)){
 			spectrometerType.Format("HR2000");
 		}
-		fprintf (f, "SPECTROMETERTYPE=%s\n\n", spectrometerType);  //can spectrometertype be retrieved automatically from configuration?
+		fprintf (f, "SPECTROMETERTYPE=%s\n\n", (LPCSTR)spectrometerType);  //can spectrometertype be retrieved automatically from configuration?
 
 		// 3e. Write the motor information
 		//fprintf(f, "%% StepsPerRound defines the number of steps the steppermotor divides one round into\n");
@@ -405,7 +405,7 @@ void	CCompositionMeasurement::StartCompositionMeasurement(const Evaluation::CSpe
 		g_comm->PostThreadMessage(WM_STATUS_UPLOAD, (WPARAM)serialNumber, (LPARAM)fileName);
 
 		// 4b. Tell the user what we've done...
-		message.Format("Telling spectrometer %s to perform composition measurement", serialNumber);
+		message.Format("Telling spectrometer %s to perform composition measurement", (LPCSTR)serialNumber);
 		ShowMessage(message);
 	}
 }

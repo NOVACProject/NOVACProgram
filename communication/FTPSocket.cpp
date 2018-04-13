@@ -18,12 +18,12 @@ CFTPSocket::~CFTPSocket(void)
 //login to one ftp server
 bool CFTPSocket::Login(const CString ftpServerIP, CString userName, CString pwd,int ftpPort)
 {
-	sprintf(m_serverParam.m_serverIP, "%s", ftpServerIP);
+	sprintf(m_serverParam.m_serverIP, "%s", (LPCSTR)ftpServerIP);
 	m_serverParam.m_serverPort = ftpPort;
 	m_serverParam.userName = userName;
 	m_serverParam.password = pwd;
 
-	m_msg.Format("%s is not accessible, check the connection", ftpServerIP);	
+	m_msg.Format("%s is not accessible, check the connection", (LPCSTR)ftpServerIP);
 	if(!Connect(m_controlSocket,m_serverParam.m_serverIP,ftpPort))
 	{
 		ShowMessage(m_msg);
@@ -33,7 +33,7 @@ bool CFTPSocket::Login(const CString ftpServerIP, CString userName, CString pwd,
 	SendCommand("PASS",pwd);
 	if(ReadResponse() == 1)
 	{
-		m_msg.Format("%s is connected", ftpServerIP);
+		m_msg.Format("%s is connected", (LPCSTR)ftpServerIP);
 		ShowMessage(m_msg);
 		return true;
 	}
@@ -53,7 +53,7 @@ void CFTPSocket::GetSysType(CString& type)
 {
 	SendCommand("SYST","");
 	if(ReadResponse() == 1)
-		type.Format("%s",m_serverMsg);
+		type.Format("%s", (LPCSTR)m_serverMsg);
 	
 }
 bool CFTPSocket::EnterFolder(CString& folder)
@@ -111,7 +111,7 @@ bool CFTPSocket::EnterPassiveMode()
 		// Connect to the server
 		if(!Connect(m_dataSocket,m_serverParam.m_serverIP,m_serverParam.m_serverDataPort))
 		{
-			m_msg.Format("can not connect to server %s:%d,server msg:%s", m_serverParam.m_serverIP,m_serverParam.m_serverDataPort,m_serverMsg);
+			m_msg.Format("can not connect to server %s:%d,server msg:%s", (LPCSTR)m_serverParam.m_serverIP,m_serverParam.m_serverDataPort, (LPCSTR)m_serverMsg);
 		
 			ShowMessage(m_msg);
 			m_serverParam.m_serverDataPort  = 0;
@@ -203,12 +203,12 @@ bool CFTPSocket::UploadFile(CString fileLocalPath)
 	result = SendFileToServer(fileLocalPath);
 	if(result)
 	{
-		m_msg.Format("%s has been uploaded to %s", fileName,m_serverParam.m_serverIP);
+		m_msg.Format("%s has been uploaded to %s", (LPCSTR)fileName, (LPCSTR)m_serverParam.m_serverIP);
 		ShowMessage(m_msg);
 	}
 	else
 	{
-		m_msg.Format("%s couldn't be uploaded to %s", fileName,m_serverParam.m_serverIP);
+		m_msg.Format("%s couldn't be uploaded to %s", (LPCSTR)fileName, (LPCSTR)m_serverParam.m_serverIP);
 		ShowMessage(m_msg);
 	}
 	return result;
@@ -228,9 +228,9 @@ int CFTPSocket::SendCommand(CString command,CString commandText)
 	char buf[100];
 	Sleep(100); // Added 2008.06.30 to work with the Axis computer
 	if(commandText.GetLength() == 0)
-		wsprintf(buf,"%s\r\n", command);
+		wsprintf(buf,"%s\r\n", (LPCSTR)command);
 	else
-		wsprintf(buf,"%s %s\r\n", command, commandText);
+		wsprintf(buf,"%s %s\r\n", (LPCSTR)command, (LPCSTR)commandText);
 	int result = send(m_controlSocket,buf,strlen(buf),0);
 	if(result == SOCKET_ERROR)
 	{
@@ -307,7 +307,7 @@ bool CFTPSocket::ReadData()
 		
 	m_msg.Format("data is %d bytes",byteSum);
 	ShowMessage(m_msg);
-	m_msg.Format("read data cycle: %d in %d seconds", count,stopTime-startTime);
+	m_msg.Format("read data cycle: %d in %d seconds", count, static_cast<int>(stopTime-startTime));
 	ShowMessage(m_msg);
 	if(errorNum == 0)
 	{
@@ -324,7 +324,7 @@ bool CFTPSocket::ReadData()
 //set the name for m_listFileName
 void CFTPSocket::SetLogFileName(const CString fileName)
 {
-	m_listFileName.Format("%s",fileName);
+	m_listFileName.Format("%s", (LPCSTR)fileName);
 }
 //find a file in ftp server
 bool CFTPSocket::FindFile(CString fileName)
@@ -338,10 +338,10 @@ bool CFTPSocket::FindFile(CString fileName)
 
 	CStdioFile listFile;
 	CFileException fileException;
-	listFileName.Format("%s", m_listFileName);
+	listFileName.Format("%s", (LPCSTR)m_listFileName);
 	if(!listFile.Open(listFileName, CFile::modeRead | CFile::typeText, &fileException))
 	{
-		m_msg.Format("Can not open %s", listFileName);
+		m_msg.Format("Can not open %s", (LPCSTR)listFileName);
 		ShowMessage(m_msg);
 		return false;
 	}
@@ -351,13 +351,13 @@ bool CFTPSocket::FindFile(CString fileName)
 		{
 			listFile.Close();
 			time(&stopTime);
-			m_msg.Format("Find a file using %d", stopTime -startTime);
+			m_msg.Format("Find a file using %d", static_cast<int>(stopTime -startTime));
 			ShowMessage(m_msg);
 			return true;
 		}
 	}
 	time(&stopTime);
-	m_msg.Format("Try to find a file using %d", stopTime -startTime);
+	m_msg.Format("Try to find a file using %d", static_cast<int>(stopTime -startTime));
 	ShowMessage(m_msg);
 
 	listFile.Close();
@@ -371,7 +371,7 @@ void CFTPSocket::WriteVectorFile(CString fileName, const TByteVector& vBuffer, l
 	if(localFile < (FILE*)1)
 	{
 		CString message;
-		message.Format("%s cannot be written", fileName);
+		message.Format("%s cannot be written", (LPCSTR)fileName);
 		ShowMessage(message);
 		//ShowMessage("fileList.txt can not be written");
 		return;
@@ -551,7 +551,7 @@ int CFTPSocket::GetPortNumber()
 	portNumber = serverIPPort[4]*256 + serverIPPort[5];
 
 	if(portNumber < 0 || portNumber > 65536){
-		str.Format("Recieved illegal port-number; %s", m_serverMsg);
+		str.Format("Recieved illegal port-number; %s", (LPCSTR)m_serverMsg);
 		ShowMessage(str);
 	}
 
@@ -570,7 +570,7 @@ long CFTPSocket::Size(CString& fileName)
 {
 	long fileSize = -1;
 	CString list,sizeStr,listFile;
-	listFile.Format("%sTemp\\fileList.txt", g_settings.outputDirectory);
+	listFile.Format("%sTemp\\fileList.txt", (LPCSTR)g_settings.outputDirectory);
 	GetFileList();
 	SendCommand("SIZE",fileName);
 	ReadData();
@@ -695,7 +695,7 @@ int CFTPSocket::DownloadFile(CString remoteFileName,CString localFileName)
 	if(stopTime - startTime != 0)
 	{	
 		m_msg.Format("%f kBytes File is downloaded in %d seconds, speed is %f KBytes/sec", fileKBytes,
-			stopTime - startTime, fileKBytes/(stopTime-startTime)	);
+			static_cast<int>(stopTime - startTime), fileKBytes/(stopTime-startTime)	);
 		ShowMessage(m_msg);
 	}
 	return 1;
@@ -713,7 +713,7 @@ bool CFTPSocket::OpenFileHandle(CString& fileName)
 	 
 	if (m_hDownloadedFile == INVALID_HANDLE_VALUE) 
 	{
-		m_msg.Format("Can not open file %s", fileName);
+		m_msg.Format("Can not open file %s", (LPCSTR)fileName);
 		ShowMessage(m_msg);   // process error 
 		return false;
 	}
@@ -768,7 +768,7 @@ bool CFTPSocket::GetCurrentFTPDirectory(CString& curDirectory)
 		directoryLength = curDirectory.GetLength();
 		if(directoryLength == msgLength)
 			returnFlag = false;
-		m_msg.Format("Current directory is %s", curDirectory);
+		m_msg.Format("Current directory is %s", (LPCSTR)curDirectory);
 		ShowMessage(m_msg);
 	}
 	return returnFlag;

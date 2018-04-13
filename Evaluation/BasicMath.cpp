@@ -122,7 +122,7 @@ double* CBasicMath::HighPassBinomial(double *fData, int iSize, int iNIterations)
 	}
 
 	// free the buffer
-	delete(fBuffer);
+	delete[] fBuffer;
 
 	return(fData);
 }
@@ -536,7 +536,7 @@ void CBasicMath::Convolute(double *fFirst, int iSize, double *fCore, int iCoreSi
 			fFirst[i] += fBuffer[iRealIndex] * fCore[j];
 		}
 	}
-	delete(fBuffer);
+	delete[] fBuffer;
 }
 
 /*void CBasicMath::Convolute(ISpectrum &dispFirst, ISpectrum &dispCore)
@@ -571,7 +571,7 @@ void CBasicMath::Reverse(double *fData, int iSize)
 	int i;
 	for(i = 0; i < iSize; i++)
 		fData[i] = fBuffer[iSize - i - 1];
-	delete(fBuffer);
+	delete[] fBuffer;
 }
 
 /*void CBasicMath::Reverse(ISpectrum &dispData)
@@ -1205,7 +1205,7 @@ void CBasicMath::CrossCorrelate(double *fFirst, int iLengthFirst, double *fSec, 
 	}
 
 	memcpy(fFirst, fResult, sizeof(double) * iLengthFirst);
-	delete(fResult);
+	delete[] fResult;
 }
 
 /*void CBasicMath::CrossCorrelate(ISpectrum &dispFirst, ISpectrum &dispSec)
@@ -1466,7 +1466,7 @@ void CBasicMath::FFT(double *fData, double *fReal, double *fImaginary, int iLeng
 		fImaginary[i - iLength / 2] = fBuffer[i * 2 + 1];
 	}
 
-	delete(fBuffer);
+	delete[] fBuffer;
 }
 
 void CBasicMath::InverseFFT(double* fReal, double* fImaginary, double* fData, int iLength)
@@ -1492,7 +1492,7 @@ void CBasicMath::InverseFFT(double* fReal, double* fImaginary, double* fData, in
 	for(i = 0; i < iLength; i++)
 		fData[i] = fBuffer[i * 2] / (double)iLength;
 
-	delete(fBuffer);
+	delete[] fBuffer;
 }
 
 /*void CBasicMath::InverseFFT(ISpectrum& dispReal, ISpectrum& dispImaginary, ISpectrum& dispSpec)

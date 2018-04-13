@@ -28,8 +28,8 @@ END_MESSAGE_MAP()
 CFTPServerContacter::CFTPServerContacter(void)
 {
 	m_ftp = new CFTPCom();
-	m_listLogFile.Format("%s\\Temp\\UploadFileList.txt", g_settings.outputDirectory);
-	m_listLogFile_Temp.Format("%s\\Temp\\UploadFileList_Temp.txt",g_settings.outputDirectory);
+	m_listLogFile.Format("%s\\Temp\\UploadFileList.txt", (LPCSTR)g_settings.outputDirectory);
+	m_listLogFile_Temp.Format("%s\\Temp\\UploadFileList_Temp.txt", (LPCSTR)g_settings.outputDirectory);
 
 	m_nTimerID = 0;
 	m_hasReadInFileList = false;
@@ -134,7 +134,7 @@ BOOL CFTPServerContacter::OnIdle(LONG lCount){
 	CString localFile, remoteFile, volcano, message;
 	CString dateText,timeText;
 	double linkSpeed;
-	int ret;
+	int ret=0;
 
 	// High resolution counter
 	LARGE_INTEGER lpFrequency, timingStart, timingStop;
@@ -186,7 +186,7 @@ BOOL CFTPServerContacter::OnIdle(LONG lCount){
 			UploadFile &upload = m_fileList.GetTail();
 
 			// The name of the file to upload
-			localFile.Format("%s", upload.fileName);
+			localFile.Format("%s", (LPCSTR)upload.fileName);
 
 			// Make sure that the file does exist...
 			if(!IsExistingFile(localFile)){
@@ -196,7 +196,7 @@ BOOL CFTPServerContacter::OnIdle(LONG lCount){
 
 			// The name of the volcano
 			if(upload.volcanoIndex >= 0 && upload.volcanoIndex < g_volcanoes.m_volcanoNum){
-				volcano.Format("%s", g_volcanoes.m_simpleName[upload.volcanoIndex]);
+				volcano.Format("%s", (LPCSTR)g_volcanoes.m_simpleName[upload.volcanoIndex]);
 			}else{
 				volcano.Format("unknown");
 			}
@@ -205,7 +205,7 @@ BOOL CFTPServerContacter::OnIdle(LONG lCount){
 			SetRemoteDirectory(volcano);
 
 			// The name of the file on the remote ftp-server
-			remoteFile.Format("%s", upload.fileName);
+			remoteFile.Format("%s", (LPCSTR)upload.fileName);
 			Common::GetFileName(remoteFile);
 
 			// Get the size of the file, to be able to calculate the size of the link
@@ -249,7 +249,7 @@ BOOL CFTPServerContacter::OnIdle(LONG lCount){
 				m_fileList.RemoveTail();
 				
 				// Tell the world!
-				message.Format("Finished uploading file %s to FTP-Server @ %.1lf kb/s", remoteFile, linkSpeed);
+				message.Format("Finished uploading file %s to FTP-Server @ %.1lf kb/s", (LPCSTR)remoteFile, linkSpeed);
 				ShowMessage(message);
 
 				pView->PostMessage(WM_FINISH_UPLOAD, (WPARAM)linkSpeed);
@@ -277,7 +277,7 @@ void CFTPServerContacter::SetRemoteDirectory(const CString &volcanoName)
 	Common::GetDateText(dateText);
 
 	// The directory on the remote server
-	rootDirectory.Format("%s", volcanoName);
+	rootDirectory.Format("%s", (LPCSTR)volcanoName);
 
 	// Create the volcano-directory and set it as the current directory
 	m_ftp->CreateDirectory(rootDirectory);
@@ -370,7 +370,7 @@ bool CFTPServerContacter::ParseAFile(const CString& fileName)
 					}
 			
 					if(volcanoIndex == -1){
-						if(0 == sscanf(pt + 1, "%d\t", &volcanoIndex,&deleteFile)){
+						if(0 == sscanf(pt + 1, "%d\t", &volcanoIndex)){
 							volcanoIndex = -1;
 							deleteFile   = 0;
 						}
@@ -453,19 +453,19 @@ void CFTPServerContacter::ExportList()
 
 			// Write to file only every 50 lines, to create fewer writing events
 			if(nLines == 0){
-				line.Format("%s\t%s\t%d\n", upload.fileName, g_volcanoes.m_simpleName[upload.volcanoIndex], upload.deleteFile);
+				line.Format("%s\t%s\t%d\n", (LPCSTR)upload.fileName, (LPCSTR)g_volcanoes.m_simpleName[upload.volcanoIndex], upload.deleteFile);
 				++nLines;
 			}else{
-				line.AppendFormat("%s\t%s\t%d\n", upload.fileName, g_volcanoes.m_simpleName[upload.volcanoIndex], upload.deleteFile);
+				line.AppendFormat("%s\t%s\t%d\n", (LPCSTR)upload.fileName, (LPCSTR)g_volcanoes.m_simpleName[upload.volcanoIndex], upload.deleteFile);
 				++nLines;
 				if(nLines == 50){
-					fprintf(f, "%s", line);
+					fprintf(f, "%s", (LPCSTR)line);
 					nLines = 0;
 				}
 			}
 		}
 		if(nLines){
-			fprintf(f, "%s", line); // <-- write the last portion of the file
+			fprintf(f, "%s", (LPCSTR)line); // <-- write the last portion of the file
 		}
 		fclose(f);
 	}

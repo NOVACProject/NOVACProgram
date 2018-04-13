@@ -119,7 +119,7 @@ bool CReEvaluator::DoEvaluation(){
 		// Check the scan file
 		if(SUCCESS != scan.CheckScanFile(&m_scanFile[m_curScanFile])){
 			CString errStr;
-			errStr.Format("Could not read scan-file %s", m_scanFile[m_curScanFile]);
+			errStr.Format("Could not read scan-file %s", (LPCTSTR)m_scanFile[m_curScanFile]);
 			MessageBox(NULL, errStr, "Error", MB_OK);
 			continue;
 		}
@@ -263,11 +263,11 @@ bool CReEvaluator::CreateOutputDirectory(){
 	cDateTime.Format("%04d%02d%02d_%02d%02d",tim->tm_year+1900,tim->tm_mon+1,tim->tm_mday,tim->tm_hour,tim->tm_min);
 
 	// Get the directory name
-	path.Format("%s", m_scanFile[m_curScanFile]);
-	fileName.Format("%s", m_scanFile[m_curScanFile]);
+	path.Format("%s", (LPCTSTR)m_scanFile[m_curScanFile]);
+	fileName.Format("%s", (LPCTSTR)m_scanFile[m_curScanFile]);
 	Common::GetDirectory(path); // gets the directory of the scan-file
 	Common::GetFileName(fileName);
-	m_outputDir.Format("%s\\ReEvaluation_%s_%s", path, fileName, cDateTime);
+	m_outputDir.Format("%s\\ReEvaluation_%s_%s", (LPCTSTR)path, (LPCTSTR)fileName, (LPCTSTR)cDateTime);
 
 	// Create the directory
 	if(0 == CreateDirectory(m_outputDir, NULL)){
@@ -286,7 +286,7 @@ bool CReEvaluator::CreateOutputDirectory(){
 				INT_PTR ret = pathDialog.DoModal();
 				if(IDCANCEL == ret)
 					return false;
-				m_outputDir.Format("%s\\ReEvaluation_%s_%s", path, fileName, cDateTime);
+				m_outputDir.Format("%s\\ReEvaluation_%s_%s", (LPCTSTR)path, (LPCTSTR)fileName, (LPCTSTR)cDateTime);
 				if(0 == CreateDirectory(m_outputDir, NULL)){
 					tmpStr.Format("Could not create output directory. ReEvaluation aborted.");
 					MessageBox(NULL, tmpStr, "ERROR", MB_OK);
@@ -317,7 +317,7 @@ bool CReEvaluator::WriteEvaluationLogHeader(){
 	}
 
 	// The common header
-	fprintf(f, "#ReEvaluation Log File for the Novac Master Program version %d.%02d. Created on: %s at %s\n", CVersion::majorNumber, CVersion::minorNumber, date, time);
+	fprintf(f, "#ReEvaluation Log File for the Novac Master Program version %d.%02d. Created on: %s at %s\n", CVersion::majorNumber, CVersion::minorNumber, (LPCTSTR)date, (LPCTSTR)time);
 	fprintf(f, "#***Settings Used in the Evaluation***\n");
 
 	// Fit interval and polynomial order
@@ -339,7 +339,7 @@ bool CReEvaluator::WriteEvaluationLogHeader(){
 	// The sky-spectrum used
 	switch(m_skyOption){
 		case SKY_FIRST:						fprintf(f, "#Sky: First spectrum in scanFile\n");	break;
-		case SKY_USER:						fprintf(f, "#Sky: %s\n", m_skySpectrum); break;
+		case SKY_USER:						fprintf(f, "#Sky: %s\n", (LPCTSTR)m_skySpectrum); break;
 		case SKY_INDEX:						fprintf(f, "#Sky: Spectrum number %d", m_skyIndex); break;
 		case SKY_AVERAGE_OF_GOOD:	fprintf(f, "#Sky: Average of all good spectra in scanFile\n");
 	}
@@ -358,12 +358,12 @@ bool CReEvaluator::WriteEvaluationLogHeader(){
 	fprintf(f, "#nSpecies=%d\n", window.nRef);
 	fprintf(f, "#Specie\tShift\tSqueeze\tReferenceFile\n");
 	for(int i = 0; i < window.nRef; ++i){
-		fprintf(f, "#%s\t", window.ref[i].m_specieName); 
+		fprintf(f, "#%s\t", (LPCTSTR)window.ref[i].m_specieName);
 		switch(window.ref[i].m_shiftOption){
 			case SHIFT_FIX:
 				fprintf(f, "%0.3lf\t", window.ref[i].m_shiftValue); break;
 			case SHIFT_LINK:
-				fprintf(f, "linked to %s\t", window.ref[(int)window.ref[i].m_shiftValue].m_specieName); break;
+				fprintf(f, "linked to %s\t", (LPCTSTR)window.ref[(int)window.ref[i].m_shiftValue].m_specieName); break;
 			case SHIFT_LIMIT:
 				fprintf(f, "limited to +-%0.3lf\t", window.ref[i].m_shiftValue);
 			default:
@@ -374,13 +374,13 @@ bool CReEvaluator::WriteEvaluationLogHeader(){
 			case SHIFT_FIX:
 				fprintf(f, "%0.3lf\t", window.ref[i].m_squeezeValue); break;
 			case SHIFT_LINK:
-				fprintf(f, "linked to %s\t", window.ref[(int)window.ref[i].m_squeezeValue].m_specieName); break;
+				fprintf(f, "linked to %s\t", (LPCTSTR)window.ref[(int)window.ref[i].m_squeezeValue].m_specieName); break;
 			case SHIFT_LIMIT:
 				fprintf(f, "limited to +-%0.3lf\t", window.ref[i].m_squeezeValue);
 			default:
 				fprintf(f, "free\t"); break;
 		}
-		fprintf(f, "%s\n", window.ref[i].m_path);
+		fprintf(f, "%s\n", (LPCTSTR)window.ref[i].m_path);
 	}
 	fprintf(f, "\n");
 
@@ -413,7 +413,7 @@ bool CReEvaluator::AppendResultToEvaluationLog(const CScanResult *result, const 
 	fprintf(f, "\tlong=%.6lf\n",											gps.Longitude());
 	fprintf(f, "\talt=%.3lf\n",												gps.Altitude());
 
-	fprintf(f, "\tserial=%s\n",												scan->m_device);
+	fprintf(f, "\tserial=%s\n", (LPCTSTR)scan->m_device);
 	fprintf(f, "\tchannel=%d\n",											scan->m_channel);
 
 	scan->GetSky(skySpec);
@@ -465,22 +465,22 @@ bool CReEvaluator::AppendResultToEvaluationLog(const CScanResult *result, const 
 	for(int i = 0; i < window.nRef; ++i){
 		name.Format(window.ref[i].m_specieName);
 
-		fprintf(f, "column(%s)\tcolumnerror(%s)\t", name, name);
-		fprintf(f, "shift(%s)\tshifterror(%s)\t", name, name);
-		fprintf(f, "squeeze(%s)\tsqueezeerror(%s)\t", name, name);
+		fprintf(f, "column(%s)\tcolumnerror(%s)\t", (LPCTSTR)name, (LPCTSTR)name);
+		fprintf(f, "shift(%s)\tshifterror(%s)\t", (LPCTSTR)name, (LPCTSTR)name);
+		fprintf(f, "squeeze(%s)\tsqueezeerror(%s)\t", (LPCTSTR)name, (LPCTSTR)name);
 	}
 
 	if(window.fitType == FIT_HP_SUB || window.fitType == FIT_POLY){
 		name.Format("fraunhoferref");
 
-		fprintf(f, "column(%s)\tcolumnerror(%s)\t", name, name);
-		fprintf(f, "shift(%s)\tshifterror(%s)\t", name, name);
-		fprintf(f, "squeeze(%s)\tsqueezeerror(%s)", name, name);
+		fprintf(f, "column(%s)\tcolumnerror(%s)\t", (LPCTSTR)name, (LPCTSTR)name);
+		fprintf(f, "shift(%s)\tshifterror(%s)\t", (LPCTSTR)name, (LPCTSTR)name);
+		fprintf(f, "squeeze(%s)\tsqueezeerror(%s)", (LPCTSTR)name, (LPCTSTR)name);
 	}
 
 	fprintf(f, "\n<spectraldata>\n");
 
-	for(int i = 0; i < result->GetEvaluatedNum(); ++i){
+	for(unsigned long i = 0; i < result->GetEvaluatedNum(); ++i){
 		const CSpectrumInfo &info = result->GetSpectrumInfo(i);
 
 		// The scan angle
@@ -496,7 +496,7 @@ bool CReEvaluator::AppendResultToEvaluationLog(const CScanResult *result, const 
 		fprintf(f, "%02d:%02d:%02d\t", info.m_stopTime.hr, info.m_stopTime.m, info.m_stopTime.sec);
 
 		// The name of the spectrum
-		fprintf(f, "%s\t",							common.SimplifyString(info.m_name));
+		fprintf(f, "%s\t", (LPCTSTR)common.SimplifyString(info.m_name));
 
 		// The delta of the fit
 		fprintf(f, "%.2e\t", result->GetDelta(i));

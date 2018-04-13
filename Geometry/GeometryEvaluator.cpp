@@ -163,9 +163,9 @@ int	CGeometryEvaluator::FindMatchingEvalLog(const CString &evalLog, CString matc
 		}
 
 		// 1g. This is a match
-		match[nFound++].Format("%s", name);
+		match[nFound++].Format("%s", (LPCSTR)name);
 		if(nFound >= MAX_MATCHING_FILES){
-			message.Format("File: %s can be matched with %d other files", evalLog, nFound);
+			message.Format("File: %s can be matched with %d other files", (LPCSTR)evalLog, nFound);
 			ShowMessage(message);
 			return nFound;
 		}
@@ -203,20 +203,28 @@ bool CGeometryEvaluator::GetInfoFromFileName(const CString fileName, CDateTime &
 	resToken = name.Tokenize("_", curPos);
 	if(resToken == "")
 		return false;
-	sscanf(resToken, "%d", &iDate);
-	start.year  = (unsigned char)(iDate /10000);
-	start.month = (unsigned char)((iDate - start.year*10000) / 100);
-	start.day   = (unsigned char) (iDate % 100);
-	start.year  += 2000;
+	if (sscanf(resToken, "%d", &iDate) == 1) {
+		start.year = (unsigned char)(iDate / 10000);
+		start.month = (unsigned char)((iDate - start.year * 10000) / 100);
+		start.day = (unsigned char)(iDate % 100);
+		start.year += 2000;
+	}
+	else {
+		return false;
+	}
 
 	// The third part is the time
 	resToken = name.Tokenize("_", curPos);
 	if(resToken == "")
 		return false;
-	sscanf(resToken, "%d", &iTime);
-	start.hour    = (unsigned char)(iTime /100);
-	start.minute  = (unsigned char)((iTime - start.hour*100));
-	start.second  = 0;
+	if (sscanf(resToken, "%d", &iTime) == 1) {
+		start.hour = (unsigned char)(iTime / 100);
+		start.minute = (unsigned char)((iTime - start.hour * 100));
+		start.second = 0;
+	}
+	else {
+		return false;
+	}
 
 	return true;
 }
@@ -267,7 +275,7 @@ RETURN_CODE CGeometryEvaluator::CalculateGeometry(const CString &evalLog1, const
 	Common::GetDirectory(directory);  // get the parent-parent-directory to the evaluation-log files
 
 	// 3b. Create the geometry log-file if it does not exist
-	fileName.Format("%sGeometryLog_%04d.%02d.%02d.txt", directory, startTime1.year, startTime1.month, startTime1.day);
+	fileName.Format("%sGeometryLog_%04d.%02d.%02d.txt", (LPCSTR)directory, startTime1.year, startTime1.month, startTime1.day);
 	int exists = IsExistingFile(fileName);
 	FILE *f = fopen(fileName, "a+");
 	if(f == NULL){
@@ -287,8 +295,8 @@ RETURN_CODE CGeometryEvaluator::CalculateGeometry(const CString &evalLog1, const
 	evLogName1.Format(evalLog1);		Common::GetFileName(evLogName1);
 	evLogName2.Format(evalLog2);		Common::GetFileName(evLogName2);
 	volcanoName.Format(g_volcanoes.m_name[volcanoIndex]);
-	fprintf(f, "%s\t",             volcanoName);
-	fprintf(f, "%s\t%s\t",         evLogName1, evLogName2);
+	fprintf(f, "%s\t", (LPCSTR)volcanoName);
+	fprintf(f, "%s\t%s\t", (LPCSTR)evLogName1, (LPCSTR)evLogName2);
 	fprintf(f, "%02d:%02d:%02d\t", startTime1.hour, startTime1.minute, startTime1.second);
 	fprintf(f, "%.1lf\t%.1lf\t",   info->plumeCentre[0], info->plumeCentre[1]);
 	fprintf(f, "%.1lf\t",          common.GPSDistance(info->scanner[0].m_latitude, info->scanner[0].m_longitude, info->scanner[1].m_latitude, info->scanner[1].m_longitude));

@@ -30,7 +30,7 @@ CSerialControllerWithTx::CSerialControllerWithTx(void)
 	CString errorMsg;
 
 	pakFileHandler = new FileHandler::CPakFileHandler();
-	m_storageDirectory.Format("%sTemp\\", g_settings.outputDirectory);
+	m_storageDirectory.Format("%sTemp\\", (LPCSTR)g_settings.outputDirectory);
 	if(CreateDirectoryStructure(m_storageDirectory)){ // Make sure that the storage directory exists
 		GetSysTempFolder(m_storageDirectory);
 		if(CreateDirectoryStructure(m_storageDirectory)){
@@ -49,7 +49,7 @@ CSerialControllerWithTx::CSerialControllerWithTx(ELECTRONICS_BOX box){
 	CString errorMsg;
 	
 	pakFileHandler = new FileHandler::CPakFileHandler();
-	m_storageDirectory.Format("%sTemp\\", g_settings.outputDirectory);
+	m_storageDirectory.Format("%sTemp\\", (LPCSTR)g_settings.outputDirectory);
 	if(CreateDirectoryStructure(m_storageDirectory)){ // Make sure that the storage directory exists
 		errorMsg.Format("Could not create storage-directory for serial-data!! Please check settings and restart");
 		MessageBox(NULL, errorMsg, "Serious error", MB_OK);
@@ -85,12 +85,12 @@ void CSerialControllerWithTx::SetSerialPort(int serialID,int COMPort,int baudrat
 		m_Port.fCTS = FALSE;
 	}
 	m_connectionID.Format("Serial %d",m_mainIndex);
-	m_spectrometerSerialNumber.Format("%s", g_settings.scanner[m_mainIndex].spec[0].serialNumber);
+	m_spectrometerSerialNumber.Format("%s", (LPCSTR)g_settings.scanner[m_mainIndex].spec[0].serialNumber);
 	m_timeout  = g_settings.scanner[m_mainIndex].comm.timeout;
 	m_interval = g_settings.scanner[m_mainIndex].comm.queryPeriod;
 	
 	// Make one directory for each instrument...
-	m_storageDirectory.Format("%sTemp\\%s\\", g_settings.outputDirectory, m_spectrometerSerialNumber);
+	m_storageDirectory.Format("%sTemp\\%s\\", (LPCSTR)g_settings.outputDirectory, (LPCSTR)m_spectrometerSerialNumber);
 	if(CreateDirectoryStructure(m_storageDirectory)){ // Make sure that the storage directory exists
 		GetSysTempFolder(m_storageDirectory);
 		if(CreateDirectoryStructure(m_storageDirectory)){
@@ -398,7 +398,7 @@ RETURN_CODE CSerialControllerWithTx::GetFile(char* fileName,CString filePath,cha
 					curSpeed			 = downloadedSize/(stopTime - startTime);
 				}
 				m_ErrorMsg.Format("<%s>:%s Have downloaded %.1lfKBytes data at %.1f KBytes/second. Duration is %d seconds. %.1lf percent is finished",
-					m_connectionID,timeTxt, downloadedSize, curSpeed, stopTime-startTime, 100.0*start/size);
+					(LPCSTR)m_connectionID, (LPCSTR)timeTxt, downloadedSize, curSpeed, static_cast<int>(stopTime-startTime), 100.0*start/size);
 				if(nChunks == 0)
 					ShowMessage(m_ErrorMsg);
 				else
@@ -433,14 +433,14 @@ RETURN_CODE CSerialControllerWithTx::WriteSpectraFile(BYTE* mem, long fileSize,C
 	}
 	if(localFile<(FILE *)1)
 	{
-		m_ErrorMsg.Format("Fail to write %s",filePath);
+		m_ErrorMsg.Format("Fail to write %s", (LPCSTR)filePath);
 		ShowMessage(m_ErrorMsg , m_connectionID);
 		return FAIL; 
 	}
 	fseek(localFile,0,SEEK_END);
 	fwrite(mem,fileSize,1,localFile);
 	fclose(localFile);
-	m_ErrorMsg.Format("Data is written to %s, file size is %.1lf KBytes",filePath,fileSize/1024.0);
+	m_ErrorMsg.Format("Data is written to %s, file size is %.1lf KBytes", (LPCSTR)filePath,fileSize/1024.0);
 	ShowMessage(m_ErrorMsg , m_connectionID);
 	return SUCCESS;
 
@@ -523,7 +523,7 @@ RETURN_CODE CSerialControllerWithTx::SwitchToShell()
 		stdioMode = ParseMode(string);
 		if(stdioMode == NOSTDIO)
 		{
-			m_ErrorMsg.Format("Can not switch %s to shell mode, check it by hyperterminal.",m_connectionID);
+			m_ErrorMsg.Format("Can not switch %s to shell mode, check it by hyperterminal.", (LPCSTR)m_connectionID);
 			ShowMessage(m_ErrorMsg);
 			return FAIL;
 		}
@@ -542,8 +542,7 @@ int CSerialControllerWithTx::ParseMode(CString string)
 	int result[3]={NOSTDIO,NOSTDIO,NOSTDIO};
 	int modeIndex= NOSTDIO;
 	CString mode[3] = {"Stdio: User","Stdio: Both","Stdio: Shell"};
-	int i;
-	for(i=0;i<3;i++)
+	for(int i=0;i<3;i++)
 	{
 		result[i]=string.Find(mode[i]);
 		//printf("i=%d,result[i]=%d\n",i,result[i]);
@@ -589,7 +588,7 @@ bool CSerialControllerWithTx::Start()
 	
 	Sleep(1000);
 	// download old upload*.pak files if time permitted	
-	interval = g_settings.scanner[m_mainIndex].comm.queryPeriod - stopTime + startTime;
+	interval = g_settings.scanner[m_mainIndex].comm.queryPeriod - static_cast<long>(stopTime + startTime);
 	
 	DownloadOldPak(interval);
 	
@@ -600,7 +599,7 @@ bool CSerialControllerWithTx::UploadFile(CString localPath, char* fileName, char
 {
 	bool result;
 	CString filePath;
-	filePath.Format("%s%s", localPath, fileName);
+	filePath.Format("%s%s", (LPCSTR)localPath, (LPCSTR)fileName);
 	
 	if(!IsTxStarted(m_timeout))
 	{
@@ -630,7 +629,7 @@ bool CSerialControllerWithTx::DownloadFile(const CString &fileName,CString fileP
 		return false;
 
 	char *fileBuffer = (char *)calloc(length + 2, sizeof(char));
-	sprintf(fileBuffer, "%s", fileName);
+	sprintf(fileBuffer, "%s", (LPCSTR)fileName);
 
 	bool retCode = DownloadFile(fileBuffer, filePath, diskName, delFlag);
 
@@ -641,7 +640,7 @@ bool CSerialControllerWithTx::DownloadFile(const CString &fileName,CString fileP
 bool CSerialControllerWithTx::DownloadFile(char* fileName,CString filePath, char diskName,bool delFlag)
 {
 	CString fileFullName;
-	fileFullName.Format("%s%s",filePath, fileName);
+	fileFullName.Format("%s%s", (LPCSTR)filePath, (LPCSTR)fileName);
 	
 	pView->PostMessage(WM_SCANNER_RUN,(WPARAM)&(m_spectrometerSerialNumber),0);
 	long remoteFileSize=0;
@@ -665,11 +664,11 @@ bool CSerialControllerWithTx::DownloadFile(char* fileName,CString filePath, char
 	}
 	else
 	{
-		m_ErrorMsg.Format("Finished downloading file %s from %s @ %.1lf kb/s", fileName, m_spectrometerSerialNumber, m_avgDownloadSpeed);
+		m_ErrorMsg.Format("Finished downloading file %s from %s @ %.1lf kb/s", (LPCSTR)fileName, (LPCSTR)m_spectrometerSerialNumber, m_avgDownloadSpeed);
 		ShowMessage(m_ErrorMsg,m_connectionID);
 		if(IsExistingFile(fileFullName) == 0)
 		{		
-			m_ErrorMsg.Format("%s is not found in local disk", fileFullName);
+			m_ErrorMsg.Format("%s is not found in local disk", (LPCSTR)fileFullName);
 			ShowMessage(m_ErrorMsg,m_connectionID);
 			return false;
 		}
@@ -691,9 +690,9 @@ int CSerialControllerWithTx::OrganizeFileList(CString folderName, char diskName)
 	memset(smallBuf,0,1024);
 	char command[128];
 	if(this->m_electronicsBox != BOX_VERSION_2){
-		sprintf(command,"dir %c:\\%s\\", diskName, folderName);	
+		sprintf(command,"dir %c:\\%s\\", diskName, (LPCSTR)folderName);
 	}else{
-		sprintf(command, "dir %s", folderName);
+		sprintf(command, "dir %s", (LPCSTR)folderName);
 	}
 	int len = 0;
 	int loop = 0;
@@ -705,14 +704,14 @@ int CSerialControllerWithTx::OrganizeFileList(CString folderName, char diskName)
 	//judge whether is folder
 	if(folderNameLen!=4 && folderNameLen!=0 )
 	{
-		m_ErrorMsg.Format("Folder name %s is not 4-character long, invalid folder", folderName);
+		m_ErrorMsg.Format("Folder name %s is not 4-character long, invalid folder", (LPCSTR)folderName);
 		ShowMessage(m_ErrorMsg,m_connectionID);
 		return 0;
 	}
 	if( folderNameLen == 0)
 		m_ErrorMsg.Format("Download file list from root directory");
 	else
-		m_ErrorMsg.Format("Download file list from %s", folderName);
+		m_ErrorMsg.Format("Download file list from %s", (LPCSTR)folderName);
 	ShowMessage(m_ErrorMsg,m_connectionID);
 
 	SendCommand(command);
@@ -733,7 +732,7 @@ int CSerialControllerWithTx::OrganizeFileList(CString folderName, char diskName)
 	// if the folder is not valid, return -10 2007.05.16
 	if(strstr(recBuf,"Invalid path") != NULL)
 	{
-		m_ErrorMsg.Format("The folder %s is not valid", folderName);
+		m_ErrorMsg.Format("The folder %s is not valid", (LPCSTR)folderName);
 		ShowMessage(m_ErrorMsg,m_connectionID);
 		return -10;
 	}
@@ -831,11 +830,11 @@ void CSerialControllerWithTx::EnterFolder(const CString &folderName)
 {
 	char command[32];
 	CString folder;
-	folder.Format("%s",folderName);
+	folder.Format("%s", (LPCSTR)folderName);
 	//make sure folder name is not too long
 	if(m_electronicsBox == BOX_VERSION_1 && folder.GetLength() > 16)
 		return;
-	sprintf(command, "cd %s", folderName);
+	sprintf(command, "cd %s", (LPCSTR)folderName);
 	SendCommand(command);
 }
 
@@ -888,7 +887,7 @@ int CSerialControllerWithTx::CheckKongoExit()
 	//check it by checking the screen print?
 
 	CString filePath;
-	filePath.Format("%sSTATUS.DAT",m_storageDirectory);
+	filePath.Format("%sSTATUS.DAT", (LPCSTR)m_storageDirectory);
 	if( DownloadFile("STATUS.DAT", m_storageDirectory, 'B') == FAIL)
 		return FAIL;
 	m_statusFileReader.SetWorkingPath(m_storageDirectory);
@@ -1100,7 +1099,7 @@ bool CSerialControllerWithTx::PutFile(char *name, CString fileFullPath,char disk
 	localFile=fopen(fileFullPath,"rb");
 	if(localFile<(FILE *)1)
 	{
-		m_ErrorMsg.Format("Can not open %s", fileFullPath);
+		m_ErrorMsg.Format("Can not open %s", (LPCSTR)fileFullPath);
 		ShowMessage(m_ErrorMsg); 
 		m_linkStatistics.AppendFailedUpload();
 		return false; 
@@ -1264,7 +1263,7 @@ bool CSerialControllerWithTx::Delete(char *fileName,char diskName)
 
 bool CSerialControllerWithTx::DelFile(char *fileName,char diskName)
 {
-	char txt[2];
+	char txt[2] = { 0 };
 	CString msg;
 	char fileFullName[64];
 	if(diskName == 'A' && this->m_electronicsBox != BOX_VERSION_2)
@@ -1314,9 +1313,9 @@ bool CSerialControllerWithTx::CallModem()
 	}
 
 	if(m_radioID.GetLength() == 1)
-		sprintf(command,"ATDT%s",m_radioID);
+		sprintf(command,"ATDT%s", (LPCSTR)m_radioID);
 	else
-		sprintf(command,"ATD%s",m_radioID);
+		sprintf(command,"ATD%s", (LPCSTR)m_radioID);
 
 	time(&startTime);
 	WriteSerial((void*)command, strlen(command));
@@ -1333,13 +1332,13 @@ bool CSerialControllerWithTx::CallModem()
 		if(stopTime - startTime >= 60) //10 sec timeout
 		{
 			CloseSerialPort();
-			m_ErrorMsg.Format("can not connect to radio link, use time %d seconds", stopTime-startTime);
+			m_ErrorMsg.Format("can not connect to radio link, use time %d seconds", static_cast<int>(stopTime-startTime));
 			ShowMessage( m_ErrorMsg, m_connectionID);
 			return false;
 		}
 	}while(strstr(buf,"CONNECT") == NULL);
 	m_ErrorMsg.Format("The radio modem %s is connected after %d loops, %d seconds",
-		m_connectionID,loopCount, stopTime - startTime);
+		(LPCSTR)m_connectionID,loopCount, static_cast<int>(stopTime - startTime));
 	ShowMessage(m_ErrorMsg);
 	pView->PostMessage(WM_SCANNER_RUN,(WPARAM)&(m_spectrometerSerialNumber),0);
 	Sleep(10000);
@@ -1349,7 +1348,7 @@ bool CSerialControllerWithTx::CallModem()
 void CSerialControllerWithTx::SetModem(CString radioID)
 {
 	SetDTRControl(true);
-	m_radioID.Format("%s",radioID);
+	m_radioID.Format("%s", (LPCSTR)radioID);
 }
 
 bool CSerialControllerWithTx::InitCommunication(char diskName)
@@ -1386,12 +1385,12 @@ bool CSerialControllerWithTx::InitCommunication(char diskName)
 bool CSerialControllerWithTx::CleanLocalFile(char* fileName)
 {
 	CString localFile;
-	localFile.Format("%s%s",m_storageDirectory, fileName);
+	localFile.Format("%s%s", (LPCSTR)m_storageDirectory, (LPCSTR)fileName);
 	if(IsExistingFile(localFile))
 	{
 		if(!DeleteFile(localFile))
 		{
-			m_ErrorMsg.Format("Can not delete old file in local folder - %s", localFile);
+			m_ErrorMsg.Format("Can not delete old file in local folder - %s", (LPCSTR)localFile);
 		 	ShowMessage(m_ErrorMsg);
 			return false;
 		}
@@ -1477,7 +1476,7 @@ bool CSerialControllerWithTx::DownloadOldPak(long interval)
 
 	time(&stopTime);
 	//continue downloading Uxxx.pak files
-	interval = interval + startTime - stopTime;
+	interval = interval + static_cast<long>(startTime - stopTime);
 	//if there is no time to download more files in current folder,return
 	if(interval <= 0)
 	{
@@ -1489,7 +1488,7 @@ bool CSerialControllerWithTx::DownloadOldPak(long interval)
 		downloadResult = DownloadPakFile(folder,interval);
 
 	time(&stopTime);
-	interval = interval + startTime - stopTime;
+	interval = interval + static_cast<long>(startTime - stopTime);
 	//if there is no time to download more folders,return
 	if(interval <= 0)
 	{
@@ -1501,7 +1500,7 @@ bool CSerialControllerWithTx::DownloadOldPak(long interval)
 	{
 		time(&startTime);
 		m_oldPakList.RemoveAll();
-		folder.Format("%s",m_rFolderList.GetTail());
+		folder.Format("%s", (LPCSTR)m_rFolderList.GetTail());
 		fileListSum = GetOldPakList(folder);
 		if(fileListSum == 0)
 		{
@@ -1514,7 +1513,7 @@ bool CSerialControllerWithTx::DownloadOldPak(long interval)
 			continue;
 		}
 		time(&stopTime);
-		interval = interval + startTime - stopTime;
+		interval = interval + static_cast<long>(startTime - stopTime);
 		if(interval <= 0)
 			break;
 		if(DownloadPakFile(folder,interval))
@@ -1536,13 +1535,13 @@ bool CSerialControllerWithTx::DeleteFolder(CString folder)
 {//out of tx
 	char cmd[32];
 	if(m_electronicsBox != BOX_VERSION_2){
-		sprintf(cmd,"rd %s",folder);
+		sprintf(cmd,"rd %s", (LPCSTR)folder);
 	}else{
-		sprintf(cmd,"rmdir %s",folder);
+		sprintf(cmd,"rmdir %s", (LPCSTR)folder);
 	}
 	Sleep(1000);
 	SendCommand(cmd);
-	m_ErrorMsg.Format("delete folder %s", folder);
+	m_ErrorMsg.Format("delete folder %s", (LPCSTR)folder);
 	ShowMessage(m_ErrorMsg, m_connectionID);
 	return true;
 }
@@ -1562,12 +1561,12 @@ bool CSerialControllerWithTx::DownloadPakFile(CString folderName, long interval)
 		if(interval > m_oldPakList.GetTail().m_fileSize/2048)	
 		{
 			time(&startTime);
-			fileName.Format("%s.pak", m_oldPakList.GetTail().m_fileName);		
-			sprintf(fileFullName, "%s",fileName);
+			fileName.Format("%s.pak", (LPCSTR)m_oldPakList.GetTail().m_fileName);
+			sprintf(fileFullName, "%s", (LPCSTR)fileName);
 			
 			downloadResult = DownloadSpectra(fileFullName);
 			time(&stopTime);
-			interval = interval + startTime - stopTime;
+			interval = interval + static_cast<long>(startTime - stopTime);
 			if(downloadResult)
 				m_oldPakList.RemoveTail();
 			else
@@ -1589,7 +1588,7 @@ bool CSerialControllerWithTx::CreatePakFileList()
 		ShowMessage("Can not get pak file list",m_connectionID);
 		return false;
 	}
-	sprintf(text,"%s",listTextB);
+	sprintf(text,"%s", (LPCSTR)listTextB);
 	ArrangeFileList(text,folderName );
 	return true;
 }
@@ -1662,7 +1661,7 @@ int CSerialControllerWithTx::GetOldPakList(CString folderName)
 		//enter folder 
 		if(folderName.GetLength() > 0)
 		{
-			sprintf(command, "cd %s", folderName);
+			sprintf(command, "cd %s", (LPCSTR)folderName);
 			SendCommand(command);
 		}
 		if(!StartTx())
@@ -1678,7 +1677,7 @@ bool CSerialControllerWithTx::IsKongoRunning()
 {
 	int counter = 0;
 	CString statusFile;
-	statusFile.Format("%sSTATUS.DAT",m_storageDirectory);
+	statusFile.Format("%sSTATUS.DAT", (LPCSTR)m_storageDirectory);
 	while(DownloadFile("STATUS.DAT",m_storageDirectory,'B')	!= SUCCESS)
 	{
 		counter++;
@@ -1701,7 +1700,7 @@ bool CSerialControllerWithTx::IsKongoRunning()
 bool CSerialControllerWithTx::DownloadSpectra(char* pakFileName)
 {
 	CString specFile;
-	specFile.Format("%s%s",m_storageDirectory, pakFileName);	
+	specFile.Format("%s%s", (LPCSTR)m_storageDirectory, (LPCSTR)pakFileName);
 
 	bool downloadResult = DownloadFile(pakFileName, m_storageDirectory, 'B',true); 
 	if(!downloadResult)
@@ -1826,9 +1825,9 @@ bool CSerialControllerWithTx::GetFileListText_Folder(CString& folderName, CStrin
 	// The command to send...
 	char command[128];
 	if(this->m_electronicsBox != BOX_VERSION_2){
-		sprintf(command,"dir B:\\%s\\",folderName);	
+		sprintf(command,"dir B:\\%s\\", (LPCSTR)folderName);
 	}else{
-		sprintf(command, "dir %s", folderName);
+		sprintf(command, "dir %s", (LPCSTR)folderName);
 	}
 
 	Bye();
@@ -1901,7 +1900,7 @@ void CSerialControllerWithTx::SetRemotePCTime()
 bool CSerialControllerWithTx::MakeCommandFile(char* content)
 {
 	CString fileName;
-	fileName.Format("%scommand.txt",m_storageDirectory);
+	fileName.Format("%scommand.txt",(LPCSTR)m_storageDirectory);
 	FILE *f;
 	f=fopen(fileName,"w");
 	if(f<(FILE*)1)
@@ -1988,7 +1987,7 @@ int CSerialControllerWithTx::DownloadCfgTxt(){
 	// If we managed to download the file, then check it!
 	// Try to parse the cfg.txt - file in order to get the paramters...
 	FileHandler::CCfgTxtFileHandler cfgTxtReader;
-	localFileName.Format("%scfg.txt", m_storageDirectory);
+	localFileName.Format("%scfg.txt", (LPCSTR)m_storageDirectory);
 	if(0 == cfgTxtReader.ReadCfgTxt(localFileName)){
 		return 0;
 	}
@@ -2005,7 +2004,7 @@ int CSerialControllerWithTx::DownloadCfgTxt(){
 	int todaysDate = m_common.GetDay();
 	if(todaysDate % 7 == 0){
 		// Copy the file to a new name.
-		copyFileName.Format("%scfg_%s.txt", m_storageDirectory, m_spectrometerSerialNumber);
+		copyFileName.Format("%scfg_%s.txt", (LPCSTR)m_storageDirectory, (LPCSTR)m_spectrometerSerialNumber);
 		if(0 != CopyFile(localFileName, copyFileName, FALSE)){
 			// Get the index of this volcano
 			int volcanoIndex = Common::GetMonitoredVolcano(m_spectrometerSerialNumber);

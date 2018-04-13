@@ -28,7 +28,7 @@ RETURN_CODE CSTDFile::ReadSpectrum(CSpectrum &spec, const CString &fileName){
 	if(NULL == fgets(buffer, bufSize, f)){
 		fclose(f); return FAIL;
 	}
-	if(0 != strnicmp("GDBGMNUP\n", buffer, strlen(buffer))){
+	if(0 != _strnicmp("GDBGMNUP\n", buffer, strlen(buffer))){
 		fclose(f); return FAIL;
 	}
 
@@ -181,27 +181,30 @@ RETURN_CODE CSTDFile::ReadSpectrum(CSpectrum &spec, const CString &fileName){
 		// Read in scanAngle
 		if(NULL != strstr(szLine, "ElevationAngle = ")){
 			char *pt = strstr(szLine, "ElevationAngle = ");
-			sscanf(pt + 17, "%lf",	&tmpDbl);
-			if(fabs(tmpDbl) < 360.0){
-				spec.m_info.m_scanAngle = (float)tmpDbl;
+			if (sscanf(pt + 17, "%lf", &tmpDbl) == 1) {
+				if (fabs(tmpDbl) < 360.0) {
+					spec.m_info.m_scanAngle = (float)tmpDbl;
+				}
 			}
 		}
 
 		// Read in scanAngle2
 		if(NULL != strstr(szLine, "AzimuthAngle = ")){
 			char *pt = strstr(szLine, "AzimuthAngle = ");
-			sscanf(pt + 15, "%lf",	&tmpDbl);
-			if(fabs(tmpDbl) < 360.0){
-				spec.m_info.m_scanAngle2 = (float)tmpDbl;
+			if (sscanf(pt + 15, "%lf", &tmpDbl) == 1) {
+				if (fabs(tmpDbl) < 360.0) {
+					spec.m_info.m_scanAngle2 = (float)tmpDbl;
+				}
 			}
 		}
 
 		// Read in the temperature
 		if(NULL != strstr(szLine, "Temperature = ")){
 			char *pt = strstr(szLine, "Temperature = ");
-			sscanf(pt + 14, "%lf",	&tmpDbl);
-			if(fabs(tmpDbl) < 100.0){
-				spec.m_info.m_temperature = (float)tmpDbl;
+			if (sscanf(pt + 14, "%lf", &tmpDbl) == 1) {
+				if (fabs(tmpDbl) < 100.0) {
+					spec.m_info.m_temperature = (float)tmpDbl;
+				}
 			}
 		}
 	}
@@ -244,11 +247,11 @@ RETURN_CODE CSTDFile::WriteSpectrum(const CSpectrum &spec, const CString &fileNa
 
 	int index = fileName.ReverseFind('\\');
 	if(index != 0)
-		fprintf(f, "%s\n", fileName.Left(index));
+		fprintf(f, "%s\n", (LPCSTR)fileName.Left(index));
 	else
-		fprintf(f, "%s\n", fileName);
+		fprintf(f, "%s\n", (LPCSTR)fileName);
 	fprintf(f, ".......\n"); // the detector
-	fprintf(f, "%s\n", info.m_device); // the spectrometer
+	fprintf(f, "%s\n", (LPCSTR)info.m_device); // the spectrometer
 
 	if(info.m_date[0] == info.m_date[1] && info.m_date[1] == info.m_date[2] && info.m_date[2] == 0){
 		fprintf(f, "01.01.01\n"); /* Default date */
@@ -263,7 +266,7 @@ RETURN_CODE CSTDFile::WriteSpectrum(const CSpectrum &spec, const CString &fileNa
 	fprintf(f, "SCANS %ld\n", info.m_numSpec);
 	fprintf(f, "INT_TIME %ld\n", info.m_exposureTime);
 
-	fprintf(f, "SITE %s\n", info.m_name);
+	fprintf(f, "SITE %s\n", (LPCSTR)info.m_name);
 	fprintf(f, "LONGITUDE %.6lf\n", info.m_gps.Longitude());
 	fprintf(f, "LATITUDE %.6lf\n", info.m_gps.Latitude());
 
@@ -277,7 +280,7 @@ RETURN_CODE CSTDFile::WriteSpectrum(const CSpectrum &spec, const CString &fileNa
 		fprintf(f, "Device = \"\"\n");
 		fprintf(f, "ElevationAngle = %.2lf\n",	info.m_scanAngle);
 		fprintf(f, "ExposureTime = %d\n",				info.m_exposureTime);
-		fprintf(f, "FileName = %s\n",						fileName);
+		fprintf(f, "FileName = %s\n", (LPCSTR)fileName);
 		fprintf(f, "FitHigh = 0\n");
 		fprintf(f, "FitLow = 0\n");
 		fprintf(f, "Gain = 0\n");
@@ -293,7 +296,7 @@ RETURN_CODE CSTDFile::WriteSpectrum(const CSpectrum &spec, const CString &fileNa
 		fprintf(f, "Min = %.3lf\n",							spec.MinValue());
 		fprintf(f, "MinChannel = 0\n");
 		fprintf(f, "MultiChannelCounter = 0\n");
-		fprintf(f, "Name = \"%s\"\n",						info.m_name);
+		fprintf(f, "Name = \"%s\"\n", (LPCSTR)info.m_name);
 		fprintf(f, "NumScans = %d\n",						info.m_numSpec);
 		fprintf(f, "OpticalDensity = 0\n");
 		fprintf(f, "OpticalDensityCenter = %d\n",	spec.m_length / 2);

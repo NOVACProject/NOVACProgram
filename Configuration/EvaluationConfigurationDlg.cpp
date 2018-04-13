@@ -247,13 +247,13 @@ void CEvaluationConfigurationDlg::OnAddReferenceFile(){
 	if(!common.BrowseForFile(filter, fileName)){
 		return;
 	}
-	m_curSpec->channel[m_channel].fitWindow.ref[m_curSpec->channel[m_channel].fitWindow.nRef].m_path.Format("%s", fileName);
+	m_curSpec->channel[m_channel].fitWindow.ref[m_curSpec->channel[m_channel].fitWindow.nRef].m_path.Format("%s", (LPCSTR)fileName);
 
 	// 3. Make a guess for the specie name
 	CString specie;
 	Common::GuessSpecieName(fileName, specie);
 	if(strlen(specie) != 0){
-		m_curSpec->channel[m_channel].fitWindow.ref[m_curSpec->channel[m_channel].fitWindow.nRef].m_specieName.Format("%s", specie);
+		m_curSpec->channel[m_channel].fitWindow.ref[m_curSpec->channel[m_channel].fitWindow.nRef].m_specieName.Format("%s", (LPCSTR)specie);
 	}else{
 		// Could not guess for a specie name. Let the user select one.
 		Dialogs::CSelectionDialog selectionDlg;
@@ -273,7 +273,7 @@ void CEvaluationConfigurationDlg::OnAddReferenceFile(){
 			}
 		}
 		if(insert)
-			selectionDlg.m_option[index++].Format("%s", species[i]);
+			selectionDlg.m_option[index++].Format("%s", (LPCSTR)species[i]);
 		}
 		selectionDlg.m_windowText.Format("Select Specie");
 		selectionDlg.m_currentSelection = &selection;
@@ -282,7 +282,7 @@ void CEvaluationConfigurationDlg::OnAddReferenceFile(){
 		if(IDCANCEL == ret)
 		return;
 
-		m_curSpec->channel[m_channel].fitWindow.ref[m_curSpec->channel[m_channel].fitWindow.nRef].m_specieName.Format("%s", selection);
+		m_curSpec->channel[m_channel].fitWindow.ref[m_curSpec->channel[m_channel].fitWindow.nRef].m_specieName.Format("%s", (LPCSTR)selection);
 	}
 	m_curSpec->channel[m_channel].fitWindow.nRef += 1;
 
@@ -315,7 +315,7 @@ void CEvaluationConfigurationDlg::OnRemoveReferenceFile(){
 
 	// the 'are you sure?' - message
 	CString message;
-	message.Format("Are you sure you want to delete the reference for specie %s ?", m_curSpec->channel[m_channel].fitWindow.ref[minRow].m_specieName);
+	message.Format("Are you sure you want to delete the reference for specie %s ?", (LPCSTR)m_curSpec->channel[m_channel].fitWindow.ref[minRow].m_specieName);
 	int answer = MessageBox(message, "Delete Reference File", MB_YESNO);
 	if(IDNO == answer)
 		return;

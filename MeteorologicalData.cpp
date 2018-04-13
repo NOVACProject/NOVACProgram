@@ -35,7 +35,7 @@ int CMeteorologicalData::SetWindField(const CString &serialNumber, const CWindFi
 	}
 
 	// insert a scanner
-	m_scanner[m_scannerNum].Format("%s", serialNumber);
+	m_scanner[m_scannerNum].Format("%s", (LPCTSTR)serialNumber);
 	m_windFieldAtScanner[m_scannerNum] = windField;
 	++m_scannerNum;
 

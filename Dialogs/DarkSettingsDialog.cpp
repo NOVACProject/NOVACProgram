@@ -114,10 +114,10 @@ void CDarkSettingsDialog::OnOK()
 
 	// the files
 	if(m_darkSettings->m_darkSpecOption	== DARK_USER_SUPPLIED){
-		m_darkSettings->m_offsetSpec.Format("%s",						m_darkSpectrum_UserSupplied);
+		m_darkSettings->m_offsetSpec.Format("%s", (LPCSTR)m_darkSpectrum_UserSupplied);
 	}else{
-		m_darkSettings->m_offsetSpec.Format("%s",						m_offsetPath1);
-		m_darkSettings->m_darkCurrentSpec.Format("%s",			m_dcPath1);
+		m_darkSettings->m_offsetSpec.Format("%s", (LPCSTR)m_offsetPath1);
+		m_darkSettings->m_darkCurrentSpec.Format("%s", (LPCSTR)m_dcPath1);
 	}
 
 	CDialog::OnOK();
@@ -140,10 +140,10 @@ BOOL CDarkSettingsDialog::OnInitDialog(){
 
 	// the files
 	if(m_darkSpecOption == DARK_USER_SUPPLIED){
-		m_darkSpectrum_UserSupplied.Format("%s",	m_darkSettings->m_offsetSpec);
+		m_darkSpectrum_UserSupplied.Format("%s", (LPCSTR)m_darkSettings->m_offsetSpec);
 	}else{
-		m_offsetPath1.Format("%s",	m_darkSettings->m_offsetSpec);
-		m_dcPath1.Format("%s",			m_darkSettings->m_darkCurrentSpec);
+		m_offsetPath1.Format("%s", (LPCSTR)m_darkSettings->m_offsetSpec);
+		m_dcPath1.Format("%s", (LPCSTR)m_darkSettings->m_darkCurrentSpec);
 	}
 
 	// Enable and disable the controls accoring to the settings

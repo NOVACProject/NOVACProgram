@@ -1161,7 +1161,10 @@ void CGraphCtrl::SetSecondYUnit(CString string)
 **/
 void CGraphCtrl::DrawLine(DIRECTION direction, double value,COLORREF pColor, LINE_STYLE lineStyle, int plotOption)
 {
-	int x0, x1, y0, y1;
+	int x0 = 0;
+	int x1 = 0;
+	int y0 = 0;
+	int y1 = 0;
 	CPen *oldPen ;
 	CPen pen;
 	AxisOptions::FloatRect curAxis;
@@ -1191,17 +1194,19 @@ void CGraphCtrl::DrawLine(DIRECTION direction, double value,COLORREF pColor, LIN
 	GetTransform(offsLeft, offsBottom, xFactor, yFactor, curAxis);
 
 	// --- Draw the line ---
-	if(direction == VERTICAL){
-		x0			=	m_rectPlot.left + (long)((value - offsLeft)*xFactor) ;
+	switch(direction){
+	case VERTICAL:
+		x0			= m_rectPlot.left + (long)((value - offsLeft)*xFactor) ;
 		y0			= m_rectPlot.top;
 		x1			= x0;
 		y1			= m_rectPlot.bottom;
-	}
-	if(direction == HORIZONTAL){
+		break;
+	case HORIZONTAL:
 		x0			= m_rectPlot.left;
 		y0			= m_rectPlot.bottom - (long)((value - offsBottom)*yFactor) ;
 		x1			= m_rectPlot.right;
 		y1			= y0;
+		break;
 	}
 	m_dcPlot.MoveTo(x0, y0);
 	m_dcPlot.LineTo(x1, y1);
@@ -1229,35 +1234,37 @@ void CGraphCtrl::SetGridSpacing(double &lower, double &upper, int dim, NUMBER_FO
 		double rangeNorm, magnitude;
 		double intervals[50];
 		int nIntervals;
-
-		if(format == FORMAT_TIME){
-			intervals[0] =14400.0f;
+		switch (format) {
+		case FORMAT_TIME:
+			intervals[0] = 14400.0f;
 			intervals[1] = 3600.0f;
 			intervals[2] = 1800.0f;
-			intervals[3] =  300.0f;
-			intervals[4] =   60.0f;
-			intervals[5] =   30.0f;
-			intervals[6] =    1.0f;
-			rangeNorm			= range;
-			nIntervals		= 7;
-			magnitude			= 1.0;
-		}
-		if(format == FORMAT_BINARY){
-			intervals[0] =    1.0f;
-			nIntervals	 = 1;
-			double log2	 = log10(range) / log10(2);
-			magnitude		 = pow(2, round(log2)) / 4;		// The order of magnitude of the range;
-			rangeNorm		 = range / magnitude;
-		}
-		if(format == FORMAT_GENERAL){
-			intervals[0]				=	1.0;
-			intervals[1]				=	0.5;
-			intervals[2]				=	0.2;
-			intervals[3]				= 0.1;
-			magnitude						= pow(10, round(log10(range)));		// The order of magnitude of the range
-			double magnitudeInv = 1/magnitude;									// The inverse magnitude
-			rangeNorm						= range * magnitudeInv;					// Normalize to the range [0-10]
-			nIntervals					= 4;
+			intervals[3] = 300.0f;
+			intervals[4] = 60.0f;
+			intervals[5] = 30.0f;
+			intervals[6] = 1.0f;
+			rangeNorm = range;
+			nIntervals = 7;
+			magnitude = 1.0;
+			break;
+		case FORMAT_BINARY:
+			intervals[0] = 1.0f;
+			nIntervals = 1;
+			//double log2 = log10(range) / log10(2);
+			magnitude = pow(2, round(log10(range) / log10(2))) / 4;		// The order of magnitude of the range;
+			rangeNorm = range / magnitude;
+			break;
+		case FORMAT_GENERAL:
+		default:
+			intervals[0] = 1.0;
+			intervals[1] = 0.5;
+			intervals[2] = 0.2;
+			intervals[3] = 0.1;
+			magnitude = pow(10, round(log10(range)));		// The order of magnitude of the range
+			double magnitudeInv = 1 / magnitude;									// The inverse magnitude
+			rangeNorm = range * magnitudeInv;					// Normalize to the range [0-10]
+			nIntervals = 4;
+			break;
 		}
 
 		for(int i = 0; i < nIntervals; ++i){

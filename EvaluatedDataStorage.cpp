@@ -121,7 +121,7 @@ int CEvaluatedDataStorage::AddData(const CString &serial, Evaluation::CScanResul
 		if(m_serialNum < MAX_NUMBER_OF_SCANNING_INSTRUMENTS){
 			// if the scanner is not in the list then insert it
 			scannerIndex = m_serialNum;
-			m_serials[m_serialNum].Format("%s", serial);
+			m_serials[m_serialNum].Format("%s", (LPCSTR)serial);
 			
 			// find the serial-number in the global configuration, to find the spectrometer-model
 			bool found = false;
@@ -176,7 +176,7 @@ int CEvaluatedDataStorage::AddData(const CString &serial, Evaluation::CScanResul
 
 	// add the evaluated column values and their corresponding elevation angle and saturation-level
 	int nIgnored = 0;
-	for(int i = 0; i < result->GetEvaluatedNum(); ++i){
+	for(unsigned long i = 0; i < result->GetEvaluatedNum(); ++i){
 		// Check so that we don't add too many data points here
 		if(i - nIgnored >= MAX_SPEC_PER_SCAN)
 			break;
@@ -244,7 +244,7 @@ int CEvaluatedDataStorage::AddWindData(const CString &serial, WindSpeedMeasureme
 		if(m_serialNum < MAX_NUMBER_OF_SCANNING_INSTRUMENTS){
 			// if the scanner is not in the list then insert it
 			scannerIndex = m_serialNum;
-			m_serials[m_serialNum].Format("%s", serial);
+			m_serials[m_serialNum].Format("%s", (LPCSTR)serial);
 			
 			// find the serial-number in the global configuration, to find the spectrometer-model
 			bool found = false;
@@ -464,7 +464,7 @@ long CEvaluatedDataStorage::GetColumnData(const CString &serial, double *dataBuf
 		return 0;
 
 	// The unit conversion
-	double unitConversionFactor;
+	double unitConversionFactor = 0;
 	if(g_userSettings.m_columnUnit == UNIT_PPMM)
 		unitConversionFactor = 1.0;
 	else if(g_userSettings.m_columnUnit == UNIT_MOLEC_CM2)
@@ -512,7 +512,7 @@ long CEvaluatedDataStorage::GetBadColumnData(const CString &serial, double *data
 		return 0;
 
 	// The unit conversion
-	double unitConversionFactor;
+	double unitConversionFactor=0.0;
 	if(g_userSettings.m_columnUnit == UNIT_PPMM)
 		unitConversionFactor = 1.0;
 	else if(g_userSettings.m_columnUnit == UNIT_MOLEC_CM2)
@@ -587,11 +587,15 @@ long CEvaluatedDataStorage::GetFluxData(const CString &serial, double *timeBuffe
 		return 0;
 
 	// The unit conversion
-	double unitConversionFactor;
-	if(g_userSettings.m_fluxUnit == UNIT_KGS)
-		unitConversionFactor = 1.0;
-	else if(g_userSettings.m_fluxUnit == UNIT_TONDAY)
+	double unitConversionFactor = 0;
+	switch (g_userSettings.m_fluxUnit) {
+	case UNIT_TONDAY:
 		unitConversionFactor = 3.6 * 24.0;
+		break;
+	case UNIT_KGS:
+		unitConversionFactor = 1.0;
+		break;
+	}
 
 	// Copy the flux data
 	int nCopy = min(bufferSize, m_fluxIndex[scannerIndex]);
@@ -891,10 +895,9 @@ double	CEvaluatedDataStorage::GetMaxBatteryVoltage(const CString &serial){
 
 /** Returns the spectrometer index given a serial number */
 int CEvaluatedDataStorage::GetScannerIndex(const CString &serial){
-	unsigned int i;
 
 	// Search for the serial-number
-	for(i = 0; i < m_serialNum; ++i){
+	for(unsigned int i = 0; i < m_serialNum; ++i){
 		if(Equals(serial, m_serials[i])){
 			return (int)i;
 		}

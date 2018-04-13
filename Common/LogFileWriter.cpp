@@ -18,7 +18,7 @@ int CLogFileWriter::SetErrorLogFile(const CString &path, const CString &fileName
 	if(ret){
 		return 1; // error
 	}
-	m_errorFile.Format("%s\\%s", path, fileName);
+	m_errorFile.Format("%s\\%s", (LPCSTR)path, (LPCSTR)fileName);
 
 	// try to open the file and make sure that the file can be written to
 	GetHeaderString(str, ERROR_LOG);
@@ -35,7 +35,7 @@ int CLogFileWriter::SetResultLogFile(const CString &path, const CString &fileNam
 	if(ret){
 		return 1; // error
 	}
-	m_resultFile[resultLogFileNum].Format("%s\\%s", path, fileName);
+	m_resultFile[resultLogFileNum].Format("%s\\%s", (LPCSTR)path, (LPCSTR)fileName);
 
 	// try to open the file and make sure that the file can be written to
 	if(resultLogFileNum == 0){
@@ -130,7 +130,8 @@ int CLogFileWriter::GetHeaderString(CString &str, const int file) const
 		default: return 1;
 	}
 
-	str.AppendFormat("file for the Novac Master Program version %d.%02d. Created on: %s at %s", CVersion::majorNumber, CVersion::minorNumber, date, time);
+	str.AppendFormat("file for the Novac Master Program version %d.%02d. Created on: %s at %s",
+		CVersion::majorNumber, CVersion::minorNumber, (LPCSTR)date, (LPCSTR)time);
 
 	return 0;
 }

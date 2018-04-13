@@ -72,7 +72,7 @@ void CReEval_MiscSettingsDlg::OnBrowseSkySpectrum(){
 
 	// let the user browse for a spectrum-file
 	if(common.BrowseForFile(filter, skySpec)){
-		m_reeval->m_skySpectrum.Format("%s", skySpec);
+		m_reeval->m_skySpectrum.Format("%s", (LPCTSTR)skySpec);
 		SetDlgItemText(IDC_EDIT_USER_SKY, skySpec);
 
 		m_reeval->m_skyOption = SKY_USER;

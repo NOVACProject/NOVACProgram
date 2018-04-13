@@ -98,7 +98,7 @@ void CCommunicationController::OnStatusUpload(WPARAM wp, LPARAM lp)
 	}else{
 		m_nodeControl->SetNodeStatus(mainIndex, SPECIAL_MODE,*filePath);	
 	}
-	message.Format("File %s added to upload-queue for node %d", *filePath, mainIndex);
+	message.Format("File %s added to upload-queue for node %d", (LPCSTR)*filePath, mainIndex);
 	ShowMessage(message);
 	
 	// clear up...
@@ -213,7 +213,7 @@ UINT ConnectByFTP( LPVOID pParam)
 	                                      g_settings.scanner[mainIndex].comm.ftpAdminUserName,
 	                                      g_settings.scanner[mainIndex].comm.ftpAdminPassword);
 
-	spectrometerSerialID.Format("%s", g_settings.scanner[mainIndex].spec[0].serialNumber);
+	spectrometerSerialID.Format("%s", (LPCSTR)g_settings.scanner[mainIndex].spec[0].serialNumber);
 
 	while(g_runFlag)
 	{
@@ -274,7 +274,7 @@ void UploadFile_SerialTx(int i, Communication::CCommunicationController *mainCon
 		uploadFileFolder.Format(strFileName);
 		common.GetDirectory(uploadFileFolder);
 		common.GetFileName(strFileName);
-		sprintf(fileName,"%s",strFileName);
+		sprintf(fileName,"%s", (LPCSTR)strFileName);
 
 		cable->UploadFile(uploadFileFolder,fileName,'A') ;
 		mainController->m_nodeControl->SetNodeStatus(i,RUN_MODE,uploadFilePath);
@@ -301,9 +301,9 @@ void UploadFile_FTP(int mainIndex, CFTPHandler* ftpHandler){
 
 			// Upload the file
 			if(ftpHandler->UploadFile(fileName, remoteFile)){
-				message.Format("Failed to upload %s to node %d", fileName, mainIndex);
+				message.Format("Failed to upload %s to node %d", (LPCSTR)fileName, mainIndex);
 			}else{
-				message.Format("Successfully uploaded %s to node %d", fileName, mainIndex);
+				message.Format("Successfully uploaded %s to node %d", (LPCSTR)fileName, mainIndex);
 			}
 			ShowMessage(message);
 

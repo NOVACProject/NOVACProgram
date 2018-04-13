@@ -76,15 +76,15 @@ int CEvaluation::Evaluate(const CSpectrum &sky, const CSpectrum &measured, int n
 
 /** Evaluate the supplied spectrum using the parameters set in the supplied fit window
 */
-int CEvaluation::Evaluate(const CSpectrum &sky, const CSpectrum &meas, const CFitWindow &window, int numSteps){
+int CEvaluation::Evaluate(const CSpectrum &sky, const CSpectrum &meas, const CFitWindow &window, int numSteps) {
 	CString message;
-	int fitLow	= window.fitLow;
-	int fitHigh	= window.fitHigh;
+	int fitLow = window.fitLow;
+	int fitHigh = window.fitHigh;
 
 	// Check the fit region
-	if(fitHigh < fitLow){
+	if (fitHigh < fitLow) {
 		int tmp = fitLow;
-		fitLow	= fitHigh;
+		fitLow = fitHigh;
 		fitHigh = tmp;
 	}
 
@@ -92,36 +92,34 @@ int CEvaluation::Evaluate(const CSpectrum &sky, const CSpectrum &meas, const CFi
 	int specLen = sky.m_length;
 
 	// Check so that the length of the spectra agree with each other
-	if(specLen != meas.m_length)
+	if (specLen != meas.m_length)
 		return(1);
 
 	// If the spectra are longer than the references, then something is wrong!
-	if(specLen > window.specLength)
+	if (specLen > window.specLength)
 		return(1);
 
-	if(sky.m_info.m_startChannel != 0 || sky.m_length < window.specLength){
+	if (sky.m_info.m_startChannel != 0 || sky.m_length < window.specLength) {
 		// Partial spectra
-		fitLow	-= sky.m_info.m_startChannel;
-		fitHigh	-= sky.m_info.m_startChannel;
-		if(fitLow < 0 || fitHigh > sky.m_length)
+		fitLow -= sky.m_info.m_startChannel;
+		fitHigh -= sky.m_info.m_startChannel;
+		if (fitLow < 0 || fitHigh > sky.m_length)
 			return 1;
 	}
 
 	// initialize the reference-spectrum functions
-	for(int k = 0; k < MAX_N_REFERENCES; ++k)
+	for (int k = 0; k < MAX_N_REFERENCES; ++k)
 		ref[k] = new CReferenceSpectrumFunction();
 
 	// Vectors to store the data
 	CVector vMeas, vSky;
 
-	int i;
-
 	// Make local copies of the data
 	double *measArray = (double *)calloc(meas.m_length, sizeof(double));
-	memcpy(measArray, meas.m_data, meas.m_length*sizeof(double));
+	memcpy(measArray, meas.m_data, meas.m_length * sizeof(double));
 
-	double *skyArray = (double *)calloc(sky.m_length, sizeof(double));
-	memcpy(skyArray, sky.m_data, sky.m_length*sizeof(double));
+	_Post_ _Notnull_ double *skyArray = (double *)calloc(sky.m_length, sizeof(double));
+	memcpy(skyArray, sky.m_data, sky.m_length * sizeof(double));
 
 	//----------------------------------------------------------------
 	// --------- prepare the spectrum for evaluation -----------------
@@ -132,7 +130,7 @@ int CEvaluation::Evaluate(const CSpectrum &sky, const CSpectrum &meas, const CFi
 	//----------------------------------------------------------------
 
 	// Copy the measured spectrum to vMeas
-	vMeas.Copy(measArray,specLen,1);
+	vMeas.Copy(measArray, specLen, 1);
 
 	// To perform the fit we need to extract the wavelength (or pixel)
 	//	information from the vXData-vector
@@ -148,7 +146,7 @@ int CEvaluation::Evaluate(const CSpectrum &sky, const CSpectrum &meas, const CFi
 
 	// now set the data of the measured spectrum in regard to the wavelength information
 	dataTarget.SetData(vXData.SubVector(window.startChannel, window.specLength), vMeas);
-	
+
 	// since the DOAS model function consists of the sum of all reference spectra and a polynomial,
 	// we first create a summation object
 	CSimpleDOASFunction cRefSum;
@@ -156,15 +154,15 @@ int CEvaluation::Evaluate(const CSpectrum &sky, const CSpectrum &meas, const CFi
 	// now we create the required CReferenceSpectrumFunction objects that actually represent the 
 	// reference spectra used in the DOAS model function
 
-	if(0 != CreateReferenceSpectrum(window, sky.m_info.m_startChannel)){
+	if (0 != CreateReferenceSpectrum(window, sky.m_info.m_startChannel)) {
 		free(skyArray);
 		free(measArray);
-		for(int k = 0; k < MAX_N_REFERENCES; ++k)
+		for (int k = 0; k < MAX_N_REFERENCES; ++k)
 			delete ref[k];
 		return 1;
 	}
-	for(int i = 0; i < window.nRef; ++i){
-			cRefSum.AddReference(*ref[i]); // <-- at last add the reference to the summation object
+	for (int i = 0; i < window.nRef; ++i) {
+		cRefSum.AddReference(*ref[i]); // <-- at last add the reference to the summation object
 	}
 
 	// create the additional polynomial with the correct order
@@ -195,101 +193,103 @@ int CEvaluation::Evaluate(const CSpectrum &sky, const CSpectrum &meas, const CFi
 
 	try
 	{
-			// prepare everything for fitting
-			cFirstFit.PrepareMinimize();
+		// prepare everything for fitting
+		cFirstFit.PrepareMinimize();
 
-			// actually do the fitting
-		if(!cFirstFit.Minimize()){
+		// actually do the fitting
+		if (!cFirstFit.Minimize()) {
 			message.Format("Fit Failed!");
 			ShowMessage(message);
 			free(skyArray);
 			free(measArray);
-			for(int k = 0; k < MAX_N_REFERENCES; ++k)
+			for (int k = 0; k < MAX_N_REFERENCES; ++k)
 				delete ref[k];
 			return 1;
 		}
 
 		// finalize the fitting process. This will calculate the error measurements and other statistical stuff
-			cFirstFit.FinishMinimize();
+		cFirstFit.FinishMinimize();
 
-			// get the basic fit results
-		m_result.m_stepNum    = (long)cFirstFit.GetFitSteps();
-		m_result.m_chiSquare  = (double)cFirstFit.GetChiSquare();
+		// get the basic fit results
+		m_result.m_stepNum = (long)cFirstFit.GetFitSteps();
+		m_result.m_chiSquare = (double)cFirstFit.GetChiSquare();
 		m_result.m_speciesNum = (unsigned long)window.nRef;
 		m_result.m_ref.SetSize(window.nRef);
 
-		for(int tmpInt = 0; tmpInt <= window.polyOrder; ++tmpInt)
+		for (int tmpInt = 0; tmpInt <= window.polyOrder; ++tmpInt)
 			m_result.m_polynomial[tmpInt] = (double)cPoly.GetCoefficient(tmpInt);
 
-			// get residuum vector and expand it to a DOAS vector object. Do NOT assign the vector data to the new object!
-			// display some statistical stuff about the residual data
-			CDOASVector vResiduum;
-			vResiduum.Attach(cFirstFit.GetResiduum(), false);
-			m_residual.SetSize(vResiduum.GetSize());
-			m_residual.Zero();
-			m_residual.Add(vResiduum);
+		// get residuum vector and expand it to a DOAS vector object. Do NOT assign the vector data to the new object!
+		// display some statistical stuff about the residual data
+		CDOASVector vResiduum;
+		vResiduum.Attach(cFirstFit.GetResiduum(), false);
+		m_residual.SetSize(vResiduum.GetSize());
+		m_residual.Zero();
+		m_residual.Add(vResiduum);
 
-			m_result.m_delta = (double)vResiduum.Delta();
+		m_result.m_delta = (double)vResiduum.Delta();
 
-			// get the fitResult for the polynomial
+		// get the fitResult for the polynomial
+		CVector tmpVector;
+		tmpVector.SetSize(specLen);
+		cPoly.GetValues(vXData.SubVector(window.startChannel, window.specLength), tmpVector);
+		m_fitResult[0].Set(tmpVector, specLen);
+
+		// finally display the fit results for each reference spectrum including their appropriate error
+		for (int i = 0; i < window.nRef; i++)
+		{
+			m_result.m_ref[i].m_specieName.Format("%s", (LPCSTR)window.ref[i].m_specieName);
+
+			m_result.m_ref[i].m_column = (double)ref[i]->GetModelParameter(CReferenceSpectrumFunction::CONCENTRATION);
+			m_result.m_ref[i].m_columnError = (double)ref[i]->GetModelParameterError(CReferenceSpectrumFunction::CONCENTRATION);
+			m_result.m_ref[i].m_shift = (double)ref[i]->GetModelParameter(CReferenceSpectrumFunction::SHIFT);
+			m_result.m_ref[i].m_shiftError = (double)ref[i]->GetModelParameterError(CReferenceSpectrumFunction::SHIFT);
+			m_result.m_ref[i].m_squeeze = (double)ref[i]->GetModelParameter(CReferenceSpectrumFunction::SQUEEZE);
+			m_result.m_ref[i].m_squeezeError = (double)ref[i]->GetModelParameterError(CReferenceSpectrumFunction::SQUEEZE);
+
+			// get the final fit result
 			CVector tmpVector;
 			tmpVector.SetSize(specLen);
-			cPoly.GetValues(vXData.SubVector(window.startChannel, window.specLength), tmpVector);
-			m_fitResult[0].Set(tmpVector, specLen);
-
-			// finally display the fit results for each reference spectrum including their appropriate error
-			for(i = 0; i < window.nRef; i++)
-			{
-				m_result.m_ref[i].m_specieName.Format("%s", window.ref[i].m_specieName);
-
-				m_result.m_ref[i].m_column        = (double)ref[i]->GetModelParameter(CReferenceSpectrumFunction::CONCENTRATION);
-				m_result.m_ref[i].m_columnError   = (double)ref[i]->GetModelParameterError(CReferenceSpectrumFunction::CONCENTRATION);
-				m_result.m_ref[i].m_shift         = (double)ref[i]->GetModelParameter(CReferenceSpectrumFunction::SHIFT);
-				m_result.m_ref[i].m_shiftError    = (double)ref[i]->GetModelParameterError(CReferenceSpectrumFunction::SHIFT);
-				m_result.m_ref[i].m_squeeze       = (double)ref[i]->GetModelParameter(CReferenceSpectrumFunction::SQUEEZE);
-				m_result.m_ref[i].m_squeezeError  = (double)ref[i]->GetModelParameterError(CReferenceSpectrumFunction::SQUEEZE);
-
-				// get the final fit result
-				CVector tmpVector;
-				tmpVector.SetSize(specLen);
-				ref[i]->GetValues(vXData.SubVector(window.startChannel, window.specLength), tmpVector);
-				m_fitResult[i+1].Set(tmpVector, specLen);
-			}
-
-			// clean up the evaluation
-			free(skyArray);
-			free(measArray);
-			for(int k = 0; k < MAX_N_REFERENCES; ++k)
-				delete ref[k];
-				return (0);
-			}
-		catch(CFitException e)
-		{
-			// in case that something went wrong, display the error to the user.
-			// normally you will get error in two cases:
-			//
-			// 1. You forgot to set a valid fit range before you start fitting
-			//
-			// 2. A matrix inversion failed for some reason inside the fitting loop. Matrix inversions
-			//    normally fail when there are linear dependecies in the matrix respectrively you have linear
-			//    dependencies in your reference spectrum. Eg. you tried to fit the same reference spectrum twice at once.
-
-		//  e.ReportError();
-		//	std::cout << "Failed: " << ++iFalseCount << std::endl;
-		//	std::cout << "Steps: " << cFirstFit.GetNonlinearMinimizer().GetFitSteps() << " - Chi: " << cFirstFit.GetNonlinearMinimizer().GetChiSquare() << std::endl;
-
-			message.Format("A Fit Exception has occured. Are the reference files OK?");
-			ShowMessage(message);
-
-			// clean up the evaluation
-			free(skyArray);
-			free(measArray);
-			for(int k = 0; k < MAX_N_REFERENCES; ++k)
-				delete ref[k];
-			delete solarSpec;
-
-			return (1);
+			ref[i]->GetValues(vXData.SubVector(window.startChannel, window.specLength), tmpVector);
+			m_fitResult[i + 1].Set(tmpVector, specLen);
 		}
+
+		// clean up the evaluation
+		free(skyArray);
+		free(measArray);
+		for (int k = 0; k < MAX_N_REFERENCES; ++k) {
+			delete ref[k];
+		}
+		return (0);
+	}
+	catch (CFitException e)
+	{
+		// in case that something went wrong, display the error to the user.
+		// normally you will get error in two cases:
+		//
+		// 1. You forgot to set a valid fit range before you start fitting
+		//
+		// 2. A matrix inversion failed for some reason inside the fitting loop. Matrix inversions
+		//    normally fail when there are linear dependecies in the matrix respectrively you have linear
+		//    dependencies in your reference spectrum. Eg. you tried to fit the same reference spectrum twice at once.
+
+	//  e.ReportError();
+	//	std::cout << "Failed: " << ++iFalseCount << std::endl;
+	//	std::cout << "Steps: " << cFirstFit.GetNonlinearMinimizer().GetFitSteps() << " - Chi: " << cFirstFit.GetNonlinearMinimizer().GetChiSquare() << std::endl;
+
+		message.Format("A Fit Exception has occured. Are the reference files OK?");
+		ShowMessage(message);
+
+		// clean up the evaluation
+		free(skyArray);
+		free(measArray);
+		for (int k = 0; k < MAX_N_REFERENCES; ++k) {
+			delete ref[k];
+		}
+		delete solarSpec;
+
+		return (1);
+	}
 }
 
 /** Evaluate the supplied spectrum using the solarReference found in 'window'
@@ -345,7 +345,7 @@ int CEvaluation::EvaluateShift(const CSpectrum &measured, const CFitWindow &wind
 
 	// Make a local copy of the solar-spectrum, this for the filtering...
 	double *solarArray = (double *)calloc(m_solarSpectrumData.GetSize(), sizeof(double));
-	for(int k = 0; k < m_solarSpectrumData.GetSize(); ++k){
+	for(unsigned int k = 0; k < m_solarSpectrumData.GetSize(); ++k){
 		solarArray[k] = m_solarSpectrumData.GetAt(k);
 	}
 
@@ -442,7 +442,7 @@ int CEvaluation::EvaluateShift(const CSpectrum &measured, const CFitWindow &wind
 		// transformation of the spectral data into a B-Spline that will be used to interpolate the 
 		// reference spectrum during shift and squeeze operations
 		yValues.SetSize(m_crossSection[i].GetSize());
-		for(int k = 0; k < m_crossSection[i].GetSize(); ++k){
+		for(unsigned int k = 0; k < m_crossSection[i].GetSize(); ++k){
 			yValues.SetAt(k, m_crossSection[i].GetAt(k));
 		}
 		if(!ref[i]->SetData(vXData.SubVector(0, m_crossSection[i].GetSize()), yValues))

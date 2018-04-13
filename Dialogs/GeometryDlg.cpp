@@ -211,9 +211,9 @@ void CGeometryDlg::OnChangeCompass(){
 	if(curScanner < 0 || m_evalLogReader[curScanner] == NULL)
 		return;
 	GetDlgItemText(IDC_EDIT_COMPASS, str);
-	sscanf(str, "%f", &m_evalLogReader[curScanner]->m_specInfo.m_compass);
-
-	DrawMap(); // <-- redraw the map
+	if (sscanf(str, "%f", &m_evalLogReader[curScanner]->m_specInfo.m_compass)==1) {
+		DrawMap(); // <-- redraw the map
+	}
 }
 
 BOOL CGeometryDlg::OnInitDialog()
@@ -295,12 +295,10 @@ void CGeometryDlg::DrawMap(){
 	static const int BUFFERSIZE = 128;
 	static double iLat[BUFFERSIZE];
 	static double iLon[BUFFERSIZE];
-	static double iCol[BUFFERSIZE];
+	static double iCol[BUFFERSIZE];;
 	int		nScanners = 0; // <-- the number of scanners to draw
-	int scanner;				// <-- iterator over the scanners
 	double maxColumn = -1e16;	// <-- the highest column we will draw
 	double minColumn = 1e16;	// <-- the lowest column we will draw
-	int k; // <-- iterator over spectra
 
 	UpdateData(TRUE); // <-- save the data in the dialog
 
@@ -329,7 +327,7 @@ void CGeometryDlg::DrawMap(){
 
 	// To fix the scale for the column-values, we must normalize it. Find the 
 	//	highest and the lowest column value there is
-	for(scanner = 0; scanner < MAX_N_SCANNERS; ++scanner){
+	for(int scanner = 0; scanner < MAX_N_SCANNERS; ++scanner){
 		// If this evaluation-log has not yet been opened, then check the next one
 		if(m_evalLogReader[scanner] == NULL || strlen(m_evalLogReader[scanner]->m_evaluationLog) <= 0)
 			continue;
@@ -340,7 +338,7 @@ void CGeometryDlg::DrawMap(){
 		m_evalLogReader[scanner]->m_scan[m_curScan[scanner]].CalculateOffset(m_evalLogReader[scanner]->m_scan[m_curScan[scanner]].GetSpecieName(0, 0));
 
 		// Get the columns
-		for(k = 0; k < m_evalLogReader[scanner]->m_scan[m_curScan[scanner]].GetEvaluatedNum(); ++k){
+		for(unsigned long k = 0; k < m_evalLogReader[scanner]->m_scan[m_curScan[scanner]].GetEvaluatedNum(); ++k){
 			if(m_evalLogReader[scanner]->m_scan[m_curScan[scanner]].IsOk(k)){
 				double curColumn = m_evalLogReader[scanner]->m_scan[m_curScan[scanner]].GetColumn(k, 0);
 				maxColumn = max(maxColumn, curColumn);
@@ -351,7 +349,7 @@ void CGeometryDlg::DrawMap(){
 
 
 	// Go through the scanners again and draw the data
-	for(scanner = 0; scanner < MAX_N_SCANNERS; ++scanner){
+	for(int scanner = 0; scanner < MAX_N_SCANNERS; ++scanner){
 		// If this evaluation-log has not yet been opened, then check the next one
 		if(m_evalLogReader[scanner] == NULL || strlen(m_evalLogReader[scanner]->m_evaluationLog) <= 0)
 			continue;
@@ -362,7 +360,7 @@ void CGeometryDlg::DrawMap(){
 		int nPoints = CalculateIntersectionPoints(scanner, m_curScan[scanner], iLat, iLon, iCol, BUFFERSIZE);
 
 		// Normalize the columns to the range [0->1]
-		for(k = 0; k < nPoints; ++k){
+		for(int k = 0; k < nPoints; ++k){
 			iCol[k] = (iCol[k] - minColumn) / (maxColumn - minColumn);
 		}
 
@@ -543,7 +541,7 @@ int	CGeometryDlg::CalculateIntersectionPoints(int seriesNumber, int scanNumber, 
 	Common common;
 
 	// the number of points
-	int nPoints = min(dataLength, m_evalLogReader[seriesNumber]->m_scan[scanNumber].GetEvaluatedNum());
+	int nPoints = min(dataLength, (int)m_evalLogReader[seriesNumber]->m_scan[scanNumber].GetEvaluatedNum());
 
 	// Get the cone-angle
 	double coneAngle	=	m_evalLogReader[seriesNumber]->m_specInfo.m_coneAngle;
@@ -555,7 +553,8 @@ int	CGeometryDlg::CalculateIntersectionPoints(int seriesNumber, int scanNumber, 
 	int index = 0;
 	if(fabs(coneAngle - 90) < 5){
 		// ----------- FLAT SCANNERS ---------------
-		for(int k = 0; k < min(dataLength, m_evalLogReader[seriesNumber]->m_scan[scanNumber].GetEvaluatedNum()); ++k){
+		//for(int k = 0; k < min(dataLength, m_evalLogReader[seriesNumber]->m_scan[scanNumber].GetEvaluatedNum()); ++k){
+		for (int k = 0; k < min(dataLength, (int)m_evalLogReader[seriesNumber]->m_scan[scanNumber].GetEvaluatedNum()); ++k) {
 			double scanAngle = m_evalLogReader[seriesNumber]->m_scan[scanNumber].GetScanAngle(k);
 
 			if(fabs(scanAngle) > 85){
@@ -583,7 +582,7 @@ int	CGeometryDlg::CalculateIntersectionPoints(int seriesNumber, int scanNumber, 
 		}
 	}else{
 		// ----------- CONE SCANNERS ---------------
-		for(int k = 0; k < min(dataLength, m_evalLogReader[seriesNumber]->m_scan[scanNumber].GetEvaluatedNum()); ++k){
+		for(int k = 0; k < min(dataLength, (int)m_evalLogReader[seriesNumber]->m_scan[scanNumber].GetEvaluatedNum()); ++k){
 			double scanAngle = m_evalLogReader[seriesNumber]->m_scan[scanNumber].GetScanAngle(k);
 
 			if(fabs(scanAngle) > 85){
@@ -732,7 +731,7 @@ void CGeometryDlg::InitializeControls(){
 		if(m_evalLogReader[k] == NULL || strlen(m_evalLogReader[k]->m_evaluationLog) <= 0)
 			continue;
 
-		str.Format("%s (%d scans)", m_serialNumber[k], m_evalLogReader[k]->m_scanNum);
+		str.Format("%s (%d scans)", (LPCSTR)m_serialNumber[k], m_evalLogReader[k]->m_scanNum);
 		m_scannerList.AddString(str);
 	}
 
@@ -1002,20 +1001,20 @@ void Dialogs::CGeometryDlg::OnMenu_CalculateGeometries(){
 			continue;
 
 		// Serial-number of spectrometer #1
-		serial1.Format("%s", m_evalLogReader[it]->m_scan[0].GetSerial());
+		serial1.Format("%s", (LPCSTR)m_evalLogReader[it]->m_scan[0].GetSerial());
 
 		for(it2 = it+1; it2 < MAX_N_SCANNERS; ++it2){
 			if(m_evalLogReader[it2] == NULL)
 				continue;
 
 			// Serial-number of spectrometer #2
-			serial2.Format("%s", m_evalLogReader[it2]->m_scan[0].GetSerial());
+			serial2.Format("%s", (LPCSTR)m_evalLogReader[it2]->m_scan[0].GetSerial());
 
 			// Open a post-geometry log
 			FILE *f = OpenPostGeometryLogFile(it, it2, fileName);
 			// The name of the volcano we're working on...
 			if(m_volcanoIndex[0] != -1)
-				volcanoName.Format("%s", g_volcanoes.m_simpleName[m_volcanoIndex[0]]);
+				volcanoName.Format("%s", (LPCSTR)g_volcanoes.m_simpleName[m_volcanoIndex[0]]);
 			else
 				volcanoName.Format("Unknown");
 
@@ -1043,7 +1042,7 @@ void Dialogs::CGeometryDlg::OnMenu_CalculateGeometries(){
 						//CalculateWindDirection(it2, scanNumber2);
 
 						// 3. Output the results
-						fprintf(f, "%s\t%s\t%s\t",			volcanoName, serial1, serial2);
+						fprintf(f, "%s\t%s\t%s\t", (LPCSTR)volcanoName, (LPCSTR)serial1, (LPCSTR)serial2);
 						fprintf(f, "%04d.%02d.%02d\t",	time1.year, time1.month, time1.day);
 						fprintf(f, "%02d:%02d:%02d\t",	time1.hour, time1.minute,time1.second);
 						fprintf(f, "%02d:%02d:%02d\t",	time2.hour, time2.minute,time2.second);
@@ -1057,7 +1056,7 @@ void Dialogs::CGeometryDlg::OnMenu_CalculateGeometries(){
 	}// end for(it...
 
 	if(nCalculatedResults > 0){
-		message.Format("%d results calculated and written to: %s", nCalculatedResults, fileName);
+		message.Format("%d results calculated and written to: %s", nCalculatedResults, (LPCSTR)fileName);
 		MessageBox(message);
 	}
 
@@ -1072,7 +1071,7 @@ FILE *Dialogs::CGeometryDlg::OpenPostGeometryLogFile(int seriesNumber1, int seri
 	Common::GetDirectory(directory);		// get the directory of the evaluation-log files
 	directory = directory.Left((int)strlen(directory) - 1);
 	Common::GetDirectory(directory);		// get the parent-directory to the evaluation-log files
-	fileName.Format("%sPostGeometryLog.txt", directory);
+	fileName.Format("%sPostGeometryLog.txt", (LPCSTR)directory);
 	int exists	= IsExistingFile(fileName);
 	FILE *f			= fopen(fileName, "a+");
 	if(f == NULL){
@@ -1086,7 +1085,7 @@ FILE *Dialogs::CGeometryDlg::OpenPostGeometryLogFile(int seriesNumber1, int seri
 			return NULL;
 
 		// Try to open the file again
-		fileName.Format("%sPostGeometryLog.txt", directory);
+		fileName.Format("%sPostGeometryLog.txt", (LPCSTR)directory);
 		exists	= IsExistingFile(fileName);
 		f				= fopen(fileName, "a+");
 		if(f == NULL){

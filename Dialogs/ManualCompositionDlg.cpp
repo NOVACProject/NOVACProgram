@@ -115,14 +115,14 @@ void CManualCompositionDlg::OnSend(){
 
 	// 3. Get the directory where to temporarily store the cfgonce.txt
 	if(strlen(g_settings.outputDirectory) > 0){
-		fileName->Format("%s\\Temp\\%s\\cfgonce.txt", g_settings.outputDirectory, *serialNumber);
+		fileName->Format("%s\\Temp\\%s\\cfgonce.txt", (LPCSTR)g_settings.outputDirectory, (LPCSTR)*serialNumber);
 	}else{
 		common.GetExePath();
-		fileName->Format("%s\\cfgonce.txt", common.m_exePath);
+		fileName->Format("%s\\cfgonce.txt", (LPCSTR)common.m_exePath);
 	}
 	FILE *f = fopen(*fileName, "w");
 	if(f == NULL){
-		message.Format("Could not open %s for writing. Upload failed!!", *fileName);
+		message.Format("Could not open %s for writing. Upload failed!!", (LPCSTR)*fileName);
 		MessageBox(message, "Error");
 		return;
 	}
@@ -134,7 +134,7 @@ void CManualCompositionDlg::OnSend(){
 	double maxExpTime			= 200;
 
 	// The number of measurement positions inside the plume...
-	int measurementsInPlume	= abs(m_plumeEdgeHigh - m_plumeEdgeLow) / stepAngle;
+	int measurementsInPlume	= (int)(abs(m_plumeEdgeHigh - m_plumeEdgeLow) / stepAngle);
 	if(measurementsInPlume < 5)
 		return; // there's not enough space to make 5 measurements in the plume. Quit!
 	measurementsInPlume	= min(measurementsInPlume, 8); // we can't make more than 8 measurements
@@ -149,10 +149,10 @@ void CManualCompositionDlg::OnSend(){
 
 	// 4a. A small header 
 	common.GetDateTimeText(dateTime);
-	fprintf(f, "%% -------------Modified at %s------------%\n\n",dateTime);
+	fprintf(f, "%% -------------Modified at %s------------\n\n", (LPCSTR)dateTime);
 	fprintf(f, "%% Questions? email\n%% mattias.johansson@chalmers.se\n\n");
 
-	if(scanner->instrumentType == INSTR_GOTHENBURG){
+	if(scanner && scanner->instrumentType == INSTR_GOTHENBURG){
 		// 4c. Write the Spectrum transfer information
 		fprintf(f, "%% The following channels defines which channels in the spectra that will be transferred\n");
 		fprintf(f, "STARTCHN=0\n");

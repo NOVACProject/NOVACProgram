@@ -81,7 +81,7 @@ int CFTPCom::Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, BOOL 
 			TCHAR szErr[255];
 			if (pEx->GetErrorMessage(szErr, 255))
 			{
-				m_ErrorMsg.Format("FTP error from connecting %s: %s", m_FTPSite, szErr);
+				m_ErrorMsg.Format("FTP error from connecting %s: %s", (LPCSTR)m_FTPSite, (LPCSTR)szErr);
 				ShowMessage(m_ErrorMsg);
 			}
 			else
@@ -150,7 +150,7 @@ BOOL CFTPCom::DownloadAFile(LPCTSTR remoteFile, LPCTSTR fileFullName)
 			int ftpError = GetLastError();
 			if(ftpError != 0)
 			{
-				msg.Format("FTP error happened when downloading %s from %s: %d", fileFullName,m_FTPSite,ftpError);
+				msg.Format("FTP error happened when downloading %s from %s: %d", (LPCSTR)fileFullName, (LPCSTR)m_FTPSite,ftpError);
 				ShowMessage(msg);
 				DWORD code;
 				DWORD size_needed = 0;
@@ -173,7 +173,7 @@ BOOL CFTPCom::DownloadAFile(LPCTSTR remoteFile, LPCTSTR fileFullName)
 		TCHAR szErr[255];
 		if (pEx->GetErrorMessage(szErr, 255))
 		{
-			m_ErrorMsg.Format("FTP error happened when downloading %s from %s: %s", fileFullName,m_FTPSite,szErr);
+			m_ErrorMsg.Format("FTP error happened when downloading %s from %s: %s", (LPCSTR)fileFullName, (LPCSTR)m_FTPSite, (LPCSTR)szErr);
 			ShowMessage(m_ErrorMsg);
 		}
 		else
@@ -212,7 +212,7 @@ int CFTPCom::UploadFile(LPCTSTR localFile, LPCTSTR remoteFile)
 		TCHAR szErr[255];
 		if (pEx->GetErrorMessage(szErr, 255))
 		{
-			m_ErrorMsg.Format("FTP error happened when uploading %s to %s: %s", localFile,m_FTPSite,szErr);
+			m_ErrorMsg.Format("FTP error happened when uploading %s to %s: %s", (LPCSTR)localFile, (LPCSTR)m_FTPSite, (LPCSTR)szErr);
 			ShowMessage(m_ErrorMsg);
 		}
 		else
@@ -265,6 +265,7 @@ int CFTPCom::FindFile(CString& fileName)
 	//	result = finder.FindNextFile();
 	//	CString name = finder.GetFileURL();	// Just here for debugging
 	//}
+	//TODO:  Need to check for instrumentation box.  This fix will work for Moxa but will break it for older DOS based boxes.
 
 	if(0 < result){
 		DWORD retcode = GetLastError();
@@ -307,18 +308,18 @@ BOOL CFTPCom::EnterFolder(const CString& folder)
 		return FALSE;
 
 	// The response we want to have...
-	strFolder.Format("/%s/",folder);
+	strFolder.Format("/%s/", (LPCSTR)folder);
 
 	// Compare if the returned string is the same as what we want...
 	if(Equals(strDir, strFolder))
 	{
-		msg.Format("Get into folder %s", folder);
+		msg.Format("Get into folder %s", (LPCSTR)folder);
 		ShowMessage(msg);
 		return TRUE;
 	}
 	else
 	{
-		msg.Format("Can not get into folder %s", folder);
+		msg.Format("Can not get into folder %s", (LPCSTR)folder);
 		ShowMessage(msg);
 		return FALSE;
 	}

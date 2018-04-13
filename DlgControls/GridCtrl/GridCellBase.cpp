@@ -503,13 +503,19 @@ CSize CGridCellBase::GetTextExtent(LPCTSTR szText, CDC* pDC /*= NULL*/)
     BOOL bReleaseDC = FALSE;
     if (pDC == NULL || szText == NULL)
     {
-        if (szText)
+		if (szText) {
 			pDC = pGrid->GetDC();
+		}
         if (pDC == NULL || szText == NULL) 
         {
             CGridDefaultCell* pDefCell = (CGridDefaultCell*) GetDefaultCell();
             ASSERT(pDefCell);
-            return CSize(pDefCell->GetWidth(), pDefCell->GetHeight());
+			if (pDefCell) {
+				return CSize(pDefCell->GetWidth(), pDefCell->GetHeight());
+			}
+			else {
+				return CSize(0, 0); // error?
+			}
         }
         bReleaseDC = TRUE;
     }
@@ -546,8 +552,11 @@ CSize CGridCellBase::GetTextExtent(LPCTSTR szText, CDC* pDC /*= NULL*/)
         pDC->DrawText(szText, -1, rect, nFormat | DT_CALCRECT);
         size = rect.Size();
     }
-    else
-        size = pDC->GetTextExtent(szText, (int)_tcslen(szText));
+	else {
+		if (pDC) {
+			size = pDC->GetTextExtent(szText, (int)_tcslen(szText));
+		}
+	}
 
     // Removed by Yogurt
     //TEXTMETRIC tm;
@@ -586,8 +595,8 @@ CSize CGridCellBase::GetCellExtent(CDC* pDC)
     {        
         CGridCtrl* pGrid = GetGrid();        
         ASSERT(pGrid);        
-        IMAGEINFO Info;        
-        if (pGrid->GetImageList() && pGrid->GetImageList()->GetImageInfo(nImage, &Info))         
+        IMAGEINFO Info;
+        if (pGrid && pGrid->GetImageList() && pGrid->GetImageList()->GetImageInfo(nImage, &Info))         
         {            
             ImageSize = CSize(Info.rcImage.right-Info.rcImage.left,                                 
                 Info.rcImage.bottom-Info.rcImage.top);            
