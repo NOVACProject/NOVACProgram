@@ -21,11 +21,11 @@ New features
 * Add a check box to activate wind file options (#17)
 
 Removal of unused features
-* Remove 'Instrument' option (#10)
-* Remove 'Motor' configuration (#11)
-* Remove 'Dark' tab from configuration dialog (#15)
-* Remove 'Remote Configuration' tab (#16)
-* Remove Summarize Flux Data menu item (#32)
+* 'Instrument' option (#10)
+* 'Motor' configuration (#11)
+* 'Dark' tab from configuration dialog (#15)
+* 'Remote Configuration' tab (#16)
+* Summarize Flux Data menu item (#32)
 
 
 
