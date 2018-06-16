@@ -175,7 +175,7 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 	CString copyright, version, credits;
 	CDialog::DoDataExchange(pDX);
 
-	version.Format("Novac Program Version %d.%02d Built: %s", CVersion::majorNumber, CVersion::minorNumber, __DATE__);
+	version.Format("Novac Program Version %d.%d Built: %s", CVersion::majorNumber, CVersion::minorNumber, __DATE__);
 	copyright.Format("Copyright (c) 2005 - %4d Optical Remote Sensing Group\n\nChalmers University of Technology, Sweden", Common::GetYear());
 	credits.Format("Programming:\n  Yan Zhang\n  Mattias Johansson\n  Diana Norgaard");
 	DDX_Text(pDX, IDC_STATIC_VERSIONNUMBER, version);

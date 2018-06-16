@@ -1095,7 +1095,7 @@ FILE *Dialogs::CGeometryDlg::OpenPostGeometryLogFile(int seriesNumber1, int seri
 	}
 
 	if(!exists){
-		fprintf(f, "# This is the PostGeometryLog of the NovacProgram version %d.%02d\n", CVersion::majorNumber, CVersion::minorNumber);
+		fprintf(f, "# This is the PostGeometryLog of the NovacProgram version %d.%d\n", CVersion::majorNumber, CVersion::minorNumber);
 		fprintf(f, "# This file contains the result of combining two scans to calculate plume-height and/or wind-direction\n");
 		fprintf(f, "Volcano\tSerialNumber1\tSerialNumber2\tDate\tStartTime1\tStartTime2\tCalculatedPlumeHeight\tWindDirection\n");
 	}
