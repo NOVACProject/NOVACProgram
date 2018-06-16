@@ -1,5 +1,11 @@
 NOVAC Program Release Notes
 -----------------------------------------------------
+Version 3.1 (TBD)
+
+New features
+* Status Message area resizes when window is resized
+
+-----------------------------------------------------
 Version 3.0 (February 2018)
 
 Bug fixes

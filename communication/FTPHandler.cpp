@@ -95,6 +95,9 @@ bool CFTPHandler::DownloadPakFiles(const CString& folder)
 	if(folder.GetLength() > 0)
 		EnterFolder(folder);
 
+	time_t start;
+	time(&start);
+	time_t current;
 	while(m_fileInfoList.GetCount() > 0)
 	{
 		fileInfo = &m_fileInfoList.GetTail();
@@ -114,10 +117,19 @@ bool CFTPHandler::DownloadPakFiles(const CString& folder)
 		m_statusMsg.Format("Begin to download %s/%s", (LPCSTR)folder, (LPCSTR)fileName);
 		downloadResult = DownloadSpectra(fileName, m_storageDirectory);
 
-		if(downloadResult)
+		if (downloadResult) {
 			m_fileInfoList.RemoveTail();
-		else
+		}
+		else {
 			break;	//get out of loop, 2007.4.30
+		}
+
+		time(&current);
+		double seconds = current - start;
+		long queryPeriod = g_settings.scanner[m_mainIndex].comm.queryPeriod;
+		if (seconds > queryPeriod) {
+			break; // spent long enough on one scanner; move to next
+		}
 	}
 
 	m_fileInfoList.RemoveAll();
