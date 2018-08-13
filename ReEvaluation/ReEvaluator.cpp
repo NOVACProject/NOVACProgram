@@ -317,7 +317,7 @@ bool CReEvaluator::WriteEvaluationLogHeader(){
 	}
 
 	// The common header
-	fprintf(f, "#ReEvaluation Log File for the Novac Master Program version %d.%02d. Created on: %s at %s\n", CVersion::majorNumber, CVersion::minorNumber, (LPCTSTR)date, (LPCTSTR)time);
+	fprintf(f, "#ReEvaluation Log File for the Novac Master Program version %d.%d. Created on: %s at %s\n", CVersion::majorNumber, CVersion::minorNumber, (LPCTSTR)date, (LPCTSTR)time);
 	fprintf(f, "#***Settings Used in the Evaluation***\n");
 
 	// Fit interval and polynomial order
@@ -449,7 +449,7 @@ bool CReEvaluator::AppendResultToEvaluationLog(const CScanResult *result, const 
 
 	// Finally, the version of the file and the version of the program
 	fprintf(f, "\tversion=2.1\n");
-	fprintf(f, "\tsoftwareversion=%d.%02d\n", CVersion::majorNumber, CVersion::minorNumber);
+	fprintf(f, "\tsoftwareversion=%d.%d\n", CVersion::majorNumber, CVersion::minorNumber);
 	fprintf(f, "\tcompiledate=%s\n",					  __DATE__);
 
 	fprintf(f, "</scaninformation>\n");

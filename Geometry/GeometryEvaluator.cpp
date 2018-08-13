@@ -285,7 +285,7 @@ RETURN_CODE CGeometryEvaluator::CalculateGeometry(const CString &evalLog1, const
 
 	// 3c. If the file does not already exist, then create a small header for it
 	if(!exists){
-		fprintf(f, "# This is the GeometryLog of the NovacProgram version %d.%02d. Built: %s\n", CVersion::majorNumber, CVersion::minorNumber, __DATE__);
+		fprintf(f, "# This is the GeometryLog of the NovacProgram version %d.%d. Built: %s\n", CVersion::majorNumber, CVersion::minorNumber, __DATE__);
 		fprintf(f, "# This file contains the result of combining two scans to calculate plume-height and/or wind-direction\n");
 		fprintf(f, "Volcano\tEvaluationLog1\tEvaluationLog2\tAverageStartTime\tPlumeCentre1\tPlumeCentre2\tScannerDistance\tCalculatedPlumeHeight\tTotalPlumeHeight\tPlumeHeightError\tWindDirection\tWindDirectionError\n");
 	}

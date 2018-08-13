@@ -631,7 +631,7 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *resu
 
 	// Finally, the version of the file and the version of the program
 	string.AppendFormat("\tversion=3.0\n");
-	string.AppendFormat("\tsoftwareversion=%d.%02d\n",	CVersion::majorNumber, CVersion::minorNumber);
+	string.AppendFormat("\tsoftwareversion=%d.%d\n",	CVersion::majorNumber, CVersion::minorNumber);
 	string.AppendFormat("\tcompiledate=%s\n",			__DATE__);
 
 	string.AppendFormat("</scaninformation>\n");

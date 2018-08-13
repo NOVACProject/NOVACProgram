@@ -130,7 +130,7 @@ int CLogFileWriter::GetHeaderString(CString &str, const int file) const
 		default: return 1;
 	}
 
-	str.AppendFormat("file for the Novac Master Program version %d.%02d. Created on: %s at %s",
+	str.AppendFormat("file for the Novac Master Program version %d.%d. Created on: %s at %s",
 		CVersion::majorNumber, CVersion::minorNumber, (LPCSTR)date, (LPCSTR)time);
 
 	return 0;

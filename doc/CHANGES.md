@@ -1,5 +1,14 @@
 NOVAC Program Release Notes
 -----------------------------------------------------
+Version 3.1 (TBD)
+
+Bug fixes
+* Set time limit on how much time to spend downloading pak files from one spectrometer (#43)
+
+New features
+* Status Message area resizes when window is resized
+
+-----------------------------------------------------
 Version 3.0 (February 2018)
 
 Bug fixes
