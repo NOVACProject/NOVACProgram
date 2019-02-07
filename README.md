@@ -6,4 +6,5 @@ Requires the repository SpectralEvaluation.
 When cloning NOVACProgram, also run:
 
 git submodule init
+
 git submodule update
