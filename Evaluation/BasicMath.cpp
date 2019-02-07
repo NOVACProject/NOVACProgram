@@ -5,17 +5,13 @@
 #include "stdafx.h"
 #include "../resource.h"
 #include "BasicMath.h"
-//#include "MFCTools.h"
-//#include "MathHistory.h"
-#include "../Fit/GaussFunction.h"
-#include "../Fit/CubicSplineFunction.h"
-#include "../Fit/StandardMetricFunction.h"
-#include "../Fit/PolynomialFunction.h"
-#include "../Fit/DiscreteFunction.h"
-#include "../Fit/StandardFit.h"
-#include "../Fit/DOASVector.h"
-//#include "windoastools.h"
-//#include "DoubleMonitoredArrayData.h"
+#include "../SpectralEvaluation/Fit/GaussFunction.h"
+#include "../SpectralEvaluation/Fit/CubicSplineFunction.h"
+#include "../SpectralEvaluation/Fit/StandardMetricFunction.h"
+#include "../SpectralEvaluation/Fit/PolynomialFunction.h"
+#include "../SpectralEvaluation/Fit/DiscreteFunction.h"
+#include "../SpectralEvaluation/Fit/StandardFit.h"
+#include "../SpectralEvaluation/Fit/DOASVector.h"
 #include <math.h>
 #include <vector>
 
@@ -268,7 +264,7 @@ double CBasicMath::CalcExposureTime(double fSaturation, double fEOffsetExpTime, 
 		return(fCurrentExpTime * 0.8);
 
 	// the currently used exposure time is the exposure time without the electronic background exposure time
-	double fCurExpTime = max(fCurrentExpTime - fEOffsetExpTime, 0);
+	double fCurExpTime = std::max(fCurrentExpTime - fEOffsetExpTime, 0.0);
 
 	// we need only the average of the real measured signal level without the background
 	// ensure the difference is at least 1 unit big, so we switch to maximum exposure time
@@ -279,10 +275,10 @@ double CBasicMath::CalcExposureTime(double fSaturation, double fEOffsetExpTime, 
 
 	// the new exposure time is the sum of the electronic offset exposure time and 
 	// the old exposure time derived from the ratio calculated
-	double fRes = max((fCurExpTime * fSignalRatio) + fEOffsetExpTime, 0);
+	double fRes = std::max((fCurExpTime * fSignalRatio) + fEOffsetExpTime, 0.0);
 
 	if(fIntTime > 0)
-		return(min(fRes, fIntTime));
+		return(std::min(fRes, fIntTime));
 	else
 		return(fRes);
 }
@@ -393,7 +389,7 @@ void CBasicMath::NormalizeAmplitude(double *fData, int iSize, double fMaxAmplitu
 	// search pivot
 	fMax = fData[0];
 	for(i = 1; i < iSize; i++)
-		fMax = max(fMax, fabs(fData[i]));
+		fMax = std::max(fMax, fabs(fData[i]));
 
 	// nothing to do here
 	if(fMax == 0)
@@ -1190,8 +1186,8 @@ void CBasicMath::CrossCorrelate(double *fFirst, int iLengthFirst, double *fSec, 
 		double fSum = 0.0;
 		int iSampleCount = 0;
 
-		int iStartIndexSec = max(-iLengthSec / 2, -i);	// we either have to start at the end of the second data array or we can start before the zero index of the first array
-		int iStopIndexSec = min(iLengthSec / 2, iLengthFirst - i);	// we can go further than iLengthFirst
+		int iStartIndexSec = std::max(-iLengthSec / 2, -i);	// we either have to start at the end of the second data array or we can start before the zero index of the first array
+		int iStopIndexSec = std::min(iLengthSec / 2, iLengthFirst - i);	// we can go further than iLengthFirst
 		int iFirstIndex = i + iStartIndexSec;
 		
 		iStartIndexSec += iLengthSec / 2;

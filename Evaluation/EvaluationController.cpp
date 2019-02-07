@@ -627,7 +627,7 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *resu
 	}else if(spectrometer.m_scanner.instrumentType == INSTR_HEIDELBERG){
 		string.AppendFormat("\tinstrumenttype=heidelberg\n");
 	}
-	double maxIntensity = max(spectrometer.GetMaxIntensity(), 1.0);
+	double maxIntensity = std::max(spectrometer.GetMaxIntensity(), 1.0);
 
 	// Finally, the version of the file and the version of the program
 	string.AppendFormat("\tversion=3.0\n");

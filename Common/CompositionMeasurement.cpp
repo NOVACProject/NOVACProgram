@@ -220,11 +220,11 @@ void	CCompositionMeasurement::StartCompositionMeasurement(const Evaluation::CSpe
 	if(spec->m_scanner.instrumentType == INSTR_GOTHENBURG){
 		if(measurementsInPlume < 5)
 			return; // there's not enough space to make 5 measurements in the plume. Quit!
-		measurementsInPlume	= min(measurementsInPlume, 8); // we can't make more than 8 measurements
+		measurementsInPlume	= std::min(measurementsInPlume, 8); // we can't make more than 8 measurements
 	}else if(spec->m_scanner.instrumentType == INSTR_HEIDELBERG){
 		if(measurementsInPlume < 2)
 			return; // there's not enough space to make 3 measurements in the plume. Quit!
-		measurementsInPlume	= min(measurementsInPlume, 4); // we can't make more than 8 measurements
+		measurementsInPlume	= std::min(measurementsInPlume, 4); // we can't make more than 8 measurements
 	}
 	// The angle between each measurement
 	alphaStep						= (plumeEdge[1] - plumeEdge[0]) / measurementsInPlume;

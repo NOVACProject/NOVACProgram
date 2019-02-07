@@ -3,8 +3,8 @@
 #include "../Common/Spectra/Spectrum.h"
 #include "../Common/WindField.h"
 
+#include "FitParameter.h"
 #include "EvaluationResult.h"
-#include "Evaluation.h"
 #include "FluxResult.h"
 
 namespace Evaluation

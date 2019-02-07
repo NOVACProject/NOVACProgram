@@ -243,8 +243,8 @@ void CReEval_ScanDlg::OnChangeSpectrum(NMHDR *pNMHDR, LRESULT *pResult)
 		m_curSpec -= 1;
 
 	// set the limits for the selected spectrum
-	m_curSpec = max(m_curSpec, 0);
-	m_curSpec = min(m_curSpec, m_specNum - 1);
+	m_curSpec = std::max(m_curSpec, 0L);
+	m_curSpec = std::min(m_curSpec, m_specNum - 1);
 
 	// Reset the scale of the graph
 	m_specGraph.ResetZoomRect();
@@ -318,7 +318,7 @@ void CReEval_ScanDlg::OnRemoveSelected(){
 	m_reeval->m_scanFile.RemoveAt(m_curSpecFile);
 	--m_reeval->m_scanFileNum;
 
-	m_curSpecFile = max(0, m_curSpecFile - 1);
+	m_curSpecFile = std::max(0L, m_curSpecFile - 1);
 
 	// Update the list
 	m_scanfileList.PopulateList();

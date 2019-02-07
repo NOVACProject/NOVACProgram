@@ -365,8 +365,8 @@ void CReEval_DoEvaluationDlg::DrawFit(){
 
 	// find the minimum and maximum value
 	for(int i = fitLow+3; i < fitHigh-3; ++i){
-		minV = min(minV, spectrum[i]);
-		maxV = max(maxV, spectrum[i]);
+		minV = std::min(minV, spectrum[i]);
+		maxV = std::max(maxV, spectrum[i]);
 	}
 	if(maxV <= minV)
 		maxV = minV + 1;
@@ -412,8 +412,8 @@ void CReEval_DoEvaluationDlg::DrawResidual(){
 
 	// find the minimum and maximum value
 	for(int i = fitLow+3; i < fitHigh-3; ++i){
-		minV = min(minV, residual[i]);
-		maxV = max(maxV, residual[i]);
+		minV = std::min(minV, residual[i]);
+		maxV = std::max(maxV, residual[i]);
 	}
 	if((maxV - minV) < 0.25 * (oldMaxV - oldMinV)){
 		oldMaxV = maxV;

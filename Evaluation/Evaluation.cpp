@@ -8,20 +8,20 @@
 #include <iostream>
 #include <conio.h>
 // include all required fit objects
-#include "../Fit/ReferenceSpectrumFunction.h"
-#include "../Fit/SimpleDOASFunction.h"
-#include "../Fit/StandardMetricFunction.h"
-#include "../Fit/StandardFit.h"
-#include "../Fit/ExpFunction.h"
-#include "../Fit/LnFunction.h"
-#include "../Fit/PolynomialFunction.h"
-#include "../Fit/NegateFunction.h"
-#include "../Fit/MulFunction.h"
-#include "../Fit/DivFunction.h"
-#include "../Fit/GaussFunction.h"
-#include "../Fit/DiscreteFunction.h"
-#include "../Fit/DOASVector.h"
-#include "../Fit/NonlinearParameterFunction.h"
+#include "../SpectralEvaluation/Fit/ReferenceSpectrumFunction.h"
+#include "../SpectralEvaluation/Fit/SimpleDOASFunction.h"
+#include "../SpectralEvaluation/Fit/StandardMetricFunction.h"
+#include "../SpectralEvaluation/Fit/StandardFit.h"
+#include "../SpectralEvaluation/Fit/ExpFunction.h"
+#include "../SpectralEvaluation/Fit/LnFunction.h"
+#include "../SpectralEvaluation/Fit/PolynomialFunction.h"
+#include "../SpectralEvaluation/Fit/NegateFunction.h"
+#include "../SpectralEvaluation/Fit/MulFunction.h"
+#include "../SpectralEvaluation/Fit/DivFunction.h"
+#include "../SpectralEvaluation/Fit/GaussFunction.h"
+#include "../SpectralEvaluation/Fit/DiscreteFunction.h"
+#include "../SpectralEvaluation/Fit/DOASVector.h"
+#include "../SpectralEvaluation/Fit/NonlinearParameterFunction.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

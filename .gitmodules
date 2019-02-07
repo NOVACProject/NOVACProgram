@@ -1,0 +1,3 @@
+[submodule "SpectralEvaluation"]
+	path = SpectralEvaluation
+	url = https://github.com/NOVACProject/SpectralEvaluation.git
