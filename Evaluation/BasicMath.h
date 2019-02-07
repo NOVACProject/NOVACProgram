@@ -5,8 +5,8 @@
 #if !defined(AFX_BASICMATH_H__1DEB20E2_5D81_11D4_866C_00E098701FA6__INCLUDED_)
 #define AFX_BASICMATH_H__1DEB20E2_5D81_11D4_866C_00E098701FA6__INCLUDED_
 
-#include "../fit/Vector.h"
-#include "../fit/FitException.h"
+#include "../SpectralEvaluation/Fit/Vector.h"
+#include "../SpectralEvaluation/Fit/FitException.h"
 
 #if _MSC_VER > 1000
 #pragma once

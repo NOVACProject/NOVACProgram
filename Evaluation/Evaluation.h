@@ -14,37 +14,20 @@
 #include "EvaluationResult.h"
 #include "FitWindow.h"
 #include "CrossSectionData.h"
+#include "FitParameter.h"
 
-#include "../FIT\Vector.h"	// Added by ClassView
+#include "../SpectralEvaluation/Fit/Vector.h"
 
 #include "../Common/Spectra/Spectrum.h"
-#include "../Fit/ReferenceSpectrumFunction.h"
+#include "../SpectralEvaluation/Fit/ReferenceSpectrumFunction.h"
 
 namespace Evaluation
 {
-	/** constants for selection of fit-parameters*/
-	const enum FIT_PARAMETER{ 
-			COLUMN, 
-			COLUMN_ERROR, 
-			SHIFT, 
-			SHIFT_ERROR, 
-			SQUEEZE, 
-			SQUEEZE_ERROR,
-			DELTA};
-
-	// The options for how to ignore spectra (spectra which are too dark or saturated)
-	enum IgnoreType { IGNORE_DARK, IGNORE_LIMIT, IGNORE_NOTHING};
-	typedef struct IgnoreOption{
-		IgnoreType m_type;
-		double     m_intensity;
-		long       m_channel;
-	}IgnoreOption;
-
 	/** An object of the <b>CEvaluation</b>-class contains the settings to evaluate
 		spectra from <b>one</b> spectrometer. The class contains the parameters 
 		necessary to define the fit and a function to perform the actual evaluation. 
 	*/
-	class CEvaluation : public CBasicMath	
+	class CEvaluation : public CBasicMath
 	{
 	public:
 		/** Default constructor */

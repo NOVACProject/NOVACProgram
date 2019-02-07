@@ -159,11 +159,11 @@ void CRealTimeWind::StartWindSpeedMeasurement(const Evaluation::CSpectrometer *s
 	int stablePeriod	= spec->m_scanner.windSettings.stablePeriod;
 	double plumeCentre	= spec->m_history->GetPlumeCentre(stablePeriod);
 	int motorPosition	= (int)((plumeCentre / 2) * (stepsPerRound / 360.0));
-	double avgExpTime	= min(fabs(spec->m_history->GetExposureTime(stablePeriod)), maxExpTime);
-	int sum1			= (int)min(max(1000.0 / (avgExpTime + readOutTime), 1), 15); // <-- calculate the number of co-adds assuming 100ms to read out each spectrum
+	double avgExpTime	= std::min(fabs(spec->m_history->GetExposureTime(stablePeriod)), maxExpTime);
+	int sum1			= (int)std::min(std::max(1000.0 / (avgExpTime + readOutTime), 1.0), 15.0); // <-- calculate the number of co-adds assuming 100ms to read out each spectrum
 
 	int	repetitions		= (int)(spec->m_scanner.windSettings.duration / (sum1 * (avgExpTime + readOutTime) / 1000 ));
-	repetitions			= max(min(repetitions, 800), 400);
+	repetitions			= std::max(std::min(repetitions, 800), 400);
 
 	// 0. Simple error checking...
 	if(fabs(motorPosition) > 50 || fabs(plumeCentre) > 90)
@@ -280,10 +280,10 @@ void CRealTimeWind::StartWindSpeedMeasurement(const Evaluation::CSpectrometer *s
 		int second_motorPosition2	=	int (round(stepsPerDegree2*round(phi_2)));
 
 		double avgExpTime	= fabs(spec->m_history->GetExposureTime(stablePeriod));
-		int sum1			= (int)min(max(1000.0 / (avgExpTime + readOutTime), 1), 15); // <-- calculate the number of co-adds assuming 100ms to read out each spectrum
+		int sum1			= (int)std::min(std::max(1000.0 / (avgExpTime + readOutTime), 1.0), 15.0); // <-- calculate the number of co-adds assuming 100ms to read out each spectrum
 
 		int	repetitions		= (int)(spec->m_scanner.windSettings.duration / (sum1 * (avgExpTime + readOutTime) / 1000 ));
-		repetitions			= max(min(repetitions, 800), 400);
+		repetitions			= std::max(std::min(repetitions, 800), 400);
 
 		// 4b. The instrument-type
 		if(SUCCESS != CSpectrometerModel::ToString(spec->m_scanner.spec[0].model, spectrometerType)){
@@ -423,17 +423,17 @@ int wind_measurement_calculation (double PlumeHeight, double wd, double &alpha_c
   int j = (i==0)?1:0;
   
     if (phi[j] < SwitchLow+180){
-         if ( max (  max(alpha[i], alpha[j]) - min(alpha[i], alpha[j]),
-                     max(phi[i], phi[j])     - min(phi[i], phi[j])      )
-            > max (  max(alpha[i], -alpha[j])- min(alpha[i], -alpha[j]),
-                     max(phi[i], phi[j]+180) - min(phi[i], phi[j]+180)  ) )
+         if (std::max (std::max(alpha[i], alpha[j]) - std::min(alpha[i], alpha[j]),
+			 std::max(phi[i], phi[j])     - std::min(phi[i], phi[j])      )
+            > std::max (std::max(alpha[i], -alpha[j])- std::min(alpha[i], -alpha[j]),
+				std::max(phi[i], phi[j]+180) - std::min(phi[i], phi[j]+180)  ) )
              {alpha[j] = -alpha[j];
               phi[j] = phi[j]+180;}}
     else if (phi[j] >= SwitchPosition+180 && phi[j] < SwitchLow+360){
-         if ( max (  max(alpha[i], alpha[j]) - min(alpha[i], alpha[j]),
-                     max(phi[i], phi[j])     - min(phi[i], phi[j])      )
-            > max (  max(alpha[i], -alpha[j])- min(alpha[i], -alpha[j]),
-                     max(phi[i], phi[j]-180) - min(phi[i], phi[j]-180)  ) )
+         if (std::max (  std::max(alpha[i], alpha[j]) - std::min(alpha[i], alpha[j]),
+                     std::max(phi[i], phi[j])     - std::min(phi[i], phi[j])      )
+            > std::max (  std::max(alpha[i], -alpha[j])- std::min(alpha[i], -alpha[j]),
+                     std::max(phi[i], phi[j]-180) - std::min(phi[i], phi[j]-180)  ) )
              {alpha[j] = -alpha[j];
               phi[j] = phi[j]-180;}}
     else if (phi[j] >= SwitchLow+360)

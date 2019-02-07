@@ -1,6 +1,6 @@
 #pragma once
 #include <afxtempl.h>
-#include "../FIT\Vector.h"
+#include "../SpectralEvaluation/Fit/Vector.h"
 
 namespace Evaluation{
 	/** 

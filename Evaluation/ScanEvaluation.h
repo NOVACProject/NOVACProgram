@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Evaluation.h"
 #include "ScanResult.h"
 #include <memory>
 #include <mutex>
 
+#include "FitParameter.h"
 #include "../Common/Common.h"
 #include "../Common/Spectra/ScanFileHandler.h"
 #include "../Common/LogFileWriter.h"
@@ -12,6 +12,7 @@
 
 namespace Evaluation
 {
+	class CEvaluation;
 
 	/** 
 		An object of the <b>CScanEvaluation</b>-class handles the evaluation of one

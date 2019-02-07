@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "ScanResult.h"
+#include "Evaluation.h"
 #include "../VolcanoInfo.h"
 
 // we also need the meterological data
@@ -450,7 +451,7 @@ double CScanResult::GetMaxColumn(const CString &specie) const{
 		if(m_spec[i].IsBad() || m_spec[i].IsDeleted()){
 			continue;
 		}
-		maxColumn = max(maxColumn, m_spec[i].m_ref[specieIndex].m_column - m_offset);
+		maxColumn = std::max(maxColumn, m_spec[i].m_ref[specieIndex].m_column - m_offset);
 	}
 
 	return maxColumn;

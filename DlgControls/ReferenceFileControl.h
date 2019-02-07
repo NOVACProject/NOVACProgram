@@ -2,11 +2,7 @@
 
 #include "GridCtrl\GridCtrl.h"
 
-#include "../Common/Common.h"
-#include "../Common/ReferenceFile.h"
-
 #include "../Evaluation/FitWindow.h"
-#include "../Evaluation/Evaluation.h"
 
 namespace DlgControls
 {
