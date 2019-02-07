@@ -103,6 +103,12 @@
     <Filter Include="Source Files\SpectralEvaluation\Fit">
       <UniqueIdentifier>{f9939c1b-4ecb-4204-adb4-e8c219289323}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\SpectralEvaluation\Evaluation">
+      <UniqueIdentifier>{25ed61be-87c2-41b4-9e7c-4a35992610ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\SpectralEvaluation\Evaluation">
+      <UniqueIdentifier>{4e500692-1d4d-4797-bd12-242351c8c05c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Configuration\AdvancedFTPUploadSettings.cpp">
@@ -456,9 +462,6 @@
     <ClCompile Include="Dialogs\SplitPakFilesDlg.cpp">
       <Filter>Source Files\Dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="Evaluation\BasicMath.cpp">
-      <Filter>Source Files\Evaluation</Filter>
-    </ClCompile>
     <ClCompile Include="Evaluation\CrossSectionData.cpp">
       <Filter>Source Files\Evaluation</Filter>
     </ClCompile>
@@ -472,9 +475,6 @@
       <Filter>Source Files\Evaluation</Filter>
     </ClCompile>
     <ClCompile Include="Evaluation\FitWindowFileHandler.cpp">
-      <Filter>Source Files\Evaluation</Filter>
-    </ClCompile>
-    <ClCompile Include="Evaluation\ReferenceFitResult.cpp">
       <Filter>Source Files\Evaluation</Filter>
     </ClCompile>
     <ClCompile Include="Evaluation\ScanEvaluation.cpp">
@@ -545,6 +545,12 @@
     </ClCompile>
     <ClCompile Include="SpectralEvaluation\Fit\MessageLog.cpp">
       <Filter>Source Files\SpectralEvaluation\Fit</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\Evaluation\BasicMath.cpp">
+      <Filter>Source Files\SpectralEvaluation\Evaluation</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\Evaluation\ReferenceFitResult.cpp">
+      <Filter>Source Files\SpectralEvaluation\Evaluation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -782,9 +788,6 @@
     <ClInclude Include="Common\Spectra\SpectrumTime.h">
       <Filter>Header Files\Common\Spectra</Filter>
     </ClInclude>
-    <ClInclude Include="Evaluation\BasicMath.h">
-      <Filter>Header Files\Evaluation</Filter>
-    </ClInclude>
     <ClInclude Include="Evaluation\CrossSectionData.h">
       <Filter>Header Files\Evaluation</Filter>
     </ClInclude>
@@ -798,9 +801,6 @@
       <Filter>Header Files\Evaluation</Filter>
     </ClInclude>
     <ClInclude Include="Evaluation\FitWindowFileHandler.h">
-      <Filter>Header Files\Evaluation</Filter>
-    </ClInclude>
-    <ClInclude Include="Evaluation\ReferenceFitResult.h">
       <Filter>Header Files\Evaluation</Filter>
     </ClInclude>
     <ClInclude Include="Evaluation\ScanEvaluation.h">
@@ -1117,6 +1117,12 @@
     </ClInclude>
     <ClInclude Include="SpectralEvaluation\Fit\MessageLog.h">
       <Filter>Header Files\SpectralEvaluation\Fit</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\Evaluation\BasicMath.h">
+      <Filter>Header Files\SpectralEvaluation\Evaluation</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\Evaluation\ReferenceFitResult.h">
+      <Filter>Header Files\SpectralEvaluation\Evaluation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

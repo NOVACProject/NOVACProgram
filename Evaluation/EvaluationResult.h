@@ -3,7 +3,7 @@
 #include <Afxtempl.h>
 
 #include "../Common/Common.h"
-#include "ReferenceFitResult.h"
+#include "../SpectralEvaluation/Evaluation/ReferenceFitResult.h"
 #include "../Common/Spectra/SpectrumInfo.h"
 #include "ColumnCorrection.h"
 
