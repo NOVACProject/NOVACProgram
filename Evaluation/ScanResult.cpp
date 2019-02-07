@@ -167,7 +167,14 @@ bool CScanResult::CheckGoodnessOfFit(const CSpectrumInfo& info, int index, float
 	return m_spec[index].CheckGoodnessOfFit(info, chi2Limit, upperLimit, lowerLimit);
 }
 
-int CScanResult::CalculateOffset(const CString &specie){
+int CScanResult::CalculateOffset(const CString &specie)
+{
+	std::string specieName((LPCTSTR)specie);
+	return CalculateOffset(specieName);
+}
+
+int CScanResult::CalculateOffset(const std::string &specie)
+{
 	if(m_specNum < 0)
 		return 1;
 
@@ -202,6 +209,12 @@ int CScanResult::CalculateOffset(const CString &specie){
 
 int CScanResult::GetSpecieIndex(const CString &specie) const
 {
+	std::string specieName((LPCTSTR)specie);
+	return GetSpecieIndex(specieName);
+}
+
+int CScanResult::GetSpecieIndex(const std::string &specie) const
+{
 	if(m_specNum <= 0) // <-- if there are no spectra, there can be no species
 		return -1;
 
@@ -210,8 +223,10 @@ int CScanResult::GetSpecieIndex(const CString &specie) const
 		return 0;
 
 	// find the index of the interesting specie
-	for(unsigned long i = 0; i < m_spec[0].m_speciesNum; ++i){
-		if(Equals(m_spec[0].m_ref[i].m_specieName, specie)){
+	for(unsigned long i = 0; i < m_spec[0].m_speciesNum; ++i)
+	{
+		if(m_spec[0].m_ref[i].m_specieName.compare(specie) == 0)
+		{
 			return i;
 		}
 	}
@@ -1040,8 +1055,11 @@ int CScanResult::ApplyCorrection(CORRECTION correctionToApply, double *parameter
 		// Loop through all evaluated species
 		for(unsigned long k = 0; k < evalRes.m_speciesNum; ++k){
 			// check if we should apply any correction to this specie
-			if(specie != NULL){
-				if(!Equals(evalRes.m_ref[k].m_specieName, *specie)){
+			if(specie != NULL)
+			{
+				std::string specieToSearchFor((LPCTSTR)*specie);
+				if(evalRes.m_ref[k].m_specieName.compare(specieToSearchFor) != 0)
+				{
 					continue;
 				}
 
@@ -1059,4 +1077,17 @@ int CScanResult::ApplyCorrection(CORRECTION correctionToApply, double *parameter
 	}
 
 	return 0;
+}
+
+const CString CScanResult::GetSpecieName(unsigned long spectrumNum, unsigned long specieNum) const
+{
+	if (IsValidSpectrumIndex(spectrumNum))
+	{
+		const char* data = m_spec[spectrumNum].m_ref[specieNum].m_specieName.c_str();
+		return CString(data);
+	}
+	else
+	{
+		return CString("");
+	}
 }

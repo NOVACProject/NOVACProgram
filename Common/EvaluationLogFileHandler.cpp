@@ -260,7 +260,7 @@ void CEvaluationLogFileHandler::ParseScanHeader(const char szLine[8192]){
 
 	m_specieNum = m_evResult.m_speciesNum;
 	for(int k = 0; k < m_specieNum; ++k)
-		m_specie[k].Format("%s", (LPCSTR)m_evResult.m_ref[k].m_specieName);
+		m_specie[k].Format("%s", m_evResult.m_ref[k].m_specieName.c_str());
 
 	return;
 }

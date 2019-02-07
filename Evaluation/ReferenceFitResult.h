@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 namespace Evaluation
 {
 	/** CReferenceFitResult is a class to store the evaluated parameters of a 
@@ -29,7 +31,7 @@ namespace Evaluation
 		double m_squeezeError;
 
 		/** The name of the specie that the reference identifies */
-		CString m_specieName;
+		std::string m_specieName;
 	};
 
 }

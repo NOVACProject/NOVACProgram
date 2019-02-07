@@ -238,7 +238,7 @@ int CEvaluation::Evaluate(const CSpectrum &sky, const CSpectrum &meas, const CFi
 		// finally display the fit results for each reference spectrum including their appropriate error
 		for (int i = 0; i < window.nRef; i++)
 		{
-			m_result.m_ref[i].m_specieName.Format("%s", (LPCSTR)window.ref[i].m_specieName);
+			m_result.m_ref[i].m_specieName = std::string((LPCTSTR)window.ref[i].m_specieName);
 
 			m_result.m_ref[i].m_column = (double)ref[i]->GetModelParameter(CReferenceSpectrumFunction::CONCENTRATION);
 			m_result.m_ref[i].m_columnError = (double)ref[i]->GetModelParameterError(CReferenceSpectrumFunction::CONCENTRATION);

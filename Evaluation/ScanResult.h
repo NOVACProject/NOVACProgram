@@ -95,6 +95,7 @@ namespace Evaluation
 		  @param specie - The name of the specie for which the offset should be found.
 		  @return 0 on success. @return 1 - if any error occurs. */
 		int CalculateOffset(const CString &specie);
+		int CalculateOffset(const std::string &specie);
 
 		/** Calculate the flux in this scan, using the supplied compass direction 
 		        and coneAngle.
@@ -381,7 +382,7 @@ namespace Evaluation
 		int GetSpecieNum(unsigned long spectrumNum) const {return (IsValidSpectrumIndex(spectrumNum)) ? m_spec[spectrumNum].m_speciesNum : 0; }
 
 		/** returns the specie name */
-		const CString GetSpecieName(unsigned long spectrumNum, unsigned long specieNum) const {return (IsValidSpectrumIndex(spectrumNum)) ? m_spec[spectrumNum].m_ref[specieNum].m_specieName : 0; }
+		const CString GetSpecieName(unsigned long spectrumNum, unsigned long specieNum) const;
 
 		/** Sets the type of the instrument used */
 		void SetInstrumentType(INSTRUMENT_TYPE type);
@@ -486,6 +487,7 @@ namespace Evaluation
 		    @return the zero-based index of the specie.
 		    @return -1 if specie not found.*/
 		int GetSpecieIndex(const CString &specie) const;
+		int GetSpecieIndex(const std::string &specie) const;
 
 		/** makes a sanity check of the parameters and returns fit parameter number 'index'.
 		    @param specIndex - the zero based into the list of evaluated spectra.
