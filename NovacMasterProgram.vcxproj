@@ -220,7 +220,6 @@
     <ClCompile Include="Evaluation\FitWindow.cpp" />
     <ClCompile Include="Evaluation\FitWindowFileHandler.cpp" />
     <ClCompile Include="Evaluation\FluxResult.cpp" />
-    <ClCompile Include="Evaluation\MessageLog.cpp" />
     <ClCompile Include="Evaluation\ReferenceFitResult.cpp" />
     <ClCompile Include="Evaluation\ScanEvaluation.cpp" />
     <ClCompile Include="Evaluation\ScanResult.cpp" />
@@ -262,6 +261,10 @@
     <ClInclude Include="SpectralEvaluation\Fit\BSpline.cxx" />
     <ClInclude Include="SpectralEvaluation\Fit\BSplineD.cxx" />
     <ClInclude Include="SpectralEvaluation\Fit\BSplineF.cxx" />
+    <ClCompile Include="SpectralEvaluation\Fit\MessageLog.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="StatusFileReader.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -376,7 +379,6 @@
     <ClInclude Include="Evaluation\FitWindow.h" />
     <ClInclude Include="Evaluation\FitWindowFileHandler.h" />
     <ClInclude Include="Evaluation\FluxResult.h" />
-    <ClInclude Include="Evaluation\MessageLog.h" />
     <ClInclude Include="Evaluation\ReferenceFitResult.h" />
     <ClInclude Include="Evaluation\ScanEvaluation.h" />
     <ClInclude Include="Evaluation\ScanResult.h" />
@@ -442,6 +444,7 @@
     <ClInclude Include="SpectralEvaluation\Fit\LinearInterpolateFunction.h" />
     <ClInclude Include="SpectralEvaluation\Fit\LnFunction.h" />
     <ClInclude Include="SpectralEvaluation\Fit\Matrix.h" />
+    <ClInclude Include="SpectralEvaluation\Fit\MessageLog.h" />
     <ClInclude Include="SpectralEvaluation\Fit\Minimizer.h" />
     <ClInclude Include="SpectralEvaluation\Fit\MulFunction.h" />
     <ClInclude Include="SpectralEvaluation\Fit\NegateFunction.h" />

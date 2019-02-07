@@ -97,6 +97,12 @@
     <Filter Include="Header Files\SpectralEvaluation\Fit">
       <UniqueIdentifier>{65de0c42-58c6-45e4-bd25-37435fad3831}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\SpectralEvaluation">
+      <UniqueIdentifier>{d3c0217b-0547-49c6-a49c-dc0f3970c3f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\SpectralEvaluation\Fit">
+      <UniqueIdentifier>{f9939c1b-4ecb-4204-adb4-e8c219289323}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Configuration\AdvancedFTPUploadSettings.cpp">
@@ -468,9 +474,6 @@
     <ClCompile Include="Evaluation\FitWindowFileHandler.cpp">
       <Filter>Source Files\Evaluation</Filter>
     </ClCompile>
-    <ClCompile Include="Evaluation\MessageLog.cpp">
-      <Filter>Source Files\Evaluation</Filter>
-    </ClCompile>
     <ClCompile Include="Evaluation\ReferenceFitResult.cpp">
       <Filter>Source Files\Evaluation</Filter>
     </ClCompile>
@@ -539,6 +542,9 @@
     </ClCompile>
     <ClCompile Include="SpectralEvaluation\Fit\BSplineF.cxx">
       <Filter>Header Files\SpectralEvaluation\Fit</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\Fit\MessageLog.cpp">
+      <Filter>Source Files\SpectralEvaluation\Fit</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -792,9 +798,6 @@
       <Filter>Header Files\Evaluation</Filter>
     </ClInclude>
     <ClInclude Include="Evaluation\FitWindowFileHandler.h">
-      <Filter>Header Files\Evaluation</Filter>
-    </ClInclude>
-    <ClInclude Include="Evaluation\MessageLog.h">
       <Filter>Header Files\Evaluation</Filter>
     </ClInclude>
     <ClInclude Include="Evaluation\ReferenceFitResult.h">
@@ -1110,6 +1113,9 @@
       <Filter>Header Files\SpectralEvaluation\Fit</Filter>
     </ClInclude>
     <ClInclude Include="SpectralEvaluation\Fit\Vector.h">
+      <Filter>Header Files\SpectralEvaluation\Fit</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\Fit\MessageLog.h">
       <Filter>Header Files\SpectralEvaluation\Fit</Filter>
     </ClInclude>
   </ItemGroup>
