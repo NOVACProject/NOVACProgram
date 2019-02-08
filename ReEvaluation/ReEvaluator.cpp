@@ -358,12 +358,12 @@ bool CReEvaluator::WriteEvaluationLogHeader(){
 	fprintf(f, "#nSpecies=%d\n", window.nRef);
 	fprintf(f, "#Specie\tShift\tSqueeze\tReferenceFile\n");
 	for(int i = 0; i < window.nRef; ++i){
-		fprintf(f, "#%s\t", (LPCTSTR)window.ref[i].m_specieName);
+		fprintf(f, "#%s\t", window.ref[i].m_specieName.c_str());
 		switch(window.ref[i].m_shiftOption){
 			case SHIFT_FIX:
 				fprintf(f, "%0.3lf\t", window.ref[i].m_shiftValue); break;
 			case SHIFT_LINK:
-				fprintf(f, "linked to %s\t", (LPCTSTR)window.ref[(int)window.ref[i].m_shiftValue].m_specieName); break;
+				fprintf(f, "linked to %s\t", window.ref[(int)window.ref[i].m_shiftValue].m_specieName.c_str()); break;
 			case SHIFT_LIMIT:
 				fprintf(f, "limited to +-%0.3lf\t", window.ref[i].m_shiftValue);
 			default:
@@ -374,13 +374,13 @@ bool CReEvaluator::WriteEvaluationLogHeader(){
 			case SHIFT_FIX:
 				fprintf(f, "%0.3lf\t", window.ref[i].m_squeezeValue); break;
 			case SHIFT_LINK:
-				fprintf(f, "linked to %s\t", (LPCTSTR)window.ref[(int)window.ref[i].m_squeezeValue].m_specieName); break;
+				fprintf(f, "linked to %s\t", window.ref[(int)window.ref[i].m_squeezeValue].m_specieName.c_str()); break;
 			case SHIFT_LIMIT:
 				fprintf(f, "limited to +-%0.3lf\t", window.ref[i].m_squeezeValue);
 			default:
 				fprintf(f, "free\t"); break;
 		}
-		fprintf(f, "%s\n", (LPCTSTR)window.ref[i].m_path);
+		fprintf(f, "%s\n", window.ref[i].m_path.c_str());
 	}
 	fprintf(f, "\n");
 
@@ -463,7 +463,7 @@ bool CReEvaluator::AppendResultToEvaluationLog(const CScanResult *result, const 
 
 	fprintf(f, "starttime\tstoptime\tname\tdelta\tchisquare\texposuretime\tnumspec\tintensity\tfitintensity\tisgoodpoint\toffset\tflag\t");
 	for(int i = 0; i < window.nRef; ++i){
-		name.Format(window.ref[i].m_specieName);
+		name.Format("%s", window.ref[i].m_specieName.c_str());
 
 		fprintf(f, "column(%s)\tcolumnerror(%s)\t", (LPCTSTR)name, (LPCTSTR)name);
 		fprintf(f, "shift(%s)\tshifterror(%s)\t", (LPCTSTR)name, (LPCTSTR)name);

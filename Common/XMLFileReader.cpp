@@ -51,17 +51,32 @@ char *CXMLFileReader::NextToken(){
 	return pt;
 }
 /** General parsing of a single, simple string item */
-int CXMLFileReader::Parse_StringItem(const CString &label, CString &string){
+int CXMLFileReader::Parse_StringItem(const CString &label, CString &str){
 	while(szToken = NextToken()){
 
 		if(Equals(szToken, label))
 		return 1;
 
-		string.Format(szToken);
+        str.Format(szToken);
 	}
 
 	return 0;
 }
+
+int CXMLFileReader::Parse_StringItem(const CString &label, std::string &str)
+{
+    while (szToken = NextToken()) {
+
+        if (Equals(szToken, label))
+            return 1;
+
+        str = std::string(szToken);
+    }
+
+    return 0;
+}
+
+
 int CXMLFileReader::Parse_LongItem(const CString &label, long &number){
 
 	while(szToken = NextToken()){

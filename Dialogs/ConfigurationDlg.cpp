@@ -133,9 +133,9 @@ RETURN_CODE ConfigurationDialog::CConfigurationDlg::CheckSettings(){
 				}
 
 				for(k = 0; k < window.nRef; ++k){
-					FILE *f = fopen(window.ref[k].m_path, "r");
+					FILE *f = fopen(window.ref[k].m_path.c_str(), "r");
 					if(f == NULL){
-						message.Format("Cannot read reference file %s", (LPCSTR)window.ref[k].m_path);
+						message.Format("Cannot read reference file %s", window.ref[k].m_path.c_str());
 						pass = false;
 						break;
 					}

@@ -230,8 +230,8 @@ int CConfigurationFileHandler::WriteConfigurationFile(CConfigurationSetting &con
 				Evaluation::CFitWindow &window = spec.channel[l].fitWindow;
 				for(int k = 0; k < window.nRef; ++k){
 					fprintf(f, TEXT(indent + "\t<Reference>\n"));
-					fprintf(f, TEXT(indent + "\t\t<name>" + window.ref[k].m_specieName + "</name>\n"));
-					fprintf(f, TEXT(indent + "\t\t<path>" + window.ref[k].m_path + "</path>\n"));
+					fprintf(f, "%s\t\t<name>%s</name>\n", (LPCSTR)indent, window.ref[k].m_specieName.c_str());
+					fprintf(f, "%s\t\t<path>%s</path>\n", (LPCSTR)indent, window.ref[k].m_path.c_str());
 					// writing the shift
 					fprintf(f, TEXT(indent + "\t\t<shift>"));
 					if(window.ref[k].m_shiftOption == Evaluation::SHIFT_FIX)
@@ -949,7 +949,7 @@ int CConfigurationFileHandler::Parse_Specie(CConfigurationSetting::SpectrometerC
 		if(pt = strstr(pt, "\"")){
 			if(char *pt2 = strstr(pt+1, "\""))
 				pt2[0] = 0;		 //remove the second quote
-			curChannel->fitWindow.ref[curChannel->fitWindow.nRef].m_specieName.Format("%s", pt+1);
+			curChannel->fitWindow.ref[curChannel->fitWindow.nRef].m_specieName = std::string(pt+1);
 		}
 	}
 
@@ -961,7 +961,7 @@ int CConfigurationFileHandler::Parse_Specie(CConfigurationSetting::SpectrometerC
 		}
 
 		// Read the path of the reference file.
-		curChannel->fitWindow.ref[curChannel->fitWindow.nRef].m_path.Format(szToken);
+		curChannel->fitWindow.ref[curChannel->fitWindow.nRef].m_path = std::string(szToken);
 
 	}
 

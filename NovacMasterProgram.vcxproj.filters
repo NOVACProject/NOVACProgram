@@ -303,9 +303,6 @@
     <ClCompile Include="Common\LogFileWriter.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
-    <ClCompile Include="Common\ReferenceFile.cpp">
-      <Filter>Source Files\Common</Filter>
-    </ClCompile>
     <ClCompile Include="Common\SpectrometerModel.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
@@ -462,9 +459,6 @@
     <ClCompile Include="Dialogs\SplitPakFilesDlg.cpp">
       <Filter>Source Files\Dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="Evaluation\CrossSectionData.cpp">
-      <Filter>Source Files\Evaluation</Filter>
-    </ClCompile>
     <ClCompile Include="Evaluation\Evaluation.cpp">
       <Filter>Source Files\Evaluation</Filter>
     </ClCompile>
@@ -534,15 +528,6 @@
     <ClCompile Include="Dialogs\ReferencePlotDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SpectralEvaluation\Fit\BSpline.cxx">
-      <Filter>Header Files\SpectralEvaluation\Fit</Filter>
-    </ClCompile>
-    <ClCompile Include="SpectralEvaluation\Fit\BSplineD.cxx">
-      <Filter>Header Files\SpectralEvaluation\Fit</Filter>
-    </ClCompile>
-    <ClCompile Include="SpectralEvaluation\Fit\BSplineF.cxx">
-      <Filter>Header Files\SpectralEvaluation\Fit</Filter>
-    </ClCompile>
     <ClCompile Include="SpectralEvaluation\Fit\MessageLog.cpp">
       <Filter>Source Files\SpectralEvaluation\Fit</Filter>
     </ClCompile>
@@ -550,6 +535,12 @@
       <Filter>Source Files\SpectralEvaluation\Evaluation</Filter>
     </ClCompile>
     <ClCompile Include="SpectralEvaluation\Evaluation\ReferenceFitResult.cpp">
+      <Filter>Source Files\SpectralEvaluation\Evaluation</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\Evaluation\CrossSectionData.cpp">
+      <Filter>Source Files\SpectralEvaluation\Evaluation</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\Evaluation\ReferenceFile.cpp">
       <Filter>Source Files\SpectralEvaluation\Evaluation</Filter>
     </ClCompile>
   </ItemGroup>
@@ -752,9 +743,6 @@
     <ClInclude Include="Common\LogFileWriter.h">
       <Filter>Header Files\Common</Filter>
     </ClInclude>
-    <ClInclude Include="Common\ReferenceFile.h">
-      <Filter>Header Files\Common</Filter>
-    </ClInclude>
     <ClInclude Include="Common\SpectrometerModel.h">
       <Filter>Header Files\Common</Filter>
     </ClInclude>
@@ -787,9 +775,6 @@
     </ClInclude>
     <ClInclude Include="Common\Spectra\SpectrumTime.h">
       <Filter>Header Files\Common\Spectra</Filter>
-    </ClInclude>
-    <ClInclude Include="Evaluation\CrossSectionData.h">
-      <Filter>Header Files\Evaluation</Filter>
     </ClInclude>
     <ClInclude Include="Evaluation\Evaluation.h">
       <Filter>Header Files\Evaluation</Filter>
@@ -1122,6 +1107,21 @@
       <Filter>Header Files\SpectralEvaluation\Evaluation</Filter>
     </ClInclude>
     <ClInclude Include="SpectralEvaluation\Evaluation\ReferenceFitResult.h">
+      <Filter>Header Files\SpectralEvaluation\Evaluation</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\Evaluation\CrossSectionData.h">
+      <Filter>Header Files\SpectralEvaluation\Evaluation</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\Fit\BSpline.cxx">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\Fit\BSplineD.cxx">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\Fit\BSplineF.cxx">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\Evaluation\ReferenceFile.h">
       <Filter>Header Files\SpectralEvaluation\Evaluation</Filter>
     </ClInclude>
   </ItemGroup>

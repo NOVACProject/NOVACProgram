@@ -148,7 +148,7 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, CEvaluation *eval, b
 
 	// If we have a solar-spectrum that we can use to determine the shift
 	//	& squeeze then fit that first so that we know the wavelength calibration
-	if(eval->m_window.fraunhoferRef.m_path.GetLength() > 4) {
+	if(eval->m_window.fraunhoferRef.m_path.size() > 4) {
 		FindOptimumShiftAndSqueeze_Fraunhofer(eval, &scan);
 	}
 
@@ -373,7 +373,7 @@ bool  CScanEvaluation::IncludeSkySpecInFit(CEvaluation *eval, const CSpectrum &s
 	}
 
 	// set the name of the reference
-	window.ref[window.nRef].m_specieName.Format("FraunhoferRef");
+	window.ref[window.nRef].m_specieName = "FraunhoferRef";
 
 	++window.nRef;
 	return true;
@@ -724,7 +724,7 @@ void CScanEvaluation::FindOptimumShiftAndSqueeze(CEvaluation *eval, FileHandler:
 	eval->m_window.ref[0].m_squeezeOption = SHIFT_FIX;
 	eval->m_window.ref[0].m_squeezeValue  = 1.0;
 	for(k = 1; k < eval->m_window.nRef; ++k){
-		if(Equals(eval->m_window.ref[k].m_specieName, "FraunhoferRef"))
+		if(eval->m_window.ref[k].m_specieName.compare("FraunhoferRef") == 0)
 			continue;
 
 		eval->m_window.ref[k].m_shiftOption   = SHIFT_LINK;
@@ -767,7 +767,7 @@ void CScanEvaluation::FindOptimumShiftAndSqueeze(CEvaluation *eval, FileHandler:
 
 	// 5. Set the shift for all references to this value
 	for(k = 0; k < eval->m_window.nRef; ++k){
-		if(Equals(eval->m_window.ref[k].m_specieName, "FraunhoferRef"))
+		if(eval->m_window.ref[k].m_specieName.compare("FraunhoferRef") == 0)
 			continue;
 
 		eval->m_window.ref[k].m_shiftOption     = SHIFT_FIX;

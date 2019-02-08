@@ -158,7 +158,7 @@ RETURN_CODE CFitWindowFileHandler::Parse_Reference(Evaluation::CFitWindow &windo
 				pt2[0] = 0; // remove the second quote
 			char tmpStr[512];
 			if(sscanf(pt+1, "%s", &tmpStr)){
-				window.ref[nRef].m_specieName.Format("%s", tmpStr);
+				window.ref[nRef].m_specieName = std::string(tmpStr);
 			}
 		}
 	}
@@ -277,8 +277,8 @@ RETURN_CODE CFitWindowFileHandler::WriteFitWindow(const Evaluation::CFitWindow &
 	fprintf(f, "%s<nRef>%d</nRef>\n", (LPCSTR)indent, window.nRef);
 
 	for(int i = 0; i < window.nRef; ++i){
-		fprintf(f, "%s<ref name=\"%s\">\n", (LPCSTR)indent, (LPCSTR)window.ref[i].m_specieName);
-		fprintf(f, "%s\t<path>%s</path>\n", (LPCSTR)indent, (LPCSTR)window.ref[i].m_path);
+		fprintf(f, "%s<ref name=\"%s\">\n", (LPCSTR)indent, window.ref[i].m_specieName.c_str());
+		fprintf(f, "%s\t<path>%s</path>\n", (LPCSTR)indent, window.ref[i].m_path.c_str());
 
 		fprintf(f, "%s\t<shiftOption>%d</shiftOption>\n", (LPCSTR)indent, window.ref[i].m_shiftOption);
 		if(window.ref[i].m_shiftOption != Evaluation::SHIFT_FREE)

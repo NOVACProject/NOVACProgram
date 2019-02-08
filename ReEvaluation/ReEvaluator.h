@@ -2,7 +2,7 @@
 
 #include "../Evaluation/Evaluation.h"
 #include "../Evaluation/ScanResult.h"
-#include "../Common/ReferenceFile.h"
+#include "../SpectralEvaluation/Evaluation/ReferenceFile.h"
 #include "../Common/Spectra/Spectrum.h"
 #include "../Common/Spectra/ScanFileHandler.h"
 #include "../Configuration/Configuration.h"

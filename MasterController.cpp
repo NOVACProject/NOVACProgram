@@ -272,9 +272,9 @@ bool CMasterController::CheckSettings(){
 			for(int k  = 0; k < g_settings.scanner[i].spec[j].channelNum; ++k){
 				Evaluation::CFitWindow *window = &g_settings.scanner[i].spec[j].channel[k].fitWindow;
 				for(int n  = 0; n < window->nRef; ++n){
-					f  =  fopen(window->ref[n].m_path, "r");
+					f  =  fopen(window->ref[n].m_path.c_str(), "r");
 					if(NULL == f){
-						message.Format("Cannot read reference file: %s", (LPCTSTR)window->ref[n].m_path);
+						message.Format("Cannot read reference file: %s", window->ref[n].m_path.c_str());
 						MessageBox(NULL, message, "Error in settings", MB_OK);
 						return true;
 					}

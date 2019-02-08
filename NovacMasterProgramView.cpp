@@ -1098,10 +1098,10 @@ void CNovacMasterProgramView::UploadAuxData(){
 						(LPCTSTR)g_settings.outputDirectory, 
 						(LPCTSTR)g_settings.scanner[it].spec[0].serialNumber,
 						j, 
-						(LPCTSTR)g_settings.scanner[it].spec[0].channel[j].fitWindow.ref[k].m_specieName,
+						g_settings.scanner[it].spec[0].channel[j].fitWindow.ref[k].m_specieName.c_str(),
 						(LPCTSTR)dateStr,
 						(LPCTSTR)timeStr);
-					CopyFile(g_settings.scanner[it].spec[0].channel[j].fitWindow.ref[k].m_path, fileName[fileNameIndex], false);
+					CopyFile(CString(g_settings.scanner[it].spec[0].channel[j].fitWindow.ref[k].m_path.c_str()), fileName[fileNameIndex], false);
 
 					// upload the copy of the reference-file
 					UploadToNOVACServer(fileName[fileNameIndex++], thisVolcano, true);

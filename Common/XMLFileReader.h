@@ -1,4 +1,7 @@
 #pragma once
+
+#include <string>
+
 namespace FileHandler
 {
 	class CXMLFileReader
@@ -11,7 +14,8 @@ namespace FileHandler
 		char *NextToken();
 
 		/** General parsing of a single, simple string item */
-		int Parse_StringItem(const CString &label, CString &string);
+		int Parse_StringItem(const CString &label, CString &str);
+        int Parse_StringItem(const CString &label, std::string &str);
 
 		/** General parsing of a single, simple float item */
 		int Parse_FloatItem(const CString &label, double &number);

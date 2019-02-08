@@ -39,8 +39,8 @@ void CReferencePropertiesDlg::DoDataExchange(CDataExchange* pDX)
 	CDialog::DoDataExchange(pDX);
 
 	if(m_ref != NULL){
-		DDX_Text(pDX, IDC_EDIT_SPECIE,					m_ref->m_specieName);
-		DDX_Text(pDX, IDC_EDIT_PATH,						m_ref->m_path);
+		DDX_Text(pDX, IDC_EDIT_SPECIE,			m_specieName);
+		DDX_Text(pDX, IDC_EDIT_PATH,			m_referencePath);
 
 		DDX_Radio(pDX, IDC_RADIO_SHIFT_FREE,		m_shiftOption);
 		DDX_Radio(pDX, IDC_RADIO_SQUEEZE_FREE,	m_squeezeOption);
@@ -83,6 +83,10 @@ void CReferencePropertiesDlg::SaveData(){
 	if(m_ref == NULL)
 		return;
 
+    // Save the strings (converting CString to std::string)
+    m_ref->m_specieName = std::string((LPCSTR)m_specieName);
+    m_ref->m_path       = std::string((LPCSTR)m_referencePath);
+
 	// save the shift option
 	switch(m_shiftOption){
 		case 0: m_ref->m_shiftOption = SHIFT_FREE; 
@@ -114,6 +118,10 @@ void CReferencePropertiesDlg::SaveData(){
 void CReferencePropertiesDlg::UpdateDlg(){
 	if(m_ref == NULL)
 		return;
+
+    // Get the strings, converting between std::string and CString
+    m_specieName    = CString(m_ref->m_specieName.c_str());
+    m_referencePath = CString(m_ref->m_path.c_str());
 
 	// save the shift option
 	switch(m_ref->m_shiftOption){
@@ -167,13 +175,13 @@ void CReferencePropertiesDlg::BrowseForReference(){
     return;
 
 	// 2. Set the path
-	m_ref->m_path.Format("%s", (LPCSTR)fileName);
+	m_ref->m_path = std::string((LPCSTR)fileName);
 
   // 3. make a guess of the specie name
   CString specie;
   Common::GuessSpecieName(fileName, specie);
   if(strlen(specie) != 0){
-    m_ref->m_specieName.Format("%s", (LPCSTR)specie);
+    m_ref->m_specieName = std::string((LPCSTR)specie);
   }
 
 	UpdateData(FALSE);

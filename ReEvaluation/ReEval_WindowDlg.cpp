@@ -34,7 +34,7 @@ void CReEval_WindowDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_POLYNOM, window.polyOrder);
 
 	// The solar-spectrum
-	DDX_Text(pDX, IDC_EDIT_SOLARSPECTRUMPATH, window.fraunhoferRef.m_path);
+	DDX_Text(pDX, IDC_EDIT_SOLARSPECTRUMPATH, m_fraunhoferReferenceName);
 
 	// The fit-types
 	DDX_Radio(pDX, IDC_FIT_HP_DIV, (int &)window.fitType);
@@ -214,37 +214,40 @@ void CReEval_WindowDlg::PopulateReferenceFileControl(){
 		m_btnRemoveRef.EnableWindow(TRUE);
 	}
 
-	int i;
+    int i = 0;
 	for(i = 0; i < window.nRef; ++i){
 
 		CReferenceFile &ref = window.ref[i];
 
-		m_referenceGrid.SetItemTextFmt(1 + i, 0, ref.m_specieName);
-		m_referenceGrid.SetItemTextFmt(1 + i, 1, ref.m_path);
+        CString specieName(ref.m_specieName.c_str());
+        CString path(ref.m_path.c_str());
+
+		m_referenceGrid.SetItemTextFmt(1 + i, 0, specieName);
+		m_referenceGrid.SetItemTextFmt(1 + i, 1, path);
 
 		if(ref.m_shiftOption == SHIFT_FREE)
-		m_referenceGrid.SetItemTextFmt(1 + i, 2, "free");
+            m_referenceGrid.SetItemTextFmt(1 + i, 2, "free");
 
 		if(ref.m_shiftOption == SHIFT_FIX)
-		m_referenceGrid.SetItemTextFmt(1 + i, 2, "fixed to %.2lf", ref.m_shiftValue);
+            m_referenceGrid.SetItemTextFmt(1 + i, 2, "fixed to %.2lf", ref.m_shiftValue);
 
 		if(ref.m_shiftOption == SHIFT_LINK)
-		m_referenceGrid.SetItemTextFmt(1 + i, 2, "linked to %.2lf", ref.m_shiftValue);
+            m_referenceGrid.SetItemTextFmt(1 + i, 2, "linked to %.2lf", ref.m_shiftValue);
 
 		if(ref.m_shiftOption == SHIFT_LIMIT)
-		m_referenceGrid.SetItemTextFmt(1 + i, 2, "limited to %.2lf", ref.m_shiftValue);
+            m_referenceGrid.SetItemTextFmt(1 + i, 2, "limited to %.2lf", ref.m_shiftValue);
 
 		if(ref.m_squeezeOption == SHIFT_FREE)
-		m_referenceGrid.SetItemTextFmt(1 + i, 3, "free");
+            m_referenceGrid.SetItemTextFmt(1 + i, 3, "free");
 
 		if(ref.m_squeezeOption == SHIFT_FIX)
-		m_referenceGrid.SetItemTextFmt(1 + i, 3, "fixed to %.2lf", ref.m_squeezeValue);
+            m_referenceGrid.SetItemTextFmt(1 + i, 3, "fixed to %.2lf", ref.m_squeezeValue);
 
 		if(ref.m_squeezeOption == SHIFT_LINK)
-		m_referenceGrid.SetItemTextFmt(1 + i, 3, "linked to %.2lf", ref.m_squeezeValue);
+            m_referenceGrid.SetItemTextFmt(1 + i, 3, "linked to %.2lf", ref.m_squeezeValue);
 
 		if(ref.m_squeezeOption == SHIFT_LIMIT)
-		m_referenceGrid.SetItemTextFmt(1 + i, 3, "limited to %.2lf", ref.m_squeezeValue);
+            m_referenceGrid.SetItemTextFmt(1 + i, 3, "limited to %.2lf", ref.m_squeezeValue);
 	}
 
 	// make sure that the last line is clear
@@ -280,13 +283,13 @@ void CReEval_WindowDlg::OnInsertReference(){
 	// The user has selected a new reference file, insert it into the list
 
 	// 1. Set the path
-	window.ref[window.nRef].m_path.Format("%s", (LPCTSTR)fileName);
+	window.ref[window.nRef].m_path = std::string((LPCTSTR)fileName);
 
 	// 2. make a guess of the specie name
 	CString specie;
 	Common::GuessSpecieName(fileName, specie);
 	if(strlen(specie) != 0){
-		window.ref[window.nRef].m_specieName.Format("%s", (LPCTSTR)specie);
+		window.ref[window.nRef].m_specieName = std::string((LPCTSTR)specie);
 	}
 
 	// 3. update the number of references
@@ -344,6 +347,9 @@ void CReEval_WindowDlg::OnRemoveReference(){
 void CReEval_WindowDlg::SaveData()
 {
 	UpdateData(TRUE);
+
+    CFitWindow &window          = m_reeval->m_window[m_reeval->m_curWindow];
+    window.fraunhoferRef.m_path = std::string((LPCSTR)m_fraunhoferReferenceName);
 
 	// Update the controls
 	UpdateControls();
@@ -455,7 +461,7 @@ void CReEval_WindowDlg::OnBrowseSolarSpectrum(){
 		return;
 
 	// The user has selected a solar-spectrum file
-	m_reeval->m_window[m_reeval->m_curWindow].fraunhoferRef.m_path.Format(fileName);
+	m_reeval->m_window[m_reeval->m_curWindow].fraunhoferRef.m_path = std::string((LPCTSTR)fileName);
 
 	// Disable the 'Find Optimal Shift' check-box
 	m_checkFindOptimalShift.EnableWindow(FALSE);

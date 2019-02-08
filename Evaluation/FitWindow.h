@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Common/ReferenceFile.h"
+#include "../SpectralEvaluation/Evaluation/ReferenceFile.h"
 #include "../Common/Common.h"
 
 namespace Evaluation

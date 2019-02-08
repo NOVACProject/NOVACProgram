@@ -121,8 +121,10 @@ void  CReEval_DoEvaluationDlg::PopulateRefList(){
 	m_specieList.ResetContent();
 
 	// then fill the list with all the specie names
-	for(int i = 0; i < window.nRef; ++i){
-		m_specieList.AddString(window.ref[i].m_specieName);
+	for(int i = 0; i < window.nRef; ++i)
+    {
+        CString name(window.ref[i].m_specieName.c_str());
+		m_specieList.AddString(name);
 	}
 
 	// set the selection

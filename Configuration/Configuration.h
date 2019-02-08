@@ -2,7 +2,7 @@
 
 #include "../Common/Common.h"
 #include "../Common/GPSData.h"
-#include "../Common/ReferenceFile.h"
+#include "../SpectralEvaluation/Evaluation/ReferenceFile.h"
 
 #include "../Evaluation/FitWindow.h"
 #include "../Common/SpectrometerModel.h"

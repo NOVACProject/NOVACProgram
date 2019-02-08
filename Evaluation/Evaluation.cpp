@@ -238,7 +238,7 @@ int CEvaluation::Evaluate(const CSpectrum &sky, const CSpectrum &meas, const CFi
 		// finally display the fit results for each reference spectrum including their appropriate error
 		for (int i = 0; i < window.nRef; i++)
 		{
-			m_result.m_ref[i].m_specieName = std::string((LPCTSTR)window.ref[i].m_specieName);
+			m_result.m_ref[i].m_specieName = std::string(window.ref[i].m_specieName);
 
 			m_result.m_ref[i].m_column = (double)ref[i]->GetModelParameter(CReferenceSpectrumFunction::CONCENTRATION);
 			m_result.m_ref[i].m_columnError = (double)ref[i]->GetModelParameterError(CReferenceSpectrumFunction::CONCENTRATION);
@@ -317,7 +317,7 @@ int CEvaluation::EvaluateShift(const CSpectrum &measured, const CFitWindow &wind
 
 	// Check that we have a solar-spectrum to check against
 	int specLen = measured.m_length;
-	if(window.fraunhoferRef.m_path.GetLength() < 6)
+	if(window.fraunhoferRef.m_path.size() < 6)
 		return 1;
 
 	// If the spectra are longer than the references, then something is wrong!
@@ -623,7 +623,7 @@ BOOL CEvaluation::ReadReferences(){
 	}
 
 	// read the solar spectrum, if any...
-	if(m_window.fraunhoferRef.m_path.GetLength() > 6){
+	if(m_window.fraunhoferRef.m_path.size() > 6){
 		if(m_solarSpectrumData.ReadCrossSectionFile(m_window.fraunhoferRef.m_path))
 			return FALSE;
 	}

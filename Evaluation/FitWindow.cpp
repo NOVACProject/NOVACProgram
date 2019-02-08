@@ -50,10 +50,10 @@ void CFitWindow::Clear(){
   polyOrder = 5;
   UV = TRUE;
   for(int i = 0; i < MAX_N_REFERENCES; ++i){
-    ref[i].m_path.Format("");
-    ref[i].m_specieName.Format("");
+    ref[i].m_path = "";
+    ref[i].m_specieName = "";
   }
-	fraunhoferRef.m_path.Format("");
-	fraunhoferRef.m_specieName.Format("SolarSpec");
+	fraunhoferRef.m_path = "";
+	fraunhoferRef.m_specieName = "SolarSpec";
   findOptimalShift = FALSE;
 }

@@ -106,7 +106,7 @@ BOOL CReferencePlotDlg::OnInitDialog()
 		rect.top = k * (plotHeight + margin) + margin + plotHeight / 2;
 		rect.bottom = rect.top + plotHeight / 3;
 
-		specieName.Format("%s", (LPCTSTR)m_window->ref[k].m_specieName);
+		specieName.Format("%s", m_window->ref[k].m_specieName.c_str());
 		m_label[k].Create(specieName, WS_VISIBLE | WS_CHILD, rect, this);
 		m_label[k].SetFont(font);
 	}
@@ -146,12 +146,12 @@ void CReferencePlotDlg::ReadReferences() {
 		m_dataLength[i] = 0;
 
 		// Check if this is a relative or absolute path
-		if (IsExistingFile(m_window->ref[i].m_path)) {
-			fileName.Format(m_window->ref[i].m_path);
+		if (IsExistingFile(CString(m_window->ref[i].m_path.c_str()))) {
+			fileName.Format("%s", m_window->ref[i].m_path.c_str());
 		}
 		else {
 			//fileName.Format("%s%s", g_exePath, m_window->ref[i].m_path);
-			fileName.Format("%s", (LPCTSTR)m_window->ref[i].m_path);
+			fileName.Format("%s", (LPCTSTR)m_window->ref[i].m_path.c_str());
 		}
 
 		if (!fileRef[i].Open(fileName, CFile::modeRead | CFile::typeText, &exceFile))

@@ -678,8 +678,8 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *resu
 		for (int k = 0; k < fitWindow.nRef; k++) {
 			const CReferenceFile &ref = fitWindow.ref[k];
 			string.AppendFormat("\t\t<Reference>\n");
-			string.AppendFormat("\t\t\t<name>%s</name>\n", (LPCSTR)ref.m_specieName);
-			string.AppendFormat("\t\t\t<path>%s</path>\n", (LPCSTR)ref.m_path);
+			string.AppendFormat("\t\t\t<name>%s</name>\n", ref.m_specieName.c_str());
+			string.AppendFormat("\t\t\t<path>%s</path>\n", ref.m_path.c_str());
 
 			CString shiftString;
 			if (ref.m_shiftOption == Evaluation::SHIFT_FIX)
@@ -723,9 +723,9 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *resu
 	string.AppendFormat("starttime\tstoptime\tname\tspecsaturation\tfitsaturation\tcounts_ms\tdelta\tchisquare\texposuretime\tnumspec\t");
 
 	for(int itSpecie = 0; itSpecie < spectrometer.m_evaluator[0]->NumberOfReferences(); ++itSpecie){
-		string.AppendFormat("column(%s)\tcolumnerror(%s)\t", (LPCSTR)window.ref[itSpecie].m_specieName, (LPCSTR)window.ref[itSpecie].m_specieName);
-		string.AppendFormat("shift(%s)\tshifterror(%s)\t", (LPCSTR)window.ref[itSpecie].m_specieName, (LPCSTR)window.ref[itSpecie].m_specieName);
-		string.AppendFormat("squeeze(%s)\tsqueezeerror(%s)\t", (LPCSTR)window.ref[itSpecie].m_specieName, (LPCSTR)window.ref[itSpecie].m_specieName);
+		string.AppendFormat("column(%s)\tcolumnerror(%s)\t", window.ref[itSpecie].m_specieName.c_str(), window.ref[itSpecie].m_specieName.c_str());
+		string.AppendFormat("shift(%s)\tshifterror(%s)\t", window.ref[itSpecie].m_specieName.c_str(), window.ref[itSpecie].m_specieName.c_str());
+		string.AppendFormat("squeeze(%s)\tsqueezeerror(%s)\t", window.ref[itSpecie].m_specieName.c_str(), window.ref[itSpecie].m_specieName.c_str());
 	}
 	string.AppendFormat("isgoodpoint\toffset\tflag");
 	string.AppendFormat("\n<spectraldata>\n");
