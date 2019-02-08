@@ -287,13 +287,8 @@ CConfigurationSetting::CommunicationSetting &CConfigurationSetting::Communicatio
 }
 /** ------------- Constructor for the ftp-settings ----------------- */
 CConfigurationSetting::CFTPSetting::CFTPSetting()
+ : ftpStatus(0), ftpAddress(""), userName(""), password(""), ftpStartTime(0), ftpStopTime(86400)
 {
-	ftpStatus = 0;
-	ftpAddress.Format("129.16.35.206");
-	userName.Format("novacUser");
-	password.Format("iht-1inks.");
-	ftpStartTime = 0;
-	ftpStopTime	 = 86400;
 }
 CConfigurationSetting::CFTPSetting::~CFTPSetting()
 {

@@ -65,12 +65,9 @@ int CConfigurationFileHandler::ReadConfigurationFile(CConfigurationSetting &conf
 		in the same directory as the executable. */
 int CConfigurationFileHandler::WriteConfigurationFile(CConfigurationSetting &configuration, const CString *fileName){
 	CString indent, str, tmp_fileName;
-	CString defaultFTPpwd;
 	Common common;
 	CString modelStr;
 
-	defaultFTPpwd.Format("iht-1inks.");
-	
 	// 1. Get the filename
 	if(fileName == NULL){
 		common.GetExePath();
@@ -109,10 +106,8 @@ int CConfigurationFileHandler::WriteConfigurationFile(CConfigurationSetting &con
 	str.Format("\t<ftpUserName>%s</ftpUserName>\n", (LPCSTR)conf->ftpSetting.userName);
 	fprintf(f, str);
 	// 4e. The ftp server setting - password
-	if(!Equals(conf->ftpSetting.password, defaultFTPpwd)){
-		str.Format("\t<ftpPassword>%s</ftpPassword>\n", (LPCSTR)conf->ftpSetting.password);
-		fprintf(f, str);
-	}
+	str.Format("\t<ftpPassword>%s</ftpPassword>\n", (LPCSTR)conf->ftpSetting.password);
+	fprintf(f, str);
 	// 4e2. The settings for when to upload to the FTP-server...
 	str.Format("\t<ftpStartTime>%d</ftpStartTime>\n", conf->ftpSetting.ftpStartTime);
 	fprintf(f, str);
