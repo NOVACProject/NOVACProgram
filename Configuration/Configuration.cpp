@@ -184,11 +184,11 @@ CConfigurationSetting::SpectrometerChannelSetting::SpectrometerChannelSetting(){
 CConfigurationSetting::SpectrometerChannelSetting::~SpectrometerChannelSetting(){
 }
 void CConfigurationSetting::SpectrometerChannelSetting::Clear(){
-	detectorSize = 2048;
-	fitWindow.name.Format("");
-	fitWindow.nRef = 0;
+	detectorSize        = 2048;
+	fitWindow.name      = "";
+	fitWindow.nRef      = 0;
 	fitWindow.polyOrder = 5;
-	fitWindow.specLength = 2048;
+	fitWindow.specLength= 2048;
 
 	m_darkSettings.Clear();
 }

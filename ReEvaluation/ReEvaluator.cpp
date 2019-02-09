@@ -307,7 +307,7 @@ bool CReEvaluator::WriteEvaluationLogHeader(){
 	CFitWindow &window = m_window[m_curWindow];
 
 	// Get the name of the evaluation log file
-	m_evalLog[m_curWindow] = m_outputDir + "\\ReEvaluationLog_" + window.name + ".txt";
+	m_evalLog[m_curWindow] = m_outputDir + "\\ReEvaluationLog_" + CString(window.name.c_str()) + ".txt";
 
 	// Try to open the log file
 	FILE *f = fopen(m_evalLog[m_curWindow], "w");

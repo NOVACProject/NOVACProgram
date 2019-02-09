@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "../NovacMasterProgram.h"
 #include "referencefilecontrol.h"
+#include "../Common/Common.h"
 
 using namespace DlgControls;
 using namespace Evaluation;

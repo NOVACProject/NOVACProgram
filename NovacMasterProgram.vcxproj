@@ -214,7 +214,6 @@
     <ClCompile Include="Evaluation\Evaluation.cpp" />
     <ClCompile Include="Evaluation\EvaluationController.cpp" />
     <ClCompile Include="Evaluation\EvaluationResult.cpp" />
-    <ClCompile Include="Evaluation\FitWindow.cpp" />
     <ClCompile Include="Evaluation\FitWindowFileHandler.cpp" />
     <ClCompile Include="Evaluation\FluxResult.cpp" />
     <ClCompile Include="Evaluation\ScanEvaluation.cpp" />
@@ -256,6 +255,7 @@
     <ClCompile Include="ScannerFolderInfo.cpp" />
     <ClInclude Include="SpectralEvaluation\Evaluation\BasicMath.h" />
     <ClInclude Include="SpectralEvaluation\Evaluation\CrossSectionData.h" />
+    <ClInclude Include="SpectralEvaluation\Evaluation\FitWindow.h" />
     <ClInclude Include="SpectralEvaluation\Evaluation\ReferenceFile.h" />
     <ClInclude Include="SpectralEvaluation\Evaluation\ReferenceFitResult.h" />
     <ClInclude Include="SpectralEvaluation\Fit\BSpline.cxx" />
@@ -266,6 +266,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="SpectralEvaluation\Evaluation\CrossSectionData.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\Evaluation\FitWindow.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -389,7 +393,6 @@
     <ClInclude Include="Evaluation\Evaluation.h" />
     <ClInclude Include="Evaluation\EvaluationController.h" />
     <ClInclude Include="Evaluation\EvaluationResult.h" />
-    <ClInclude Include="Evaluation\FitWindow.h" />
     <ClInclude Include="Evaluation\FitWindowFileHandler.h" />
     <ClInclude Include="Evaluation\FluxResult.h" />
     <ClInclude Include="Evaluation\ScanEvaluation.h" />

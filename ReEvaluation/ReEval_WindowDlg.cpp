@@ -40,9 +40,9 @@ void CReEval_WindowDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Radio(pDX, IDC_FIT_HP_DIV, (int &)window.fitType);
 
 	// The extra options
-	DDX_Check(pDX, IDC_CHECK_UV,						window.UV);
-	DDX_Check(pDX, IDC_CHECK_FIND_OPTIMAL,	window.findOptimalShift);
-	DDX_Check(pDX, IDC_CHECK_SHIFT_SKY,			window.shiftSky);
+	DDX_Check(pDX, IDC_CHECK_UV,            (int&)window.UV);
+	DDX_Check(pDX, IDC_CHECK_FIND_OPTIMAL,  (int&)window.findOptimalShift);
+	DDX_Check(pDX, IDC_CHECK_SHIFT_SKY,     (int&)window.shiftSky);
 
 	//This list of fit-windows
 	DDX_Control(pDX, IDC_FITWINDOW_LIST, m_windowList);
@@ -297,8 +297,8 @@ void CReEval_WindowDlg::OnInsertReference(){
 
 	// If this is the first reference inserted, also make a guess for the window name
 	//	 (if the user has not already given the window a name)
-	if(window.nRef == 1 && strlen(specie) != 0 && Equals(window.name, "SO2")){
-		window.name.Format("%s", (LPCTSTR)specie);
+	if(window.nRef == 1 && strlen(specie) != 0 && EqualsIgnoringCase(window.name, "SO2")){
+		window.name = std::string((LPCTSTR)specie);
 		m_windowList.PopulateList();
 		m_windowList.SetCurSel(0);
 	}

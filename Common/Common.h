@@ -58,6 +58,7 @@ int IsSerialNumber(const CString &serialNumber);
 /** Compares two strings without regard to case.
     @return 1 if the strings are equal. @return 0 if the strings are not equal. */
 int Equals(const CString &str1, const CString &str2);
+bool EqualsIgnoringCase(const std::string& str1, const std::string& str2);
 
 /** Compares at most 'nCharacters' of two strings without regard to case.
     @param nCharacters - The number of characters to compare

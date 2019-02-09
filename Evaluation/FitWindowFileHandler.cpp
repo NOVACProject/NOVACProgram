@@ -68,7 +68,7 @@ RETURN_CODE CFitWindowFileHandler::Parse_FitWindow(Evaluation::CFitWindow &windo
 				pt2[0] = 0; // remove the second quote
 			char tmpStr[512];
 			if(sscanf(pt+1, "%s", &tmpStr)){
-				window.name.Format("%s", tmpStr);
+				window.name = std::string(tmpStr);
 			}
 		}
 	}
@@ -114,15 +114,21 @@ RETURN_CODE CFitWindowFileHandler::Parse_FitWindow(Evaluation::CFitWindow &windo
 			continue;
 		}
 		if(Equals(szToken, "fOptShift")){
-			Parse_IntItem(TEXT("/fOptShift"), window.findOptimalShift);
+            int parsedFlag = 0;
+			Parse_IntItem(TEXT("/fOptShift"), parsedFlag);
+            window.findOptimalShift = (parsedFlag > 0);
 			continue;
 		}
 		if(Equals(szToken, "UV")){
-			Parse_IntItem(TEXT("/UV"), window.UV);
+            int parsedFlag = 0;
+			Parse_IntItem(TEXT("/UV"), parsedFlag);
+            window.UV = (parsedFlag > 0);
 			continue;
 		}
 		if(Equals(szToken, "shiftSky")){
-			Parse_IntItem(TEXT("/shiftSky"), window.shiftSky);
+            int parsedFlag = 0;
+			Parse_IntItem(TEXT("/shiftSky"), parsedFlag);
+            window.shiftSky = (parsedFlag > 0);
 			continue;
 		}
 		if(Equals(szToken, "interlaceStep")){
@@ -258,7 +264,7 @@ RETURN_CODE CFitWindowFileHandler::WriteFitWindow(const Evaluation::CFitWindow &
 	if(NULL == f)
 		return FAIL;
 
-	fprintf(f, "<fitWindow name=\"%s\">\n", (LPCSTR)window.name);
+	fprintf(f, "<fitWindow name=\"%s\">\n", window.name.c_str());
 	indent.Format("\t");
 
 	fprintf(f, "%s<fitLow>%d</fitLow>\n", (LPCSTR)indent, window.fitLow);

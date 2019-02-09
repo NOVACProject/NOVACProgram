@@ -3,8 +3,7 @@
 #include "../Common/Common.h"
 #include "../Common/GPSData.h"
 #include "../SpectralEvaluation/Evaluation/ReferenceFile.h"
-
-#include "../Evaluation/FitWindow.h"
+#include "../SpectralEvaluation/Evaluation/FitWindow.h"
 #include "../Common/SpectrometerModel.h"
 
 #ifndef _CCONFIGURATIONSETTINGS_H_

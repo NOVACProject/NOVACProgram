@@ -1,7 +1,8 @@
 #pragma once
 
+#include "../Common/Common.h"
 #include "../Common/XMLFileReader.h"
-#include "FitWindow.h"
+#include "../SpectralEvaluation/Evaluation/FitWindow.h"
 
 namespace FileHandler {
 /** A <b>CFitWindowFileHandler</b> object is capable of reading
