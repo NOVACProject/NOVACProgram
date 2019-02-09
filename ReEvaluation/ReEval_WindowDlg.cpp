@@ -6,6 +6,7 @@
 #include "ReEval_WindowDlg.h"
 #include "../Dialogs/ReferencePropertiesDlg.h"
 #include "../Dialogs/ReferencePlotDlg.h"
+#include "../SpectralEvaluation/Utils.h"
 
 using namespace ReEvaluation;
 using namespace Evaluation;

@@ -141,9 +141,7 @@
     <ClCompile Include="Common\Spectra\PakFileHandler.cpp" />
     <ClCompile Include="Common\Spectra\ScanFileHandler.cpp" />
     <ClCompile Include="Common\Spectra\Spectrum.cpp" />
-    <ClCompile Include="Common\Spectra\SpectrumInfo.cpp" />
     <ClCompile Include="Common\Spectra\SpectrumIO.cpp" />
-    <ClCompile Include="Common\SpectrometerModel.cpp" />
     <ClCompile Include="Common\SpectrumFormat\MKPack.cpp" />
     <ClCompile Include="Common\SpectrumFormat\STDFile.cpp" />
     <ClCompile Include="Common\SpectrumFormat\TXTFile.cpp" />
@@ -289,7 +287,22 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="SpectralEvaluation\Spectra\GPSData.cpp" />
+    <ClCompile Include="SpectralEvaluation\Spectra\GPSData.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\Spectra\SpectrometerModel.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\Spectra\SpectrumInfo.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\Utils.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="StatusFileReader.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -322,9 +335,7 @@
     <ClInclude Include="Common\Spectra\PakFileHandler.h" />
     <ClInclude Include="Common\Spectra\ScanFileHandler.h" />
     <ClInclude Include="Common\Spectra\Spectrum.h" />
-    <ClInclude Include="Common\Spectra\SpectrumInfo.h" />
     <ClInclude Include="Common\Spectra\SpectrumIO.h" />
-    <ClInclude Include="Common\SpectrometerModel.h" />
     <ClInclude Include="Common\SpectrumFormat\MKPack.h" />
     <ClInclude Include="Common\SpectrumFormat\STDFile.h" />
     <ClInclude Include="Common\SpectrumFormat\TXTFile.h" />
@@ -477,6 +488,9 @@
     <ClInclude Include="SpectralEvaluation\Fit\Vector.h" />
     <ClInclude Include="SpectralEvaluation\Spectra\DateTime.h" />
     <ClInclude Include="SpectralEvaluation\Spectra\GPSData.h" />
+    <ClInclude Include="SpectralEvaluation\Spectra\SpectrometerModel.h" />
+    <ClInclude Include="SpectralEvaluation\Spectra\SpectrumInfo.h" />
+    <ClInclude Include="SpectralEvaluation\Utils.h" />
     <ClInclude Include="StatusFileReader.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="UserSettings.h" />

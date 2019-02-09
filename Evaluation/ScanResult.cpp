@@ -2,6 +2,7 @@
 #include "ScanResult.h"
 #include "Evaluation.h"
 #include "../VolcanoInfo.h"
+#include "../SpectralEvaluation/Utils.h"
 
 // we also need the meterological data
 #include "../MeteorologicalData.h"
@@ -265,19 +266,19 @@ int CScanResult::CalculateFlux(const CString &specie, const CWindField &wind, do
             continue; // this is a bad measurement
         if (m_specInfo[i].m_flag >= 64)
             continue; // this is a direct-sun measurement, don't use it to calculate the flux...
-        if (Equals(m_specInfo[i].m_name, "direct_sun", 10) ||
-            Equals(m_specInfo[i].m_name, "direct_moon", 11) ||
-            Equals(m_specInfo[i].m_name, "sun_", 4) ||
-            Equals(m_specInfo[i].m_name, "moon_", 5) ||
-            Equals(m_specInfo[i].m_name, "sky", 3) ||
-            Equals(m_specInfo[i].m_name, "strat", 5) ||
-            Equals(m_specInfo[i].m_name, "trop", 4) ||
-            Equals(m_specInfo[i].m_name, "maxdoas", 7) ||
-            Equals(m_specInfo[i].m_name, "special", 7) ||
-            Equals(m_specInfo[i].m_name, "wind", 4) ||
-            Equals(m_specInfo[i].m_name, "dark", 4) ||
-            Equals(m_specInfo[i].m_name, "dark_cur", 8) ||
-            Equals(m_specInfo[i].m_name, "offset", 6)) {
+        if (EqualsIgnoringCase(m_specInfo[i].m_name, "direct_sun", 10) ||
+            EqualsIgnoringCase(m_specInfo[i].m_name, "direct_moon", 11) ||
+            EqualsIgnoringCase(m_specInfo[i].m_name, "sun_", 4) ||
+            EqualsIgnoringCase(m_specInfo[i].m_name, "moon_", 5) ||
+            EqualsIgnoringCase(m_specInfo[i].m_name, "sky", 3) ||
+            EqualsIgnoringCase(m_specInfo[i].m_name, "strat", 5) ||
+            EqualsIgnoringCase(m_specInfo[i].m_name, "trop", 4) ||
+            EqualsIgnoringCase(m_specInfo[i].m_name, "maxdoas", 7) ||
+            EqualsIgnoringCase(m_specInfo[i].m_name, "special", 7) ||
+            EqualsIgnoringCase(m_specInfo[i].m_name, "wind", 4) ||
+            EqualsIgnoringCase(m_specInfo[i].m_name, "dark", 4) ||
+            EqualsIgnoringCase(m_specInfo[i].m_name, "dark_cur", 8) ||
+            EqualsIgnoringCase(m_specInfo[i].m_name, "offset", 6)) {
             continue; // this is not intended to be used for calculating the flux
         }
 
@@ -697,15 +698,15 @@ CString CScanResult::GetName(int index) const {
         return CString("");
 
     const CSpectrumInfo &info = m_specInfo.GetAt(index);
-    return info.m_name;
+    return CString(info.m_name.c_str());
 }
 
 /** Returns the serial-number of the spectrometer that collected this scan */
 CString CScanResult::GetSerial() const {
     for (unsigned long k = 0; k < m_specNum; ++k) {
         const CSpectrumInfo &info = m_specInfo.GetAt(k);
-        if (strlen(info.m_device) > 0)
-            return info.m_device;
+        if (info.m_device.size() > 0)
+            return CString(info.m_device.c_str());
     }
     return CString("");
 }

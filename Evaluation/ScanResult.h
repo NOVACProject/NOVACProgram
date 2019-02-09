@@ -2,8 +2,7 @@
 
 #include "../Common/Spectra/Spectrum.h"
 #include "../Common/WindField.h"
-#include "../Common/Spectra/SpectrumInfo.h"
-
+#include "../SpectralEvaluation/Spectra/SpectrumInfo.h"
 #include "../SpectralEvaluation/Evaluation/FitParameter.h"
 #include "../SpectralEvaluation/Evaluation/EvaluationResult.h"
 #include "FluxResult.h"

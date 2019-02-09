@@ -150,7 +150,7 @@ bool	CRealTimeWind::IsTimeForWindMeasurement(const Evaluation::CSpectrometer *sp
 
 /** Starts an automatic wind-speed measurement for the supplied spectrometer */
 void CRealTimeWind::StartWindSpeedMeasurement(const Evaluation::CSpectrometer *spec, CWindField &windField){
-	static CString message, spectrometerType;
+	static CString message;
 	CString dateTime, directory;
 	Common common;
 	int stepsPerRound	= 200;
@@ -203,7 +203,6 @@ void CRealTimeWind::StartWindSpeedMeasurement(const Evaluation::CSpectrometer *s
 	// 3a. A small header 
 	common.GetDateTimeText(dateTime);
 	fprintf(f, "%%-------------Modified at %s------------\n\n", (LPCTSTR)dateTime);
-	fprintf(f, "%% Questions? email\n%% mattias.johansson@chalmers.se\n\n");
 
 	if(spec->m_scanner.instrumentType == INSTR_GOTHENBURG){
 
@@ -286,10 +285,11 @@ void CRealTimeWind::StartWindSpeedMeasurement(const Evaluation::CSpectrometer *s
 		repetitions			= std::max(std::min(repetitions, 800), 400);
 
 		// 4b. The instrument-type
+        std::string spectrometerType;
 		if(SUCCESS != CSpectrometerModel::ToString(spec->m_scanner.spec[0].model, spectrometerType)){
-			spectrometerType.Format("HR2000");
+			spectrometerType = "HR2000";
 		}
-		fprintf (f, "SPECTROMETERTYPE=%s\n\n", (LPCTSTR)spectrometerType);  //can spectrometertype be retrieved automatically from configuration?
+		fprintf (f, "SPECTROMETERTYPE=%s\n\n", spectrometerType.c_str());  //can spectrometertype be retrieved automatically from configuration?
 
 		// 3c. Write the Spectrum transfer information
 		fprintf(f, "%% STARTCHN and STOPCHN define which channels in the spectra will be transferred\n");

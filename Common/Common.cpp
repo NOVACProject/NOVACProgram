@@ -125,11 +125,6 @@ int CreateDirectoryStructure(const CString &path)
 int Equals(const CString &str1, const CString &str2){
 	return (0 ==_tcsnicmp(str1, str2, max(strlen(str1), strlen(str2))));
 }
-bool EqualsIgnoringCase(const std::string& str1, const std::string& str2)
-{
-    return (0 == _tcsnicmp(str1.c_str(), str2.c_str(), max(strlen(str1.c_str()), strlen(str2.c_str()))));
-}
-
 
 int Equals(const CString &str1, const CString &str2, unsigned int nCharacters){
 	return (0 ==_tcsnicmp(str1, str2, min(nCharacters, max(strlen(str1), strlen(str2)))));

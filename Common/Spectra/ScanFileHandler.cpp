@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "ScanFileHandler.h"
+#include "../../SpectralEvaluation/Utils.h"
 
 using namespace SpectrumIO;
 using namespace FileHandler;
@@ -154,7 +155,7 @@ RETURN_CODE CScanFileHandler::CheckScanFile(const CString *fileName){
         m_stopTime.day    = m_startTime.day;
 
 		// get the serial number of the spectrometer
-		m_device.Format(tempSpec.m_info.m_device);
+		m_device.Format(tempSpec.m_info.m_device.c_str());
 
 		// get the channel of the spectrometer
 		m_channel = tempSpec.m_info.m_channel;
@@ -206,21 +207,21 @@ int CScanFileHandler::GetNextSpectrum(CSpectrum &spec){
 		this->m_startTime = spec.m_info.m_startTime;
 
 	// Extract the spectrometer-model from the serial-number of the spectrometer
-	if(strstr(spec.m_info.m_device, "D2J")){
+	if(Contains(spec.m_info.m_device, "D2J")){
 		spec.m_info.m_specModel = S2000;
-	}else if(strstr(spec.m_info.m_device, "I2J")){
+	}else if(Contains(spec.m_info.m_device, "I2J")){
 		spec.m_info.m_specModel = S2000;
-	}else if(strstr(spec.m_info.m_device, "USB2")){
+	}else if(Contains(spec.m_info.m_device, "USB2")){
 		spec.m_info.m_specModel = USB2000;
-	}else if(strstr(spec.m_info.m_device, "USB4C")){
+	}else if(Contains(spec.m_info.m_device, "USB4C")){
 		spec.m_info.m_specModel = USB4000;
-	}else if(strstr(spec.m_info.m_device, "HR2")){
+	}else if(Contains(spec.m_info.m_device, "HR2")){
 		spec.m_info.m_specModel = HR2000;
-	}else if(strstr(spec.m_info.m_device, "HR4")){
+	}else if(Contains(spec.m_info.m_device, "HR4")){
 		spec.m_info.m_specModel = HR4000;
-	}else if(strstr(spec.m_info.m_device, "QE")){
+	}else if(Contains(spec.m_info.m_device, "QE")){
 		spec.m_info.m_specModel = QE65000;
-	}else if (strstr(spec.m_info.m_device, "MAYAPRO")) {
+	}else if (Contains(spec.m_info.m_device, "MAYAPRO")) {
 		spec.m_info.m_specModel = MAYAPRO;
 	}
 

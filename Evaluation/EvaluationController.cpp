@@ -95,7 +95,7 @@ void CEvaluationController::OnTestEvaluation(WPARAM wp, LPARAM lp){
 	// 2. Find the serial number of the spectrometer
 	CString serialNumber;
 	reader.ReadSpectrum(*fileName, 0, curSpec);
-	serialNumber.Format("%s", (LPCSTR)curSpec.m_info.m_device);
+	serialNumber.Format("%s", curSpec.m_info.m_device.c_str());
 	ASSERT(IsSerialNumber(serialNumber));
 
 	EvaluateScan(*fileName, -1);
@@ -127,7 +127,7 @@ void CEvaluationController::OnArrivedSpectra(WPARAM wp, LPARAM lp){
 
 	// 2. Find the serial number of the spectrometer and the channel that was used
 	reader.ReadSpectrum(*fileName, 0, spec); // TODO: check for errors!!
-	serialNumber.Format("%s", (LPCSTR)spec.m_info.m_device);
+	serialNumber.Format("%s", spec.m_info.m_device.c_str());
 	int specPerScan				= spec.SpectraPerScan();
 
 	// 3. Find the volcano that the spectrometer with this serial-number monitors
@@ -565,10 +565,12 @@ RETURN_CODE CEvaluationController::WriteFluxResult(const CScanResult *result, co
 RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *result, const FileHandler::CScanFileHandler *scan, const CSpectrometer &spectrometer, CWindField &windField){
 	CString string, string1, string2, string3, string4;
 	const CConfigurationSetting::SpectrometerSetting &settings = spectrometer.m_settings;
-	CString pakFile, txtFile, specModel, evalLogFile;
+	CString pakFile, txtFile, evalLogFile;
 	CString wsSrc, wdSrc, phSrc;
 	CDateTime dateTime;
 	GetArchivingfileName(pakFile, txtFile, scan->GetFileName());
+
+    std::string specModel;
 	CSpectrometerModel::ToString(spectrometer.m_settings.model, specModel);
 
 	// 1. Get the name of the evaluation-log file to write to...
@@ -598,7 +600,7 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *resu
 	string.AppendFormat("\tobservatory=%s\n", (LPCSTR)m_common.SimplifyString(spectrometer.m_scanner.observatory));
 
 	string.AppendFormat("\tserial=%s\n", (LPCSTR)settings.serialNumber);
-	string.AppendFormat("\tspectrometer=%s\n", (LPCSTR)specModel);
+	string.AppendFormat("\tspectrometer=%s\n", specModel.c_str());
 	string.AppendFormat("\tchannel=%d\n", spectrometer.m_channel);
 	string.AppendFormat("\tconeangle=%.1lf\n", spectrometer.m_scanner.coneAngle);
 	string.AppendFormat("\tinterlacesteps=%d\n", scan->GetInterlaceSteps());
@@ -671,7 +673,7 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *resu
 
 	string.AppendFormat("<spectrometer>\n");
 	string.AppendFormat("\t<serialNumber>%s</serialNumber>\n", (LPCSTR)settings.serialNumber);
-	string.AppendFormat("\t<model>%s</model>\n", (LPCSTR)specModel);
+	string.AppendFormat("\t<model>%s</model>\n", specModel.c_str());
 	for (int i = 0; i < settings.channelNum; i++) {
 		string.AppendFormat("\t<channel number='%d'>\n", i);
 		const Evaluation::CFitWindow &fitWindow = settings.channel[i].fitWindow;
@@ -1008,7 +1010,7 @@ void CEvaluationController::Output_ArrivedScan(const CSpectrometer *spec){
 /** Handles the output when a fit failure has occured */
 void CEvaluationController::Output_FitFailure(const CSpectrum &spec){
 	CString message;
-	message.Format("Failed to evaluate spectrum from spectrometer: %s", (LPCSTR)spec.m_info.m_device);
+	message.Format("Failed to evaluate spectrum from spectrometer: %s", spec.m_info.m_device.c_str());
 	m_logFileWriter.WriteErrorMessage(message);
 	pView->PostMessage(WM_EVAL_FAILURE, (WPARAM)&(spec.m_info.m_device));
 	ShowMessage(message);
@@ -1073,7 +1075,7 @@ RETURN_CODE CEvaluationController::GetArchivingfileName(CString &pakFile, CStrin
 	}
 
 	// 2. Get the serialNumber of the spectrometer
-	serialNumber.Format("%s", (LPCSTR)info.m_device);
+	serialNumber.Format("%s", info.m_device.c_str());
 
 	// 3. Get the time and date when the scan started
 	dateStr.Format("%02d%02d%02d",		info.m_startTime.year % 1000,	info.m_startTime.month, info.m_startTime.day);

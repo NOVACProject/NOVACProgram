@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../Evaluation/FluxResult.h"
-#include "../Common/Spectra/SpectrumInfo.h"
+#include "../SpectralEvaluation/Spectra/SpectrumInfo.h"
 
 #include <Afxtempl.h>
 

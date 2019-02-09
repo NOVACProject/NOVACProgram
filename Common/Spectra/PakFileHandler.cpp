@@ -99,7 +99,7 @@ RETURN_CODE CPakFileHandler::FindNextScanStart(FILE *pakFile, CSpectrum &curSpec
 	int originalSpectrumNumber = m_spectrumNumber;
 
 	// Get the serial-number of the spectrometer
-	serialNumber.Format("%s", (LPCSTR)curSpec.m_info.m_device);
+	serialNumber.Format("%s", curSpec.m_info.m_device.c_str());
 
 	// Get the spectrum's position in the scan
 	int scanIndex = curSpec.ScanIndex(); 
@@ -239,7 +239,7 @@ int CPakFileHandler::ReadDownloadedFile(const CString &fileName, bool deletePakF
 			ShowMessage("Received file with illegal channel number");
 			channel = 0;
 		}
-		serialNumber.Format("%s", (LPCSTR)curSpec.m_info.m_device);
+		serialNumber.Format("%s", curSpec.m_info.m_device.c_str());
 		if(serialNumber.GetLength() < 6 || serialNumber.GetLength() > 11){
 			// There's something wrong with this serial-number
 			serialNumber.Format("NN");
@@ -736,7 +736,7 @@ bool CPakFileHandler::IsDirectSunMeasurement(const CString &fileName){
 		return false; // failed to check the file
 	}
 	while(scan.GetNextSpectrum(spec)){
-		CString name = CString(spec.m_info.m_name);
+		CString name = CString(spec.m_info.m_name.c_str());
 		if(Equals(name, "direct_sun")){
 			++nFound;
 			if(nFound == 5)
@@ -761,7 +761,7 @@ bool CPakFileHandler::IsLunarMeasurement(const CString &fileName){
 		return false; // failed to check the file
 	}
 	while(scan.GetNextSpectrum(spec)){
-		CString name = CString(spec.m_info.m_name);
+		CString name = CString(spec.m_info.m_name.c_str());
 		if(Equals(name, "lunar")){
 			++nFound;
 			if(nFound == 5)
@@ -799,7 +799,7 @@ bool CPakFileHandler::IsCompositionMeasurement(const CString &fileName){
 	}
 	scan.ResetCounter();
 	while(scan.GetNextSpectrum(spec)){
-		CString name = CString(spec.m_info.m_name);
+		CString name = CString(spec.m_info.m_name.c_str());
 		if(Equals(name, "comp")){
 			return true;
 		}
@@ -826,7 +826,7 @@ RETURN_CODE	CPakFileHandler::ArchiveScan(const CString &scanFileName){
 	int channel         = info.m_channel;
 
 	// 2. Get the serialNumber of the spectrometer
-	serialNumber.Format("%s", (LPCSTR)info.m_device);
+	serialNumber.Format("%s", info.m_device.c_str());
 
 	// 3. Get the time and date when the scan started
 	dateStr.Format("%02d%02d%02d", info.m_startTime.year % 1000, info.m_startTime.month, info.m_startTime.day);
@@ -910,7 +910,7 @@ RETURN_CODE CPakFileHandler::SaveCorruptSpectrum(const CSpectrum &curSpec, int s
 
 	// Find a suitable file-name for the spectrum
 	int index = 0;
-	serial.Format(curSpec.m_info.m_device);
+	serial.Format(curSpec.m_info.m_device.c_str());
 	date.Format("%04d.%02d.%02d", curSpec.m_info.m_startTime.year, curSpec.m_info.m_startTime.month, curSpec.m_info.m_startTime.day);
 	time.Format("%02d.%02d.%02d", curSpec.m_info.m_startTime.hour, curSpec.m_info.m_startTime.minute, curSpec.m_info.m_startTime.second);
 	fileName.Format("%s%s_%s_%s_%d.pak", (LPCSTR)directory, (LPCSTR)serial, (LPCSTR)date, (LPCSTR)time, index++);

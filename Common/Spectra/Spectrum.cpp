@@ -206,8 +206,8 @@ void CSpectrum::Clear(){
 	// long
 	m_info.m_exposureTime =  m_info.m_numSpec = 0;
 	// CString
-	m_info.m_device.Format("");
-	m_info.m_name.Format("");
+	m_info.m_device = "";
+	m_info.m_name = "";
 	// short
 	m_info.m_scanIndex = m_info.m_scanSpecNum = 0;
 	// GPS

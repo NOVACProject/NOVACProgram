@@ -297,9 +297,6 @@
     <ClCompile Include="Common\LogFileWriter.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
-    <ClCompile Include="Common\SpectrometerModel.cpp">
-      <Filter>Source Files\Common</Filter>
-    </ClCompile>
     <ClCompile Include="Common\WindField.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
@@ -319,9 +316,6 @@
       <Filter>Source Files\Common\Spectra</Filter>
     </ClCompile>
     <ClCompile Include="Common\Spectra\SpectrumIO.cpp">
-      <Filter>Source Files\Common\Spectra</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\Spectra\SpectrumInfo.cpp">
       <Filter>Source Files\Common\Spectra</Filter>
     </ClCompile>
     <ClCompile Include="PostFlux\PostFluxCalculator.cpp">
@@ -543,6 +537,15 @@
     <ClCompile Include="SpectralEvaluation\Spectra\DateTime.cpp">
       <Filter>Source Files\SpectralEvaluation\Spectra</Filter>
     </ClCompile>
+    <ClCompile Include="SpectralEvaluation\Spectra\SpectrometerModel.cpp">
+      <Filter>Source Files\SpectralEvaluation\Spectra</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\Spectra\SpectrumInfo.cpp">
+      <Filter>Source Files\SpectralEvaluation\Spectra</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\Utils.cpp">
+      <Filter>Source Files\SpectralEvaluation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Configuration\AdvancedFTPUploadSettings.h">
@@ -731,9 +734,6 @@
     <ClInclude Include="Common\LogFileWriter.h">
       <Filter>Header Files\Common</Filter>
     </ClInclude>
-    <ClInclude Include="Common\SpectrometerModel.h">
-      <Filter>Header Files\Common</Filter>
-    </ClInclude>
     <ClInclude Include="Common\WindField.h">
       <Filter>Header Files\Common</Filter>
     </ClInclude>
@@ -756,9 +756,6 @@
       <Filter>Header Files\Common\Spectra</Filter>
     </ClInclude>
     <ClInclude Include="Common\Spectra\SpectrumIO.h">
-      <Filter>Header Files\Common\Spectra</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\Spectra\SpectrumInfo.h">
       <Filter>Header Files\Common\Spectra</Filter>
     </ClInclude>
     <ClInclude Include="Evaluation\Evaluation.h">
@@ -1117,6 +1114,15 @@
     </ClInclude>
     <ClInclude Include="SpectralEvaluation\Spectra\DateTime.h">
       <Filter>Header Files\SpectralEvaluation\Spectra</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\Spectra\SpectrometerModel.h">
+      <Filter>Header Files\SpectralEvaluation\Spectra</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\Spectra\SpectrumInfo.h">
+      <Filter>Header Files\SpectralEvaluation\Spectra</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\Utils.h">
+      <Filter>Header Files\SpectralEvaluation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

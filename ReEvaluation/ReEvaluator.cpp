@@ -5,6 +5,7 @@
 #include "../Common/Version.h"
 #include "../Evaluation/ScanEvaluation.h"
 #include "../Dialogs/QueryStringDialog.h"
+#include "../SpectralEvaluation/Utils.h"
 
 using namespace ReEvaluation;
 using namespace Evaluation;
@@ -496,7 +497,8 @@ bool CReEvaluator::AppendResultToEvaluationLog(const CScanResult *result, const 
 		fprintf(f, "%02d:%02d:%02d\t", info.m_stopTime.hour, info.m_stopTime.minute, info.m_stopTime.second);
 
 		// The name of the spectrum
-		fprintf(f, "%s\t", (LPCTSTR)common.SimplifyString(info.m_name));
+        const std::string spectrumName = SimplifyString(info.m_name);
+		fprintf(f, "%s\t", spectrumName.c_str());
 
 		// The delta of the fit
 		fprintf(f, "%.2e\t", result->GetDelta(i));

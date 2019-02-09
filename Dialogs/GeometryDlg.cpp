@@ -175,7 +175,7 @@ int CGeometryDlg::BrowseForEvaluationLog(int seriesNumber)
 		}
 
 		// Get the serial-number of the spectrometer
-		m_serialNumber[seriesNumber].Format(m_evalLogReader[seriesNumber]->m_specInfo.m_device);
+		m_serialNumber[seriesNumber].Format(m_evalLogReader[seriesNumber]->m_specInfo.m_device.c_str());
 			
 		// Initialize the controls (mostly the spin-button)
 		InitializeControls();
@@ -272,7 +272,7 @@ BOOL CGeometryDlg::OnInitDialog()
 		}
 
 		// Get the serial-number of the spectrometer
-		m_serialNumber[0].Format(m_evalLogReader[0]->m_specInfo.m_device);
+		m_serialNumber[0].Format(m_evalLogReader[0]->m_specInfo.m_device.c_str());
 			
 		// Initialize the controls (mostly the spin-button)
 		InitializeControls();

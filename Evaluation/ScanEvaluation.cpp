@@ -262,7 +262,7 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, CEvaluation *eval, b
 			if(eval->Evaluate(sky, current)){
 				CString str;
 				str.Format("Failed to evaluate spectrum from spectrometer %s. Failure at spectrum %d in scan containing %d spectra",
-					(LPCSTR)current.m_info.m_device, current.ScanIndex(), current.SpectraPerScan());
+					current.m_info.m_device.c_str(), current.ScanIndex(), current.SpectraPerScan());
 				ShowMessage(str);
 				success = false;
 			}

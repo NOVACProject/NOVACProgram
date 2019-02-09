@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "evaluationlogfilehandler.h"
-#include "../Common/SpectrometerModel.h"
+#include "../SpectralEvaluation/Spectra/SpectrometerModel.h"
+#include "../SpectralEvaluation/Utils.h"
 #include "../Common/Version.h"
 
 // Include synchronization classes
@@ -446,7 +447,7 @@ RETURN_CODE CEvaluationLogFileHandler::ReadEvaluationLog(){
 
 			// Also check the name...
 			if(curCol == m_col.name){
-				m_specInfo.m_name.Format(szToken);
+				m_specInfo.m_name = std::string(szToken);
 				szToken = NULL;
 				continue;
 			}
@@ -565,13 +566,13 @@ RETURN_CODE CEvaluationLogFileHandler::ReadEvaluationLog(){
 			}
 
 			m_specInfo.m_scanIndex = measNr;
-			if(Equals(m_specInfo.m_name, "sky")){
+			if(EqualsIgnoringCase(m_specInfo.m_name, "sky")){
 				m_scan[sortOrder[m_scanNum]].SetSkySpecInfo(m_specInfo);
-			}else if(Equals(m_specInfo.m_name, "dark")){
+			}else if(EqualsIgnoringCase(m_specInfo.m_name, "dark")){
 				m_scan[sortOrder[m_scanNum]].SetDarkSpecInfo(m_specInfo);
-			}else if(Equals(m_specInfo.m_name, "offset")){
+			}else if(EqualsIgnoringCase(m_specInfo.m_name, "offset")){
 				m_scan[sortOrder[m_scanNum]].SetOffsetSpecInfo(m_specInfo);
-			}else if(Equals(m_specInfo.m_name, "dark_cur")){
+			}else if(EqualsIgnoringCase(m_specInfo.m_name, "dark_cur")){
 				m_scan[sortOrder[m_scanNum]].SetDarkCurrentSpecInfo(m_specInfo);
 			}else{
 				m_scan[sortOrder[m_scanNum]].AppendResult(m_evResult, m_specInfo);
@@ -761,8 +762,8 @@ void CEvaluationLogFileHandler::ParseScanInformation(CSpectrumInfo &scanInfo, do
 			continue;
 		}
 		if(pt = strstr(szLine, "site=")){
-			scanInfo.m_site.Format("%s", pt+5);
-			scanInfo.m_site.Remove('\n'); // Remove newline characters
+			scanInfo.m_site = std::string(pt+5);
+            Remove(scanInfo.m_site, '\n'); // Remove newline characters
 			continue;
 		}
 		if(pt = strstr(szLine, "date=")){
@@ -825,26 +826,26 @@ void CEvaluationLogFileHandler::ParseScanInformation(CSpectrumInfo &scanInfo, do
 			continue;
 		}
 		if(pt = strstr(szLine, "serial=")){
-			scanInfo.m_device.Format("%s", pt + 7);
-			scanInfo.m_device.Remove('\n'); // remove remaining strange things in the serial-number
-			scanInfo.m_device.MakeUpper();	// Convert the serial-number to all upper case letters
+			scanInfo.m_device = std::string(pt + 7);
+            Remove(scanInfo.m_device, '\n'); // remove remaining strange things in the serial-number
+			MakeUpper(scanInfo.m_device);	// Convert the serial-number to all upper case letters
 
 			// Extract the spectrometer-model from the serial-number of the spectrometer
-			if(strstr(scanInfo.m_device, "D2J")){
+			if(Contains(scanInfo.m_device, "D2J")){
 				scanInfo.m_specModel = S2000;
-			}else if(strstr(scanInfo.m_device, "I2J")){
+			}else if(Contains(scanInfo.m_device, "I2J")){
 				scanInfo.m_specModel = S2000;
-			}else if(strstr(scanInfo.m_device, "USB2")){
+			}else if(Contains(scanInfo.m_device, "USB2")){
 				scanInfo.m_specModel = USB2000;
-			}else if(strstr(scanInfo.m_device, "USB4C")){
+			}else if(Contains(scanInfo.m_device, "USB4C")){
 				scanInfo.m_specModel = USB4000;
-			}else if(strstr(scanInfo.m_device, "HR2")){
+			}else if(Contains(scanInfo.m_device, "HR2")){
 				scanInfo.m_specModel = HR2000;
-			}else if(strstr(scanInfo.m_device, "HR4")){
+			}else if(Contains(scanInfo.m_device, "HR4")){
 				scanInfo.m_specModel = HR4000;
-			}else if(strstr(scanInfo.m_device, "QE")){
+			}else if(Contains(scanInfo.m_device, "QE")){
 				scanInfo.m_specModel = QE65000;
-			}else if (strstr(scanInfo.m_device, "MAYAPRO")) {
+			}else if (Contains(scanInfo.m_device, "MAYAPRO")) {
 				scanInfo.m_specModel = MAYAPRO;
 			}
 
@@ -856,14 +857,14 @@ void CEvaluationLogFileHandler::ParseScanInformation(CSpectrumInfo &scanInfo, do
 		}
 
 		if(pt = strstr(szLine, "volcano=")){
-			scanInfo.m_volcano.Format("%s", pt+8);
-			scanInfo.m_volcano.Remove('\n'); // Remove newline characters
+			scanInfo.m_volcano = std::string(pt+8);
+            Remove(scanInfo.m_volcano, '\n'); // Remove newline characters
 			continue;
 		}
 
 		if(pt = strstr(szLine, "observatory=")){
-			scanInfo.m_observatory.Format("%s", pt+12);
-			scanInfo.m_observatory.Remove('\n'); // Remove newline characters
+			scanInfo.m_observatory = std::string(pt+12);
+            Remove(scanInfo.m_observatory, '\n'); // Remove newline characters
 			continue;
 		}
 
@@ -1171,9 +1172,9 @@ RETURN_CODE CEvaluationLogFileHandler::WriteEvaluationLog(const CString fileName
 		string.AppendFormat("\tlong=%.6lf\n", scan.GetLongitude());
 		string.AppendFormat("\talt=%ld\n", (int)scan.GetAltitude());
 
-		string.AppendFormat("\tvolcano=%s\n", (LPCSTR)m_specInfo.m_volcano);
-		string.AppendFormat("\tsite=%s\n", (LPCSTR)m_specInfo.m_site);
-		string.AppendFormat("\tobservatory=%s\n", (LPCSTR)m_specInfo.m_observatory);
+		string.AppendFormat("\tvolcano=%s\n", m_specInfo.m_volcano.c_str());
+		string.AppendFormat("\tsite=%s\n", m_specInfo.m_site.c_str());
+		string.AppendFormat("\tobservatory=%s\n", m_specInfo.m_observatory.c_str());
 
 		string.AppendFormat("\tserial=%s\n", (LPCSTR)scan.GetSerial());
 		switch(m_specInfo.m_specModel){
@@ -1302,7 +1303,8 @@ RETURN_CODE CEvaluationLogFileHandler::FormatEvaluationResult(const CSpectrumInf
 	string.AppendFormat("%02d:%02d:%02d\t", info->m_stopTime.hour, info->m_stopTime.minute, info->m_stopTime.second);
 
 	// 5 The name of the spectrum
-	string.AppendFormat("%s\t", (LPCSTR)common.SimplifyString(info->m_name));
+    std::string simplifiedName = SimplifyString(info->m_name);
+	string.AppendFormat("%s\t", simplifiedName);
 
 	// 6. The (maximum) saturation ratio of the whole spectrum,
 	//			the (maximum) saturation ratio in the fit-region

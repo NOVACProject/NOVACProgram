@@ -2,7 +2,7 @@
 
 
 #include "../Common.h"
-#include "SpectrumInfo.h"
+#include "../../SpectralEvaluation/Spectra/SpectrumInfo.h"
 
 /**
 <b>CSpectrum</b> is an implementation of a spectrum. 

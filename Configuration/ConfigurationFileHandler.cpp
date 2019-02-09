@@ -66,7 +66,7 @@ int CConfigurationFileHandler::ReadConfigurationFile(CConfigurationSetting &conf
 int CConfigurationFileHandler::WriteConfigurationFile(CConfigurationSetting &configuration, const CString *fileName){
 	CString indent, str, tmp_fileName;
 	Common common;
-	CString modelStr;
+	std::string modelStr;
 
 	// 1. Get the filename
 	if(fileName == NULL){
@@ -210,7 +210,7 @@ int CConfigurationFileHandler::WriteConfigurationFile(CConfigurationSetting &con
 
 			// model Number
 			CSpectrometerModel::ToString(spec.model, modelStr);
-			str.Format("%s<model>%s</model>\n", (LPCSTR)indent, (LPCSTR)modelStr);
+			str.Format("%s<model>%s</model>\n", (LPCSTR)indent, modelStr.c_str());
 			fprintf(f, str);
 			
 			if(conf->scanner[i].spec[j].channelNum > 1)
@@ -805,7 +805,7 @@ int CConfigurationFileHandler::Parse_Spectrometer(){
 
 		// found the model number 
 		if(Equals(szToken, "model")){
-			CString tmpStr2;
+			std::string tmpStr2;
 			if(curSpec != NULL){
 				Parse_StringItem(TEXT("/model"), tmpStr2);
 				curSpec->model = CSpectrometerModel::GetModel(tmpStr2);

@@ -3,6 +3,7 @@
 #include "Configuration/Configuration.h"
 #include "VolcanoInfo.h"
 #include "UserSettings.h"
+#include "SpectralEvaluation/Utils.h"
 
 extern CConfigurationSetting g_settings;   // <-- The settings
 extern CVolcanoInfo g_volcanoes;           // <-- The global database of volcanoes
@@ -110,7 +111,6 @@ CEvaluatedDataStorage::~CEvaluatedDataStorage(void)
 }
 
 int CEvaluatedDataStorage::AddData(const CString &serial, Evaluation::CScanResult *result){
-	CString spectrumName;
 	CDateTime tid;
 	Common common;
 
@@ -183,9 +183,9 @@ int CEvaluatedDataStorage::AddData(const CString &serial, Evaluation::CScanResul
 
 		// Check if this is a dark measurement, if so then don't include it...
 		// 1. Clean the spectrum name from special characters...
-		Common::CleanString(result->GetSpectrumInfo(i).m_name, spectrumName);
-		spectrumName.Trim(" \t");
-		if(fabs(result->GetScanAngle(i)) - 180.0 < 1e-3 && (Equals(spectrumName, "offset") || Equals(spectrumName, "dark_cur") || Equals(spectrumName, "dark"))){
+        std::string spectrumName = CleanString(result->GetSpectrumInfo(i).m_name);
+		Trim(spectrumName, " \t");
+		if(fabs(result->GetScanAngle(i)) - 180.0 < 1e-3 && (EqualsIgnoringCase(spectrumName, "offset") || EqualsIgnoringCase(spectrumName, "dark_cur") || EqualsIgnoringCase(spectrumName, "dark"))){
 			++nIgnored;
 			continue;
 		}
