@@ -110,7 +110,7 @@ namespace Evaluation
 		FileHandler::CLogFileWriter m_logFileWriter;
 
 		/** The specie for which the flux should be calculated. E.g. "SO2" */
-		CString m_fluxSpecie;
+		std::string m_fluxSpecie;
 
 		/** Defining which of the result logs is the evaluation log */
 		const static int EVALUATION_LOG = 0;

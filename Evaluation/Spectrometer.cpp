@@ -52,8 +52,8 @@ double CSpectrometer::GetMaxIntensity() const{
 
 /** Adds the result from the supplied evaluation to the history
 		of evaluations. */
-void	CSpectrometer::RememberResult(CScanResult &lastResult){
-	CString specie = CString("SO2");
+void CSpectrometer::RememberResult(CScanResult &lastResult){
+	std::string specie = "SO2";
 
 	// 0. Some checking of reasonability
 	if(lastResult.GetEvaluatedNum() <= 1)

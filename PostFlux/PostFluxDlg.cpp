@@ -1350,7 +1350,8 @@ void CPostFluxDlg::OnCalculateFlux_AllScansInPlume()
 
 		// Check if this scan is in the plume
 		double plumeCentre1, plumeCentre2, plumeCompleteness, plumeEdge_low, plumeEdge_high;
-		bool inplume = scan.CalculatePlumeCentre(m_calculator->m_specie[m_curSpecie], plumeCentre1, plumeCentre2, plumeCompleteness, plumeEdge_low, plumeEdge_high);
+        const std::string currentSpecieName = std::string((LPCSTR)m_calculator->m_specie[m_curSpecie]);
+		bool inplume = scan.CalculatePlumeCentre(currentSpecieName, plumeCentre1, plumeCentre2, plumeCompleteness, plumeEdge_low, plumeEdge_high);
 
 		// If this measurement is not in the plume, then continue with the next
 		//	scan in the file.

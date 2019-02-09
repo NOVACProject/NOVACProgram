@@ -50,7 +50,7 @@ END_MESSAGE_MAP()
 
 CEvaluationController::CEvaluationController(void)
 {
-	m_fluxSpecie.Format("SO2");
+	m_fluxSpecie = "SO2";
 	m_realTime = false;
 	m_date[0] = m_date[1] = m_date[2] = 0;
 	m_lastResult = nullptr;
@@ -389,17 +389,17 @@ RETURN_CODE CEvaluationController::CalculateFlux(CScanResult *result, const CSpe
 	// 0. If there's only one specie evaluated for, use it as flux specie. 
 	//		No matter what previously said
 	if(result->GetSpecieNum(0) == 1){
-		m_fluxSpecie.Format("%s", (LPCSTR)result->GetSpecieName(0, 0));
+		m_fluxSpecie = result->GetSpecieName(0, 0);
 	}else{
-		m_fluxSpecie.Format("SO2");
+		m_fluxSpecie = "SO2";
 	}
 
 	// 1. Get the offset level of the scan
 	if(result->CalculateOffset(m_fluxSpecie)){
 		if(!result->IsEvaluatedSpecie(m_fluxSpecie)){
-			spectrometer->m_logFileHandler.WriteErrorMessage(TEXT("Could not calculate scan offset. There is no reference file for: " + m_fluxSpecie + " for this spectrometer!"));
+			spectrometer->m_logFileHandler.WriteErrorMessage(TEXT("Could not calculate scan offset. There is no reference file for: " + CString(m_fluxSpecie.c_str()) + " for this spectrometer!"));
 		}else{
-			spectrometer->m_logFileHandler.WriteErrorMessage(TEXT("Could not calculate scan offset. Is there a reference file for: " + m_fluxSpecie + " for this spectrometer ?"));
+			spectrometer->m_logFileHandler.WriteErrorMessage(TEXT("Could not calculate scan offset. Is there a reference file for: " + CString(m_fluxSpecie.c_str()) + " for this spectrometer ?"));
 		}
 	}
 
@@ -784,7 +784,10 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *resu
 		int nSpectra = result->GetSpectrumInfo(itSpectrum).m_numSpec;
 
 		// 3a. Pretty print the result and the spectral info into a string
-		CEvaluationLogFileHandler::FormatEvaluationResult(&result->GetSpectrumInfo(itSpectrum), result->GetResult(itSpectrum), spectrometer.m_scanner.instrumentType, maxIntensity * nSpectra, spectrometer.m_evaluator[0]->NumberOfReferences(), string1);
+        Evaluation::CEvaluationResult evResult;
+        result->GetResult(itSpectrum, evResult);
+
+		CEvaluationLogFileHandler::FormatEvaluationResult(&result->GetSpectrumInfo(itSpectrum), &evResult, spectrometer.m_scanner.instrumentType, maxIntensity * nSpectra, spectrometer.m_evaluator[0]->NumberOfReferences(), string1);
 
 		string.AppendFormat("%s", (LPCSTR)string1);
 	}

@@ -25,15 +25,16 @@ CPostFluxCalculator::~CPostFluxCalculator(void)
 
 double CPostFluxCalculator::CalculateFlux(int scanNr){
 	double plumeCentre1, plumeCentre2, plumeCompleteness, plumeEdge_low, plumeEdge_high;
+    const std::string specieName = std::string((LPCSTR)m_specie[m_curSpecie]);
 
 	// Write the header of the flux-log file, if necessary
 	WriteFluxLogHeader(scanNr);
 
 	// Calculate the flux
-	m_scan[scanNr].CalculateFlux(m_specie[m_curSpecie], m_wind, m_compass, m_coneAngle, m_tilt);
+	m_scan[scanNr].CalculateFlux(specieName, m_wind, m_compass, m_coneAngle, m_tilt);
 
 	// Calculate the plume-centre
-	m_scan[scanNr].CalculatePlumeCentre(m_specie[m_curSpecie], plumeCentre1, plumeCentre2, plumeCompleteness, plumeEdge_low, plumeEdge_high);
+	m_scan[scanNr].CalculatePlumeCentre(specieName, plumeCentre1, plumeCentre2, plumeCompleteness, plumeEdge_low, plumeEdge_high);
 
 	// Get the flux
 	m_flux = m_scan[scanNr].GetFlux();
@@ -64,7 +65,8 @@ double CPostFluxCalculator::CalculateOffset(int scanNr, const CString & specie, 
 	}
 
 	// Do the final calculation of the offset
-	scan.CalculateOffset(specie);
+    std::string specieName = std::string((LPCSTR)specie);
+	scan.CalculateOffset(specieName);
 
 	return scan.GetOffset();
 }
@@ -80,16 +82,16 @@ void  CPostFluxCalculator::SetOffset(double offset, int scanNr){
 
 /** Writes the header of the post-flux log file */
 void  CPostFluxCalculator::WriteFluxLogHeader(int scanNr){
-	CString fluxFilePath, str, serial;
+	CString fluxFilePath, str;
 	fluxFilePath.Format(m_evaluationLog);
 	Common::GetDirectory(fluxFilePath);
 
-	serial = (scanNr < 0) ? m_scan[0].GetSerial() : m_scan[scanNr].GetSerial();
+	std::string serial = (scanNr < 0) ? m_scan[0].GetSerial() : m_scan[scanNr].GetSerial();
 
-	if(CString::StringLength(serial) == 0)
+	if(serial.size() == 0)
 	  m_logFile.Format("%sPostFluxLog.txt", (LPCTSTR)fluxFilePath);
 	else
-		m_logFile.Format("%sPostFluxLog_%s.txt", (LPCTSTR)fluxFilePath, (LPCTSTR)serial);
+		m_logFile.Format("%sPostFluxLog_%s.txt", (LPCTSTR)fluxFilePath, serial.c_str());
 
 	if(IsExistingFile(m_logFile))
 		return; // if the file already exists, then we don't need to add anything...

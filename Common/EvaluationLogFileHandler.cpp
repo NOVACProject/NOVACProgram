@@ -1176,7 +1176,7 @@ RETURN_CODE CEvaluationLogFileHandler::WriteEvaluationLog(const CString fileName
 		string.AppendFormat("\tsite=%s\n", m_specInfo.m_site.c_str());
 		string.AppendFormat("\tobservatory=%s\n", m_specInfo.m_observatory.c_str());
 
-		string.AppendFormat("\tserial=%s\n", (LPCSTR)scan.GetSerial());
+		string.AppendFormat("\tserial=%s\n", scan.GetSerial().c_str());
 		switch(m_specInfo.m_specModel){
 			case S2000:				string.AppendFormat("\tspectrometer=s2000\n");	break;
 			case USB2000:			string.AppendFormat("\tspectrometer=usb2000\n");	break;
@@ -1253,7 +1253,7 @@ RETURN_CODE CEvaluationLogFileHandler::WriteEvaluationLog(const CString fileName
 		string.AppendFormat("starttime\tstoptime\tname\tspecsaturation\tfitsaturation\tdelta\tchisquare\texposuretime\tnumspec\t");
 
 		for(int itSpecie = 0; itSpecie < scan.GetSpecieNum(0); ++itSpecie){
-			specieName.Format("%s", (LPCSTR)scan.GetSpecieName(0, itSpecie));
+			specieName.Format("%s", scan.GetSpecieName(0, itSpecie).c_str());
 			string.AppendFormat("column(%s)\tcolumnerror(%s)\t", (LPCSTR)specieName, (LPCSTR)specieName);
 			string.AppendFormat("shift(%s)\tshifterror(%s)\t", (LPCSTR)specieName, (LPCSTR)specieName);
 			string.AppendFormat("squeeze(%s)\tsqueezeerror(%s)\t", (LPCSTR)specieName, (LPCSTR)specieName);
@@ -1267,7 +1267,10 @@ RETURN_CODE CEvaluationLogFileHandler::WriteEvaluationLog(const CString fileName
 		// ------------------- Then write the parameters for each spectrum ---------------------------
 		for(unsigned long itSpectrum = 0; itSpectrum < scan.GetEvaluatedNum(); ++itSpectrum){
 			// 3a. Pretty print the result and the spectral info into a string
-			FormatEvaluationResult(&scan.GetSpectrumInfo(itSpectrum), scan.GetResult(itSpectrum), m_instrumentType, 0.0, scan.GetSpecieNum(itSpectrum), string);
+            Evaluation::CEvaluationResult result;
+            scan.GetResult(itSpectrum, result);
+
+			FormatEvaluationResult(&scan.GetSpectrumInfo(itSpectrum), &result, m_instrumentType, 0.0, scan.GetSpecieNum(itSpectrum), string);
 
 			// 3b. Write it to the evaluation log file
 			fprintf(f, string);

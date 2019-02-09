@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Common/Common.h"
 #include "../Evaluation/FluxResult.h"
 #include "../SpectralEvaluation/Spectra/SpectrumInfo.h"
 

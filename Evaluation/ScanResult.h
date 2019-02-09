@@ -1,7 +1,6 @@
 #pragma once
 
-#include "../Common/Spectra/Spectrum.h"
-#include "../Common/WindField.h"
+#include "../Common/Common.h"
 #include "../SpectralEvaluation/Spectra/SpectrumInfo.h"
 #include "../SpectralEvaluation/Evaluation/FitParameter.h"
 #include "../SpectralEvaluation/Evaluation/EvaluationResult.h"
@@ -45,15 +44,15 @@ namespace Evaluation
 
 		/** Retrieves the evaluation result for spectrum number 
 		    'specIndex' from the list of calculated results.
-				@return - NULL if specIndex is out of bounds... */
-		const CEvaluationResult *GetResult(unsigned int specIndex) const;
+				@return false if specIndex is out of bounds... */
+		bool GetResult(unsigned int specIndex, CEvaluationResult& result) const;
 
 		/** Adds spectrum number 'specIndex' into the list of spectra in the .pak -file 
 				which are corrupted and could not be evaluated */
-		void	MarkAsCorrupted(unsigned int specIndex);
+		void MarkAsCorrupted(unsigned int specIndex);
 
 		/** Retrieves how many spectra are corrupted in the scan */
-		int		GetCorruptedNum() const;
+		int GetCorruptedNum() const;
 
 		/** Stores the information about the sky-spectrum used */
 		void SetSkySpecInfo(const CSpectrumInfo &skySpecInfo);
@@ -82,7 +81,6 @@ namespace Evaluation
 		  been called the actual offset can be retrieved by a call to 'GetOffset'.
 		  @param specie - The name of the specie for which the offset should be found.
 		  @return 0 on success. @return 1 - if any error occurs. */
-		int CalculateOffset(const CString &specie);
 		int CalculateOffset(const std::string &specie);
 
 		/** Calculate the flux in this scan, using the supplied compass direction 
@@ -91,7 +89,7 @@ namespace Evaluation
 		    retrieved by a call to 'GetFlux()'
 		    @param spec - the spectrometer with which the scan was collected.
 		    @return 0 if all is ok. @return 1 if any error occurs. */
-		int CalculateFlux(const CString &specie, const CWindField &wind, double compass, double coneAngle = 90.0, double tilt = 0.0);
+		int CalculateFlux(const std::string &specie, const CWindField &wind, double compass, double coneAngle = 90.0, double tilt = 0.0);
 
 		/** Tries to find a plume in the last scan result. If the plume is found
 				this function returns true, and the centre of the plume (in scanAngles) 
@@ -99,12 +97,12 @@ namespace Evaluation
 				is given in 'plumeWidth' and the estimated completeness of the plume
 				is given in 'plumeCompleteness' (ranging from 0.0 to 1.0)
 				*/
-		bool CalculatePlumeCentre(const CString &specie, double &plumeCentre_alpha, double &plumeCentre_phi, double &plumeCompleteness, double &plumeEdge_low, double &plumeEdge_high);
+		bool CalculatePlumeCentre(const std::string &specie, double &plumeCentre_alpha, double &plumeCentre_phi, double &plumeCompleteness, double &plumeEdge_low, double &plumeEdge_high);
 
 		/** Tries to find a plume in the last scan result. If the plume is found
 		    this function returns true. The result of the calculations is stored in
 		    the member-variables 'm_plumeCentre' and 'm_plumeCompleteness' */
-		bool CalculatePlumeCentre(const CString &specie);
+		bool CalculatePlumeCentre(const std::string &specie);
 
 		/** Tries to calculate the local wind-direction when this scan was collected.
 		    If succesful, this function returns 'true' and the result is saved 
@@ -146,7 +144,7 @@ namespace Evaluation
 		    corrected for the offset.
 		    NB!! The function 'CalculateOffset' must have been called
 		    before this function is called. */
-		double GetMaxColumn(const CString &specie) const;
+		double GetMaxColumn(const std::string &specie) const;
 
 		/** Returns the calculated flux */
 		double GetFlux() const {return m_flux.m_flux; }
@@ -159,7 +157,7 @@ namespace Evaluation
 		void SetFlux(double flux) {this->m_flux.m_flux = flux; }
 
 		/** returns the offset of the measurement */
-		SpecData GetOffset() const {return m_offset; } 
+		double GetOffset() const {return m_offset; } 
 
 		/** returns the temperature of the system at the time of the measurement */
 		double	GetTemperature() const {return m_skySpecInfo.m_temperature; }
@@ -207,10 +205,10 @@ namespace Evaluation
 		float	GetBatteryVoltage() const;
 
 		/** Returns the name of the requested spectrum */
-		CString GetName(int index) const;
+        std::string GetName(int index) const;
 
 		/** Returns the serial-number of the spectrometer that collected this scan */
-		CString GetSerial() const;
+        std::string GetSerial() const;
 
 		/** returns the goodness of fit for the fitting of the evaluated 
 		        spectrum number 'index'. 
@@ -261,8 +259,8 @@ namespace Evaluation
 		/** returns the time and date (UMT) when evaluated spectrum number 
 		        'index' was started.
 		    @param index - the zero based index into the list of evaluated spectra.
-		    @return SUCCESS if the index is valid */
-		RETURN_CODE GetStartTime(unsigned long index, CDateTime &time) const;
+		    @return true if the index is valid */
+		bool GetStartTime(unsigned long index, CDateTime &time) const;
 
 		/** returns the time and date (UMT) when the sky-spectrum was started. */
 		void CScanResult::GetSkyStartTime(CDateTime &t) const;
@@ -274,13 +272,13 @@ namespace Evaluation
 		/** returns the time and date (UMT) when evaluated spectrum number 'index' 
 		        was stopped.
 		    @param index - the zero based index into the list of evaluated spectra.
-		    @return SUCCESS if the index is valid */
-		RETURN_CODE GetStopTime(unsigned long index, CDateTime &time) const;
+		    @return true if the index is valid */
+		bool GetStopTime(unsigned long index, CDateTime &time) const;
 
 		/** returns the date (UMT) when the evaluated spectrum number 'index'
 		        was collected
 		    @param index - the zero-based index into the list of evaluated spectra. */
-		RETURN_CODE GetDate(unsigned long index, unsigned short date[3]) const;
+		bool GetDate(unsigned long index, unsigned short date[3]) const;
 
 		/** returns the evaluated column for specie number 'specieNum' and 
 		        spectrum number 'specNum'
@@ -363,14 +361,14 @@ namespace Evaluation
 		/** returns true if the spectra have been evaluated for the supplied specie.
 		    @param specie - a string containing the name of the specie to 
 		        search for, e.g. "SO2" (case insensitive)*/
-		bool IsEvaluatedSpecie(const CString &specie) const {return (-1 != GetSpecieIndex(specie)); }
+		bool IsEvaluatedSpecie(const std::string &specie) const {return (-1 != GetSpecieIndex(specie)); }
 
 		/** returns the number of species that were used in the evaluation of a 
 		    given spectrum */
 		int GetSpecieNum(unsigned long spectrumNum) const {return (IsValidSpectrumIndex(spectrumNum)) ? (int)m_spec[spectrumNum].m_referenceResult.size() : 0; }
 
 		/** returns the specie name */
-		const CString GetSpecieName(unsigned long spectrumNum, unsigned long specieNum) const;
+		const std::string GetSpecieName(unsigned long spectrumNum, unsigned long specieNum) const;
 
 		/** Sets the type of the instrument used */
 		void SetInstrumentType(INSTRUMENT_TYPE type);
@@ -405,7 +403,7 @@ namespace Evaluation
 		// ----------------------------------------------------------------------
 
 		/** The offset in the measurement */
-		SpecData m_offset;
+		double m_offset;
 
 		/** The calculated flux and the parameters used to 
 		     calculate the flux */
@@ -436,10 +434,10 @@ namespace Evaluation
 		double	m_plumeCompleteness;
 
 		/** result of evaluating the spectra */
-		CArray<CEvaluationResult, CEvaluationResult&> m_spec;
+		std::vector<CEvaluationResult> m_spec;
 
-		/** information about the collected spectra */
-		CArray<CSpectrumInfo, CSpectrumInfo&> m_specInfo;
+		/** information about the collected spectra (number of elements should equal number in m_spec) */
+        std::vector<CSpectrumInfo> m_specInfo;
 
 		/** information about the sky-spectrum used */
 		CSpectrumInfo	m_skySpecInfo;
@@ -454,8 +452,7 @@ namespace Evaluation
 		CSpectrumInfo	m_darkCurSpecInfo;
 
 		/** A list of which spectra were corrupted and could not be evaluated */
-		CArray <unsigned int, unsigned int &>		m_corruptedSpectra;
-		int											m_corruptedNum;
+        std::vector <unsigned int> m_corruptedSpectra;
 
 		/** The number of evaluations */
 		unsigned long m_specNum;
@@ -474,7 +471,6 @@ namespace Evaluation
 		    @param specie - the gas to search for e.g. SO2 (case insensitive).
 		    @return the zero-based index of the specie.
 		    @return -1 if specie not found.*/
-		int GetSpecieIndex(const CString &specie) const;
 		int GetSpecieIndex(const std::string &specie) const;
 
 		/** makes a sanity check of the parameters and returns fit parameter number 'index'.

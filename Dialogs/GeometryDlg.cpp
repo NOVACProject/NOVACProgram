@@ -1001,14 +1001,14 @@ void Dialogs::CGeometryDlg::OnMenu_CalculateGeometries(){
 			continue;
 
 		// Serial-number of spectrometer #1
-		serial1.Format("%s", (LPCSTR)m_evalLogReader[it]->m_scan[0].GetSerial());
+		serial1.Format("%s", m_evalLogReader[it]->m_scan[0].GetSerial().c_str());
 
 		for(it2 = it+1; it2 < MAX_N_SCANNERS; ++it2){
 			if(m_evalLogReader[it2] == NULL)
 				continue;
 
 			// Serial-number of spectrometer #2
-			serial2.Format("%s", (LPCSTR)m_evalLogReader[it2]->m_scan[0].GetSerial());
+			serial2.Format("%s", m_evalLogReader[it2]->m_scan[0].GetSerial().c_str());
 
 			// Open a post-geometry log
 			FILE *f = OpenPostGeometryLogFile(it, it2, fileName);

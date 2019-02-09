@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../Common/Common.h"
 #include "../SpectralEvaluation/Spectra/DateTime.h"
 #include "../Common/WindField.h"
 

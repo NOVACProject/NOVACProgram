@@ -565,7 +565,7 @@ void CDataBrowserDlg::UpdateScanInfo(){
 	m_scanInfoList.SetItemText(index++, 1, str);
 
 	// The serial-number of the spectrometer used
-	str.Format("%s", (LPCSTR)scan.GetSerial());
+	str.Format("%s", scan.GetSerial().c_str());
 	m_scanInfoList.SetItemText(index++, 1, str);
 
 	// The type of scanner used

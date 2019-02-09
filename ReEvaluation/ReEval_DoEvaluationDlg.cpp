@@ -262,7 +262,7 @@ LRESULT CReEval_DoEvaluationDlg::OnEvaluatedSpectrum(WPARAM wp, LPARAM lp){
 			for(int i  = fitLow; i < fitHigh; ++i){
 				m_GraphRef.m_fitResult[k][i] = spec[k + 3].m_data[i];			// fit result is the scaled cross section of the chosen specie
 			}
-			m_GraphRef.m_specieName[k].Format(m_result->GetSpecieName(0, k));
+			m_GraphRef.m_specieName[k] = CString(m_result->GetSpecieName(0, k).c_str());
 		}
 
 		// also copy the residual
