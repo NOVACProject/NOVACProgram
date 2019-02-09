@@ -138,8 +138,8 @@ void CExportEvallogDlg::OnExportLog()
 
     for(unsigned long specIndex = 0; specIndex < m_scan[scanIndex].GetEvaluatedNum(); ++specIndex){
       // The GPS-Time
-      const CSpectrumTime *starttime = m_scan[scanIndex].GetStartTime(specIndex);
-      fprintf(f, "%02d:%02d:%02d\t", starttime->hr, starttime->m, starttime->sec);
+      const CDateTime *starttime = m_scan[scanIndex].GetStartTime(specIndex);
+      fprintf(f, "%02d:%02d:%02d\t", starttime->hour, starttime->minute, starttime->second);
 
       // The Position
       fprintf(f, "%.0lf\t", m_scan[scanIndex].GetScanAngle(specIndex) / 1.8);

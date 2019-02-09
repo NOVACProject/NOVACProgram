@@ -585,13 +585,13 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *resu
 
 	// 0. Create the additional scan-information
 	string.Format("<scaninformation>\n");
-	string.AppendFormat("\tdate=%02d.%02d.%04d\n", scan->m_date[2], scan->m_date[1], scan->m_date[0]);
-	string.AppendFormat("\tstarttime=%02d:%02d:%02d\n", scan->m_startTime.hr, scan->m_startTime.m, scan->m_startTime.sec);
+	string.AppendFormat("\tdate=%02d.%02d.%04d\n", scan->m_startTime.day, scan->m_startTime.month, scan->m_startTime.year);
+	string.AppendFormat("\tstarttime=%02d:%02d:%02d\n", scan->m_startTime.hour, scan->m_startTime.minute, scan->m_startTime.second);
 	string.AppendFormat("\tcompass=%.1lf\n", spectrometer.m_scanner.compass);
 	string.AppendFormat("\ttilt=%.1lf\n", spectrometer.m_scanner.tilt);
-	string.AppendFormat("\tlat=%.6lf\n", spectrometer.m_scanner.gps.Latitude());
-	string.AppendFormat("\tlong=%.6lf\n", spectrometer.m_scanner.gps.Longitude());
-	string.AppendFormat("\talt=%.3lf\n", spectrometer.m_scanner.gps.Altitude());
+	string.AppendFormat("\tlat=%.6lf\n", spectrometer.m_scanner.gps.m_latitude);
+	string.AppendFormat("\tlong=%.6lf\n", spectrometer.m_scanner.gps.m_longitude);
+	string.AppendFormat("\talt=%.3lf\n", spectrometer.m_scanner.gps.m_altitude);
 
 	string.AppendFormat("\tvolcano=%s\n", (LPCSTR)m_common.SimplifyString(spectrometer.m_scanner.volcano));
 	string.AppendFormat("\tsite=%s\n", (LPCSTR)m_common.SimplifyString(spectrometer.m_scanner.site));
@@ -1066,7 +1066,7 @@ RETURN_CODE CEvaluationController::GetArchivingfileName(CString &pakFile, CStrin
 	// 1a. If the GPS had no connection with the satelites when collecting the sky-spectrum,
 	//			then try to find a spectrum in the file for which it had connection...
 	i = 1;
-	while(info.m_date[0] == 2004 && info.m_date[1] == 3 && info.m_date[2] == 22){
+	while(info.m_startTime.year == 2004 && info.m_startTime.month == 3 && info.m_startTime.day == 22){
 		if(SUCCESS != reader.ReadSpectrum(temporaryScanFile, i++, tmpSpec))
 			break;
 		info	= tmpSpec.m_info;
@@ -1076,9 +1076,9 @@ RETURN_CODE CEvaluationController::GetArchivingfileName(CString &pakFile, CStrin
 	serialNumber.Format("%s", (LPCSTR)info.m_device);
 
 	// 3. Get the time and date when the scan started
-	dateStr.Format("%02d%02d%02d",		info.m_date[0] % 1000,	info.m_date[1], info.m_date[2]);
-	dateStr2.Format("%04d.%02d.%02d",	info.m_date[0],			info.m_date[1], info.m_date[2]);
-	timeStr.Format("%02d%02d",			info.m_startTime.hr,	info.m_startTime.m);
+	dateStr.Format("%02d%02d%02d",		info.m_startTime.year % 1000,	info.m_startTime.month, info.m_startTime.day);
+	dateStr2.Format("%04d.%02d.%02d",	info.m_startTime.year,			info.m_startTime.month, info.m_startTime.day);
+	timeStr.Format("%02d%02d",			info.m_startTime.hour,	info.m_startTime.minute);
 
 
 	// 4. Write the archiving name of the spectrum file

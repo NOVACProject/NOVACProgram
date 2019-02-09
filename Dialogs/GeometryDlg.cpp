@@ -433,13 +433,13 @@ int CGeometryDlg::SetPlotRange(){
 
 		// Get the ranges for the plot
 		if(nScanners == 0){
-			m_plotRange.minLat = m_plotRange.maxLat = m_gps[scanner].Latitude();
-			m_plotRange.minLon = m_plotRange.maxLon	= m_gps[scanner].Longitude();
+			m_plotRange.minLat = m_plotRange.maxLat = m_gps[scanner].m_latitude;
+			m_plotRange.minLon = m_plotRange.maxLon	= m_gps[scanner].m_longitude;
 		}else{
-			m_plotRange.minLat = min(m_plotRange.minLat, m_gps[scanner].Latitude());
-			m_plotRange.maxLat = max(m_plotRange.maxLat, m_gps[scanner].Latitude());
-			m_plotRange.minLon = min(m_plotRange.minLon, m_gps[scanner].Longitude());
-			m_plotRange.maxLon = max(m_plotRange.maxLon, m_gps[scanner].Longitude());
+			m_plotRange.minLat = min(m_plotRange.minLat, m_gps[scanner].m_latitude);
+			m_plotRange.maxLat = max(m_plotRange.maxLat, m_gps[scanner].m_latitude);
+			m_plotRange.minLon = min(m_plotRange.minLon, m_gps[scanner].m_longitude);
+			m_plotRange.maxLon = max(m_plotRange.maxLon, m_gps[scanner].m_longitude);
 		}
 		if(m_showVolcano){
 			m_plotRange.minLat = min(m_plotRange.minLat, vLat);
@@ -474,10 +474,10 @@ void CGeometryDlg::ShowSunPosition(int scanner){
 		// The length of the line showing the direction to the sun
 		double L = sin(sza*DEGREETORAD) * (2*m_plotRange.margin + min(m_plotRange.maxLat - m_plotRange.minLat, m_plotRange.maxLon - m_plotRange.minLon));
 
-		sunLat[0] = m_gps[scanner].Latitude();
-		sunLon[0]	= m_gps[scanner].Longitude();
-		sunLat[1] = m_gps[scanner].Latitude()  + L * cos(saz * DEGREETORAD);
-		sunLon[1] = m_gps[scanner].Longitude() + L * sin(saz * DEGREETORAD);
+		sunLat[0] = m_gps[scanner].m_latitude;
+		sunLon[0]	= m_gps[scanner].m_longitude;
+		sunLat[1] = m_gps[scanner].m_latitude + L * cos(saz * DEGREETORAD);
+		sunLon[1] = m_gps[scanner].m_longitude + L * sin(saz * DEGREETORAD);
 		m_map.SetPlotColor(RGB(255, 255, 0));
 		m_map.XYPlot(sunLon, sunLat, 2, Graph::CGraphCtrl::PLOT_FIXED_AXIS | Graph::CGraphCtrl::PLOT_CONNECTED);
 	}
@@ -496,9 +496,9 @@ void	CGeometryDlg::GetGPSData(int seriesNumber, double &lat, double &lon, long &
 
 	// check all data
 	for(int k = 0; k < m_evalLogReader[seriesNumber]->m_scanNum; ++k){
-		double tmpLat = m_evalLogReader[seriesNumber]->m_scan[k].GetSpectrumInfo(0).m_gps.Latitude();
-		double tmpLon = m_evalLogReader[seriesNumber]->m_scan[k].GetSpectrumInfo(0).m_gps.Longitude();
-		double tmpAlt	= m_evalLogReader[seriesNumber]->m_scan[k].GetSpectrumInfo(0).m_gps.Altitude();
+		double tmpLat = m_evalLogReader[seriesNumber]->m_scan[k].GetSpectrumInfo(0).m_gps.m_latitude;
+		double tmpLon = m_evalLogReader[seriesNumber]->m_scan[k].GetSpectrumInfo(0).m_gps.m_longitude;
+		double tmpAlt	= m_evalLogReader[seriesNumber]->m_scan[k].GetSpectrumInfo(0).m_gps.m_altitude;
 		
 		// Check if this position has GPS-data or not
 		if(fabs(tmpLat) < 1e-5 || fabs(tmpLon) < 1e-5)
@@ -535,8 +535,8 @@ int	CGeometryDlg::CalculateIntersectionPoints(int seriesNumber, int scanNumber, 
 	if(lat == 0 || lon == 0)
 		return 0;
 
-	double sLat = m_gps[seriesNumber].Latitude();
-	double sLon = m_gps[seriesNumber].Longitude();
+	double sLat = m_gps[seriesNumber].m_latitude;
+	double sLon = m_gps[seriesNumber].m_longitude;
 
 	Common common;
 
@@ -651,8 +651,8 @@ void	CGeometryDlg::CalculateWindDirection(int seriesNumber, int scanNumber){
 		return;
 
 	// the location of the system
-	double sLat = m_gps[seriesNumber].Latitude();
-	double sLon	= m_gps[seriesNumber].Longitude();
+	double sLat = m_gps[seriesNumber].m_latitude;
+	double sLon	= m_gps[seriesNumber].m_longitude;
 
 	// calculate the intersection point...
 	
@@ -779,7 +779,7 @@ void CGeometryDlg::InitLegend(){
 	double vLon = g_volcanoes.m_peakLongitude[m_volcanoIndex[m_curScanner]];
 
 	// Calculate the distance to the volcano
-	double dist = common.GPSDistance(vLat, vLon, m_gps[m_curScanner].Latitude(), m_gps[m_curScanner].Longitude());
+	double dist = common.GPSDistance(vLat, vLon, m_gps[m_curScanner].m_latitude, m_gps[m_curScanner].m_longitude);
 	distanceLabel.Format("Distance: %.1lf [km]", dist * 0.001);
 	SetDlgItemText(IDC_LABEL_VOLCANODISTANCE, distanceLabel);
 
@@ -789,14 +789,14 @@ void CGeometryDlg::InitLegend(){
 	//SetDlgItemText(IDC_EDIT_COMPASS, compassLabel);
 
 	// Update the start-time label on the screen
-	const CSpectrumTime *startTime = m_evalLogReader[m_curScanner]->m_scan[m_curScan[m_curScanner]].GetStartTime(0);
+	const CDateTime *startTime = m_evalLogReader[m_curScanner]->m_scan[m_curScan[m_curScanner]].GetStartTime(0);
 	if(startTime != NULL){
 		unsigned short date[3];
 		if(SUCCESS == m_evalLogReader[m_curScanner]->m_scan[m_curScan[m_curScanner]].GetDate(0, date)){
 			message.Format("Scan started on: %04d.%02d.%02d at %02d:%02d:%02d", 
-			date[0], date[1], date[2], startTime->hr, startTime->m, startTime->sec);
+			date[0], date[1], date[2], startTime->hour, startTime->minute, startTime->second);
 		}else{
-			message.Format("Scan started at: %02d:%02d:%02d", startTime->hr, startTime->m, startTime->sec);
+			message.Format("Scan started at: %02d:%02d:%02d", startTime->hour, startTime->minute, startTime->second);
 		}
 	}
 
@@ -857,7 +857,7 @@ void	CGeometryDlg::GetSunPosition(int seriesNumber, int scanNumber, double &sza,
 	CDateTime gmtTime;
 
 	m_evalLogReader[seriesNumber]->m_scan[scanNumber].GetStartTime(0, gmtTime);
-	Common::GetSunPosition(gmtTime, m_gps[seriesNumber].Latitude(), m_gps[seriesNumber].Longitude(), sza, saz);
+	Common::GetSunPosition(gmtTime, m_gps[seriesNumber].m_latitude, m_gps[seriesNumber].m_longitude, sza, saz);
 }
 
 /** Called when the user has changed which is to be the source for the current

@@ -131,13 +131,13 @@ public:
 	inline double ScanAngle2() const { return this->m_info.m_scanAngle2; }
 
 	/** Short-cut to getting the latitude */
-	inline double Latitude() const { return this->m_info.m_gps.Latitude(); }
+	inline double Latitude() const { return this->m_info.m_gps.m_latitude; }
 	  
 	/** Short-cut to getting the longitude */
-	inline double Longitude() const { return this->m_info.m_gps.Longitude(); }
+	inline double Longitude() const { return this->m_info.m_gps.m_longitude; }
 
 	/** Short-cut to getting the altitude */
-	inline double Altitude() const { return this->m_info.m_gps.Altitude(); }
+	inline double Altitude() const { return this->m_info.m_gps.m_altitude; }
 
 	/** Short-cut to getting the compass direction */
 	inline float Compass() const { return this->m_info.m_compass; }

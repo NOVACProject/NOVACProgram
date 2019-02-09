@@ -428,32 +428,33 @@ RETURN_CODE CSpectrumIO::ReadNextSpectrum(FILE *f, CSpectrum &spec, int &headerS
 	return SUCCESS;
 }
 
-void CSpectrumIO::ParseTime(const unsigned long t, CSpectrumTime &time) const{
-	time.hr   = (unsigned short)(t /1000000);
-	time.m  = (unsigned short)((t - time.hr*1000000) / 10000);
-	time.sec  = (unsigned short)((t - time.hr*1000000 - time.m*10000) / 100);
-	time.msec = 10*((unsigned short) (t % 100));
+void CSpectrumIO::ParseTime(const unsigned long t, CDateTime &time) const{
+	time.hour    = (unsigned char)(t /1000000);
+	time.minute  = (unsigned char)((t - time.hour *1000000) / 10000);
+	time.second  = (unsigned char)((t - time.hour *1000000 - time.minute *10000) / 100);
+	time.millisecond = 10*((unsigned short) (t % 100));
 }
 
-void CSpectrumIO::WriteTime(unsigned long &t, const CSpectrumTime &time) const{
-	t = time.hr * 1000000 + time.m * 10000 + time.sec * 100 + time.msec/10;
+void CSpectrumIO::WriteTime(unsigned long &t, const CDateTime &time) const{
+	t = time.hour * 1000000 + time.minute * 10000 + time.second * 100 + time.millisecond /10;
 }
 
-void CSpectrumIO::ParseDate(const unsigned long d, unsigned short day[3]) const{
-	day[2] = (unsigned short)(d /10000);                  // the day
-	day[1] = (unsigned short)((d - day[2]*10000) / 100);  // the month
-	day[0] = (unsigned short) (d % 100);                  // the year
+void CSpectrumIO::ParseDate(const unsigned long d, CDateTime& day) const
+{
+    day.day   = (unsigned char)(d /10000);                  // the day
+	day.month = (unsigned char)((d - day.day*10000) / 100);  // the month
+	day.year  = (unsigned char) (d % 100);                  // the year
 
-	if(day[0] < 100)
-		day[0] += 2000; // assume the 21:st century (should be ok for another 95 years)
+	if(day.year < 100)
+        day.year += 2000; // assume the 21:st century (should be ok for another 95 years)
 }
 
 // Write the date in Manne's format: ddmmyy 
-void CSpectrumIO::WriteDate(unsigned long &d, const unsigned short day[3]) const{
-	if(day[0] < 100)
-		d = day[2] * 10000 + day[1]*100 + day[0];
+void CSpectrumIO::WriteDate(unsigned long &d, const CDateTime& day) const{
+	if(day.year < 100)
+		d = day.day * 10000 + day.month*100 + day.year;
 	else
-		d = day[2] * 10000 + day[1]*100 + day[0] - (day[0] / 100)*100;
+		d = day.day * 10000 + day.month *100 + day.year - (day.year / 100)*100;
 }
 
 int CSpectrumIO::AddSpectrumToFile(const CString &fileName, const CSpectrum &spectrum, const char *headerBuffer, int headerSize){
@@ -517,7 +518,7 @@ int CSpectrumIO::AddSpectrumToFile(const CString &fileName, const CSpectrum &spe
 	MKZY.ADC[0]         = (unsigned short)(info.m_batteryVoltage * 100.0f);
 
 	MKZY.coneangle      = (char)info.m_coneAngle;
-	WriteDate(MKZY.date, info.m_date);
+	WriteDate(MKZY.date, info.m_startTime);
 	MKZY.exptime        = (short)info.m_exposureTime;
 	MKZY.flag           = info.m_flag;
 	MKZY.hdrsize        = sizeof(struct MKZYhdr);
@@ -655,7 +656,8 @@ int CSpectrumIO::ReadNextSpectrumHeader(FILE *f, int &headerSize, CSpectrum *spe
 
 		ParseTime(MKZY.starttime, info->m_startTime);
 		ParseTime(MKZY.stoptime, info->m_stopTime);
-		ParseDate(MKZY.date, info->m_date);
+		ParseDate(MKZY.date, info->m_startTime);
+        ParseDate(MKZY.date, info->m_stopTime);
 
 		info->m_device.Format("%s", MKZY.instrumentname);
 		info->m_device.Trim(_T(" ")); // remove spaces in the beginning or the end

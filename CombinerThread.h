@@ -1,8 +1,8 @@
 #pragma once
 
 #include <afxtempl.h>
+#include "SpectralEvaluation/Spectra/DateTime.h"
 
-#include "Common/DateTime.h"
 
 /** <b>CCombinerThread</b> is an abstract class designed to be inherited
 		by CWinThread-object which have as purpose to take two evaluation-logs,

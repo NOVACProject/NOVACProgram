@@ -11,10 +11,10 @@
 
 #include <afxtempl.h>
 
-#include "DateTime.h"
-
 #include "WindField.h"
-#include "GPSData.h"
+#include "../SpectralEvaluation/Spectra/GPSData.h"
+#include "../SpectralEvaluation/Spectra/DateTime.h"
+
 
 // definition used for storing the spectral data
 typedef double SpecData;

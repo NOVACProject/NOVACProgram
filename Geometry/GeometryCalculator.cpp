@@ -174,17 +174,17 @@ bool CGeometryCalculator::GetPlumeHeight_Exact(const CGPSData gps[2], const doub
 	int upperScanner = 1 - lowerScanner;
 
 	// 2. The distance between the two systems
-	distance = common.GPSDistance(gps[lowerScanner].Latitude(), gps[lowerScanner].Longitude(),
-																gps[upperScanner].Latitude(), gps[upperScanner].Longitude());
+	distance = common.GPSDistance(gps[lowerScanner].m_latitude, gps[lowerScanner].m_longitude,
+																gps[upperScanner].m_latitude, gps[upperScanner].m_longitude);
 
 	// 3. The bearing from the lower to the higher system (degrees from north, counted clock-wise)
-	bearing		= common.GPSBearing(gps[lowerScanner].Latitude(), gps[lowerScanner].Longitude(), 
-																gps[upperScanner].Latitude(), gps[upperScanner].Longitude());
+	bearing		= common.GPSBearing(gps[lowerScanner].m_latitude, gps[lowerScanner].m_longitude,
+																gps[upperScanner].m_latitude, gps[upperScanner].m_longitude);
 
 	// 4. The position of the upper scanner 
 	posUpper[0]	= distance * cos(bearing * DEGREETORAD);
 	posUpper[1]	= distance * sin(-bearing * DEGREETORAD);
-	posUpper[2]	= gps[upperScanner].Altitude() - gps[lowerScanner].Altitude();
+	posUpper[2]	= gps[upperScanner].m_altitude - gps[lowerScanner].m_altitude;
 
 	// 5. The directions of the two plume-center rays (defined in the coordinate systems of each scanner)
 	double dirLower[3], dirUpper[3]; // <-- the directions
@@ -401,9 +401,9 @@ bool CGeometryCalculator::CalculateGeometry(const CString &evalLog1, int scanInd
 	// 2. Get the gps-data from the eval-logs, if they don't contain any
 	//      GPS-information or if the instruments are too close then return.
 	for(k = 0; k < 2; ++k){
-		gps[k].m_latitude  = reader[k].m_specInfo.m_gps.Latitude();
-		gps[k].m_longitude = reader[k].m_specInfo.m_gps.Longitude();
-		gps[k].m_altitude  = reader[k].m_specInfo.m_gps.Altitude();
+		gps[k].m_latitude  = reader[k].m_specInfo.m_gps.m_latitude;
+		gps[k].m_longitude = reader[k].m_specInfo.m_gps.m_longitude;
+		gps[k].m_altitude  = reader[k].m_specInfo.m_gps.m_altitude;
 	}
 	if(fabs(gps[0].m_latitude) < 1e-2 && fabs(gps[0].m_longitude) < 1e-2)
 		return false;
@@ -571,10 +571,10 @@ double CGeometryCalculator::GetWindDirection(const CGPSData source, double plume
 	// 1c. the intersection-point
 	double lat2, lon2;
 	Common common;
-	common.CalculateDestination(scannerPos.Latitude(), scannerPos.Longitude(), intersectionDistance, angle, lat2, lon2);
+	common.CalculateDestination(scannerPos.m_latitude, scannerPos.m_longitude, intersectionDistance, angle, lat2, lon2);
 
 	// 2. the wind-direction
-	double windDirection = common.GPSBearing(source.Latitude(), source.Longitude(), lat2, lon2);
+	double windDirection = common.GPSBearing(source.m_latitude, source.m_longitude, lat2, lon2);
 
 	return windDirection;
 }

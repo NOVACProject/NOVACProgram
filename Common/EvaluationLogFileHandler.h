@@ -2,7 +2,7 @@
 
 #include "Common.h"
 #include "../Evaluation/ScanResult.h"
-#include "../Evaluation/EvaluationResult.h"
+#include "../SpectralEvaluation/Evaluation/EvaluationResult.h"
 
 namespace FileHandler
 {

@@ -13,8 +13,9 @@
 #include "../SpectralEvaluation/Evaluation/BasicMath.h"
 #include "../SpectralEvaluation/Evaluation/CrossSectionData.h"
 #include "../SpectralEvaluation/Evaluation/FitWindow.h"
-#include "EvaluationResult.h"
-#include "FitParameter.h"
+#include "../SpectralEvaluation/Evaluation/FitParameter.h"
+#include "../SpectralEvaluation/Evaluation/EvaluationResult.h"
+
 
 #include "../SpectralEvaluation/Fit/Vector.h"
 

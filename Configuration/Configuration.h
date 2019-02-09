@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../Common/Common.h"
-#include "../Common/GPSData.h"
+#include "../SpectralEvaluation/Spectra/GPSData.h"
 #include "../SpectralEvaluation/Evaluation/ReferenceFile.h"
 #include "../SpectralEvaluation/Evaluation/FitWindow.h"
 #include "../Common/SpectrometerModel.h"

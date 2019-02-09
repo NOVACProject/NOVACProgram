@@ -761,8 +761,8 @@ void CScanEvaluation::FindOptimumShiftAndSqueeze(CEvaluation *eval, FileHandler:
 
 	// 4. See what the optimum value for the shift turned out to be.
 	CEvaluationResult newResult = eval->GetEvaluationResult();
-	double optimumShift		= newResult.m_ref[0].m_shift;
-	double optimumSqueeze = newResult.m_ref[0].m_squeeze;
+	double optimumShift		= newResult.m_referenceResult[0].m_shift;
+	double optimumSqueeze = newResult.m_referenceResult[0].m_squeeze;
 
 
 	// 5. Set the shift for all references to this value

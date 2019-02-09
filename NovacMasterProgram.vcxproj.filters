@@ -109,15 +109,18 @@
     <Filter Include="Source Files\SpectralEvaluation\Evaluation">
       <UniqueIdentifier>{4e500692-1d4d-4797-bd12-242351c8c05c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\SpectralEvaluation\Spectra">
+      <UniqueIdentifier>{996a8f38-112a-423a-8118-7012eaf30715}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\SpectralEvaluation\Spectra">
+      <UniqueIdentifier>{ae975ed8-25e4-4d5d-b98a-3933d282a32d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Configuration\AdvancedFTPUploadSettings.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Common\CfgTxtFileHandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Evaluation\ColumnCorrection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CombinerThread.cpp">
@@ -133,9 +136,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Dialogs\DataBrowserDlg.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\DateTime.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EvaluatedDataStorage.cpp">
@@ -294,9 +294,6 @@
     <ClCompile Include="Common\Common.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
-    <ClCompile Include="Common\GPSData.cpp">
-      <Filter>Source Files\Common</Filter>
-    </ClCompile>
     <ClCompile Include="Common\LogFileWriter.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
@@ -325,9 +322,6 @@
       <Filter>Source Files\Common\Spectra</Filter>
     </ClCompile>
     <ClCompile Include="Common\Spectra\SpectrumInfo.cpp">
-      <Filter>Source Files\Common\Spectra</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\Spectra\SpectrumTime.cpp">
       <Filter>Source Files\Common\Spectra</Filter>
     </ClCompile>
     <ClCompile Include="PostFlux\PostFluxCalculator.cpp">
@@ -462,9 +456,6 @@
     <ClCompile Include="Evaluation\EvaluationController.cpp">
       <Filter>Source Files\Evaluation</Filter>
     </ClCompile>
-    <ClCompile Include="Evaluation\EvaluationResult.cpp">
-      <Filter>Source Files\Evaluation</Filter>
-    </ClCompile>
     <ClCompile Include="Evaluation\FitWindowFileHandler.cpp">
       <Filter>Source Files\Evaluation</Filter>
     </ClCompile>
@@ -543,15 +534,21 @@
     <ClCompile Include="SpectralEvaluation\Evaluation\FitWindow.cpp">
       <Filter>Source Files\SpectralEvaluation\Evaluation</Filter>
     </ClCompile>
+    <ClCompile Include="SpectralEvaluation\Evaluation\EvaluationResult.cpp">
+      <Filter>Source Files\SpectralEvaluation\Evaluation</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\Spectra\GPSData.cpp">
+      <Filter>Source Files\SpectralEvaluation\Spectra</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\Spectra\DateTime.cpp">
+      <Filter>Source Files\SpectralEvaluation\Spectra</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Configuration\AdvancedFTPUploadSettings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Common\CfgTxtFileHandler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Evaluation\ColumnCorrection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CombinerThread.h">
@@ -567,9 +564,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Dialogs\DataBrowserDlg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\DateTime.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="EvaluatedDataStorage.h">
@@ -734,9 +728,6 @@
     <ClInclude Include="Common\Common.h">
       <Filter>Header Files\Common</Filter>
     </ClInclude>
-    <ClInclude Include="Common\GPSData.h">
-      <Filter>Header Files\Common</Filter>
-    </ClInclude>
     <ClInclude Include="Common\LogFileWriter.h">
       <Filter>Header Files\Common</Filter>
     </ClInclude>
@@ -770,16 +761,10 @@
     <ClInclude Include="Common\Spectra\SpectrumInfo.h">
       <Filter>Header Files\Common\Spectra</Filter>
     </ClInclude>
-    <ClInclude Include="Common\Spectra\SpectrumTime.h">
-      <Filter>Header Files\Common\Spectra</Filter>
-    </ClInclude>
     <ClInclude Include="Evaluation\Evaluation.h">
       <Filter>Header Files\Evaluation</Filter>
     </ClInclude>
     <ClInclude Include="Evaluation\EvaluationController.h">
-      <Filter>Header Files\Evaluation</Filter>
-    </ClInclude>
-    <ClInclude Include="Evaluation\EvaluationResult.h">
       <Filter>Header Files\Evaluation</Filter>
     </ClInclude>
     <ClInclude Include="Evaluation\FitWindowFileHandler.h">
@@ -1123,6 +1108,15 @@
     </ClInclude>
     <ClInclude Include="SpectralEvaluation\Evaluation\FitWindow.h">
       <Filter>Header Files\SpectralEvaluation\Evaluation</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\Evaluation\EvaluationResult.h">
+      <Filter>Header Files\SpectralEvaluation\Evaluation</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\Spectra\GPSData.h">
+      <Filter>Header Files\SpectralEvaluation\Spectra</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\Spectra\DateTime.h">
+      <Filter>Header Files\SpectralEvaluation\Spectra</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

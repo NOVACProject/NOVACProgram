@@ -8,7 +8,6 @@ CSpectrumInfo::CSpectrumInfo(void)
 	m_compass			= 0;
 	m_coneAngle			= 90.0f;
 
-	memset(m_date, 0, 3*sizeof(unsigned short));
 	m_device.Format("");
 
 	m_exposureTime			= 0;
@@ -36,8 +35,8 @@ CSpectrumInfo::CSpectrumInfo(void)
 	m_scanSpecNum			= 0;
 	m_specModel				= S2000;
 	m_startChannel  = 0;
-	memset(&m_startTime, 0, sizeof(CSpectrumTime));
-	memset(&m_stopTime, 0, sizeof(CSpectrumTime));
+	memset(&m_startTime, 0, sizeof(CDateTime));
+	memset(&m_stopTime, 0, sizeof(CDateTime));
 
 	m_temperature		= 0.0f;
 }
@@ -48,9 +47,6 @@ CSpectrumInfo::CSpectrumInfo(const CSpectrumInfo &spec){
 	m_compass			= spec.m_compass;
 	m_coneAngle			= spec.m_coneAngle;
 	
-	m_date[0]         = spec.m_date[0];
-	m_date[1]         = spec.m_date[1];
-	m_date[2]         = spec.m_date[2];
 	m_device.Format("%s", (LPCSTR)spec.m_device);
 
 	m_exposureTime		= spec.m_exposureTime;

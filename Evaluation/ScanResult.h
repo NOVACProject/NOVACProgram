@@ -2,9 +2,10 @@
 
 #include "../Common/Spectra/Spectrum.h"
 #include "../Common/WindField.h"
+#include "../Common/Spectra/SpectrumInfo.h"
 
-#include "FitParameter.h"
-#include "EvaluationResult.h"
+#include "../SpectralEvaluation/Evaluation/FitParameter.h"
+#include "../SpectralEvaluation/Evaluation/EvaluationResult.h"
 #include "FluxResult.h"
 
 namespace Evaluation
@@ -38,18 +39,6 @@ namespace Evaluation
 
 		/** Removes the spectrum number 'specIndex' from the list of calcualted results */
 		int RemoveResult(unsigned int specIndex);
-
-		/** Applies the given correction to all or some evaluated references.
-		    @param corretionToApply - the correction to apply...
-		    @param parameters - The parameters for the corrections
-		    @param nParameters - the number of parameters (i.e. the 
-		        length of the array 'parameters')
-		    @param specie - The name of the specie for which to 
-		        apply the correction, if NULL then correction will be 
-		        applied to all species.
-		    @return zero if all is ok, otherwise a non-zero value
-		*/
-		int ApplyCorrection(CORRECTION correctionToApply, double *parameters, long nParameters, CString *specie = NULL);
 
 		/** Intializes the memory arrays to have, initially, space for 
 		    'specNum' spectra. */
@@ -240,13 +229,13 @@ namespace Evaluation
 
 		/** Marks the desired spectrum with the supplied mark_flag.
 		    Mark flag must be MARK_BAD_EVALUATION, or MARK_DELETED
-		    @return SUCCESS on success. */
-		RETURN_CODE  MarkAs(unsigned long index, int MARK_FLAG);
+		    @return true on success. */
+		bool MarkAs(unsigned long index, int MARK_FLAG);
 
 		/** Removes the desired mark from the desired spectrum
 		    Mark flag must be MARK_BAD_EVALUATION, or MARK_DELETED
-		    @return SUCCESS on success. */
-		RETURN_CODE  RemoveMark(unsigned long index, int MARK_FLAG);
+		    @return true on success. */
+        bool RemoveMark(unsigned long index, int MARK_FLAG);
 
 		/** Returns a reference to the desired spectrum info-structure */
 		const CSpectrumInfo &GetSpectrumInfo(unsigned long index) const;
@@ -268,7 +257,7 @@ namespace Evaluation
 
 		/** returns the time (UMT) when evaluated spectrum number 'index' was started.
 		    @param index - the zero based index into the list of evaluated spectra */
-		const CSpectrumTime *GetStartTime(unsigned long index) const {return (IsValidSpectrumIndex(index)) ? &m_specInfo[index].m_startTime : NULL; }
+		const CDateTime *GetStartTime(unsigned long index) const {return (IsValidSpectrumIndex(index)) ? &m_specInfo[index].m_startTime : NULL; }
 
 		/** returns the time and date (UMT) when evaluated spectrum number 
 		        'index' was started.
@@ -281,7 +270,7 @@ namespace Evaluation
 
 		/** return the time (UMT) when evaluated spectrum number 'index' was stopped
 		    @param index - the zero based index into the list of evaluated spectra */
-		const CSpectrumTime *GetStopTime(unsigned long index) const {return (IsValidSpectrumIndex(index)) ? &m_specInfo[index].m_stopTime : NULL; }
+		const CDateTime *GetStopTime(unsigned long index) const {return (IsValidSpectrumIndex(index)) ? &m_specInfo[index].m_stopTime : NULL; }
 
 		/** returns the time and date (UMT) when evaluated spectrum number 'index' 
 		        was stopped.
@@ -379,7 +368,7 @@ namespace Evaluation
 
 		/** returns the number of species that were used in the evaluation of a 
 		    given spectrum */
-		int GetSpecieNum(unsigned long spectrumNum) const {return (IsValidSpectrumIndex(spectrumNum)) ? m_spec[spectrumNum].m_speciesNum : 0; }
+		int GetSpecieNum(unsigned long spectrumNum) const {return (IsValidSpectrumIndex(spectrumNum)) ? (int)m_spec[spectrumNum].m_referenceResult.size() : 0; }
 
 		/** returns the specie name */
 		const CString GetSpecieName(unsigned long spectrumNum, unsigned long specieNum) const;

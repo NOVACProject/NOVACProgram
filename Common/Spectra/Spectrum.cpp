@@ -72,7 +72,7 @@ int CSpectrum::Add(const CSpectrum &spec){
 	m_length = spec.m_length;
 	m_info.m_numSpec += spec.m_info.m_numSpec;
 
-	CSpectrumTime localCopy = spec.m_info.m_startTime;
+    CDateTime localCopy = spec.m_info.m_startTime;
 	if(localCopy < m_info.m_startTime)
 		m_info.m_startTime = localCopy;
 
@@ -205,8 +205,6 @@ void CSpectrum::Clear(){
 	m_info.m_compass = m_info.m_scanAngle = m_info.m_scanAngle2 = m_info.m_peakIntensity = 0;
 	// long
 	m_info.m_exposureTime =  m_info.m_numSpec = 0;
-	// date
-	m_info.m_date[0] = m_info.m_date[1] = m_info.m_date[2] = 0;
 	// CString
 	m_info.m_device.Format("");
 	m_info.m_name.Format("");
@@ -216,8 +214,8 @@ void CSpectrum::Clear(){
 	m_info.m_gps.m_altitude = 0;
 	m_info.m_gps.m_latitude = m_info.m_gps.m_longitude = 0;
 	// Time
-	m_info.m_startTime.hr = m_info.m_startTime.m = m_info.m_startTime.msec = m_info.m_startTime.sec = 0;
-	m_info.m_stopTime.hr = m_info.m_stopTime.m = m_info.m_stopTime.msec = m_info.m_stopTime.sec = 0;
+    m_info.m_startTime = CDateTime();
+    m_info.m_stopTime  = CDateTime();
 }
 
 int	CSpectrum::Split(CSpectrum *spec[MAX_CHANNEL_NUM]) const{

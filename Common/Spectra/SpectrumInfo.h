@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../GPSData.h"
-#include "SpectrumTime.h"
+#include "../../SpectralEvaluation/Spectra/GPSData.h"
+#include "../../SpectralEvaluation/Spectra/DateTime.h"
 #include "../SpectrometerModel.h"
 
 /** <b>CSpectrumInfo</b> is a class that contains all auxilliary information about
@@ -13,19 +13,19 @@ class CSpectrumInfo
 {
 public:
 	/** Default constructor */
-	CSpectrumInfo(void);
+	CSpectrumInfo();
 
 	/** Copy constructor */
 	CSpectrumInfo(const CSpectrumInfo &spec);
 
 	/** Default destructor */
-	~CSpectrumInfo(void);
+	~CSpectrumInfo();
 
 	/** The number of exposures that are added together */
-	long m_numSpec;
+	long m_numSpec = 0;
 
 	/** The exposure time for each co added spectrum [ms] */
-	long m_exposureTime;
+	long m_exposureTime = 0;
 
 	/** The geographical information on where the spectrum was collected. 
 		(see {@link CGPSData}) */
@@ -46,17 +46,11 @@ public:
 	/** The battery voltage when this spectrum was read out. */
 	float m_batteryVoltage;
 
-	/** The time the spectrum collection began (see {@link CSpectrumTime}) */
-	CSpectrumTime m_startTime;
+	/** The time the spectrum collection began */
+    CDateTime m_startTime;
 
-	/** The time the spectrum collection stopped (see {@link CSpectrumTime}) */
-	CSpectrumTime m_stopTime;
-
-	/** The date the spectrum was collected
-			(m_date[0] is the year (4 digits), 
-			m_date[1] is the month (1-12), and 
-			m_date[2] is the day (1-31) */
-	unsigned short m_date[3];
+	/** The time the spectrum collection stopped */
+    CDateTime m_stopTime;
 
 	/** The spectrometer which collected the spectrum. 
 		For OceanOptics Spectrometers this is the serial number */

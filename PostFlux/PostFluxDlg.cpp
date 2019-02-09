@@ -439,8 +439,8 @@ void CPostFluxDlg::DrawScan(){
 	// If this is a time-series then we need the start-times for each spectrum
 	if(isTimeSeries){
 		for(int k = 0; k < numSpec; ++k){
-			const CSpectrumTime *tid = scan.GetStartTime(k);
-			times[k] = tid->hr * 3600 + tid->m * 60 + tid->sec;
+			const CDateTime *tid = scan.GetStartTime(k);
+			times[k] = tid->hour * 3600 + tid->minute * 60 + tid->second;
 		}
 	}
 
@@ -477,14 +477,14 @@ void CPostFluxDlg::DrawScan(){
 	SetDlgItemText(IDC_STATUSBAR, message);
 
 	// Update the start-time label on the screen
-	const CSpectrumTime *startTime = scan.GetStartTime(0);
+	const CDateTime *startTime = scan.GetStartTime(0);
 	if(startTime != NULL){
 		unsigned short date[3];
 		if(SUCCESS == scan.GetDate(0, date)){
 			message.Format("Scan started on: %04d.%02d.%02d at %02d:%02d:%02d", 
-			date[0], date[1], date[2], startTime->hr, startTime->m, startTime->sec);
+			date[0], date[1], date[2], startTime->hour, startTime->minute, startTime->second);
 		}else{
-			message.Format("Scan started at: %02d:%02d:%02d", startTime->hr, startTime->m, startTime->sec);
+			message.Format("Scan started at: %02d:%02d:%02d", startTime->hour, startTime->minute, startTime->second);
 		}
 		SetDlgItemText(IDC_LEGEND_STARTTIME, message);
 	}
@@ -1081,7 +1081,8 @@ void CPostFluxDlg::OnDeleteSelectedPoints()
 	Evaluation::CScanResult &scan = m_calculator->m_scan[m_curScan];
 
 	// Mark the selected data points as deleted
-	for(i = 0; i < m_selectedNum; ++i){
+	for(i = 0; i < m_selectedNum; ++i)
+    {
 		scan.MarkAs(m_selected[i], MARK_DELETED);
 	}
 

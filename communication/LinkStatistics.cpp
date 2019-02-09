@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "linkstatistics.h"
-#include "../Common/DateTime.h"
+#include "../SpectralEvaluation/Spectra/DateTime.h"
 
 using namespace Communication;
 

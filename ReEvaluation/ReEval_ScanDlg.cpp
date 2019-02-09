@@ -272,15 +272,15 @@ void CReEval_ScanDlg::UpdateInfo(){
 	SetDlgItemText(IDC_LBL_DEVICE, deviceStr);
 
 	// Show the date the spectrum was collected
-	dateStr.Format("Date: %04d.%02d.%02d [yyyy.mm.dd]", info.m_date[0], info.m_date[1], info.m_date[2]);
+	dateStr.Format("Date: %04d.%02d.%02d [yyyy.mm.dd]", info.m_startTime.year, info.m_startTime.month, info.m_startTime.day);
 	SetDlgItemText(IDC_LBL_DATE, dateStr);
 
 	// Show the time when the spectrum collection began
-	startStr.Format("Start Time: %02d:%02d:%02d", info.m_startTime.hr, info.m_startTime.m, info.m_startTime.sec);
+	startStr.Format("Start Time: %02d:%02d:%02d", info.m_startTime.hour, info.m_startTime.minute, info.m_startTime.second);
 	SetDlgItemText(IDC_LBL_STARTTIME, startStr);
 
 	// Show the time when the spectrum collection stopped
-	stopStr.Format("Stop Time: %02d:%02d:%02d", info.m_stopTime.hr, info.m_stopTime.m, info.m_stopTime.sec);
+	stopStr.Format("Stop Time: %02d:%02d:%02d", info.m_stopTime.hour, info.m_stopTime.minute, info.m_stopTime.second);
 	SetDlgItemText(IDC_LBL_STOPTIME, stopStr);
 
 	// Show the exposure time of the spectrum

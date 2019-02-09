@@ -213,8 +213,7 @@ int CEvaluation::Evaluate(const CSpectrum &sky, const CSpectrum &meas, const CFi
 		// get the basic fit results
 		m_result.m_stepNum = (long)cFirstFit.GetFitSteps();
 		m_result.m_chiSquare = (double)cFirstFit.GetChiSquare();
-		m_result.m_speciesNum = (unsigned long)window.nRef;
-		m_result.m_ref.SetSize(window.nRef);
+		m_result.m_referenceResult.resize(window.nRef);
 
 		for (int tmpInt = 0; tmpInt <= window.polyOrder; ++tmpInt)
 			m_result.m_polynomial[tmpInt] = (double)cPoly.GetCoefficient(tmpInt);
@@ -238,14 +237,14 @@ int CEvaluation::Evaluate(const CSpectrum &sky, const CSpectrum &meas, const CFi
 		// finally display the fit results for each reference spectrum including their appropriate error
 		for (int i = 0; i < window.nRef; i++)
 		{
-			m_result.m_ref[i].m_specieName = std::string(window.ref[i].m_specieName);
+			m_result.m_referenceResult[i].m_specieName = std::string(window.ref[i].m_specieName);
 
-			m_result.m_ref[i].m_column = (double)ref[i]->GetModelParameter(CReferenceSpectrumFunction::CONCENTRATION);
-			m_result.m_ref[i].m_columnError = (double)ref[i]->GetModelParameterError(CReferenceSpectrumFunction::CONCENTRATION);
-			m_result.m_ref[i].m_shift = (double)ref[i]->GetModelParameter(CReferenceSpectrumFunction::SHIFT);
-			m_result.m_ref[i].m_shiftError = (double)ref[i]->GetModelParameterError(CReferenceSpectrumFunction::SHIFT);
-			m_result.m_ref[i].m_squeeze = (double)ref[i]->GetModelParameter(CReferenceSpectrumFunction::SQUEEZE);
-			m_result.m_ref[i].m_squeezeError = (double)ref[i]->GetModelParameterError(CReferenceSpectrumFunction::SQUEEZE);
+			m_result.m_referenceResult[i].m_column          = (double)ref[i]->GetModelParameter(CReferenceSpectrumFunction::CONCENTRATION);
+			m_result.m_referenceResult[i].m_columnError     = (double)ref[i]->GetModelParameterError(CReferenceSpectrumFunction::CONCENTRATION);
+			m_result.m_referenceResult[i].m_shift           = (double)ref[i]->GetModelParameter(CReferenceSpectrumFunction::SHIFT);
+			m_result.m_referenceResult[i].m_shiftError      = (double)ref[i]->GetModelParameterError(CReferenceSpectrumFunction::SHIFT);
+			m_result.m_referenceResult[i].m_squeeze         = (double)ref[i]->GetModelParameter(CReferenceSpectrumFunction::SQUEEZE);
+			m_result.m_referenceResult[i].m_squeezeError    = (double)ref[i]->GetModelParameterError(CReferenceSpectrumFunction::SQUEEZE);
 
 			// get the final fit result
 			CVector tmpVector;

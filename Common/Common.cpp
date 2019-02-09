@@ -500,10 +500,10 @@ int Common::GetDay()
 		*/
 RETURN_CODE Common::ConvertToLocalTime(unsigned short date[3], int &hr, CGPSData &gps){
 	// Direction is -1 if the local time is after the GMT-time, otherwise positive.
-	int		 direction = (gps.Longitude() > 0) ? 1 : -1;
+	int		 direction = (gps.m_longitude > 0) ? 1 : -1;
 
 	// The absolute number of degrees from Greenwitch
-	double degreesToGreenwitch = fabs(gps.Longitude());
+	double degreesToGreenwitch = fabs(gps.m_longitude);
 	
 	// The number of hours that differ between the local time and GMT
 	int hoursToGreenwitch			= (int)round((12.0 / 180.0) * degreesToGreenwitch);

@@ -69,8 +69,8 @@ void	CSpectrometer::RememberResult(CScanResult &lastResult){
 	// 3. Get date and time when the scan started
 	unsigned short date[3];
 	lastResult.GetDate(0, date);
-	const CSpectrumTime *starttid = lastResult.GetStartTime(0);
-	CDateTime tid = CDateTime(date[0], date[1], date[2], starttid->hr, starttid->m, starttid->sec);
+	const CDateTime *starttid = lastResult.GetStartTime(0);
+	CDateTime tid = CDateTime(date[0], date[1], date[2], starttid->hour, starttid->minute, starttid->second);
 
 	// 4. Get the maximum column value
 	double maxColumn = lastResult.GetMaxColumn(specie);

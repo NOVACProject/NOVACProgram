@@ -210,7 +210,7 @@ RETURN_CODE CWindEvaluator::CalculateCorrelation(const CString &evalLog1, const 
 		Evaluation::CScanResult &scan = reader[k].m_scan[scanIndex[k]];
 
 		// 3b. The start-time of the whole measurement
-		const CSpectrumTime *startTime = scan.GetStartTime(0);
+		const CDateTime *startTime = scan.GetStartTime(0);
 
 		// 3c. The length of the measurement
 		int	length = scan.GetEvaluatedNum();
@@ -220,16 +220,16 @@ RETURN_CODE CWindEvaluator::CalculateCorrelation(const CString &evalLog1, const 
 
 		// 3e. Copy the relevant data in the scan
 		for(int i = 0; i < length; ++i){
-			const CSpectrumTime *time = scan.GetStartTime(i);
+			const CDateTime *time = scan.GetStartTime(i);
 
 			// get the column value
 			series[k]->column[i]	= scan.GetColumn(i, 0);
 
 			// calculate the time-difference between the start of the
 			//	time-series and this measurement
-			series[k]->time[i] = 3600.0 * (time->hr - startTime->hr) + 
-														60.0 * (time->m - startTime->m) +
-															1.0	* (time->sec - startTime->sec);
+			series[k]->time[i] = 3600.0 * (time->hour - startTime->hour) +
+														60.0 * (time->minute - startTime->minute) +
+															1.0	* (time->second - startTime->second);
 		}
 	}
 
@@ -318,7 +318,7 @@ RETURN_CODE CWindEvaluator::CalculateCorrelation_Heidelberg(const CString &evalL
 	Evaluation::CScanResult &scan = reader.m_scan[scanIndex];
 
 	// 3b. The start-time of the whole measurement
-	const CSpectrumTime *startTime = scan.GetStartTime(0);
+	const CDateTime *startTime = scan.GetStartTime(0);
 	scan.GetStartTime(0, startTime_dt);
 
 	// 3b-2. Find out what plume-height to use
@@ -334,15 +334,15 @@ RETURN_CODE CWindEvaluator::CalculateCorrelation_Heidelberg(const CString &evalL
 
 	// 3e. Copy the relevant data in the scan
 	for(int k = 0; k < length; ++k){
-		const CSpectrumTime *time = scan.GetStartTime(k);
+		const CDateTime *time = scan.GetStartTime(k);
 
 		series[k % 2]->column[k / 2] = scan.GetColumn(k, 0);
 
 		// Save the time difference
 		series[k % 2]->time[k / 2]		= 
-			3600 * (time->hr - startTime->hr) + 
-			60	 * (time->m - startTime->m) + 
-			(time->sec - startTime->sec);
+			3600 * (time->hour - startTime->hour) +
+			60	 * (time->minute - startTime->minute) +
+			(time->second - startTime->second);
 	}
 
 	// 3f. Adjust the settings to have the correct angle

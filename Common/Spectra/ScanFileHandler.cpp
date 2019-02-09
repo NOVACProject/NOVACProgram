@@ -146,9 +146,12 @@ RETURN_CODE CScanFileHandler::CheckScanFile(const CString *fileName){
 		this->m_stopTime  = tempSpec.m_info.m_stopTime;
 
 		// set the date for the measurement
-		m_date[0] =	tempSpec.m_info.m_date[0];
-		m_date[1] =	tempSpec.m_info.m_date[1];
-		m_date[2] =	tempSpec.m_info.m_date[2];
+        m_startTime.year  = tempSpec.m_info.m_startTime.year;
+        m_startTime.month = tempSpec.m_info.m_startTime.month;
+        m_startTime.day   = tempSpec.m_info.m_startTime.day;
+        m_stopTime.year   = m_startTime.year;
+        m_stopTime.month  = m_startTime.month;
+        m_stopTime.day    = m_startTime.day;
 
 		// get the serial number of the spectrometer
 		m_device.Format(tempSpec.m_info.m_device);

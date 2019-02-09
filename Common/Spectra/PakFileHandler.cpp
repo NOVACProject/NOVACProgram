@@ -106,8 +106,8 @@ RETURN_CODE CPakFileHandler::FindNextScanStart(FILE *pakFile, CSpectrum &curSpec
 	int originalScanIndex = scanIndex;
 
 	// Save this spectrum in a file in the 'incomplete' - folder
-	CSpectrumTime *starttid = &curSpec.m_info.m_startTime;
-	incompleteFileName.Format("%s\\%s_%02d.%02d.%02d.pak", (LPCSTR)m_incompleteDir, (LPCSTR)serialNumber, starttid->hr, starttid->m, starttid->sec);
+    CDateTime *starttid = &curSpec.m_info.m_startTime;
+	incompleteFileName.Format("%s\\%s_%02d.%02d.%02d.pak", (LPCSTR)m_incompleteDir, (LPCSTR)serialNumber, starttid->hour, starttid->minute, starttid->second);
 
 	// Continue reading spectra until we find one which has scan-index = 0
 	while(scanIndex > 0){
@@ -547,12 +547,12 @@ bool CPakFileHandler::IsWindSpeedMeasurement_Gothenburg(const CString &fileName)
 	//			and not a wind-speed measurement
 	if(SUCCESS != reader.ReadSpectrum(fileName, 0, spectrum))
 		return false;
-	gpsTime.year   = spectrum.m_info.m_date[0];
-	gpsTime.month  = (unsigned char)spectrum.m_info.m_date[1];
-	gpsTime.day    = (unsigned char)spectrum.m_info.m_date[2];
-	gpsTime.hour   = (unsigned char)spectrum.m_info.m_startTime.hr;
-	gpsTime.minute = (unsigned char)spectrum.m_info.m_startTime.m;
-	gpsTime.second = (unsigned char)spectrum.m_info.m_startTime.sec;
+	gpsTime.year   = spectrum.m_info.m_startTime.year;
+	gpsTime.month  = (unsigned char)spectrum.m_info.m_startTime.month;
+	gpsTime.day    = (unsigned char)spectrum.m_info.m_startTime.day;
+	gpsTime.hour   = (unsigned char)spectrum.m_info.m_startTime.hour;
+	gpsTime.minute = (unsigned char)spectrum.m_info.m_startTime.minute;
+	gpsTime.second = (unsigned char)spectrum.m_info.m_startTime.second;
 	if(SUCCESS != Common::GetSunPosition(gpsTime, spectrum.Latitude(), spectrum.Longitude(), sza, saz))
 		return false;
 	if(fabs(sza) > 75)
@@ -687,12 +687,12 @@ bool CPakFileHandler::IsStratosphericMeasurement(const CString &fileName){
 	//			and not a wind-speed measurement
 	if(SUCCESS != reader.ReadSpectrum(fileName, 0, spectrum))
 		return false;
-	gpsTime.year		= spectrum.m_info.m_date[0];
-	gpsTime.month		= (unsigned char)spectrum.m_info.m_date[1];
-	gpsTime.day			= (unsigned char)spectrum.m_info.m_date[2];
-	gpsTime.hour		= (unsigned char)spectrum.m_info.m_startTime.hr;
-	gpsTime.minute	= (unsigned char)spectrum.m_info.m_startTime.m;
-	gpsTime.second	= (unsigned char)spectrum.m_info.m_startTime.sec;
+	gpsTime.year		= spectrum.m_info.m_startTime.year;
+	gpsTime.month		= (unsigned char)spectrum.m_info.m_startTime.month;
+	gpsTime.day			= (unsigned char)spectrum.m_info.m_startTime.day;
+	gpsTime.hour		= (unsigned char)spectrum.m_info.m_startTime.hour;
+	gpsTime.minute	= (unsigned char)spectrum.m_info.m_startTime.minute;
+	gpsTime.second	= (unsigned char)spectrum.m_info.m_startTime.second;
 	if(SUCCESS != Common::GetSunPosition(gpsTime, spectrum.Latitude(), spectrum.Longitude(), sza, saz))
 		return false;
 	if(fabs(sza) < 75)
@@ -829,8 +829,8 @@ RETURN_CODE	CPakFileHandler::ArchiveScan(const CString &scanFileName){
 	serialNumber.Format("%s", (LPCSTR)info.m_device);
 
 	// 3. Get the time and date when the scan started
-	dateStr.Format("%02d%02d%02d", info.m_date[0] % 1000, info.m_date[1], info.m_date[2]);
-	timeStr.Format("%02d%02d", info.m_startTime.hr, info.m_startTime.m);
+	dateStr.Format("%02d%02d%02d", info.m_startTime.year % 1000, info.m_startTime.month, info.m_startTime.day);
+	timeStr.Format("%02d%02d", info.m_startTime.hour, info.m_startTime.minute);
 
 	// 5. Write the archiving name of the spectrum file
 	if(channel < 128 && channel > MAX_CHANNEL_NUM)
@@ -911,8 +911,8 @@ RETURN_CODE CPakFileHandler::SaveCorruptSpectrum(const CSpectrum &curSpec, int s
 	// Find a suitable file-name for the spectrum
 	int index = 0;
 	serial.Format(curSpec.m_info.m_device);
-	date.Format("%04d.%02d.%02d", curSpec.m_info.m_date[0], curSpec.m_info.m_date[1], curSpec.m_info.m_date[2]);
-	time.Format("%02d.%02d.%02d", curSpec.m_info.m_startTime.hr, curSpec.m_info.m_startTime.m, curSpec.m_info.m_startTime.sec);
+	date.Format("%04d.%02d.%02d", curSpec.m_info.m_startTime.year, curSpec.m_info.m_startTime.month, curSpec.m_info.m_startTime.day);
+	time.Format("%02d.%02d.%02d", curSpec.m_info.m_startTime.hour, curSpec.m_info.m_startTime.minute, curSpec.m_info.m_startTime.second);
 	fileName.Format("%s%s_%s_%s_%d.pak", (LPCSTR)directory, (LPCSTR)serial, (LPCSTR)date, (LPCSTR)time, index++);
 	while(IsExistingFile(fileName)){
 		fileName.Format("%s%s_%s_%s_%d.pak", (LPCSTR)directory, (LPCSTR)serial, (LPCSTR)date, (LPCSTR)time, index++);
