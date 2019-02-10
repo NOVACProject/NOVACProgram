@@ -116,9 +116,6 @@ const enum MEASUREMENT_MODE {MODE_UNKNOWN, MODE_FLUX, MODE_WINDSPEED, MODE_STRAT
 // The maximum number of scanning instruments that can be controlled
 #define MAX_NUMBER_OF_SCANNING_INSTRUMENTS 16
 
-// the maximum length of any single spectrum
-#define MAX_SPECTRUM_LENGTH 4096
-
 // the maximum number of channels that the program can handle
 #define MAX_CHANNEL_NUM 8
 

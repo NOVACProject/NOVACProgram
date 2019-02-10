@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Spectrum.h"
+#include "../../SpectralEvaluation/Spectra/Spectrum.h"
 #include "../LogFileWriter.h"
 #include "../SpectrumFormat/MKPack.h"
 

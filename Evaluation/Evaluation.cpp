@@ -5,6 +5,7 @@
 #include "stdafx.h"
 #include "../NovacMasterProgram.h"
 #include "Evaluation.h"
+#include "../Common/Common.h"
 #include <iostream>
 #include <conio.h>
 // include all required fit objects

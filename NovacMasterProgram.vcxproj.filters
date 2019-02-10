@@ -318,9 +318,6 @@
     <ClCompile Include="Common\Spectra\ScanFileHandler.cpp">
       <Filter>Source Files\Common\Spectra</Filter>
     </ClCompile>
-    <ClCompile Include="Common\Spectra\Spectrum.cpp">
-      <Filter>Source Files\Common\Spectra</Filter>
-    </ClCompile>
     <ClCompile Include="Common\Spectra\SpectrumIO.cpp">
       <Filter>Source Files\Common\Spectra</Filter>
     </ClCompile>
@@ -558,6 +555,9 @@
     <ClCompile Include="SpectralEvaluation\Flux\Flux.cpp">
       <Filter>Source Files\Common\Flux</Filter>
     </ClCompile>
+    <ClCompile Include="SpectralEvaluation\Spectra\Spectrum.cpp">
+      <Filter>Source Files\SpectralEvaluation\Spectra</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Configuration\AdvancedFTPUploadSettings.h">
@@ -762,9 +762,6 @@
       <Filter>Header Files\Common\Spectra</Filter>
     </ClInclude>
     <ClInclude Include="Common\Spectra\ScanFileHandler.h">
-      <Filter>Header Files\Common\Spectra</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\Spectra\Spectrum.h">
       <Filter>Header Files\Common\Spectra</Filter>
     </ClInclude>
     <ClInclude Include="Common\Spectra\SpectrumIO.h">
@@ -1141,6 +1138,9 @@
     </ClInclude>
     <ClInclude Include="SpectralEvaluation\Flux\Flux.h">
       <Filter>Header Files\SpectralEvaluation\Flux</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\Spectra\Spectrum.h">
+      <Filter>Header Files\SpectralEvaluation\Spectra</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

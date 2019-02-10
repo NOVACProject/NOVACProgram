@@ -1,7 +1,6 @@
 #include "StdAfx.h"
 #include "ScanEvaluation.h"
 #include "Evaluation.h"
-#include "../Common/Spectra/Spectrum.h"
 #include "../Common/Spectra/SpectrumIO.h"
 #include "../Common/SpectrumFormat/STDFile.h"
 #include "../Common/SpectrumFormat/TXTFile.h"

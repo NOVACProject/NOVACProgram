@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "mkpack.h"
 
-#include "../Spectra/Spectrum.h"
+#include "../../SpectralEvaluation/Spectra/Spectrum.h"
 
 using namespace SpectrumIO;
 

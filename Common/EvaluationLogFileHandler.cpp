@@ -48,10 +48,10 @@ CEvaluationLogFileHandler::CEvaluationLogFileHandler(void)
 
 CEvaluationLogFileHandler::~CEvaluationLogFileHandler(void)
 {
-	m_scan.RemoveAll();
-	m_scan.SetSize(0);
-	m_windField.RemoveAll();
-	m_windField.SetSize(0);
+    m_scan.RemoveAll();
+    m_scan.SetSize(0);
+    m_windField.RemoveAll();
+    m_windField.SetSize(0);
 }
 
 

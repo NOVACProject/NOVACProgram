@@ -15,11 +15,10 @@
 #include "../SpectralEvaluation/Evaluation/FitWindow.h"
 #include "../SpectralEvaluation/Evaluation/FitParameter.h"
 #include "../SpectralEvaluation/Evaluation/EvaluationResult.h"
-
+#include "../SpectralEvaluation/Spectra/Spectrum.h"
 
 #include "../SpectralEvaluation/Fit/Vector.h"
 
-#include "../Common/Spectra/Spectrum.h"
 #include "../SpectralEvaluation/Fit/ReferenceSpectrumFunction.h"
 
 namespace Evaluation
