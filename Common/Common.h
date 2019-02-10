@@ -548,21 +548,6 @@ public:
 			algorithm to use based on the given cone angle. */
 	static double CalculateFlux(const double *scanAngle, const double *scanAngle2, const double *column, double offset, int nDataPoints, const CWindField &wind, double compass, double gasFactor, INSTRUMENT_TYPE type, double coneAngle = 90.0, double tilt = 0.0);
 
-	/** Calculates the flux for the supplied data using the old algorithm */
-	static double CalculateFlux_FlatFormula(const double *scanAngle, const double *column, double offset, int nDataPoints, const CWindField &wind, double compass, double gasFactor);
-
-	/** Calculates the flux for the supplied data using the new algorithm */
-	static double CalculateFlux_ConeFormula(const double *scanAngle, const double *column, double offset, int nDataPoints, const CWindField &wind, double compass, double gasFactor, double coneAngle, double tilt);
-
-	/** Calculates the flux for the Heidelberg-instrument for the supplied data using the general algorithm */
-	static double CalculateFlux_HeidelbergFormula(const double *scanAngle1, const double *scanAngle2, const double *column, double offset, int nDataPoints, const CWindField &wind, double compass, double gasFactor);
-
-	// --------------------------------------------------------------------
-	// ------------- CALCULATING OFFSET FOR A SCAN ------------------------
-	// --------------------------------------------------------------------
-
-	static double CalculateOffset(const std::vector<double>& columns, const std::vector<bool>& badEvaluation, long numPoints);
-
 
 	// ---------------------------- MISC ----------------------------------
 

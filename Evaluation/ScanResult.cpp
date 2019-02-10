@@ -200,7 +200,7 @@ int CScanResult::CalculateOffset(const std::string &specie)
     }
 
     // Calculate the offset
-    this->m_offset = Common::CalculateOffset(columns, badEval, m_specNum);
+    this->m_offset = CalculatePlumeOffset(columns, badEval, m_specNum);
 
     return 0;
 }
@@ -372,7 +372,7 @@ bool CScanResult::CalculatePlumeCentre(const std::string &specie, double &plumeC
         m_plumeEdge[0] = plumeEdge_low;
         m_plumeEdge[1] = plumeEdge_high;
 
-        double offset = Common::CalculateOffset(column, badEval, m_specNum);
+        double offset = CalculatePlumeOffset(column, badEval, m_specNum);
 
         // Estimate the completeness of the plume
         CalculatePlumeCompleteness(scanAngle, phi, column, columnError, badEval, offset, m_specNum, plumeCompleteness);

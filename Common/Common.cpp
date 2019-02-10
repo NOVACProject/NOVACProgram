@@ -6,6 +6,8 @@
 #include "../VolcanoInfo.h"
 #include "../Communication/FTPServerContacter.h"
 
+#include "../SpectralEvaluation/Flux/Flux.h"
+
 #include "PSAPI.H"
 #include <tlhelp32.h>
 #include <VersionHelpers.h>
@@ -944,280 +946,28 @@ double Common::GetGasFactor(const CString &specie)
 	return -1;
 }
 
-double Common::CalculateFlux(const double *scanAngle, const double *scanAngle2, const double *column, double offset, int nDataPoints, const CWindField &wind, double compass, double gasFactor, INSTRUMENT_TYPE type, double coneAngle, double tilt){
-	if(type == INSTR_HEIDELBERG){
-		return CalculateFlux_HeidelbergFormula(scanAngle, scanAngle2, column, offset, nDataPoints, wind, compass, gasFactor);
-	}else if(type == INSTR_GOTHENBURG){
-		if(fabs(coneAngle - 90.0) < 1.0)
-			return CalculateFlux_FlatFormula(scanAngle, column, offset, nDataPoints, wind, compass, gasFactor);
-		else
-			return CalculateFlux_ConeFormula(scanAngle, column, offset, nDataPoints, wind, compass, gasFactor, coneAngle, tilt);
-	}else{
-		return 0.0; // unsupported instrument-type
-	}
+double Common::CalculateFlux(const double *scanAngle, const double *scanAngle2, const double *column, double offset, int nDataPoints, const CWindField &wind, double compass, double gasFactor, INSTRUMENT_TYPE type, double coneAngle, double tilt)
+{
+    double windSpeed = wind.GetWindSpeed();
+    double windDirection = wind.GetWindDirection();
+    double plumeHeight = wind.GetPlumeHeight();
+
+    if (type == INSTR_HEIDELBERG)
+    {
+        return CalculateFluxHeidelbergScanner(scanAngle, scanAngle2, column, offset, nDataPoints, windSpeed, windDirection, plumeHeight, compass);
+    }
+    else if (type == INSTR_GOTHENBURG)
+    {
+        if (fabs(coneAngle - 90.0) < 1.0)
+            return CalculateFluxFlatScanner(scanAngle, column, offset, nDataPoints, windSpeed, windDirection, plumeHeight, compass);
+        else
+            return CalculateFluxConicalScanner(scanAngle, column, offset, nDataPoints, windSpeed, windDirection, plumeHeight, compass, coneAngle, tilt);
+    }
+    else
+    {
+        return 0.0; // unsupported instrument-type
+    }
 }
-
-/** Calculates the flux using the supplied data using the old algorithm */
-double Common::CalculateFlux_FlatFormula(const double *scanAngle, const double *column, double offset, int nDataPoints, const CWindField &wind, double compass, double gasFactor){
-	double avgVCD, VCD1, VCD2, TAN1, TAN2, distance;
-	double flux = 0;
-	double partialFlux;
-
-	// the wind factor
-	double windFactor = fabs(cos(DEGREETORAD*(wind.GetWindDirection() - compass)));
-
-	// now calculate the flux
-	for(int i = 0; i < nDataPoints - 1; ++i){
-		if(fabs(fabs(scanAngle[i]) - 90.0) < 0.5)
-			continue; // the distance-calculation has a singularity at +-90 degrees so just skip those points!
-		if(fabs(fabs(scanAngle[i+1]) - 90.0) < 0.5)
-			continue; // the distance-calculation has a singularity at +-90 degrees so just skip those points!
-
-		// The vertical columns
-		VCD1			= (column[i] - offset)	 * cos(DEGREETORAD * scanAngle[i]);
-		VCD2			= (column[i+1] - offset) * cos(DEGREETORAD * scanAngle[i+1]);
-
-		// calculating the horisontal distance
-		TAN1			= tan(DEGREETORAD * scanAngle[i]);
-		TAN2			= tan(DEGREETORAD * scanAngle[i+1]);
-		distance		= wind.GetPlumeHeight() * fabs(TAN2 - TAN1);
-
-		// The average vertical column
-		avgVCD			= (1E-6) * gasFactor * ( VCD1 + VCD2) * 0.5;
-
-		// The flux...
-		partialFlux		= distance * avgVCD * wind.GetWindSpeed() * windFactor;
-		flux			+= partialFlux;
-	}
-
-	return fabs(flux);
-}
-
-/** Calculates the flux using the supplied data using the cone-scanner algorithm */
-double Common::CalculateFlux_ConeFormula(const double *scanAngle, const double *column, double offset, int nDataPoints, const CWindField &wind, double compass, double gasFactor, double coneAngle, double tilt){
-	double flux = 0;
-	double partialFlux, columnAmplification;
-
-#ifdef _DEBUG
-	FILE *f = fopen("Debug_fluxLog.txt", "w");
-	if(f != NULL){
-		fprintf(f, "Calculating flux for cone-scan with %d spectra\n", nDataPoints);
-		fprintf(f, "windDirection=%lf\ncompass=%lf\noffset=%lf\n\n", 
-			wind.GetWindDirection(), compass, offset);
-		fprintf(f, "ScanAngle[deg]\tColumn[ppmm]\tAvgVCD[ppmm]\tHorizontalDistance\tConeCompass\tWindFactor\tPartialFlux\n");
-		fclose(f);
-	}
-#endif
-
-	// convert the angles to radians
-	tilt					*= DEGREETORAD;
-	coneAngle			*= DEGREETORAD;
-
-	// local-data buffer to store the intermediate calculations
-	std::vector<double> alpha(nDataPoints);
-	std::vector<double> scd(nDataPoints);
-	std::vector<double> columnCorrection(nDataPoints);
-	std::vector<double> x(nDataPoints);
-	std::vector<double> y(nDataPoints);
-
-	// Temporary variables, to do less computations
-	double	tan_coneAngle	= tan(coneAngle);
-	double	sin_tilt			= sin(tilt);
-	double	cos_tilt			= cos(tilt);
-		
-	// First prepare the buffers before we calculate anything
-	for(int i = 0; i < nDataPoints - 1; ++i){
-		// The slant columns
-		scd[i]	= column[i]-offset;
-
-		// The scan-angles, in radians
-		alpha[i]	= scanAngle[i]	* DEGREETORAD;
-
-		// cosine and sine of the scan-angle
-		double cos_alpha	= cos(alpha[i]);
-		double sin_alpha	= sin(alpha[i]);
-
-		// Calculate the AMF in order to get vertical columns
-		double x_term				= pow(cos_tilt/tan_coneAngle - cos_alpha*sin_tilt, 2);
-		double y_term				= pow(sin_alpha, 2);
-		double divisor			= pow(cos_alpha*cos_tilt + sin_tilt/tan_coneAngle, 2);
-		columnAmplification	= sqrt( (x_term + y_term)/divisor + 1 );
-		columnCorrection[i]	= 1 / columnAmplification;
-
-		// Calculate the projections of the intersection points in the ground-plane
-		double commonDenominator = cos_alpha*cos_tilt + sin_tilt/tan_coneAngle;
-		x[i]		= (cos_tilt/tan_coneAngle - cos_alpha*sin_tilt)	/ commonDenominator;
-		y[i]		= (sin_alpha)																		/ commonDenominator;
-	}
-
-	// Now make the actual flux-calculation
-	for(int i = 0; i < nDataPoints - 2; ++i){
-		if(fabs(fabs(alpha[i]) - HALF_PI) < 1e-2 || fabs(fabs(alpha[i+1]) - HALF_PI) < 1e-2)
-			continue;// This algorithm does not work very well for scanangles around +-90 degrees
-
-		// The average vertical column
-		double avgVCD	= (1e-6) * gasFactor * (scd[i]*columnCorrection[i] + scd[i+1]*columnCorrection[i+1]) * 0.5;
-
-		// The horizontal distance
-		double S = wind.GetPlumeHeight() * sqrt( pow(x[i+1] - x[i], 2) + pow(y[i+1] - y[i], 2) );
-
-		// The local compass-direction [radians] due to the curvature of the cone
-		double coneCompass	= atan2(y[i+1] - y[i], x[i+1] - x[i]);
-
-		// The wind-factor 
-		double windFactor	= fabs(sin(DEGREETORAD * (wind.GetWindDirection() - compass) - coneCompass));
-		
-		// The partial flux
-		partialFlux	= avgVCD * S * wind.GetWindSpeed() * windFactor;
-
-		// The total flux
-		flux	+= partialFlux;
-
-#ifdef _DEBUG
-	FILE *f = fopen("Debug_fluxLog.txt", "a+");
-	if(f != NULL){
-		fprintf(f, "%lf\t%lf\t%lf\t", scanAngle[i], scd[i], avgVCD);
-		fprintf(f, "%lf\t%lf\t%lf\t", S, coneCompass * RADTODEGREE, windFactor);
-		fprintf(f, "%lf\n",		partialFlux);
-		fclose(f);
-	}
-#endif
-
-	}
-
-	return fabs(flux);
-}
-
-/** Calculates the flux using an instrument of type Heidelberg = general algorithm for calculating the flux using cartesian coordinates and angles defined as 
-		elev	= scanAngle 1 (elevation, for elevation=0° azimuth=90° pointing to North)
-		azim	= scanAngle 2 (azimuth from North, clockwise)*/
-double Common::CalculateFlux_HeidelbergFormula(const double *scanAngle1, const double *scanAngle2, const double *column, double offset, int nDataPoints, const CWindField &wind, double compass, double gasFactor){
-	double flux = 0;
-	double partialFlux;
-
-/*TODO: writing the Log, what needs to be included? */
-#ifdef _DEBUG
-	FILE *f = fopen("Debug_fluxLog_HD.txt", "w");
-	if(f != NULL){
-		fprintf(f, "Calculating flux for Heidelberg instrument with %d spectra\n", nDataPoints);
-		fprintf(f, "windDirection=%lf\ncompass=%lf\noffset=%lf\n\n", 
-			wind.GetWindDirection(), compass, offset);
-		fprintf(f, "ScanAngle1_Elev[deg]\tScanAngle2_Azim[deg]\tColumn[ppmm]\tAvgVCD[ppmm]\tHorizontalDistance\tConeCompass\tWindFactor\tPartialFlux\n");
-		fclose(f);
-	}
-#endif
-
-	// local-data buffer to store the intermediate calculations
-	// double	*alpha							= new double[nDataPoints];
-	
-	std::vector<double> elev(nDataPoints);
-	std::vector<double> azim(nDataPoints);
-	std::vector<double> scd(nDataPoints);
-	std::vector<double> columnCorrection(nDataPoints);
-	std::vector<double> x(nDataPoints);
-	std::vector<double> y(nDataPoints);
-
-	// First prepare the buffers before we calculate anything
-	for(int i = 0; i < nDataPoints - 1; ++i){
-		// The slant columns
-		scd[i]	= column[i+1]-offset;
-
-		// The scan-angles, in radians
-		elev[i]		= scanAngle1[i] * DEGREETORAD;
-		azim[i]		= scanAngle2[i] * DEGREETORAD;
-
-		double tan_elev	= tan(elev[i]);
-		double cos_elev	= cos(elev[i]);
-		double sin_azim		= sin(azim[i]);
-		double cos_azim		= cos(azim[i]);
-		
-		// Calculate the AMF in order to get vertical columns
-		columnCorrection[i]	= cos_elev;
-		
-
-		// Calculate the projections of the intersection points in the ground-plane
-		double x_term	= tan_elev * cos_azim;
-		double y_term	= tan_elev * sin_azim;
-
-		x[i]		= x_term;
-		y[i]		= y_term;
-	}
-
-	// Now make the actual flux-calculation
-/*TODO: flux calculations for Heidelberg instrument differ from Gothenborg instrument because local and global coordinate system do not differ!!!! Define another loop for Heidelberg?*/
-	for(int i = 0; i < nDataPoints - 2; ++i){
-		if(fabs(fabs(elev[i]) - HALF_PI) < 1e-2 || fabs(fabs(elev[i+1]) - HALF_PI) < 1e-2)
-			continue;// This algorithm does not work very well for scanangles around +-90 degrees
-		
-		// The average vertical column
-		double avgVCD	= (1e-6) * gasFactor * (scd[i]*columnCorrection[i] + scd[i+1]*columnCorrection[i+1]) * 0.5;
-
-		// The horizontal distance
-		double S = wind.GetPlumeHeight() * sqrt( pow(x[i+1] - x[i], 2) + pow(y[i+1] - y[i], 2) );
-		
-		// The local compass-direction [radians] due to the curvature of the cone
-		double DirectionCompass = atan2(y[i+1] - y[i], x[i+1] - x[i]);
-		
-		// The wind-factor HD: compass=azim[i]
-		double windFactor	= fabs(sin(DEGREETORAD * wind.GetWindDirection() - DirectionCompass));
-
-		// The partial flux
-		partialFlux	= avgVCD * S * wind.GetWindSpeed() * windFactor;
-
-		// The total flux
-		flux	+= partialFlux;
-
-#ifdef _DEBUG
-	FILE *f = fopen("Debug_fluxLog_HD.txt", "a+");
-	if(f != NULL){
-		fprintf(f, "%lf\t%lf\t%lf\t%lf\t", scanAngle1[i], scanAngle2[i], scd[i], avgVCD);
-		fprintf(f, "%lf\t%lf\t%lf\t", S, DirectionCompass * RADTODEGREE, windFactor);
-		fprintf(f, "%lf\n",		partialFlux);
-		fclose(f);
-	}
-#endif
-
-	}
-
-	return fabs(flux);
-}
-
-double Common::CalculateOffset(const std::vector<double>& columns, const std::vector<bool>& badEvaluation, long numPoints){
-//  SpecData m[3] = {1e6, 1e6, 1e6}; 
-	SpecData avg;
-	Common common;
-	long i;
-
-	// calculate the offset as the average of the three lowest column values 
-	//    that are not considered as 'bad' values
-
-	std::vector<double> testColumns(numPoints);
-
-	int numColumns = 0;
-	for(i = 0; i < numPoints; ++i){
-		if(badEvaluation[i])
-		continue;
-
-		testColumns[numColumns++] = columns[i];
-	}
-
-	if(numColumns <= 5){
-		return 0.0;
-	}
-
-	// Find the N lowest column values
-	int N = (int)(0.2 * numColumns);
-	std::vector<SpecData> m(N, 1e6);
-	if(FindNLowest(testColumns.data(), numColumns, m.data(), N)){
-		avg = Average(m.data(), N);
-//		avg = (m[0] + m[1] + m[2]) / 3;
-		return avg;
-	}
-
-	// could not calculate a good offset.
-	return 0;
-}
-
 
 
 void Common::GuessSpecieName(const CString &fileName, CString &specie){
