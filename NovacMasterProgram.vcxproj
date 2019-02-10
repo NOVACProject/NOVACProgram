@@ -283,6 +283,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="SpectralEvaluation\Flux\PlumeInScanProperty.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="SpectralEvaluation\Spectra\DateTime.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
@@ -486,6 +490,7 @@
     <ClInclude Include="SpectralEvaluation\Fit\StatisticVector.h" />
     <ClInclude Include="SpectralEvaluation\Fit\SumFunction.h" />
     <ClInclude Include="SpectralEvaluation\Fit\Vector.h" />
+    <ClInclude Include="SpectralEvaluation\Flux\PlumeInScanProperty.h" />
     <ClInclude Include="SpectralEvaluation\Spectra\DateTime.h" />
     <ClInclude Include="SpectralEvaluation\Spectra\GPSData.h" />
     <ClInclude Include="SpectralEvaluation\Spectra\SpectrometerModel.h" />

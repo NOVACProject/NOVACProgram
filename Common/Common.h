@@ -563,41 +563,6 @@ public:
 
 	static double CalculateOffset(const std::vector<double>& columns, const std::vector<bool>& badEvaluation, long numPoints);
 
-	// --------------------------------------------------------------------
-	// -------------- CALCULATING IF WE SEE THE PLUME ---------------------
-	// --------------------------------------------------------------------
-
-	/** Finds the plume in the supplied scan. Return value is true if there is a plume, otherwise false 
-			@param scanAngles - the scanAngles for the measurements.
-			@param columns - the slant columns for the measurements. Must be from a normal scan
-			@param columnErrors - the corresponding slant column errors for the measurement.
-			@param badEvaluation - the result of the quality judgement of the measured columns, 
-				badEvaluation[i] = true means a bad value
-			@param numPoints - the number of points in the scan. Must also be the length 
-				of the vectors 'columns', 'columnErrors', and 'badEvaluation'
-			@param plumeCentre - Will on successful return be filled with the scan angle 
-				which hits the centre of the plume
-			@param plumeWidth - will on successful return be filled with the 
-				estimated width of the plume (same unit as the scanAngles)
-			@param plumeEdge_low - will on successful return be filled with the 
-				lower edge  of the plume (same unit as the scanAngles)
-			@param plumeEdge_high - will on successful return be filled with the 
-				higher edge  of the plume (same unit as the scanAngles)	*/
-	static bool FindPlume(const std::vector<double>& scanAngles, const std::vector<double>& phi, const std::vector<double>& columns, const std::vector<double>& columnErrors, const std::vector<bool>& badEvaluation, long numPoints, double &plumeCentre_alpha, double &plumeCentre_phi, double &plumeEdge_low, double &plumeEdge_high);
-
-	/** Tries to calculate the completeness of the given scan.
-			The completeness is 1.0 if the entire plume can be seen and 0.0 if the plume
-				cannot be seen at all.
-			Return value is true if there is a plume, otherwise false 
-			@param scanAngles - the scanAngles for the measurements.
-			@param columns - the slant columns for the measurements. Must be from a normal scan
-			@param columnErrors - the corresponding slant column errors for the measurement.
-			@param badEvaluation - the result of the quality judgement of the measured columns, 
-				badEvaluation[i] = true means a bad value
-			@param numPoints - the number of points in the scan. Must also be the length 
-				of the vectors 'columns', 'columnErrors', and 'badEvaluation'
-			@param completeness - Will on successful return be filled with the completeness of the plume */
-	static bool CalculatePlumeCompleteness(const std::vector<double>& scanAngles, const std::vector<double>& phi, const std::vector<double>& columns, const std::vector<double>& columnErrors, const std::vector<bool>& badEvaluation, double offset, long numPoints, double &completeness);
 
 	// ---------------------------- MISC ----------------------------------
 

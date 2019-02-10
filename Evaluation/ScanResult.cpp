@@ -3,6 +3,7 @@
 #include "Evaluation.h"
 #include "../VolcanoInfo.h"
 #include "../SpectralEvaluation/Utils.h"
+#include "../SpectralEvaluation/Flux/PlumeInScanProperty.h"
 
 // we also need the meterological data
 #include "../MeteorologicalData.h"
@@ -361,7 +362,7 @@ bool CScanResult::CalculatePlumeCentre(const std::string &specie, double &plumeC
     }
 
     // Calculate the centre of the plume
-    bool ret = Common::FindPlume(scanAngle, phi, column, columnError, badEval, m_specNum, plumeCentre_alpha, plumeCentre_phi, plumeEdge_low, plumeEdge_high);
+    bool ret = FindPlume(scanAngle, phi, column, columnError, badEval, m_specNum, plumeCentre_alpha, plumeCentre_phi, plumeEdge_low, plumeEdge_high);
 
     if (ret) {
         // Remember the calculated value of the plume centre
@@ -374,7 +375,7 @@ bool CScanResult::CalculatePlumeCentre(const std::string &specie, double &plumeC
         double offset = Common::CalculateOffset(column, badEval, m_specNum);
 
         // Estimate the completeness of the plume
-        Common::CalculatePlumeCompleteness(scanAngle, phi, column, columnError, badEval, offset, m_specNum, plumeCompleteness);
+        CalculatePlumeCompleteness(scanAngle, phi, column, columnError, badEval, offset, m_specNum, plumeCompleteness);
         m_plumeCompleteness = plumeCompleteness;
 
         // Also calculate the wind-direction

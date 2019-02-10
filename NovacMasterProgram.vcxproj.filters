@@ -115,6 +115,12 @@
     <Filter Include="Header Files\SpectralEvaluation\Spectra">
       <UniqueIdentifier>{ae975ed8-25e4-4d5d-b98a-3933d282a32d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\SpectralEvaluation\Flux">
+      <UniqueIdentifier>{05fb6f89-8ca1-4dcd-aaa6-72d399a2ea0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Common\Flux">
+      <UniqueIdentifier>{6a57bac3-4a11-4286-8f8b-e2c7f52ab4bc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Configuration\AdvancedFTPUploadSettings.cpp">
@@ -545,6 +551,9 @@
     </ClCompile>
     <ClCompile Include="SpectralEvaluation\Utils.cpp">
       <Filter>Source Files\SpectralEvaluation</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\Flux\PlumeInScanProperty.cpp">
+      <Filter>Source Files\Common\Flux</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1123,6 +1132,9 @@
     </ClInclude>
     <ClInclude Include="SpectralEvaluation\Utils.h">
       <Filter>Header Files\SpectralEvaluation</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\Flux\PlumeInScanProperty.h">
+      <Filter>Header Files\SpectralEvaluation\Flux</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
