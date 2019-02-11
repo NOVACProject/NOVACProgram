@@ -71,16 +71,11 @@ CEvaluation::~CEvaluation()
 }
 
 
-int CEvaluation::Evaluate(const CSpectrum &sky, const CSpectrum &measured, int numSteps){
-	return Evaluate(sky, measured, m_window, numSteps);
-}
-
-/** Evaluate the supplied spectrum using the parameters set in the supplied fit window
-*/
-int CEvaluation::Evaluate(const CSpectrum &sky, const CSpectrum &meas, const CFitWindow &window, int numSteps) {
+int CEvaluation::Evaluate(const CSpectrum &sky, const CSpectrum &meas, int numSteps)
+{
 	CString message;
-	int fitLow = window.fitLow;
-	int fitHigh = window.fitHigh;
+	int fitLow = m_window.fitLow;
+	int fitHigh = m_window.fitHigh;
 
 	// Check the fit region
 	if (fitHigh < fitLow) {
@@ -97,10 +92,10 @@ int CEvaluation::Evaluate(const CSpectrum &sky, const CSpectrum &meas, const CFi
 		return(1);
 
 	// If the spectra are longer than the references, then something is wrong!
-	if (specLen > window.specLength)
+	if (specLen > m_window.specLength)
 		return(1);
 
-	if (sky.m_info.m_startChannel != 0 || sky.m_length < window.specLength) {
+	if (sky.m_info.m_startChannel != 0 || sky.m_length < m_window.specLength) {
 		// Partial spectra
 		fitLow -= sky.m_info.m_startChannel;
 		fitHigh -= sky.m_info.m_startChannel;
@@ -126,7 +121,7 @@ int CEvaluation::Evaluate(const CSpectrum &sky, const CSpectrum &meas, const CFi
 	// --------- prepare the spectrum for evaluation -----------------
 	//----------------------------------------------------------------
 
-	PrepareSpectra(skyArray, measArray, window);
+	PrepareSpectra(skyArray, measArray, m_window);
 
 	//----------------------------------------------------------------
 
@@ -146,7 +141,7 @@ int CEvaluation::Evaluate(const CSpectrum &sky, const CSpectrum &meas, const CFi
 	CDiscreteFunction dataTarget;
 
 	// now set the data of the measured spectrum in regard to the wavelength information
-	dataTarget.SetData(vXData.SubVector(window.startChannel, window.specLength), vMeas);
+	dataTarget.SetData(vXData.SubVector(m_window.startChannel, m_window.specLength), vMeas);
 
 	// since the DOAS model function consists of the sum of all reference spectra and a polynomial,
 	// we first create a summation object
@@ -155,20 +150,20 @@ int CEvaluation::Evaluate(const CSpectrum &sky, const CSpectrum &meas, const CFi
 	// now we create the required CReferenceSpectrumFunction objects that actually represent the 
 	// reference spectra used in the DOAS model function
 
-	if (0 != CreateReferenceSpectrum(window, sky.m_info.m_startChannel)) {
+	if (0 != CreateReferenceSpectrum(m_window, sky.m_info.m_startChannel)) {
 		free(skyArray);
 		free(measArray);
 		for (int k = 0; k < MAX_N_REFERENCES; ++k)
 			delete ref[k];
 		return 1;
 	}
-	for (int i = 0; i < window.nRef; ++i) {
+	for (int i = 0; i < m_window.nRef; ++i) {
 		cRefSum.AddReference(*ref[i]); // <-- at last add the reference to the summation object
 	}
 
 	// create the additional polynomial with the correct order
 	//	and add it to the summation object, too
-	CPolynomialFunction cPoly(window.polyOrder);
+	CPolynomialFunction cPoly(m_window.polyOrder);
 	cRefSum.AddReference(cPoly);
 
 	// the last step in the model function will be to define how the difference between the measured data and the modeled
@@ -214,9 +209,9 @@ int CEvaluation::Evaluate(const CSpectrum &sky, const CSpectrum &meas, const CFi
 		// get the basic fit results
 		m_result.m_stepNum = (long)cFirstFit.GetFitSteps();
 		m_result.m_chiSquare = (double)cFirstFit.GetChiSquare();
-		m_result.m_referenceResult.resize(window.nRef);
+		m_result.m_referenceResult.resize(m_window.nRef);
 
-		for (int tmpInt = 0; tmpInt <= window.polyOrder; ++tmpInt)
+		for (int tmpInt = 0; tmpInt <= m_window.polyOrder; ++tmpInt)
 			m_result.m_polynomial[tmpInt] = (double)cPoly.GetCoefficient(tmpInt);
 
 		// get residuum vector and expand it to a DOAS vector object. Do NOT assign the vector data to the new object!
@@ -232,14 +227,13 @@ int CEvaluation::Evaluate(const CSpectrum &sky, const CSpectrum &meas, const CFi
 		// get the fitResult for the polynomial
 		CVector tmpVector;
 		tmpVector.SetSize(specLen);
-		cPoly.GetValues(vXData.SubVector(window.startChannel, window.specLength), tmpVector);
+		cPoly.GetValues(vXData.SubVector(m_window.startChannel, m_window.specLength), tmpVector);
 		m_fitResult[0].Set(tmpVector, specLen);
 
 		// finally display the fit results for each reference spectrum including their appropriate error
-		for (int i = 0; i < window.nRef; i++)
+		for (int i = 0; i < m_window.nRef; i++)
 		{
-			m_result.m_referenceResult[i].m_specieName = std::string(window.ref[i].m_specieName);
-
+			m_result.m_referenceResult[i].m_specieName      = std::string(m_window.ref[i].m_specieName);
 			m_result.m_referenceResult[i].m_column          = (double)ref[i]->GetModelParameter(CReferenceSpectrumFunction::CONCENTRATION);
 			m_result.m_referenceResult[i].m_columnError     = (double)ref[i]->GetModelParameterError(CReferenceSpectrumFunction::CONCENTRATION);
 			m_result.m_referenceResult[i].m_shift           = (double)ref[i]->GetModelParameter(CReferenceSpectrumFunction::SHIFT);
@@ -250,7 +244,7 @@ int CEvaluation::Evaluate(const CSpectrum &sky, const CSpectrum &meas, const CFi
 			// get the final fit result
 			CVector tmpVector;
 			tmpVector.SetSize(specLen);
-			ref[i]->GetValues(vXData.SubVector(window.startChannel, window.specLength), tmpVector);
+			ref[i]->GetValues(vXData.SubVector(m_window.startChannel, m_window.specLength), tmpVector);
 			m_fitResult[i + 1].Set(tmpVector, specLen);
 		}
 
@@ -599,18 +593,6 @@ int CEvaluation::EvaluateShift(const CSpectrum &measured, const CFitWindow &wind
 		}
 }
 
-/** Returns the evaluation result for the last spectrum
-  @return a reference to the evaluation result */
-const CEvaluationResult& CEvaluation::GetEvaluationResult() const{
-	return m_result;
-}
-
-
-/** Returns the polynomial that was fitted to the last evaluation result */
-double *CEvaluation::GetPolynomial(){
-	return m_result.m_polynomial;
-}
-
 /** read data from the references defined in the fit window 'm_window'. */
 BOOL CEvaluation::ReadReferences(){
 	if(m_window.nRef == 0)
@@ -629,18 +611,11 @@ BOOL CEvaluation::ReadReferences(){
 	}
 
 	// Added 2005-12-13 to increase the speed of evaluation /MJ
-	InitializeVectors(MAX_SPECTRUM_LENGTH);
+    CreateXDataVector(MAX_SPECTRUM_LENGTH);
 	
 	return TRUE;
 }
 
-void CEvaluation::InitializeVectors(int sumChn){
-	int i; //iterator
-
-	vXData.SetSize(sumChn);
-	for(i = 0; i < sumChn; ++i)
-		vXData.SetAt(i, (TFitData)(1.0f + (double)i));
-}
 
 BOOL CEvaluation::IncludeAsReference(double *array, int sumChn, int refNum){
 
@@ -661,77 +636,6 @@ BOOL CEvaluation::IncludeAsReference(double *array, int sumChn, int refNum){
 		m_crossSection[refNum].Set(array, (unsigned long)sumChn);
 	}
 	return TRUE;
-}
-
-void CEvaluation::RemoveOffset(double *spectrum, int sumChn, BOOL UV){
-	int offsetFrom  = (UV) ? 50 : 2;
-	int offsetTo    = (UV) ? 200 : 20;
-
-	//  remove any remaining offset in the measured spectrum
-	double avg = 0;
-	for(int i = offsetFrom; i < offsetTo; i++){
-		avg += spectrum[i];
-	}
-	avg = avg/(double)(offsetTo - offsetFrom);
-
-	Sub(spectrum, sumChn, avg);
-
-	return;
-}
-
-void CEvaluation::PrepareSpectra(double *sky, double *meas, const CFitWindow &window){
-
-	if(window.fitType == FIT_HP_DIV)
-		return PrepareSpectra_HP_Div(sky, meas, window);
-	if(window.fitType == FIT_HP_SUB)
-		return PrepareSpectra_HP_Sub(sky, meas, window);
-	if(window.fitType == FIT_POLY)
-		return PrepareSpectra_Poly(sky, meas, window);
-}
-
-void CEvaluation::PrepareSpectra_HP_Div(double *skyArray, double *measArray, const CFitWindow &window){
-
-	//  1. Remove any remaining offset
-	RemoveOffset(measArray, window.specLength, window.UV);
-	RemoveOffset(skyArray, window.specLength, window.UV);
-
-	// 2. Divide the measured spectrum with the sky spectrum
-	Div(measArray,skyArray,window.specLength,0.0);
-
-	// 3. high pass filter
-	HighPassBinomial(measArray,window.specLength,500);
-
-	// 4. log(spec)
-	Log(measArray,window.specLength);
-
-	// 5. low pass filter
-//	LowPassBinomial(measArray,window.specLength, 5);
-}
-
-void CEvaluation::PrepareSpectra_HP_Sub(double *skyArray, double *measArray, const CFitWindow &window){
-
-	// 1. remove any remaining offset in the measured spectrum
-	RemoveOffset(measArray, window.specLength, window.UV);
-
-	// 2. high pass filter
-	HighPassBinomial(measArray,window.specLength,500);
-
-	// 3. log(spec)
-	Log(measArray,window.specLength);
-}
-
-void CEvaluation::PrepareSpectra_Poly(double *skyArray, double *measArray, const CFitWindow &window){
-
-	// 1. remove any remaining offset in the measured spectrum
-	RemoveOffset(measArray, window.specLength, window.UV);
-
-	// 2. log(spec)
-	Log(measArray,window.specLength);
-
-	// 3. Multiply the spectrum with -1 to get the correct sign for everything
-	for(int i = 0; i < window.specLength; ++i){
-		measArray[i] *= -1.0;
-	}
 }
 
 /** Assignment operator */

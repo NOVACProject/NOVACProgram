@@ -247,6 +247,7 @@
     <ClCompile Include="ScannerFolderInfo.cpp" />
     <ClInclude Include="SpectralEvaluation\Evaluation\BasicMath.h" />
     <ClInclude Include="SpectralEvaluation\Evaluation\CrossSectionData.h" />
+    <ClInclude Include="SpectralEvaluation\Evaluation\EvaluationBase.h" />
     <ClInclude Include="SpectralEvaluation\Evaluation\EvaluationResult.h" />
     <ClInclude Include="SpectralEvaluation\Evaluation\FitWindow.h" />
     <ClInclude Include="SpectralEvaluation\Evaluation\ReferenceFile.h" />
@@ -259,6 +260,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="SpectralEvaluation\Evaluation\CrossSectionData.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\Evaluation\EvaluationBase.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
