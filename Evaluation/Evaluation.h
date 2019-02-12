@@ -14,7 +14,6 @@
 #include "../SpectralEvaluation/Evaluation/CrossSectionData.h"
 #include "../SpectralEvaluation/Evaluation/FitParameter.h"
 #include "../SpectralEvaluation/Evaluation/EvaluationResult.h"
-#include "../SpectralEvaluation/Spectra/Spectrum.h"
 
 #include "../SpectralEvaluation/Fit/Vector.h"
 
@@ -28,10 +27,10 @@ namespace Evaluation
 	class CEvaluation : public CEvaluationBase
 	{
 	public:
-		/** Default constructor */
 		CEvaluation();
 
-		/** Copy constructor */
+        explicit CEvaluation(const CFitWindow &window);
+
 		CEvaluation(const CEvaluation &eval2);
 
 		/** Default destructor */
@@ -44,16 +43,6 @@ namespace Evaluation
 			polynomial and the following 'MAX_N_REFERENCES + 1' are the scaled references. */
 		CCrossSectionData m_fitResult[MAX_N_REFERENCES + 2];
 
-		/** Reads the references defined in the parameter 'm_window'.
-			@return FALSE if any error occurs, (eg. no references defined in 'm_window')
-			@return TRUE if all is ok. */
-		BOOL ReadReferences();
-
-		/** Evaluate using the parameters set in the local parameter 'm_window'.
-			@return 0 if all is ok.
-			@return 1 if any error occured, or if the window is not defined. */
-		int Evaluate(const CSpectrum &sky, const CSpectrum &measured, int numSteps = 1000);
-        
 		/** Evaluate the supplied spectrum using the solarReference found in 'window'
 			@param measured - the spectrum for which to determine the shift & squeeze
 			relative to the solarReference-spectrum found in 'window'
@@ -63,9 +52,6 @@ namespace Evaluation
 			@return 0 if the fit succeeds and the shift & squeeze could be determined
 			@return 1 if any error occured. */
 		int EvaluateShift(const CSpectrum &measured, const CFitWindow &window, double &shift, double &shiftError, double &squeeze, double &squeezeError);
-
-		/** Returns the number of references that are read in */
-		int NumberOfReferences() const {return m_referenceNum;}
 
 		/** Includes an array as a reference file */
 		BOOL IncludeAsReference(double *array, int sumChn, int refNum = -1);

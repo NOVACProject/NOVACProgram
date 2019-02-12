@@ -8,6 +8,9 @@
 #include "../Common/Common.h"
 #include <iostream>
 #include <conio.h>
+
+#include "../SpectralEvaluation/Spectra/Spectrum.h"
+
 // include all required fit objects
 #include "../SpectralEvaluation/Fit/ReferenceSpectrumFunction.h"
 #include "../SpectralEvaluation/Fit/SimpleDOASFunction.h"
@@ -42,19 +45,25 @@ using namespace std;
 //////////////////////////////////////////////////////////////////////
 
 CEvaluation::CEvaluation()
+    : CEvaluationBase()
 {
 	m_referenceNum = 1;
-
-	for(int i = 0; i < MAX_N_REFERENCES; ++i)
-		ref[i] = NULL;
 
 	solarSpec = NULL;
 	m_numberOfReferencesToUse = 0;
 }
 
-CEvaluation::CEvaluation(const CEvaluation &eval2){
+CEvaluation::CEvaluation(const CFitWindow &window)
+    : CEvaluationBase(window)
+{
+
+}
+
+CEvaluation::CEvaluation(const CEvaluation &eval2)
+{
 	this->m_referenceNum = eval2.m_referenceNum;
 	this->m_numberOfReferencesToUse = eval2.m_numberOfReferencesToUse;
+    this->m_window = eval2.m_window;
 
 	this->m_result = eval2.m_result;
 
@@ -71,7 +80,7 @@ CEvaluation::~CEvaluation()
 }
 
 
-int CEvaluation::Evaluate(const CSpectrum &sky, const CSpectrum &meas, int numSteps)
+/* int CEvaluation::Evaluate(const CSpectrum &sky, const CSpectrum &meas, int numSteps)
 {
 	CString message;
 	int fitLow = m_window.fitLow;
@@ -284,7 +293,7 @@ int CEvaluation::Evaluate(const CSpectrum &sky, const CSpectrum &meas, int numSt
 
 		return (1);
 	}
-}
+} */
 
 /** Evaluate the supplied spectrum using the solarReference found in 'window'
 		@param measured - the spectrum for which to determine the shift & squeeze
@@ -330,8 +339,12 @@ int CEvaluation::EvaluateShift(const CSpectrum &measured, const CFitWindow &wind
 	solarSpec = new CReferenceSpectrumFunction();
 
 	// initialize the reference-spectrum functions
-	for(unsigned int k = 0; k < MAX_N_REFERENCES; ++k)
-		ref[k] = new CReferenceSpectrumFunction();
+    m_ref.clear();
+    for (unsigned int k = 0; k < MAX_N_REFERENCES; ++k)
+    {
+        CReferenceSpectrumFunction r;
+        m_ref.push_back(r);
+    }
 
 	// Make a local copy of the data
 	double *measArray = (double *)calloc(measured.m_length, sizeof(double));
@@ -404,8 +417,6 @@ int CEvaluation::EvaluateShift(const CSpectrum &measured, const CFitWindow &wind
 		Error0("Error initializing spline object!");
 		free(measArray);
 		delete solarSpec;
-		for(int k = 0; k < MAX_N_REFERENCES; ++k)
-			delete ref[k];
 		return(1);
 	}
 
@@ -425,12 +436,12 @@ int CEvaluation::EvaluateShift(const CSpectrum &measured, const CFitWindow &wind
 	// Also add all the 'normal' cross sections to the fit
 	for(i = 0; i < window.nRef; ++i){
 		// reset all reference's parameters
-		ref[i]->ResetLinearParameter();
-		ref[i]->ResetNonlinearParameter();
+		m_ref[i].ResetLinearParameter();
+        m_ref[i].ResetNonlinearParameter();
 
 		// enable amplitude normalization. This should normally be done in order to avoid numerical
 		// problems during fitting.
-		ref[i]->SetNormalize(true);
+        m_ref[i].SetNormalize(true);
 
 		// set the spectral data of the reference spectrum to the object. This also causes an internal
 		// transformation of the spectral data into a B-Spline that will be used to interpolate the 
@@ -439,21 +450,19 @@ int CEvaluation::EvaluateShift(const CSpectrum &measured, const CFitWindow &wind
 		for(unsigned int k = 0; k < m_crossSection[i].GetSize(); ++k){
 			yValues.SetAt(k, m_crossSection[i].GetAt(k));
 		}
-		if(!ref[i]->SetData(vXData.SubVector(0, m_crossSection[i].GetSize()), yValues))
+		if(!m_ref[i].SetData(vXData.SubVector(0, m_crossSection[i].GetSize()), yValues))
 		{
 			Error0("Error initializing spline object!");
 			free(measArray);
 			delete solarSpec;
-			for(int k = 0; k < MAX_N_REFERENCES; ++k)
-				delete ref[k];
 			return(1);
 		}
 
 		// Link the shift and squeeze to the solar-reference
-		solarSpec->LinkParameter(CReferenceSpectrumFunction::SHIFT,	  *ref[i], CReferenceSpectrumFunction::SHIFT);
-		solarSpec->LinkParameter(CReferenceSpectrumFunction::SQUEEZE, *ref[i], CReferenceSpectrumFunction::SQUEEZE);
+		solarSpec->LinkParameter(CReferenceSpectrumFunction::SHIFT,   m_ref[i], CReferenceSpectrumFunction::SHIFT);
+		solarSpec->LinkParameter(CReferenceSpectrumFunction::SQUEEZE, m_ref[i], CReferenceSpectrumFunction::SQUEEZE);
 
-		cRefSum.AddReference(*ref[i]); // <-- at last add the reference to the summation object
+		cRefSum.AddReference(m_ref[i]); // <-- at last add the reference to the summation object
 	}
 
 	// create the additional polynomial with the correct order
@@ -492,8 +501,6 @@ int CEvaluation::EvaluateShift(const CSpectrum &measured, const CFitWindow &wind
 			ShowMessage(message);
 			free(measArray);
 			delete solarSpec;
-			for(int k = 0; k < MAX_N_REFERENCES; ++k)
-				delete ref[k];
 			return 1;
 		}
 
@@ -525,12 +532,12 @@ int CEvaluation::EvaluateShift(const CSpectrum &measured, const CFitWindow &wind
 
 #ifdef _DEBUG
 		for(i = 0; i < window.nRef; ++i){
-			double rcolumn              = (double)ref[i]->GetModelParameter(CReferenceSpectrumFunction::CONCENTRATION);
-			double rcolumnError         = (double)ref[i]->GetModelParameterError(CReferenceSpectrumFunction::CONCENTRATION);
-			double rshift               = (double)ref[i]->GetModelParameter(CReferenceSpectrumFunction::SHIFT);
-			double rshiftError          = (double)ref[i]->GetModelParameterError(CReferenceSpectrumFunction::SHIFT);
-			double rsqueeze             = (double)ref[i]->GetModelParameter(CReferenceSpectrumFunction::SQUEEZE);
-			double rsqueezeError        = (double)ref[i]->GetModelParameterError(CReferenceSpectrumFunction::SQUEEZE);
+			double rcolumn              = (double)m_ref[i].GetModelParameter(CReferenceSpectrumFunction::CONCENTRATION);
+			double rcolumnError         = (double)m_ref[i].GetModelParameterError(CReferenceSpectrumFunction::CONCENTRATION);
+			double rshift               = (double)m_ref[i].GetModelParameter(CReferenceSpectrumFunction::SHIFT);
+			double rshiftError          = (double)m_ref[i].GetModelParameterError(CReferenceSpectrumFunction::SHIFT);
+			double rsqueeze             = (double)m_ref[i].GetModelParameter(CReferenceSpectrumFunction::SQUEEZE);
+			double rsqueezeError        = (double)m_ref[i].GetModelParameterError(CReferenceSpectrumFunction::SQUEEZE);
 		}
 #endif
 
@@ -538,7 +545,6 @@ int CEvaluation::EvaluateShift(const CSpectrum &measured, const CFitWindow &wind
 		free(measArray);
 		delete solarSpec;
 		for(int k = 0; k < MAX_N_REFERENCES; ++k)
-			delete ref[k];
 			return (0);
 		}
 		catch(CFitException e)
@@ -586,15 +592,13 @@ int CEvaluation::EvaluateShift(const CSpectrum &measured, const CFitWindow &wind
 			// clean up the evaluation
 			free(measArray);
 			delete solarSpec;
-			for(int k = 0; k < MAX_N_REFERENCES; ++k)
-				delete ref[k];
 
 			return (1);
 		}
 }
 
 /** read data from the references defined in the fit window 'm_window'. */
-BOOL CEvaluation::ReadReferences(){
+/* BOOL CEvaluation::ReadReferences(){
 	if(m_window.nRef == 0)
 		return FALSE;
 
@@ -614,7 +618,7 @@ BOOL CEvaluation::ReadReferences(){
     CreateXDataVector(MAX_SPECTRUM_LENGTH);
 	
 	return TRUE;
-}
+} */
 
 
 BOOL CEvaluation::IncludeAsReference(double *array, int sumChn, int refNum){
@@ -647,7 +651,7 @@ CEvaluation &CEvaluation::operator = (const CEvaluation &e2){
 }
 
 // Creates the appropriate CReferenceSpectrumFunction for the fitting
-int CEvaluation::CreateReferenceSpectrum(const CFitWindow &window, int startChannel){
+/* int CEvaluation::CreateReferenceSpectrum(const CFitWindow &window, int startChannel){
 	CVector yValues;
 
 	for(int i = 0; i < window.nRef; i++)
@@ -700,4 +704,4 @@ int CEvaluation::CreateReferenceSpectrum(const CFitWindow &window, int startChan
 	}
 
 	return 0;
-}
+} */

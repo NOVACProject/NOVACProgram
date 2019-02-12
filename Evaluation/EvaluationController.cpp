@@ -265,7 +265,7 @@ RETURN_CODE CEvaluationController::EvaluateScan(const CString &fileName, int vol
 	CScanEvaluation *ev = new CScanEvaluation(); // TODO: Check for errors
 	ev->m_pause = NULL;
 	CConfigurationSetting::DarkSettings *darkSettings = &spectrometer->m_settings.channel[0].m_darkSettings;
-	long spectrumNum = ev->EvaluateScan(fileName, spectrometer->m_evaluator[0], NULL, darkSettings);
+	long spectrumNum = ev->EvaluateScan(fileName, spectrometer->m_evaluator[0].FitWindow(), NULL, darkSettings);
 
 	// 6. Get the result from the evaluation
 	if(ev != nullptr && ev->HasResult()){
@@ -724,7 +724,7 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *resu
 	}
 	string.AppendFormat("starttime\tstoptime\tname\tspecsaturation\tfitsaturation\tcounts_ms\tdelta\tchisquare\texposuretime\tnumspec\t");
 
-	for(int itSpecie = 0; itSpecie < spectrometer.m_evaluator[0]->NumberOfReferences(); ++itSpecie){
+	for(int itSpecie = 0; itSpecie < spectrometer.m_evaluator[0].FitWindow().nRef; ++itSpecie){
 		string.AppendFormat("column(%s)\tcolumnerror(%s)\t", window.ref[itSpecie].m_specieName.c_str(), window.ref[itSpecie].m_specieName.c_str());
 		string.AppendFormat("shift(%s)\tshifterror(%s)\t", window.ref[itSpecie].m_specieName.c_str(), window.ref[itSpecie].m_specieName.c_str());
 		string.AppendFormat("squeeze(%s)\tsqueezeerror(%s)\t", window.ref[itSpecie].m_specieName.c_str(), window.ref[itSpecie].m_specieName.c_str());
@@ -744,7 +744,7 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *resu
 		sky.m_info.m_fitIntensity = (float)(sky.MaxValue(window.fitLow, window.fitHigh));
 		if(sky.NumSpectra() > 0)
 			sky.Div(sky.NumSpectra());
-		CEvaluationLogFileHandler::FormatEvaluationResult(&sky.m_info,	NULL, spectrometer.m_scanner.instrumentType, maxIntensity*sky.NumSpectra(), spectrometer.m_evaluator[0]->NumberOfReferences(), string1);
+		CEvaluationLogFileHandler::FormatEvaluationResult(&sky.m_info,	NULL, spectrometer.m_scanner.instrumentType, maxIntensity*sky.NumSpectra(), spectrometer.m_evaluator[0].FitWindow().nRef, string1);
 	}
 	scan->GetDark(dark);
 	if(dark.m_info.m_interlaceStep > 1)
@@ -753,7 +753,7 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *resu
 		dark.m_info.m_fitIntensity = (float)(dark.MaxValue(window.fitLow, window.fitHigh));
 		if(dark.NumSpectra() > 0)
 			dark.Div(dark.NumSpectra());	
-		CEvaluationLogFileHandler::FormatEvaluationResult(&dark.m_info, NULL, spectrometer.m_scanner.instrumentType, maxIntensity*dark.NumSpectra(), spectrometer.m_evaluator[0]->NumberOfReferences(), string2);
+		CEvaluationLogFileHandler::FormatEvaluationResult(&dark.m_info, NULL, spectrometer.m_scanner.instrumentType, maxIntensity*dark.NumSpectra(), spectrometer.m_evaluator[0].FitWindow().nRef, string2);
 	}
 	scan->GetOffset(offset);
 	if(offset.m_info.m_interlaceStep > 1)
@@ -761,7 +761,7 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *resu
 	if(offset.m_length > 0){
 		offset.m_info.m_fitIntensity = (float)(offset.MaxValue(window.fitLow, window.fitHigh));
 		offset.Div(offset.NumSpectra());	
-		CEvaluationLogFileHandler::FormatEvaluationResult(&offset.m_info, NULL, spectrometer.m_scanner.instrumentType, maxIntensity * offset.NumSpectra(), spectrometer.m_evaluator[0]->NumberOfReferences(), string3);
+		CEvaluationLogFileHandler::FormatEvaluationResult(&offset.m_info, NULL, spectrometer.m_scanner.instrumentType, maxIntensity * offset.NumSpectra(), spectrometer.m_evaluator[0].FitWindow().nRef, string3);
 	}
 	scan->GetDarkCurrent(darkCurrent);
 	if(darkCurrent.m_info.m_interlaceStep > 1)
@@ -769,7 +769,7 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *resu
 	if(darkCurrent.m_length > 0){
 		darkCurrent.m_info.m_fitIntensity = (float)(darkCurrent.MaxValue(window.fitLow, window.fitHigh));
 		darkCurrent.Div(darkCurrent.NumSpectra());	
-		CEvaluationLogFileHandler::FormatEvaluationResult(&darkCurrent.m_info, NULL, spectrometer.m_scanner.instrumentType, maxIntensity*darkCurrent.NumSpectra(), spectrometer.m_evaluator[0]->NumberOfReferences(), string4);
+		CEvaluationLogFileHandler::FormatEvaluationResult(&darkCurrent.m_info, NULL, spectrometer.m_scanner.instrumentType, maxIntensity*darkCurrent.NumSpectra(), spectrometer.m_evaluator[0].FitWindow().nRef, string4);
 	}
 
 	string.AppendFormat("%s", (LPCSTR)string1);
@@ -787,7 +787,7 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *resu
         Evaluation::CEvaluationResult evResult;
         result->GetResult(itSpectrum, evResult);
 
-		CEvaluationLogFileHandler::FormatEvaluationResult(&result->GetSpectrumInfo(itSpectrum), &evResult, spectrometer.m_scanner.instrumentType, maxIntensity * nSpectra, spectrometer.m_evaluator[0]->NumberOfReferences(), string1);
+		CEvaluationLogFileHandler::FormatEvaluationResult(&result->GetSpectrumInfo(itSpectrum), &evResult, spectrometer.m_scanner.instrumentType, maxIntensity * nSpectra, spectrometer.m_evaluator[0].FitWindow().nRef, string1);
 
 		string.AppendFormat("%s", (LPCSTR)string1);
 	}
@@ -838,11 +838,12 @@ CSpectrometer *CEvaluationController::HandleUnIdentifiedSpectrometer(const CStri
 
 	// 4. Configure the evaluation (here we don't know anything, just guess what could be an ok evaluator)
 	CSpectrometer *spec0 = m_spectrometer[0];
-	for(int i = 0; i < spec0->m_fitWindowNum; ++i){
-		*spec->m_evaluator[i] = *spec0->m_evaluator[i];
-		spec->m_evaluator[i]->ReadReferences();
+	for(int i = 0; i < spec0->m_fitWindowNum; ++i)
+    {
+        CEvaluation newEval{spec0->m_evaluator[i]};
+		spec->m_evaluator.push_back(newEval);
 	}
-	spec->m_history	=	new CSpectrometerHistory();
+	spec->m_history = new CSpectrometerHistory();
 
 	// 5. Insert the new spectrometer
 	long spectrometerNum = (long)m_spectrometer.GetSize();
@@ -907,19 +908,19 @@ RETURN_CODE CEvaluationController::InitializeSpectrometers(){
 
 				// the fit window
 				Evaluation::CFitWindow &window = spec.channel[k].fitWindow;
+                if (!ReadReferences(window))
+                {
+                    message.Format("Cannot read all references for spectrometer %s.\nThe program will now terminate.\nCheck the settings and restart.", (LPCSTR)spec.serialNumber);
+                    ShowMessage(message);
+                    MessageBox(NULL, message, "Serious Error - Cannot read References", MB_OK);
+                    Sleep(500);
+                    return FAIL;
+                }
 
 				// set the fit window
-				curSpec->m_evaluator[0]->m_window = window;
-				curSpec->m_fitWindowNum	= 1;
-
-				// the references
-				if(FALSE == curSpec->m_evaluator[0]->ReadReferences()){
-					message.Format("Cannot read all references for spectrometer %s.\nThe program will now terminate.\nCheck the settings and restart.", (LPCSTR)spec.serialNumber);
-					ShowMessage(message);
-					MessageBox(NULL, message, "Serious Error - Cannot read References", MB_OK);
-					Sleep(500);
-					return FAIL;
-				}
+                // TODO: Remove this evaluator eventually. It isn't necessary anymore. Just create the fit window as pass it.
+				curSpec->m_evaluator[0].SetFitWindow(window);
+				curSpec->m_fitWindowNum = 1;
 
 				// Insert the new spectrometer
 				m_spectrometer.SetAtGrow(spectrometerNum, curSpec);

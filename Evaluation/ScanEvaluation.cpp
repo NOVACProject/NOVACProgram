@@ -4,6 +4,7 @@
 #include "../Common/Spectra/SpectrumIO.h"
 #include "../Common/SpectrumFormat/STDFile.h"
 #include "../Common/SpectrumFormat/TXTFile.h"
+#include "../SpectralEvaluation/Utils.h"
 
 using namespace Evaluation;
 
@@ -64,7 +65,7 @@ bool CScanEvaluation::HasResult()
 }
 
 /** Called to evaluate one scan */
-long CScanEvaluation::EvaluateScan(const CString &scanfile, CEvaluation *eval, bool *fRun, const CConfigurationSetting::DarkSettings *darkSettings){
+long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& window, bool *fRun, const CConfigurationSetting::DarkSettings *darkSettings){
 	
 #ifdef _DEBUG
 	// this is for searching for memory leaks
@@ -81,8 +82,8 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, CEvaluation *eval, b
 	CSpectrum sky, dark, current;
 
 	// Remember the fit-range
-	m_fitLow  = eval->m_window.fitLow;
-	m_fitHigh = eval->m_window.fitHigh;
+	m_fitLow  = window.fitLow;
+	m_fitHigh = window.fitHigh;
 
 	// Check so that the file exists
 	if(!IsExistingFile(scanfile)) {
@@ -101,24 +102,25 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, CEvaluation *eval, b
 
 	// make a backup of the fit window (this function may make some changes to the
 	//  fit window, and we should be able to restore the old values on return).
-	CFitWindow backupWindow = eval->m_window;
+	CFitWindow copyOfWindow = window;
 
 	// If the user wants to find optimum shift, then the scan shall be evaluated
 	//  once with all shifts set to 0 and all squeeze set to 1.
-	if(eval->m_window.findOptimalShift) {
-		for(int k = 0; k < eval->m_window.nRef; ++k) {
-			eval->m_window.ref[k].m_shiftOption   = SHIFT_FIX;
-			eval->m_window.ref[k].m_squeezeOption = SHIFT_FIX;
-			eval->m_window.ref[k].m_shiftValue    = 0.0;
-			eval->m_window.ref[k].m_squeezeValue  = 1.0;
+	if(copyOfWindow.findOptimalShift)
+    {
+		for(int k = 0; k < copyOfWindow.nRef; ++k)
+        {
+            copyOfWindow.ref[k].m_shiftOption   = SHIFT_FIX;
+            copyOfWindow.ref[k].m_squeezeOption = SHIFT_FIX;
+            copyOfWindow.ref[k].m_shiftValue    = 0.0;
+            copyOfWindow.ref[k].m_squeezeValue  = 1.0;
 		}
 	}
 
 	// Get the sky and dark spectra and divide them by the number of 
 	//     co-added spectra in it
-	if(SUCCESS != GetSky(&scan, sky)) {
-		//if(logFileWriter != NULL)
-		//	logFileWriter->WriteErrorMessage("Error in evaluation: Cannot read sky spectrum from file");
+	if(SUCCESS != GetSky(&scan, sky))
+    {
 		return 0;
 	}
 	CSpectrum original_sky = sky; // original_sky is the sky-spectrum without dark-spectrum corrections...
@@ -137,34 +139,47 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, CEvaluation *eval, b
 
 	// Get some important information about the spectra, like
 	//	interlace steps, spectrum length and start-channel
-	eval->m_window.interlaceStep	= scan.GetInterlaceSteps();
-	eval->m_window.specLength		= scan.GetSpectrumLength() * eval->m_window.interlaceStep;
-	eval->m_window.startChannel		= scan.GetStartChannel();
+    copyOfWindow.interlaceStep	= scan.GetInterlaceSteps();
+    copyOfWindow.specLength		= scan.GetSpectrumLength() * copyOfWindow.interlaceStep;
+    copyOfWindow.startChannel	= scan.GetStartChannel();
 
 	// Adjust the fit-low and fit-high parameters according to the spectra
-	m_fitLow  = eval->m_window.fitLow  - eval->m_window.startChannel;
-	m_fitHigh = eval->m_window.fitHigh	- eval->m_window.startChannel;
+	m_fitLow  = copyOfWindow.fitLow  - copyOfWindow.startChannel;
+	m_fitHigh = copyOfWindow.fitHigh - copyOfWindow.startChannel;
+
+    // Create our evaluator
+    std::unique_ptr<CEvaluation> eval = std::make_unique<CEvaluation>( copyOfWindow );
 
 	// If we have a solar-spectrum that we can use to determine the shift
 	//	& squeeze then fit that first so that we know the wavelength calibration
-	if(eval->m_window.fraunhoferRef.m_path.size() > 4) {
-		FindOptimumShiftAndSqueeze_Fraunhofer(eval, &scan);
+	if(copyOfWindow.fraunhoferRef.m_path.size() > 4)
+    {
+        // TODO: Implement this properly...
+        CFitWindow* newWindow = FindOptimumShiftAndSqueeze_Fraunhofer(eval.get(), &scan);
+
+        if (nullptr != newWindow)
+        {
+            copyOfWindow = *newWindow; // copy the good window here.
+            eval.reset(new CEvaluation{copyOfWindow});
+            delete newWindow;
+        }
 	}
 
 	// if wanted, include the sky spectrum into the fit
-	if(eval->m_window.fitType == FIT_HP_SUB || eval->m_window.fitType == FIT_POLY) {
-		IncludeSkySpecInFit(eval, sky, eval->m_window);
+	if(copyOfWindow.fitType == FIT_HP_SUB || copyOfWindow.fitType == FIT_POLY)
+    {
+		IncludeSkySpecInFit(eval.get(), sky, copyOfWindow);
 	}
 
 	// the data structure to keep track of the evaluation results
 	std::shared_ptr<CScanResult> newResult = std::make_shared<CScanResult>();
 
 	// Check weather we are to find an optimal shift and squeeze
-	int nIt = (eval->m_window.findOptimalShift == FALSE) ? 1 : 2;
+	int nIt = (copyOfWindow.findOptimalShift == FALSE) ? 1 : 2;
 
 	// Evaluate the scan (one or two times, depending on the settings)
-	for(int iteration = 0; iteration < nIt; ++iteration){
-
+	for(int iteration = 0; iteration < nIt; ++iteration)
+    {
 		index = -1; // we're at spectrum number 0 in the .pak-file
 		m_indexOfMostAbsorbingSpectrum = -1;	// as far as we know, there's no absorption in any spectrum...
 
@@ -175,7 +190,8 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, CEvaluation *eval, b
 		scan.ResetCounter();
 
 		// Evaluate all the spectra in the scan.
-		while(1) {
+		while(1)
+        {
 			success = true; // assume that we will succeed in evaluating this spectrum
 
 			// If the user wants to exit this thread then do so.
@@ -243,7 +259,8 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, CEvaluation *eval, b
 			}
 
 			// d. Check if this spectrum is worth evaluating
-			if(Ignore(current, eval->m_window)) {
+			if(Ignore(current, copyOfWindow))
+            {
 				message.Format("Ignoring spectrum %d in scan %s.", current.ScanIndex(), (LPCSTR)scan.GetFileName());
 				ShowMessage(message);
 				continue;
@@ -258,7 +275,9 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, CEvaluation *eval, b
 			current.Sub(dark);
 
 			// e. Evaluate the spectrum
-			if(eval->Evaluate(sky, current)){
+            eval->SetSkySpectrum(sky); // TODO: move up..
+			if(eval->Evaluate(current))
+            {
 				CString str;
 				str.Format("Failed to evaluate spectrum from spectrometer %s. Failure at spectrum %d in scan containing %d spectra",
 					current.m_info.m_device.c_str(), current.ScanIndex(), current.SpectraPerScan());
@@ -279,13 +298,15 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, CEvaluation *eval, b
 			}
 
 			// h. Update the screen (if any)
-			if (success) {
+			if (success)
+            {
 				UpdateResult(newResult);
-			}
-			if(success && pView != nullptr) {
-				//UpdateResult(newResult);
-				ShowResult(current, eval, index, scan.GetSpectrumNumInFile());
-			}
+
+                if(pView != nullptr)
+                {
+				    ShowResult(current, eval.get(), index, scan.GetSpectrumNumInFile());
+			    }
+            }
 
 			// i. If the user wants us to sleep between each evaluation. Do so...
 			if(m_pause != nullptr && *m_pause == 1 && m_sleeping != nullptr){
@@ -303,23 +324,35 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, CEvaluation *eval, b
 		} // end while(1)
 
 		// end of scan...
-		if((iteration == 0) && (eval->m_window.findOptimalShift == TRUE)){
-			FindOptimumShiftAndSqueeze(eval, &scan, newResult.get());
-		}
+		if((iteration == 0) && (copyOfWindow.findOptimalShift == TRUE))
+        {
+            if (m_indexOfMostAbsorbingSpectrum < 0)
+            {
+                ShowMessage("Could not determine optimal shift & squeeze. No good spectra in scan.");
+                break;
+            }
+            else
+            {
+                CEvaluationResult result = FindOptimumShiftAndSqueeze(eval.get(), &scan, newResult.get());
 
-	}//
+                // Get a new fit-window to use for the second iteration...
+                CFitWindow newWindow = copyOfWindow; // create a new copy
 
-	// restore the fit window
-	eval->m_window = backupWindow;
+                                                     // 5. Set the shift for all references to this value
+                for (int k = 0; k < newWindow.nRef; ++k) {
+                    if (newWindow.ref[k].m_specieName.compare("FraunhoferRef") == 0)
+                        continue;
 
-#ifdef _DEBUG
-	// this is for searching for memory leaks
-	newMem.Checkpoint();
-	if(diffMem.Difference(oldMem, newMem)){
-		diffMem.DumpStatistics(); 
-//    diffMem.DumpAllObjectsSince();
+                    newWindow.ref[k].m_shiftOption   = SHIFT_FIX;
+                    newWindow.ref[k].m_squeezeOption = SHIFT_FIX;
+                    newWindow.ref[k].m_shiftValue    = result.m_referenceResult[0].m_shift;
+                    newWindow.ref[k].m_squeezeValue  = result.m_referenceResult[0].m_squeeze;
+                }
+
+                eval.reset(new CEvaluation{newWindow});
+		    }
+        }
 	}
-#endif
 
 	return NumberOfSpectraInLastResult();
 }
@@ -383,8 +416,8 @@ void CScanEvaluation::ShowResult(const CSpectrum &spec, const CEvaluation *eval,
 		return;
 	}
 
-	int fitLow	= eval->m_window.fitLow  - spec.m_info.m_startChannel;
-	int fitHigh = eval->m_window.fitHigh - spec.m_info.m_startChannel;
+	int fitLow	= eval->FitWindow().fitLow  - spec.m_info.m_startChannel;
+	int fitHigh = eval->FitWindow().fitHigh - spec.m_info.m_startChannel;
 
 	/** copy the spectra. These spectra will be filled in after each evaluation
 		and the address of the first spectrum in the array will be sent
@@ -393,7 +426,7 @@ void CScanEvaluation::ShowResult(const CSpectrum &spec, const CEvaluation *eval,
 		The second spectrum is the residual of the fit,
 		The third spectrum is the fitted polynomial, and the following
 		MAX_N_REFERENCES + 1 spectra are the scaled reference spectra used in the fit. */
-	CSpectrum* spectra = new CSpectrum[eval->m_window.nRef + 3];
+	CSpectrum* spectra = new CSpectrum[eval->FitWindow().nRef + 3];
 
 	spectra[0] = spec;
 
@@ -404,7 +437,7 @@ void CScanEvaluation::ShowResult(const CSpectrum &spec, const CEvaluation *eval,
 	}
 
 	// copy the scaled referencefiles
-	for(int tmpRefIndex = 0; tmpRefIndex < eval->m_window.nRef; ++tmpRefIndex) {
+	for(int tmpRefIndex = 0; tmpRefIndex < eval->FitWindow().nRef; ++tmpRefIndex) {
 		for(int i = fitLow; i < fitHigh; ++i) {
 			spectra[tmpRefIndex + 3].m_data[i] = eval->m_fitResult[tmpRefIndex+1].GetAt(i);
 		}
@@ -693,18 +726,14 @@ bool CScanEvaluation::Ignore(const CSpectrum &spec, const CFitWindow window){
 }
 
 
-/** Finds the optimum shift and squeeze for an evaluated scan */
-void CScanEvaluation::FindOptimumShiftAndSqueeze(CEvaluation *eval, FileHandler::CScanFileHandler *scan, CScanResult *result){
+CEvaluationResult CScanEvaluation::FindOptimumShiftAndSqueeze(const CEvaluation *originalEvaluation, FileHandler::CScanFileHandler *scan, CScanResult *result)
+{
 	int k;
 	CSpectrum spec, sky, dark;
 	int specieNum = 0;
 	CString message;
 
 	// 1. Find the spectrum with the highest column value
-	if(m_indexOfMostAbsorbingSpectrum < 0){
-		ShowMessage("Could not determine optimal shift & squeeze. No good spectra in scan.");
-		return; // <-- no good data-point found. Quit it!
-	}
 
 	// 2. Make sure that this spectrum was ok and that the column-value is high enough
 	//double columnError		= result->GetColumnError(m_indexOfMostAbsorbingSpectrum, specieNum); // <-- the column error that corresponds to the highest column-value
@@ -719,22 +748,25 @@ void CScanEvaluation::FindOptimumShiftAndSqueeze(CEvaluation *eval, FileHandler:
 	ShowMessage(message);
 
 	// 3. Evaluate this spectrum again with free (and linked) shift
-	eval->m_window.ref[0].m_shiftOption	 = SHIFT_FREE;
-	eval->m_window.ref[0].m_squeezeOption = SHIFT_FIX;
-	eval->m_window.ref[0].m_squeezeValue  = 1.0;
-	for(k = 1; k < eval->m_window.nRef; ++k){
-		if(eval->m_window.ref[k].m_specieName.compare("FraunhoferRef") == 0)
+    CFitWindow newFitWindow = originalEvaluation->FitWindow(); // Create a local copy which we can modify
+    newFitWindow.ref[0].m_shiftOption   = SHIFT_FREE;
+    newFitWindow.ref[0].m_squeezeOption = SHIFT_FIX;
+    newFitWindow.ref[0].m_squeezeValue  = 1.0;
+	for(k = 1; k < newFitWindow.nRef; ++k){
+		if(EqualsIgnoringCase(newFitWindow.ref[k].m_specieName, "FraunhoferRef"))
 			continue;
 
-		eval->m_window.ref[k].m_shiftOption   = SHIFT_LINK;
-		eval->m_window.ref[k].m_squeezeOption = SHIFT_LINK;
-		eval->m_window.ref[k].m_shiftValue    = 0.0;
-		eval->m_window.ref[k].m_squeezeValue  = 0.0;
+		newFitWindow.ref[k].m_shiftOption   = SHIFT_LINK;
+		newFitWindow.ref[k].m_squeezeOption = SHIFT_LINK;
+		newFitWindow.ref[k].m_shiftValue    = 0.0;
+		newFitWindow.ref[k].m_squeezeValue  = 0.0;
 	}
 	// Get the sky-spectrum
 	GetSky(scan, sky);
 	if(sky.NumSpectra() > 0  && !m_averagedSpectra)
+    {
 		sky.Div(sky.NumSpectra());
+    }
 
 	// Get the dark-spectrum
 	GetDark(scan, sky, dark);
@@ -756,36 +788,28 @@ void CScanEvaluation::FindOptimumShiftAndSqueeze(CEvaluation *eval, FileHandler:
 	spec.Sub(dark);
 
 	// Evaluate
-	eval->Evaluate(sky, spec, 5000);
+    CEvaluation newEval{ newFitWindow };
+    newEval.SetSkySpectrum(sky);
+    newEval.Evaluate(spec, 5000);
 
 	// 4. See what the optimum value for the shift turned out to be.
-	CEvaluationResult newResult = eval->GetEvaluationResult();
-	double optimumShift		= newResult.m_referenceResult[0].m_shift;
-	double optimumSqueeze = newResult.m_referenceResult[0].m_squeeze;
+	CEvaluationResult newResult = newEval.GetEvaluationResult();
+	double optimumShift		    = newResult.m_referenceResult[0].m_shift;
+	double optimumSqueeze       = newResult.m_referenceResult[0].m_squeeze;
 
-
-	// 5. Set the shift for all references to this value
-	for(k = 0; k < eval->m_window.nRef; ++k){
-		if(eval->m_window.ref[k].m_specieName.compare("FraunhoferRef") == 0)
-			continue;
-
-		eval->m_window.ref[k].m_shiftOption     = SHIFT_FIX;
-		eval->m_window.ref[k].m_squeezeOption   = SHIFT_FIX;
-		eval->m_window.ref[k].m_shiftValue      = optimumShift;
-		eval->m_window.ref[k].m_squeezeValue    = optimumSqueeze;
-	}
-
-	// 6. We're done!
+	// 5. We're done!
 	message.Format("Optimum shift set to : %.2lf. Optimum squeeze set to: %.2lf ", optimumShift, optimumSqueeze);
 	ShowMessage(message);
-	return;
+	
+    return newResult;
 }
 
-void CScanEvaluation::FindOptimumShiftAndSqueeze_Fraunhofer(CEvaluation *eval, FileHandler::CScanFileHandler *scan){
-	CFitWindow backupWindow = eval->m_window;
+CFitWindow* CScanEvaluation::FindOptimumShiftAndSqueeze_Fraunhofer(const CEvaluation *originalEvaluation, FileHandler::CScanFileHandler *scan)
+{
+    CFitWindow newFitWindow = originalEvaluation->FitWindow(); // Create a local copy which we can modify
 	double shift, shiftError, squeeze, squeezeError;
-	long fitLow = backupWindow.fitLow;
-	long fitHigh= backupWindow.fitHigh;
+	long fitLow = newFitWindow.fitLow;
+	long fitHigh= newFitWindow.fitHigh;
 	CSpectrum spectrum, dark;
 	CString message;
 	double fitIntensity, fitSaturation, maxInt;
@@ -842,7 +866,7 @@ void CScanEvaluation::FindOptimumShiftAndSqueeze_Fraunhofer(CEvaluation *eval, F
 
 	// 2. Get the spectrum we should evaluate...
 	if(indexOfMostSuitableSpectrum == NO_SPECTRUM_INDEX) {
-		return; // we could not find any good spectrum to use...
+		return nullptr; // we could not find any good spectrum to use...
 	} else if(indexOfMostSuitableSpectrum == INDEX_OF_SKYSPECTRUM) {
 		scan->GetSky(spectrum);
 		message.Format("Determining shift and squeeze from sky-spectrum");
@@ -856,7 +880,7 @@ void CScanEvaluation::FindOptimumShiftAndSqueeze_Fraunhofer(CEvaluation *eval, F
 	}
 
 	if(SUCCESS != GetDark(scan, spectrum, dark)) {
-		return; // fail
+		return nullptr; // fail
 	}
 
 	if(dark.NumSpectra() > 0 && !m_averagedSpectra) {
@@ -868,22 +892,31 @@ void CScanEvaluation::FindOptimumShiftAndSqueeze_Fraunhofer(CEvaluation *eval, F
 	ShowMessage(message);
 
 	// 3. Do the evaluation.
-	if(eval->EvaluateShift(spectrum, backupWindow, shift, shiftError, squeeze, squeezeError)) {
+    CEvaluation shiftEvaluator{newFitWindow};
+
+	if(shiftEvaluator.EvaluateShift(spectrum, newFitWindow, shift, shiftError, squeeze, squeezeError)) {
 		// We failed to make the fit, what shall we do now??
 		ShowMessage("Failed to determine shift and squeeze. Will proceed with default parameters.");
+        return nullptr;
 	}else{
-		if(fabs(shiftError) < 1 && fabs(squeezeError) < 0.01) {
+		if(fabs(shiftError) < 1 && fabs(squeezeError) < 0.01)
+        {
+            CFitWindow* bestFitWindow = new CFitWindow{ originalEvaluation->FitWindow() };
 			// The fit is good enough to use the values
-			for(int it = 0; it < eval->m_window.nRef; ++it){
-				eval->m_window.ref[it].m_shiftOption		= SHIFT_FIX;
-				eval->m_window.ref[it].m_squeezeOption		= SHIFT_FIX;
-				eval->m_window.ref[it].m_shiftValue			= shift;
-				eval->m_window.ref[it].m_squeezeValue		= squeeze;
+			for(int it = 0; it < originalEvaluation->FitWindow().nRef; ++it){
+                bestFitWindow->ref[it].m_shiftOption		= SHIFT_FIX;
+                bestFitWindow->ref[it].m_squeezeOption		= SHIFT_FIX;
+                bestFitWindow->ref[it].m_shiftValue			= shift;
+                bestFitWindow->ref[it].m_squeezeValue		= squeeze;
 			}
 			message.Format("Shift: %.2lf ± %.2lf; Squeeze: %.2lf ± %.2lf", shift, shiftError, squeeze, squeezeError);
 			ShowMessage(message);
+
+            return bestFitWindow;
 		}else{
 			ShowMessage("Fit not good enough. Will proceed with default parameters.");
+
+            return nullptr;
 		}
 	}
 }

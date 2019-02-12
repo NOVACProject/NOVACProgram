@@ -35,7 +35,8 @@ namespace Evaluation
 
 		/** A set of evaluators which can evaluate spectra from this spectrometer.
 				Each evaluator evaluates for one fit window. */
-		CEvaluation *m_evaluator[MAX_FIT_WINDOWS];
+        std::vector<CEvaluation> m_evaluator;
+		// CEvaluation *m_evaluator[MAX_FIT_WINDOWS];
 
 		/** The number of fit windows defined */
 		unsigned short	m_fitWindowNum;
