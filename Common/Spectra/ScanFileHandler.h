@@ -3,10 +3,11 @@
 #include <afxtempl.h>
 
 #include "../Common.h"
-#include "SpectrumTime.h"
+#include "../../SpectralEvaluation/Spectra/DateTime.h"
 #include "SpectrumIO.h"
 
-#include "../../Evaluation/EvaluationResult.h"
+#include "../../SpectralEvaluation/Evaluation/EvaluationResult.h"
+
 
 #include "../WindField.h"
 
@@ -43,15 +44,10 @@ namespace FileHandler
 		unsigned char m_channel;
 
 		/** The time (UMT) when the measurement started */
-		CSpectrumTime m_startTime;
+        CDateTime m_startTime;
 
 		/** The time (UMT) when the measurement was finished */
-		CSpectrumTime m_stopTime;
-
-		/** The date when the measurement started .
-				(m_date[0] is the year, m_date[1] is the month (1-12), 
-					and m_date[2] is the day (1-31)*/
-		unsigned short m_date[3];
+        CDateTime m_stopTime;
 
 		/** If any error occurs in the reading of the file, this int is set to
 			any of the errors defined int 'SpectrumIO.h. */

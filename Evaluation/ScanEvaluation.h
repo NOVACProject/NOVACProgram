@@ -4,7 +4,7 @@
 #include <memory>
 #include <mutex>
 
-#include "FitParameter.h"
+#include "../SpectralEvaluation/Evaluation/FitParameter.h"
 #include "../Common/Common.h"
 #include "../Common/Spectra/ScanFileHandler.h"
 #include "../Common/LogFileWriter.h"

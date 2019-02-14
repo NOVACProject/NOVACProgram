@@ -238,10 +238,10 @@ void CPakFileInspector::CheckPakFile(){
 	str.Format("%I64u", fileSize);
 	m_propertyList.SetItemText(index++, 1, 		str);
 
-	str.Format("%02d:%02d:%02d", firstSpectrum.m_info.m_startTime.hr, firstSpectrum.m_info.m_startTime.m, firstSpectrum.m_info.m_startTime.sec);
+	str.Format("%02d:%02d:%02d", firstSpectrum.m_info.m_startTime.hour, firstSpectrum.m_info.m_startTime.minute, firstSpectrum.m_info.m_startTime.second);
 	m_propertyList.SetItemText(index++, 1, 		str);
 
-	str.Format("%02d:%02d:%02d", lastSpectrum.m_info.m_startTime.hr, lastSpectrum.m_info.m_startTime.m, lastSpectrum.m_info.m_startTime.sec);
+	str.Format("%02d:%02d:%02d", lastSpectrum.m_info.m_startTime.hour, lastSpectrum.m_info.m_startTime.minute, lastSpectrum.m_info.m_startTime.second);
 	m_propertyList.SetItemText(index++, 1, 		str);
 
 	// --- Show the spectrum and its properties ---

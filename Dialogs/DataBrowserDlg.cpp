@@ -268,7 +268,7 @@ void CDataBrowserDlg::OnBrowseEvallog(){
 		}
 
 		// Find the volcano that we're observing
-		CString volcanoName = CString(m_calculator->m_scan[0].GetSpectrumInfo(0).m_volcano);
+		CString volcanoName = CString(m_calculator->m_scan[0].GetSpectrumInfo(0).m_volcano.c_str());
 		for(unsigned int k = 0; k < g_volcanoes.m_volcanoNum; ++k){
 			if(Equals(volcanoName, g_volcanoes.m_name[k])){
 				m_volcanoIndex = k;
@@ -541,11 +541,11 @@ void CDataBrowserDlg::UpdateScanInfo(){
 
 	// The volcano
 	const CSpectrumInfo &info = scan.GetSpectrumInfo(0);
-	str.Format("%s", (LPCSTR)info.m_volcano);
+	str.Format("%s", info.m_volcano.c_str());
 	m_scanInfoList.SetItemText(index++, 1, str);
 
 	// The site
-	str.Format("%s", (LPCSTR)info.m_site);
+	str.Format("%s", info.m_site.c_str());
 	m_scanInfoList.SetItemText(index++, 1, str);
 
 	// The latitude
@@ -565,7 +565,7 @@ void CDataBrowserDlg::UpdateScanInfo(){
 	m_scanInfoList.SetItemText(index++, 1, str);
 
 	// The serial-number of the spectrometer used
-	str.Format("%s", (LPCSTR)scan.GetSerial());
+	str.Format("%s", scan.GetSerial().c_str());
 	m_scanInfoList.SetItemText(index++, 1, str);
 
 	// The type of scanner used

@@ -72,7 +72,7 @@ RETURN_CODE CSTDFile::ReadSpectrum(CSpectrum &spec, const CString &fileName){
 		fclose(f); return FAIL;
 	}
 	buffer[strlen(buffer) - 1] = 0; // <-- Remove the trailing newline character
-	spec.m_info.m_device.Format("%s", buffer);
+	spec.m_info.m_device = std::string(buffer);
 
 	// 8. The date
 	if(NULL == fgets(buffer, bufSize, f)){
@@ -89,13 +89,13 @@ RETURN_CODE CSTDFile::ReadSpectrum(CSpectrum &spec, const CString &fileName){
 		}
 	}
 	if(tmpInt > 31){
-		spec.m_info.m_date[0] = (tmpInt < 1900) ? tmpInt + 2000 : tmpInt;
-		spec.m_info.m_date[1] = tmpInt2;
-		spec.m_info.m_date[2] = tmpInt3;
+		spec.m_info.m_startTime.year  = (tmpInt < 1900) ? tmpInt + 2000 : tmpInt;
+		spec.m_info.m_startTime.month = tmpInt2;
+		spec.m_info.m_startTime.day   = tmpInt3;
 	}else{
-		spec.m_info.m_date[0] = (tmpInt3 < 1900) ? tmpInt3 + 2000 : tmpInt3;
-		spec.m_info.m_date[1] = tmpInt2;
-		spec.m_info.m_date[2] = tmpInt;
+		spec.m_info.m_startTime.year  = (tmpInt3 < 1900) ? tmpInt3 + 2000 : tmpInt3;
+		spec.m_info.m_startTime.month = tmpInt2;
+		spec.m_info.m_startTime.day   = tmpInt;
 	}
 
 	// 9. The starttime
@@ -104,9 +104,9 @@ RETURN_CODE CSTDFile::ReadSpectrum(CSpectrum &spec, const CString &fileName){
 	}
 	if(3 > sscanf(buffer, "%d:%d:%d", &tmpInt, &tmpInt2, &tmpInt3)){
 	}else{
-		spec.m_info.m_startTime.hr	= tmpInt;
-		spec.m_info.m_startTime.m		= tmpInt2;
-		spec.m_info.m_startTime.sec = tmpInt3;
+		spec.m_info.m_startTime.hour   = tmpInt;
+		spec.m_info.m_startTime.minute = tmpInt2;
+		spec.m_info.m_startTime.second = tmpInt3;
 	}
 
 	// 10. The stoptime
@@ -116,9 +116,9 @@ RETURN_CODE CSTDFile::ReadSpectrum(CSpectrum &spec, const CString &fileName){
 	if(3 > sscanf(buffer, "%d:%d:%d", &tmpInt, &tmpInt2, &tmpInt3)){
 		fclose(f); return FAIL;
 	}
-	spec.m_info.m_stopTime.hr		= tmpInt;
-	spec.m_info.m_stopTime.m		= tmpInt2;
-	spec.m_info.m_stopTime.sec	= tmpInt3;
+	spec.m_info.m_stopTime.hour   = tmpInt;
+	spec.m_info.m_stopTime.minute = tmpInt2;
+	spec.m_info.m_stopTime.second = tmpInt3;
 
 	// 11. The start wavelength (ignore)
 	if(NULL == fgets(buffer, bufSize, f)){
@@ -153,7 +153,7 @@ RETURN_CODE CSTDFile::ReadSpectrum(CSpectrum &spec, const CString &fileName){
 		fclose(f); return FAIL;
 	}
 	buffer[strlen(buffer) - 1] = 0; // <-- Remove the trailing newline character
-	spec.m_info.m_name.Format("%s", buffer + 5);
+	spec.m_info.m_name = std::string(buffer + 5);
 
 	// 15. The longitude
 	if(NULL == fgets(buffer, bufSize, f)){
@@ -251,24 +251,24 @@ RETURN_CODE CSTDFile::WriteSpectrum(const CSpectrum &spec, const CString &fileNa
 	else
 		fprintf(f, "%s\n", (LPCSTR)fileName);
 	fprintf(f, ".......\n"); // the detector
-	fprintf(f, "%s\n", (LPCSTR)info.m_device); // the spectrometer
+	fprintf(f, "%s\n", info.m_device.c_str()); // the spectrometer
 
-	if(info.m_date[0] == info.m_date[1] && info.m_date[1] == info.m_date[2] && info.m_date[2] == 0){
+	if(info.m_startTime.year == info.m_startTime.month && info.m_startTime.month == info.m_startTime.day && info.m_startTime.day == 0){
 		fprintf(f, "01.01.01\n"); /* Default date */
 	}else{
-		fprintf(f, "%02d.%02d.%02d\n", info.m_date[0], info.m_date[1], info.m_date[2]); // the date
+		fprintf(f, "%02d.%02d.%02d\n", info.m_startTime.year, info.m_startTime.month, info.m_startTime.day); // the date
 	}
-	fprintf(f, "%02d:%02d:%02d\n", info.m_startTime.hr, info.m_startTime.m, info.m_startTime.sec);
-	fprintf(f, "%02d:%02d:%02d\n", info.m_stopTime.hr, info.m_stopTime.m, info.m_stopTime.sec);
+	fprintf(f, "%02d:%02d:%02d\n", info.m_startTime.hour, info.m_startTime.minute, info.m_startTime.second);
+	fprintf(f, "%02d:%02d:%02d\n", info.m_stopTime.hour, info.m_stopTime.minute, info.m_stopTime.second);
 
 	fprintf(f, "0.0\n0.0\n"); // the start and stop wavelengths
 
 	fprintf(f, "SCANS %ld\n", info.m_numSpec);
 	fprintf(f, "INT_TIME %ld\n", info.m_exposureTime);
 
-	fprintf(f, "SITE %s\n", (LPCSTR)info.m_name);
-	fprintf(f, "LONGITUDE %.6lf\n", info.m_gps.Longitude());
-	fprintf(f, "LATITUDE %.6lf\n", info.m_gps.Latitude());
+	fprintf(f, "SITE %s\n", info.m_name.c_str());
+	fprintf(f, "LONGITUDE %.6lf\n", info.m_gps.m_longitude);
+	fprintf(f, "LATITUDE %.6lf\n", info.m_gps.m_latitude);
 
 	if(extendedFormat){
 		fprintf(f, "Author = \"\"\n");
@@ -284,10 +284,10 @@ RETURN_CODE CSTDFile::WriteSpectrum(const CSpectrum &spec, const CString &fileNa
 		fprintf(f, "FitHigh = 0\n");
 		fprintf(f, "FitLow = 0\n");
 		fprintf(f, "Gain = 0\n");
-		fprintf(f, "Latitude = %.6lf\n",				info.m_gps.Latitude());
+		fprintf(f, "Latitude = %.6lf\n",				info.m_gps.m_latitude);
 		fprintf(f, "LightPath = 0\n");
 		fprintf(f, "LightSource = \"\"\n");
-		fprintf(f, "Longitude = %.6lf\n",				info.m_gps.Longitude());
+		fprintf(f, "Longitude = %.6lf\n",				info.m_gps.m_longitude);
 		fprintf(f, "Marker = %d\n",							spec.m_length / 2);
 		fprintf(f, "MathHigh = %d\n",						spec.m_length - 1);
 		fprintf(f, "MathLow = 0\n");
@@ -296,7 +296,7 @@ RETURN_CODE CSTDFile::WriteSpectrum(const CSpectrum &spec, const CString &fileNa
 		fprintf(f, "Min = %.3lf\n",							spec.MinValue());
 		fprintf(f, "MinChannel = 0\n");
 		fprintf(f, "MultiChannelCounter = 0\n");
-		fprintf(f, "Name = \"%s\"\n", (LPCSTR)info.m_name);
+		fprintf(f, "Name = \"%s\"\n", info.m_name.c_str());
 		fprintf(f, "NumScans = %d\n",						info.m_numSpec);
 		fprintf(f, "OpticalDensity = 0\n");
 		fprintf(f, "OpticalDensityCenter = %d\n",	spec.m_length / 2);

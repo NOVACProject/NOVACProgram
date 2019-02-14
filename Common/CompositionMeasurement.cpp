@@ -186,7 +186,8 @@ bool CCompositionMeasurement::IsTimeForCompositionMeasurement(const Evaluation::
 
 /** Starts an automatic composition measurement for the supplied spectrometer */
 void	CCompositionMeasurement::StartCompositionMeasurement(const Evaluation::CSpectrometer *spec){
-	static CString message, spectrometerType;
+	static CString message;
+    std::string spectrometerType;
 	CString dateTime, directory;
 	Common common;
 	double plumeCentre, plumeEdge[2];
@@ -345,10 +346,10 @@ void	CCompositionMeasurement::StartCompositionMeasurement(const Evaluation::CSpe
 
 		int motorPosition2				=	int (round(stepsPerDegree2*phi_center_of_mass));
 
-		if(SUCCESS != CSpectrometerModel::ToString(spec->m_scanner.spec[0].model, spectrometerType)){
-			spectrometerType.Format("HR2000");
+		if(!CSpectrometerModel::ToString(spec->m_scanner.spec[0].model, spectrometerType)){
+			spectrometerType = "HR2000";
 		}
-		fprintf (f, "SPECTROMETERTYPE=%s\n\n", (LPCSTR)spectrometerType);  //can spectrometertype be retrieved automatically from configuration?
+		fprintf (f, "SPECTROMETERTYPE=%s\n\n", spectrometerType.c_str());  //can spectrometertype be retrieved automatically from configuration?
 
 		// 3e. Write the motor information
 		//fprintf(f, "%% StepsPerRound defines the number of steps the steppermotor divides one round into\n");

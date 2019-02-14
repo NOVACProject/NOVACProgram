@@ -97,15 +97,36 @@
     <Filter Include="Header Files\SpectralEvaluation\Fit">
       <UniqueIdentifier>{65de0c42-58c6-45e4-bd25-37435fad3831}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\SpectralEvaluation">
+      <UniqueIdentifier>{d3c0217b-0547-49c6-a49c-dc0f3970c3f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\SpectralEvaluation\Fit">
+      <UniqueIdentifier>{f9939c1b-4ecb-4204-adb4-e8c219289323}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\SpectralEvaluation\Evaluation">
+      <UniqueIdentifier>{25ed61be-87c2-41b4-9e7c-4a35992610ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\SpectralEvaluation\Evaluation">
+      <UniqueIdentifier>{4e500692-1d4d-4797-bd12-242351c8c05c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\SpectralEvaluation\Spectra">
+      <UniqueIdentifier>{996a8f38-112a-423a-8118-7012eaf30715}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\SpectralEvaluation\Spectra">
+      <UniqueIdentifier>{ae975ed8-25e4-4d5d-b98a-3933d282a32d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\SpectralEvaluation\Flux">
+      <UniqueIdentifier>{05fb6f89-8ca1-4dcd-aaa6-72d399a2ea0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Common\Flux">
+      <UniqueIdentifier>{6a57bac3-4a11-4286-8f8b-e2c7f52ab4bc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Configuration\AdvancedFTPUploadSettings.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Common\CfgTxtFileHandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Evaluation\ColumnCorrection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CombinerThread.cpp">
@@ -123,9 +144,6 @@
     <ClCompile Include="Dialogs\DataBrowserDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Common\DateTime.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="EvaluatedDataStorage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -136,9 +154,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FileTreeCtrl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Evaluation\FitWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ReEvaluation\FitWindowListBox.cpp">
@@ -285,16 +300,7 @@
     <ClCompile Include="Common\Common.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
-    <ClCompile Include="Common\GPSData.cpp">
-      <Filter>Source Files\Common</Filter>
-    </ClCompile>
     <ClCompile Include="Common\LogFileWriter.cpp">
-      <Filter>Source Files\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\ReferenceFile.cpp">
-      <Filter>Source Files\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\SpectrometerModel.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
     <ClCompile Include="Common\WindField.cpp">
@@ -312,16 +318,7 @@
     <ClCompile Include="Common\Spectra\ScanFileHandler.cpp">
       <Filter>Source Files\Common\Spectra</Filter>
     </ClCompile>
-    <ClCompile Include="Common\Spectra\Spectrum.cpp">
-      <Filter>Source Files\Common\Spectra</Filter>
-    </ClCompile>
     <ClCompile Include="Common\Spectra\SpectrumIO.cpp">
-      <Filter>Source Files\Common\Spectra</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\Spectra\SpectrumInfo.cpp">
-      <Filter>Source Files\Common\Spectra</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\Spectra\SpectrumTime.cpp">
       <Filter>Source Files\Common\Spectra</Filter>
     </ClCompile>
     <ClCompile Include="PostFlux\PostFluxCalculator.cpp">
@@ -450,28 +447,13 @@
     <ClCompile Include="Dialogs\SplitPakFilesDlg.cpp">
       <Filter>Source Files\Dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="Evaluation\BasicMath.cpp">
-      <Filter>Source Files\Evaluation</Filter>
-    </ClCompile>
-    <ClCompile Include="Evaluation\CrossSectionData.cpp">
-      <Filter>Source Files\Evaluation</Filter>
-    </ClCompile>
     <ClCompile Include="Evaluation\Evaluation.cpp">
       <Filter>Source Files\Evaluation</Filter>
     </ClCompile>
     <ClCompile Include="Evaluation\EvaluationController.cpp">
       <Filter>Source Files\Evaluation</Filter>
     </ClCompile>
-    <ClCompile Include="Evaluation\EvaluationResult.cpp">
-      <Filter>Source Files\Evaluation</Filter>
-    </ClCompile>
     <ClCompile Include="Evaluation\FitWindowFileHandler.cpp">
-      <Filter>Source Files\Evaluation</Filter>
-    </ClCompile>
-    <ClCompile Include="Evaluation\MessageLog.cpp">
-      <Filter>Source Files\Evaluation</Filter>
-    </ClCompile>
-    <ClCompile Include="Evaluation\ReferenceFitResult.cpp">
       <Filter>Source Files\Evaluation</Filter>
     </ClCompile>
     <ClCompile Include="Evaluation\ScanEvaluation.cpp">
@@ -531,14 +513,53 @@
     <ClCompile Include="Dialogs\ReferencePlotDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SpectralEvaluation\Fit\BSpline.cxx">
-      <Filter>Header Files\SpectralEvaluation\Fit</Filter>
+    <ClCompile Include="SpectralEvaluation\Fit\MessageLog.cpp">
+      <Filter>Source Files\SpectralEvaluation\Fit</Filter>
     </ClCompile>
-    <ClCompile Include="SpectralEvaluation\Fit\BSplineD.cxx">
-      <Filter>Header Files\SpectralEvaluation\Fit</Filter>
+    <ClCompile Include="SpectralEvaluation\Evaluation\BasicMath.cpp">
+      <Filter>Source Files\SpectralEvaluation\Evaluation</Filter>
     </ClCompile>
-    <ClCompile Include="SpectralEvaluation\Fit\BSplineF.cxx">
-      <Filter>Header Files\SpectralEvaluation\Fit</Filter>
+    <ClCompile Include="SpectralEvaluation\Evaluation\ReferenceFitResult.cpp">
+      <Filter>Source Files\SpectralEvaluation\Evaluation</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\Evaluation\CrossSectionData.cpp">
+      <Filter>Source Files\SpectralEvaluation\Evaluation</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\Evaluation\ReferenceFile.cpp">
+      <Filter>Source Files\SpectralEvaluation\Evaluation</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\Evaluation\FitWindow.cpp">
+      <Filter>Source Files\SpectralEvaluation\Evaluation</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\Evaluation\EvaluationResult.cpp">
+      <Filter>Source Files\SpectralEvaluation\Evaluation</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\Spectra\GPSData.cpp">
+      <Filter>Source Files\SpectralEvaluation\Spectra</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\Spectra\DateTime.cpp">
+      <Filter>Source Files\SpectralEvaluation\Spectra</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\Spectra\SpectrometerModel.cpp">
+      <Filter>Source Files\SpectralEvaluation\Spectra</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\Spectra\SpectrumInfo.cpp">
+      <Filter>Source Files\SpectralEvaluation\Spectra</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\Utils.cpp">
+      <Filter>Source Files\SpectralEvaluation</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\Flux\PlumeInScanProperty.cpp">
+      <Filter>Source Files\Common\Flux</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\Flux\Flux.cpp">
+      <Filter>Source Files\Common\Flux</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\Spectra\Spectrum.cpp">
+      <Filter>Source Files\SpectralEvaluation\Spectra</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\Evaluation\EvaluationBase.cpp">
+      <Filter>Source Files\SpectralEvaluation\Evaluation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -546,9 +567,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Common\CfgTxtFileHandler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Evaluation\ColumnCorrection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CombinerThread.h">
@@ -566,9 +584,6 @@
     <ClInclude Include="Dialogs\DataBrowserDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Common\DateTime.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="EvaluatedDataStorage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -582,9 +597,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FileTreeCtrl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Evaluation\FitWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ReEvaluation\FitWindowListBox.h">
@@ -734,16 +746,7 @@
     <ClInclude Include="Common\Common.h">
       <Filter>Header Files\Common</Filter>
     </ClInclude>
-    <ClInclude Include="Common\GPSData.h">
-      <Filter>Header Files\Common</Filter>
-    </ClInclude>
     <ClInclude Include="Common\LogFileWriter.h">
-      <Filter>Header Files\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\ReferenceFile.h">
-      <Filter>Header Files\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\SpectrometerModel.h">
       <Filter>Header Files\Common</Filter>
     </ClInclude>
     <ClInclude Include="Common\WindField.h">
@@ -764,23 +767,8 @@
     <ClInclude Include="Common\Spectra\ScanFileHandler.h">
       <Filter>Header Files\Common\Spectra</Filter>
     </ClInclude>
-    <ClInclude Include="Common\Spectra\Spectrum.h">
-      <Filter>Header Files\Common\Spectra</Filter>
-    </ClInclude>
     <ClInclude Include="Common\Spectra\SpectrumIO.h">
       <Filter>Header Files\Common\Spectra</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\Spectra\SpectrumInfo.h">
-      <Filter>Header Files\Common\Spectra</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\Spectra\SpectrumTime.h">
-      <Filter>Header Files\Common\Spectra</Filter>
-    </ClInclude>
-    <ClInclude Include="Evaluation\BasicMath.h">
-      <Filter>Header Files\Evaluation</Filter>
-    </ClInclude>
-    <ClInclude Include="Evaluation\CrossSectionData.h">
-      <Filter>Header Files\Evaluation</Filter>
     </ClInclude>
     <ClInclude Include="Evaluation\Evaluation.h">
       <Filter>Header Files\Evaluation</Filter>
@@ -788,16 +776,7 @@
     <ClInclude Include="Evaluation\EvaluationController.h">
       <Filter>Header Files\Evaluation</Filter>
     </ClInclude>
-    <ClInclude Include="Evaluation\EvaluationResult.h">
-      <Filter>Header Files\Evaluation</Filter>
-    </ClInclude>
     <ClInclude Include="Evaluation\FitWindowFileHandler.h">
-      <Filter>Header Files\Evaluation</Filter>
-    </ClInclude>
-    <ClInclude Include="Evaluation\MessageLog.h">
-      <Filter>Header Files\Evaluation</Filter>
-    </ClInclude>
-    <ClInclude Include="Evaluation\ReferenceFitResult.h">
       <Filter>Header Files\Evaluation</Filter>
     </ClInclude>
     <ClInclude Include="Evaluation\ScanEvaluation.h">
@@ -1111,6 +1090,63 @@
     </ClInclude>
     <ClInclude Include="SpectralEvaluation\Fit\Vector.h">
       <Filter>Header Files\SpectralEvaluation\Fit</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\Fit\MessageLog.h">
+      <Filter>Header Files\SpectralEvaluation\Fit</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\Evaluation\BasicMath.h">
+      <Filter>Header Files\SpectralEvaluation\Evaluation</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\Evaluation\ReferenceFitResult.h">
+      <Filter>Header Files\SpectralEvaluation\Evaluation</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\Evaluation\CrossSectionData.h">
+      <Filter>Header Files\SpectralEvaluation\Evaluation</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\Fit\BSpline.cxx">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\Fit\BSplineD.cxx">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\Fit\BSplineF.cxx">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\Evaluation\ReferenceFile.h">
+      <Filter>Header Files\SpectralEvaluation\Evaluation</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\Evaluation\FitWindow.h">
+      <Filter>Header Files\SpectralEvaluation\Evaluation</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\Evaluation\EvaluationResult.h">
+      <Filter>Header Files\SpectralEvaluation\Evaluation</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\Spectra\GPSData.h">
+      <Filter>Header Files\SpectralEvaluation\Spectra</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\Spectra\DateTime.h">
+      <Filter>Header Files\SpectralEvaluation\Spectra</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\Spectra\SpectrometerModel.h">
+      <Filter>Header Files\SpectralEvaluation\Spectra</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\Spectra\SpectrumInfo.h">
+      <Filter>Header Files\SpectralEvaluation\Spectra</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\Utils.h">
+      <Filter>Header Files\SpectralEvaluation</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\Flux\PlumeInScanProperty.h">
+      <Filter>Header Files\SpectralEvaluation\Flux</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\Flux\Flux.h">
+      <Filter>Header Files\SpectralEvaluation\Flux</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\Spectra\Spectrum.h">
+      <Filter>Header Files\SpectralEvaluation\Spectra</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\Evaluation\EvaluationBase.h">
+      <Filter>Header Files\SpectralEvaluation\Evaluation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

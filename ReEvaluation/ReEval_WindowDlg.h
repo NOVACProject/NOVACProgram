@@ -20,10 +20,11 @@ namespace ReEvaluation
 		// Dialog Data
 		enum { IDD = IDD_REEVAL_WINDOW };
 
-		protected:
+    protected:
 		virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 		DECLARE_MESSAGE_MAP()
+
 	public:
 
 		// --------------------------- PUBLIC DATA -------------------------- 
@@ -98,5 +99,8 @@ namespace ReEvaluation
 
 		/** Lets the user browse for a solar-spectrum */
 		afx_msg void OnBrowseSolarSpectrum();
+
+    private:
+        CString m_fraunhoferReferenceName;
 	};
 }

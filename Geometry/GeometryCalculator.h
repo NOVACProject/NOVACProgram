@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Common/GPSData.h"
+#include "../SpectralEvaluation/Spectra/GPSData.h"
 
 namespace Geometry{
 

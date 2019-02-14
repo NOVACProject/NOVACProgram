@@ -547,7 +547,7 @@ LRESULT CView_Scanner::OnUpdateEvalStatus(WPARAM wParam, LPARAM lParam){
 	}
 
 	Common common;
-	if(g_settings.scanner[m_scannerIndex].gps.Latitude() == 0){
+	if(g_settings.scanner[m_scannerIndex].gps.m_latitude == 0){
 		printf("ojsan");
 	}
 	// update the configuration info
@@ -555,9 +555,9 @@ LRESULT CView_Scanner::OnUpdateEvalStatus(WPARAM wParam, LPARAM lParam){
 	this->SetDlgItemText(IDC_CONFINFO_SERIAL, txt);
 	txt.Format("%.1lf [deg]", fmod(g_settings.scanner[m_scannerIndex].compass, 360.0f));
 	this->SetDlgItemText(IDC_CONFINFO_COMPASS, txt);
-	txt.Format("%.5lf", g_settings.scanner[m_scannerIndex].gps.Latitude());
+	txt.Format("%.5lf", g_settings.scanner[m_scannerIndex].gps.m_latitude);
 	this->SetDlgItemText(IDC_CONFINFO_LATITUDE, txt);
-	txt.Format("%.5lf", g_settings.scanner[m_scannerIndex].gps.Longitude());
+	txt.Format("%.5lf", g_settings.scanner[m_scannerIndex].gps.m_longitude);
 	this->SetDlgItemText(IDC_CONFINFO_LONGITUDE, txt);
 	if(fabs(g_settings.scanner[m_scannerIndex].coneAngle - 90.0) < 1e-2){
 		// flat scanner
@@ -573,12 +573,12 @@ LRESULT CView_Scanner::OnUpdateEvalStatus(WPARAM wParam, LPARAM lParam){
 		Evaluation::CScanResult *result = (Evaluation::CScanResult *)lParam;
 		CDateTime startTime;
 		result->GetSkyStartTime(startTime);
-		CSpectrumTime stopTime	= result->GetSpectrumInfo(result->GetEvaluatedNum()-1).m_stopTime;
+        CDateTime stopTime	= result->GetSpectrumInfo(result->GetEvaluatedNum()-1).m_stopTime;
 
 		txt.Format("%02d:%02d:%02d", startTime.hour, startTime.minute, startTime.second);
 		SetDlgItemText(IDC_SCANINFO_STARTTIME, txt);
 
-		txt.Format("%02d:%02d:%02d", stopTime.hr, stopTime.m, stopTime.sec);
+		txt.Format("%02d:%02d:%02d", stopTime.hour, stopTime.minute, stopTime.second);
 		SetDlgItemText(IDC_SCANINFO_STOPTIME, txt);
 
 		txt.Format("%04d.%02d.%02d", startTime.year, startTime.month, startTime.day);

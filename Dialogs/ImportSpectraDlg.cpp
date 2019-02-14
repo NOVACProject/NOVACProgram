@@ -562,26 +562,26 @@ int	 ImportScanDOASSpectraInDirectory(const CArray<CString *, CString *>	&m_spec
 			dark.m_info.m_scanAngle = 180.0;
 
 		// Set the names of the dark and the sky-spectra
-		sky.m_info.m_name.Format("sky");
-		dark.m_info.m_name.Format("dark");
+		sky.m_info.m_name = std::string("sky");
+		dark.m_info.m_name = std::string("dark");
 
 		// Set the serial-number information
-		sky.m_info.m_device.Format("%s", (LPCSTR)serialNumber);
-		dark.m_info.m_device.Format("%s", (LPCSTR)serialNumber);
+		sky.m_info.m_device = std::string(serialNumber);
+		dark.m_info.m_device = std::string(serialNumber);
 	
 		// Correct the date
-		if(sky.m_info.m_date[0] > currentYear){
-			tmpInt							 = sky.m_info.m_date[0] - 2000;
-			sky.m_info.m_date[0] = sky.m_info.m_date[2] + 2000;
-			sky.m_info.m_date[2] = tmpInt;
-			tmpInt							 = dark.m_info.m_date[0] - 2000;
-			dark.m_info.m_date[0]= dark.m_info.m_date[2] + 2000;
-			dark.m_info.m_date[2]= tmpInt;
+		if(sky.m_info.m_startTime.year > currentYear){
+			tmpInt                           = sky.m_info.m_startTime.year - 2000;
+			sky.m_info.m_startTime.year      = sky.m_info.m_startTime.day + 2000;
+			sky.m_info.m_startTime.day       = tmpInt;
+			tmpInt                           = dark.m_info.m_startTime.year - 2000;
+			dark.m_info.m_startTime.year     = dark.m_info.m_startTime.day + 2000;
+			dark.m_info.m_startTime.day      = tmpInt;
 		}
 	
 		// If necessary, correct the start-time of the sky-spectrum
-		if(sky.m_info.m_startTime.hr == 0 && sky.m_info.m_startTime.m == 0){
-			sky.m_info.m_startTime = sky.m_info.m_stopTime;		
+		if(sky.m_info.m_startTime.hour == 0 && sky.m_info.m_startTime.minute == 0){
+			sky.m_info.m_startTime = sky.m_info.m_stopTime;
 		}
 
 		// If wanted, set the interlace and channel status of the spectra
@@ -608,12 +608,12 @@ int	 ImportScanDOASSpectraInDirectory(const CArray<CString *, CString *>	&m_spec
 		// Get the file name for the .pak-file to save
 		CSpectrumInfo &info = sky.m_info;
 		if(!changeSerial){
-			serialNumber.Format("%s", (LPCSTR)info.m_device);
+			serialNumber.Format("%s", info.m_device.c_str());
 			if(0 == serialNumber.Compare(".........."))
-				serialNumber.Format("%s", (LPCSTR)info.m_name);
+				serialNumber.Format("%s", info.m_name.c_str());
 		}
-		scanDate.Format("%02d%02d%02d", info.m_date[0], info.m_date[1], info.m_date[2]);
-		scanTime.Format("%02d%02d", info.m_startTime.hr, info.m_startTime.m);
+		scanDate.Format("%02d%02d%02d", info.m_startTime.year, info.m_startTime.month, info.m_startTime.day);
+		scanTime.Format("%02d%02d", info.m_startTime.hour, info.m_startTime.minute);
 		pakFile.Format("%s\\%s_%s_%s.pak", (LPCSTR)wnd->m_outputDir, (LPCSTR)serialNumber, (LPCSTR)scanDate, (LPCSTR)scanTime);
 		int it = 1;
 		while(IsExistingFile(pakFile)){
@@ -642,10 +642,10 @@ int	 ImportScanDOASSpectraInDirectory(const CArray<CString *, CString *>	&m_spec
 			spec.m_info.m_scanIndex		= i + 2;
 
 			// Correct the date
-			if(spec.m_info.m_date[0] > currentYear){
-				tmpInt							 = spec.m_info.m_date[0] - 2000;
-				spec.m_info.m_date[0]= spec.m_info.m_date[2] + 2000;
-				spec.m_info.m_date[2]= tmpInt;
+			if(spec.m_info.m_startTime.year > currentYear){
+				tmpInt                            = spec.m_info.m_startTime.year - 2000;
+				spec.m_info.m_startTime.year      = spec.m_info.m_startTime.day + 2000;
+				spec.m_info.m_startTime.day       = tmpInt;
 			}
 
 			// Set the scan angle (if wanted)
@@ -656,10 +656,10 @@ int	 ImportScanDOASSpectraInDirectory(const CArray<CString *, CString *>	&m_spec
 			}
 
 			// Set the serial-number...
-			spec.m_info.m_device.Format("%s", (LPCSTR)serialNumber);
+			spec.m_info.m_device = std::string((LPCSTR)serialNumber);
 
 			// Set the name of the measurement
-			spec.m_info.m_name.Format("scan");
+			spec.m_info.m_name = std::string("scan");
 
 			// If wanted, se the interlace and channel status of the spectra
 			if(m_interlacedSpectra){

@@ -1,7 +1,6 @@
 #pragma once
 
-#include "../Common/Common.h"
-#include "../Common/DateTime.h"
+#include "../SpectralEvaluation/Spectra/DateTime.h"
 #include "../Common/WindField.h"
 
 /** The class <b>CFluxResult</b> is a generic class for storing the results

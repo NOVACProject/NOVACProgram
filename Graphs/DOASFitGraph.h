@@ -1,5 +1,7 @@
 #pragma once
+
 #include "GraphCtrl.h"
+#include "../SpectralEvaluation/Spectra/Spectrum.h"
 
 namespace Graph{
 	class CDOASFitGraph :

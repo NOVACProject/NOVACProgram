@@ -37,9 +37,9 @@ void CCfgTxtFileHandler::Clear(){
 	this->m_ftpServerIp[1] = 168;
 	this->m_ftpServerIp[2] = 1;
 	this->m_ftpServerIp[3] = 2;
-	this->m_ftpServerPassword.Format("iht-1inks.");
+	this->m_ftpServerPassword.Format("");
 	this->m_ftpServerTimeOut = 30000;
-	this->m_ftpServerUserName.Format("novacUser");
+	this->m_ftpServerUserName.Format("");
 	this->m_maxIntTime = 5000;
 	this->m_minIntTime = 20;
 	this->m_measurements.SetSize(50);

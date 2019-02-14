@@ -47,7 +47,8 @@ void CFitWindowListBox::PopulateList(){
 	this->ResetContent(); // clear the list
 
 	for(int i = 0; i < m_reeval->m_windowNum; ++i){
-		this->AddString(m_reeval->m_window[i].name);
+        CString name(m_reeval->m_window[i].name.c_str());
+		this->AddString(name);
 	}
 }
 
@@ -105,7 +106,7 @@ void CFitWindowListBox::OnInsertFitWindow(){
 		return;
 
 	// insert an empty fit window.
-	m_reeval->m_window[m_reeval->m_windowNum].name.Format("%s", (LPCTSTR)name);
+	m_reeval->m_window[m_reeval->m_windowNum].name = std::string((LPCTSTR)name);
 	m_reeval->m_windowNum += 1;
 
 	// Update the list
@@ -204,7 +205,7 @@ void CFitWindowListBox::OnRenameWindow(){
 		return;
 
 	// Let the initial guess for the name be the old name of the window
-	name.Format(m_reeval->m_window[curSel].name);
+	name = CString(m_reeval->m_window[curSel].name.c_str());
 
 	// Ask the user for the name of the window
 	Dialogs::CQueryStringDialog nameDialog;
@@ -216,7 +217,7 @@ void CFitWindowListBox::OnRenameWindow(){
 		return;
 
 	// Change the name 
-	m_reeval->m_window[curSel].name.Format("%s", (LPCTSTR)name);
+	m_reeval->m_window[curSel].name = std::string((LPCTSTR)name);
 
 	// Update hte list
 	PopulateList();

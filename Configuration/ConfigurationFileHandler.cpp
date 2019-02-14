@@ -65,12 +65,9 @@ int CConfigurationFileHandler::ReadConfigurationFile(CConfigurationSetting &conf
 		in the same directory as the executable. */
 int CConfigurationFileHandler::WriteConfigurationFile(CConfigurationSetting &configuration, const CString *fileName){
 	CString indent, str, tmp_fileName;
-	CString defaultFTPpwd;
 	Common common;
-	CString modelStr;
+	std::string modelStr;
 
-	defaultFTPpwd.Format("iht-1inks.");
-	
 	// 1. Get the filename
 	if(fileName == NULL){
 		common.GetExePath();
@@ -109,10 +106,8 @@ int CConfigurationFileHandler::WriteConfigurationFile(CConfigurationSetting &con
 	str.Format("\t<ftpUserName>%s</ftpUserName>\n", (LPCSTR)conf->ftpSetting.userName);
 	fprintf(f, str);
 	// 4e. The ftp server setting - password
-	if(!Equals(conf->ftpSetting.password, defaultFTPpwd)){
-		str.Format("\t<ftpPassword>%s</ftpPassword>\n", (LPCSTR)conf->ftpSetting.password);
-		fprintf(f, str);
-	}
+	str.Format("\t<ftpPassword>%s</ftpPassword>\n", (LPCSTR)conf->ftpSetting.password);
+	fprintf(f, str);
 	// 4e2. The settings for when to upload to the FTP-server...
 	str.Format("\t<ftpStartTime>%d</ftpStartTime>\n", conf->ftpSetting.ftpStartTime);
 	fprintf(f, str);
@@ -215,7 +210,7 @@ int CConfigurationFileHandler::WriteConfigurationFile(CConfigurationSetting &con
 
 			// model Number
 			CSpectrometerModel::ToString(spec.model, modelStr);
-			str.Format("%s<model>%s</model>\n", (LPCSTR)indent, (LPCSTR)modelStr);
+			str.Format("%s<model>%s</model>\n", (LPCSTR)indent, modelStr.c_str());
 			fprintf(f, str);
 			
 			if(conf->scanner[i].spec[j].channelNum > 1)
@@ -230,8 +225,8 @@ int CConfigurationFileHandler::WriteConfigurationFile(CConfigurationSetting &con
 				Evaluation::CFitWindow &window = spec.channel[l].fitWindow;
 				for(int k = 0; k < window.nRef; ++k){
 					fprintf(f, TEXT(indent + "\t<Reference>\n"));
-					fprintf(f, TEXT(indent + "\t\t<name>" + window.ref[k].m_specieName + "</name>\n"));
-					fprintf(f, TEXT(indent + "\t\t<path>" + window.ref[k].m_path + "</path>\n"));
+					fprintf(f, "%s\t\t<name>%s</name>\n", (LPCSTR)indent, window.ref[k].m_specieName.c_str());
+					fprintf(f, "%s\t\t<path>%s</path>\n", (LPCSTR)indent, window.ref[k].m_path.c_str());
 					// writing the shift
 					fprintf(f, TEXT(indent + "\t\t<shift>"));
 					if(window.ref[k].m_shiftOption == Evaluation::SHIFT_FIX)
@@ -810,7 +805,7 @@ int CConfigurationFileHandler::Parse_Spectrometer(){
 
 		// found the model number 
 		if(Equals(szToken, "model")){
-			CString tmpStr2;
+			std::string tmpStr2;
 			if(curSpec != NULL){
 				Parse_StringItem(TEXT("/model"), tmpStr2);
 				curSpec->model = CSpectrometerModel::GetModel(tmpStr2);
@@ -949,7 +944,7 @@ int CConfigurationFileHandler::Parse_Specie(CConfigurationSetting::SpectrometerC
 		if(pt = strstr(pt, "\"")){
 			if(char *pt2 = strstr(pt+1, "\""))
 				pt2[0] = 0;		 //remove the second quote
-			curChannel->fitWindow.ref[curChannel->fitWindow.nRef].m_specieName.Format("%s", pt+1);
+			curChannel->fitWindow.ref[curChannel->fitWindow.nRef].m_specieName = std::string(pt+1);
 		}
 	}
 
@@ -961,7 +956,7 @@ int CConfigurationFileHandler::Parse_Specie(CConfigurationSetting::SpectrometerC
 		}
 
 		// Read the path of the reference file.
-		curChannel->fitWindow.ref[curChannel->fitWindow.nRef].m_path.Format(szToken);
+		curChannel->fitWindow.ref[curChannel->fitWindow.nRef].m_path = std::string(szToken);
 
 	}
 

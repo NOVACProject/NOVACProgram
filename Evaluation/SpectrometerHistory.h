@@ -3,7 +3,7 @@
 #include <afxtempl.h>
 
 #include "../Common/Common.h"
-#include "../Common/DateTime.h"
+#include "../SpectralEvaluation/Spectra/DateTime.h"
 
 #include "ScanResult.h"
 
@@ -51,7 +51,7 @@ namespace Evaluation{
 		// ----------------------------------------------------------------------
 		
 		/** Appends a new set of results. */
-		void AppendScanResult(const CScanResult &result, const CString &specie);	
+		void AppendScanResult(const CScanResult &result, const std::string &specie);
 
 		/** Appends the information that a wind-speed measurement has been performed
 				at a specific time. */

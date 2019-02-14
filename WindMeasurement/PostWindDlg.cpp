@@ -154,16 +154,16 @@ int CPostWindDlg::BrowseForEvalLog(int seriesNumber){
 			if(m_OriginalSeries[seriesNumber] == NULL)
 				return 0; // <-- failed to allocate enough memory
 
-			const CSpectrumTime *startTime = scan.GetStartTime(0);
+			const CDateTime *startTime = scan.GetStartTime(0);
 			for(int k = 0; k < length; ++k){
-				const CSpectrumTime *time = scan.GetStartTime(k);
+				const CDateTime *time = scan.GetStartTime(k);
 				m_OriginalSeries[seriesNumber]->column[k] = scan.GetColumn(k, 0);
 
 				// Save the time difference
-				m_OriginalSeries[seriesNumber]->time[k]		= 
-					3600.0 * (time->hr - startTime->hr) + 
-					60.0	 * (time->m - startTime->m) + 
-					(time->sec - startTime->sec);
+				m_OriginalSeries[seriesNumber]->time[k] = 
+					3600.0 * (time->hour - startTime->hour) +
+					60.0	 * (time->minute - startTime->minute) +
+					(time->second - startTime->second);
 			}
 
 			// remember the settings for the instrument
@@ -176,16 +176,16 @@ int CPostWindDlg::BrowseForEvalLog(int seriesNumber){
 			if(m_OriginalSeries[0] == NULL || m_OriginalSeries[1] == NULL)
 				return 0; // <-- failed to allocate enough memory
 
-			const CSpectrumTime *startTime = scan.GetStartTime(0);
+			const CDateTime *startTime = scan.GetStartTime(0);
 			for(int k = 0; k < length; ++k){
-				const CSpectrumTime *time = scan.GetStartTime(k);
+				const CDateTime *time = scan.GetStartTime(k);
 				m_OriginalSeries[k % 2]->column[k / 2] = scan.GetColumn(k, 0);
 
 				// Save the time difference
 				m_OriginalSeries[k % 2]->time[k / 2]		= 
-					3600 * (time->hr - startTime->hr) + 
-					60	 * (time->m - startTime->m) + 
-					(time->sec - startTime->sec);
+					3600 * (time->hour - startTime->hour) +
+					60	 * (time->minute - startTime->minute) +
+					(time->second - startTime->second);
 			}
 
 			// remember the settings for the instrument

@@ -2,6 +2,7 @@
 #include "../NovacMasterProgram.h"
 #include "WindEvaluator.h"
 #include "WindSpeedResult.h"
+#include "../SpectralEvaluation/Utils.h"
 
 // We must be able to read the evaluation-log files
 #include "../Common/EvaluationLogFileHandler.h"
@@ -89,10 +90,12 @@ void CWindEvaluator::OnEvaluatedWindMeasurement(WPARAM wp, LPARAM lp){
 	reader.m_evaluationLog.Format("%s", (LPCTSTR)fileName);
 	if(SUCCESS != reader.ReadEvaluationLog())
 		return;
-	const CString &serialNumber = reader.m_scan[0].GetSerial();
+	const std::string serialNumber = reader.m_scan[0].GetSerial();
 	bool isHeidelbergInstrument = false;
-	for(unsigned int it = 0; it < g_settings.scannerNum; ++it){
-		if(Equals(serialNumber, g_settings.scanner[it].spec[0].serialNumber)){
+	for(unsigned int it = 0; it < g_settings.scannerNum; ++it)
+    {
+        const std::string scannerSerial = std::string((LPCSTR)g_settings.scanner[it].spec[0].serialNumber);
+		if(EqualsIgnoringCase(serialNumber, scannerSerial)){
 			if(g_settings.scanner[it].instrumentType == INSTR_HEIDELBERG)
 				isHeidelbergInstrument = true;
 			else
@@ -201,7 +204,8 @@ RETURN_CODE CWindEvaluator::CalculateCorrelation(const CString &evalLog1, const 
 	scan.GetStopTime(scan.GetEvaluatedNum()- 1, stopTime);
 
 	// 2b. Find out what plume-height to use
-	g_metData.GetWindField(scan.GetSerial(), startTime_dt, wf);
+    const CString scannerSerialNumber = CString(scan.GetSerial().c_str());
+	g_metData.GetWindField(scannerSerialNumber, startTime_dt, wf);
 	m_settings.plumeHeight = wf.GetPlumeHeight();
 
 	// 3. Create the wind-speed measurement series
@@ -210,7 +214,7 @@ RETURN_CODE CWindEvaluator::CalculateCorrelation(const CString &evalLog1, const 
 		Evaluation::CScanResult &scan = reader[k].m_scan[scanIndex[k]];
 
 		// 3b. The start-time of the whole measurement
-		const CSpectrumTime *startTime = scan.GetStartTime(0);
+		const CDateTime *startTime = scan.GetStartTime(0);
 
 		// 3c. The length of the measurement
 		int	length = scan.GetEvaluatedNum();
@@ -220,16 +224,16 @@ RETURN_CODE CWindEvaluator::CalculateCorrelation(const CString &evalLog1, const 
 
 		// 3e. Copy the relevant data in the scan
 		for(int i = 0; i < length; ++i){
-			const CSpectrumTime *time = scan.GetStartTime(i);
+			const CDateTime *time = scan.GetStartTime(i);
 
 			// get the column value
 			series[k]->column[i]	= scan.GetColumn(i, 0);
 
 			// calculate the time-difference between the start of the
 			//	time-series and this measurement
-			series[k]->time[i] = 3600.0 * (time->hr - startTime->hr) + 
-														60.0 * (time->m - startTime->m) +
-															1.0	* (time->sec - startTime->sec);
+			series[k]->time[i] = 3600.0 * (time->hour - startTime->hour) +
+														60.0 * (time->minute - startTime->minute) +
+															1.0	* (time->second - startTime->second);
 		}
 	}
 
@@ -242,7 +246,7 @@ RETURN_CODE CWindEvaluator::CalculateCorrelation(const CString &evalLog1, const 
 		// Tell the world that we've tried to make a correlation calculation but failed
 		Evaluation::CScanResult &scan = reader[0].m_scan[scanIndex[0]];
 		scan.GetDate(0, date);
-		PostWindMeasurementResult(0, 0, 0, startTime_dt, stopTime, scan.GetSerial());
+		PostWindMeasurementResult(0, 0, 0, startTime_dt, stopTime, scannerSerialNumber);
 
 		// Clean up and return
 		delete series[0];		delete series[1];
@@ -259,7 +263,7 @@ RETURN_CODE CWindEvaluator::CalculateCorrelation(const CString &evalLog1, const 
 		// Tell the world that we've tried to make a correlation calculation but failed
 		Evaluation::CScanResult &scan = reader[0].m_scan[scanIndex[0]];
 		scan.GetDate(0, date);
-		PostWindMeasurementResult(0, 0, 0, startTime_dt, stopTime, scan.GetSerial());
+		PostWindMeasurementResult(0, 0, 0, startTime_dt, stopTime, scannerSerialNumber);
 
 		// Clean up and return
 		delete series[0];		delete series[1];
@@ -318,11 +322,12 @@ RETURN_CODE CWindEvaluator::CalculateCorrelation_Heidelberg(const CString &evalL
 	Evaluation::CScanResult &scan = reader.m_scan[scanIndex];
 
 	// 3b. The start-time of the whole measurement
-	const CSpectrumTime *startTime = scan.GetStartTime(0);
+	const CDateTime *startTime = scan.GetStartTime(0);
 	scan.GetStartTime(0, startTime_dt);
 
 	// 3b-2. Find out what plume-height to use
-	g_metData.GetWindField(scan.GetSerial(), startTime_dt, wf);
+    const CString scannerSerialNumber = CString(scan.GetSerial().c_str());
+	g_metData.GetWindField(scannerSerialNumber, startTime_dt, wf);
 	m_settings.plumeHeight = wf.GetPlumeHeight();
 
 	// 3c. The length of the measurement
@@ -334,15 +339,15 @@ RETURN_CODE CWindEvaluator::CalculateCorrelation_Heidelberg(const CString &evalL
 
 	// 3e. Copy the relevant data in the scan
 	for(int k = 0; k < length; ++k){
-		const CSpectrumTime *time = scan.GetStartTime(k);
+		const CDateTime *time = scan.GetStartTime(k);
 
 		series[k % 2]->column[k / 2] = scan.GetColumn(k, 0);
 
 		// Save the time difference
 		series[k % 2]->time[k / 2]		= 
-			3600 * (time->hr - startTime->hr) + 
-			60	 * (time->m - startTime->m) + 
-			(time->sec - startTime->sec);
+			3600 * (time->hour - startTime->hour) +
+			60	 * (time->minute - startTime->minute) +
+			(time->second - startTime->second);
 	}
 
 	// 3f. Adjust the settings to have the correct angle
@@ -495,7 +500,8 @@ void CWindEvaluator::WriteWindMeasurementLog(const CWindSpeedCalculator &calc, c
 	ShowMessage(message);
 
 	// 9. Tell the rest of the program about what we've done
-	PostWindMeasurementResult(avgDelay, avgCorr, distance, startTime, stopTime, scan.GetSerial());
+    const CString scannerSerialNumber = CString(scan.GetSerial().c_str());
+    PostWindMeasurementResult(avgDelay, avgCorr, distance, startTime, stopTime, scannerSerialNumber);
 
 	// 10. Upload the file to the FTP-server
 	UploadToNOVACServer(fileName, volcanoIndex);

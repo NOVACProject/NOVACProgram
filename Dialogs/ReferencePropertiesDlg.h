@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Common/ReferenceFile.h"
+#include "../SpectralEvaluation/Evaluation/ReferenceFile.h"
 
 // CReferencePropertiesDlg dialog
 namespace Dialogs
@@ -62,6 +62,12 @@ namespace Dialogs
 
 		/** The limits for the squeeze, if the 'limit' is selected */
 		double	m_squeezeLimitLow, m_squeezeLimitHigh;
+
+        /** The name of the species */
+        CString m_specieName;
+
+        /** The file path */
+        CString m_referencePath;
 
 	public:
 		virtual BOOL OnInitDialog();

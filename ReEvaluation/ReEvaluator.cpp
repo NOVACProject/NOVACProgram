@@ -5,6 +5,7 @@
 #include "../Common/Version.h"
 #include "../Evaluation/ScanEvaluation.h"
 #include "../Dialogs/QueryStringDialog.h"
+#include "../SpectralEvaluation/Utils.h"
 
 using namespace ReEvaluation;
 using namespace Evaluation;
@@ -307,7 +308,7 @@ bool CReEvaluator::WriteEvaluationLogHeader(){
 	CFitWindow &window = m_window[m_curWindow];
 
 	// Get the name of the evaluation log file
-	m_evalLog[m_curWindow] = m_outputDir + "\\ReEvaluationLog_" + window.name + ".txt";
+	m_evalLog[m_curWindow] = m_outputDir + "\\ReEvaluationLog_" + CString(window.name.c_str()) + ".txt";
 
 	// Try to open the log file
 	FILE *f = fopen(m_evalLog[m_curWindow], "w");
@@ -358,12 +359,12 @@ bool CReEvaluator::WriteEvaluationLogHeader(){
 	fprintf(f, "#nSpecies=%d\n", window.nRef);
 	fprintf(f, "#Specie\tShift\tSqueeze\tReferenceFile\n");
 	for(int i = 0; i < window.nRef; ++i){
-		fprintf(f, "#%s\t", (LPCTSTR)window.ref[i].m_specieName);
+		fprintf(f, "#%s\t", window.ref[i].m_specieName.c_str());
 		switch(window.ref[i].m_shiftOption){
 			case SHIFT_FIX:
 				fprintf(f, "%0.3lf\t", window.ref[i].m_shiftValue); break;
 			case SHIFT_LINK:
-				fprintf(f, "linked to %s\t", (LPCTSTR)window.ref[(int)window.ref[i].m_shiftValue].m_specieName); break;
+				fprintf(f, "linked to %s\t", window.ref[(int)window.ref[i].m_shiftValue].m_specieName.c_str()); break;
 			case SHIFT_LIMIT:
 				fprintf(f, "limited to +-%0.3lf\t", window.ref[i].m_shiftValue);
 			default:
@@ -374,13 +375,13 @@ bool CReEvaluator::WriteEvaluationLogHeader(){
 			case SHIFT_FIX:
 				fprintf(f, "%0.3lf\t", window.ref[i].m_squeezeValue); break;
 			case SHIFT_LINK:
-				fprintf(f, "linked to %s\t", (LPCTSTR)window.ref[(int)window.ref[i].m_squeezeValue].m_specieName); break;
+				fprintf(f, "linked to %s\t", window.ref[(int)window.ref[i].m_squeezeValue].m_specieName.c_str()); break;
 			case SHIFT_LIMIT:
 				fprintf(f, "limited to +-%0.3lf\t", window.ref[i].m_squeezeValue);
 			default:
 				fprintf(f, "free\t"); break;
 		}
-		fprintf(f, "%s\n", (LPCTSTR)window.ref[i].m_path);
+		fprintf(f, "%s\n", window.ref[i].m_path.c_str());
 	}
 	fprintf(f, "\n");
 
@@ -403,15 +404,15 @@ bool CReEvaluator::AppendResultToEvaluationLog(const CScanResult *result, const 
 
 	// Write the scan-information to file
 	fprintf(f, "<scaninformation>\n");
-	fprintf(f, "\tdate=%02d.%02d.%04d\n",							scan->m_date[2], scan->m_date[1], scan->m_date[0]);
-	fprintf(f, "\tstarttime=%02d:%02d:%02d\n",				scan->m_startTime.hr, scan->m_startTime.m, scan->m_startTime.sec);
+	fprintf(f, "\tdate=%02d.%02d.%04d\n",                               scan->m_startTime.day, scan->m_startTime.month, scan->m_startTime.year);
+	fprintf(f, "\tstarttime=%02d:%02d:%02d\n",				            scan->m_startTime.hour, scan->m_startTime.minute, scan->m_startTime.second);
 	fprintf(f, "\tcompass=%.1lf\n",										scan->GetCompass());
 	fprintf(f, "\ttilt=%.1lf\n",											skySpec.m_info.m_pitch);
 
 	const CGPSData &gps = scan->GetGPS();
-	fprintf(f, "\tlat=%.6lf\n",												gps.Latitude());
-	fprintf(f, "\tlong=%.6lf\n",											gps.Longitude());
-	fprintf(f, "\talt=%.3lf\n",												gps.Altitude());
+	fprintf(f, "\tlat=%.6lf\n",												gps.m_latitude);
+	fprintf(f, "\tlong=%.6lf\n",											gps.m_longitude);
+	fprintf(f, "\talt=%.3lf\n",												gps.m_altitude);
 
 	fprintf(f, "\tserial=%s\n", (LPCTSTR)scan->m_device);
 	fprintf(f, "\tchannel=%d\n",											scan->m_channel);
@@ -463,7 +464,7 @@ bool CReEvaluator::AppendResultToEvaluationLog(const CScanResult *result, const 
 
 	fprintf(f, "starttime\tstoptime\tname\tdelta\tchisquare\texposuretime\tnumspec\tintensity\tfitintensity\tisgoodpoint\toffset\tflag\t");
 	for(int i = 0; i < window.nRef; ++i){
-		name.Format(window.ref[i].m_specieName);
+		name.Format("%s", window.ref[i].m_specieName.c_str());
 
 		fprintf(f, "column(%s)\tcolumnerror(%s)\t", (LPCTSTR)name, (LPCTSTR)name);
 		fprintf(f, "shift(%s)\tshifterror(%s)\t", (LPCTSTR)name, (LPCTSTR)name);
@@ -490,13 +491,14 @@ bool CReEvaluator::AppendResultToEvaluationLog(const CScanResult *result, const 
 		}
 
 		// The start time
-		fprintf(f, "%02d:%02d:%02d\t", info.m_startTime.hr, info.m_startTime.m, info.m_startTime.sec);
+		fprintf(f, "%02d:%02d:%02d\t", info.m_startTime.hour, info.m_startTime.minute, info.m_startTime.second);
 
 		// The stop time
-		fprintf(f, "%02d:%02d:%02d\t", info.m_stopTime.hr, info.m_stopTime.m, info.m_stopTime.sec);
+		fprintf(f, "%02d:%02d:%02d\t", info.m_stopTime.hour, info.m_stopTime.minute, info.m_stopTime.second);
 
 		// The name of the spectrum
-		fprintf(f, "%s\t", (LPCTSTR)common.SimplifyString(info.m_name));
+        const std::string spectrumName = SimplifyString(info.m_name);
+		fprintf(f, "%s\t", spectrumName.c_str());
 
 		// The delta of the fit
 		fprintf(f, "%.2e\t", result->GetDelta(i));

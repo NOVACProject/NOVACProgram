@@ -1,11 +1,10 @@
 #pragma once
 
 #include "../Common/Common.h"
-#include "../Common/GPSData.h"
-#include "../Common/ReferenceFile.h"
-
-#include "../Evaluation/FitWindow.h"
-#include "../Common/SpectrometerModel.h"
+#include "../SpectralEvaluation/Spectra/GPSData.h"
+#include "../SpectralEvaluation/Evaluation/ReferenceFile.h"
+#include "../SpectralEvaluation/Evaluation/FitWindow.h"
+#include "../SpectralEvaluation/Spectra/SpectrometerModel.h"
 
 #ifndef _CCONFIGURATIONSETTINGS_H_
 #define _CCONFIGURATIONSETTINGS_H_

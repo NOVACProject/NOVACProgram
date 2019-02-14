@@ -1,6 +1,7 @@
 #pragma once
 
-#include "../Spectra/Spectrum.h"
+#include "../Common.h"
+#include "../../SpectralEvaluation/Spectra/Spectrum.h"
 
 namespace SpectrumIO{
 

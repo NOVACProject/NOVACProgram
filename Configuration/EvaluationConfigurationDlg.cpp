@@ -5,7 +5,7 @@
 #include "../NovacMasterProgram.h"
 #include "EvaluationConfigurationDlg.h"
 #include "ScannerConfiguration.h"
-#include "../Common/ReferenceFile.h"
+#include "../SpectralEvaluation/Evaluation/ReferenceFile.h"
 #include "../Dialogs/SelectionDialog.h"
 #include "../Dialogs/ReferencePropertiesDlg.h"
 #include "../Dialogs/ReferencePlotDlg.h"
@@ -187,8 +187,8 @@ void CEvaluationConfigurationDlg::PopulateReferenceFileControl(){
 	for(i = 0; i < numberOfReferences; ++i){
 		Evaluation::CReferenceFile &ref = m_curSpec->channel[m_channel].fitWindow.ref[i];
 
-		m_referenceFileCtrl.SetItemTextFmt(i+1, 0, ref.m_specieName);
-		m_referenceFileCtrl.SetItemTextFmt(i+1, 1, ref.m_path);
+		m_referenceFileCtrl.SetItemTextFmt(i+1, 0, CString(ref.m_specieName.c_str()));
+		m_referenceFileCtrl.SetItemTextFmt(i+1, 1, CString(ref.m_path.c_str()));
 
 		if(ref.m_shiftOption== SHIFT_FREE)
 		m_referenceFileCtrl.SetItemTextFmt(1 + i, 2, "free");
@@ -247,33 +247,36 @@ void CEvaluationConfigurationDlg::OnAddReferenceFile(){
 	if(!common.BrowseForFile(filter, fileName)){
 		return;
 	}
-	m_curSpec->channel[m_channel].fitWindow.ref[m_curSpec->channel[m_channel].fitWindow.nRef].m_path.Format("%s", (LPCSTR)fileName);
+	m_curSpec->channel[m_channel].fitWindow.ref[m_curSpec->channel[m_channel].fitWindow.nRef].m_path = std::string(fileName);
 
 	// 3. Make a guess for the specie name
 	CString specie;
 	Common::GuessSpecieName(fileName, specie);
 	if(strlen(specie) != 0){
-		m_curSpec->channel[m_channel].fitWindow.ref[m_curSpec->channel[m_channel].fitWindow.nRef].m_specieName.Format("%s", (LPCSTR)specie);
+		m_curSpec->channel[m_channel].fitWindow.ref[m_curSpec->channel[m_channel].fitWindow.nRef].m_specieName = std::string((LPCSTR)specie);
 	}else{
 		// Could not guess for a specie name. Let the user select one.
 		Dialogs::CSelectionDialog selectionDlg;
 		CString selection;
-		CString species[] = {"SO2", "O3", "NO2", "Ring", "BrO"};
+		std::string species[] = {"SO2", "O3", "NO2", "Ring", "BrO"};
 		int nSpecies = 5;
 		int index = 0;
 		for(int i = 0; i < nSpecies; ++i){
-		bool insert = true;
+		    bool insert = true;
 
-		/** Check if there's already specie with the specified name inserted 
-			If so */
-		for(int j = 0; j < m_curSpec->channel[m_channel].fitWindow.nRef; ++j){
-			if(Equals(m_curSpec->channel[m_channel].fitWindow.ref[j].m_specieName, species[i])){
-			insert = false;
-			break;
-			}
-		}
-		if(insert)
-			selectionDlg.m_option[index++].Format("%s", (LPCSTR)species[i]);
+		    /** Check if there's already specie with the specified name inserted 
+			    If so */
+		    for(int j = 0; j < m_curSpec->channel[m_channel].fitWindow.nRef; ++j){
+			    if(m_curSpec->channel[m_channel].fitWindow.ref[j].m_specieName.compare(species[i]) == 0)
+                {
+			        insert = false;
+			        break;
+			    }
+		    }
+		    if(insert)
+            {
+			    selectionDlg.m_option[index++].Format("%s", species[i].c_str());
+            }
 		}
 		selectionDlg.m_windowText.Format("Select Specie");
 		selectionDlg.m_currentSelection = &selection;
@@ -282,7 +285,7 @@ void CEvaluationConfigurationDlg::OnAddReferenceFile(){
 		if(IDCANCEL == ret)
 		return;
 
-		m_curSpec->channel[m_channel].fitWindow.ref[m_curSpec->channel[m_channel].fitWindow.nRef].m_specieName.Format("%s", (LPCSTR)selection);
+		m_curSpec->channel[m_channel].fitWindow.ref[m_curSpec->channel[m_channel].fitWindow.nRef].m_specieName = std::string((LPCSTR)selection);
 	}
 	m_curSpec->channel[m_channel].fitWindow.nRef += 1;
 
@@ -315,7 +318,7 @@ void CEvaluationConfigurationDlg::OnRemoveReferenceFile(){
 
 	// the 'are you sure?' - message
 	CString message;
-	message.Format("Are you sure you want to delete the reference for specie %s ?", (LPCSTR)m_curSpec->channel[m_channel].fitWindow.ref[minRow].m_specieName);
+	message.Format("Are you sure you want to delete the reference for specie %s ?", m_curSpec->channel[m_channel].fitWindow.ref[minRow].m_specieName.c_str());
 	int answer = MessageBox(message, "Delete Reference File", MB_YESNO);
 	if(IDNO == answer)
 		return;

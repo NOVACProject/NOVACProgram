@@ -33,7 +33,7 @@ CSpectrometerHistory::~CSpectrometerHistory(void)
 }
 
 /** Appends a new set of results. */
-void CSpectrometerHistory::AppendScanResult(const CScanResult &result, const CString &specie){
+void CSpectrometerHistory::AppendScanResult(const CScanResult &result, const std::string &specie){
 	CDateTime startTime;
 
 	// 1. Create the information about when the scan-information arrived

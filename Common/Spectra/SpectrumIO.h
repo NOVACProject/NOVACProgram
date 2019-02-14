@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Spectrum.h"
+#include "../../SpectralEvaluation/Spectra/Spectrum.h"
 #include "../LogFileWriter.h"
 #include "../SpectrumFormat/MKPack.h"
 
@@ -129,16 +129,16 @@ namespace SpectrumIO
 				@return 1 - ...*/
 		int ReadNextSpectrumHeader(FILE *f, int &headerSize, CSpectrum *spec = NULL, char *headerBuffer = NULL, int headerBufferSize = 0);
 
-		/** Converts a time from unsigned long to CSpectrumTime */
-		void ParseTime(const unsigned long t, CSpectrumTime &time) const;
+		/** Converts a time from unsigned long to CDateTime (only fills in the time stamp, not the date) */
+		void ParseTime(const unsigned long t, CDateTime &time) const;
 
-		/** Converts a time from CSpectrumTime to unsigned long */
-		void WriteTime(unsigned long &t, const CSpectrumTime &time) const;
+		/** Converts a time from CDateTime to unsigned long (retrieving the timestamp only, not the date) */
+		void WriteTime(unsigned long &t, const CDateTime &time) const;
 
-		/** Converts a date from unsigned long to unsiged short[3] */
-		void ParseDate(const unsigned long d, unsigned short day[3]) const;
+		/** Converts a date from unsigned long to CDateTime, filling in the date only not the timestamp */
+		void ParseDate(const unsigned long d, CDateTime& day) const;
 
-		/** Converts a date from unsigned short[3] to unsigned long */
-		void WriteDate(unsigned long &d, const unsigned short day[3]) const;
+		/** Converts a date from CDateTime to unsigned long (retrieving the date only, not the timestamp) */
+		void WriteDate(unsigned long &d, const CDateTime& day) const;
 	};
 }

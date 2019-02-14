@@ -7,7 +7,7 @@
 #include "ScannerConfiguration.h"
 #include "../VolcanoInfo.h"
 #include "../ObservatoryInfo.h"
-#include "../Common/SpectrometerModel.h"
+#include "../SpectralEvaluation/Spectra/SpectrometerModel.h"
 
 #include "../Dialogs/QueryStringDialog.h"
 
@@ -102,7 +102,7 @@ END_MESSAGE_MAP()
 BOOL CLocationConfigurationDlg::OnInitDialog()
 {
 	Common common;
-	CString str, model;
+	CString str;
 
 	CDialog::OnInitDialog();
 
@@ -118,9 +118,13 @@ BOOL CLocationConfigurationDlg::OnInitDialog()
 
 	// The spectrometer models combo box
 	m_comboSpectrometerModel.ResetContent();
-	for(int j = 0; j < CSpectrometerModel::GetNumSpectrometerModels()-1; ++j){
+	for(int j = 0; j < CSpectrometerModel::GetNumSpectrometerModels()-1; ++j)
+    {
+        std::string model;
 		CSpectrometerModel::ToString((SPECTROMETER_MODEL)j, model);
-		m_comboSpectrometerModel.AddString(model);
+
+        CString modelStr(model.c_str());
+		m_comboSpectrometerModel.AddString(modelStr);
 	}
 
 	// The channels combo box

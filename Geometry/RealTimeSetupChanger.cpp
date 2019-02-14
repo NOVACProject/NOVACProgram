@@ -130,7 +130,7 @@ bool	CRealTimeSetupChanger::IsTimeToChangeCfg(const Evaluation::CSpectrometer *s
 
 /** Changes the cfg.txt for the supplied spectrometer */
 void	CRealTimeSetupChanger::ChangeCfg(const Evaluation::CSpectrometer *spec, double alpha_min, double alpha_max, double phi_source, double beta, bool isflat){
-	CString dateTime, message, spectrometerType;
+	CString dateTime, message;
 	Common common;
 
 	// allocate the strings	
@@ -165,8 +165,10 @@ void	CRealTimeSetupChanger::ChangeCfg(const Evaluation::CSpectrometer *spec, dou
 	double alpha;				//variable for zenith angle which is varied for the flat scan of the partial sky
 
 	// Retrieve the model of the spectrometer
-	if(SUCCESS != CSpectrometerModel::ToString(spec->m_scanner.spec[0].model, spectrometerType)){
-		spectrometerType.Format("HR2000");
+    std::string spectrometerType;
+	if(!CSpectrometerModel::ToString(spec->m_scanner.spec[0].model, spectrometerType))
+    {
+		spectrometerType = "HR2000";
 	}
 
 	// 2. Get the directory where to temporarily store the cfg.txt
@@ -186,10 +188,9 @@ void	CRealTimeSetupChanger::ChangeCfg(const Evaluation::CSpectrometer *spec, dou
 	// 4a. A small header 
 	common.GetDateTimeText(dateTime);
 	fprintf(f, "%%-------------Modified at %s------------\n\n", (LPCSTR)dateTime);
-	fprintf(f, "%% Questions? email\n%% mattias.johansson@chalmers.se\n\n");
 
 	// 4b. The instrument-type
-    fprintf (f, "SPECTROMETERTYPE=%s\n\n", (LPCSTR)spectrometerType);
+    fprintf (f, "SPECTROMETERTYPE=%s\n\n", spectrometerType.c_str());
   
 	// 4c. Write the Spectrum transfer information
 	fprintf(f, "%%  STARTCHN and STOPCHN define which channels in the spectra will be transferred\n");

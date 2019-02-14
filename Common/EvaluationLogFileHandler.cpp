@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "evaluationlogfilehandler.h"
-#include "../Common/SpectrometerModel.h"
+#include "../SpectralEvaluation/Spectra/SpectrometerModel.h"
+#include "../SpectralEvaluation/Utils.h"
 #include "../Common/Version.h"
 
 // Include synchronization classes
@@ -47,10 +48,10 @@ CEvaluationLogFileHandler::CEvaluationLogFileHandler(void)
 
 CEvaluationLogFileHandler::~CEvaluationLogFileHandler(void)
 {
-	m_scan.RemoveAll();
-	m_scan.SetSize(0);
-	m_windField.RemoveAll();
-	m_windField.SetSize(0);
+    m_scan.RemoveAll();
+    m_scan.SetSize(0);
+    m_windField.RemoveAll();
+    m_windField.SetSize(0);
 }
 
 
@@ -165,18 +166,17 @@ void CEvaluationLogFileHandler::ParseScanHeader(const char szLine[8192]){
 
 		// The column error (must be looked for before 'column')
 		if(0 == _strnicmp(szToken, columnError, strlen(columnError))){
-			m_col.columnError[m_evResult.m_speciesNum-1] = curCol;
+			m_col.columnError[m_evResult.NumberOfSpecies() - 1] = curCol;
 			szToken = NULL;
 			continue;
 		}
 
 		// The column
 		if(0 == _strnicmp(szToken, column, strlen(column))){
-			CString str;
-			m_col.column[m_evResult.m_speciesNum] = curCol;
+			m_col.column[m_evResult.NumberOfSpecies()] = curCol;
 			char *pt = szToken + strlen(column) + 1;
 			szToken[strlen(szToken) - 1] = 0;
-			str.Format("%s", pt);
+            std::string str(pt);
 			m_evResult.InsertSpecie(str);
 			++m_col.nSpecies;
 			szToken = NULL;
@@ -185,28 +185,28 @@ void CEvaluationLogFileHandler::ParseScanHeader(const char szLine[8192]){
 
 		// The shift error (must be checked before 'shift')
 		if(0 == _strnicmp(szToken, shiftError, strlen(shiftError))){
-			m_col.shiftError[m_evResult.m_speciesNum-1] = curCol;
+			m_col.shiftError[m_evResult.NumberOfSpecies() - 1] = curCol;
 			szToken = NULL;
 			continue;
 		}
 
 		// The shift
 		if(0 == _strnicmp(szToken, shift, strlen(shift))){
-			m_col.shift[m_evResult.m_speciesNum-1] = curCol;
+			m_col.shift[m_evResult.NumberOfSpecies() - 1] = curCol;
 			szToken = NULL;
 			continue;
 		}
 
 		// The squeeze error (must be checked before 'squeeze')
 		if(0 == _strnicmp(szToken, squeezeError, strlen(squeezeError))){
-			m_col.squeezeError[m_evResult.m_speciesNum-1] = curCol;
+			m_col.squeezeError[m_evResult.NumberOfSpecies() - 1] = curCol;
 			szToken = NULL;
 			continue;
 		}
 
 		// The squeeze
 		if(0 == _strnicmp(szToken, squeeze, strlen(squeeze))){
-			m_col.squeeze[m_evResult.m_speciesNum-1] = curCol;
+			m_col.squeeze[m_evResult.NumberOfSpecies() - 1] = curCol;
 			szToken = NULL;
 			continue;
 		}
@@ -258,9 +258,9 @@ void CEvaluationLogFileHandler::ParseScanHeader(const char szLine[8192]){
 		szToken = NULL;
 	}
 
-	m_specieNum = m_evResult.m_speciesNum;
+	m_specieNum = m_evResult.NumberOfSpecies();
 	for(int k = 0; k < m_specieNum; ++k)
-		m_specie[k].Format("%s", (LPCSTR)m_evResult.m_ref[k].m_specieName);
+		m_specie[k].Format("%s", m_evResult.m_referenceResult[k].m_specieName.c_str());
 
 	return;
 }
@@ -372,7 +372,7 @@ RETURN_CODE CEvaluationLogFileHandler::ReadEvaluationLog(){
 
 					// 2. Calculate the offset
 					if(m_scanNum >= 0){
-						m_scan[sortOrder[m_scanNum]].CalculateOffset(m_evResult.m_ref[0].m_specieName);
+						m_scan[sortOrder[m_scanNum]].CalculateOffset(m_evResult.m_referenceResult[0].m_specieName);
 					}
 
 					// start the next scan.
@@ -419,9 +419,9 @@ RETURN_CODE CEvaluationLogFileHandler::ReadEvaluationLog(){
 					ret = sscanf(szToken, "%d.%d.%d", &fValue1, &fValue2, &fValue3);
 				}
 				if (ret == 3) {
-					m_specInfo.m_startTime.hr = fValue1;
-					m_specInfo.m_startTime.m = fValue2;
-					m_specInfo.m_startTime.sec = fValue3;
+					m_specInfo.m_startTime.hour   = fValue1;
+					m_specInfo.m_startTime.minute = fValue2;
+					m_specInfo.m_startTime.second = fValue3;
 					szToken = NULL;
 				}
 				continue;
@@ -437,9 +437,9 @@ RETURN_CODE CEvaluationLogFileHandler::ReadEvaluationLog(){
 					ret = sscanf(szToken, "%d.%d.%d", &fValue1, &fValue2, &fValue3);
 				}
 				if (ret == 3) {
-					m_specInfo.m_stopTime.hr = fValue1;
-					m_specInfo.m_stopTime.m = fValue2;
-					m_specInfo.m_stopTime.sec = fValue3;
+					m_specInfo.m_stopTime.hour   = fValue1;
+					m_specInfo.m_stopTime.minute = fValue2;
+					m_specInfo.m_stopTime.second = fValue3;
 					szToken = NULL;
 				}
 				continue;
@@ -447,7 +447,7 @@ RETURN_CODE CEvaluationLogFileHandler::ReadEvaluationLog(){
 
 			// Also check the name...
 			if(curCol == m_col.name){
-				m_specInfo.m_name.Format(szToken);
+				m_specInfo.m_name = std::string(szToken);
 				szToken = NULL;
 				continue;
 			}
@@ -526,27 +526,27 @@ RETURN_CODE CEvaluationLogFileHandler::ReadEvaluationLog(){
 
 			for(int k = 0; k < m_col.nSpecies; ++k){
 				if(curCol == m_col.column[k]){
-					m_evResult.m_ref[k].m_column = (float)fValue;
+					m_evResult.m_referenceResult[k].m_column = (float)fValue;
 					break;
 				}
 				if(curCol == m_col.columnError[k]){
-					m_evResult.m_ref[k].m_columnError = (float)fValue;
+					m_evResult.m_referenceResult[k].m_columnError = (float)fValue;
 					break;
 				}
 				if(curCol == m_col.shift[k]){
-					m_evResult.m_ref[k].m_shift = (float)fValue;
+					m_evResult.m_referenceResult[k].m_shift = (float)fValue;
 					break;
 				}
 				if(curCol == m_col.shiftError[k]){
-					m_evResult.m_ref[k].m_shiftError = (float)fValue;
+					m_evResult.m_referenceResult[k].m_shiftError = (float)fValue;
 					break;
 				}
 				if(curCol == m_col.squeeze[k]){
-					m_evResult.m_ref[k].m_squeeze = (float)fValue;
+					m_evResult.m_referenceResult[k].m_squeeze = (float)fValue;
 					break;
 				}
 				if(curCol == m_col.squeezeError[k]){
-					m_evResult.m_ref[k].m_squeezeError = (float)fValue;
+					m_evResult.m_referenceResult[k].m_squeezeError = (float)fValue;
 					break;
 				}
 			}
@@ -566,13 +566,13 @@ RETURN_CODE CEvaluationLogFileHandler::ReadEvaluationLog(){
 			}
 
 			m_specInfo.m_scanIndex = measNr;
-			if(Equals(m_specInfo.m_name, "sky")){
+			if(EqualsIgnoringCase(m_specInfo.m_name, "sky")){
 				m_scan[sortOrder[m_scanNum]].SetSkySpecInfo(m_specInfo);
-			}else if(Equals(m_specInfo.m_name, "dark")){
+			}else if(EqualsIgnoringCase(m_specInfo.m_name, "dark")){
 				m_scan[sortOrder[m_scanNum]].SetDarkSpecInfo(m_specInfo);
-			}else if(Equals(m_specInfo.m_name, "offset")){
+			}else if(EqualsIgnoringCase(m_specInfo.m_name, "offset")){
 				m_scan[sortOrder[m_scanNum]].SetOffsetSpecInfo(m_specInfo);
-			}else if(Equals(m_specInfo.m_name, "dark_cur")){
+			}else if(EqualsIgnoringCase(m_specInfo.m_name, "dark_cur")){
 				m_scan[sortOrder[m_scanNum]].SetDarkCurrentSpecInfo(m_specInfo);
 			}else{
 				m_scan[sortOrder[m_scanNum]].AppendResult(m_evResult, m_specInfo);
@@ -601,7 +601,7 @@ RETURN_CODE CEvaluationLogFileHandler::ReadEvaluationLog(){
 
 	// Calculate the offset
 	if(m_scanNum >= 0){
-		m_scan[sortOrder[m_scanNum]].CalculateOffset(m_evResult.m_ref[0].m_specieName);
+		m_scan[sortOrder[m_scanNum]].CalculateOffset(m_evResult.m_referenceResult[0].m_specieName);
 	}
 
 	// make sure that scan num is correct
@@ -762,31 +762,35 @@ void CEvaluationLogFileHandler::ParseScanInformation(CSpectrumInfo &scanInfo, do
 			continue;
 		}
 		if(pt = strstr(szLine, "site=")){
-			scanInfo.m_site.Format("%s", pt+5);
-			scanInfo.m_site.Remove('\n'); // Remove newline characters
+			scanInfo.m_site = std::string(pt+5);
+            Remove(scanInfo.m_site, '\n'); // Remove newline characters
 			continue;
 		}
 		if(pt = strstr(szLine, "date=")){
 			if (3 == sscanf(pt + 5, "%d.%d.%d", &tmpInt[0], &tmpInt[1], &tmpInt[2])) {
-				scanInfo.m_date[0] = tmpInt[2];
-				scanInfo.m_date[1] = tmpInt[1];
-				scanInfo.m_date[2] = tmpInt[0];
+				scanInfo.m_startTime.year  = tmpInt[2];
+				scanInfo.m_startTime.month = tmpInt[1];
+				scanInfo.m_startTime.day   = tmpInt[0];
+
+                scanInfo.m_stopTime.year  = scanInfo.m_startTime.year;
+                scanInfo.m_stopTime.month = scanInfo.m_startTime.month;
+                scanInfo.m_stopTime.day   = scanInfo.m_startTime.day;
 			}
 			continue;
 		}
 		if(pt = strstr(szLine, "starttime=")){
 			if(3 == sscanf(pt+10, "%d:%d:%d", &tmpInt[0], &tmpInt[1], &tmpInt[2])){
-				scanInfo.m_startTime.hr		= tmpInt[0];
-				scanInfo.m_startTime.m		= tmpInt[1];
-				scanInfo.m_startTime.sec	= tmpInt[2];
+				scanInfo.m_startTime.hour   = tmpInt[0];
+				scanInfo.m_startTime.minute = tmpInt[1];
+				scanInfo.m_startTime.second = tmpInt[2];
 			}
 			continue;
 		}
 		if(pt = strstr(szLine, "stoptime=")){
 			if(3 == sscanf(pt+9, "%d.%d.%d", &tmpInt[0], &tmpInt[1], &tmpInt[2])){
-				scanInfo.m_stopTime.hr		= tmpInt[0];
-				scanInfo.m_stopTime.m		= tmpInt[1];
-				scanInfo.m_stopTime.sec	= tmpInt[2];
+				scanInfo.m_stopTime.hour   = tmpInt[0];
+				scanInfo.m_stopTime.minute = tmpInt[1];
+				scanInfo.m_stopTime.second = tmpInt[2];
 			}
 			continue;
 		}
@@ -822,26 +826,26 @@ void CEvaluationLogFileHandler::ParseScanInformation(CSpectrumInfo &scanInfo, do
 			continue;
 		}
 		if(pt = strstr(szLine, "serial=")){
-			scanInfo.m_device.Format("%s", pt + 7);
-			scanInfo.m_device.Remove('\n'); // remove remaining strange things in the serial-number
-			scanInfo.m_device.MakeUpper();	// Convert the serial-number to all upper case letters
+			scanInfo.m_device = std::string(pt + 7);
+            Remove(scanInfo.m_device, '\n'); // remove remaining strange things in the serial-number
+			MakeUpper(scanInfo.m_device);	// Convert the serial-number to all upper case letters
 
 			// Extract the spectrometer-model from the serial-number of the spectrometer
-			if(strstr(scanInfo.m_device, "D2J")){
+			if(Contains(scanInfo.m_device, "D2J")){
 				scanInfo.m_specModel = S2000;
-			}else if(strstr(scanInfo.m_device, "I2J")){
+			}else if(Contains(scanInfo.m_device, "I2J")){
 				scanInfo.m_specModel = S2000;
-			}else if(strstr(scanInfo.m_device, "USB2")){
+			}else if(Contains(scanInfo.m_device, "USB2")){
 				scanInfo.m_specModel = USB2000;
-			}else if(strstr(scanInfo.m_device, "USB4C")){
+			}else if(Contains(scanInfo.m_device, "USB4C")){
 				scanInfo.m_specModel = USB4000;
-			}else if(strstr(scanInfo.m_device, "HR2")){
+			}else if(Contains(scanInfo.m_device, "HR2")){
 				scanInfo.m_specModel = HR2000;
-			}else if(strstr(scanInfo.m_device, "HR4")){
+			}else if(Contains(scanInfo.m_device, "HR4")){
 				scanInfo.m_specModel = HR4000;
-			}else if(strstr(scanInfo.m_device, "QE")){
+			}else if(Contains(scanInfo.m_device, "QE")){
 				scanInfo.m_specModel = QE65000;
-			}else if (strstr(scanInfo.m_device, "MAYAPRO")) {
+			}else if (Contains(scanInfo.m_device, "MAYAPRO")) {
 				scanInfo.m_specModel = MAYAPRO;
 			}
 
@@ -853,14 +857,14 @@ void CEvaluationLogFileHandler::ParseScanInformation(CSpectrumInfo &scanInfo, do
 		}
 
 		if(pt = strstr(szLine, "volcano=")){
-			scanInfo.m_volcano.Format("%s", pt+8);
-			scanInfo.m_volcano.Remove('\n'); // Remove newline characters
+			scanInfo.m_volcano = std::string(pt+8);
+            Remove(scanInfo.m_volcano, '\n'); // Remove newline characters
 			continue;
 		}
 
 		if(pt = strstr(szLine, "observatory=")){
-			scanInfo.m_observatory.Format("%s", pt+12);
-			scanInfo.m_observatory.Remove('\n'); // Remove newline characters
+			scanInfo.m_observatory = std::string(pt+12);
+            Remove(scanInfo.m_observatory, '\n'); // Remove newline characters
 			continue;
 		}
 
@@ -1018,7 +1022,8 @@ void CEvaluationLogFileHandler::ResetColumns(){
 		m_col.squeezeError[k] = -1;
 	}
 	m_col.delta = m_col.intensity = m_col.position = m_col.position2 = -1;
-	m_col.nSpecies =  m_evResult.m_speciesNum = 0;
+	m_col.nSpecies = 0;
+    m_evResult.m_referenceResult.clear();
 	m_col.expTime = m_col.nSpec = -1;
 	m_col.name	= -1;
 	m_specieNum = m_curSpecie = 0;
@@ -1167,11 +1172,11 @@ RETURN_CODE CEvaluationLogFileHandler::WriteEvaluationLog(const CString fileName
 		string.AppendFormat("\tlong=%.6lf\n", scan.GetLongitude());
 		string.AppendFormat("\talt=%ld\n", (int)scan.GetAltitude());
 
-		string.AppendFormat("\tvolcano=%s\n", (LPCSTR)m_specInfo.m_volcano);
-		string.AppendFormat("\tsite=%s\n", (LPCSTR)m_specInfo.m_site);
-		string.AppendFormat("\tobservatory=%s\n", (LPCSTR)m_specInfo.m_observatory);
+		string.AppendFormat("\tvolcano=%s\n", m_specInfo.m_volcano.c_str());
+		string.AppendFormat("\tsite=%s\n", m_specInfo.m_site.c_str());
+		string.AppendFormat("\tobservatory=%s\n", m_specInfo.m_observatory.c_str());
 
-		string.AppendFormat("\tserial=%s\n", (LPCSTR)scan.GetSerial());
+		string.AppendFormat("\tserial=%s\n", scan.GetSerial().c_str());
 		switch(m_specInfo.m_specModel){
 			case S2000:				string.AppendFormat("\tspectrometer=s2000\n");	break;
 			case USB2000:			string.AppendFormat("\tspectrometer=usb2000\n");	break;
@@ -1248,7 +1253,7 @@ RETURN_CODE CEvaluationLogFileHandler::WriteEvaluationLog(const CString fileName
 		string.AppendFormat("starttime\tstoptime\tname\tspecsaturation\tfitsaturation\tdelta\tchisquare\texposuretime\tnumspec\t");
 
 		for(int itSpecie = 0; itSpecie < scan.GetSpecieNum(0); ++itSpecie){
-			specieName.Format("%s", (LPCSTR)scan.GetSpecieName(0, itSpecie));
+			specieName.Format("%s", scan.GetSpecieName(0, itSpecie).c_str());
 			string.AppendFormat("column(%s)\tcolumnerror(%s)\t", (LPCSTR)specieName, (LPCSTR)specieName);
 			string.AppendFormat("shift(%s)\tshifterror(%s)\t", (LPCSTR)specieName, (LPCSTR)specieName);
 			string.AppendFormat("squeeze(%s)\tsqueezeerror(%s)\t", (LPCSTR)specieName, (LPCSTR)specieName);
@@ -1262,7 +1267,10 @@ RETURN_CODE CEvaluationLogFileHandler::WriteEvaluationLog(const CString fileName
 		// ------------------- Then write the parameters for each spectrum ---------------------------
 		for(unsigned long itSpectrum = 0; itSpectrum < scan.GetEvaluatedNum(); ++itSpectrum){
 			// 3a. Pretty print the result and the spectral info into a string
-			FormatEvaluationResult(&scan.GetSpectrumInfo(itSpectrum), scan.GetResult(itSpectrum), m_instrumentType, 0.0, scan.GetSpecieNum(itSpectrum), string);
+            Evaluation::CEvaluationResult result;
+            scan.GetResult(itSpectrum, result);
+
+			FormatEvaluationResult(&scan.GetSpectrumInfo(itSpectrum), &result, m_instrumentType, 0.0, scan.GetSpecieNum(itSpectrum), string);
 
 			// 3b. Write it to the evaluation log file
 			fprintf(f, string);
@@ -1292,13 +1300,14 @@ RETURN_CODE CEvaluationLogFileHandler::FormatEvaluationResult(const CSpectrumInf
 		string.AppendFormat("%.0lf\t", info->m_scanAngle2);
 
 	// 3. The start time
-	string.AppendFormat("%02d:%02d:%02d\t", info->m_startTime.hr, info->m_startTime.m, info->m_startTime.sec);
+	string.AppendFormat("%02d:%02d:%02d\t", info->m_startTime.hour, info->m_startTime.minute, info->m_startTime.second);
 
 	// 4. The stop time
-	string.AppendFormat("%02d:%02d:%02d\t", info->m_stopTime.hr, info->m_stopTime.m, info->m_stopTime.sec);
+	string.AppendFormat("%02d:%02d:%02d\t", info->m_stopTime.hour, info->m_stopTime.minute, info->m_stopTime.second);
 
 	// 5 The name of the spectrum
-	string.AppendFormat("%s\t", (LPCSTR)common.SimplifyString(info->m_name));
+    std::string simplifiedName = SimplifyString(info->m_name);
+	string.AppendFormat("%s\t", simplifiedName);
 
 	// 6. The (maximum) saturation ratio of the whole spectrum,
 	//			the (maximum) saturation ratio in the fit-region
@@ -1330,12 +1339,12 @@ RETURN_CODE CEvaluationLogFileHandler::FormatEvaluationResult(const CSpectrumInf
 	// 10. The column/column error for each specie
 	for(itSpecie = 0; itSpecie < nSpecies; ++itSpecie){
 		if(result != NULL){
-			if( (fabs(result->m_ref[itSpecie].m_column) > 5e-2) && (fabs(result->m_ref[itSpecie].m_columnError) > 5e-2))
-				string.AppendFormat("%.2lf\t%.2lf\t", result->m_ref[itSpecie].m_column,		result->m_ref[itSpecie].m_columnError);
+			if( (fabs(result->m_referenceResult[itSpecie].m_column) > 5e-2) && (fabs(result->m_referenceResult[itSpecie].m_columnError) > 5e-2))
+				string.AppendFormat("%.2lf\t%.2lf\t", result->m_referenceResult[itSpecie].m_column,		result->m_referenceResult[itSpecie].m_columnError);
 			else
-				string.AppendFormat("%.2e\t%.2e\t", result->m_ref[itSpecie].m_column,		result->m_ref[itSpecie].m_columnError);
-			string.AppendFormat("%.2lf\t%.2lf\t", result->m_ref[itSpecie].m_shift,		result->m_ref[itSpecie].m_shiftError);
-			string.AppendFormat("%.2lf\t%.2lf\t", result->m_ref[itSpecie].m_squeeze,	result->m_ref[itSpecie].m_squeezeError);
+				string.AppendFormat("%.2e\t%.2e\t", result->m_referenceResult[itSpecie].m_column,		result->m_referenceResult[itSpecie].m_columnError);
+			string.AppendFormat("%.2lf\t%.2lf\t", result->m_referenceResult[itSpecie].m_shift,		result->m_referenceResult[itSpecie].m_shiftError);
+			string.AppendFormat("%.2lf\t%.2lf\t", result->m_referenceResult[itSpecie].m_squeeze,	result->m_referenceResult[itSpecie].m_squeezeError);
 		}else{
 			string.AppendFormat("0.0\t0.0\t0.0\t0.0\t0.0\t0.0\t");
 		}

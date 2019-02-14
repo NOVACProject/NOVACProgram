@@ -11,10 +11,10 @@
 
 #include <afxtempl.h>
 
-#include "DateTime.h"
-
 #include "WindField.h"
-#include "GPSData.h"
+#include "../SpectralEvaluation/Spectra/GPSData.h"
+#include "../SpectralEvaluation/Spectra/DateTime.h"
+
 
 // definition used for storing the spectral data
 typedef double SpecData;
@@ -115,9 +115,6 @@ const enum MEASUREMENT_MODE {MODE_UNKNOWN, MODE_FLUX, MODE_WINDSPEED, MODE_STRAT
 
 // The maximum number of scanning instruments that can be controlled
 #define MAX_NUMBER_OF_SCANNING_INSTRUMENTS 16
-
-// the maximum length of any single spectrum
-#define MAX_SPECTRUM_LENGTH 4096
 
 // the maximum number of channels that the program can handle
 #define MAX_CHANNEL_NUM 8
@@ -548,56 +545,6 @@ public:
 			algorithm to use based on the given cone angle. */
 	static double CalculateFlux(const double *scanAngle, const double *scanAngle2, const double *column, double offset, int nDataPoints, const CWindField &wind, double compass, double gasFactor, INSTRUMENT_TYPE type, double coneAngle = 90.0, double tilt = 0.0);
 
-	/** Calculates the flux for the supplied data using the old algorithm */
-	static double CalculateFlux_FlatFormula(const double *scanAngle, const double *column, double offset, int nDataPoints, const CWindField &wind, double compass, double gasFactor);
-
-	/** Calculates the flux for the supplied data using the new algorithm */
-	static double CalculateFlux_ConeFormula(const double *scanAngle, const double *column, double offset, int nDataPoints, const CWindField &wind, double compass, double gasFactor, double coneAngle, double tilt);
-
-	/** Calculates the flux for the Heidelberg-instrument for the supplied data using the general algorithm */
-	static double CalculateFlux_HeidelbergFormula(const double *scanAngle1, const double *scanAngle2, const double *column, double offset, int nDataPoints, const CWindField &wind, double compass, double gasFactor);
-
-	// --------------------------------------------------------------------
-	// ------------- CALCULATING OFFSET FOR A SCAN ------------------------
-	// --------------------------------------------------------------------
-
-	static double CalculateOffset(const std::vector<double>& columns, const std::vector<bool>& badEvaluation, long numPoints);
-
-	// --------------------------------------------------------------------
-	// -------------- CALCULATING IF WE SEE THE PLUME ---------------------
-	// --------------------------------------------------------------------
-
-	/** Finds the plume in the supplied scan. Return value is true if there is a plume, otherwise false 
-			@param scanAngles - the scanAngles for the measurements.
-			@param columns - the slant columns for the measurements. Must be from a normal scan
-			@param columnErrors - the corresponding slant column errors for the measurement.
-			@param badEvaluation - the result of the quality judgement of the measured columns, 
-				badEvaluation[i] = true means a bad value
-			@param numPoints - the number of points in the scan. Must also be the length 
-				of the vectors 'columns', 'columnErrors', and 'badEvaluation'
-			@param plumeCentre - Will on successful return be filled with the scan angle 
-				which hits the centre of the plume
-			@param plumeWidth - will on successful return be filled with the 
-				estimated width of the plume (same unit as the scanAngles)
-			@param plumeEdge_low - will on successful return be filled with the 
-				lower edge  of the plume (same unit as the scanAngles)
-			@param plumeEdge_high - will on successful return be filled with the 
-				higher edge  of the plume (same unit as the scanAngles)	*/
-	static bool FindPlume(const std::vector<double>& scanAngles, const std::vector<double>& phi, const std::vector<double>& columns, const std::vector<double>& columnErrors, const std::vector<bool>& badEvaluation, long numPoints, double &plumeCentre_alpha, double &plumeCentre_phi, double &plumeEdge_low, double &plumeEdge_high);
-
-	/** Tries to calculate the completeness of the given scan.
-			The completeness is 1.0 if the entire plume can be seen and 0.0 if the plume
-				cannot be seen at all.
-			Return value is true if there is a plume, otherwise false 
-			@param scanAngles - the scanAngles for the measurements.
-			@param columns - the slant columns for the measurements. Must be from a normal scan
-			@param columnErrors - the corresponding slant column errors for the measurement.
-			@param badEvaluation - the result of the quality judgement of the measured columns, 
-				badEvaluation[i] = true means a bad value
-			@param numPoints - the number of points in the scan. Must also be the length 
-				of the vectors 'columns', 'columnErrors', and 'badEvaluation'
-			@param completeness - Will on successful return be filled with the completeness of the plume */
-	static bool CalculatePlumeCompleteness(const std::vector<double>& scanAngles, const std::vector<double>& phi, const std::vector<double>& columns, const std::vector<double>& columnErrors, const std::vector<bool>& badEvaluation, double offset, long numPoints, double &completeness);
 
 	// ---------------------------- MISC ----------------------------------
 
