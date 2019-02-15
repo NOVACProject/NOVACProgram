@@ -26,7 +26,7 @@ CSpectrometer &CSpectrometer::operator=(const CSpectrometer &spec2)
     this->m_evaluator.clear();
     for (size_t i = 0; i < spec2.m_evaluator.size(); ++i)
     {
-        CEvaluation newEval{spec2.m_evaluator[i]};
+        CEvaluationBase *newEval = new CEvaluationBase{spec2.m_evaluator[i]->FitWindow()};
         this->m_evaluator.push_back(newEval);
     }
 

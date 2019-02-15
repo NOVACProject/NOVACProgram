@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "ScanEvaluation.h"
-#include "Evaluation.h"
+#include "../SpectralEvaluation/Evaluation/EvaluationBase.h"
 #include "../Common/Spectra/SpectrumIO.h"
 #include "../Common/SpectrumFormat/STDFile.h"
 #include "../Common/SpectrumFormat/TXTFile.h"
@@ -137,18 +137,21 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
 		original_sky.Div(original_sky.NumSpectra());
 	}
 
-	// Get some important information about the spectra, like
-	//	interlace steps, spectrum length and start-channel
-    copyOfWindow.interlaceStep	= scan.GetInterlaceSteps();
-    copyOfWindow.specLength		= scan.GetSpectrumLength() * copyOfWindow.interlaceStep;
-    copyOfWindow.startChannel	= scan.GetStartChannel();
+    // Get some important information about the spectra, like
+    //	interlace steps, spectrum length and start-channel
+    copyOfWindow.interlaceStep = scan.GetInterlaceSteps();
+    copyOfWindow.specLength = scan.GetSpectrumLength() * copyOfWindow.interlaceStep;
+    copyOfWindow.startChannel = scan.GetStartChannel();
+
+    // Create our evaluator
+    std::unique_ptr<CEvaluationBase> eval = std::make_unique<CEvaluationBase>(copyOfWindow);
+
+    // tell the evaluator which sky-spectrum to use
+    eval->SetSkySpectrum(sky);
 
 	// Adjust the fit-low and fit-high parameters according to the spectra
 	m_fitLow  = copyOfWindow.fitLow  - copyOfWindow.startChannel;
 	m_fitHigh = copyOfWindow.fitHigh - copyOfWindow.startChannel;
-
-    // Create our evaluator
-    std::unique_ptr<CEvaluation> eval = std::make_unique<CEvaluation>( copyOfWindow );
 
 	// If we have a solar-spectrum that we can use to determine the shift
 	//	& squeeze then fit that first so that we know the wavelength calibration
@@ -160,15 +163,9 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
         if (nullptr != newWindow)
         {
             copyOfWindow = *newWindow; // copy the good window here.
-            eval.reset(new CEvaluation{copyOfWindow});
+            eval.reset(new CEvaluationBase{copyOfWindow});
             delete newWindow;
         }
-	}
-
-	// if wanted, include the sky spectrum into the fit
-	if(copyOfWindow.fitType == FIT_HP_SUB || copyOfWindow.fitType == FIT_POLY)
-    {
-		IncludeSkySpecInFit(eval.get(), sky, copyOfWindow);
 	}
 
 	// the data structure to keep track of the evaluation results
@@ -349,7 +346,7 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
                     newWindow.ref[k].m_squeezeValue  = result.m_referenceResult[0].m_squeeze;
                 }
 
-                eval.reset(new CEvaluation{newWindow});
+                eval.reset(new CEvaluationBase{newWindow});
 		    }
         }
 	}
@@ -363,55 +360,7 @@ void CScanEvaluation::UpdateResult(std::shared_ptr<CScanResult> newResult)
 	m_result = newResult;
 }
 
-/** Includes the sky spectrum into the fit */
-bool  CScanEvaluation::IncludeSkySpecInFit(CEvaluation *eval, const CSpectrum &skySpectrum, CFitWindow &window){
-	double sky[MAX_SPECTRUM_LENGTH];
-
-	// first make a local copy of the sky spectrum
-	CSpectrum tmpSpec = skySpectrum;
-
-	int specLen = tmpSpec.m_length;
-
-	// Remove any remaining offset of the sky-spectrum
-	eval->RemoveOffset(tmpSpec.m_data, specLen, window.UV);
-
-	// High-pass filter the sky-spectrum
-	if(window.fitType == FIT_HP_SUB)
-		eval->HighPassBinomial(tmpSpec.m_data, specLen, 500);
-
-	// Logaritmate the sky-spectrum
-	eval->Log(tmpSpec.m_data, specLen);
-
-	memcpy(sky, tmpSpec.m_data, specLen*sizeof(double));
-
-	// Include the spectrum into the fit
-	eval->IncludeAsReference(sky, specLen, window.nRef);
-
-	// set the shift and squeeze
-	window.ref[window.nRef].m_columnOption		= SHIFT_FIX;
-	window.ref[window.nRef].m_columnValue			= (window.fitType == FIT_POLY) ? -1.0 : 1.0;
-	if(window.shiftSky == TRUE){
-		window.ref[window.nRef].m_shiftOption   = SHIFT_LIMIT;
-		window.ref[window.nRef].m_shiftMaxValue = 3.0;
-		window.ref[window.nRef].m_shiftValue		= -3.0;
-		window.ref[window.nRef].m_squeezeOption = SHIFT_LIMIT;
-		window.ref[window.nRef].m_squeezeMaxValue= 1.05;
-		window.ref[window.nRef].m_squeezeValue	= 0.95;
-	}else{
-		window.ref[window.nRef].m_shiftOption   = SHIFT_FIX;
-		window.ref[window.nRef].m_shiftValue		= 0.0;
-		window.ref[window.nRef].m_squeezeOption = SHIFT_FIX;
-		window.ref[window.nRef].m_squeezeValue	= 1.0;
-	}
-
-	// set the name of the reference
-	window.ref[window.nRef].m_specieName = "FraunhoferRef";
-
-	++window.nRef;
-	return true;
-}
-
-void CScanEvaluation::ShowResult(const CSpectrum &spec, const CEvaluation *eval, long curSpecIndex, long specNum){
+void CScanEvaluation::ShowResult(const CSpectrum &spec, const CEvaluationBase *eval, long curSpecIndex, long specNum){
 	if(pView == nullptr) {
 		return;
 	}
@@ -726,7 +675,7 @@ bool CScanEvaluation::Ignore(const CSpectrum &spec, const CFitWindow window){
 }
 
 
-CEvaluationResult CScanEvaluation::FindOptimumShiftAndSqueeze(const CEvaluation *originalEvaluation, FileHandler::CScanFileHandler *scan, CScanResult *result)
+CEvaluationResult CScanEvaluation::FindOptimumShiftAndSqueeze(const CEvaluationBase *originalEvaluation, FileHandler::CScanFileHandler *scan, CScanResult *result)
 {
 	int k;
 	CSpectrum spec, sky, dark;
@@ -788,7 +737,7 @@ CEvaluationResult CScanEvaluation::FindOptimumShiftAndSqueeze(const CEvaluation 
 	spec.Sub(dark);
 
 	// Evaluate
-    CEvaluation newEval{ newFitWindow };
+    CEvaluationBase newEval{ newFitWindow };
     newEval.SetSkySpectrum(sky);
     newEval.Evaluate(spec, 5000);
 
@@ -804,7 +753,7 @@ CEvaluationResult CScanEvaluation::FindOptimumShiftAndSqueeze(const CEvaluation 
     return newResult;
 }
 
-CFitWindow* CScanEvaluation::FindOptimumShiftAndSqueeze_Fraunhofer(const CEvaluation *originalEvaluation, FileHandler::CScanFileHandler *scan)
+CFitWindow* CScanEvaluation::FindOptimumShiftAndSqueeze_Fraunhofer(const CEvaluationBase *originalEvaluation, FileHandler::CScanFileHandler *scan)
 {
     CFitWindow newFitWindow = originalEvaluation->FitWindow(); // Create a local copy which we can modify
 	double shift, shiftError, squeeze, squeezeError;
@@ -892,9 +841,9 @@ CFitWindow* CScanEvaluation::FindOptimumShiftAndSqueeze_Fraunhofer(const CEvalua
 	ShowMessage(message);
 
 	// 3. Do the evaluation.
-    CEvaluation shiftEvaluator{newFitWindow};
+    CEvaluationBase shiftEvaluator{newFitWindow};
 
-	if(shiftEvaluator.EvaluateShift(spectrum, newFitWindow, shift, shiftError, squeeze, squeezeError)) {
+	if(shiftEvaluator.EvaluateShift(spectrum, shift, shiftError, squeeze, squeezeError)) {
 		// We failed to make the fit, what shall we do now??
 		ShowMessage("Failed to determine shift and squeeze. Will proceed with default parameters.");
         return nullptr;

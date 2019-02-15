@@ -12,7 +12,7 @@
 
 namespace Evaluation
 {
-	class CEvaluation;
+	class CEvaluationBase;
 
 	/** 
 		An object of the <b>CScanEvaluation</b>-class handles the evaluation of one
@@ -92,31 +92,27 @@ namespace Evaluation
 
 		/** This function updates the 'm_residual' and 'm_fitResult' spectra
 			and sends the 'WM_EVAL_SUCCESS' message to the pView-window. */
-		void ShowResult(const CSpectrum &spec, const CEvaluation *eval, long curSpecIndex, long specNum);
+		void ShowResult(const CSpectrum &spec, const CEvaluationBase *eval, long curSpecIndex, long specNum);
 
 		/** Updates the m_result in a thread safe manner (locking the m_resultMutex) */
 		void UpdateResult(std::shared_ptr<CScanResult> newResult);
-
-		/** Includes the sky spectrum into the fitting. The dark-spectrum
-			should already have been removed from the 'sky' */
-		bool IncludeSkySpecInFit(CEvaluation *eval, const CSpectrum &skySpectrum, CFitWindow &window);
 
 		/** Finds the optimum shift and squeeze for an evaluated scan 
 					by looking at the spectrum with the highest absorption of the evaluated specie
 					and evaluate it with shift and squeeze free
              @return the fit-result for the evaluated specie. */
-        CEvaluationResult FindOptimumShiftAndSqueeze(const CEvaluation *originalEvaluation, FileHandler::CScanFileHandler *scan, CScanResult *result);
+        CEvaluationResult FindOptimumShiftAndSqueeze(const CEvaluationBase *originalEvaluation, FileHandler::CScanFileHandler *scan, CScanResult *result);
 
 		/** Finds the optimum shift and squeeze for an scan by evaluating
 			with a solar-reference spectrum and studying the shift of the 
 			Fraunhofer-lines. 
 			@param eval - the evaluator to use for the evaluation. On successful determination
 				of the shift and squeeze then the shift and squeeze of the reference-files
-				in the CEvaluation-objects CFitWindow will be fixed to the optimum value found
+				in the CEvaluationBase-objects CFitWindow will be fixed to the optimum value found
 			@param scan - a handle to the spectrum file. 
             @return a new CFitWindow to use with the references shift and squeeze fixed to the found optimal value.
             @return nullptr if an optimal shift and squeeze could not be found. */
-        CFitWindow* FindOptimumShiftAndSqueeze_Fraunhofer(const CEvaluation *originalEvaluation, FileHandler::CScanFileHandler *scan);
+        CFitWindow* FindOptimumShiftAndSqueeze_Fraunhofer(const CEvaluationBase *originalEvaluation, FileHandler::CScanFileHandler *scan);
 
 		// ------------------------ THE PARAMETERS FOR THE EVALUATION ------------------
 		/** This is the options for the sky spectrum */

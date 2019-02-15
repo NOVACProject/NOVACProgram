@@ -2,12 +2,11 @@
 
 #include "../Common/LogFileWriter.h"
 #include "../SpectralEvaluation/Evaluation/ReferenceFile.h"
+#include "../SpectralEvaluation/Evaluation/EvaluationBase.h"
 #include "../Configuration/Configuration.h"
 
 #include "SpectrometerHistory.h"
 #include "ScanResult.h"
-
-#include "Evaluation.h"
 
 namespace Evaluation
 {
@@ -35,7 +34,7 @@ namespace Evaluation
 
 		/** A set of evaluators which can evaluate spectra from this spectrometer.
 				Each evaluator evaluates for one fit window. */
-        std::vector<CEvaluation> m_evaluator;
+        std::vector<CEvaluationBase*> m_evaluator;
 		// CEvaluation *m_evaluator[MAX_FIT_WINDOWS];
 
 		/** The number of fit windows defined */
