@@ -169,7 +169,8 @@ bool CReEvaluator::DoEvaluation(){
 			}
 		
 			// Evaluate the scan-file
-			int success = ev.EvaluateScan(m_scanFile[m_curScanFile], &m_evaluator[m_curWindow], &fRun, &m_darkSettings);
+            // TODO: Don't create an CEvaluation unnecessarily, just create the fit window and pass in
+			int success = ev.EvaluateScan(m_scanFile[m_curScanFile], m_evaluator[m_curWindow].FitWindow(), &fRun, &m_darkSettings);
 
 			// Check if the user wants to stop
 			if(!fRun) {
@@ -563,12 +564,15 @@ bool CReEvaluator::PrepareEvaluation(){
 		if(!CreateOutputDirectory())
 			return false;
 
-		/* Prepare the evaluator */
-		m_evaluator[m_curWindow].m_window = m_window[m_curWindow];
-		if(!m_evaluator[m_curWindow].ReadReferences()){
-			MessageBox(NULL, "Not all references could be read. Please check settings and start again", "Error in settings", MB_OK);
-			return false;
-		}
+        /** Read the references */
+        if (!ReadReferences(m_window[m_curWindow]))
+        {
+            MessageBox(NULL, "Not all references could be read. Please check settings and start again", "Error in settings", MB_OK);
+            return false;
+        }
+
+		/* Create the evaluator */
+		m_evaluator[m_curWindow].SetFitWindow(m_window[m_curWindow]);
 
 		/* then create the evaluation log and write its header */
 		if(!WriteEvaluationLogHeader())
@@ -582,6 +586,7 @@ void CReEvaluator::SortScans(){
 	CString	tmp;
 	bool change;
 
+    // TODO: Change this. Use std::sort?
 	do{
 		change = false;
 		for(int k = 0; k < m_scanFileNum - 1; ++k){

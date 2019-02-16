@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Evaluation/Evaluation.h"
+#include "../SpectralEvaluation/Evaluation/EvaluationBase.h"
 #include "../Evaluation/ScanResult.h"
 #include "../SpectralEvaluation/Evaluation/ReferenceFile.h"
 #include "../SpectralEvaluation/Spectra/Spectrum.h"
@@ -92,7 +92,7 @@ namespace ReEvaluation
 
 	private:
 		/** The evaluators, one for every fit window. */
-		Evaluation::CEvaluation m_evaluator[MAX_FIT_WINDOWS];
+		Evaluation::CEvaluationBase m_evaluator[MAX_FIT_WINDOWS];
 
 	public:
 

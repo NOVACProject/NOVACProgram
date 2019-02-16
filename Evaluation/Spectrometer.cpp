@@ -4,11 +4,8 @@
 
 using namespace Evaluation;
 
-CSpectrometer::CSpectrometer(void)
+CSpectrometer::CSpectrometer()
 {
-	for(int i = 0; i < MAX_FIT_WINDOWS; ++i)
-		m_evaluator[i] = new CEvaluation();
-
 	m_history = NULL;
 	m_fitWindowNum = 0;
 	m_channel = 0;
@@ -17,9 +14,6 @@ CSpectrometer::CSpectrometer(void)
 
 CSpectrometer::~CSpectrometer(void)
 {
-  for(int i = 0; i < MAX_FIT_WINDOWS; ++i)
-    delete m_evaluator[i];
-
 	//if(this->m_history != NULL){
 	//	delete m_history;
 	//}
@@ -27,11 +21,14 @@ CSpectrometer::~CSpectrometer(void)
 }
 
 /** assignment operator */
-CSpectrometer &CSpectrometer::operator=(const CSpectrometer &spec2){
-	for(int i = 0; i < MAX_FIT_WINDOWS; ++i){
-		delete m_evaluator[i];
-		m_evaluator[i]           = new CEvaluation(*spec2.m_evaluator[i]);
-	}
+CSpectrometer &CSpectrometer::operator=(const CSpectrometer &spec2)
+{
+    this->m_evaluator.clear();
+    for (size_t i = 0; i < spec2.m_evaluator.size(); ++i)
+    {
+        CEvaluationBase *newEval = new CEvaluationBase{spec2.m_evaluator[i]->FitWindow()};
+        this->m_evaluator.push_back(newEval);
+    }
 
 	this->m_settings            = spec2.m_settings;
 	this->m_scanner             = spec2.m_scanner;

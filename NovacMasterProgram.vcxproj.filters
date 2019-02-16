@@ -447,9 +447,6 @@
     <ClCompile Include="Dialogs\SplitPakFilesDlg.cpp">
       <Filter>Source Files\Dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="Evaluation\Evaluation.cpp">
-      <Filter>Source Files\Evaluation</Filter>
-    </ClCompile>
     <ClCompile Include="Evaluation\EvaluationController.cpp">
       <Filter>Source Files\Evaluation</Filter>
     </ClCompile>
@@ -769,9 +766,6 @@
     </ClInclude>
     <ClInclude Include="Common\Spectra\SpectrumIO.h">
       <Filter>Header Files\Common\Spectra</Filter>
-    </ClInclude>
-    <ClInclude Include="Evaluation\Evaluation.h">
-      <Filter>Header Files\Evaluation</Filter>
     </ClInclude>
     <ClInclude Include="Evaluation\EvaluationController.h">
       <Filter>Header Files\Evaluation</Filter>

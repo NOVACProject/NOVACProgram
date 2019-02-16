@@ -1,6 +1,5 @@
 #include "StdAfx.h"
 #include "ScanResult.h"
-#include "Evaluation.h"
 #include "../VolcanoInfo.h"
 #include "../SpectralEvaluation/Utils.h"
 #include "../SpectralEvaluation/Flux/PlumeInScanProperty.h"
@@ -9,6 +8,11 @@
 #include "../MeteorologicalData.h"
 
 #include "../Geometry/GeometryCalculator.h"
+
+#undef min
+#undef max
+
+#include <algorithm>
 
 using namespace Evaluation;
 
