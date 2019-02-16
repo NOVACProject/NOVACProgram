@@ -276,8 +276,8 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
 			if(eval->Evaluate(current))
             {
 				CString str;
-				str.Format("Failed to evaluate spectrum from spectrometer %s. Failure at spectrum %d in scan containing %d spectra",
-					current.m_info.m_device.c_str(), current.ScanIndex(), current.SpectraPerScan());
+				str.Format("Failed to evaluate spectrum from spectrometer %s. Failure at spectrum %d in scan containing %d spectra. Message: '%s'",
+					current.m_info.m_device.c_str(), current.ScanIndex(), current.SpectraPerScan()), eval->m_lastError.c_str();
 				ShowMessage(str);
 				success = false;
 			}

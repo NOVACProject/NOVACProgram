@@ -7,7 +7,6 @@ using namespace Evaluation;
 CSpectrometer::CSpectrometer()
 {
 	m_history = NULL;
-	m_fitWindowNum = 0;
 	m_channel = 0;
 	m_gpsReadingsNum = 0;
 }
@@ -20,23 +19,35 @@ CSpectrometer::~CSpectrometer(void)
 	m_history = NULL;
 }
 
-/** assignment operator */
 CSpectrometer &CSpectrometer::operator=(const CSpectrometer &spec2)
 {
-    this->m_evaluator.clear();
-    for (size_t i = 0; i < spec2.m_evaluator.size(); ++i)
+    this->m_fitWindows.resize(spec2.m_fitWindows.size());
+    for (size_t i = 0; i < spec2.m_fitWindows.size(); ++i)
     {
-        CEvaluationBase *newEval = new CEvaluationBase{spec2.m_evaluator[i]->FitWindow()};
-        this->m_evaluator.push_back(newEval);
+        this->m_fitWindows[i] = spec2.m_fitWindows[i];
     }
 
 	this->m_settings            = spec2.m_settings;
 	this->m_scanner             = spec2.m_scanner;
 	this->m_logFileHandler      = spec2.m_logFileHandler;
-	this->m_fitWindowNum        = spec2.m_fitWindowNum;
-	this->m_channel							= spec2.m_channel;
-	this->m_gpsReadingsNum			= spec2.m_gpsReadingsNum;
+	this->m_channel             = spec2.m_channel;
+	this->m_gpsReadingsNum      = spec2.m_gpsReadingsNum;
 	return *this;
+}
+
+CSpectrometer::CSpectrometer(const CSpectrometer& spec2)
+{
+    this->m_fitWindows.resize(spec2.m_fitWindows.size());
+    for (size_t i = 0; i < spec2.m_fitWindows.size(); ++i)
+    {
+        this->m_fitWindows[i] = spec2.m_fitWindows[i];
+    }
+
+    this->m_settings        = spec2.m_settings;
+    this->m_scanner         = spec2.m_scanner;
+    this->m_logFileHandler  = spec2.m_logFileHandler;
+    this->m_channel         = spec2.m_channel;
+    this->m_gpsReadingsNum   = spec2.m_gpsReadingsNum;
 }
 
 const CString &CSpectrometer::SerialNumber() const{

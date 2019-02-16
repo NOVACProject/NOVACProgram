@@ -16,11 +16,12 @@ namespace Evaluation
 	class CSpectrometer
 	{
 	public:
-		/** Default constructor */
 		CSpectrometer(void);
-
-		/** Default desctructor */
 		~CSpectrometer(void);
+
+        /** Copying this object */
+        CSpectrometer &operator=(const CSpectrometer &spec2);
+        CSpectrometer(const CSpectrometer& spec2);
 
 		/** The settings for this spectrometer */
 		CConfigurationSetting::SpectrometerSetting m_settings;
@@ -31,15 +32,10 @@ namespace Evaluation
 		/** The local history at this spectrometer. For multichannel-
 				spectrometers, this is a shared object between the channels. */
 		CSpectrometerHistory *m_history;
-
-		/** A set of evaluators which can evaluate spectra from this spectrometer.
-				Each evaluator evaluates for one fit window. */
-        std::vector<CEvaluationBase*> m_evaluator;
-		// CEvaluation *m_evaluator[MAX_FIT_WINDOWS];
-
-		/** The number of fit windows defined */
-		unsigned short	m_fitWindowNum;
-		
+        
+        /** A set of fit windows, used to determine how to evaluate the spectra from this device. */
+        std::vector<CFitWindow> m_fitWindows;
+        		
 		/** The channel that this spectrometer is configured as. For OceanOptics
 				S2000 spectrometers, there can be several channels contained in the
 				same box. They will then have the same serialnumber, but different channels.
@@ -65,8 +61,5 @@ namespace Evaluation
 		/** Adds the result from the supplied evaluation to the history
 			of evaluations. */
 		void RememberResult(CScanResult &lastResult);
-
-		/** assignment operator */
-		CSpectrometer &operator=(const CSpectrometer &spec2);
-	};
+    };
 }

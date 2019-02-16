@@ -564,16 +564,6 @@ bool CReEvaluator::PrepareEvaluation(){
 		if(!CreateOutputDirectory())
 			return false;
 
-        // In the NovacProgram, the references are always assumed to be pre-filtered by default.
-        // TODO: Make this an input from the user.
-        if (m_window[m_curWindow].fitType == Evaluation::FIT_HP_DIV || m_window[m_curWindow].fitType == Evaluation::FIT_HP_SUB)
-        {
-            for (int referenceIndex = 0; referenceIndex < m_window[m_curWindow].nRef; ++referenceIndex)
-            {
-                m_window[m_curWindow].ref[referenceIndex].m_isFiltered = true;
-            }
-        }
-
         /** Read the references */
         if (!ReadReferences(m_window[m_curWindow]))
         {
