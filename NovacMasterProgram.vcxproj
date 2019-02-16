@@ -244,6 +244,7 @@
     <ClCompile Include="Dialogs\ReferencePlotDlg.cpp" />
     <ClCompile Include="ScannerFileInfo.cpp" />
     <ClCompile Include="ScannerFolderInfo.cpp" />
+    <ClInclude Include="Evaluation\EvaluationResultView.h" />
     <ClInclude Include="SpectralEvaluation\Evaluation\BasicMath.h" />
     <ClInclude Include="SpectralEvaluation\Evaluation\CrossSectionData.h" />
     <ClInclude Include="SpectralEvaluation\Evaluation\EvaluationBase.h" />

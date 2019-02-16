@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "ScanEvaluation.h"
+#include "EvaluationResultView.h"
 #include "../SpectralEvaluation/Evaluation/EvaluationBase.h"
 #include "../Common/Spectra/SpectrumIO.h"
 #include "../Common/SpectrumFormat/STDFile.h"
@@ -375,20 +376,24 @@ void CScanEvaluation::ShowResult(const CSpectrum &spec, const CEvaluationBase *e
 		The third spectrum is the fitted polynomial, and the following
 		MAX_N_REFERENCES + 1 spectra are the scaled reference spectra used in the fit. */
     // TODO: Create a struct to hold this information instead. This is messy and prone to errors...
-	CSpectrum* spectra = new CSpectrum[eval->NumberOfReferencesFitted() + 3];
+    CEvaluationResultView* resultView = new CEvaluationResultView();
+    resultView->scaledReference.resize(eval->NumberOfReferencesFitted());
 
-	spectra[0] = spec;
+    resultView->measuredSpectrum = spec;
 
 	// copy the residual and the polynomial
-	for(int i = fitLow; i < fitHigh; ++i) {
-		spectra[1].m_data[i] = eval->m_residual.GetAt(i - fitLow);	// spectra[1] is the residual
-		spectra[2].m_data[i] = eval->m_fitResult[0].GetAt(i);		// spectra[2] is the polynomial
+	for(int i = fitLow; i < fitHigh; ++i)
+    {
+        resultView->residual.m_data[i] = eval->m_residual.GetAt(i - fitLow);
+        resultView->polynomial.m_data[i] = eval->m_fitResult[0].GetAt(i);
 	}
 
 	// copy the scaled referencefiles
-	for(size_t tmpRefIndex = 0; tmpRefIndex < eval->NumberOfReferencesFitted(); ++tmpRefIndex) {
-		for(int i = fitLow; i < fitHigh; ++i) {
-			spectra[tmpRefIndex + 3].m_data[i] = eval->m_fitResult[tmpRefIndex+1].GetAt(i);
+	for(size_t tmpRefIndex = 0; tmpRefIndex < eval->NumberOfReferencesFitted(); ++tmpRefIndex)
+    {
+		for(int i = fitLow; i < fitHigh; ++i)
+        {
+            resultView->scaledReference[tmpRefIndex].m_data[i] = eval->m_fitResult[tmpRefIndex+1].GetAt(i);
 		}
 	}
 
@@ -397,7 +402,7 @@ void CScanEvaluation::ShowResult(const CSpectrum &spec, const CEvaluationBase *e
 		CScanResult* copiedResult = new CScanResult(*m_result.get());
 
 		// post the message to the view to update. This will also transfer the ownership of the two pointers to the view
-		pView->PostMessage(WM_EVAL_SUCCESS, (WPARAM)spectra, (LPARAM)copiedResult);
+		pView->PostMessage(WM_EVAL_SUCCESS, (WPARAM)resultView, (LPARAM)copiedResult);
 	}
 
 	m_prog_SpecCur = curSpecIndex;

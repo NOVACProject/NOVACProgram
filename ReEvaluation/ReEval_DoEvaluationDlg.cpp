@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "../NovacMasterProgram.h"
 #include "ReEval_DoEvaluationDlg.h"
+#include "../Evaluation/EvaluationResultView.h"
 
 using namespace ReEvaluation;
 using namespace Evaluation;
@@ -226,13 +227,13 @@ void CReEval_DoEvaluationDlg::OnCancelEvaluation()
 LRESULT CReEval_DoEvaluationDlg::OnEvaluatedSpectrum(WPARAM wp, LPARAM lp){
 	// if the reevaluator stopped, don't do anything
 	if(!m_reeval->fRun) {
-		CSpectrum* spec = (CSpectrum *)wp;
+        CEvaluationResultView* resultview = (CEvaluationResultView *)wp;
 		CScanResult * result = (CScanResult *)lp;
 
 		// Clean up the pointers which we were given
 		m_result.reset();
 		delete result;
-		delete[] spec;
+		delete resultview;
 
 		return 0;
 	}
@@ -240,14 +241,14 @@ LRESULT CReEval_DoEvaluationDlg::OnEvaluatedSpectrum(WPARAM wp, LPARAM lp){
 	int lastWindowUsed = 0; // which window in the re-evaluator was used last time we received an evaluated spectrum?
 
 	// Capture the spectrum (remember to delete this later)
-	CSpectrum* spec = (CSpectrum *)wp;
+    CEvaluationResultView* resultview = (CEvaluationResultView *)wp;
 
 	m_result.reset((CScanResult *)lp);
 
 	// a handle to the fit window
 	CFitWindow &window = m_reeval->m_window[m_reeval->m_curWindow];
-	int fitLow  = window.fitLow		- spec->m_info.m_startChannel;
-	int fitHigh = window.fitHigh	- spec->m_info.m_startChannel;
+	int fitLow  = window.fitLow		- resultview->measuredSpectrum.m_info.m_startChannel;
+	int fitHigh = window.fitHigh	- resultview->measuredSpectrum.m_info.m_startChannel;
 
 	// If the fit-window has changed, then change the list of references
 	if(m_reeval->m_curWindow != lastWindowUsed) {
@@ -258,16 +259,19 @@ LRESULT CReEval_DoEvaluationDlg::OnEvaluatedSpectrum(WPARAM wp, LPARAM lp){
 	// 1. Draw the resulting fit for one of the references
 	{
 		// copy the fitted cross-sections to a local variable
-		for(int k = 0; k < m_result->GetSpecieNum(0); ++k){
-			for(int i  = fitLow; i < fitHigh; ++i){
-				m_GraphRef.m_fitResult[k][i] = spec[k + 3].m_data[i];			// fit result is the scaled cross section of the chosen specie
+		for(int k = 0; k < m_result->GetSpecieNum(0); ++k)
+        {
+			for(int i  = fitLow; i < fitHigh; ++i)
+            {
+				m_GraphRef.m_fitResult[k][i] = resultview->scaledReference[k].m_data[i];			// fit result is the scaled cross section of the chosen specie
 			}
 			m_GraphRef.m_specieName[k] = CString(m_result->GetSpecieName(0, k).c_str());
 		}
 
 		// also copy the residual
-		for(int i = fitLow; i < fitHigh; ++i){
-			m_GraphRef.m_residual[i] = spec[1].m_data[i];
+		for(int i = fitLow; i < fitHigh; ++i)
+        {
+			m_GraphRef.m_residual[i] = resultview->residual.m_data[i];
 		}
 
 		DrawReference();
@@ -277,20 +281,20 @@ LRESULT CReEval_DoEvaluationDlg::OnEvaluatedSpectrum(WPARAM wp, LPARAM lp){
 	if(m_showFit == 0){
 		// copy the spectrum to the local variable
 		for(int i = 0; i < window.specLength; ++i) {
-			spectrum[i] = spec[0].m_data[i];
+			spectrum[i] = resultview->measuredSpectrum.m_data[i];
 		}
 		DrawFit();
 	}else{
 		// copy the residual to the local variable
 		for(int i = fitLow; i < fitHigh; ++i) {
-			residual[i] = spec[1].m_data[i];
+			residual[i] = resultview->residual.m_data[i];
 		}
 
 		DrawResidual();
 	}
 
 	// Clean up the pointer which we were given
-	delete [] spec;
+	delete resultview;
 
 	return 0;
 }

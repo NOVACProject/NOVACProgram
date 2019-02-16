@@ -1142,6 +1142,9 @@
     <ClInclude Include="SpectralEvaluation\Evaluation\EvaluationBase.h">
       <Filter>Header Files\SpectralEvaluation\Evaluation</Filter>
     </ClInclude>
+    <ClInclude Include="Evaluation\EvaluationResultView.h">
+      <Filter>Header Files\Evaluation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\NOVAClogo2.ico">
