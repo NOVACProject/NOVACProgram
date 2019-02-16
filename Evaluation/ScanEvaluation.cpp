@@ -272,7 +272,6 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
 			current.Sub(dark);
 
 			// e. Evaluate the spectrum
-            eval->SetSkySpectrum(sky); // TODO: move up..
 			if(eval->Evaluate(current))
             {
 				CString str;
@@ -375,7 +374,8 @@ void CScanEvaluation::ShowResult(const CSpectrum &spec, const CEvaluationBase *e
 		The second spectrum is the residual of the fit,
 		The third spectrum is the fitted polynomial, and the following
 		MAX_N_REFERENCES + 1 spectra are the scaled reference spectra used in the fit. */
-	CSpectrum* spectra = new CSpectrum[eval->FitWindow().nRef + 3];
+    // TODO: Create a struct to hold this information instead. This is messy and prone to errors...
+	CSpectrum* spectra = new CSpectrum[eval->NumberOfReferencesFitted() + 3];
 
 	spectra[0] = spec;
 
@@ -386,7 +386,7 @@ void CScanEvaluation::ShowResult(const CSpectrum &spec, const CEvaluationBase *e
 	}
 
 	// copy the scaled referencefiles
-	for(int tmpRefIndex = 0; tmpRefIndex < eval->FitWindow().nRef; ++tmpRefIndex) {
+	for(size_t tmpRefIndex = 0; tmpRefIndex < eval->NumberOfReferencesFitted(); ++tmpRefIndex) {
 		for(int i = fitLow; i < fitHigh; ++i) {
 			spectra[tmpRefIndex + 3].m_data[i] = eval->m_fitResult[tmpRefIndex+1].GetAt(i);
 		}

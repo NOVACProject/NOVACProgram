@@ -455,7 +455,7 @@ namespace Evaluation
         std::vector <unsigned int> m_corruptedSpectra;
 
 		/** The number of evaluations */
-		unsigned long m_specNum;
+		unsigned long m_specNum = 0;
 
 		/** The type of the instrument used for this scan */
 		INSTRUMENT_TYPE m_instrumentType;
