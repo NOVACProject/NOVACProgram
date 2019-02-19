@@ -208,15 +208,15 @@ int	CSpectrometerHistory::SecondsSinceLastWindMeas(){
 		return -1;
 
 	// 2. The arrival-time of the last wind-measurement (in the time of the observatory PC we're running on)
-	CWMInfo	lastInfo	= m_windMeasurementTimes.GetAt(m_windMeasurementTimes.GetHeadPosition());
+	CWMInfo	lastInfo = m_windMeasurementTimes.GetAt(m_windMeasurementTimes.GetHeadPosition());
 
 	// 3. The local time now
-	CDateTime	now;
+	CDateTime now;
 	now.SetToNow();
-	now.Increment(_timezone); // convert from local-time to GMT
+	// now.Increment(_timezone); // convert from local-time to GMT. CHANGED 2019-02-19 as this is incorrect unless specifically set.
 
 	// 4. Calculate the difference...
-	double secondsPassed = CDateTime::Difference(now, lastInfo.startTime);
+	double secondsPassed = CDateTime::Difference(now, lastInfo.arrived); // CHANGED 2019-02-19 from being the avg.time of the scan to instead the time the scan was downloaded. To not having to bother about time-zone settings.
 
 	// 5. Return
 	return (int)fabs(secondsPassed);
@@ -234,7 +234,7 @@ int	CSpectrometerHistory::SecondsSinceLastCompMeas(){
 	CWMInfo	lastInfo	= m_compMeasurementTimes.GetAt(m_compMeasurementTimes.GetHeadPosition());
 
 	// 3. The local time now
-	CDateTime	now;
+	CDateTime now;
 	now.SetToNow();
 
 	// 4. Calculate the difference...
