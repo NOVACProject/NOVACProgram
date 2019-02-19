@@ -1,8 +1,12 @@
 #include "StdAfx.h"
 #include "realtimewind.h"
 
+// This is for debugging only!
+#include "../VolcanoInfo.h"
+
 extern CConfigurationSetting g_settings;	// <-- The settings
-extern CWinThread *g_comm;								// <-- the communication controller
+extern CWinThread *g_comm;					// <-- the communication controller
+extern CVolcanoInfo g_volcanoes;			// <-- A list of all known volcanoes
 
 int wind_measurement_calculation (double PlumeHeight, double wd, double &alpha_center_of_mass, double &phi_center_of_mass, double angle_between_meas, double &alpha_2, double &phi_2, int AzimuthMotorstepsComp, int AzimuthStepsPerRound, const CConfigurationSetting::WindSpeedMeasurementSetting &windSettings);
 
@@ -28,6 +32,14 @@ bool	CRealTimeWind::IsTimeForWindMeasurement(const Evaluation::CSpectrometer *sp
 	common.GetDateText(dateStr);
 	common.GetTimeText(timeStr);
 	debugFile.Format("%sOutput\\%s\\Debug_WindSpeedMeas.txt", (LPCTSTR)g_settings.outputDirectory, (LPCTSTR)dateStr);
+
+    int thisVolcano = -1;
+    for (unsigned int k = 0; k < g_volcanoes.m_volcanoNum; ++k) {
+        if (Equals(spectrometer->m_scanner.volcano, g_volcanoes.m_name[k])) {
+            thisVolcano = k;
+            break;
+        }
+    }
 
 	//// -1. This checking should only be performed on master-channel spectrometers...
 	//if(spectrometer->m_channel != 0)
