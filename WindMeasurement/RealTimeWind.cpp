@@ -70,7 +70,8 @@ bool	CRealTimeWind::IsTimeForWindMeasurement(const Evaluation::CSpectrometer *sp
 		if(f != NULL){ 
 			fprintf(f, "%s\t No measurement: Little time since last measurement\n", (LPCTSTR)timeStr);
 			fclose(f);
-		}
+            UploadToNOVACServer(debugFile, thisVolcano, false);
+        }
 		return false;
 	}
 
@@ -87,7 +88,8 @@ bool	CRealTimeWind::IsTimeForWindMeasurement(const Evaluation::CSpectrometer *sp
 		if(f != NULL){ 
 			fprintf(f, "%s\t No measurement: At least one of the last %d scans has missed the plume\n", (LPCTSTR)timeStr, windSettings->stablePeriod);
 			fclose(f);
-		}
+            UploadToNOVACServer(debugFile, thisVolcano, false);
+        }
 		return false;
 	}
 
@@ -98,7 +100,8 @@ bool	CRealTimeWind::IsTimeForWindMeasurement(const Evaluation::CSpectrometer *sp
 		if(f != NULL){ 
 			fprintf(f, "%s\t No measurement: Too large variation in plume centre\n", (LPCTSTR)timeStr);
 			fclose(f);
-		}
+            UploadToNOVACServer(debugFile, thisVolcano, false);
+        }
 		return false;
 	}
 
@@ -110,7 +113,8 @@ bool	CRealTimeWind::IsTimeForWindMeasurement(const Evaluation::CSpectrometer *sp
 		if(f != NULL){ 
 			fprintf(f, "%s\t No measurement: Plume centre too low\n", (LPCTSTR)timeStr);
 			fclose(f);
-		}
+            UploadToNOVACServer(debugFile, thisVolcano, false);
+        }
 		return false;
 	}
 
@@ -122,7 +126,8 @@ bool	CRealTimeWind::IsTimeForWindMeasurement(const Evaluation::CSpectrometer *sp
 		if(f != NULL){ 
 			fprintf(f, "%s\t No measurement: Plume too weak\n", (LPCTSTR)timeStr);
 			fclose(f);
-		}
+            UploadToNOVACServer(debugFile, thisVolcano, false);
+        }
 		return false;
 	}
 
@@ -133,8 +138,9 @@ bool	CRealTimeWind::IsTimeForWindMeasurement(const Evaluation::CSpectrometer *sp
 		FILE *f = fopen(debugFile, "a+");
 		if(f != NULL){ 
 			fprintf(f, "%s\t No measurement: Too long exposure times\n", (LPCTSTR)timeStr);
-			fclose(f); 
-		}
+			fclose(f);
+            UploadToNOVACServer(debugFile, thisVolcano, false);
+        }
 		return false;
 	}
 
@@ -142,7 +148,8 @@ bool	CRealTimeWind::IsTimeForWindMeasurement(const Evaluation::CSpectrometer *sp
 	if(f != NULL){ 
 		fprintf(f, "%s\t Ok to do wind-speed measurement!!\n", (LPCTSTR)timeStr);
 		fclose(f);
-	}
+        UploadToNOVACServer(debugFile, thisVolcano, false);
+    }
 
 	// We've passed all tests, it's now ok to make a wind-speed measurement
 	return true;
