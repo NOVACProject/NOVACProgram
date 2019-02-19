@@ -361,8 +361,6 @@ int CRemoteConfigurationDlg::WriteCfg(const CString &fileName, bool append)
 	commonObject.GetDateTimeText(dateTime);
 	fprintf(f, "%%-------------Modified at %s------------\n\n", (LPCSTR)dateTime);
 
-	fprintf(f, "%%Questions? email mattias.johansson@chalmers.se\n\n");
-
 	// 2. Write the instrument name
 	fprintf(f, "%% This name will be written in the spectrum-files (maximum 16 characters)\nIt also defines the name for the file containing the IP number uploaded to the server\n");
 	fprintf(f, "INSTRUMENTNAME=%s\n\n", (LPCSTR)m_configuration->scanner[m_currentScanner].spec[currentSpec].serialNumber);

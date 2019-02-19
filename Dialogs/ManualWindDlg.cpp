@@ -147,7 +147,6 @@ void CManualWindDlg::OnSend(){
 	// 4a. A small header 
 	common.GetDateTimeText(dateTime);
 	fprintf(f, "%% -------------Modified at %s------------\n\n",(LPCSTR)dateTime);
-	fprintf(f, "%% Questions? email\n%% mattias.johansson@chalmers.se\n\n");
 
 	if(scanner->instrumentType == INSTR_GOTHENBURG){
 		// 4c. Write the Spectrum transfer information

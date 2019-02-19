@@ -271,7 +271,6 @@ void	CCompositionMeasurement::StartCompositionMeasurement(const Evaluation::CSpe
 	// 3a. A small header 
 	common.GetDateTimeText(dateTime);
 	fprintf(f, "%%-------------Modified at %s------------\n\n", (LPCSTR)dateTime);
-	fprintf(f, "%%Questions? email mattias.johansson@chalmers.se\n\n");
 
 	// 3c. Write the Spectrum transfer information
 	fprintf(f, "%% The following channels defines which channels in the spectra that will be transferred\n");

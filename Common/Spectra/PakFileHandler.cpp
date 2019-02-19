@@ -298,7 +298,7 @@ int CPakFileHandler::ReadDownloadedFile(const CString &fileName, bool deletePakF
 
 			if(channel >= MAX_CHANNEL_NUM){
 				// This is not handled by the program
-				message.Format("Recieved spectrum with channel %d. Program not able to handle more than %d channels. Please contact mattias.johansson@chalmers.se or bo.galle@chalmers.se about this problem", channel, MAX_CHANNEL_NUM);
+				message.Format("Recieved spectrum with channel %d. Program not able to handle more than %d channels.", channel, MAX_CHANNEL_NUM);
 				ShowMessage(message);
 				continue;
 			}
