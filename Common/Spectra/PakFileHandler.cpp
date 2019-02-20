@@ -1,12 +1,9 @@
 #include "StdAfx.h"
 #include "pakfilehandler.h"
-#include "SpectrumIO.h"
-#include "../Common.h"
 
 // the settings...
 #include "../../Configuration/Configuration.h"
-
-#include "ScanFileHandler.h"
+#include "../../SpectralEvaluation/File/ScanFileHandler.h"
 
 using namespace FileHandler;
 
@@ -68,11 +65,14 @@ int CPakFileHandler::FindFirstScanStart(const CString &fileName, const CString &
 	SpectrumIO::CSpectrumIO reader;
 	SpectrumIO::CSpectrumIO writer;
 
-	while(SUCCESS == reader.ReadSpectrum(fileName, specNum++, spec)){
+    const std::string fileNameStr((LPCSTR)fileName);
+    const std::string fileNameForLost((LPCSTR)fileForLost);
+
+	while(SUCCESS == reader.ReadSpectrum(fileNameStr, specNum++, spec)){
 		if(spec.ScanIndex() != 0){
 			// Add the spectrum to the 'lost' file
 			if(fileForLost.GetLength() > 3 || fileForLost.GetLength() < MAX_PATH){
-				writer.AddSpectrumToFile(fileForLost, spec);
+				writer.AddSpectrumToFile(fileNameForLost, spec);
 			}
 		}else{
 			// We found what we were looking for, jump out of the loop
@@ -112,12 +112,13 @@ RETURN_CODE CPakFileHandler::FindNextScanStart(FILE *pakFile, CSpectrum &curSpec
 	// Continue reading spectra until we find one which has scan-index = 0
 	while(scanIndex > 0){
 		// write the spectrum to an incomplete-file and store it...
-		writer.AddSpectrumToFile(incompleteFileName, curSpec, spectrumHeader, specHeaderSize);
+        const std::string incompleteFileNameStr((LPCSTR)incompleteFileName);
+		writer.AddSpectrumToFile(incompleteFileNameStr, curSpec, spectrumHeader, specHeaderSize);
 
 		// Read the next spectrum from the file and see if this is the beginning
 		//	of a scan...
-		RETURN_CODE ret = reader.ReadNextSpectrum(pakFile, curSpec, specHeaderSize, spectrumHeader, HEADER_BUF_SIZE);
-		if(ret == FAIL){
+		const bool success = reader.ReadNextSpectrum(pakFile, curSpec, specHeaderSize, spectrumHeader, HEADER_BUF_SIZE);
+		if(!success){
 			if(SUCCESS != HandleCorruptSpectrum(reader, pakFile)){
 				free(spectrumHeader);
 				return FAIL;
@@ -198,7 +199,6 @@ int CPakFileHandler::ReadDownloadedFile(const CString &fileName, bool deletePakF
 	CString message;
 	SpectrumIO::CSpectrumIO reader;
 	SpectrumIO::CSpectrumIO writer;
-	reader.m_logFileWriter = NULL; // nowhere to output the error messages
 	CSpectrum curSpec;
 	CSpectrum *mSpec[MAX_CHANNEL_NUM]; // <-- An array of spectra, needed if an multichannel spectrum is coming in.
 	CString lostFile[MAX_CHANNEL_NUM]; // <-- Where to move the lost spectra
@@ -228,7 +228,8 @@ int CPakFileHandler::ReadDownloadedFile(const CString &fileName, bool deletePakF
 	}
 
 	// 2. Read the first spectrum in the file
-	if(SUCCESS != reader.ReadSpectrum(fileName, 0, curSpec)){
+    const std::string fileNameStr((LPCSTR)fileName);
+	if(SUCCESS != reader.ReadSpectrum(fileNameStr, 0, curSpec)){
 		ShowMessage("Cannot read first spectrum from the downloaded file.");
 		channel = 0; // assumption
 		serialNumber.Format("NN");
@@ -280,8 +281,8 @@ int CPakFileHandler::ReadDownloadedFile(const CString &fileName, bool deletePakF
 		ShowMessage(message);
 	}else{
 		while(1){
-			RETURN_CODE ret = reader.ReadNextSpectrum(pakFile, curSpec, specHeaderSize, spectrumHeader, HEADER_BUF_SIZE);
-			if(ret == FAIL){
+            const bool success = reader.ReadNextSpectrum(pakFile, curSpec, specHeaderSize, spectrumHeader, HEADER_BUF_SIZE);
+			if(!success){
 				// If the spectrum is corrupt, save it to the 'corrupted' - folder
 				if(reader.m_lastError == SpectrumIO::CSpectrumIO::ERROR_CHECKSUM_MISMATCH){
 					SaveCorruptSpectrum(curSpec, specHeaderSize, spectrumHeader);
@@ -349,13 +350,14 @@ int CPakFileHandler::ReadDownloadedFile(const CString &fileName, bool deletePakF
 				}
 
 				// 6d3. Add the spectrum to the scan-file
+                const std::string fileNameStr((LPCSTR)m_scanFile[k]);
 				if(isMultiChannelSpec){
-					writer.AddSpectrumToFile(m_scanFile[k], *mSpec[k]);
+					writer.AddSpectrumToFile(fileNameStr, *mSpec[k]);
 				}else{
 					if(specHeaderSize > 0){
-						writer.AddSpectrumToFile(m_scanFile[k], curSpec, spectrumHeader, specHeaderSize);
+						writer.AddSpectrumToFile(fileNameStr, curSpec, spectrumHeader, specHeaderSize);
 					}else{
-						writer.AddSpectrumToFile(m_scanFile[k], curSpec);
+						writer.AddSpectrumToFile(fileNameStr, curSpec);
 					}
 				}
 
@@ -538,14 +540,15 @@ bool CPakFileHandler::IsWindSpeedMeasurement_Gothenburg(const CString &fileName)
 	int nRepetitions = 0; // <-- The number of repetitions at one specific scan angle
 
 	// 1. Count the number of spectra
-	int numSpec = reader.CountSpectra(fileName);
+    const std::string fileNameStr((LPCSTR)fileName);
+	int numSpec = reader.CountSpectra(fileNameStr);
 	if(numSpec <= 2)
 		return false; // <-- If file is not readable/empty/contains only a few spectra then return false.
 
 	// 2. Check the Solar Zenith Angle at the time when the measurement started
 	//			If this is larger than 75, then the measurement is a stratospheric measurement
 	//			and not a wind-speed measurement
-	if(SUCCESS != reader.ReadSpectrum(fileName, 0, spectrum))
+	if(SUCCESS != reader.ReadSpectrum(fileNameStr, 0, spectrum))
 		return false;
 	gpsTime.year   = spectrum.m_info.m_startTime.year;
 	gpsTime.month  = (unsigned char)spectrum.m_info.m_startTime.month;
@@ -569,13 +572,13 @@ bool CPakFileHandler::IsWindSpeedMeasurement_Gothenburg(const CString &fileName)
 			repetitions of two scan-angles */
 
 	// 3. Go through the file, starting at the last spectrum in the file.
-	if(SUCCESS != reader.ReadSpectrum(fileName, numSpec-3, spectrum))
+	if(SUCCESS != reader.ReadSpectrum(fileNameStr, numSpec-3, spectrum))
 		return false;
 	scanAngle  = spectrum.ScanAngle();
 	scanAngle2 = spectrum.ScanAngle2();
 
 	for(int specIndex = numSpec-4; specIndex > 0; --specIndex){
-		if(SUCCESS != reader.ReadSpectrum(fileName, specIndex, spectrum)){
+		if(SUCCESS != reader.ReadSpectrum(fileNameStr, specIndex, spectrum)){
 			// failed to read the spectrum
 			break;
 		}
@@ -611,7 +614,8 @@ bool CPakFileHandler::IsWindSpeedMeasurement_Heidelberg(const CString &fileName)
 	int nRepetitions = 0; // <-- The number of repetitions at one specific scan angle
 
 	// 1. Count the number of spectra
-	int numSpec = reader.CountSpectra(fileName);
+    const std::string fileNameStr((LPCSTR)fileName);
+	int numSpec = reader.CountSpectra(fileNameStr);
 	if(numSpec <= 2)
 		return false; // <-- If file is not readable/empty/contains only a few spectra then return false.
 
@@ -627,18 +631,18 @@ bool CPakFileHandler::IsWindSpeedMeasurement_Heidelberg(const CString &fileName)
 			repetitions of two scan-angles */
 
 	// 2. Go through the file, starting at the last spectrum in the file.
-	if(SUCCESS != reader.ReadSpectrum(fileName, numSpec-3, spectrum))
+	if(SUCCESS != reader.ReadSpectrum(fileNameStr, numSpec-3, spectrum))
 		return false;
 	scanAngles[0]				= spectrum.ScanAngle();
 	scanAngles2[0]			= spectrum.ScanAngle2();
 
-	if(SUCCESS != reader.ReadSpectrum(fileName, numSpec-4, spectrum))
+	if(SUCCESS != reader.ReadSpectrum(fileNameStr, numSpec-4, spectrum))
 		return false;
 	scanAngles[1]				= spectrum.ScanAngle();
 	scanAngles2[1]			= spectrum.ScanAngle2();
 
 	for(int specIndex = numSpec-5; specIndex > 0; --specIndex){
-		if(SUCCESS != reader.ReadSpectrum(fileName, specIndex, spectrum)){
+		if(SUCCESS != reader.ReadSpectrum(fileNameStr, specIndex, spectrum)){
 			// failed to read the spectrum
 			break;
 		}
@@ -678,14 +682,15 @@ bool CPakFileHandler::IsStratosphericMeasurement(const CString &fileName){
 	int nRepetitions = 0; // <-- The number of repetitions at one specific scan angle
 
 	// 1. Count the number of spectra
-	int numSpec = reader.CountSpectra(fileName);
+    const std::string fileNameStr((LPCSTR)fileName);
+	int numSpec = reader.CountSpectra(fileNameStr);
 	if(numSpec <= 2 || numSpec > 50)
 		return false; // <-- If file is not readable/empty/contains only a few spectra then return false.
 
 	// 2. Check the Solar Zenith Angle at the time when the measurement started
 	//			If this is larger than 75, then the measurement is a stratospheric measurement
 	//			and not a wind-speed measurement
-	if(SUCCESS != reader.ReadSpectrum(fileName, 0, spectrum))
+	if(SUCCESS != reader.ReadSpectrum(fileNameStr, 0, spectrum))
 		return false;
 	gpsTime.year		= spectrum.m_info.m_startTime.year;
 	gpsTime.month		= (unsigned char)spectrum.m_info.m_startTime.month;
@@ -700,7 +705,7 @@ bool CPakFileHandler::IsStratosphericMeasurement(const CString &fileName){
 
 	// 3. Go through the file, starting at the second last spectrum in the file.
 	for(int specIndex = numSpec-2; specIndex > 0; --specIndex){
-		if(SUCCESS != reader.ReadSpectrum(fileName, specIndex, spectrum)){
+		if(SUCCESS != reader.ReadSpectrum(fileNameStr, specIndex, spectrum)){
 			// failed to read the spectrum
 			break;
 		}
@@ -732,7 +737,8 @@ bool CPakFileHandler::IsDirectSunMeasurement(const CString &fileName){
 
 	// It is here assumed that the measurement is a direct-sun measurment
 	//	if there is at least 5 spectrum with the name 'direct_sun'
-	if(SUCCESS != scan.CheckScanFile(&fileName)){
+    const std::string fileNameStr((LPCSTR)fileName);
+	if(SUCCESS != scan.CheckScanFile(fileNameStr)){
 		return false; // failed to check the file
 	}
 	while(scan.GetNextSpectrum(spec)){
@@ -756,8 +762,9 @@ bool CPakFileHandler::IsLunarMeasurement(const CString &fileName){
 	int nFound = 0;
 
 	// It is here assumed that the measurement is a direct-sun measurment
+    const std::string fileNameStr((LPCSTR)fileName);
 	//	if there is at least 5 spectrum with the name 'direct_sun'
-	if(SUCCESS != scan.CheckScanFile(&fileName)){
+	if(SUCCESS != scan.CheckScanFile(fileNameStr)){
 		return false; // failed to check the file
 	}
 	while(scan.GetNextSpectrum(spec)){
@@ -794,7 +801,8 @@ bool CPakFileHandler::IsCompositionMeasurement(const CString &fileName){
 	//		* at least 1 spectrum with the name 'offset'
 	//		* at least 1 spectrum with the name 'dark_cur'
 	//		* at least 1 spectrum with the name 'comp'
-	if(SUCCESS != scan.CheckScanFile(&fileName)){
+    const std::string fileNameStr((LPCSTR)fileName);
+	if(SUCCESS != scan.CheckScanFile(fileNameStr)){
 		return false; // failed to check the file
 	}
 	scan.ResetCounter();
@@ -811,14 +819,14 @@ bool CPakFileHandler::IsCompositionMeasurement(const CString &fileName){
 /** Takes a scan file and renames it to an approprate name */
 RETURN_CODE	CPakFileHandler::ArchiveScan(const CString &scanFileName){
 	SpectrumIO::CSpectrumIO reader;
-	reader.m_logFileWriter = NULL;	// nowhere to output the error messages
 
 	CSpectrum tmpSpec;
 	CString serialNumber, dateStr, timeStr, nowStr, pakFile;
 
 	// 1. Read one spectrum in the scan
 	int specIndex = 0;
-	while(SUCCESS != reader.ReadSpectrum(scanFileName, specIndex++, tmpSpec)){
+    const std::string fileNameStr((LPCSTR)scanFileName);
+	while(SUCCESS != reader.ReadSpectrum(fileNameStr, specIndex++, tmpSpec)){
 		if(reader.m_lastError == SpectrumIO::CSpectrumIO::ERROR_SPECTRUM_NOT_FOUND)
 			return FAIL;
 	}

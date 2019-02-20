@@ -6,9 +6,13 @@
 
 #include "../SpectralEvaluation/Evaluation/FitParameter.h"
 #include "../Common/Common.h"
-#include "../Common/Spectra/ScanFileHandler.h"
-#include "../Common/LogFileWriter.h"
 #include "../Configuration/Configuration.h"
+
+class CSpectrum;
+namespace FileHandler
+{
+class CScanFileHandler;
+}
 
 namespace Evaluation
 {

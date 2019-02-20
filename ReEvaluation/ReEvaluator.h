@@ -4,12 +4,11 @@
 #include "../Evaluation/ScanResult.h"
 #include "../SpectralEvaluation/Evaluation/ReferenceFile.h"
 #include "../SpectralEvaluation/Spectra/Spectrum.h"
-#include "../Common/Spectra/ScanFileHandler.h"
+#include "../SpectralEvaluation/File/ScanFileHandler.h"
 #include "../Configuration/Configuration.h"
 
 #define MAX_N_SCANFILES 64
 
-//using namespace Evaluation;
 
 namespace ReEvaluation
 {

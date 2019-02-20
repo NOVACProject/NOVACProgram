@@ -6,7 +6,7 @@
 
 #include "ReEval_ScanDlg.h"
 
-#include "../Common/Spectra/SpectrumIO.h"
+#include "../SpectralEvaluation/File/SpectrumIO.h"
 
 // Include the special multi-choice file-dialog
 #include "../Dialogs/FECFileDialog.h"
@@ -168,9 +168,10 @@ int CReEval_ScanDlg::TryReadSpectrum(){
 	CString message;
 
 	// Read the spectrum
-	RETURN_CODE ret = reader.ReadSpectrum(m_reeval->m_scanFile[m_curSpecFile], m_curSpec, m_spectrum);
+    const std::string scanFileName((LPCSTR)m_reeval->m_scanFile[m_curSpecFile]);
+	const bool success = reader.ReadSpectrum(scanFileName, m_curSpec, m_spectrum);
 
-	if(ret != SUCCESS){
+	if(!success){
 		switch(reader.m_lastError){
 		case CSpectrumIO::ERROR_EOF:                   message.Format("Spectrum number %d is corrupt - EOF found", m_curSpec); break;
 		case CSpectrumIO::ERROR_COULD_NOT_OPEN_FILE:   message.Format("Could not open spectrum file"); break;
@@ -208,7 +209,8 @@ int CReEval_ScanDlg::CheckScanFile(){
 	CSpectrum spec;
 
 	// Read one spectrum to check the channel numbers
-	reader.ReadSpectrum(m_reeval->m_scanFile[m_curSpecFile], 0, spec);
+    const std::string scanFileName((LPCSTR)m_reeval->m_scanFile[m_curSpecFile]);
+	reader.ReadSpectrum(scanFileName, 0, spec);
 	unsigned char chn = spec.Channel();
 	int steps = 0;
 	if(-1 == Common::GetInterlaceSteps(chn, steps)){
@@ -217,7 +219,7 @@ int CReEval_ScanDlg::CheckScanFile(){
 	}
 
 	// Read the spectrum
-	m_specNum = reader.CountSpectra(m_reeval->m_scanFile[m_curSpecFile]);
+	m_specNum = reader.CountSpectra(scanFileName);
 
 	// check if the file was ok. 
 	if(reader.m_lastError == CSpectrumIO::ERROR_SPECTRUM_NOT_FOUND || reader.m_lastError == CSpectrumIO::ERROR_EOF){

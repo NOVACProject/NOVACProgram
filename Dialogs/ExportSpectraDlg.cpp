@@ -2,7 +2,7 @@
 #include "../NovacMasterProgram.h"
 
 #include "../Common/Common.h"
-#include "../Common/Spectra/SpectrumIO.h"
+#include "../SpectralEvaluation/File/SpectrumIO.h"
 #include "../Common/Spectra/PakFileHandler.h"
 #include "../Common/SpectrumFormat/STDFile.h"
 
@@ -144,8 +144,8 @@ void CExportSpectraDlg::OnExportSpectra()
 			while(1){
 
 //			while(SUCCESS == reader.ReadNextSpectrum(sFile, spec)){
-				RETURN_CODE ret = reader.ReadNextSpectrum(sFile, spec);
-				if(ret == FAIL){
+				const bool success = reader.ReadNextSpectrum(sFile, spec);
+				if(!success){
 					if(reader.m_lastError == SpectrumIO::CSpectrumIO::ERROR_EOF || reader.m_lastError == SpectrumIO::CSpectrumIO::ERROR_COULD_NOT_OPEN_FILE || reader.m_lastError == SpectrumIO::CSpectrumIO::ERROR_SPECTRUM_NOT_FOUND)
 						break;
 					switch(reader.m_lastError){

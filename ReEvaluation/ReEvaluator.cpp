@@ -118,7 +118,8 @@ bool CReEvaluator::DoEvaluation(){
 		FileHandler::CScanFileHandler scan;
 
 		// Check the scan file
-		if(SUCCESS != scan.CheckScanFile(&m_scanFile[m_curScanFile])){
+        const std::string scanFileName((LPCSTR)m_scanFile[m_curScanFile]);
+		if(SUCCESS != scan.CheckScanFile(scanFileName)){
 			CString errStr;
 			errStr.Format("Could not read scan-file %s", (LPCTSTR)m_scanFile[m_curScanFile]);
 			MessageBox(NULL, errStr, "Error", MB_OK);
@@ -415,7 +416,7 @@ bool CReEvaluator::AppendResultToEvaluationLog(const CScanResult *result, const 
 	fprintf(f, "\tlong=%.6lf\n",											gps.m_longitude);
 	fprintf(f, "\talt=%.3lf\n",												gps.m_altitude);
 
-	fprintf(f, "\tserial=%s\n", (LPCTSTR)scan->m_device);
+	fprintf(f, "\tserial=%s\n",                                             scan->m_device.c_str());
 	fprintf(f, "\tchannel=%d\n",											scan->m_channel);
 
 	scan->GetSky(skySpec);

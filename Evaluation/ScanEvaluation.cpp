@@ -2,7 +2,8 @@
 #include "ScanEvaluation.h"
 #include "EvaluationResultView.h"
 #include "../SpectralEvaluation/Evaluation/EvaluationBase.h"
-#include "../Common/Spectra/SpectrumIO.h"
+#include "../SpectralEvaluation/File/ScanFileHandler.h"
+#include "../SpectralEvaluation/File/SpectrumIO.h"
 #include "../Common/SpectrumFormat/STDFile.h"
 #include "../Common/SpectrumFormat/TXTFile.h"
 #include "../SpectralEvaluation/Utils.h"
@@ -97,7 +98,8 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
 
 	// Check the scan file, make sure it's correct and that the file
 	//	actually contains spectra
-	if(SUCCESS != scan.CheckScanFile(&scanfile)) {
+    const std::string scanFileName((LPCSTR)scanfile);
+	if(SUCCESS != scan.CheckScanFile(scanFileName)) {
 		return 0;
 	}
 
@@ -259,7 +261,7 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
 			// d. Check if this spectrum is worth evaluating
 			if(Ignore(current, copyOfWindow))
             {
-				message.Format("Ignoring spectrum %d in scan %s.", current.ScanIndex(), (LPCSTR)scan.GetFileName());
+				message.Format("Ignoring spectrum %d in scan %s.", current.ScanIndex(), scan.GetFileName().c_str());
 				ShowMessage(message);
 				continue;
 			}
@@ -419,7 +421,7 @@ RETURN_CODE CScanEvaluation::GetDark(FileHandler::CScanFileHandler *scan, const 
 	//		as the second spectrum in the scan.
 	if(darkSettings == NULL || darkSettings->m_darkSpecOption == MEASURE || darkSettings->m_darkSpecOption == MODEL_SOMETIMES){
 		if(0 != scan->GetDark(dark)){
-			message.Format("Could not read dark-spectrum from scan %s", (LPCSTR)scan->GetFileName());
+			message.Format("Could not read dark-spectrum from scan %s", scan->GetFileName().c_str());
 			ShowMessage(message);
 			return FAIL;
 		}
@@ -616,7 +618,11 @@ RETURN_CODE CScanEvaluation::GetSky(FileHandler::CScanFileHandler *scan, CSpectr
 		if(Equals(m_userSkySpectrum.Right(4), ".pak", 4)){
 			// If the spectrum is in .pak format
 			SpectrumIO::CSpectrumIO reader;
-			return reader.ReadSpectrum(m_userSkySpectrum, 0, sky);
+            const std::string userSkyFileName((LPCSTR)m_userSkySpectrum);
+			if(reader.ReadSpectrum(userSkyFileName, 0, sky))
+                return SUCCESS;
+            else
+                return FAIL;
 		}else if(Equals(m_userSkySpectrum.Right(4), ".std", 4)){
 			// If the spectrum is in .std format
 			return SpectrumIO::CSTDFile::ReadSpectrum(sky, m_userSkySpectrum);

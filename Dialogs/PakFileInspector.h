@@ -2,7 +2,7 @@
 
 #include "../Graphs/SpectrumGraph.h"
 #include "../SpectralEvaluation/Spectra/Spectrum.h"
-#include "../Common/SpectrumFormat/MKPack.h"
+#include "../SpectralEvaluation/File/MKPack.h"
 
 // CPakFileInspector dialog
 

@@ -309,16 +309,7 @@
     <ClCompile Include="Common\XMLFileReader.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
-    <ClCompile Include="Common\SpectrumFormat\MKPack.cpp">
-      <Filter>Source Files\Common\SpectrumFormat</Filter>
-    </ClCompile>
     <ClCompile Include="Common\Spectra\PakFileHandler.cpp">
-      <Filter>Source Files\Common\Spectra</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\Spectra\ScanFileHandler.cpp">
-      <Filter>Source Files\Common\Spectra</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\Spectra\SpectrumIO.cpp">
       <Filter>Source Files\Common\Spectra</Filter>
     </ClCompile>
     <ClCompile Include="PostFlux\PostFluxCalculator.cpp">
@@ -567,6 +558,15 @@
     <ClCompile Include="SpectralEvaluation\File\File.cpp">
       <Filter>Source Files\SpectralEvaluation</Filter>
     </ClCompile>
+    <ClCompile Include="SpectralEvaluation\File\ScanFileHandler.cpp">
+      <Filter>Source Files\Common\Spectra</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\File\SpectrumIO.cpp">
+      <Filter>Source Files\Common\Spectra</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\File\MKPack.cpp">
+      <Filter>Source Files\Common\SpectrumFormat</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Configuration\AdvancedFTPUploadSettings.h">
@@ -764,16 +764,7 @@
     <ClInclude Include="stdafx.h">
       <Filter>Header Files\Common</Filter>
     </ClInclude>
-    <ClInclude Include="Common\SpectrumFormat\MKPack.h">
-      <Filter>Header Files\Common\SpectrumFormat</Filter>
-    </ClInclude>
     <ClInclude Include="Common\Spectra\PakFileHandler.h">
-      <Filter>Header Files\Common\Spectra</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\Spectra\ScanFileHandler.h">
-      <Filter>Header Files\Common\Spectra</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\Spectra\SpectrumIO.h">
       <Filter>Header Files\Common\Spectra</Filter>
     </ClInclude>
     <ClInclude Include="Evaluation\EvaluationController.h">
@@ -1153,6 +1144,15 @@
     </ClInclude>
     <ClInclude Include="Evaluation\EvaluationResultView.h">
       <Filter>Header Files\Evaluation</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\File\MKPack.h">
+      <Filter>Header Files\Common\SpectrumFormat</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\File\ScanFileHandler.h">
+      <Filter>Header Files\Common\Spectra</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\File\SpectrumIO.h">
+      <Filter>Header Files\Common\Spectra</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

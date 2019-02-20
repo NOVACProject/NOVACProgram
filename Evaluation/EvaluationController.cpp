@@ -94,7 +94,8 @@ void CEvaluationController::OnTestEvaluation(WPARAM wp, LPARAM lp){
 
 	// 2. Find the serial number of the spectrometer
 	CString serialNumber;
-	reader.ReadSpectrum(*fileName, 0, curSpec);
+    const std::string fileNameStr((LPCSTR)*fileName);
+	reader.ReadSpectrum(fileNameStr, 0, curSpec);
 	serialNumber.Format("%s", curSpec.m_info.m_device.c_str());
 	ASSERT(IsSerialNumber(serialNumber));
 
@@ -126,7 +127,8 @@ void CEvaluationController::OnArrivedSpectra(WPARAM wp, LPARAM lp){
 	}
 
 	// 2. Find the serial number of the spectrometer and the channel that was used
-	reader.ReadSpectrum(*fileName, 0, spec); // TODO: check for errors!!
+    const std::string fileNameStr((LPCSTR)*fileName);
+	reader.ReadSpectrum(fileNameStr, 0, spec); // TODO: check for errors!!
 	serialNumber.Format("%s", spec.m_info.m_device.c_str());
 	int specPerScan				= spec.SpectraPerScan();
 
@@ -137,7 +139,7 @@ void CEvaluationController::OnArrivedSpectra(WPARAM wp, LPARAM lp){
 	measurementMode = CPakFileHandler::GetMeasurementMode(*fileName);
 
 	if(measurementMode == MODE_FLUX){
-		nSpectra		= reader.CountSpectra(*fileName);
+		nSpectra		= reader.CountSpectra(fileNameStr);
 		isFullScan	= (specPerScan == nSpectra); // TODO: will this work if there are repetitions??
 	}
 
@@ -243,7 +245,8 @@ RETURN_CODE CEvaluationController::EvaluateScan(const CString &fileName, int vol
 	}
 
 	// 2. Read the scan file
-	if(SUCCESS != scan->CheckScanFile(&fileName)){
+    const std::string fileNameStr((LPCSTR)*fileName);
+	if(SUCCESS != scan->CheckScanFile(fileNameStr)){
 		m_logFileWriter.WriteErrorMessage(TEXT("Could not read recieved scan"));
 		delete scan;
 		return FAIL;
@@ -373,14 +376,16 @@ CSpectrometer *CEvaluationController::IdentifySpectrometer(const FileHandler::CS
 
 	// find the spectrometer that corresponds to the serial number
 	for(spectrometerNum = 0; spectrometerNum < m_spectrometer.GetSize(); ++spectrometerNum){
-		if(Equals(m_spectrometer[spectrometerNum]->SerialNumber(), scan->m_device)){
+        const CString deviceName(scan->m_device.c_str());
+		if(Equals(m_spectrometer[spectrometerNum]->SerialNumber(), deviceName)){
 			if(channel == m_spectrometer[spectrometerNum]->m_channel){
 				return m_spectrometer[spectrometerNum];
 			}
 		}
 	}
 
-	return HandleUnIdentifiedSpectrometer(scan->m_device, scan);
+    const CString deviceName(scan->m_device.c_str());
+	return HandleUnIdentifiedSpectrometer(deviceName, scan);
 }
 
 RETURN_CODE CEvaluationController::CalculateFlux(CScanResult *result, const CSpectrometer *spectrometer, int volcanoIndex, CWindField &windField){
@@ -568,7 +573,9 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *resu
 	CString pakFile, txtFile, evalLogFile;
 	CString wsSrc, wdSrc, phSrc;
 	CDateTime dateTime;
-	GetArchivingfileName(pakFile, txtFile, scan->GetFileName());
+
+    const CString fName(scan->GetFileName().c_str());
+	GetArchivingfileName(pakFile, txtFile, fName);
 
     std::string specModel;
 	CSpectrometerModel::ToString(spectrometer.m_settings.model, specModel);
@@ -1047,7 +1054,6 @@ void CEvaluationController::Output_EmptyScan(const CSpectrometer *spectrometer){
 
 RETURN_CODE CEvaluationController::GetArchivingfileName(CString &pakFile, CString &txtFile, const CString &temporaryScanFile){
 	CSpectrumIO reader;
-	reader.m_logFileWriter = NULL;	// nowhere to output the error messages
 
 	CSpectrum tmpSpec;
 	CString serialNumber, dateStr, timeStr, dateStr2;
@@ -1062,7 +1068,8 @@ RETURN_CODE CEvaluationController::GetArchivingfileName(CString &pakFile, CStrin
 	txtFile.Format("%s\\Output\\UnknownScans\\%d.txt", (LPCSTR)g_settings.outputDirectory, i);
 
 	// 1. Read the first spectrum in the scan
-	if(SUCCESS != reader.ReadSpectrum(temporaryScanFile, 0, tmpSpec))
+    const std::string tempScanFileName((LPCSTR)temporaryScanFile);
+	if(SUCCESS != reader.ReadSpectrum(tempScanFileName, 0, tmpSpec))
 		return FAIL;
 	CSpectrumInfo &info	= tmpSpec.m_info;
 	int channel = info.m_channel;
@@ -1070,8 +1077,9 @@ RETURN_CODE CEvaluationController::GetArchivingfileName(CString &pakFile, CStrin
 	// 1a. If the GPS had no connection with the satelites when collecting the sky-spectrum,
 	//			then try to find a spectrum in the file for which it had connection...
 	i = 1;
-	while(info.m_startTime.year == 2004 && info.m_startTime.month == 3 && info.m_startTime.day == 22){
-		if(SUCCESS != reader.ReadSpectrum(temporaryScanFile, i++, tmpSpec))
+	while(info.m_startTime.year == 2004 && info.m_startTime.month == 3 && info.m_startTime.day == 22)
+    {
+		if(SUCCESS != reader.ReadSpectrum(tempScanFileName, i++, tmpSpec))
 			break;
 		info	= tmpSpec.m_info;
 	}
@@ -1124,7 +1132,9 @@ void CEvaluationController::GetSpectrumInformation(CSpectrometer *spectrometer, 
 	CScanFileHandler *scan = new CScanFileHandler();
 	if(scan == NULL)
 		return;
-	scan->CheckScanFile(&fileName);
+
+    const std::string fileNameStr((LPCSTR)fileName);
+	scan->CheckScanFile(fileNameStr);
 	scan->GetDark(darkSpec);
 	scan->GetSky(skySpec);
 

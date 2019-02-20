@@ -139,9 +139,6 @@
     <ClCompile Include="Common\LogFileWriter.cpp" />
     <ClCompile Include="Common\ReportWriter.cpp" />
     <ClCompile Include="Common\Spectra\PakFileHandler.cpp" />
-    <ClCompile Include="Common\Spectra\ScanFileHandler.cpp" />
-    <ClCompile Include="Common\Spectra\SpectrumIO.cpp" />
-    <ClCompile Include="Common\SpectrumFormat\MKPack.cpp" />
     <ClCompile Include="Common\SpectrumFormat\STDFile.cpp" />
     <ClCompile Include="Common\SpectrumFormat\TXTFile.cpp" />
     <ClCompile Include="Common\Version.cpp" />
@@ -252,6 +249,9 @@
     <ClInclude Include="SpectralEvaluation\Evaluation\FitWindow.h" />
     <ClInclude Include="SpectralEvaluation\Evaluation\ReferenceFile.h" />
     <ClInclude Include="SpectralEvaluation\Evaluation\ReferenceFitResult.h" />
+    <ClInclude Include="SpectralEvaluation\File\MKPack.h" />
+    <ClInclude Include="SpectralEvaluation\File\ScanFileHandler.h" />
+    <ClInclude Include="SpectralEvaluation\File\SpectrumIO.h" />
     <ClInclude Include="SpectralEvaluation\Fit\BSpline.cxx" />
     <ClInclude Include="SpectralEvaluation\Fit\BSplineD.cxx" />
     <ClInclude Include="SpectralEvaluation\Fit\BSplineF.cxx" />
@@ -284,6 +284,18 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="SpectralEvaluation\File\File.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\File\MKPack.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\File\ScanFileHandler.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\File\SpectrumIO.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -361,9 +373,6 @@
     <ClInclude Include="Common\LogFileWriter.h" />
     <ClInclude Include="Common\ReportWriter.h" />
     <ClInclude Include="Common\Spectra\PakFileHandler.h" />
-    <ClInclude Include="Common\Spectra\ScanFileHandler.h" />
-    <ClInclude Include="Common\Spectra\SpectrumIO.h" />
-    <ClInclude Include="Common\SpectrumFormat\MKPack.h" />
     <ClInclude Include="Common\SpectrumFormat\STDFile.h" />
     <ClInclude Include="Common\SpectrumFormat\TXTFile.h" />
     <ClInclude Include="Common\Version.h" />
