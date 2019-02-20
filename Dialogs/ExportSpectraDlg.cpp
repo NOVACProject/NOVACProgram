@@ -4,7 +4,8 @@
 #include "../Common/Common.h"
 #include "../SpectralEvaluation/File/SpectrumIO.h"
 #include "../Common/Spectra/PakFileHandler.h"
-#include "../Common/SpectrumFormat/STDFile.h"
+#include "../SpectralEvaluation/Spectra/Spectrum.h"
+#include "../SpectralEvaluation/File/STDFile.h"
 
 #include "ExportSpectraDlg.h"
 
@@ -228,7 +229,8 @@ void CExportSpectraDlg::SaveSpectrum(const CSpectrum &spec, const CString &path)
 		filename.Format("%s\\%05d_%d.STD", (LPCSTR)path, m_specIndex, channel);
 
 		// Write the spectrum to file
-		CSTDFile::WriteSpectrum(spec, filename, 1);
+        std::string filenameStr((LPCSTR)filename);
+		CSTDFile::WriteSpectrum(spec, filenameStr, 1);
 
 		return;
 	}
@@ -246,7 +248,8 @@ void CExportSpectraDlg::SaveSpectrum(const CSpectrum &spec, const CString &path)
 		filename.Format("%s\\%05d_%d.STD", (LPCSTR)path, m_specIndex, k);
 
 		// Write the spectrum to file
-		CSTDFile::WriteSpectrum(mSpec[k], filename, 1);
+        std::string filenameStr((LPCSTR)filename);
+		CSTDFile::WriteSpectrum(mSpec[k], filenameStr, 1);
 	}
 
 	for(int k = 0; k < MAX_CHANNEL_NUM; ++k){

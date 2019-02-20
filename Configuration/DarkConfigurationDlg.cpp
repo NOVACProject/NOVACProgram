@@ -136,30 +136,30 @@ void CDarkConfigurationDlg::SaveData(){
 	{
 		for(i = 0; i < m_curSpec->channelNum; ++i){
 			// The option for how to get the dark-spectrum
-			m_curSpec->channel[i].m_darkSettings.m_darkSpecOption = (DARK_SPEC_OPTION)m_darkSpecOption;
+			m_curSpec->channel[i].m_darkSettings.m_darkSpecOption = (Configuration::DARK_SPEC_OPTION)m_darkSpecOption;
 
 			// The option for how to get the offset-spectrum
-			m_curSpec->channel[i].m_darkSettings.m_offsetOption			= (DARK_MODEL_OPTION)m_offsetSpecOption;
+			m_curSpec->channel[i].m_darkSettings.m_offsetOption			= (Configuration::DARK_MODEL_OPTION)m_offsetSpecOption;
 
 			// The option for how to get the dark-current spectrum
-			m_curSpec->channel[i].m_darkSettings.m_darkCurrentOption = (DARK_MODEL_OPTION)m_dcSpecOption;
+			m_curSpec->channel[i].m_darkSettings.m_darkCurrentOption = (Configuration::DARK_MODEL_OPTION)m_dcSpecOption;
 		}
 
 		// The path of the offset spectrum
-		m_curSpec->channel[0].m_darkSettings.m_offsetSpec.Format(m_offsetPath1);
+		m_curSpec->channel[0].m_darkSettings.m_offsetSpec = std::string((LPCSTR)m_offsetPath1);
 		if(m_curSpec->channelNum > 1){
-			m_curSpec->channel[1].m_darkSettings.m_offsetSpec.Format(m_offsetPath2);
+			m_curSpec->channel[1].m_darkSettings.m_offsetSpec = std::string((LPCSTR)m_offsetPath2);
 		}
 
 		// The path of the dark-current spectrum
-		m_curSpec->channel[0].m_darkSettings.m_darkCurrentSpec.Format(m_dcPath1);
+		m_curSpec->channel[0].m_darkSettings.m_darkCurrentSpec = std::string((LPCSTR)m_dcPath1);
 		if(m_curSpec->channelNum > 1){
-			m_curSpec->channel[1].m_darkSettings.m_darkCurrentSpec.Format(m_dcPath2);
+			m_curSpec->channel[1].m_darkSettings.m_darkCurrentSpec = std::string((LPCSTR)m_dcPath2);
 		}
 
 		// Show or hide the label telling that the user must himself offset correct the
 		//	dark current spectrum
-		if(m_curSpec->channel[0].m_darkSettings.m_darkCurrentOption	== USER_SUPPLIED){
+		if(m_curSpec->channel[0].m_darkSettings.m_darkCurrentOption	== Configuration::DARK_MODEL_OPTION::USER_SUPPLIED){
 			m_labelDarkOffsetCorr.ShowWindow(SW_SHOW);
 		}else{
 			m_labelDarkOffsetCorr.ShowWindow(SW_HIDE);
@@ -202,19 +202,19 @@ void CDarkConfigurationDlg::OnChangeScanner(){
 		m_dcSpecOption			= (int)m_curSpec->channel[0].m_darkSettings.m_darkCurrentOption;
 
 		// Show the path of the offset spectrum
-		if(strlen(m_curSpec->channel[0].m_darkSettings.m_offsetSpec) > 1){
-			m_offsetPath1.Format(m_curSpec->channel[0].m_darkSettings.m_offsetSpec);
+		if(m_curSpec->channel[0].m_darkSettings.m_offsetSpec.size() > 1){
+			m_offsetPath1.Format("%s", m_curSpec->channel[0].m_darkSettings.m_offsetSpec.c_str());
 		}
-		if(strlen(m_curSpec->channel[1].m_darkSettings.m_offsetSpec) > 1 && m_curSpec->channelNum > 1){
-			m_offsetPath2.Format(m_curSpec->channel[1].m_darkSettings.m_offsetSpec);
+		if(m_curSpec->channel[1].m_darkSettings.m_offsetSpec.size() > 1 && m_curSpec->channelNum > 1){
+			m_offsetPath2.Format("%s", m_curSpec->channel[1].m_darkSettings.m_offsetSpec.c_str());
 		}
 
 		// Show the path of the dark-current spectrum
-		if(strlen(m_curSpec->channel[0].m_darkSettings.m_darkCurrentSpec) > 1){
-			m_dcPath1.Format(m_curSpec->channel[0].m_darkSettings.m_darkCurrentSpec);
+		if(m_curSpec->channel[0].m_darkSettings.m_darkCurrentSpec.size() > 1){
+			m_dcPath1.Format("%s", m_curSpec->channel[0].m_darkSettings.m_darkCurrentSpec.c_str());
 		}
-		if(strlen(m_curSpec->channel[1].m_darkSettings.m_darkCurrentSpec) > 1 && m_curSpec->channelNum > 1){
-			m_dcPath2.Format(m_curSpec->channel[1].m_darkSettings.m_darkCurrentSpec);
+		if(m_curSpec->channel[1].m_darkSettings.m_darkCurrentSpec.size() > 1 && m_curSpec->channelNum > 1){
+			m_dcPath2.Format("%s", m_curSpec->channel[1].m_darkSettings.m_darkCurrentSpec.c_str());
 		}
 
 		// Enable the controls that should be enabled and disable the controls

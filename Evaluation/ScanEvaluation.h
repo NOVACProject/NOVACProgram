@@ -4,6 +4,7 @@
 #include <memory>
 #include <mutex>
 
+#include "../SpectralEvaluation/Evaluation/SpectralEvaluationBase.h"
 #include "../SpectralEvaluation/Evaluation/FitParameter.h"
 #include "../Common/Common.h"
 #include "../Configuration/Configuration.h"
@@ -22,7 +23,7 @@ namespace Evaluation
 		An object of the <b>CScanEvaluation</b>-class handles the evaluation of one
 		scan.
 	*/
-	class CScanEvaluation
+	class CScanEvaluation : public SpectralEvaluationBase
 	{
 
 	public:
@@ -47,7 +48,7 @@ namespace Evaluation
 
 		/** Called to evaluate one scan.
 				@return the number of spectra evaluated. */
-		long EvaluateScan(const CString &scanfile, const CFitWindow& window, bool *fRun = NULL, const CConfigurationSetting::DarkSettings *darkSettings = NULL);
+		long EvaluateScan(const CString &scanfile, const CFitWindow& window, bool *fRun = NULL, const Configuration::CDarkSettings *darkSettings = NULL);
 
 		/** Setting the option for how to get the sky spectrum.
 			@param skySpecPath - if not null and skyOption == SKY_USER, then this string will be used
@@ -89,7 +90,7 @@ namespace Evaluation
 			@param spec - the spectrum for which the dark spectrum should be retrieved
 			@param dark - will on return be filled with the dark spectrum 
 			@param darkSettings - the settings for how to get the dark spectrum from this spectrometer */
-		RETURN_CODE GetDark(FileHandler::CScanFileHandler *scan, const CSpectrum &spec, CSpectrum &dark, const CConfigurationSetting::DarkSettings *darkSettings = NULL);
+		RETURN_CODE GetDark(FileHandler::CScanFileHandler *scan, const CSpectrum &spec, CSpectrum &dark, const Configuration::CDarkSettings *darkSettings = NULL);
 
 		/** checks the spectrum to the settings and returns 'true' if the spectrum should not be evaluated */
 		bool Ignore(const CSpectrum &spec, const CFitWindow window);

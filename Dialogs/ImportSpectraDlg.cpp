@@ -2,8 +2,9 @@
 #include "../NovacMasterProgram.h"
 #include "ImportSpectraDlg.h"
 #include "../Common/Common.h"
-#include "../Common/Spectrumformat/StdFile.h"
+#include "../SpectralEvaluation/File/STDFile.h"
 #include "../SpectralEvaluation/File/SpectrumIO.h"
+#include "../SpectralEvaluation/Spectra/Spectrum.h"
 
 #include <CDerr.h>
 
@@ -782,7 +783,8 @@ int ReadSpectrum(unsigned int index, const CString &prefix, CSpectrum &spec, con
 
 		// Found it!
 		// Read the spectrum
-		CSTDFile::ReadSpectrum(spec, *str);
+        std::string filenameStr((LPCSTR)*str);
+		CSTDFile::ReadSpectrum(spec, filenameStr);
 		return i;
 	}	
 
@@ -798,7 +800,8 @@ int ReadSpectrum(unsigned int index, const CString &prefix, CSpectrum &spec, con
 
 		// Found it!
 		// Read the spectrum
-		CSTDFile::ReadSpectrum(spec, *str);
+        std::string filenameStr((LPCSTR)*str);
+		CSTDFile::ReadSpectrum(spec, filenameStr);
 		return i;
 	}
 

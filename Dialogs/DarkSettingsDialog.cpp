@@ -108,16 +108,16 @@ void CDarkSettingsDialog::OnOK()
 		return; // shouldn't happen...
 
 	// Initialize the values of the dialog
-	m_darkSettings->m_darkSpecOption				= (DARK_SPEC_OPTION)m_darkSpecOption;
-	m_darkSettings->m_darkCurrentOption			= (DARK_MODEL_OPTION)m_dcSpecOption;
-	m_darkSettings->m_offsetOption					= (DARK_MODEL_OPTION)m_offsetSpecOption;
+	m_darkSettings->m_darkSpecOption				= (Configuration::DARK_SPEC_OPTION)m_darkSpecOption;
+	m_darkSettings->m_darkCurrentOption			= (Configuration::DARK_MODEL_OPTION)m_dcSpecOption;
+	m_darkSettings->m_offsetOption					= (Configuration::DARK_MODEL_OPTION)m_offsetSpecOption;
 
 	// the files
-	if(m_darkSettings->m_darkSpecOption	== DARK_USER_SUPPLIED){
-		m_darkSettings->m_offsetSpec.Format("%s", (LPCSTR)m_darkSpectrum_UserSupplied);
+	if(m_darkSettings->m_darkSpecOption	== Configuration::DARK_SPEC_OPTION::DARK_USER_SUPPLIED){
+		m_darkSettings->m_offsetSpec = std::string((LPCSTR)m_darkSpectrum_UserSupplied);
 	}else{
-		m_darkSettings->m_offsetSpec.Format("%s", (LPCSTR)m_offsetPath1);
-		m_darkSettings->m_darkCurrentSpec.Format("%s", (LPCSTR)m_dcPath1);
+		m_darkSettings->m_offsetSpec = std::string((LPCSTR)m_offsetPath1);
+		m_darkSettings->m_darkCurrentSpec = std::string((LPCSTR)m_dcPath1);
 	}
 
 	CDialog::OnOK();
@@ -134,16 +134,16 @@ BOOL CDarkSettingsDialog::OnInitDialog(){
 		return FALSE; // shouldn't happen...
 
 	// Initialize the values of the dialog
-	m_darkSpecOption					= m_darkSettings->m_darkSpecOption;
-	m_dcSpecOption						= m_darkSettings->m_darkCurrentOption;
-	m_offsetSpecOption				= m_darkSettings->m_offsetOption;
+	m_darkSpecOption				= (int)m_darkSettings->m_darkSpecOption;
+	m_dcSpecOption					= (int)m_darkSettings->m_darkCurrentOption;
+	m_offsetSpecOption				= (int)m_darkSettings->m_offsetOption;
 
 	// the files
-	if(m_darkSpecOption == DARK_USER_SUPPLIED){
-		m_darkSpectrum_UserSupplied.Format("%s", (LPCSTR)m_darkSettings->m_offsetSpec);
+	if(m_darkSpecOption == (int)Configuration::DARK_SPEC_OPTION::DARK_USER_SUPPLIED){
+		m_darkSpectrum_UserSupplied.Format("%s", m_darkSettings->m_offsetSpec.c_str());
 	}else{
-		m_offsetPath1.Format("%s", (LPCSTR)m_darkSettings->m_offsetSpec);
-		m_dcPath1.Format("%s", (LPCSTR)m_darkSettings->m_darkCurrentSpec);
+		m_offsetPath1.Format("%s", m_darkSettings->m_offsetSpec.c_str());
+		m_dcPath1.Format("%s", m_darkSettings->m_darkCurrentSpec.c_str());
 	}
 
 	// Enable and disable the controls accoring to the settings
@@ -244,25 +244,25 @@ void CDarkSettingsDialog::UpdateControls(){
 // The 'Browse' buttons
 void CDarkSettingsDialog::OnBrowseOffset1(){
 	if(1 == BrowseFile(IDC_EDIT_OFFSETSPECTRUM))
-		m_offsetSpecOption = USER_SUPPLIED;
+		m_offsetSpecOption = (int)Configuration::DARK_SPEC_OPTION::DARK_USER_SUPPLIED;
 
 	UpdateData(FALSE);
 }
 void CDarkSettingsDialog::OnBrowseOffset2(){
 	if(1 == BrowseFile(IDC_EDIT_OFFSETSPECTRUM2))
-		m_offsetSpecOption = USER_SUPPLIED;
+		m_offsetSpecOption = (int)Configuration::DARK_SPEC_OPTION::DARK_USER_SUPPLIED;
 
 	UpdateData(FALSE);
 }
 void CDarkSettingsDialog::OnBrowseDC1(){
 	if(1 == BrowseFile(IDC_EDIT_DARKCURRENT_SPECTRUM))
-		m_dcSpecOption = USER_SUPPLIED;
+		m_dcSpecOption = (int)Configuration::DARK_SPEC_OPTION::DARK_USER_SUPPLIED;
 
 	UpdateData(FALSE);
 }
 void CDarkSettingsDialog::OnBrowseDC2(){
 	if(1 == BrowseFile(IDC_EDIT_DARKCURRENT_SPECTRUM2))
-		m_dcSpecOption = USER_SUPPLIED;
+		m_dcSpecOption = (int)Configuration::DARK_SPEC_OPTION::DARK_USER_SUPPLIED;
 
 	UpdateData(FALSE);
 }

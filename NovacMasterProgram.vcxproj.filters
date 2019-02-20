@@ -234,9 +234,6 @@
     <ClCompile Include="Common\ReportWriter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Common\SpectrumFormat\STDFile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Graphs\ScanGraph.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -253,9 +250,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Dialogs\SummarizeFluxDataDlg.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\SpectrumFormat\TXTFile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="UserSettings.cpp">
@@ -567,6 +561,15 @@
     <ClCompile Include="SpectralEvaluation\File\MKPack.cpp">
       <Filter>Source Files\Common\SpectrumFormat</Filter>
     </ClCompile>
+    <ClCompile Include="SpectralEvaluation\File\STDFile.cpp">
+      <Filter>Source Files\Common\SpectrumFormat</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\File\TXTFile.cpp">
+      <Filter>Source Files\Common\SpectrumFormat</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\Evaluation\SpectralEvaluationBase.cpp">
+      <Filter>Source Files\SpectralEvaluation\Evaluation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Configuration\AdvancedFTPUploadSettings.h">
@@ -686,9 +689,6 @@
     <ClInclude Include="Resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Common\SpectrumFormat\STDFile.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Graphs\ScanGraph.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -705,9 +705,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Dialogs\SummarizeFluxDataDlg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\SpectrumFormat\TXTFile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="UserSettings.h">
@@ -1153,6 +1150,18 @@
     </ClInclude>
     <ClInclude Include="SpectralEvaluation\File\SpectrumIO.h">
       <Filter>Header Files\Common\Spectra</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\File\STDFile.h">
+      <Filter>Header Files\Common\SpectrumFormat</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\File\TXTFile.h">
+      <Filter>Header Files\Common\SpectrumFormat</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\Configuration\DarkSettings.h">
+      <Filter>Header Files\Configuration</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\Evaluation\spectralevaluationbase.h">
+      <Filter>Header Files\Evaluation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

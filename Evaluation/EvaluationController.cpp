@@ -267,7 +267,7 @@ RETURN_CODE CEvaluationController::EvaluateScan(const CString &fileName, int vol
 	// 5. Evaluate the scan
 	CScanEvaluation *ev = new CScanEvaluation(); // TODO: Check for errors
 	ev->m_pause = NULL;
-	CConfigurationSetting::DarkSettings *darkSettings = &spectrometer->m_settings.channel[0].m_darkSettings;
+    Configuration::CDarkSettings *darkSettings = &spectrometer->m_settings.channel[0].m_darkSettings;
 	long spectrumNum = ev->EvaluateScan(fileName, spectrometer->m_fitWindows[0], NULL, darkSettings);
 
 	// 6. Get the result from the evaluation

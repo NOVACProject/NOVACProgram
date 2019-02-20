@@ -87,7 +87,7 @@ namespace ReEvaluation
 		INSTRUMENT_TYPE m_instrumentType;
 
 		/** The settings for how to handle the dark-measurements */
-		CConfigurationSetting::DarkSettings	m_darkSettings;
+        Configuration::CDarkSettings	m_darkSettings;
 
 	private:
 		/** The evaluators, one for every fit window. */

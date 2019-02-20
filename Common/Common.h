@@ -83,12 +83,6 @@ void UpdateMessage(const CString &message);
 // defining if a function has failed or succeeded
 enum RETURN_CODE { FAIL, SUCCESS };
 
-// defining how to get the dark-spectrum
-enum	DARK_SPEC_OPTION { MEASURE, MODEL_SOMETIMES, MODEL_ALWAYS, DARK_USER_SUPPLIED };
-
-// defining how to use the dark-current and offset spectra
-enum	DARK_MODEL_OPTION { MEASURED, USER_SUPPLIED };
-
 // The list of instrument types available
 const enum INSTRUMENT_TYPE {INSTR_GOTHENBURG, INSTR_HEIDELBERG};
 
