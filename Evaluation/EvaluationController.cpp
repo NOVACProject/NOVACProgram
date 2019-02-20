@@ -351,6 +351,9 @@ RETURN_CODE CEvaluationController::EvaluateScan(const CString &fileName, int vol
 	cFinish = clock();
 	Output_TimingOfScanEvaluation(spectrumNum, spectrometer->SerialNumber(), ((double)(cFinish - cStart) / (double)CLOCKS_PER_SEC));
 
+    // TODO: Check that this is ok.
+    m_lastResult->m_path = std::string((LPCSTR)fileName);
+
 	// 16. Share the results with the rest of the program
 	if(sucess){
 		CScanResult *newResult = new CScanResult(*m_lastResult);

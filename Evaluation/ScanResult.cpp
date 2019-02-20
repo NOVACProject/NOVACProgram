@@ -366,15 +366,20 @@ bool CScanResult::CalculatePlumeCentre(const std::string &specie, double &plumeC
     }
 
     // Calculate the centre of the plume
-    bool ret = FindPlume(scanAngle, phi, column, columnError, badEval, m_specNum, plumeCentre_alpha, plumeCentre_phi, plumeEdge_low, plumeEdge_high);
+    CPlumeInScanProperty plumeProperties;
+    bool ret = FindPlume(scanAngle, phi, column, columnError, badEval, m_specNum, plumeProperties);
 
     if (ret) {
         // Remember the calculated value of the plume centre
-        m_plumeCentre[0] = plumeCentre_alpha;
-        m_plumeCentre[1] = plumeCentre_phi;
+        m_plumeCentre[0] = plumeProperties.plumeCenter;
+        m_plumeCentre[1] = plumeProperties.plumeCenter2;
+        plumeCentre_alpha = plumeProperties.plumeCenter;
+        plumeCentre_phi   = plumeProperties.plumeCenter2;
 
-        m_plumeEdge[0] = plumeEdge_low;
-        m_plumeEdge[1] = plumeEdge_high;
+        m_plumeEdge[0] = plumeProperties.plumeEdgeLow;
+        m_plumeEdge[1] = plumeProperties.plumeEdgeHigh;
+        plumeEdge_low = plumeProperties.plumeEdgeLow;
+        plumeEdge_high = plumeProperties.plumeEdgeHigh;
 
         double offset = CalculatePlumeOffset(column, badEval, m_specNum);
 

@@ -4,6 +4,7 @@
 #include "../SpectralEvaluation/Spectra/SpectrumInfo.h"
 #include "../SpectralEvaluation/Evaluation/FitParameter.h"
 #include "../SpectralEvaluation/Evaluation/EvaluationResult.h"
+#include "../SpectralEvaluation/Evaluation/BasicScanEvaluationResult.h"
 #include "FluxResult.h"
 
 namespace Evaluation
@@ -16,7 +17,7 @@ namespace Evaluation
 	    or a judgement wheather each evaluated spectrum is judged to be an ok 
 	    spectrum or not. */
 
-	class CScanResult
+	class CScanResult : public BasicScanEvaluationResult
 	{
 	public:
 		CScanResult();
@@ -432,27 +433,6 @@ namespace Evaluation
 
 		/** The calculated completness of the plume. Set to -999 if unknown */
 		double	m_plumeCompleteness;
-
-		/** result of evaluating the spectra */
-		std::vector<CEvaluationResult> m_spec;
-
-		/** information about the collected spectra (number of elements should equal number in m_spec) */
-        std::vector<CSpectrumInfo> m_specInfo;
-
-		/** information about the sky-spectrum used */
-		CSpectrumInfo	m_skySpecInfo;
-
-		/** information about the dark-spectrum used, if any */
-		CSpectrumInfo	m_darkSpecInfo;
-
-		/** information about the offset-spectrum used, if any */
-		CSpectrumInfo	m_offsetSpecInfo;
-
-		/** information about the dark-current spectrum used, if any */
-		CSpectrumInfo	m_darkCurSpecInfo;
-
-		/** A list of which spectra were corrupted and could not be evaluated */
-        std::vector <unsigned int> m_corruptedSpectra;
 
 		/** The number of evaluations */
 		unsigned long m_specNum = 0;
