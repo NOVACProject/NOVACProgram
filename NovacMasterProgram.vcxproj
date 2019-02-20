@@ -248,7 +248,7 @@
     <ClInclude Include="SpectralEvaluation\Evaluation\FitWindow.h" />
     <ClInclude Include="SpectralEvaluation\Evaluation\ReferenceFile.h" />
     <ClInclude Include="SpectralEvaluation\Evaluation\ReferenceFitResult.h" />
-    <ClInclude Include="SpectralEvaluation\Evaluation\spectralevaluationbase.h" />
+    <ClInclude Include="SpectralEvaluation\Evaluation\ScanEvaluationBase.h" />
     <ClInclude Include="SpectralEvaluation\File\MKPack.h" />
     <ClInclude Include="SpectralEvaluation\File\ScanFileHandler.h" />
     <ClInclude Include="SpectralEvaluation\File\SpectrumIO.h" />
@@ -285,7 +285,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="SpectralEvaluation\Evaluation\SpectralEvaluationBase.cpp">
+    <ClCompile Include="SpectralEvaluation\Evaluation\ScanEvaluationBase.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>

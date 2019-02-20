@@ -415,7 +415,7 @@ void CScanEvaluation::ShowResult(const CSpectrum &spec, const CEvaluationBase *e
 RETURN_CODE CScanEvaluation::GetDark(FileHandler::CScanFileHandler *scan, const CSpectrum &spec, CSpectrum &dark, const Configuration::CDarkSettings *darkSettings)
 {
     m_lastErrorMessage = "";
-    const bool successs = SpectralEvaluationBase::GetDark(*scan, spec, dark, darkSettings);
+    const bool successs = ScanEvaluationBase::GetDark(*scan, spec, dark, darkSettings);
 
     if (m_lastErrorMessage.size() > 0)
     {

@@ -567,8 +567,8 @@
     <ClCompile Include="SpectralEvaluation\File\TXTFile.cpp">
       <Filter>Source Files\Common\SpectrumFormat</Filter>
     </ClCompile>
-    <ClCompile Include="SpectralEvaluation\Evaluation\SpectralEvaluationBase.cpp">
-      <Filter>Source Files\SpectralEvaluation\Evaluation</Filter>
+    <ClCompile Include="SpectralEvaluation\Evaluation\ScanEvaluationBase.cpp">
+      <Filter>Source Files\Evaluation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1160,7 +1160,7 @@
     <ClInclude Include="SpectralEvaluation\Configuration\DarkSettings.h">
       <Filter>Header Files\Configuration</Filter>
     </ClInclude>
-    <ClInclude Include="SpectralEvaluation\Evaluation\spectralevaluationbase.h">
+    <ClInclude Include="SpectralEvaluation\Evaluation\ScanEvaluationBase.h">
       <Filter>Header Files\Evaluation</Filter>
     </ClInclude>
   </ItemGroup>

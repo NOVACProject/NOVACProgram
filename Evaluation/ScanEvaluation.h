@@ -4,7 +4,7 @@
 #include <memory>
 #include <mutex>
 
-#include "../SpectralEvaluation/Evaluation/SpectralEvaluationBase.h"
+#include "../SpectralEvaluation/Evaluation/ScanEvaluationBase.h"
 #include "../SpectralEvaluation/Evaluation/FitParameter.h"
 #include "../Common/Common.h"
 #include "../Configuration/Configuration.h"
@@ -23,7 +23,7 @@ namespace Evaluation
 		An object of the <b>CScanEvaluation</b>-class handles the evaluation of one
 		scan.
 	*/
-	class CScanEvaluation : public SpectralEvaluationBase
+	class CScanEvaluation : public ScanEvaluationBase
 	{
 
 	public:
