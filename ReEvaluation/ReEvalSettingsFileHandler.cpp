@@ -55,11 +55,11 @@ RETURN_CODE CReEvalSettingsFileHandler::WriteSettings(const ReEvaluation::CReEva
 	fprintf(f, "\t\t<OffsetOption>%d</OffsetOption>\n",	(int)reeval.m_darkSettings.m_offsetOption);
 	fprintf(f, "\t\t<DCOption>%d</DCOption>\n",					(int)reeval.m_darkSettings.m_darkCurrentOption);
 	fprintf(f, "\t\t<Index>%d</Index>\n",							(int)reeval.m_skyIndex);
-	if(reeval.m_darkSettings.m_offsetSpec.GetLength() > 1){
-		fprintf(f, "\t\t<Offset_Path>%s</Offset_Path>\n", (LPCTSTR)reeval.m_darkSettings.m_offsetSpec);
+	if(reeval.m_darkSettings.m_offsetSpec.size() > 1){
+		fprintf(f, "\t\t<Offset_Path>%s</Offset_Path>\n", reeval.m_darkSettings.m_offsetSpec.c_str());
 	}
-	if(reeval.m_darkSettings.m_darkCurrentSpec.GetLength() > 1){
-		fprintf(f, "\t\t<DC_Path>%s</DC_Path>\n", (LPCTSTR)reeval.m_darkSettings.m_darkCurrentSpec);
+	if(reeval.m_darkSettings.m_darkCurrentSpec.size() > 1){
+		fprintf(f, "\t\t<DC_Path>%s</DC_Path>\n", reeval.m_darkSettings.m_darkCurrentSpec.c_str());
 	}
 	fprintf(f, "\t</DarkSpectrum>\n");
 
@@ -262,19 +262,19 @@ RETURN_CODE CReEvalSettingsFileHandler::Parse_DarkSpecSection(ReEvaluation::CReE
 
 		if(Equals(szToken, "Option")){
 			Parse_IntItem(TEXT("/Option"), tmpInt);
-			reeval.m_darkSettings.m_darkSpecOption = (DARK_SPEC_OPTION)tmpInt;
+			reeval.m_darkSettings.m_darkSpecOption = (Configuration::DARK_SPEC_OPTION)tmpInt;
 			continue;
 		}
 
 		if(Equals(szToken, "OffsetOption")){
 			Parse_IntItem(TEXT("/OffsetOption"), tmpInt);
-			reeval.m_darkSettings.m_offsetOption = (DARK_MODEL_OPTION)tmpInt;
+			reeval.m_darkSettings.m_offsetOption = (Configuration::DARK_MODEL_OPTION)tmpInt;
 			continue;
 		}
 
 		if(Equals(szToken, "DCOption")){
 			Parse_IntItem(TEXT("/DCOption"), tmpInt);
-			reeval.m_darkSettings.m_darkCurrentOption = (DARK_MODEL_OPTION)tmpInt;
+			reeval.m_darkSettings.m_darkCurrentOption = (Configuration::DARK_MODEL_OPTION)tmpInt;
 			continue;
 		}
 

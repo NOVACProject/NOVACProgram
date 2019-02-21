@@ -5,7 +5,7 @@
 #include "../NovacMasterProgram.h"
 #include "PakFileInspector.h"
 #include "../Common/Common.h"
-#include "../Common/Spectra/SpectrumIO.h"
+#include "../SpectralEvaluation/File/SpectrumIO.h"
 
 // CPakFileInspector dialog
 using namespace Dialogs;
@@ -222,13 +222,14 @@ void CPakFileInspector::CheckPakFile(){
 	}
 
 	// Count the spectra
-	m_spectrumNum = reader.CountSpectra(m_fileName);
+    const std::string fName((LPCSTR)m_fileName);
+	m_spectrumNum = reader.CountSpectra(fName);
 
 	// Get the start-time of the first spectrum
-	reader.ReadSpectrum(m_fileName, 0, firstSpectrum);
+    reader.ReadSpectrum(fName, 0, firstSpectrum);
 
 	// Get the stop-time of the last spectrum
-	reader.ReadSpectrum(m_fileName, m_spectrumNum - 1, lastSpectrum);
+    reader.ReadSpectrum(fName, m_spectrumNum - 1, lastSpectrum);
 
 	// ---- Show the information to the user... ----
 	int index = 0;
@@ -411,9 +412,10 @@ int CPakFileInspector::TryReadSpectrum(){
 	int headerSize=0;
 
 	// Read the spectrum
-	RETURN_CODE ret = reader.ReadSpectrum(m_fileName, m_curSpectrum, m_spectrum, headerBuffer, 16384, &headerSize);
+    const std::string fName((LPCSTR)m_fileName);
+    const bool ret = reader.ReadSpectrum(fName, m_curSpectrum, m_spectrum, headerBuffer, 16384, &headerSize);
 
-	if(ret != SUCCESS){
+	if(!ret){
 //    switch(reader.m_lastError){
       //case CSpectrumIO::ERROR_EOF:                   message.Format("Spectrum number %d is corrupt - EOF found", m_curSpec); break;
       //case CSpectrumIO::ERROR_COULD_NOT_OPEN_FILE:   message.Format("Could not open spectrum file"); break;

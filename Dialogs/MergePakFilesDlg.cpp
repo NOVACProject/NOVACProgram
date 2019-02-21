@@ -3,6 +3,7 @@
 #include "MergePakFilesDlg.h"
 
 #include "../Common/Common.h"
+#include "../SpectralEvaluation/Spectra/Spectrum.h"
 #include "../Common/Spectra/PakFileHandler.h"
 
 // Include the special multi-choice file-dialog
@@ -353,8 +354,8 @@ UINT MergePakFiles_Combine(LPVOID pParam){
 				}
 
 				// Read the next spectrum in each file
-				RETURN_CODE ret = specHandler->ReadNextSpectrum(f[fileIndex], tmpSpec);
-				if(ret == FAIL){
+				const bool success = specHandler->ReadNextSpectrum(f[fileIndex], tmpSpec);
+				if(!success){
 					// Ignore this spectrum and try to find the spectrum in the next file
 					isFinished[fileIndex] = 1;
 					++nFinished;
@@ -370,7 +371,10 @@ UINT MergePakFiles_Combine(LPVOID pParam){
 
 			// -------- Save the spectrum to file ----------
 			if(curSpec.m_length > 0)
-				specHandler->AddSpectrumToFile(outputFile, curSpec);
+            {
+                const std::string outputFileName((LPCSTR)outputFile);
+				specHandler->AddSpectrumToFile(outputFileName, curSpec);
+            }
 		}
 
 		// ---- Close all the files ----

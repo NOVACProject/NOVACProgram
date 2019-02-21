@@ -51,13 +51,19 @@ bool CCompositionMeasurement::IsTimeForCompositionMeasurement(const Evaluation::
 	// 1. Check the history of the spectrometer
 
 	// 1a. Have we recieved any scans today?
-	int nScans = spectrometer->m_history->GetNumScans();
+	const int nScans = spectrometer->m_history->GetNumScans();
 	if(nScans < stablePeriod){ // <-- there must be enough scans received from the instrument today for us to make any wind-measurement
+        FILE *f = fopen(debugFile, "a+");
+        if (f != NULL) {
+            fprintf(f, "%s\t%s\tNo measurement: Too few scans received today (%d).\n", (LPCSTR)timeStr, (LPCSTR)serial, nScans);
+            fclose(f);
+            UploadToNOVACServer(debugFile, thisVolcano, false);
+        }
 		return false; // <-- too few scans recieved today
 	}
 
 	// 2b. How long time has passed since the last composition measurement?
-	int sPassed = spectrometer->m_history->SecondsSinceLastCompMeas();
+	const int sPassed = spectrometer->m_history->SecondsSinceLastCompMeas();
 	if(sPassed > 0 && sPassed < interval){
 		FILE *f = fopen(debugFile, "a+");
 		if(f != NULL){
@@ -271,7 +277,6 @@ void	CCompositionMeasurement::StartCompositionMeasurement(const Evaluation::CSpe
 	// 3a. A small header 
 	common.GetDateTimeText(dateTime);
 	fprintf(f, "%%-------------Modified at %s------------\n\n", (LPCSTR)dateTime);
-	fprintf(f, "%%Questions? email mattias.johansson@chalmers.se\n\n");
 
 	// 3c. Write the Spectrum transfer information
 	fprintf(f, "%% The following channels defines which channels in the spectra that will be transferred\n");

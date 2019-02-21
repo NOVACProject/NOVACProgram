@@ -142,40 +142,6 @@ void CConfigurationSetting::ScanningInstrumentSetting::Clear(){
 	motor[1].Clear();
 }
 
-CConfigurationSetting::DarkSettings::DarkSettings(){
-	m_darkSpecOption		= MEASURE;
-
-	m_darkCurrentOption = MEASURED;
-	m_darkCurrentSpec.Format("");
-
-	m_offsetOption		  = MEASURED;
-	m_offsetSpec.Format("");
-}
-CConfigurationSetting::DarkSettings::~DarkSettings(){
-
-}
-void CConfigurationSetting::DarkSettings::Clear(){
-	m_darkSpecOption		= MEASURE;
-
-	m_darkCurrentOption = MEASURED;
-	m_darkCurrentSpec.Format("");
-
-	m_offsetOption		  = MEASURED;
-	m_offsetSpec.Format("");
-}
-
-CConfigurationSetting::DarkSettings& CConfigurationSetting::DarkSettings::operator =(const CConfigurationSetting::DarkSettings &dark2){
-	m_darkSpecOption		= dark2.m_darkSpecOption;
-
-	m_darkCurrentOption = dark2.m_darkCurrentOption;
-	m_offsetOption			= dark2.m_offsetOption;
-
-	m_darkCurrentSpec.Format(dark2.m_darkCurrentSpec);
-	m_offsetSpec.Format(dark2.m_offsetSpec);
-
-	return *this;
-}
-
 /** --------- Constructor for the spectrometer channel settings ------------- */
 CConfigurationSetting::SpectrometerChannelSetting::SpectrometerChannelSetting(){
 	detectorSize = 2048; // default;

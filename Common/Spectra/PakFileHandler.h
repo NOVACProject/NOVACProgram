@@ -1,8 +1,8 @@
 #pragma once
 
 #include <afxtempl.h>
-
-#include "SpectrumIO.h"
+#include "../../Common/Common.h"
+#include "../../SpectralEvaluation/File/SpectrumIO.h"
 
 namespace FileHandler
 {

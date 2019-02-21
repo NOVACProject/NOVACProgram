@@ -2,8 +2,9 @@
 #include "../NovacMasterProgram.h"
 #include "ImportSpectraDlg.h"
 #include "../Common/Common.h"
-#include "../Common/Spectrumformat/StdFile.h"
-#include "../Common/Spectra/SpectrumIO.h"
+#include "../SpectralEvaluation/File/STDFile.h"
+#include "../SpectralEvaluation/File/SpectrumIO.h"
+#include "../SpectralEvaluation/Spectra/Spectrum.h"
 
 #include <CDerr.h>
 
@@ -621,8 +622,9 @@ int	 ImportScanDOASSpectraInDirectory(const CArray<CString *, CString *>	&m_spec
 		}
 
 		// Add them to the output file
-		writer.AddSpectrumToFile(pakFile, sky);
-		writer.AddSpectrumToFile(pakFile, dark);
+        const std::string pakeFileName((LPCSTR)pakFile);
+		writer.AddSpectrumToFile(pakeFileName, sky);
+		writer.AddSpectrumToFile(pakeFileName, dark);
 
 		// Then read all the spectra in the scan...
 		for(unsigned int i = 0; i < nSpecPerScan; ++i){
@@ -678,7 +680,7 @@ int	 ImportScanDOASSpectraInDirectory(const CArray<CString *, CString *>	&m_spec
 			}
 
 			// add it to the pak-file
-			writer.AddSpectrumToFile(pakFile, spec);
+			writer.AddSpectrumToFile(pakeFileName, spec);
 
 			wnd->SendMessage(WM_PROGRESS, ++nSpectraDone);
 		}
@@ -781,7 +783,8 @@ int ReadSpectrum(unsigned int index, const CString &prefix, CSpectrum &spec, con
 
 		// Found it!
 		// Read the spectrum
-		CSTDFile::ReadSpectrum(spec, *str);
+        std::string filenameStr((LPCSTR)*str);
+		CSTDFile::ReadSpectrum(spec, filenameStr);
 		return i;
 	}	
 
@@ -797,7 +800,8 @@ int ReadSpectrum(unsigned int index, const CString &prefix, CSpectrum &spec, con
 
 		// Found it!
 		// Read the spectrum
-		CSTDFile::ReadSpectrum(spec, *str);
+        std::string filenameStr((LPCSTR)*str);
+		CSTDFile::ReadSpectrum(spec, filenameStr);
 		return i;
 	}
 

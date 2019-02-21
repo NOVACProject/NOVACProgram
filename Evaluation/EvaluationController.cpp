@@ -94,7 +94,8 @@ void CEvaluationController::OnTestEvaluation(WPARAM wp, LPARAM lp){
 
 	// 2. Find the serial number of the spectrometer
 	CString serialNumber;
-	reader.ReadSpectrum(*fileName, 0, curSpec);
+    const std::string fileNameStr((LPCSTR)*fileName);
+	reader.ReadSpectrum(fileNameStr, 0, curSpec);
 	serialNumber.Format("%s", curSpec.m_info.m_device.c_str());
 	ASSERT(IsSerialNumber(serialNumber));
 
@@ -126,7 +127,8 @@ void CEvaluationController::OnArrivedSpectra(WPARAM wp, LPARAM lp){
 	}
 
 	// 2. Find the serial number of the spectrometer and the channel that was used
-	reader.ReadSpectrum(*fileName, 0, spec); // TODO: check for errors!!
+    const std::string fileNameStr((LPCSTR)*fileName);
+	reader.ReadSpectrum(fileNameStr, 0, spec); // TODO: check for errors!!
 	serialNumber.Format("%s", spec.m_info.m_device.c_str());
 	int specPerScan				= spec.SpectraPerScan();
 
@@ -137,7 +139,7 @@ void CEvaluationController::OnArrivedSpectra(WPARAM wp, LPARAM lp){
 	measurementMode = CPakFileHandler::GetMeasurementMode(*fileName);
 
 	if(measurementMode == MODE_FLUX){
-		nSpectra		= reader.CountSpectra(*fileName);
+		nSpectra		= reader.CountSpectra(fileNameStr);
 		isFullScan	= (specPerScan == nSpectra); // TODO: will this work if there are repetitions??
 	}
 
@@ -243,7 +245,8 @@ RETURN_CODE CEvaluationController::EvaluateScan(const CString &fileName, int vol
 	}
 
 	// 2. Read the scan file
-	if(SUCCESS != scan->CheckScanFile(&fileName)){
+    const std::string fileNameStr((LPCSTR)*fileName);
+	if(SUCCESS != scan->CheckScanFile(fileNameStr)){
 		m_logFileWriter.WriteErrorMessage(TEXT("Could not read recieved scan"));
 		delete scan;
 		return FAIL;
@@ -264,8 +267,8 @@ RETURN_CODE CEvaluationController::EvaluateScan(const CString &fileName, int vol
 	// 5. Evaluate the scan
 	CScanEvaluation *ev = new CScanEvaluation(); // TODO: Check for errors
 	ev->m_pause = NULL;
-	CConfigurationSetting::DarkSettings *darkSettings = &spectrometer->m_settings.channel[0].m_darkSettings;
-	long spectrumNum = ev->EvaluateScan(fileName, spectrometer->m_evaluator[0]->FitWindow(), NULL, darkSettings);
+    Configuration::CDarkSettings *darkSettings = &spectrometer->m_settings.channel[0].m_darkSettings;
+	long spectrumNum = ev->EvaluateScan(fileName, spectrometer->m_fitWindows[0], NULL, darkSettings);
 
 	// 6. Get the result from the evaluation
 	if(ev != nullptr && ev->HasResult()){
@@ -348,6 +351,9 @@ RETURN_CODE CEvaluationController::EvaluateScan(const CString &fileName, int vol
 	cFinish = clock();
 	Output_TimingOfScanEvaluation(spectrumNum, spectrometer->SerialNumber(), ((double)(cFinish - cStart) / (double)CLOCKS_PER_SEC));
 
+    // TODO: Check that this is ok.
+    m_lastResult->m_path = std::string((LPCSTR)fileName);
+
 	// 16. Share the results with the rest of the program
 	if(sucess){
 		CScanResult *newResult = new CScanResult(*m_lastResult);
@@ -373,14 +379,16 @@ CSpectrometer *CEvaluationController::IdentifySpectrometer(const FileHandler::CS
 
 	// find the spectrometer that corresponds to the serial number
 	for(spectrometerNum = 0; spectrometerNum < m_spectrometer.GetSize(); ++spectrometerNum){
-		if(Equals(m_spectrometer[spectrometerNum]->SerialNumber(), scan->m_device)){
+        const CString deviceName(scan->m_device.c_str());
+		if(Equals(m_spectrometer[spectrometerNum]->SerialNumber(), deviceName)){
 			if(channel == m_spectrometer[spectrometerNum]->m_channel){
 				return m_spectrometer[spectrometerNum];
 			}
 		}
 	}
 
-	return HandleUnIdentifiedSpectrometer(scan->m_device, scan);
+    const CString deviceName(scan->m_device.c_str());
+	return HandleUnIdentifiedSpectrometer(deviceName, scan);
 }
 
 RETURN_CODE CEvaluationController::CalculateFlux(CScanResult *result, const CSpectrometer *spectrometer, int volcanoIndex, CWindField &windField){
@@ -568,7 +576,9 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *resu
 	CString pakFile, txtFile, evalLogFile;
 	CString wsSrc, wdSrc, phSrc;
 	CDateTime dateTime;
-	GetArchivingfileName(pakFile, txtFile, scan->GetFileName());
+
+    const CString fName(scan->GetFileName().c_str());
+	GetArchivingfileName(pakFile, txtFile, fName);
 
     std::string specModel;
 	CSpectrometerModel::ToString(spectrometer.m_settings.model, specModel);
@@ -724,7 +734,7 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *resu
 	}
 	string.AppendFormat("starttime\tstoptime\tname\tspecsaturation\tfitsaturation\tcounts_ms\tdelta\tchisquare\texposuretime\tnumspec\t");
 
-	for(int itSpecie = 0; itSpecie < spectrometer.m_evaluator[0]->FitWindow().nRef; ++itSpecie){
+	for(int itSpecie = 0; itSpecie < spectrometer.m_fitWindows[0].nRef; ++itSpecie){
 		string.AppendFormat("column(%s)\tcolumnerror(%s)\t", window.ref[itSpecie].m_specieName.c_str(), window.ref[itSpecie].m_specieName.c_str());
 		string.AppendFormat("shift(%s)\tshifterror(%s)\t", window.ref[itSpecie].m_specieName.c_str(), window.ref[itSpecie].m_specieName.c_str());
 		string.AppendFormat("squeeze(%s)\tsqueezeerror(%s)\t", window.ref[itSpecie].m_specieName.c_str(), window.ref[itSpecie].m_specieName.c_str());
@@ -744,7 +754,7 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *resu
 		sky.m_info.m_fitIntensity = (float)(sky.MaxValue(window.fitLow, window.fitHigh));
 		if(sky.NumSpectra() > 0)
 			sky.Div(sky.NumSpectra());
-		CEvaluationLogFileHandler::FormatEvaluationResult(&sky.m_info,	NULL, spectrometer.m_scanner.instrumentType, maxIntensity*sky.NumSpectra(), spectrometer.m_evaluator[0]->FitWindow().nRef, string1);
+		CEvaluationLogFileHandler::FormatEvaluationResult(&sky.m_info,	NULL, spectrometer.m_scanner.instrumentType, maxIntensity*sky.NumSpectra(), spectrometer.m_fitWindows[0].nRef, string1);
 	}
 	scan->GetDark(dark);
 	if(dark.m_info.m_interlaceStep > 1)
@@ -753,7 +763,7 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *resu
 		dark.m_info.m_fitIntensity = (float)(dark.MaxValue(window.fitLow, window.fitHigh));
 		if(dark.NumSpectra() > 0)
 			dark.Div(dark.NumSpectra());	
-		CEvaluationLogFileHandler::FormatEvaluationResult(&dark.m_info, NULL, spectrometer.m_scanner.instrumentType, maxIntensity*dark.NumSpectra(), spectrometer.m_evaluator[0]->FitWindow().nRef, string2);
+		CEvaluationLogFileHandler::FormatEvaluationResult(&dark.m_info, NULL, spectrometer.m_scanner.instrumentType, maxIntensity*dark.NumSpectra(), spectrometer.m_fitWindows[0].nRef, string2);
 	}
 	scan->GetOffset(offset);
 	if(offset.m_info.m_interlaceStep > 1)
@@ -761,7 +771,7 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *resu
 	if(offset.m_length > 0){
 		offset.m_info.m_fitIntensity = (float)(offset.MaxValue(window.fitLow, window.fitHigh));
 		offset.Div(offset.NumSpectra());	
-		CEvaluationLogFileHandler::FormatEvaluationResult(&offset.m_info, NULL, spectrometer.m_scanner.instrumentType, maxIntensity * offset.NumSpectra(), spectrometer.m_evaluator[0]->FitWindow().nRef, string3);
+		CEvaluationLogFileHandler::FormatEvaluationResult(&offset.m_info, NULL, spectrometer.m_scanner.instrumentType, maxIntensity * offset.NumSpectra(), spectrometer.m_fitWindows[0].nRef, string3);
 	}
 	scan->GetDarkCurrent(darkCurrent);
 	if(darkCurrent.m_info.m_interlaceStep > 1)
@@ -769,7 +779,7 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *resu
 	if(darkCurrent.m_length > 0){
 		darkCurrent.m_info.m_fitIntensity = (float)(darkCurrent.MaxValue(window.fitLow, window.fitHigh));
 		darkCurrent.Div(darkCurrent.NumSpectra());	
-		CEvaluationLogFileHandler::FormatEvaluationResult(&darkCurrent.m_info, NULL, spectrometer.m_scanner.instrumentType, maxIntensity*darkCurrent.NumSpectra(), spectrometer.m_evaluator[0]->FitWindow().nRef, string4);
+		CEvaluationLogFileHandler::FormatEvaluationResult(&darkCurrent.m_info, NULL, spectrometer.m_scanner.instrumentType, maxIntensity*darkCurrent.NumSpectra(), spectrometer.m_fitWindows[0].nRef, string4);
 	}
 
 	string.AppendFormat("%s", (LPCSTR)string1);
@@ -787,7 +797,7 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *resu
         Evaluation::CEvaluationResult evResult;
         result->GetResult(itSpectrum, evResult);
 
-		CEvaluationLogFileHandler::FormatEvaluationResult(&result->GetSpectrumInfo(itSpectrum), &evResult, spectrometer.m_scanner.instrumentType, maxIntensity * nSpectra, spectrometer.m_evaluator[0]->FitWindow().nRef, string1);
+		CEvaluationLogFileHandler::FormatEvaluationResult(&result->GetSpectrumInfo(itSpectrum), &evResult, spectrometer.m_scanner.instrumentType, maxIntensity * nSpectra, spectrometer.m_fitWindows[0].nRef, string1);
 
 		string.AppendFormat("%s", (LPCSTR)string1);
 	}
@@ -817,16 +827,16 @@ CSpectrometer *CEvaluationController::HandleUnIdentifiedSpectrometer(const CStri
 
 
 	// ------------- Configure a new spectrometer ------------------
-	CSpectrometer *spec = new CSpectrometer();
+	CSpectrometer *newSpectrometer = new CSpectrometer();
 
 	// 1. Set the serial number
-	spec->m_settings.serialNumber.Format("%s", (LPCSTR)serialNumber);
+    newSpectrometer->m_settings.serialNumber.Format("%s", (LPCSTR)serialNumber);
 
 	// 2. Configure what we know about the scanning instrument
-	spec->m_scanner.observatory.Format("unknown");
-	spec->m_scanner.volcano.Format("unknown");
+    newSpectrometer->m_scanner.observatory.Format("unknown");
+    newSpectrometer->m_scanner.volcano.Format("unknown");
 	scan->GetSky(tmpSpec);
-	spec->m_scanner.gps = tmpSpec.GPS();
+    newSpectrometer->m_scanner.gps = tmpSpec.GPS();
 
 	// 3. Configure the log file handlers
 	CString dateStr, path, filePath;
@@ -834,20 +844,19 @@ CSpectrometer *CEvaluationController::HandleUnIdentifiedSpectrometer(const CStri
 	path.Format("%sOutput\\%s", (LPCSTR)g_settings.outputDirectory, (LPCSTR)dateStr);
 	filePath.Format("%s\\%s", (LPCSTR)path, (LPCSTR)serialNumber);
 
-	spec->m_logFileHandler.SetErrorLogFile(filePath, "ErrorLog.txt");
+    newSpectrometer->m_logFileHandler.SetErrorLogFile(filePath, "ErrorLog.txt");
 
-	// 4. Configure the evaluation (here we don't know anything, just guess what could be an ok evaluator)
+	// 4. Configure the fit window (here we don't know anything, just guess what could be an ok setting)
 	CSpectrometer *spec0 = m_spectrometer[0];
-	for(int i = 0; i < spec0->m_fitWindowNum; ++i)
+	for(CFitWindow window : spec0->m_fitWindows)
     {
-        CEvaluationBase *newEval = new CEvaluationBase{spec0->m_evaluator[i]->FitWindow()};
-		spec->m_evaluator.push_back(newEval);
+        newSpectrometer->m_fitWindows.push_back(window);
 	}
-	spec->m_history = new CSpectrometerHistory();
+    newSpectrometer->m_history = new CSpectrometerHistory();
 
 	// 5. Insert the new spectrometer
 	long spectrometerNum = (long)m_spectrometer.GetSize();
-	m_spectrometer.SetAtGrow(spectrometerNum, spec);
+	m_spectrometer.SetAtGrow(spectrometerNum, newSpectrometer);
 
 	// 6. Tell the user what just happened...
 	message.Format("RECEIVED SCAN FROM A NOT CONFIGURED SPECTROMETER: %s. SPECTRA WILL NOT BE CORRECTLY EVALUATED. PLEASE CHECK SETTINGS AND RESTART!", (LPCSTR)serialNumber);
@@ -908,6 +917,7 @@ RETURN_CODE CEvaluationController::InitializeSpectrometers(){
 
 				// the fit window
 				Evaluation::CFitWindow &window = spec.channel[k].fitWindow;
+
                 if (!ReadReferences(window))
                 {
                     message.Format("Cannot read all references for spectrometer %s.\nThe program will now terminate.\nCheck the settings and restart.", (LPCSTR)spec.serialNumber);
@@ -918,9 +928,7 @@ RETURN_CODE CEvaluationController::InitializeSpectrometers(){
                 }
 
 				// set the fit window
-                // TODO: Remove this evaluator eventually. It isn't necessary anymore. Just create the fit window as pass it.
-				curSpec->m_evaluator[0]->SetFitWindow(window);
-				curSpec->m_fitWindowNum = 1;
+				curSpec->m_fitWindows.push_back(window);
 
 				// Insert the new spectrometer
 				m_spectrometer.SetAtGrow(spectrometerNum, curSpec);
@@ -1049,7 +1057,6 @@ void CEvaluationController::Output_EmptyScan(const CSpectrometer *spectrometer){
 
 RETURN_CODE CEvaluationController::GetArchivingfileName(CString &pakFile, CString &txtFile, const CString &temporaryScanFile){
 	CSpectrumIO reader;
-	reader.m_logFileWriter = NULL;	// nowhere to output the error messages
 
 	CSpectrum tmpSpec;
 	CString serialNumber, dateStr, timeStr, dateStr2;
@@ -1064,7 +1071,8 @@ RETURN_CODE CEvaluationController::GetArchivingfileName(CString &pakFile, CStrin
 	txtFile.Format("%s\\Output\\UnknownScans\\%d.txt", (LPCSTR)g_settings.outputDirectory, i);
 
 	// 1. Read the first spectrum in the scan
-	if(SUCCESS != reader.ReadSpectrum(temporaryScanFile, 0, tmpSpec))
+    const std::string tempScanFileName((LPCSTR)temporaryScanFile);
+	if(SUCCESS != reader.ReadSpectrum(tempScanFileName, 0, tmpSpec))
 		return FAIL;
 	CSpectrumInfo &info	= tmpSpec.m_info;
 	int channel = info.m_channel;
@@ -1072,8 +1080,9 @@ RETURN_CODE CEvaluationController::GetArchivingfileName(CString &pakFile, CStrin
 	// 1a. If the GPS had no connection with the satelites when collecting the sky-spectrum,
 	//			then try to find a spectrum in the file for which it had connection...
 	i = 1;
-	while(info.m_startTime.year == 2004 && info.m_startTime.month == 3 && info.m_startTime.day == 22){
-		if(SUCCESS != reader.ReadSpectrum(temporaryScanFile, i++, tmpSpec))
+	while(info.m_startTime.year == 2004 && info.m_startTime.month == 3 && info.m_startTime.day == 22)
+    {
+		if(SUCCESS != reader.ReadSpectrum(tempScanFileName, i++, tmpSpec))
 			break;
 		info	= tmpSpec.m_info;
 	}
@@ -1126,7 +1135,9 @@ void CEvaluationController::GetSpectrumInformation(CSpectrometer *spectrometer, 
 	CScanFileHandler *scan = new CScanFileHandler();
 	if(scan == NULL)
 		return;
-	scan->CheckScanFile(&fileName);
+
+    const std::string fileNameStr((LPCSTR)fileName);
+	scan->CheckScanFile(fileNameStr);
 	scan->GetDark(darkSpec);
 	scan->GetSky(skySpec);
 

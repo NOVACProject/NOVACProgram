@@ -263,7 +263,7 @@ int CConfigurationFileHandler::WriteConfigurationFile(CConfigurationSetting &con
 				fprintf(f, str);
 
 				// The options for the dark-current
-				if(spec.channel[l].m_darkSettings.m_darkSpecOption != MEASURE){
+				if(spec.channel[l].m_darkSettings.m_darkSpecOption != Configuration::DARK_SPEC_OPTION::MEASURE){
 					// How to get the dark-spectrum
 					str.Format("\t%s<dark>%d</dark>\n", (LPCSTR)indent, (int)spec.channel[l].m_darkSettings.m_darkSpecOption);
 					fprintf(f, str);
@@ -273,8 +273,8 @@ int CConfigurationFileHandler::WriteConfigurationFile(CConfigurationSetting &con
 					fprintf(f, str);
 
 					// The path of the offset-spectrum
-					if(strlen(spec.channel[l].m_darkSettings.m_offsetSpec) > 1){
-						str.Format("\t%s<offsetPath>%s</offsetPath>\n", (LPCSTR)indent, (LPCSTR)spec.channel[l].m_darkSettings.m_offsetSpec);
+					if(spec.channel[l].m_darkSettings.m_offsetSpec.size() > 1){
+						str.Format("\t%s<offsetPath>%s</offsetPath>\n", (LPCSTR)indent, spec.channel[l].m_darkSettings.m_offsetSpec.c_str());
 						fprintf(f, str);
 					}
 
@@ -283,8 +283,8 @@ int CConfigurationFileHandler::WriteConfigurationFile(CConfigurationSetting &con
 					fprintf(f, str);
 
 					// The path of the dark-current spectrum
-					if(strlen(spec.channel[l].m_darkSettings.m_darkCurrentSpec) > 1){
-						str.Format("\t%s<darkCurrentPath>%s</darkCurrentPath>\n", (LPCSTR)indent, (LPCSTR)spec.channel[l].m_darkSettings.m_darkCurrentSpec);
+					if(spec.channel[l].m_darkSettings.m_darkCurrentSpec.size() > 1){
+						str.Format("\t%s<darkCurrentPath>%s</darkCurrentPath>\n", (LPCSTR)indent, spec.channel[l].m_darkSettings.m_darkCurrentSpec.c_str());
 						fprintf(f, str);
 					}
 
@@ -904,21 +904,21 @@ int CConfigurationFileHandler::Parse_Channel(){
 		if(Equals(szToken, "dark")){
 			if(curSpec != NULL)
 				Parse_IntItem(TEXT("/dark"), tmpInt);
-			curChannel->m_darkSettings.m_darkSpecOption = (DARK_SPEC_OPTION)tmpInt;
+			curChannel->m_darkSettings.m_darkSpecOption = (Configuration::DARK_SPEC_OPTION)tmpInt;
 			continue;
 		}
 
 		if(Equals(szToken, "offsetOption")){
 			if(curSpec != NULL)
 				Parse_IntItem(TEXT("/offsetOption"), tmpInt);
-			curChannel->m_darkSettings.m_offsetOption = (DARK_MODEL_OPTION)tmpInt;
+			curChannel->m_darkSettings.m_offsetOption = (Configuration::DARK_MODEL_OPTION)tmpInt;
 			continue;
 		}
 		
 		if(Equals(szToken, "darkcurrentOption")){
 			if(curSpec != NULL)
 				Parse_IntItem(TEXT("/darkcurrentOption"), tmpInt);
-			curChannel->m_darkSettings.m_darkCurrentOption = (DARK_MODEL_OPTION)tmpInt;
+			curChannel->m_darkSettings.m_darkCurrentOption = (Configuration::DARK_MODEL_OPTION)tmpInt;
 			continue;
 		}
 

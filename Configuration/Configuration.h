@@ -5,6 +5,7 @@
 #include "../SpectralEvaluation/Evaluation/ReferenceFile.h"
 #include "../SpectralEvaluation/Evaluation/FitWindow.h"
 #include "../SpectralEvaluation/Spectra/SpectrometerModel.h"
+#include "../SpectralEvaluation/Configuration/DarkSettings.h"
 
 #ifndef _CCONFIGURATIONSETTINGS_H_
 #define _CCONFIGURATIONSETTINGS_H_
@@ -82,44 +83,6 @@ public:
 		CommunicationSetting &operator=(const CommunicationSetting &comm2);
 	};
 
-	class DarkSettings{
-		public:
-			DarkSettings();
-			~DarkSettings();
-
-		/** Resets all values to default */
-		void Clear();
-
-		/** The options for the how to get the dark.
-			Can be: 0 - use measured (DEFAULT)
-					1 - model of no measured is available
-					2 - always model
-					3 - the dark-spectrum is given by the user, do not model */
-		DARK_SPEC_OPTION m_darkSpecOption;
-
-		/** The offset-spectrum, only useful if 'm_darkSpecOption' is not 0.
-				When this should be used is determined by 'm_offsetOption'.
-				If 'm_darkSpecOption' is '3' then this is the dark-spectrum to use */
-		CString m_offsetSpec;
-
-		/** The option for how to use the offset-spectrum.
-			Can be:	0 - always use measured
-					1 - use the user supplied */
-		DARK_MODEL_OPTION m_offsetOption;
-
-		/** The dark-current spectrum, only useful if 'm_darkSpecOption' is not 0.
-				When this should be used is determined by 'm_darkCurrentOption'. */
-		CString m_darkCurrentSpec;
-
-		/** The option for how to use the dark-current spectrum.
-				Can be:	0 - always use measured
-						1 - use the user supplied */
-		DARK_MODEL_OPTION m_darkCurrentOption;
-
-		/** Assignment operator */
-		DarkSettings& operator=(const DarkSettings &dark2);
-	};
-
 	class SpectrometerChannelSetting{
 		public:
 			SpectrometerChannelSetting();
@@ -135,7 +98,7 @@ public:
 			Evaluation::CFitWindow fitWindow;
 
 			/** The settings for how to get the dark-spectrum */
-			DarkSettings m_darkSettings;
+			Configuration::CDarkSettings m_darkSettings;
 
 				/** Assignment operator */
 			SpectrometerChannelSetting& operator=(const SpectrometerChannelSetting &spec2);

@@ -65,7 +65,7 @@ namespace Dialogs{
 		// ----------------------------------------------------------
 
 		/** the actual configuration. Will be modified when the user presses the 'ok' button */ 
-		CConfigurationSetting::DarkSettings *m_darkSettings;
+        Configuration::CDarkSettings *m_darkSettings;
 
 		private:
 			// ----------------------------------------------------------
