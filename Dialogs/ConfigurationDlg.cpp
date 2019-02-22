@@ -35,9 +35,10 @@ BOOL CConfigurationDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
-	// read the configuration file
+	// read the configuration files
 	CConfigurationFileHandler reader;
 	reader.ReadConfigurationFile(m_configuration);
+	reader.ReadFtpLoginConfigurationFile(m_configuration);
 
 	// now show the main page
 	CRect rect;
@@ -81,6 +82,7 @@ void ConfigurationDialog::CConfigurationDlg::OnOK()
 	// Write the configuration file
 	CConfigurationFileHandler writer;
 	writer.WriteConfigurationFile(m_configuration);
+	writer.WriteFtpLoginConfigurationFile(m_configuration);
 
 	// Tell the user that the program needs to be restarted
 	MessageBox("Settings saved. You need to restart the program for settings to come into effect", "RESTART!", MB_OK);
@@ -91,12 +93,11 @@ void ConfigurationDialog::CConfigurationDlg::OnOK()
 
 
 RETURN_CODE ConfigurationDialog::CConfigurationDlg::CheckSettings(){
-	unsigned int i, j, c;
-	int k;
+
 	CString message;
 
-	for(i = 0; i < m_configuration.scannerNum; ++i){
-		for(j = 0; j < m_configuration.scanner[i].specNum; ++j){
+	for(unsigned int i = 0; i < m_configuration.scannerNum; ++i){
+		for(unsigned int j = 0; j < m_configuration.scanner[i].specNum; ++j){
 			bool pass = true;
 
 			// Check the names
@@ -113,7 +114,7 @@ RETURN_CODE ConfigurationDialog::CConfigurationDlg::CheckSettings(){
 				pass = false;
 			}
 
-			for(c = 0; c < m_configuration.scanner[i].spec[j].channelNum; ++ c){ 
+			for(unsigned int c = 0; c < m_configuration.scanner[i].spec[j].channelNum; ++ c){
 				// Check the fit window
 				Evaluation::CFitWindow &window = m_configuration.scanner[i].spec[j].channel[c].fitWindow;
 
@@ -132,7 +133,7 @@ RETURN_CODE ConfigurationDialog::CConfigurationDlg::CheckSettings(){
 					pass = false;
 				}
 
-				for(k = 0; k < window.nRef; ++k){
+				for(int k = 0; k < window.nRef; ++k){
 					FILE *f = fopen(window.ref[k].m_path.c_str(), "r");
 					if(f == NULL){
 						message.Format("Cannot read reference file %s", window.ref[k].m_path.c_str());

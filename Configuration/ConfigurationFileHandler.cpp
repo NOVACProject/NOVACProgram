@@ -59,6 +59,96 @@ int CConfigurationFileHandler::ReadConfigurationFile(CConfigurationSetting &conf
 	}
 }
 
+/** Reads the FTP login configuration file and stores the found values in the
+supplied reference 'conf'. If fileName is not-null the reader will
+read from that file, otherwise it will read from 'ftplogin.xml'
+in the same directory as the executable. */
+int CConfigurationFileHandler::ReadFtpLoginConfigurationFile(CConfigurationSetting &configuration, const CString *fileName) {
+	CString tmp_fileName;
+	CFileException exceFile;
+	CStdioFile file;
+
+	this->conf = &configuration;
+
+	// 1. Get the filename
+	if (fileName == NULL) {
+		Common common;
+		common.GetExePath();
+		tmp_fileName.Format("%sftplogin.xml", (LPCSTR)common.m_exePath);
+	}
+	else {
+		tmp_fileName.Format("%s", (LPCSTR)*fileName);
+	}
+
+	// 2. Open the file
+	if (!file.Open(tmp_fileName, CFile::modeRead | CFile::typeText, &exceFile)) {
+		return 1;
+	}
+	this->m_File = &file;
+
+
+	while (szToken = NextToken()) {
+		if(Equals(szToken,"ftpUserName")){
+			Parse_StringItem(TEXT("/ftpUserName"),conf->ftpSetting.userName);
+			continue;
+		}
+		if(Equals(szToken,"ftpPassword")){
+			Parse_StringItem(TEXT("/ftpPassword"),conf->ftpSetting.password);
+			continue;
+		}
+	}
+
+	file.Close();
+	return 0;
+
+}
+
+/** Writes the configuration file using the values stored in the
+supplied reference 'conf'. If fileName is not-null the reader will
+write to that file, otherwise it will write to 'configuration.xml'
+in the same directory as the executable. */
+int CConfigurationFileHandler::WriteFtpLoginConfigurationFile(CConfigurationSetting &configuration, const CString *fileName) {
+	CString indent, str, tmp_fileName;
+	Common common;
+	std::string modelStr;
+
+	// 1. Get the filename
+	if (fileName == NULL) {
+		common.GetExePath();
+		tmp_fileName.Format("%sftplogin.xml", (LPCSTR)common.m_exePath);
+	}
+	else {
+		tmp_fileName.Format("%s", (LPCSTR)*fileName);
+	}
+
+	this->conf = &configuration;
+
+	// 2. Open the file
+	FILE *f = fopen(tmp_fileName, "w");
+	if (NULL == f) {
+		MessageBox(NULL, TEXT(common.GetString(ERROR_COULD_NOT_OPEN_EVALCONFIG)) + "." + common.GetString(MSG_NO_CHANGES_WILL_BE_SAVED), common.GetString(MSG_ERROR), MB_OK);
+		return 1;
+	}
+
+	// 3. Write the header information 
+	fprintf(f, TEXT("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n"));
+	fprintf(f, TEXT("<!-- This is the configuration file for the FTP login to the NOVAC server.\n Keep this file in a secure location and do not share with others. -->\n\n"));
+	fprintf(f, TEXT("<FtpLogin>\n"));
+
+	// 4d. The ftp server setting - username
+	str.Format("\t<ftpUserName>%s</ftpUserName>\n", (LPCSTR)conf->ftpSetting.userName);
+	fprintf(f, str);
+	// 4e. The ftp server setting - password
+	str.Format("\t<ftpPassword>%s</ftpPassword>\n", (LPCSTR)conf->ftpSetting.password);
+	fprintf(f, str);
+
+	fprintf(f, TEXT("</FtpLogin>"));
+
+	fclose(f);
+
+	return 0;
+}
+
 /** Writes the configuration file using the values stored in the 
 		supplied reference 'conf'. If fileName is not-null the reader will 
 		write to that file, otherwise it will write to 'configuration.xml' 
@@ -102,12 +192,12 @@ int CConfigurationFileHandler::WriteConfigurationFile(CConfigurationSetting &con
 	// 4c. The ftp server setting - address
 	str.Format("\t<ftpAddress>%s</ftpAddress>\n", (LPCSTR)conf->ftpSetting.ftpAddress);
 	fprintf(f, str);
-	 // 4d. The ftp server setting - username
-	str.Format("\t<ftpUserName>%s</ftpUserName>\n", (LPCSTR)conf->ftpSetting.userName);
-	fprintf(f, str);
-	// 4e. The ftp server setting - password
-	str.Format("\t<ftpPassword>%s</ftpPassword>\n", (LPCSTR)conf->ftpSetting.password);
-	fprintf(f, str);
+	// // 4d. The ftp server setting - username
+	//str.Format("\t<ftpUserName>%s</ftpUserName>\n", (LPCSTR)conf->ftpSetting.userName);
+	//fprintf(f, str);
+	//// 4e. The ftp server setting - password
+	//str.Format("\t<ftpPassword>%s</ftpPassword>\n", (LPCSTR)conf->ftpSetting.password);
+	//fprintf(f, str);
 	// 4e2. The settings for when to upload to the FTP-server...
 	str.Format("\t<ftpStartTime>%d</ftpStartTime>\n", conf->ftpSetting.ftpStartTime);
 	fprintf(f, str);
@@ -493,14 +583,14 @@ int CConfigurationFileHandler::Parse(){
 			Parse_StringItem(TEXT("/ftpAddress"),conf->ftpSetting.ftpAddress);
 			continue;
 		}
-		if(Equals(szToken,"ftpUserName")){
-			Parse_StringItem(TEXT("/ftpUserName"),conf->ftpSetting.userName);
-			continue;
-		}
-		if(Equals(szToken,"ftpPassword")){
-			Parse_StringItem(TEXT("/ftpPassword"),conf->ftpSetting.password);
-			continue;
-		}
+		//if(Equals(szToken,"ftpUserName")){
+		//	Parse_StringItem(TEXT("/ftpUserName"),conf->ftpSetting.userName);
+		//	continue;
+		//}
+		//if(Equals(szToken,"ftpPassword")){
+		//	Parse_StringItem(TEXT("/ftpPassword"),conf->ftpSetting.password);
+		//	continue;
+		//}
 		if(Equals(szToken,"ftpStartTime")){
 			Parse_IntItem(TEXT("/ftpStartTime"),conf->ftpSetting.ftpStartTime);
 			conf->ftpSetting.ftpStartTime = abs(conf->ftpSetting.ftpStartTime);
