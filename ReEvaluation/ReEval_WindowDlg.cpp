@@ -215,8 +215,7 @@ void CReEval_WindowDlg::PopulateReferenceFileControl(){
 		m_btnRemoveRef.EnableWindow(TRUE);
 	}
 
-    int i = 0;
-	for(i = 0; i < window.nRef; ++i){
+	for(int i = 0; i < window.nRef; ++i){
 
 		CReferenceFile &ref = window.ref[i];
 
@@ -252,10 +251,10 @@ void CReEval_WindowDlg::PopulateReferenceFileControl(){
 	}
 
 	// make sure that the last line is clear
-	m_referenceGrid.SetItemTextFmt(1 + i, 0, "");
-	m_referenceGrid.SetItemTextFmt(1 + i, 1, "");
-	m_referenceGrid.SetItemTextFmt(1 + i, 2, "");
-	m_referenceGrid.SetItemTextFmt(1 + i, 3, "");
+	m_referenceGrid.SetItemTextFmt(window.nRef, 0, "");
+	m_referenceGrid.SetItemTextFmt(window.nRef, 1, "");
+	m_referenceGrid.SetItemTextFmt(window.nRef, 2, "");
+	m_referenceGrid.SetItemTextFmt(window.nRef, 3, "");
 }
 
 /** Called when the user wants to insert a new reference file */

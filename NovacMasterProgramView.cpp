@@ -236,6 +236,7 @@ void CNovacMasterProgramView::OnInitialUpdate()
 	fileName.Format("%sconfiguration.xml", (LPCTSTR)m_common.m_exePath);
 	FileHandler::CConfigurationFileHandler reader;
 	reader.ReadConfigurationFile(g_settings, &fileName);
+	reader.ReadFtpLoginConfigurationFile(g_settings, &fileName);
 
 	// Read the user settings
 	userSettingsFile.Format("%s\\user.ini", (LPCTSTR)m_common.m_exePath);

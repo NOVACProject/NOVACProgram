@@ -20,12 +20,26 @@ namespace FileHandler
         @return 0 on sucess. @return 1 if any error occurs */
     int ReadConfigurationFile(CConfigurationSetting &configuration, const CString *fileName = NULL);
 
+	/** Reads the FTP login configuration file and stores the found values in the
+	supplied reference 'conf'. If fileName is not-null the reader will
+	read from that file, otherwise it will read from 'ftplogin.xml'
+	in the same directory as the executable.
+	@return 0 on sucess. @return 1 if any error occurs */
+	int ReadFtpLoginConfigurationFile(CConfigurationSetting &configuration, const CString *fileName = NULL);
+
     /** Writes the configuration file using the values stored in the 
         supplied reference 'conf'. If fileName is not-null the reader will 
         write to that file, otherwise it will write to 'configuration.xml' 
         in the same directory as the executable. 
         @return 0 on sucess. @return 1 if any error occurs */
-    int WriteConfigurationFile(CConfigurationSetting &configuration, const CString *fileName = NULL);
+	int WriteConfigurationFile(CConfigurationSetting &configuration, const CString *fileName = NULL);
+
+	/** Writes the FTP login configuration file using the values stored in the
+	supplied reference 'conf'. If fileName is not-null the reader will
+	write to that file, otherwise it will write to 'ftplogin.xml'
+	in the same directory as the executable.
+	@return 0 on sucess. @return 1 if any error occurs */
+	int WriteFtpLoginConfigurationFile(CConfigurationSetting &configuration, const CString *fileName = NULL);
 
   private:
     // ---------------------- PRIVATE DATA ----------------------------

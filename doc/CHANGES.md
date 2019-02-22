@@ -7,6 +7,7 @@ Bug fixes
 
 New features
 * Status Message area resizes when window is resized
+* FTP upload server login information is now stored in a separate ftplogin.xml file
 
 -----------------------------------------------------
 Version 3.0 (February 2018)
