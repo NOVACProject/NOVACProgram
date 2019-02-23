@@ -95,7 +95,7 @@ void CMergePakFilesDlg::OnBrowsePakFiles(){
 	while(pos){
 		str = fileDialog.GetNextPathName(pos);
 
-		m_pakFile.AddTail(CString(str));
+		m_pakFile.AddTail(str);
 		++m_pakFileNum;
 	}
 

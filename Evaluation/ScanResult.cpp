@@ -906,7 +906,7 @@ bool CScanResult::IsDirectSunMeasurement() const {
     // It is here assumed that the measurement is a direct-sun measurment
     //	if there is at least 5 spectra with the name 'direct_sun'
     for (unsigned long k = 5; k < m_specNum; ++k) {
-        std::string &name = GetName(k);
+        const std::string name = GetName(k);
         if (EqualsIgnoringCase(name, "direct_sun")) {
             ++nFound;
             if (nFound == 5)
@@ -924,7 +924,7 @@ bool CScanResult::IsLunarMeasurement() const {
     // It is here assumed that the measurement is a lunar measurment
     //	if there is at least 1 spectrum with the name 'lunar'
     for (unsigned long k = 5; k < m_specNum; ++k) {
-        std::string &name = GetName(k);
+        const std::string name = GetName(k);
         if (EqualsIgnoringCase(name, "lunar"))
             ++nFound;
         if (nFound == 5)
@@ -944,7 +944,7 @@ bool CScanResult::IsCompositionMeasurement() const {
         return false;
 
     for (unsigned long k = 0; k < m_specNum; ++k) {
-        std::string &name = GetName(k);
+        const std::string name = GetName(k);
         if (EqualsIgnoringCase(name, "comp")) {
             return true;
         }

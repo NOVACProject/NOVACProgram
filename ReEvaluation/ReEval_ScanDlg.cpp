@@ -55,8 +55,6 @@ END_MESSAGE_MAP()
 
 void CReEval_ScanDlg::OnBnClickedBtnBrowsescanfile()
 {
-	CString str;
-
 	TCHAR filter[] = _T("Pak Files|*.pak|All Files|*.*||");
 
 	// save the contents in the dialog
@@ -75,9 +73,9 @@ void CReEval_ScanDlg::OnBnClickedBtnBrowsescanfile()
 	POSITION pos = fileDialog.GetStartPosition();
 
 	while(pos){
-		str = fileDialog.GetNextPathName(pos);
+        CString str = fileDialog.GetNextPathName(pos);
 
-		m_reeval->m_scanFile.SetAtGrow(m_reeval->m_scanFileNum++, CString(str));
+		m_reeval->m_scanFile.SetAtGrow(m_reeval->m_scanFileNum++, str);
 	}
 
 	// Sort the scans in the file-list
