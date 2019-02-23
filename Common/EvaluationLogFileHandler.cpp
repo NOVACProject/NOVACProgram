@@ -333,7 +333,6 @@ RETURN_CODE CEvaluationLogFileHandler::ReadEvaluationLog() {
 
             // find the next scan-information section
             if (NULL != strstr(szLine, scanInformation)) {
-                ResetScanInformation();
                 ParseScanInformation(m_specInfo, flux, f);
                 continue;
             }
@@ -373,8 +372,11 @@ RETURN_CODE CEvaluationLogFileHandler::ReadEvaluationLog() {
                     }
 
                     // 2. Calculate the offset
-                    if (m_scanNum >= 0) {
-                        m_scan[sortOrder[m_scanNum]].CalculateOffset(m_evResult.m_referenceResult[0].m_specieName);
+                    if (m_scanNum >= 0 && m_scan[sortOrder[m_scanNum]].m_spec.size() > 0) {
+                        const Evaluation::CEvaluationResult& evResult = m_scan[sortOrder[m_scanNum]].m_spec.front();
+                        if(evResult.m_referenceResult.size() > 0) {
+                            m_scan[sortOrder[m_scanNum]].CalculateOffset(evResult.m_referenceResult.front().m_specieName);
+                        }
                     }
 
                     // start the next scan.
@@ -751,7 +753,8 @@ void CEvaluationLogFileHandler::ParseScanInformation(CSpectrumInfo &scanInfo, do
     double tmpDouble;
 
     // Reset the column- and spectrum info
-    ResetColumns();
+    // ResetColumns();
+    ResetScanInformation();
 
     // read the additional scan-information, line by line
     while (fgets(szLine, 8192, f)) {
