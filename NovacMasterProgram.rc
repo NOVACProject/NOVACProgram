@@ -1320,6 +1320,7 @@ BEGIN
     ERROR_COULD_NOT_OPEN_FTPLOGIN_CONFIG "Could not open ftplogin.xml"
     ID_CONFIGURATION_FILETRANSFER 
                             "Upload/Download files to/from a connected scanning instrument\nTransfer files to/from scanning instrument"
+    AXIS_UTCTIME            "UTC Time"
     IDD_VIEW_SCANNERSTATUS  "Shows an overview of the status of this scanning instrument"
     IDD_VIEW_OVERVIEW       "Shows an overview of the fluxes from the connected scanning instruments"
     IDD_CONFIGURE_EVALUATION 

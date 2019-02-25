@@ -180,7 +180,7 @@ BOOL CView_Scanner::OnInitDialog()
 	rect.top = 20; rect.bottom = height - 10;
 	rect.left = 10; rect.right = width - 10;
 	m_fluxPlot.Create(WS_VISIBLE | WS_CHILD, rect, &m_fluxFrame);
-	m_fluxPlot.SetXUnits(common.GetString(AXIS_LOCALTIME));
+	m_fluxPlot.SetXUnits(common.GetString(AXIS_UTCTIME));
 	m_fluxPlot.SetXAxisNumberFormat(FORMAT_TIME);
 	m_fluxPlot.EnableGridLinesX(true);
 	m_fluxPlot.SetYUnits(fluxAxisLabel);
@@ -437,11 +437,15 @@ void CView_Scanner::DrawColumn(){
 void CView_Scanner::DrawFlux(){
 	double maxFlux;
 	const int BUFFER_SIZE = 200;
-	double allFluxes[BUFFER_SIZE], tid[BUFFER_SIZE];
+	double allFluxes[BUFFER_SIZE];
+	double tid[BUFFER_SIZE];
 	int fluxOk[BUFFER_SIZE];
-	double goodFluxes[BUFFER_SIZE], badFluxes[BUFFER_SIZE];
-	double goodTime[BUFFER_SIZE],		badTime[BUFFER_SIZE];
-	int nGoodFluxes = 0, nBadFluxes = 0;
+	double goodFluxes[BUFFER_SIZE];
+	double badFluxes[BUFFER_SIZE];
+	double goodTime[BUFFER_SIZE];
+	double badTime[BUFFER_SIZE];
+	int nGoodFluxes = 0;
+	int nBadFluxes = 0;
 	CString fluxAxisLabel;
 	Common common;
 
@@ -481,6 +485,9 @@ void CView_Scanner::DrawFlux(){
 
 	// set the range for the plot
 	m_fluxPlot.SetRangeY(0, maxFlux, 1);
+
+	// TODO: update the time range for the plot
+	//m_fluxPlot.SetRange(0, 24 * 3600 - 1, 0, 0, 100, 0);
 
 	// First draw the bad values, then the good ones
 	m_fluxPlot.SetCircleColor(RGB(150, 150, 150));

@@ -251,10 +251,10 @@ void CReEval_WindowDlg::PopulateReferenceFileControl(){
 	}
 
 	// make sure that the last line is clear
-	m_referenceGrid.SetItemTextFmt(window.nRef, 0, "");
-	m_referenceGrid.SetItemTextFmt(window.nRef, 1, "");
-	m_referenceGrid.SetItemTextFmt(window.nRef, 2, "");
-	m_referenceGrid.SetItemTextFmt(window.nRef, 3, "");
+	m_referenceGrid.SetItemTextFmt(window.nRef + 1, 0, "");
+	m_referenceGrid.SetItemTextFmt(window.nRef + 1, 1, "");
+	m_referenceGrid.SetItemTextFmt(window.nRef + 1, 2, "");
+	m_referenceGrid.SetItemTextFmt(window.nRef + 1, 3, "");
 }
 
 /** Called when the user wants to insert a new reference file */
