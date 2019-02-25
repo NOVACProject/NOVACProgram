@@ -24,7 +24,7 @@ public:
 	// ------------------- PUBLIC METHODS -------------------------
 
 	/** Inserts a given wind-field into the record */
-	void	InsertWindField(const CWindField &wind);
+	void	InsertWindField(CWindField wind);
 
 	/** Searches through the read-in data and looks for the wind-field at the
 			given time. 

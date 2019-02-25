@@ -135,7 +135,7 @@ void CConfigurationTreeCtrl::GetCurScanAndSpec(int &curScanner, int &curSpec){
 	}
 
 	// Get the serial-number of the spectrometer
-	CString &serial = GetItemText(hTree);
+	CString serial = GetItemText(hTree);
 
 	// look for the serial-number in the list of scanners
 	for(k = 0; k < m_configuration->scannerNum; ++k){

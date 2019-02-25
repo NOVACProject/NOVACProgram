@@ -442,7 +442,7 @@ UINT ImportScanDOASSpectra( LPVOID pParam ){
 		// Check if we have this directory already in the list
 		if(directories.GetCount() == 0){
 			// 1. If the list is empty. just insert the current directory
-			directories.AddTail(CString(directory));
+			directories.AddTail(directory);
 			++nDirectories;
 			lastDirectory.Format(directory);
 			continue;
@@ -460,7 +460,7 @@ UINT ImportScanDOASSpectra( LPVOID pParam ){
 				}
 			}
 			if(!found){
-				directories.AddTail(CString(directory));
+				directories.AddTail(directory);
 				++nDirectories;
 				lastDirectory.Format(directory);
 			}

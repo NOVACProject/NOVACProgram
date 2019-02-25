@@ -16,10 +16,10 @@ CWindFieldRecord::~CWindFieldRecord(void)
 }
 
 /** Inserts a given wind-field into the record */
-void CWindFieldRecord::InsertWindField(const CWindField &wind){
+void CWindFieldRecord::InsertWindField(CWindField wind){
 
 	// Add the new wind-field to the end
-	m_windField.SetAt(m_windFieldNum++, CWindField(wind));
+	m_windField.SetAt(m_windFieldNum++, wind);
 
 	// If necessary, increase the size of the array
 	if(m_windFieldNum >= ORIGINAL_ARRAY_LENGTH - 1){

@@ -172,7 +172,7 @@ void CSummarizeFluxDataDlg::ReadFluxLogFiles(){
 
 		// Import the data from the reader
 		for(int k = 0; k < reader->m_fluxesNum; ++k){
-			m_fluxResults.AddTail(Evaluation::CFluxResult(reader->m_fluxes.GetAt(k)));
+			m_fluxResults.AddTail(reader->m_fluxes.GetAt(k));
 		}
 	}
 
