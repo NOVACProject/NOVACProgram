@@ -2,10 +2,10 @@
 #include "../NovacMasterProgram.h"
 
 #include "../Common/Common.h"
-#include "../SpectralEvaluation/File/SpectrumIO.h"
+#include <SpectralEvaluation/File/SpectrumIO.h>
 #include "../Common/Spectra/PakFileHandler.h"
-#include "../SpectralEvaluation/Spectra/Spectrum.h"
-#include "../SpectralEvaluation/File/STDFile.h"
+#include <SpectralEvaluation/Spectra/Spectrum.h>
+#include <SpectralEvaluation/File/STDFile.h>
 
 #include "ExportSpectraDlg.h"
 

@@ -1,5 +1,5 @@
 #pragma once
-#include "../SpectralEvaluation/Spectra/DateTime.h"
+#include <SpectralEvaluation/DateTime.h>
 
 #ifndef WINDFIELD_H
 #define WINDFIELD_H

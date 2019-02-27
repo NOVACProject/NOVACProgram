@@ -3,7 +3,7 @@
 #include "Configuration/Configuration.h"
 #include "VolcanoInfo.h"
 #include "UserSettings.h"
-#include "SpectralEvaluation/Utils.h"
+#include <SpectralEvaluation/Utils.h>
 
 extern CConfigurationSetting g_settings;   // <-- The settings
 extern CVolcanoInfo g_volcanoes;           // <-- The global database of volcanoes

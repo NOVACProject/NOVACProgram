@@ -1,8 +1,8 @@
 #pragma once
 
 #include "../Common/LogFileWriter.h"
-#include "../SpectralEvaluation/Evaluation/ReferenceFile.h"
-#include "../SpectralEvaluation/Evaluation/EvaluationBase.h"
+#include <SpectralEvaluation/Evaluation/ReferenceFile.h>
+#include <SpectralEvaluation/Evaluation/EvaluationBase.h>
 #include "../Configuration/Configuration.h"
 
 #include "SpectrometerHistory.h"

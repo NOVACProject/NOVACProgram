@@ -1,11 +1,11 @@
 #pragma once
 
 #include "../Common/Common.h"
-#include "../SpectralEvaluation/Spectra/GPSData.h"
-#include "../SpectralEvaluation/Evaluation/ReferenceFile.h"
-#include "../SpectralEvaluation/Evaluation/FitWindow.h"
-#include "../SpectralEvaluation/Spectra/SpectrometerModel.h"
-#include "../SpectralEvaluation/Configuration/DarkSettings.h"
+#include <SpectralEvaluation/GPSData.h>
+#include <SpectralEvaluation/Evaluation/ReferenceFile.h>
+#include <SpectralEvaluation/Evaluation/FitWindow.h>
+#include <SpectralEvaluation/Spectra/SpectrometerModel.h>
+#include <SpectralEvaluation/Configuration/DarkSettings.h>
 
 #ifndef _CCONFIGURATIONSETTINGS_H_
 #define _CCONFIGURATIONSETTINGS_H_

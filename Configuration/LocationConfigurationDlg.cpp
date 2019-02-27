@@ -7,7 +7,7 @@
 #include "ScannerConfiguration.h"
 #include "../VolcanoInfo.h"
 #include "../ObservatoryInfo.h"
-#include "../SpectralEvaluation/Spectra/SpectrometerModel.h"
+#include <SpectralEvaluation/Spectra/SpectrometerModel.h>
 
 #include "../Dialogs/QueryStringDialog.h"
 

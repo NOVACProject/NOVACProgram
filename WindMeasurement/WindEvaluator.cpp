@@ -2,7 +2,7 @@
 #include "../NovacMasterProgram.h"
 #include "WindEvaluator.h"
 #include "WindSpeedResult.h"
-#include "../SpectralEvaluation/Utils.h"
+#include <SpectralEvaluation/Utils.h>
 
 // We must be able to read the evaluation-log files
 #include "../Common/EvaluationLogFileHandler.h"

@@ -8,7 +8,7 @@
 #include "../Graphs/SpectrumGraph.h"
 #include "PakFileListBox.h"
 
-#include "../SpectralEvaluation/Spectra/Spectrum.h"
+#include <SpectralEvaluation/Spectra/Spectrum.h>
 
 // CReEval_ScanDlg dialog
 

@@ -1,10 +1,10 @@
 #pragma once
 
 #include "../Common/Common.h"
-#include "../SpectralEvaluation/Spectra/SpectrumInfo.h"
-#include "../SpectralEvaluation/Evaluation/FitParameter.h"
-#include "../SpectralEvaluation/Evaluation/EvaluationResult.h"
-#include "../SpectralEvaluation/Evaluation/BasicScanEvaluationResult.h"
+#include <SpectralEvaluation/Spectra/SpectrumInfo.h>
+#include <SpectralEvaluation/Evaluation/FitParameter.h>
+#include <SpectralEvaluation/Evaluation/EvaluationResult.h>
+#include <SpectralEvaluation/Evaluation/BasicScanEvaluationResult.h>
 #include "FluxResult.h"
 
 namespace Evaluation

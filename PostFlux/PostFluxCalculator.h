@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../Common/WindField.h"
-#include "../SpectralEvaluation/Spectra/SpectrumInfo.h"
+#include <SpectralEvaluation/Spectra/SpectrumInfo.h>
 #include "../Common/EvaluationLogFileHandler.h"
 
 

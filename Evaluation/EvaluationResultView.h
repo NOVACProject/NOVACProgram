@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include "../SpectralEvaluation/Spectra/Spectrum.h"
+#include <SpectralEvaluation/Spectra/Spectrum.h>
 
 namespace Evaluation
 {

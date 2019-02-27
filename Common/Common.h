@@ -12,8 +12,8 @@
 #include <afxtempl.h>
 
 #include "WindField.h"
-#include "../SpectralEvaluation/Spectra/GPSData.h"
-#include "../SpectralEvaluation/Spectra/DateTime.h"
+#include <SpectralEvaluation/GPSData.h>
+#include <SpectralEvaluation/DateTime.h>
 
 
 // definition used for storing the spectral data

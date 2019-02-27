@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../SpectralEvaluation/Evaluation/ReferenceFile.h"
+#include <SpectralEvaluation/Evaluation/ReferenceFile.h>
 
 // CReferencePropertiesDlg dialog
 namespace Dialogs

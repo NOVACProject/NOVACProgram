@@ -2,7 +2,7 @@
 
 #include "../Common/Common.h"
 #include "../Evaluation/FluxResult.h"
-#include "../SpectralEvaluation/Spectra/SpectrumInfo.h"
+#include <SpectralEvaluation/Spectra/SpectrumInfo.h>
 
 #include <Afxtempl.h>
 

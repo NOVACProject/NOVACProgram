@@ -1,12 +1,12 @@
 #include "StdAfx.h"
 #include "ScanEvaluation.h"
 #include "EvaluationResultView.h"
-#include "../SpectralEvaluation/Evaluation/EvaluationBase.h"
-#include "../SpectralEvaluation/File/ScanFileHandler.h"
-#include "../SpectralEvaluation/File/SpectrumIO.h"
-#include "../SpectralEvaluation/File/STDFile.h"
-#include "../SpectralEvaluation/File/TXTFile.h"
-#include "../SpectralEvaluation/Utils.h"
+#include <SpectralEvaluation/Evaluation/EvaluationBase.h>
+#include <SpectralEvaluation/File/ScanFileHandler.h>
+#include <SpectralEvaluation/File/SpectrumIO.h>
+#include <SpectralEvaluation/File/STDFile.h>
+#include <SpectralEvaluation/File/TXTFile.h>
+#include <SpectralEvaluation/Utils.h>
 
 using namespace Evaluation;
 

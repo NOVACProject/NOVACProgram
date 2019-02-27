@@ -7,7 +7,7 @@
 #include "ScanResult.h"
 
 #include "../Common/Common.h"
-#include "../SpectralEvaluation/File/ScanFileHandler.h"
+#include <SpectralEvaluation/File/ScanFileHandler.h>
 #include "../Common/LogFileWriter.h"
 #include "../Common/Spectra/PakFileHandler.h"
 

@@ -2,9 +2,9 @@
 #include "../NovacMasterProgram.h"
 #include "ImportSpectraDlg.h"
 #include "../Common/Common.h"
-#include "../SpectralEvaluation/File/STDFile.h"
-#include "../SpectralEvaluation/File/SpectrumIO.h"
-#include "../SpectralEvaluation/Spectra/Spectrum.h"
+#include <SpectralEvaluation/File/STDFile.h>
+#include <SpectralEvaluation/File/SpectrumIO.h>
+#include <SpectralEvaluation/Spectra/Spectrum.h>
 
 #include <CDerr.h>
 

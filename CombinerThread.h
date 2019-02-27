@@ -1,7 +1,7 @@
 #pragma once
 
 #include <afxtempl.h>
-#include "SpectralEvaluation/Spectra/DateTime.h"
+#include <SpectralEvaluation/DateTime.h>
 
 
 /** <b>CCombinerThread</b> is an abstract class designed to be inherited

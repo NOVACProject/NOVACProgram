@@ -6,7 +6,7 @@
 
 #include "ReEval_ScanDlg.h"
 
-#include "../SpectralEvaluation/File/SpectrumIO.h"
+#include <SpectralEvaluation/File/SpectrumIO.h>
 
 // Include the special multi-choice file-dialog
 #include "../Dialogs/FECFileDialog.h"
