@@ -2,7 +2,7 @@
 
 #include "GridCtrl\GridCtrl.h"
 
-#include "../SpectralEvaluation/Evaluation/FitWindow.h"
+#include <SpectralEvaluation/Evaluation/FitWindow.h>
 
 namespace DlgControls
 {

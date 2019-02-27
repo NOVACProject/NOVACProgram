@@ -3,7 +3,7 @@
 #include <afxtempl.h>
 
 #include "../Common/Common.h"
-#include "../SpectralEvaluation/Spectra/DateTime.h"
+#include <SpectralEvaluation/DateTime.h>
 
 #include "ScanResult.h"
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../SpectralEvaluation/Evaluation/FitWindow.h"
+#include <SpectralEvaluation/Evaluation/FitWindow.h>
 #include "../Graphs/GraphCtrl.h"
 #include "../Resource.h"
 

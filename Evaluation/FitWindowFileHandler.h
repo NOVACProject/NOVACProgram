@@ -2,7 +2,7 @@
 
 #include "../Common/Common.h"
 #include "../Common/XMLFileReader.h"
-#include "../SpectralEvaluation/Evaluation/FitWindow.h"
+#include <SpectralEvaluation/Evaluation/FitWindow.h>
 
 namespace FileHandler {
 /** A <b>CFitWindowFileHandler</b> object is capable of reading

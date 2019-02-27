@@ -2,7 +2,7 @@
 
 #include <afxtempl.h>
 #include "../../Common/Common.h"
-#include "../../SpectralEvaluation/File/SpectrumIO.h"
+#include <SpectralEvaluation/File/SpectrumIO.h>
 
 namespace FileHandler
 {

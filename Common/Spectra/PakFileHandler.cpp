@@ -3,7 +3,7 @@
 
 // the settings...
 #include "../../Configuration/Configuration.h"
-#include "../../SpectralEvaluation/File/ScanFileHandler.h"
+#include <SpectralEvaluation/File/ScanFileHandler.h>
 
 using namespace FileHandler;
 

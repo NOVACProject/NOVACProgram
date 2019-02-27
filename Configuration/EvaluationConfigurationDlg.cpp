@@ -5,7 +5,7 @@
 #include "../NovacMasterProgram.h"
 #include "EvaluationConfigurationDlg.h"
 #include "ScannerConfiguration.h"
-#include "../SpectralEvaluation/Evaluation/ReferenceFile.h"
+#include <SpectralEvaluation/Evaluation/ReferenceFile.h>
 #include "../Dialogs/SelectionDialog.h"
 #include "../Dialogs/ReferencePropertiesDlg.h"
 #include "../Dialogs/ReferencePlotDlg.h"

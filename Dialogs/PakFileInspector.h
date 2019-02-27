@@ -1,8 +1,8 @@
 #pragma once
 
 #include "../Graphs/SpectrumGraph.h"
-#include "../SpectralEvaluation/Spectra/Spectrum.h"
-#include "../SpectralEvaluation/File/MKPack.h"
+#include <SpectralEvaluation/Spectra/Spectrum.h>
+#include <SpectralEvaluation/File/MKPack.h>
 
 // CPakFileInspector dialog
 

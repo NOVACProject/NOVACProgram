@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "evaluationlogfilehandler.h"
-#include "../SpectralEvaluation/Spectra/SpectrometerModel.h"
-#include "../SpectralEvaluation/Utils.h"
+#include <SpectralEvaluation/Spectra/SpectrometerModel.h>
+#include <SpectralEvaluation/Utils.h>
 #include "../Common/Version.h"
 
 // Include synchronization classes

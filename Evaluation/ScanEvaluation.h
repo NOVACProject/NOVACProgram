@@ -4,8 +4,8 @@
 #include <memory>
 #include <mutex>
 
-#include "../SpectralEvaluation/Evaluation/ScanEvaluationBase.h"
-#include "../SpectralEvaluation/Evaluation/FitParameter.h"
+#include <SpectralEvaluation/Evaluation/ScanEvaluationBase.h>
+#include <SpectralEvaluation/Evaluation/FitParameter.h>
 #include "../Common/Common.h"
 #include "../Configuration/Configuration.h"
 

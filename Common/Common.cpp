@@ -6,7 +6,7 @@
 #include "../VolcanoInfo.h"
 #include "../Communication/FTPServerContacter.h"
 
-#include "../SpectralEvaluation/Flux/Flux.h"
+#include <SpectralEvaluation/Flux/Flux.h>
 
 #include "PSAPI.H"
 #include <tlhelp32.h>

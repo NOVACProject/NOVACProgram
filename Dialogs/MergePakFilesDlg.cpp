@@ -3,7 +3,7 @@
 #include "MergePakFilesDlg.h"
 
 #include "../Common/Common.h"
-#include "../SpectralEvaluation/Spectra/Spectrum.h"
+#include <SpectralEvaluation/Spectra/Spectrum.h>
 #include "../Common/Spectra/PakFileHandler.h"
 
 // Include the special multi-choice file-dialog
