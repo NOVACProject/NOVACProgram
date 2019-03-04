@@ -430,11 +430,10 @@ UINT ImportScanDOASSpectra( LPVOID pParam ){
 	Dialogs::CImportSpectraDlg *wnd = (Dialogs::CImportSpectraDlg *)pParam;
 	CString directory, lastDirectory;
 	CList <CString, CString&> directories;
-	int k;
 	int nDirectories = 0;
 	
 	// 1 Find all unique directories in the list of files
-	for(k = 0; k < wnd->m_nSpecFiles; ++k){
+	for(int k = 0; k < wnd->m_nSpecFiles; ++k){
 		// Extract the directory for the current file
 		directory.Format("%s", (LPCSTR)*wnd->m_spectrumFiles.GetAt(k));
 		Common::GetDirectory(directory);
@@ -491,7 +490,7 @@ UINT ImportScanDOASSpectra( LPVOID pParam ){
 			CArray<CString *, CString *>	spectrumFiles;
 			spectrumFiles.SetSize(wnd->m_nSpecFiles / nDirectories); // Initial guess of the number of spectrum files
 			int nSpectrumFiles = 0;
-			for(k = 0; k < wnd->m_nSpecFiles; ++k){
+			for(int k = 0; k < wnd->m_nSpecFiles; ++k){
 				directory.Format("%s", (LPCSTR)*wnd->m_spectrumFiles.GetAt(k));
 				Common::GetDirectory(directory);
 				if(Equals(directory, curDirectory)){
