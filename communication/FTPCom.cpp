@@ -311,16 +311,20 @@ BOOL CFTPCom::EnterFolder(const CString& folder)
 	strFolder.Format("/%s/", (LPCSTR)folder);
 
 	// Compare if the returned string is the same as what we want...
+	// If a relative directory is passed into this function
+	// the Equals below will compare it agains a full path and return false.
+	// Misleading 'Can not get into folder' message displays even if the
+	// change directory was successful. Best to handle messages externally.
 	if(Equals(strDir, strFolder))
 	{
-		msg.Format("Get into folder %s", (LPCSTR)folder);
-		ShowMessage(msg);
+		//msg.Format("Get into folder %s", (LPCSTR)folder);
+		//ShowMessage(msg);
 		return TRUE;
 	}
 	else
 	{
-		msg.Format("Can not get into folder %s", (LPCSTR)folder);
-		ShowMessage(msg);
+		//msg.Format("Can not get into folder %s", (LPCSTR)folder);
+		//ShowMessage(msg);
 		return FALSE;
 	}
 }
