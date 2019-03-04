@@ -389,7 +389,7 @@ void Common::GetDateText(CString &txt)
 	time_t t;
 
 	time(&t);
-	tim=localtime(&t);
+	tim = gmtime(&t);
 	txt.Format("%04d.%02d.%02d",tim->tm_year+1900,tim->tm_mon+1,tim->tm_mday);
 }
 int Common::GetHour()
@@ -397,7 +397,7 @@ int Common::GetHour()
 	struct tm *tim;
 	time_t t;
 	time(&t);
-	tim=localtime(&t);
+	tim = gmtime(&t);
 	return tim->tm_hour;
 }
 int Common::GetMinute()
@@ -405,7 +405,7 @@ int Common::GetMinute()
 	struct tm *tim;
 	time_t t;
 	time(&t);
-	tim=localtime(&t);
+	tim = gmtime(&t);
 	return tim->tm_min;
 }
 int Common::GetSecond()
@@ -413,7 +413,7 @@ int Common::GetSecond()
 	struct tm *tim;
 	time_t t;
 	time(&t);
-	tim=localtime(&t);
+	tim = gmtime(&t);
 	return tim->tm_sec;
 }
 
@@ -430,7 +430,7 @@ void Common::GetTimeText(CString &txt)
 	struct tm *tim;
 	time_t t;
 	time(&t);
-	tim=localtime(&t);
+	tim = gmtime(&t);
 	txt.Format("%02d:%02d:%02d",tim->tm_hour,tim->tm_min,tim->tm_sec);
 }
 /* pretty prints the current time into the string 'txt' */
@@ -439,7 +439,7 @@ void Common::GetTimeText(CString &txt,char* seperator)
 	struct tm *tim;
 	time_t t;
 	time(&t);
-	tim=localtime(&t);
+	tim = gmtime(&t);
 	txt.Format("%02d%s%02d%s%02d",tim->tm_hour,seperator,tim->tm_min,seperator,tim->tm_sec);
 }
 /* pretty prints the current date and time into the string 'txt' */
@@ -448,7 +448,7 @@ void Common::GetDateTimeText(CString &txt)
 	struct tm *tim;
 	time_t t;
 	time(&t);
-	tim = localtime(&t);
+	tim = gmtime(&t);
 	txt.Format("%04d.%02d.%02d  %02d:%02d:%02d",tim->tm_year+1900,tim->tm_mon+1,tim->tm_mday,tim->tm_hour,tim->tm_min,tim->tm_sec);
 }
 
@@ -458,7 +458,7 @@ int Common::GetYear()
 	struct tm *tim;
 	time_t t;
 	time(&t);
-	tim = localtime(&t);
+	tim = gmtime(&t);
 	return (tim->tm_year + 1900);
 }
 
@@ -468,7 +468,7 @@ int Common::GetMonth()
 	struct tm *tim;
 	time_t t;
 	time(&t);
-	tim = localtime(&t);
+	tim = gmtime(&t);
 	return (tim->tm_mon + 1);
 }
 
@@ -478,7 +478,7 @@ int Common::GetDay()
 	struct tm *tim;
 	time_t t;
 	time(&t);
-	tim = localtime(&t);
+	tim = gmtime(&t);
 	return (tim->tm_mday);
 }
 

@@ -164,7 +164,9 @@ BOOL CFTPServerContacter::OnIdle(LONG lCount){
 	//      |xxxxxxxxxxxx                         xxxxxxxxx|
 	//      ------------^-------------------------^---------
 	//               stopTime                 startTime
-	int now       = Common::GetHour() * 3600 + Common::GetMinute() * 60 + Common::GetSecond();
+
+	CTime currentTime = CTime::GetCurrentTime();
+	int now       = currentTime.GetHour() * 3600 + currentTime.GetMinute() * 60 + currentTime.GetSecond();
 	int startTime = g_settings.ftpSetting.ftpStartTime;
 	int stopTime  = g_settings.ftpSetting.ftpStopTime;
 	if(stopTime > startTime){
