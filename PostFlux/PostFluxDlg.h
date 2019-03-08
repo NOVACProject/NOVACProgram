@@ -77,9 +77,6 @@ public:
 	/** The cone-angle combo, lets the user select the cone-angle of the system */
 	CComboBox m_coneangleCombo;
 
-	/** The instrument-type combo */
-	//CComboBox m_instrumentTypeCombo;
-
 	/** The flux-errors */
 	Dialogs::CFluxErrorDlg	m_fluxErrorDlg;
 
@@ -172,9 +169,6 @@ public:
 	/** Called when the user wants to change gas for which the flux calculation is done.
 			The gas affects only the conversion from ppmm to mg/m^2. */
 	afx_msg void OnChangeGas();
-
-	/** Called when the user changes the type of instrument used */
-	//afx_msg void OnChangeInstrumentType();
 
 	/** Called when the user changes the cone-angle */
 	afx_msg void OnChangeConeAngle();

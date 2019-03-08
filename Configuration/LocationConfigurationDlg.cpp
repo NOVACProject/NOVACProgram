@@ -57,7 +57,6 @@ void CLocationConfigurationDlg::DoDataExchange(CDataExchange* pDX)
 	// The combo boxes
 	DDX_Control(pDX, IDC_COMBO_VOLCANO,					m_comboVolcano);
 	DDX_Control(pDX, IDC_COMBO_ELECTRONICS,				m_comboElectronics);
-	DDX_Control(pDX, IDC_COMBO_INSTRUMENTTYPE,			m_comboInstrumentType);
 	DDX_Control(pDX, IDC_COMBO_SPECTROMETERMODEL,		m_comboSpectrometerModel);
 	DDX_Control(pDX, IDC_COMBO_CHANNELS,				m_comboSpectrometerChannels);
 
@@ -65,11 +64,6 @@ void CLocationConfigurationDlg::DoDataExchange(CDataExchange* pDX)
 		DDX_Text(pDX, IDC_EDIT_SITE,					m_curScanner->site);
 		DDX_Text(pDX, IDC_EDIT_OBSERVATORY,			m_curScanner->observatory);
 		DDX_Text(pDX, IDC_EDIT_SERIALNUMBER,			m_curScanner->spec[0].serialNumber);
-
-		//DDX_Text(pDX, IDC_EDIT_STEPSPERROUND1,			m_curScanner->motor[0].stepsPerRound);
-		//DDX_Text(pDX, IDC_EDIT_STEPSPERROUND2,			m_curScanner->motor[1].stepsPerRound);
-		//DDX_Text(pDX, IDC_EDIT_MOTORSTEPSCOMPENSATION1,	m_curScanner->motor[0].motorStepsComp);
-		//DDX_Text(pDX, IDC_EDIT_MOTORSTEPSCOMPENSATION2,	m_curScanner->motor[1].motorStepsComp);
 
 	}else{
 		CString site, observatory, serialNumber;
@@ -94,7 +88,6 @@ BEGIN_MESSAGE_MAP(CLocationConfigurationDlg, CPropertyPage)
 	ON_CBN_SELCHANGE(IDC_COMBO_SPECTROMETERMODEL,		OnChangeModel)
 	//ON_CBN_SELCHANGE(IDC_COMBO_OBSERVATORY,				SaveData)
 	ON_CBN_SELCHANGE(IDC_COMBO_CHANNELS,				OnChangeChannelNum)
-	ON_CBN_SELCHANGE(IDC_COMBO_INSTRUMENTTYPE,			OnChangeType)
 	ON_CBN_SELCHANGE(IDC_COMBO_ELECTRONICS, &CLocationConfigurationDlg::OnChangeElectronics)
 END_MESSAGE_MAP()
 
@@ -138,11 +131,6 @@ BOOL CLocationConfigurationDlg::OnInitDialog()
 	m_comboElectronics.ResetContent();
 	m_comboElectronics.AddString("Version 1");
 	m_comboElectronics.AddString("Version 3");
-
-	// The instrument-type combo-box
-	m_comboInstrumentType.ResetContent();
-	m_comboInstrumentType.AddString("Gothenburg");
-	//m_comboInstrumentType.AddString("Heidelberg");
 
 	UpdateData(FALSE);
 
@@ -263,26 +251,12 @@ void CLocationConfigurationDlg::OnChangeScanner(){
 		// Update the electronics
 		m_comboElectronics.SetCurSel((int)m_curScanner->electronicsBox);
 
-		// Update the instrument-type
-		m_comboInstrumentType.SetCurSel((int)m_curScanner->instrumentType);
 
-		// If the type is 'Heidelberg' then we can only have one channel
-		if(m_curScanner->instrumentType == INSTR_HEIDELBERG){
-			m_curScanner->spec[0].channelNum = 1;
-			m_comboSpectrometerChannels.SetCurSel(0);
-			m_comboSpectrometerChannels.EnableWindow(FALSE);
-			m_editSPR1.ShowWindow(TRUE);
-			m_editSPR2.ShowWindow(TRUE);
-			m_labelSPR.ShowWindow(TRUE);
-			m_editMSC2.ShowWindow(TRUE);
-
-		}else if(m_curScanner->instrumentType == INSTR_GOTHENBURG){
-			m_comboSpectrometerChannels.EnableWindow(TRUE);
-			m_editSPR1.ShowWindow(FALSE);
-			m_editSPR2.ShowWindow(FALSE);
-			m_labelSPR.ShowWindow(FALSE);
-			m_editMSC2.ShowWindow(FALSE);
-		}
+		m_comboSpectrometerChannels.EnableWindow(TRUE);
+		m_editSPR1.ShowWindow(FALSE);
+		m_editSPR2.ShowWindow(FALSE);
+		m_labelSPR.ShowWindow(FALSE);
+		m_editMSC2.ShowWindow(FALSE);
 
 		// Finally, update the screen to reflect the changes
 		UpdateData(FALSE);
@@ -328,41 +302,6 @@ void CLocationConfigurationDlg::OnChangeModel(){
 		return;
 
 	m_curScanner->spec[0].model = (SPECTROMETER_MODEL)curSel;
-}
-
-/** The user has changed the type of the instrument */
-void CLocationConfigurationDlg::OnChangeType(){
-	if(m_curScanner == NULL)
-		return;
-
-	int curSel = m_comboInstrumentType.GetCurSel();
-	if(curSel < 0)
-		return;
-
-	m_curScanner->instrumentType = (INSTRUMENT_TYPE)curSel;
-
-	// If the type is 'Heidelberg' then we can only have one channel
-	if(m_curScanner->instrumentType == INSTR_HEIDELBERG){
-		m_curScanner->spec[0].channelNum = 1;
-		m_comboSpectrometerChannels.SetCurSel(0);
-		m_comboSpectrometerChannels.EnableWindow(FALSE);
-
-		m_editSPR1.ShowWindow(TRUE);
-		m_editSPR2.ShowWindow(TRUE);
-		m_labelSPR.ShowWindow(TRUE);
-		m_editMSC2.ShowWindow(TRUE);
-	}else if(m_curScanner->instrumentType == INSTR_GOTHENBURG){
-		m_comboSpectrometerChannels.EnableWindow(TRUE);
-
-		m_editSPR1.ShowWindow(FALSE);
-		m_editSPR2.ShowWindow(FALSE);
-		m_labelSPR.ShowWindow(FALSE);
-		m_editMSC2.ShowWindow(FALSE);
-	}
-
-	// Call the 'onchangescanner' function to determine if
-	//	we want to change the number of tabs...
-	((CScannerConfiguration *)m_parent)->OnChangeScanner();
 }
 
 /** The user has changed the number of channels in the spectrometer */

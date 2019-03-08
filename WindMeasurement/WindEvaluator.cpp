@@ -91,23 +91,6 @@ void CWindEvaluator::OnEvaluatedWindMeasurement(WPARAM wp, LPARAM lp){
 	if(SUCCESS != reader.ReadEvaluationLog())
 		return;
 	const std::string serialNumber = reader.m_scan[0].GetSerial();
-	bool isHeidelbergInstrument = false;
-	for(unsigned int it = 0; it < g_settings.scannerNum; ++it)
-    {
-        const std::string scannerSerial = std::string((LPCSTR)g_settings.scanner[it].spec[0].serialNumber);
-		if(EqualsIgnoringCase(serialNumber, scannerSerial)){
-			if(g_settings.scanner[it].instrumentType == INSTR_HEIDELBERG)
-				isHeidelbergInstrument = true;
-			else
-				isHeidelbergInstrument = false;
-			break;
-		}
-	}
-
-	if(isHeidelbergInstrument && reader.IsWindSpeedMeasurement_Heidelberg(0)){
-		CalculateCorrelation_Heidelberg(fileName, volcanoIndex);
-		return;
-	}
 
 	// 5. Find matching evaluation-logs, to make wind-speed measurements
 	CString match[MAX_MATCHING_FILES];
@@ -284,112 +267,7 @@ RETURN_CODE CWindEvaluator::CalculateCorrelation(const CString &evalLog1, const 
 	}
 
 	// 5. Write the results of our calculations to file
-	WriteWindMeasurementLog(calc, evalLog1, reader[0].m_scan[scanIndex[0]], volcanoIndex, INSTR_GOTHENBURG);
-
-	// 6. Clean up a little bit.
-	delete series[0];
-	delete series[1];
-
-	return SUCCESS;
-}
-
-/** Calculate the correlation between the two time-series found in the 
-		given evaluation-file. */
-RETURN_CODE CWindEvaluator::CalculateCorrelation_Heidelberg(const CString &evalLog, int volcanoIndex){
-	WindSpeedMeasurement::CWindSpeedCalculator	calc; // <-- The actual calculator
-	FileHandler::CEvaluationLogFileHandler reader;
-	WindSpeedMeasurement::CWindSpeedCalculator::CMeasurementSeries *series[2];
-	CWindField wf;
-	CDateTime startTime_dt;
-	int scanIndex;
-	double delay;
-
-	// 1. Read the evaluation-log
-	reader.m_evaluationLog.Format("%s", (LPCSTR)evalLog);
-	if(SUCCESS != reader.ReadEvaluationLog())
-		return FAIL;
-
-	// 2. Find the wind-speed measurement series in the log-files
-	for(scanIndex = 0; scanIndex < reader.m_scanNum; ++scanIndex)
-		if(reader.IsWindSpeedMeasurement_Heidelberg(scanIndex))
-			break;
-	if(scanIndex == reader.m_scanNum)
-		return FAIL;		// <-- no wind-speed measurement found
-
-	// 3. Create the wind-speed measurement series
-
-	// 3a. The scan we're looking at
-	Evaluation::CScanResult &scan = reader.m_scan[scanIndex];
-
-	// 3b. The start-time of the whole measurement
-	const CDateTime *startTime = scan.GetStartTime(0);
-	scan.GetStartTime(0, startTime_dt);
-
-	// 3b-2. Find out what plume-height to use
-    const CString scannerSerialNumber = CString(scan.GetSerial().c_str());
-	g_metData.GetWindField(scannerSerialNumber, startTime_dt, wf);
-	m_settings.plumeHeight = wf.GetPlumeHeight();
-
-	// 3c. The length of the measurement
-	int	length = scan.GetEvaluatedNum();
-
-	// 3d. Allocate the memory for the series
-	series[0] = new CWindSpeedCalculator::CMeasurementSeries(length / 2);
-	series[1] = new CWindSpeedCalculator::CMeasurementSeries(length / 2);
-
-	// 3e. Copy the relevant data in the scan
-	for(int k = 0; k < length; ++k){
-		const CDateTime *time = scan.GetStartTime(k);
-
-		series[k % 2]->column[k / 2] = scan.GetColumn(k, 0);
-
-		// Save the time difference
-		series[k % 2]->time[k / 2]		= 
-			3600 * (time->hour - startTime->hour) +
-			60	 * (time->minute - startTime->minute) +
-			(time->second - startTime->second);
-	}
-
-	// 3f. Adjust the settings to have the correct angle
-	int midpoint = (int)(length / 2);
-	double d1 = scan.GetScanAngle(midpoint) - scan.GetScanAngle(midpoint + 1);
-	double d2 = scan.GetScanAngle2(midpoint) - scan.GetScanAngle2(midpoint + 1);
-	m_settings.angleSeparation = sqrt(d1 * d1 + d2 * d2);
-
-	// 4. Perform the correlation calculations...
-
-	// 4a. Calculate the correlation, assuming that series[0] is the upwind series
-	if(SUCCESS != calc.CalculateDelay(delay, series[0], series[1], m_settings)){
-		ShowMessage("Failed to correlate time-series, no windspeed could be derived");
-		delete series[0];		delete series[1];
-		return FAIL;
-	}
-
-	// 4b. Calculate the average correlation
-	double avgCorr1 = Average(calc.corr, calc.m_length);
-
-	// 4c. Calculate the correlation, assuming that series[1] is the upwind series
-	if(SUCCESS != calc.CalculateDelay(delay, series[1], series[0], m_settings)){
-		ShowMessage("Failed to correlate time-series, no windspeed could be derived");
-		delete series[0];		delete series[1];
-		return FAIL;
-	}
-
-	// 4d. Calculate the average correlation
-	double avgCorr2 = Average(calc.corr, calc.m_length);
-
-	// 4e. Use the result which gave the higest correlation
-	if(avgCorr1 > avgCorr2){
-		if(SUCCESS != calc.CalculateDelay(delay, series[0], series[1], m_settings)){
-			// this should never happen
-			ShowMessage("Failed to correlate time-series, no windspeed could be derived");
-			delete series[0];		delete series[1];
-			return FAIL;
-		}
-	}
-
-	// 5. Write the results of our calculations to file
-	WriteWindMeasurementLog(calc, evalLog, reader.m_scan[scanIndex], volcanoIndex, INSTR_HEIDELBERG);
+	WriteWindMeasurementLog(calc, evalLog1, reader[0].m_scan[scanIndex[0]], volcanoIndex);
 
 	// 6. Clean up a little bit.
 	delete series[0];
@@ -399,7 +277,7 @@ RETURN_CODE CWindEvaluator::CalculateCorrelation_Heidelberg(const CString &evalL
 }
 
 /** Writes the results of the windspeed measurement to a file */
-void CWindEvaluator::WriteWindMeasurementLog(const CWindSpeedCalculator &calc, const CString &evalLog, const Evaluation::CScanResult &scan, int volcanoIndex, INSTRUMENT_TYPE instrType){
+void CWindEvaluator::WriteWindMeasurementLog(const CWindSpeedCalculator &calc, const CString &evalLog, const Evaluation::CScanResult &scan, int volcanoIndex){
 	CString fileName, directory, commonName, str;
 	CDateTime startTime, stopTime;
 
@@ -429,33 +307,18 @@ void CWindEvaluator::WriteWindMeasurementLog(const CWindSpeedCalculator &calc, c
 	double coneAngle	= scan.GetConeAngle();
 	double scanAngle	= scan.GetScanAngle(scan.GetEvaluatedNum() / 2);
 
-	if(instrType == INSTR_GOTHENBURG){
-		if(fabs(coneAngle - 90.0) < 1){
-			// Flat scanner
-			distance		= m_settings.plumeHeight * (1.0 / cos(DEGREETORAD * scanAngle)) * tan(DEGREETORAD * m_settings.angleSeparation);
-		}else{
-			// Cone scanner
-			double angle	= DEGREETORAD * (90.0 - (coneAngle - fabs(scan.GetPitch())));
-			distance			= m_settings.plumeHeight * fabs(tan(angle) - tan(angle - DEGREETORAD * m_settings.angleSeparation));
-		}
-		// If the scanners are not looking straight up then the distance between
-		//		the two directions gets decreased with the scanAngle
-		distance			*= cos(scanAngle * DEGREETORAD);
-	}else{	//for Heidelberg instrument: recover the distance along the plume
-					//from the plume height and the two measurement directions used
-					//(alpha=angle from zenith; beta=azimuth angle)
-
-		int halfLength= scan.GetEvaluatedNum() / 2;
-		double alpha1 = DEGREETORAD * scan.GetScanAngle(halfLength);
-		double alpha2 = DEGREETORAD * scan.GetScanAngle(halfLength+1);
-		double beta1  = DEGREETORAD * scan.GetScanAngle2(halfLength);
-		double beta2  = DEGREETORAD * scan.GetScanAngle2(halfLength+1);
-		distance		= m_settings.plumeHeight *
-									sqrt ( (tan(alpha1)*sin(beta1)-tan(alpha2)*sin(beta2))*
-													(tan(alpha1)*sin(beta1)-tan(alpha2)*sin(beta2)) + 
-													(tan(alpha1)*cos(beta1)-tan(alpha2)*cos(beta2))*
-													(tan(alpha1)*cos(beta1)-tan(alpha2)*cos(beta2)) );
+	if (fabs(coneAngle - 90.0) < 1) {
+		// Flat scanner
+		distance = m_settings.plumeHeight * (1.0 / cos(DEGREETORAD * scanAngle)) * tan(DEGREETORAD * m_settings.angleSeparation);
 	}
+	else {
+		// Cone scanner
+		double angle = DEGREETORAD * (90.0 - (coneAngle - fabs(scan.GetPitch())));
+		distance = m_settings.plumeHeight * fabs(tan(angle) - tan(angle - DEGREETORAD * m_settings.angleSeparation));
+	}
+	// If the scanners are not looking straight up then the distance between
+	//		the two directions gets decreased with the scanAngle
+	distance *= cos(scanAngle * DEGREETORAD);
 
 	// 6. Write the header of the wind-log file
 	fprintf(f, "<windcorrelationinformation>\n");

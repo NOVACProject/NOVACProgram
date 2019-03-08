@@ -69,8 +69,7 @@ int CFTPCom::Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, BOOL 
 				m_InternetSession->SetOption(INTERNET_OPTION_RECEIVE_TIMEOUT, nTimeout * 1000);
 				m_InternetSession->SetOption(INTERNET_OPTION_SEND_TIMEOUT, nTimeout * 1000);
 			
-				m_FtpConnection = m_InternetSession->GetFtpConnection(siteName,
-											userName,password,21,mode);
+				m_FtpConnection = m_InternetSession->GetFtpConnection(siteName,userName,password,21,mode);
 				m_ErrorMsg.Format("CONNECTED to FTP server: %s", siteName); 
 				ShowMessage(m_ErrorMsg);
 				return 1;

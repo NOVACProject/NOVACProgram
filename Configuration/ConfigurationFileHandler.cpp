@@ -280,10 +280,6 @@ int CConfigurationFileHandler::WriteConfigurationFile(CConfigurationSetting &con
 		str.AppendFormat("\t\t\t<instr_compass>%lf</instr_compass>\n",		conf->scanner[i].compass);
 		fprintf(f, str);
 
-		// type
-		str.Format("\t\t\t<type>%d</type>\n", conf->scanner[i].instrumentType);
-		fprintf(f, str);
-
 		// electronicsBox
 		str.Format("\t\t\t<electronics>%d</electronics>\n", conf->scanner[i].electronicsBox);
 		fprintf(f, str);
@@ -458,30 +454,8 @@ int CConfigurationFileHandler::WriteConfigurationFile(CConfigurationSetting &con
 			fprintf(f, TEXT("\t\t\t</communication>\n"));
 		}
 
-		// Write the motor information	
-		//{
-		//	indent.Format("\t\t\t\t");
-		//	fprintf(f, TEXT("\t\t\t<motor>\n"));
-
-		//	str.Format("%s<stepsperround1>%d</stepsperround1>\n", indent, conf->scanner[i].motor[0].stepsPerRound);
-		//	fprintf(f, str);
-
-		//	str.Format("%s<motorstepscomp1>%d</motorstepscomp1>\n", indent, conf->scanner[i].motor[0].motorStepsComp);
-		//	fprintf(f, str);
-
-		//	if(conf->scanner[i].instrumentType == INSTR_HEIDELBERG){
-		//		str.Format("%s<stepsperround2>%d</stepsperround2>\n", indent, conf->scanner[i].motor[1].stepsPerRound);
-		//		fprintf(f, str);
-
-		//		str.Format("%s<motorstepscomp2>%d</motorstepscomp2>\n", indent, conf->scanner[i].motor[1].motorStepsComp);
-		//		fprintf(f, str);
-		//	}
-
-		//	fprintf(f, TEXT("\t\t\t</motor>\n"));
-		//}
-
 		// .. Third: write the wind measurement settings, if applicable
-		bool doWindMeasurements	= (hasDoubleSpectrometer || conf->scanner[i].instrumentType == INSTR_HEIDELBERG)&& conf->scanner[i].windSettings.automaticWindMeasurements;
+		bool doWindMeasurements = (hasDoubleSpectrometer && conf->scanner[i].windSettings.automaticWindMeasurements);
 		if(doWindMeasurements){
 			indent.Format("\t\t\t\t");
 			fprintf(f, TEXT("\t\t\t<windmeasurement>\n"));
@@ -511,25 +485,7 @@ int CConfigurationFileHandler::WriteConfigurationFile(CConfigurationSetting &con
 			fprintf(f, str);
 
 			fprintf(f, TEXT("\t\t\t</windmeasurement>\n"));
-		}
-
-		// ... Write the Real-time setup changes section, if applicable
-		if(conf->scanner[i].instrumentType == INSTR_HEIDELBERG && conf->scanner[i].scSettings.automaticSetupChange){
-			indent.Format("\t\t\t\t");
-			fprintf(f, TEXT("\t\t\t<realtimesetup>\n"));
-			
-			str.Format("%s<usecalculatedplumeparam>%d</usecalculatedplumeparam>\n", (LPCSTR)indent, conf->scanner[i].scSettings.useCalculatedPlumeParameters);
-			fprintf(f, str);
-
-			str.Format("%s<mode>%d</mode>\n", (LPCSTR)indent, conf->scanner[i].scSettings.mode);
-			fprintf(f, str);
-
-			str.Format("%s<winddirtol>%.2lf</winddirtol>\n", (LPCSTR)indent, conf->scanner[i].scSettings.windDirectionTolerance);
-			fprintf(f, str);
-
-			fprintf(f, TEXT("\t\t\t</realtimesetup>\n"));
-		}
-			
+		}	
 
 		fprintf(f, TEXT("\t\t</scanningInstrument>\n"));
 
@@ -732,17 +688,6 @@ int CConfigurationFileHandler::Parse_ScanningInstrument(){
 		// the compass-direction for the scanning instrument
 		if(Equals(szToken, "instr_compass")){
 			Parse_FloatItem(TEXT("/instr_compass"), curScanner->compass);
-			continue;
-		}
-
-		// the type of the instrument
-		if(Equals(szToken, "type")){
-			Parse_IntItem(TEXT("/type"), tmpInt);
-			if(tmpInt == 0){
-				curScanner->instrumentType = INSTR_GOTHENBURG;
-			}else{
-				curScanner->instrumentType = INSTR_HEIDELBERG;
-			}
 			continue;
 		}
 

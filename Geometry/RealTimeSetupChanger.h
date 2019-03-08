@@ -12,7 +12,7 @@ namespace Geometry{
 		/** Runs through the history of the CSpectrometer and checks the settings
 				if the instrument is scanning in a good way...
 				@return true if the cfg.txt inside the instrument should be changed else return false */
-		static bool	IsTimeToChangeCfg(const Evaluation::CSpectrometer *spectrometer, double &alpha_min, double &alpha_max, double &phi, double &beta, bool &flat);
+		//static bool	IsTimeToChangeCfg(const Evaluation::CSpectrometer *spectrometer, double &alpha_min, double &alpha_max, double &phi, double &beta, bool &flat);
 
 		/** Changes the cfg.txt for the supplied spectrometer */
 		static void	ChangeCfg(const Evaluation::CSpectrometer *spec, double alpha_min, double alpha_max, double phi, double beta, bool flat);

@@ -131,7 +131,6 @@ void CConfigurationSetting::ScanningInstrumentSetting::Clear(){
 	site.Format("");
 	specNum = 0;
 	volcano.Format("");
-	instrumentType = INSTR_GOTHENBURG;
 	electronicsBox = BOX_VERSION_2;
 	for(int i = 0; i < MAX_SPECTROMETERS_PER_SCANNER; ++i)
 		spec[i].Clear();
@@ -213,8 +212,6 @@ CConfigurationSetting::ScanningInstrumentSetting &CConfigurationSetting::Scannin
 
 	specNum		= scanner2.specNum;
 	volcano.Format("%s", (LPCSTR)scanner2.volcano);
-
-	instrumentType = scanner2.instrumentType;
 
 	windSettings	= scanner2.windSettings;
 	scSettings		= scanner2.scSettings;

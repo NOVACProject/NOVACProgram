@@ -83,9 +83,6 @@ void UpdateMessage(const CString &message);
 // defining if a function has failed or succeeded
 enum RETURN_CODE { FAIL, SUCCESS };
 
-// The list of instrument types available
-const enum INSTRUMENT_TYPE {INSTR_GOTHENBURG, INSTR_HEIDELBERG};
-
 // The list of electronics boxes available
 const enum ELECTRONICS_BOX {BOX_VERSION_1, BOX_VERSION_2};
 
@@ -537,7 +534,7 @@ public:
 	
 	/** Calculates the flux using the supplied data. Automatically decides which
 			algorithm to use based on the given cone angle. */
-	static double CalculateFlux(const double *scanAngle, const double *scanAngle2, const double *column, double offset, int nDataPoints, const CWindField &wind, double compass, double gasFactor, INSTRUMENT_TYPE type, double coneAngle = 90.0, double tilt = 0.0);
+	static double CalculateFlux(const double *scanAngle, const double *scanAngle2, const double *column, double offset, int nDataPoints, const CWindField &wind, double compass, double gasFactor, double coneAngle = 90.0, double tilt = 0.0);
 
 
 	// ---------------------------- MISC ----------------------------------

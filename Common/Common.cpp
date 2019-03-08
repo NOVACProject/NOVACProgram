@@ -946,27 +946,16 @@ double Common::GetGasFactor(const CString &specie)
 	return -1;
 }
 
-double Common::CalculateFlux(const double *scanAngle, const double *scanAngle2, const double *column, double offset, int nDataPoints, const CWindField &wind, double compass, double gasFactor, INSTRUMENT_TYPE type, double coneAngle, double tilt)
+double Common::CalculateFlux(const double *scanAngle, const double *scanAngle2, const double *column, double offset, int nDataPoints, const CWindField &wind, double compass, double gasFactor, double coneAngle, double tilt)
 {
     double windSpeed = wind.GetWindSpeed();
     double windDirection = wind.GetWindDirection();
     double plumeHeight = wind.GetPlumeHeight();
 
-    if (type == INSTR_HEIDELBERG)
-    {
-        return CalculateFluxHeidelbergScanner(scanAngle, scanAngle2, column, offset, nDataPoints, windSpeed, windDirection, plumeHeight, compass);
-    }
-    else if (type == INSTR_GOTHENBURG)
-    {
-        if (fabs(coneAngle - 90.0) < 1.0)
-            return CalculateFluxFlatScanner(scanAngle, column, offset, nDataPoints, windSpeed, windDirection, plumeHeight, compass);
-        else
-            return CalculateFluxConicalScanner(scanAngle, column, offset, nDataPoints, windSpeed, windDirection, plumeHeight, compass, coneAngle, tilt);
-    }
-    else
-    {
-        return 0.0; // unsupported instrument-type
-    }
+	if (fabs(coneAngle - 90.0) < 1.0)
+		return CalculateFluxFlatScanner(scanAngle, column, offset, nDataPoints, windSpeed, windDirection, plumeHeight, compass);
+	else
+		return CalculateFluxConicalScanner(scanAngle, column, offset, nDataPoints, windSpeed, windDirection, plumeHeight, compass, coneAngle, tilt);
 }
 
 

@@ -120,9 +120,6 @@ void CPostFluxDlg::DoDataExchange(CDataExchange* pDX)
 
 	// The user's selection of the cone-angle
 	DDX_Control(pDX, IDC_PF_CONEANGLE,					m_coneangleCombo);
-
-	// The user's selection of the instrument-type
-	//DDX_Control(pDX, IDC_PF_INSTRUMENTTYPE,				m_instrumentTypeCombo);
 }
 
 
@@ -140,9 +137,6 @@ BEGIN_MESSAGE_MAP(CPostFluxDlg, CDialog)
 
 	// Changing the cone-angle
 	ON_CBN_SELCHANGE(IDC_PF_CONEANGLE,			OnChangeConeAngle)
-
-	// Changing the instrument-type
-	//ON_CBN_SELCHANGE(IDC_PF_INSTRUMENTTYPE,		OnChangeInstrumentType)
 
 	// Clicking the buttons
 	ON_BN_CLICKED(IDC_BTN_BROWSE_EVALLOG,		OnBrowseEvallog)
@@ -234,12 +228,6 @@ BOOL CPostFluxDlg::OnInitDialog()
 	m_gasCombo.AddString("NO2");
 	m_gasCombo.AddString("O3");
 	m_gasCombo.SetCurSel(0);
-
-	// Initialize the list of available instrument-types
-	//m_instrumentTypeCombo.ResetContent();
-	//m_instrumentTypeCombo.AddString("Gothenburg");
-	//m_instrumentTypeCombo.AddString("Heidelberg");
-	//m_instrumentTypeCombo.SetCurSel(0);
 
 	// Initialize the unit to use
 	if(g_userSettings.m_columnUnit == UNIT_MOLEC_CM2)
@@ -458,8 +446,6 @@ void CPostFluxDlg::DrawScan(){
 		if(scan.IsFluxMeasurement()){
 			message.Format("No Plume");
 		}else if(scan.IsWindMeasurement()){
-			if(scan.IsWindMeasurement_Heidelberg())
-				message.Format("Wind measurement");
 			if(scan.GetSkySpectrumInfo().m_channel == 0)
 				message.Format("Wind measurement - Master channel");
 			else
@@ -488,20 +474,6 @@ void CPostFluxDlg::DrawScan(){
 		}
 		SetDlgItemText(IDC_LEGEND_STARTTIME, message);
 	}
-
-	// Update the type of the instrument
-	//INSTRUMENT_TYPE type = scan.GetInstrumentType();
-	//switch(type){
-	//	case INSTR_GOTHENBURG:
-	//		m_instrumentTypeCombo.SetCurSel(0);
-	//		m_coneangleCombo.EnableWindow(TRUE); break;
-	//	case INSTR_HEIDELBERG:
-	//		m_instrumentTypeCombo.SetCurSel(1);
-	//		m_coneangleCombo.EnableWindow(FALSE); break;
-	//	default: 
-	//		m_instrumentTypeCombo.SetCurSel(0);
-	//		m_coneangleCombo.EnableWindow(TRUE); break;
-	//}
 
 	// Get the ranges for the intensites, normalize if necessary
 	double maxPeakIntensity = Max(peakIntensity, numSpec);
@@ -1014,14 +986,6 @@ void CPostFluxDlg::OnCalcFlux()
 	GetDlgItemText(IDC_PF_TILT, tilt);
 	ret = sscanf(tilt, "%f", &m_calculator->m_tilt);
 
-	// The instrument-type
-	//if(m_instrumentTypeCombo.GetCurSel() == 0)
-	//	m_calculator->m_scan[m_curScan].SetInstrumentType(INSTR_GOTHENBURG);
-	//else if(m_instrumentTypeCombo.GetCurSel() == 1)
-	//	m_calculator->m_scan[m_curScan].SetInstrumentType(INSTR_HEIDELBERG);
-	//else
-	//	m_calculator->m_scan[m_curScan].SetInstrumentType(INSTR_GOTHENBURG);
-
 	// The offset, calculate or use the users value
 	switch(m_offsetOption){
 		case OFFSET_CALCULATE:
@@ -1136,30 +1100,6 @@ void CPostFluxDlg::OnChangeConeAngle(){
 		m_editTilt.EnableWindow(TRUE);
 	}
 }
-
-//void CPostFluxDlg::OnChangeInstrumentType()
-//{
-//	// If no ev.log has been opened yet
-//	if(m_calculator == NULL)
-//		return;
-//
-//	// The instrument-type
-//	if(m_instrumentTypeCombo.GetCurSel() == 0)
-//		m_calculator->m_instrumentType = INSTR_GOTHENBURG;
-//	else if(m_instrumentTypeCombo.GetCurSel() == 1)
-//		m_calculator->m_instrumentType = INSTR_HEIDELBERG;
-//	else
-//		m_calculator->m_instrumentType = INSTR_GOTHENBURG;
-//
-//	// enabling or disabling the cone-angle
-//	switch(m_calculator->m_instrumentType){
-//		case INSTR_HEIDELBERG: 
-//			m_coneangleCombo.EnableWindow(FALSE); break;
-//		default:
-//			m_coneangleCombo.EnableWindow(TRUE); break;
-//	}
-//
-//}
 
 
 double CPostFluxDlg::Convert(double flux){
@@ -1334,14 +1274,6 @@ void CPostFluxDlg::OnCalculateFlux_AllScansInPlume()
 		m_calculator->m_coneAngle = 90.0;
 	else
 		m_calculator->m_coneAngle = m_coneAngles[m_coneangleCombo.GetCurSel()];
-
-	// The instrument-type
-	//if(m_instrumentTypeCombo.GetCurSel() == 0)
-	//	m_calculator->m_scan[m_curScan].SetInstrumentType(INSTR_GOTHENBURG);
-	//else if(m_instrumentTypeCombo.GetCurSel() == 1)
-	//	m_calculator->m_scan[m_curScan].SetInstrumentType(INSTR_HEIDELBERG);
-	//else
-	//	m_calculator->m_scan[m_curScan].SetInstrumentType(INSTR_GOTHENBURG);
 
 	for(m_curScan = 0; m_curScan < m_calculator->m_scanNum; ++m_curScan){
 

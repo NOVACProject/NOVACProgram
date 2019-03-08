@@ -126,9 +126,6 @@ namespace Evaluation
 		/** Returns true if this is a wind-speed measurement of Gothenburg type */
 		bool IsWindMeasurement_Gothenburg() const;
 
-		/** Returns true if this is a wind-speed measurement of Heidelberg type */
-		bool IsWindMeasurement_Heidelberg() const;
-
 		/** Returns true if this is a stratospheric mode measurement */
 		bool IsStratosphereMeasurement() const;
 
@@ -371,12 +368,6 @@ namespace Evaluation
 		/** returns the specie name */
 		const std::string GetSpecieName(unsigned long spectrumNum, unsigned long specieNum) const;
 
-		/** Sets the type of the instrument used */
-		void SetInstrumentType(INSTRUMENT_TYPE type);
-
-		/** Returns the type of the instrument used */
-		INSTRUMENT_TYPE GetInstrumentType() const;
-
 		/** Assignment operator */
 		CScanResult &operator=(const CScanResult &s2);
 
@@ -436,9 +427,6 @@ namespace Evaluation
 
 		/** The number of evaluations */
 		unsigned long m_specNum = 0;
-
-		/** The type of the instrument used for this scan */
-		INSTRUMENT_TYPE m_instrumentType;
 	
 		/** Flag to signal if this is a wind measurement, a scan, or something else. */
 		MEASUREMENT_MODE m_measurementMode;
