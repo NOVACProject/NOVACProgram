@@ -519,19 +519,6 @@ MEASUREMENT_MODE CPakFileHandler::GetMeasurementMode(const CString &fileName){
 		@return false - if the file does not contain spectra, 
 				or contains spectra which are not collected in a wind speed measurement mode. */
 bool CPakFileHandler::IsWindSpeedMeasurement(const CString &fileName){
-	if(IsWindSpeedMeasurement_Gothenburg(fileName))
-		return true;
-	if(IsWindSpeedMeasurement_Heidelberg(fileName))
-		return true;
-
-	// not a wind-speed measurement file
-	return false;
-}
-/** This function checks the contents of the file 'fileName'.
-		@return true - if the spectra are collected in a wind speed measurement mode. 
-		@return false - if the file does not contain spectra, 
-				or contains spectra which are not collected in a wind speed measurement mode. */
-bool CPakFileHandler::IsWindSpeedMeasurement_Gothenburg(const CString &fileName){
 	SpectrumIO::CSpectrumIO reader;
 	double scanAngle = 0, scanAngle2 = 0;
 	CSpectrum spectrum;
@@ -566,10 +553,7 @@ bool CPakFileHandler::IsWindSpeedMeasurement_Gothenburg(const CString &fileName)
 
 		- For a Gothenburg-type of instrument, a measurement is considered
 			to be a wind-speed measurement if there are more than 50
-			repetitions at a single scan-angle. 
-		- For a Heidelberg-type of instrument, a measurement is considered
-			to be a wind-speed measurement if there are more than 50 
-			repetitions of two scan-angles */
+			repetitions at a single scan-angle.  */
 
 	// 3. Go through the file, starting at the last spectrum in the file.
 	if(SUCCESS != reader.ReadSpectrum(fileNameStr, numSpec-3, spectrum))
@@ -586,73 +570,6 @@ bool CPakFileHandler::IsWindSpeedMeasurement_Gothenburg(const CString &fileName)
 		//	then increase the number of repetitions.
 		if((fabs(scanAngle - spectrum.ScanAngle()) < 1e-2) && (fabs(scanAngle2 - spectrum.ScanAngle2()) < 1e-2)){
 			++nRepetitions;
-		}else{
-			break;
-		}
-
-		if(nRepetitions >= 50)
-			return true;
-	}
-
-	// IF THERE ARE MORE THAN 50 REPETITIONS IN ONE SINGLE SCAN ANGLE
-	//	THEN WE CONSIDER THIS MEASUREMENT TO BE A WINDSPEED MEASUREMENT
-	if(nRepetitions >= 50)
-		return true;
-
-	return false;
-}
-/** This function checks the contents of the file 'fileName'.
-	@return true - if the spectra are collected in a wind speed measurement mode. 
-	@return false - if the file does not contain spectra, 
-			or contains spectra which are not collected in a wind speed measurement mode. */
-bool CPakFileHandler::IsWindSpeedMeasurement_Heidelberg(const CString &fileName){
-	SpectrumIO::CSpectrumIO reader;
-	double scanAngles[2]	= {0, 0};
-	double scanAngles2[2]	= {0, 0};
-	int		 scanIndex			= 0;
-	CSpectrum spectrum;
-	int nRepetitions = 0; // <-- The number of repetitions at one specific scan angle
-
-	// 1. Count the number of spectra
-    const std::string fileNameStr((LPCSTR)fileName);
-	int numSpec = reader.CountSpectra(fileNameStr);
-	if(numSpec <= 2)
-		return false; // <-- If file is not readable/empty/contains only a few spectra then return false.
-
-	/* In a windspeed measurement we expect to have one/several sky+dark spectra
-		and then a long series of measurements at one single scan angle. 
-
-		- For a Gothenburg-type of instrument, a measurement is considered
-			to be a wind-speed measurement if there are more than 50
-			repetitions at a single scan-angle. NOTE! this must be separated
-			from stratospheric measurements...
-		- For a Heidelberg-type of instrument, a measurement is considered
-			to be a wind-speed measurement if there are more than 50 
-			repetitions of two scan-angles */
-
-	// 2. Go through the file, starting at the last spectrum in the file.
-	if(SUCCESS != reader.ReadSpectrum(fileNameStr, numSpec-3, spectrum))
-		return false;
-	scanAngles[0]				= spectrum.ScanAngle();
-	scanAngles2[0]			= spectrum.ScanAngle2();
-
-	if(SUCCESS != reader.ReadSpectrum(fileNameStr, numSpec-4, spectrum))
-		return false;
-	scanAngles[1]				= spectrum.ScanAngle();
-	scanAngles2[1]			= spectrum.ScanAngle2();
-
-	for(int specIndex = numSpec-5; specIndex > 0; --specIndex){
-		if(SUCCESS != reader.ReadSpectrum(fileNameStr, specIndex, spectrum)){
-			// failed to read the spectrum
-			break;
-		}
-		// if this is the same scan angle as in the last spectrum, 
-		//	then increase the number of repetitions.
-		if(fabs(scanAngles[scanIndex] - spectrum.ScanAngle()) < 1e-2){
-			if(fabs(scanAngles2[scanIndex] - spectrum.ScanAngle2()) < 1e-2){
-				++nRepetitions;
-				scanIndex	= (scanIndex + 1) % 2;
-			}
 		}else{
 			break;
 		}

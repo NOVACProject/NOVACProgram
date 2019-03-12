@@ -41,9 +41,6 @@ namespace ReEvaluation
 		/** The electronic combo-box */
 		CComboBox m_electronicCombo;
 
-		/** The instrument-type combo-box */
-		//CComboBox m_instrumentTypeCombo;
-
 		/** The frame for defining the size of the reference file control */ 
 		CStatic m_referenceFrame;
 
@@ -78,9 +75,6 @@ namespace ReEvaluation
 
 		/** Called when the user has changed the selected fit window */
 		afx_msg void OnChangeFitWindow();
-
-		/** Called when the user has changed the instrument type */
-		afx_msg void OnChangeInstrumentType();
 
 		/** Called when the user wants to insert a new reference file */
 		afx_msg void OnInsertReference();

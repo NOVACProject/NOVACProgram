@@ -83,9 +83,6 @@ namespace ReEvaluation
 		long					m_skyIndex;
 		CString				m_skySpectrum;
 
-		/** The type of the instrument that we're currently evaluating for */
-		INSTRUMENT_TYPE m_instrumentType;
-
 		/** The settings for how to handle the dark-measurements */
         Configuration::CDarkSettings	m_darkSettings;
 

@@ -35,7 +35,6 @@ CScanResult::CScanResult(void)
     m_plumeEdge[1] = -999.0;
     m_plumeCompleteness = -999.0;
     m_measurementMode = MODE_UNKNOWN;
-    m_instrumentType = INSTR_GOTHENBURG;
 }
 
 CScanResult::CScanResult(const CScanResult& other)
@@ -68,7 +67,6 @@ CScanResult::CScanResult(const CScanResult& other)
     this->m_darkCurSpecInfo = other.m_darkCurSpecInfo;
 
     this->m_measurementMode = other.m_measurementMode;
-    this->m_instrumentType = other.m_instrumentType;
 }
 
 CScanResult::~CScanResult(void)
@@ -297,7 +295,7 @@ int CScanResult::CalculateFlux(const std::string &specie, const CWindField &wind
     }
 
     // Calculate the flux
-    m_flux.m_flux = Common::CalculateFlux(scanAngle, scanAngle2, column, m_offset, nDataPoints, wind, compass, gasFactor, m_instrumentType, coneAngle, tilt);
+    m_flux.m_flux = Common::CalculateFlux(scanAngle, scanAngle2, column, m_offset, nDataPoints, wind, compass, gasFactor, coneAngle, tilt);
     m_flux.m_windDirection = wind.GetWindDirection();
     m_flux.m_windDirectionSource = wind.GetWindDirectionSource();
     m_flux.m_windSpeed = wind.GetWindSpeed();
@@ -586,7 +584,6 @@ CScanResult &CScanResult::operator=(const CScanResult &s2) {
     this->m_darkCurSpecInfo = s2.m_darkCurSpecInfo;
 
     this->m_measurementMode = s2.m_measurementMode;
-    this->m_instrumentType = s2.m_instrumentType;
 
     return *this;
 }
@@ -794,15 +791,6 @@ bool CScanResult::IsFluxMeasurement() {
 }
 
 bool CScanResult::IsWindMeasurement() const {
-    if (this->IsWindMeasurement_Gothenburg())
-        return true;
-    if (this->IsWindMeasurement_Heidelberg())
-        return true;
-
-    return false;
-}
-
-bool CScanResult::IsWindMeasurement_Gothenburg() const {
     double SZA, SAZ;
     CDateTime startTime;
 
@@ -838,58 +826,6 @@ bool CScanResult::IsWindMeasurement_Gothenburg() const {
             nRepetitions = 0;
             lastPos = pos;
             lastPos2 = pos2;
-        }
-
-        if (nRepetitions > 50) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-bool CScanResult::IsWindMeasurement_Heidelberg() const {
-    double SAZ, SZA;
-    CDateTime startTime;
-
-    // Check so that the measurement is long enough
-    if (m_specNum < 52)
-        return false;
-
-    // Check if we've already checked the mode
-    if (m_measurementMode == MODE_WINDSPEED)
-        return true;
-
-    // Check if the channel-number is equal to 0
-    if (m_specInfo[0].m_channel > 0)
-        return false;
-
-    // If the measurement started at a time when the Solar Zenith Angle 
-    //	was larger than 75 degrees then it is not a wind-speed measurement
-    this->GetStartTime(0, startTime);
-    if (SUCCESS != Common::GetSunPosition(startTime, GetLatitude(), GetLongitude(), SZA, SAZ))
-        return false; // error
-    if (fabs(SZA) >= 75.0)
-        return false;
-
-    // Check if this is a wind-measurement in the Heidelberg method...
-    int nRepetitions = 0; // <-- the number of repetitions in one position
-    float scanAngle[2] = { GetScanAngle(3), GetScanAngle(4) };
-    float scanAngle2[2] = { GetScanAngle2(3),GetScanAngle2(4) };
-    int		scanIndex = 0;
-
-    // It is here assumed that the measurement is a wind speed measurement
-    //	if there are more then 50 repetitions in one measurement positon
-    for (unsigned long k = 5; k < m_specNum; ++k) {
-        float pos = GetScanAngle(k);
-        float pos2 = GetScanAngle2(k);
-
-        if ((fabs(pos - scanAngle[scanIndex]) < 1e-2) && (fabs(pos2 - scanAngle2[scanIndex]) < 1e-2)) {
-            ++nRepetitions;
-            scanIndex = (scanIndex + 1) % 2;
-        }
-        else {
-            return false;
         }
 
         if (nRepetitions > 50) {
@@ -998,16 +934,6 @@ bool CScanResult::GetStopTime(unsigned long index, CDateTime &t) const {
     t.day = (unsigned char)m_specInfo[index].m_startTime.day;
 
     return true;
-}
-
-/** Sets the type of the instrument used */
-void CScanResult::SetInstrumentType(INSTRUMENT_TYPE type) {
-    this->m_instrumentType = type;
-}
-
-/** Sets the type of the instrument used */
-INSTRUMENT_TYPE CScanResult::GetInstrumentType() const {
-    return this->m_instrumentType;
 }
 
 /** Getting the estimated geometrical error */

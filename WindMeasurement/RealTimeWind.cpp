@@ -65,7 +65,7 @@ bool CRealTimeWind::IsTimeForWindMeasurement(const Evaluation::CSpectrometer *sp
 			isMultiChannelSpec = true;
         }
 	}
-	if(!isMultiChannelSpec && spectrometer->m_scanner.instrumentType != INSTR_HEIDELBERG) {
+	if(!isMultiChannelSpec) {
 		return false;
     }
 	if(spectrometer->m_history == NULL) {
@@ -162,7 +162,7 @@ bool CRealTimeWind::IsTimeForWindMeasurement(const Evaluation::CSpectrometer *sp
 	// 2i. Check so that the average exposure-time over the last few scans is not
 	//			too large. This to ensure that we can measure fast enough
 	double expTime = spectrometer->m_history->GetExposureTime(windSettings->stablePeriod);
-	if(expTime < 0 || (expTime > 600 && spectrometer->m_scanner.instrumentType == INSTR_GOTHENBURG)){
+	if(expTime < 0 || expTime > 600){
 		FILE *f = fopen(debugFile, "a+");
 		if(f != NULL){ 
 			fprintf(f, "%s\t No measurement: Too long exposure times\n", (LPCTSTR)timeStr);
@@ -239,147 +239,55 @@ void CRealTimeWind::StartWindSpeedMeasurement(const Evaluation::CSpectrometer *s
 	common.GetDateTimeText(dateTime);
 	fprintf(f, "%%-------------Modified at %s------------\n\n", (LPCTSTR)dateTime);
 
-	if(spec->m_scanner.instrumentType == INSTR_GOTHENBURG){
+	// 3c. Write the Spectrum transfer information
+	fprintf(f, "%% The following channels defines which channels in the spectra that will be transferred\n");
+	fprintf(f, "STARTCHN=0\n");
+	fprintf(f, "STOPCHN=684\n\n");
 
-		// 3c. Write the Spectrum transfer information
-		fprintf(f, "%% The following channels defines which channels in the spectra that will be transferred\n");
-		fprintf(f, "STARTCHN=0\n");
-		fprintf(f, "STOPCHN=684\n\n");
+	// 3d. Don't use real-time collection
+	fprintf(f, "%% If Realtime=1 then the spectra will be added to work.pak one at a time.\n");
+	fprintf(f, "%% If RealTime=0 then the spectra will be added to work.pak one scan at a time\n");
+	fprintf(f, "REALTIME=0\n\n");
 
-		// 3d. Don't use real-time collection
-		fprintf(f, "%% If Realtime=1 then the spectra will be added to work.pak one at a time.\n");
-		fprintf(f, "%% If RealTime=0 then the spectra will be added to work.pak one scan at a time\n");
-		fprintf(f, "REALTIME=0\n\n");
+	// 3e. Write the motor information
+	fprintf(f, "%% StepsPerRound defines the number of steps the steppermotor divides one round into\n");
+	fprintf(f, "STEPSPERROUND=%d\n",	stepsPerRound);
+	fprintf(f, "MOTORSTEPCOMP=%d\n",	spec->m_scanner.motor[0].motorStepsComp);
+	fprintf(f, "%% If Skipmotor=1 then the scanner will not be used. ONLY FOR TESTING PURPOSES\n");
+	fprintf(f, "SKIPMOTOR=0\n");
+	if(spec->m_scanner.coneAngle == 90.0)
+		fprintf(f, "DELAY=%d\n\n",				 200);
+	else
+		fprintf(f, "DELAY=%d\n\n",				 400);
 
-		// 3e. Write the motor information
-		fprintf(f, "%% StepsPerRound defines the number of steps the steppermotor divides one round into\n");
-		fprintf(f, "STEPSPERROUND=%d\n",	stepsPerRound);
-		fprintf(f, "MOTORSTEPCOMP=%d\n",	spec->m_scanner.motor[0].motorStepsComp);
-		fprintf(f, "%% If Skipmotor=1 then the scanner will not be used. ONLY FOR TESTING PURPOSES\n");
-		fprintf(f, "SKIPMOTOR=0\n");
-		if(spec->m_scanner.coneAngle == 90.0)
-			fprintf(f, "DELAY=%d\n\n",				 200);
-		else
-			fprintf(f, "DELAY=%d\n\n",				 400);
+	// 3f. Write the geometry (compass, tilt...)
+	fprintf(f, "%% The geometry: compassDirection  tiltX(=roll)  tiltY(=pitch)  temperature\n");
+	fprintf(f, "COMPASS=%.1lf 0.0 0.0\n\n", spec->m_scanner.compass);
 
-		// 3f. Write the geometry (compass, tilt...)
-		fprintf(f, "%% The geometry: compassDirection  tiltX(=roll)  tiltY(=pitch)  temperature\n");
-		fprintf(f, "COMPASS=%.1lf 0.0 0.0\n\n", spec->m_scanner.compass);
+	// 3g. Write other things
+	fprintf(f, "%% Percent defines how big part of the spectrometers dynamic range we want to use\n");
+	fprintf(f,  "PERCENT=%.2lf\n\n",			0.8);
+	fprintf(f, "%% The maximum integration time that we allow the spectrometer to use. In milli seconds\n");
+	fprintf(f,	"MAXINTTIME=%.0lf\n\n",		maxExpTime);
+	fprintf(f, "%% The pixel where we want to measure the intensity of the spectra \n");
+	fprintf(f,	"CHANNEL=670\n\n");
+	fprintf(f, "%% The debug-level, the higher number the more output will be created\n");
+	fprintf(f,  "DEBUG=1\n\n");
 
-		// 3g. Write other things
-		fprintf(f, "%% Percent defines how big part of the spectrometers dynamic range we want to use\n");
-		fprintf(f,  "PERCENT=%.2lf\n\n",			0.8);
-		fprintf(f, "%% The maximum integration time that we allow the spectrometer to use. In milli seconds\n");
-		fprintf(f,	"MAXINTTIME=%.0lf\n\n",		maxExpTime);
-		fprintf(f, "%% The pixel where we want to measure the intensity of the spectra \n");
-		fprintf(f,	"CHANNEL=670\n\n");
-		fprintf(f, "%% The debug-level, the higher number the more output will be created\n");
-		fprintf(f,  "DEBUG=1\n\n");
+	// 3h. Write the measurement information
+	fprintf(f, "%% sum1 is inside the specrometer [1 to 15]\n%%-----pos----time-sum1-sum2--chn--basename----- repetitions\n");
 
-		// 3h. Write the measurement information
-		fprintf(f, "%% sum1 is inside the specrometer [1 to 15]\n%%-----pos----time-sum1-sum2--chn--basename----- repetitions\n");
+	// 3i. The sky-measurement
+	fprintf(f, "MEAS=%d -1 15 1 257 sky 1 0\n", motorPosition);
 
-		// 3i. The sky-measurement
-		fprintf(f, "MEAS=%d -1 15 1 257 sky 1 0\n", motorPosition);
-
-		// 3j. The dark-measurement
-		fprintf(f, "MEAS=100 0 15 1 257 dark 1 0\n");
+	// 3j. The dark-measurement
+	fprintf(f, "MEAS=100 0 15 1 257 dark 1 0\n");
 		
-		// 3k. The actual measurement
-		fprintf(f, "MEAS=%d 0 %d 1 257 wind %d 0\n", motorPosition, sum1, repetitions);
+	// 3k. The actual measurement
+	fprintf(f, "MEAS=%d 0 %d 1 257 wind %d 0\n", motorPosition, sum1, repetitions);
 
-		// 3l. Another dark-measurement
-		fprintf(f, "MEAS=100 0 15 1 257 dark 1 0\n");
-
-	}else{
-		// Heidelberg instrument!
-
-		double alpha_center_of_mass = spec->m_history->GetPlumeCentre(stablePeriod, 0);
-		double phi_center_of_mass		= spec->m_history->GetPlumeCentre(stablePeriod, 1);
-
-		//alpha_2 and phi_2 define the second direction for the wind speed measurement
-		double alpha_2=0;		
-		double phi_2=0;
-		//they are calculated by the following function:
-		wind_measurement_calculation (windField.GetPlumeHeight(), windField.GetWindDirection(), alpha_center_of_mass, phi_center_of_mass, spec->m_scanner.windSettings.desiredAngle, alpha_2, phi_2, int (round(spec->m_scanner.motor[1].motorStepsComp)), abs (int(spec->m_scanner.motor[1].stepsPerRound)), spec->m_scanner.windSettings);
-		
-		int stepsPerRound1			=	abs (int(spec->m_scanner.motor[0].stepsPerRound));
-		int stepsPerRound2			=	abs (int(spec->m_scanner.motor[1].stepsPerRound));
-		double stepsPerDegree1		=	stepsPerRound1/360.0;
-		double stepsPerDegree2		=	stepsPerRound2/360.0;
-
-		int first_motorPosition1	=	int (round(stepsPerDegree1*round(alpha_center_of_mass)));
-		int first_motorPosition2	=	int (round(stepsPerDegree2*round(phi_center_of_mass)));
-		int second_motorPosition1	=	int (round(stepsPerDegree1*round(alpha_2)));
-		int second_motorPosition2	=	int (round(stepsPerDegree2*round(phi_2)));
-
-		double avgExpTime	= fabs(spec->m_history->GetExposureTime(stablePeriod));
-		int sum1			= (int)std::min(std::max(1000.0 / (avgExpTime + readOutTime), 1.0), 15.0); // <-- calculate the number of co-adds assuming 100ms to read out each spectrum
-
-		int	repetitions		= (int)(spec->m_scanner.windSettings.duration / (sum1 * (avgExpTime + readOutTime) / 1000 ));
-		repetitions			= std::max(std::min(repetitions, 800), 400);
-
-		// 4b. The instrument-type
-        std::string spectrometerType;
-		if(SUCCESS != CSpectrometerModel::ToString(spec->m_scanner.spec[0].model, spectrometerType)){
-			spectrometerType = "HR2000";
-		}
-		fprintf (f, "SPECTROMETERTYPE=%s\n\n", spectrometerType.c_str());  //can spectrometertype be retrieved automatically from configuration?
-
-		// 3c. Write the Spectrum transfer information
-		fprintf(f, "%% STARTCHN and STOPCHN define which channels in the spectra will be transferred\n");
-		fprintf(f, "STARTCHN=0\n");
-		fprintf(f, "STOPCHN=2047\n\n");
-
-		// 3d. Don't use real-time collection
-		fprintf(f, "%% If Realtime=1 then the spectra will be added to work.pak one at a time.\n");
-		fprintf(f, "%% If RealTime=0 then the spectra will be added to work.pak one scan at a time\n");
-		fprintf(f, "REALTIME=0\n\n");
-
-		// 3e. Write the motor information
-		fprintf(f, "%% StepsPerRound defines the number of steps the steppermotor divides one round into\n");
-		fprintf(f, "STEPSPERROUND=%d %d\n",	-stepsPerRound1, -stepsPerRound2); //2 motors HD
-		fprintf(f, "MOTORSTEPSCOMP=%d %d\n",	int (round(spec->m_scanner.motor[0].motorStepsComp)), int (round(spec->m_scanner.motor[1].motorStepsComp))); //2 motors HD
-		fprintf(f, "%% If Skipmotor=1 then the scanner will not be used. ONLY FOR TESTING PURPOSES\n");
-		fprintf(f, "SKIPMOTOR=2\n");
-		fprintf(f, "DELAY=%d\n\n",	 2); // what is an appropriate value
-
-		// 3f. Write the geometry (compass, tilt...)
-	//	fprintf(f, "%% The geometry: compassDirection  tiltX(=roll)  tiltY(=pitch)  temperature\n");
-	//  fprintf(f, "COMPASS=%.1lf %.1lf %.1lf %.1lf \n\n", 0.0, 0.0, 0.0);
-
-		// 3g. Write other things
-		fprintf(f, "%% Percent defines how big part of the spectrometers dynamic range we want to use\n");
-		fprintf(f,  "PERCENT=%.2lf\n\n",			0.8);
-		fprintf(f, "%% The maximum integration time that we allow the spectrometer to use. In milli seconds\n");
-		fprintf(f,	"MAXINTTIME=%.0lf\n\n",		1000.0);
-		fprintf(f, "%% The pixel where we want to measure the intensity of the spectra \n");
-		fprintf(f,	"CHANNEL=-1\n\n");
-		fprintf(f, "%% The debug-level, the higher number the more output will be created\n");
-		fprintf(f,  "DEBUG=1\n\n");
-
-		// 3h. Write the measurement information
-		fprintf(f, "%% sum1 is inside the specrometer [1 to 15]\n%%--zenith----azimuth----time-sum1-sum2--chn--basename-----repetitions\n");
-
-		// 3i. The sky-measurement
-		fprintf(f, "MEAS=0 %d -1 %d 1 0 sky1 1 0\n", first_motorPosition2, sum1);
-
-		// 3j. The dark-measurement
-		fprintf(f, "MEAS=%d %d 0 %d 1 0 dark 1 0\n", int (round(180*stepsPerDegree1)), first_motorPosition2, sum1);
-		
-		// 3k. The actual measurement
-		/* These two lines are to be executed alternately. 'repetitions' gives the
-		total amount of collected spectra. Therefore each line is executed 
-		one half 'repetitions' times. (this is done using flag 8) */
-		{
-			fprintf(f, "MEAS=%d %d 0 %d 1 0 wind 1 0\n", first_motorPosition1, first_motorPosition2, sum1);
-			fprintf(f, "MEAS=%d %d 0 %d 1 0 wind %d 8\n", second_motorPosition1, second_motorPosition2, sum1, repetitions);	
-		}
-
-		// 3l. Another dark-measurement
-		fprintf(f, "MEAS=%d %d 0 %d 1 0 dark 1 0\n", int (round(180*stepsPerDegree1)), second_motorPosition2, sum1);
-
-	}
+	// 3l. Another dark-measurement
+	fprintf(f, "MEAS=100 0 15 1 257 dark 1 0\n");
 
 	// Close the file
 	fclose(f);

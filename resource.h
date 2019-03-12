@@ -481,6 +481,7 @@
 #define IDC_CHECK_PUBLISH               1117
 #define IDC_CHECK_INCLUDE_SUBDIRS       1117
 #define IDC_CHECK_ENABLE_REALTIME_CFG   1117
+#define IDC_CHECK_SINGLE_DIRECTION      1117
 #define IDC_EDIT1                       1118
 #define IDC_FTPUSER                     1118
 #define IDC_EDIT_SELECTEDPOINTS         1118
@@ -787,7 +788,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        306
+#define _APS_NEXT_RESOURCE_VALUE        307
 #define _APS_NEXT_COMMAND_VALUE         32784
 #define _APS_NEXT_CONTROL_VALUE         1344
 #define _APS_NEXT_SYMED_VALUE           104

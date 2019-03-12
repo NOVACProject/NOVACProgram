@@ -31,16 +31,12 @@ namespace FileHandler
 				evaluation log file is a wind speed measurement. */
 		bool	IsWindSpeedMeasurement(int scanNo);
 		
-		/** Returns true if the scan number 'scanNo' in the most recently read 
-				evaluation log file is a wind speed measurement of heidelberg type. */
-		bool	IsWindSpeedMeasurement_Heidelberg(int scanNo);
-
 		/** Appends the evaluation result of one spectrum to the given string. 
 				@param info - the information about the spectrum
 				@param result - the evaluation result, can be NULL
 				@param string - will on return be filled with the output line to be written to the evaluation-log.
 				@return SUCCESS - always */
-		static RETURN_CODE FormatEvaluationResult(const CSpectrumInfo *info, const Evaluation::CEvaluationResult *result, INSTRUMENT_TYPE iType, double maxIntensity, int nSpecies, CString &string);
+		static RETURN_CODE FormatEvaluationResult(const CSpectrumInfo *info, const Evaluation::CEvaluationResult *result, double maxIntensity, int nSpecies, CString &string);
 
 		// ------------------- PUBLIC DATA -------------------------
 
@@ -60,10 +56,7 @@ namespace FileHandler
 		long    m_specieNum;
 
 		/** The currently selected specie */
-		long    m_curSpecie;
-
-		/** The instrument-type for the instrument that generated the results */
-		INSTRUMENT_TYPE m_instrumentType;
+		long    m_curSpecie;;
 
 		/** The additional spectrum information of one spectrum. */
 		CSpectrumInfo m_specInfo;

@@ -842,7 +842,7 @@ int CNovacMasterProgramView::InitializeControls(){
 			m_scannerPages.Add(page);
 
 			// if this system can make wind-measurements then show the wind-overView page
-			if(g_settings.scanner[i].spec[0].channelNum == 2 || g_settings.scanner[i].instrumentType == INSTR_HEIDELBERG){
+			if(g_settings.scanner[i].spec[0].channelNum == 2 ){
 				m_showWindOverView = true;
 			}
 		}

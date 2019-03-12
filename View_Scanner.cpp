@@ -203,7 +203,6 @@ BOOL CView_Scanner::OnInitDialog()
 	m_toolTip.AddTool(&m_plumeHeight,       IDC_EDIT_PLUMEHEIGHT);
 	m_toolTip.AddTool(&m_labelPlumeHeight,	IDC_EDIT_PLUMEHEIGHT);
 	m_toolTip.AddTool(&m_setButton,         IDC_BUTTON_SET_WINDFIELD);
-	m_toolTip.AddTool(&m_columnPlot,        IDC_COLUMN_PLOT);
 	m_toolTip.AddTool(&m_fluxPlot,          IDC_FLUX_PLOT);
 	m_toolTip.AddTool(&m_infoSerial,        IDC_CONFINFO_SERIAL);
 	m_toolTip.AddTool(&m_infoCompass,       IDC_CONFINFO_COMPASS);

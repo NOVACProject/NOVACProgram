@@ -33,8 +33,6 @@ CReEvaluator::CReEvaluator(void)
 	pView = NULL;
 	m_progress = 0;
 
-	m_instrumentType = INSTR_GOTHENBURG;
-
 	m_statusMsg.Format("");
 
 	m_curScanFile = -1;
@@ -442,14 +440,6 @@ bool CReEvaluator::AppendResultToEvaluationLog(const CScanResult *result, const 
 	else
 		fprintf(f, "\tmode=plume\n");
 
-	// The type of instrument used...
-	if(m_instrumentType == INSTR_GOTHENBURG){
-		fprintf(f, "\tinstrumenttype=gothenburg\n");
-	}else if(m_instrumentType == INSTR_HEIDELBERG){
-		fprintf(f, "\tinstrumenttype=heidelberg\n");
-	}
-
-
 	// Finally, the version of the file and the version of the program
 	fprintf(f, "\tversion=2.1\n");
 	fprintf(f, "\tsoftwareversion=%d.%d\n", CVersion::majorNumber, CVersion::minorNumber);
@@ -458,13 +448,7 @@ bool CReEvaluator::AppendResultToEvaluationLog(const CScanResult *result, const 
 	fprintf(f, "</scaninformation>\n");
 
 	// Write the header
-	if(m_instrumentType == INSTR_GOTHENBURG){
-		fprintf(f, "#scanangle\t");
-	}else if(m_instrumentType == INSTR_HEIDELBERG){
-		fprintf(f, "#observationangle\tazimuth\t");
-	}
-
-	fprintf(f, "starttime\tstoptime\tname\tdelta\tchisquare\texposuretime\tnumspec\tintensity\tfitintensity\tisgoodpoint\toffset\tflag\t");
+	fprintf(f, "#scanangle\tstarttime\tstoptime\tname\tdelta\tchisquare\texposuretime\tnumspec\tintensity\tfitintensity\tisgoodpoint\toffset\tflag\t");
 	for(int i = 0; i < window.nRef; ++i){
 		name.Format("%s", window.ref[i].m_specieName.c_str());
 
@@ -488,9 +472,6 @@ bool CReEvaluator::AppendResultToEvaluationLog(const CScanResult *result, const 
 
 		// The scan angle
 		fprintf(f, "%.0f\t",					info.m_scanAngle);
-		if(m_instrumentType == INSTR_HEIDELBERG){
-			fprintf(f, "%.0f\t",				info.m_scanAngle2);
-		}
 
 		// The start time
 		fprintf(f, "%02d:%02d:%02d\t", info.m_startTime.hour, info.m_startTime.minute, info.m_startTime.second);

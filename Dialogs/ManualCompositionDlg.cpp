@@ -151,65 +151,62 @@ void CManualCompositionDlg::OnSend(){
 	common.GetDateTimeText(dateTime);
 	fprintf(f, "%% -------------Modified at %s------------\n\n", (LPCSTR)dateTime);
 
-	if(scanner && scanner->instrumentType == INSTR_GOTHENBURG){
-		// 4c. Write the Spectrum transfer information
-		fprintf(f, "%% The following channels defines which channels in the spectra that will be transferred\n");
-		fprintf(f, "STARTCHN=0\n");
-		fprintf(f, "STOPCHN=2047\n\n");
+	// 4c. Write the Spectrum transfer information
+	fprintf(f, "%% The following channels defines which channels in the spectra that will be transferred\n");
+	fprintf(f, "STARTCHN=0\n");
+	fprintf(f, "STOPCHN=2047\n\n");
 
-		// 4d. Don't use real-time collection
-		fprintf(f, "%% If Realtime=1 then the spectra will be added to work.pak one at a time.\n");
-		fprintf(f, "%% If RealTime=0 then the spectra will be added to work.pak one scan at a time\n");
-		fprintf(f, "REALTIME=0\n\n");
+	// 4d. Don't use real-time collection
+	fprintf(f, "%% If Realtime=1 then the spectra will be added to work.pak one at a time.\n");
+	fprintf(f, "%% If RealTime=0 then the spectra will be added to work.pak one scan at a time\n");
+	fprintf(f, "REALTIME=0\n\n");
 
-		// 4e. Write the motor information
-		fprintf(f, "%% StepsPerRound defines the number of steps the steppermotor divides one round into\n");
-		fprintf(f, "STEPSPERROUND=%d\n",	m_stepsPerRound[0]);
-		fprintf(f, "MOTORSTEPCOMP=%d\n",	m_motorStepsComp[0]);
-		fprintf(f, "%% If Skipmotor=1 then the scanner will not be used. ONLY FOR TESTING PURPOSES\n");
-		fprintf(f, "SKIPMOTOR=0\n");
-		fprintf(f, "DELAY=%d\n\n",				 200);
+	// 4e. Write the motor information
+	fprintf(f, "%% StepsPerRound defines the number of steps the steppermotor divides one round into\n");
+	fprintf(f, "STEPSPERROUND=%d\n",	m_stepsPerRound[0]);
+	fprintf(f, "MOTORSTEPCOMP=%d\n",	m_motorStepsComp[0]);
+	fprintf(f, "%% If Skipmotor=1 then the scanner will not be used. ONLY FOR TESTING PURPOSES\n");
+	fprintf(f, "SKIPMOTOR=0\n");
+	fprintf(f, "DELAY=%d\n\n",				 200);
 
-		// 4f. Write the geometry (compass, tilt...)
-		fprintf(f, "%% The geometry: compassDirection  tiltX(=roll)  tiltY(=pitch)  temperature\n");
-		fprintf(f, "COMPASS=%.1lf 0.0 0.0\n\n", m_compass);
+	// 4f. Write the geometry (compass, tilt...)
+	fprintf(f, "%% The geometry: compassDirection  tiltX(=roll)  tiltY(=pitch)  temperature\n");
+	fprintf(f, "COMPASS=%.1lf 0.0 0.0\n\n", m_compass);
 
-		// 4g. Write other things
-		fprintf(f, "%% Percent defines how big part of the spectrometers dynamic range we want to use\n");
-		fprintf(f,  "PERCENT=%.2lf\n\n",			0.6);
-		fprintf(f, "%% The maximum integration time that we allow the spectrometer to use. In milli seconds\n");
-		fprintf(f,	"MAXINTTIME=%.0lf\n\n",		maxExpTime);
-		fprintf(f, "%% The debug-level, the higher number the more output will be created\n");
-		fprintf(f,  "DEBUG=1\n\n");
+	// 4g. Write other things
+	fprintf(f, "%% Percent defines how big part of the spectrometers dynamic range we want to use\n");
+	fprintf(f,  "PERCENT=%.2lf\n\n",			0.6);
+	fprintf(f, "%% The maximum integration time that we allow the spectrometer to use. In milli seconds\n");
+	fprintf(f,	"MAXINTTIME=%.0lf\n\n",		maxExpTime);
+	fprintf(f, "%% The debug-level, the higher number the more output will be created\n");
+	fprintf(f,  "DEBUG=1\n\n");
 
-		// 4h. Write the measurement information
-		fprintf(f, "%% sum1 is inside the specrometer [1 to 15]\n%%-----pos----time-sum1-sum2--chn--basename----- repetitions\n");
+	// 4h. Write the measurement information
+	fprintf(f, "%% sum1 is inside the specrometer [1 to 15]\n%%-----pos----time-sum1-sum2--chn--basename----- repetitions\n");
 
-		// 4i. The offset-measurement
-		fprintf(f, "MEAS=100 3 15 100 0 offset 1 0\n");
+	// 4i. The offset-measurement
+	fprintf(f, "MEAS=100 3 15 100 0 offset 1 0\n");
 		
-		// 4j. The dark-current measurement
-		fprintf(f, "MEAS=100 10000 1 1 0 dark_cur 1 0\n");
+	// 4j. The dark-current measurement
+	fprintf(f, "MEAS=100 10000 1 1 0 dark_cur 1 0\n");
 
-		// 4k. Each of the measurements
+	// 4k. Each of the measurements
 		
-		// 4k1. The first of the measurements outside the plume...
-		alpha	= (min(m_plumeEdgeLow, m_plumeEdgeHigh) - 90) / 2;
-		fprintf(f, "MEAS=%.0lf -1 15 %d 0 sky 1 0\n", alpha / stepAngle, repetitions);
+	// 4k1. The first of the measurements outside the plume...
+	alpha	= (min(m_plumeEdgeLow, m_plumeEdgeHigh) - 90) / 2;
+	fprintf(f, "MEAS=%.0lf -1 15 %d 0 sky 1 0\n", alpha / stepAngle, repetitions);
 
-		// 3k2. The measurements inside the plume
-		alpha = m_plumeCentre - (measurementsInPlume - 1) * alphaStep / 2;
-		for(int k = 0; k < measurementsInPlume; ++k){
-			fprintf(f, "MEAS=%.0lf -1 15 %d 0 comp 1 0\n", alpha / stepAngle, repetitions);
+	// 3k2. The measurements inside the plume
+	alpha = m_plumeCentre - (measurementsInPlume - 1) * alphaStep / 2;
+	for(int k = 0; k < measurementsInPlume; ++k){
+		fprintf(f, "MEAS=%.0lf -1 15 %d 0 comp 1 0\n", alpha / stepAngle, repetitions);
 
-			alpha += alphaStep;
-		}
-
-		// 3k2. The second of the measurements outside the plume...
-		alpha	= (max(m_plumeEdgeLow, m_plumeEdgeHigh) + 90) / 2;
-		fprintf(f, "MEAS=%.0lf -1 15 %d 0 sky 1 0\n", alpha / stepAngle, repetitions);
-	}else{
+		alpha += alphaStep;
 	}
+
+	// 3k2. The second of the measurements outside the plume...
+	alpha	= (max(m_plumeEdgeLow, m_plumeEdgeHigh) + 90) / 2;
+	fprintf(f, "MEAS=%.0lf -1 15 %d 0 sky 1 0\n", alpha / stepAngle, repetitions);
 
 	// Close the file
 	fclose(f);

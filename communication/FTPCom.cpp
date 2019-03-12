@@ -69,8 +69,7 @@ int CFTPCom::Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, BOOL 
 				m_InternetSession->SetOption(INTERNET_OPTION_RECEIVE_TIMEOUT, nTimeout * 1000);
 				m_InternetSession->SetOption(INTERNET_OPTION_SEND_TIMEOUT, nTimeout * 1000);
 			
-				m_FtpConnection = m_InternetSession->GetFtpConnection(siteName,
-											userName,password,21,mode);
+				m_FtpConnection = m_InternetSession->GetFtpConnection(siteName,userName,password,21,mode);
 				m_ErrorMsg.Format("CONNECTED to FTP server: %s", siteName); 
 				ShowMessage(m_ErrorMsg);
 				return 1;
@@ -311,16 +310,20 @@ BOOL CFTPCom::EnterFolder(const CString& folder)
 	strFolder.Format("/%s/", (LPCSTR)folder);
 
 	// Compare if the returned string is the same as what we want...
+	// If a relative directory is passed into this function
+	// the Equals below will compare it agains a full path and return false.
+	// Misleading 'Can not get into folder' message displays even if the
+	// change directory was successful. Best to handle messages externally.
 	if(Equals(strDir, strFolder))
 	{
-		msg.Format("Get into folder %s", (LPCSTR)folder);
-		ShowMessage(msg);
+		//msg.Format("Get into folder %s", (LPCSTR)folder);
+		//ShowMessage(msg);
 		return TRUE;
 	}
 	else
 	{
-		msg.Format("Can not get into folder %s", (LPCSTR)folder);
-		ShowMessage(msg);
+		//msg.Format("Can not get into folder %s", (LPCSTR)folder);
+		//ShowMessage(msg);
 		return FALSE;
 	}
 }

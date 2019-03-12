@@ -58,18 +58,12 @@ void CReEval_WindowDlg::DoDataExchange(CDataExchange* pDX)
 		
 	// The 'find optimal shift' checkbox
 	DDX_Control(pDX, IDC_CHECK_FIND_OPTIMAL,								m_checkFindOptimalShift);
-
-	// The list of instrument-types
-	//DDX_Control(pDX, IDC_COMBO_INSTRUMENTTYPE,					m_instrumentTypeCombo);
 }
 
 
 BEGIN_MESSAGE_MAP(CReEval_WindowDlg, CPropertyPage)
 	// the user has selected another fit window
 	ON_LBN_SELCHANGE(IDC_FITWINDOW_LIST,				OnChangeFitWindow)
-
-	// the user has changed the type of the instrument
-	//ON_CBN_SELCHANGE(IDC_COMBO_INSTRUMENTTYPE, OnChangeInstrumentType)
 
 	// The user has pressed the 'insert' item on the reference-grid context menu
 	ON_COMMAND(ID__INSERT, OnInsertReference)
@@ -112,11 +106,6 @@ BOOL CReEval_WindowDlg::OnInitDialog()
 	m_windowList.m_reeval = this->m_reeval;
 	m_windowList.PopulateList();
 	m_windowList.SetCurSel(0);
-
-	// Initialize the types of instruments
-	//m_instrumentTypeCombo.AddString("Gothenburg");
-	//m_instrumentTypeCombo.AddString("Heidelberg");
-	//m_instrumentTypeCombo.SetCurSel(0);
 
 	// Initialize the reference grid control
 	InitReferenceFileControl();
@@ -420,19 +409,6 @@ void ReEvaluation::CReEval_WindowDlg::OnShowReferenceGraph()
 	dlg.m_window = m_reeval->m_window;
 	dlg.DoModal();
 }
-
-//void CReEval_WindowDlg::OnChangeInstrumentType(){
-//	int curType = m_instrumentTypeCombo.GetCurSel();
-//	if(curType < 0)
-//		curType = 0;
-//
-//	// Set the current type
-//	switch(curType){
-//		case 0:		m_reeval->m_instrumentType = INSTR_GOTHENBURG; break;
-//		case 1:		m_reeval->m_instrumentType = INSTR_HEIDELBERG; break;
-//		default:	m_reeval->m_instrumentType = INSTR_GOTHENBURG; break;
-//	};
-//}
 
 /** Updates the controls */
 void CReEval_WindowDlg::UpdateControls(){

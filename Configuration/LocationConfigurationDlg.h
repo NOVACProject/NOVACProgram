@@ -41,9 +41,6 @@ namespace ConfigurationDialog
 		/** The user has changed the model of the spectrometer */
 		afx_msg void OnChangeModel();
 
-		/** The user has changed the type of the instrument */
-		afx_msg void OnChangeType();
-
 		/** The user has changed the number of channels in the spectrometer */
 		afx_msg void OnChangeChannelNum();
 
@@ -76,7 +73,6 @@ namespace ConfigurationDialog
 		CComboBox	m_comboVolcano;
 		//CComboBox	m_comboObservatory;
 		CComboBox	m_comboElectronics;
-		CComboBox	m_comboInstrumentType;
 		CComboBox	m_comboSpectrometerModel;
 		CComboBox	m_comboSpectrometerChannels;
 

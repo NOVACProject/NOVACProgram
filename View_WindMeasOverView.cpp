@@ -59,7 +59,7 @@ BOOL CView_WindMeasOverView::OnInitDialog()
 	// The number of double spectrometers
 	int nSpectrometers = 0;
 	for(unsigned int index = 0; index < g_settings.scannerNum; ++index){
-		if(g_settings.scanner[index].spec[0].channelNum == 2 || g_settings.scanner[index].instrumentType == INSTR_HEIDELBERG){
+		if(g_settings.scanner[index].spec[0].channelNum == 2){
 			++nSpectrometers;
 		}
 	}
@@ -104,7 +104,7 @@ BOOL CView_WindMeasOverView::OnInitDialog()
 	// Create the legends
 	int labelNo = -1;
 	for(unsigned long index = 0; index < g_settings.scannerNum; ++index){
-		if(g_settings.scanner[index].spec[0].channelNum == 2 || g_settings.scanner[index].instrumentType == INSTR_HEIDELBERG){
+		if(g_settings.scanner[index].spec[0].channelNum == 2){
 			++labelNo;
 			// the size and position of the colored square
 			labelRect.top			= graphRect.bottom + margin / 2;

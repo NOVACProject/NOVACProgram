@@ -418,7 +418,7 @@ EXSTYLE WS_EX_CONTROLPARENT
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     GROUPBOX        "Last Downloaded Scan",IDC_STATIC_COLUMN,164,7,480,116
-    GROUPBOX        "Today's Flux",IDC_STATIC_FLUX,163,137,480,136
+    GROUPBOX        "Today's Scans",IDC_STATIC_FLUX,163,137,480,136
     LTEXT           "Evaluation status:",IDC_LABEL_EVALSTATUS,7,22,59,8,SS_NOTIFY
     CONTROL         MSG_NO_CHANGES_WILL_BE_SAVED,IDC_STATUS_LIGHT,"Static",SS_BITMAP | SS_NOTIFY,79,22,10,9
     LTEXT           "Scanner Status:",IDC_LABEL_SCANNERSTATUS,7,8,52,8,SS_NOTIFY
@@ -573,19 +573,6 @@ BEGIN
     LTEXT           "During this period, the peak-column value is at least:",IDC_STATIC,54,91,169,8
     EDITTEXT        IDC_EDIT_MINPEAKCOLUMN,224,89,48,13,ES_AUTOHSCROLL | ES_NUMBER
     LTEXT           "ppmm",IDC_STATIC,275,91,20,8
-    CONTROL         "Angle between the measurement directions:",IDC_RADIO_ANGLE1,
-                    "Button",BS_AUTORADIOBUTTON | WS_GROUP,54,122,157,10
-    CONTROL         "Desired distance along plume:",IDC_RADIO_ANGLE2,"Button",BS_AUTORADIOBUTTON,54,134,111,10
-    EDITTEXT        IDC_EDIT_ANGLE,216,121,35,12,ES_AUTOHSCROLL
-    EDITTEXT        IDC_EDIT_DISTANCE,216,133,35,12,ES_AUTOHSCROLL
-    LTEXT           "[deg]",IDC_LABEL_DEGREES,254,123,18,8
-    LTEXT           "[m]",IDC_LABEL_METERS,254,135,12,8
-    GROUPBOX        "",IDC_FRAME_DISTANCE,42,111,267,67
-    CONTROL         "Use Automatically Calculated Plume height and Wind Direction",IDC_CHECK_USE_AUTOMATIC_PLUMEPARAM2,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,54,164,213,10
-    EDITTEXT        IDC_EDIT_SWITCHRANGE,216,150,35,12,ES_AUTOHSCROLL
-    LTEXT           "[deg]",IDC_LABEL_METERS2,254,152,18,8
-    LTEXT           "Switch range:",IDC_LABEL_SWITCHRANGE,54,151,45,8
 END
 
 IDD_PAKFILES_MERGE DIALOGEX 0, 0, 427, 198
@@ -1082,6 +1069,16 @@ BEGIN
     0, 0, 0, 0
 END
 
+IDD_VIEW_SCANNERSTATUS AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_CONFIGURE_WIND AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1280,7 +1277,6 @@ BEGIN
     IDC_EDIT_WINDSPEED      "The wind speed at the selected scanning instrument (measured in m/s)."
     IDC_EDIT_PLUMEHEIGHT    "The height of the plume above the scanning instrument (in meters). "
     IDC_FLUX_PLOT           "The variation of the measured flux over time."
-    IDC_COLUMN_PLOT         "Red - The measured columns of the last scan \nWhite - The spectrum peak intensities"
     IDC_SCANNER_TREE        "Shows the scanners in the network"
     IDC_CONFINFO_SITE       "The site of the selected spectrometer. \nFrom the configuration file"
     IDC_CONFINFO_COMPASS    "The direction in which the scanner points [degrees from north]."
@@ -1825,6 +1821,78 @@ BEGIN
     LTEXT           "[deg]",IDC_STATIC,244,89,18,8
 END
 
+IDD_POSTFLUX_DLG DIALOGEX 0, 0, 548, 410
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Post Calculate Flux"
+MENU IDR_POSTFLUXDLG_MENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    EDITTEXT        IDC_EDIT_SELECTEDPOINTS,435,301,97,15,ES_AUTOHSCROLL
+    PUSHBUTTON      "Delete Selected Points",IDC_BTN_DELETEPOINTS,327,323,96,13
+    PUSHBUTTON      "Reset",IDC_BTN_RESETDELETION,485,322,47,13
+    COMBOBOX        IDC_COMBO_FLUXUNIT,485,381,45,15,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    DEFPUSHBUTTON   "&Calculate",IDC_BTN_CALC_FLUX,323,379,39,17
+    COMBOBOX        IDC_GAS_COMBO,81,295,53,13,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    EDITTEXT        IDC_PF_WINDSPEED,81,311,53,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_PF_WINDDIRECTION,81,326,53,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_PF_PLUMEHEIGHT,81,340,53,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_PF_COMPASS,81,355,53,12,ES_AUTOHSCROLL
+    COMBOBOX        IDC_PF_CONEANGLE,81,371,53,101,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Calculate Offset Automatically",IDC_RADIO_CALCULATE_OFFSET,
+                    "Button",BS_AUTORADIOBUTTON | WS_GROUP,177,383,113,10
+    CONTROL         "Calculate Offset Using:",IDC_RADIO_CALCULATEOFFSET_2,
+                    "Button",BS_AUTORADIOBUTTON,177,301,90,10
+    CONTROL         "Use this offset:",IDC_RADIO_USETHIS_OFFSET,"Button",BS_AUTORADIOBUTTON,177,365,65,10
+    EDITTEXT        IDC_EDIT_OFFSET_CHI2,248,314,37,13,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_OFFSET_INTENSITY_ABOVE,248,330,37,13,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_OFFSET_INTENSITY_BELOW,248,345,37,13,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_OFFSET,243,364,59,13,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EVALUATION_LOG_EDIT,21,17,446,15,ES_AUTOHSCROLL | WS_DISABLED
+    PUSHBUTTON      "&Browse...",IDC_BTN_BROWSE_EVALLOG,471,16,63,16
+    GROUPBOX        "Offset",IDC_STATIC,169,287,143,117
+    GROUPBOX        "Evaluation Log",IDC_STATIC,7,7,534,30
+    GROUPBOX        "Scan",IDC_SCANGRAPH_FRAME,52,69,489,191
+    GROUPBOX        "Settings",IDC_STATIC,7,286,158,117
+    LTEXT           "Wind Speed",IDC_STATIC,16,314,39,8
+    LTEXT           "[m/s]",IDC_STATIC,137,314,18,8
+    LTEXT           "Wind Direction",IDC_STATIC,16,329,47,8
+    LTEXT           "[deg]",IDC_STATIC,137,329,18,8
+    LTEXT           "Plume Height",IDC_LABEL_PLUMEHEIGHT,16,343,42,8,SS_NOTIFY
+    LTEXT           "[m]",IDC_STATIC,137,343,12,8
+    LTEXT           "[deg]",IDC_STATIC,137,358,18,8
+    LTEXT           "Scan number: out of:",IDC_STATUSBAR,52,40,155,10
+    EDITTEXT        IDC_EDIT_FLUX,398,381,77,15,ES_AUTOHSCROLL
+    GROUPBOX        "Flux",IDC_STATIC,316,368,225,35
+    CONTROL         "",IDC_SCAN_SPINBTN,"msctls_updown32",UDS_ARROWKEYS | UDS_HORZ,217,39,100,15
+    CONTROL         "",IDC_INTENSITY_SLIDER,"msctls_trackbar32",TBS_AUTOTICKS | TBS_VERT | WS_TABSTOP,7,68,20,195
+    GROUPBOX        "Deletion of bad Points",IDC_STATIC,316,285,225,57
+    LTEXT           "Selected data points \r\n(press button below to delete):",IDC_STATIC,322,301,107,18
+    LTEXT           "Flux Gas:",IDC_STATIC,17,297,31,8
+    LTEXT           "Flux:",IDC_STATIC,370,384,17,8
+    LTEXT           "Intensity",IDC_STATIC,7,55,30,8
+    LTEXT           "Intensity above",IDC_STATIC,189,332,52,8
+    LTEXT           "Intensity below",IDC_STATIC,189,347,50,8
+    LTEXT           "",IDC_LEGEND_COLUMN,64,265,8,8,WS_BORDER
+    LTEXT           "",IDC_LEGEND_PEAKINTENSITY,140,265,8,8,WS_BORDER
+    LTEXT           "Column [ppmm]",IDC_STATIC_COLUMN,75,265,50,8
+    LTEXT           "Peak Intensity",IDC_STATIC_PEAKINTENSITY,152,265,53,8
+    LTEXT           "Delta(residual)",IDC_STATIC_DELTA,420,265,91,8
+    LTEXT           "",IDC_LEGEND_DELTA,410,265,8,8,WS_BORDER
+    LTEXT           "Chi² of Fit",IDC_STATIC_CHISQUARE,319,265,81,8
+    LTEXT           "",IDC_LEGEND_CHISQUARE,307,265,8,8,WS_BORDER
+    LTEXT           "Scan started at:",IDC_LEGEND_STARTTIME,337,40,197,10
+    LTEXT           "",IDC_LEGEND_FITINTENSITY,216,265,8,8,WS_BORDER
+    LTEXT           "Fit Intensity",IDC_STATIC_FITINTENSITY,227,265,75,8
+    LTEXT           "No Plume",IDC_LABEL_PLUME_INFO,52,55,264,11
+    LTEXT           "Cone Angle",IDC_LABEL_CONEANGLE,16,374,38,8,SS_NOTIFY
+    LTEXT           "[deg]",IDC_STATIC,137,373,18,8
+    LTEXT           "Chi² >",IDC_STATIC,189,316,22,8
+    EDITTEXT        IDC_PF_TILT,81,387,53,12,ES_AUTOHSCROLL
+    LTEXT           "Tilt",IDC_LABEL_TILT,16,389,10,8
+    LTEXT           "[deg]",IDC_STATIC,137,389,18,8
+    LTEXT           "Compass Direction",IDC_LABEL_COMPASSDIRECTION,16,358,63,8,SS_NOTIFY
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1944,6 +2012,14 @@ BEGIN
         RIGHTMARGIN, 281
         TOPMARGIN, 4
         BOTTOMMARGIN, 135
+    END
+
+    IDD_POSTFLUX_DLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 541
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 403
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -2115,6 +2191,17 @@ BEGIN
 END
 
 
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_POSTFLUX_DLG AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -2187,78 +2274,6 @@ BEGIN
     GROUPBOX        "",IDC_STATIC_FRAME,7,7,579,333
 END
 
-IDD_POSTFLUX_DLG DIALOGEX 0, 0, 548, 410
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Post Calculate Flux"
-MENU IDR_POSTFLUXDLG_MENU
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
-BEGIN
-    EDITTEXT        IDC_EDIT_SELECTEDPOINTS,435,301,97,15,ES_AUTOHSCROLL
-    PUSHBUTTON      "Delete Selected Points",IDC_BTN_DELETEPOINTS,327,323,96,13
-    PUSHBUTTON      "Reset",IDC_BTN_RESETDELETION,485,322,47,13
-    COMBOBOX        IDC_COMBO_FLUXUNIT,485,381,45,15,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    DEFPUSHBUTTON   "&Calculate",IDC_BTN_CALC_FLUX,323,379,39,17
-    COMBOBOX        IDC_GAS_COMBO,81,295,53,13,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    EDITTEXT        IDC_PF_WINDSPEED,81,311,53,12,ES_AUTOHSCROLL
-    EDITTEXT        IDC_PF_WINDDIRECTION,81,326,53,12,ES_AUTOHSCROLL
-    EDITTEXT        IDC_PF_PLUMEHEIGHT,81,340,53,12,ES_AUTOHSCROLL
-    EDITTEXT        IDC_PF_COMPASS,81,355,53,12,ES_AUTOHSCROLL
-    COMBOBOX        IDC_PF_CONEANGLE,81,371,53,101,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Calculate Offset Automatically",IDC_RADIO_CALCULATE_OFFSET,
-                    "Button",BS_AUTORADIOBUTTON | WS_GROUP,177,383,113,10
-    CONTROL         "Calculate Offset Using:",IDC_RADIO_CALCULATEOFFSET_2,
-                    "Button",BS_AUTORADIOBUTTON,177,301,90,10
-    CONTROL         "Use this offset:",IDC_RADIO_USETHIS_OFFSET,"Button",BS_AUTORADIOBUTTON,177,365,65,10
-    EDITTEXT        IDC_EDIT_OFFSET_CHI2,248,314,37,13,ES_AUTOHSCROLL
-    EDITTEXT        IDC_EDIT_OFFSET_INTENSITY_ABOVE,248,330,37,13,ES_AUTOHSCROLL
-    EDITTEXT        IDC_EDIT_OFFSET_INTENSITY_BELOW,248,345,37,13,ES_AUTOHSCROLL
-    EDITTEXT        IDC_EDIT_OFFSET,243,364,59,13,ES_AUTOHSCROLL
-    EDITTEXT        IDC_EVALUATION_LOG_EDIT,21,17,446,15,ES_AUTOHSCROLL | WS_DISABLED
-    PUSHBUTTON      "&Browse...",IDC_BTN_BROWSE_EVALLOG,471,16,63,16
-    GROUPBOX        "Offset",IDC_STATIC,169,287,143,117
-    GROUPBOX        "Evaluation Log",IDC_STATIC,7,7,534,30
-    GROUPBOX        "Scan",IDC_SCANGRAPH_FRAME,52,69,489,191
-    GROUPBOX        "Settings",IDC_STATIC,7,286,158,117
-    LTEXT           "Wind Speed",IDC_STATIC,16,314,39,8
-    LTEXT           "[m/s]",IDC_STATIC,137,314,18,8
-    LTEXT           "Wind Direction",IDC_STATIC,16,329,47,8
-    LTEXT           "[deg]",IDC_STATIC,137,329,18,8
-    LTEXT           "Plume Height",IDC_LABEL_PLUMEHEIGHT,16,343,42,8,SS_NOTIFY
-    LTEXT           "[m]",IDC_STATIC,137,343,12,8
-    LTEXT           "[deg]",IDC_STATIC,137,358,18,8
-    LTEXT           "Scan number: out of:",IDC_STATUSBAR,52,40,155,10
-    EDITTEXT        IDC_EDIT_FLUX,398,381,77,15,ES_AUTOHSCROLL
-    GROUPBOX        "Flux",IDC_STATIC,316,368,225,35
-    CONTROL         "",IDC_SCAN_SPINBTN,"msctls_updown32",UDS_ARROWKEYS | UDS_HORZ,217,39,100,15
-    CONTROL         "",IDC_INTENSITY_SLIDER,"msctls_trackbar32",TBS_AUTOTICKS | TBS_VERT | WS_TABSTOP,7,68,20,195
-    GROUPBOX        "Deletion of bad Points",IDC_STATIC,316,285,225,57
-    LTEXT           "Selected data points \r\n(press button below to delete):",IDC_STATIC,322,301,107,18
-    LTEXT           "Flux Gas:",IDC_STATIC,17,297,31,8
-    LTEXT           "Flux:",IDC_STATIC,370,384,17,8
-    LTEXT           "Intensity",IDC_STATIC,7,55,30,8
-    LTEXT           "Intensity above",IDC_STATIC,189,332,52,8
-    LTEXT           "Intensity below",IDC_STATIC,189,347,50,8
-    LTEXT           "",IDC_LEGEND_COLUMN,64,265,8,8,WS_BORDER
-    LTEXT           "",IDC_LEGEND_PEAKINTENSITY,140,265,8,8,WS_BORDER
-    LTEXT           "Column [ppmm]",IDC_STATIC_COLUMN,75,265,50,8
-    LTEXT           "Peak Intensity",IDC_STATIC_PEAKINTENSITY,152,265,53,8
-    LTEXT           "Delta(residual)",IDC_STATIC_DELTA,420,265,91,8
-    LTEXT           "",IDC_LEGEND_DELTA,410,265,8,8,WS_BORDER
-    LTEXT           "Chi² of Fit",IDC_STATIC_CHISQUARE,319,265,81,8
-    LTEXT           "",IDC_LEGEND_CHISQUARE,307,265,8,8,WS_BORDER
-    LTEXT           "Scan started at:",IDC_LEGEND_STARTTIME,337,40,197,10
-    LTEXT           "",IDC_LEGEND_FITINTENSITY,216,265,8,8,WS_BORDER
-    LTEXT           "Fit Intensity",IDC_STATIC_FITINTENSITY,227,265,75,8
-    LTEXT           "No Plume",IDC_LABEL_PLUME_INFO,52,55,264,11
-    LTEXT           "Cone Angle",IDC_LABEL_CONEANGLE,16,374,38,8,SS_NOTIFY
-    LTEXT           "[deg]",IDC_STATIC,137,373,18,8
-    LTEXT           "Chi² >",IDC_STATIC,189,316,22,8
-    EDITTEXT        IDC_PF_TILT,81,387,53,12,ES_AUTOHSCROLL
-    LTEXT           "Tilt",IDC_LABEL_TILT,16,389,10,8
-    LTEXT           "[deg]",IDC_STATIC,137,389,18,8
-    LTEXT           "Compass Direction",IDC_LABEL_COMPASSDIRECTION,16,358,63,8,SS_NOTIFY
-END
-
 IDD_DATA_BROWSE_DLG DIALOGEX 0, 0, 656, 401
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Browse Data"
@@ -2302,8 +2317,6 @@ BEGIN
     LTEXT           "All fields must be filled in.",IDC_LABEL_MESSAGE,196,132,201,48
     EDITTEXT        IDC_EDIT_SITE,59,31,107,12,ES_AUTOHSCROLL
     GROUPBOX        "Instrument",IDC_STATIC,7,76,165,47
-    LTEXT           "Type",IDC_STATIC,15,104,17,8,NOT WS_VISIBLE
-    COMBOBOX        IDC_COMBO_INSTRUMENTTYPE,65,102,101,158,CBS_DROPDOWNLIST | NOT WS_VISIBLE | WS_VSCROLL | WS_TABSTOP
     GROUPBOX        "Motor",IDC_STATIC,181,76,147,46,NOT WS_VISIBLE
     LTEXT           "MotorStepsComp:",IDC_STATIC,189,88,57,10,NOT WS_VISIBLE
     EDITTEXT        IDC_EDIT_MOTORSTEPSCOMPENSATION1,251,87,33,13,ES_AUTOHSCROLL | NOT WS_VISIBLE
@@ -2314,6 +2327,8 @@ BEGIN
     EDITTEXT        IDC_EDIT_OBSERVATORY,59,47,107,12,ES_AUTOHSCROLL
     LTEXT           "Electronics",IDC_STATIC,15,88,35,8
     COMBOBOX        IDC_COMBO_ELECTRONICS,65,86,101,158,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Single Direction Scan Mode",IDC_CHECK_SINGLE_DIRECTION,
+                    "Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,16,104,101,10
 END
 
 
@@ -2331,14 +2346,6 @@ BEGIN
         RIGHTMARGIN, 586
         TOPMARGIN, 7
         BOTTOMMARGIN, 359
-    END
-
-    IDD_POSTFLUX_DLG, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 541
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 403
     END
 
     IDD_DATA_BROWSE_DLG, DIALOG
@@ -2388,11 +2395,6 @@ END
 //
 
 IDD_CONFIGURE_LOCATION AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_POSTFLUX_DLG AFX_DIALOG_LAYOUT
 BEGIN
     0
 END
@@ -2869,7 +2871,6 @@ BEGIN
     IDC_EDIT_WINDSPEED      "La velocidad de viento sobre el instrumento de escaneo (medida en m/s)."
     IDC_EDIT_PLUMEHEIGHT    "La altura de la pluma sobre el instrumento de escaneo (en metros)"
     IDC_FLUX_PLOT           "Muestra el cálculo de flujo"
-    IDC_COLUMN_PLOT         "Rojo - Las columnas de gas cuantificadas en el último escaneo \nBlanco- La intensidad más alta en los espectros  \nAmarillo- La intensidad más alta en los límites de evaluación"
     IDC_SCANNER_TREE        "Muestra los instrumentos que forman parte de la red"
     IDC_CONFINFO_SITE       "La ubicación del espectrómetro seleccionado, definido en el archivo de configuración"
     IDC_CONFINFO_COMPASS    "La dirección a la cual el escaner está apuntando [grados a partir del Norte]."

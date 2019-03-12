@@ -39,8 +39,6 @@ CEvaluationLogFileHandler::CEvaluationLogFileHandler(void)
         m_col.squeeze[i] = 11;
         m_col.squeezeError[i] = 12;
     }
-
-    m_instrumentType = INSTR_GOTHENBURG;
     m_scanNum = 0;
     m_scan.SetSize(ORIGINAL_ARRAY_LENGTH);
     m_windField.SetSize(ORIGINAL_ARRAY_LENGTH);
@@ -585,7 +583,6 @@ RETURN_CODE CEvaluationLogFileHandler::ReadEvaluationLog() {
             else {
                 m_scan[sortOrder[m_scanNum]].AppendResult(m_evResult, m_specInfo);
                 m_scan[sortOrder[m_scanNum]].SetFlux(flux);
-                m_scan[sortOrder[m_scanNum]].SetInstrumentType(m_instrumentType);
             }
 
             double dynamicRange = 1.0; // <-- unknown
@@ -909,16 +906,6 @@ void CEvaluationLogFileHandler::ParseScanInformation(CSpectrumInfo &scanInfo, do
             int ret = sscanf(pt + 12, "%f", &scanInfo.m_temperature);
         }
 
-        if (pt = strstr(szLine, "instrumenttype=")) {
-            m_instrumentType = INSTR_GOTHENBURG;
-            char instrumentType[64];
-            if (sscanf(pt + 15, "%s", instrumentType) == 1) {
-                instrumentType[0] = '\0';
-                if (Equals(instrumentType, "heidelberg")) { // heidelberg no longer supported as of 6.0
-                    m_instrumentType = INSTR_HEIDELBERG;
-                }
-            }
-        }
     }
 }
 
@@ -1060,16 +1047,6 @@ bool	CEvaluationLogFileHandler::IsWindSpeedMeasurement(int scanNo) {
         return false;
 
     return m_scan[scanNo].IsWindMeasurement();
-}
-
-/** Returns true if the scan number 'scanNo' in the most recently read
-        evaluation log file is a wind speed measurement of heidelberg type. */
-bool	CEvaluationLogFileHandler::IsWindSpeedMeasurement_Heidelberg(int scanNo) {
-    // check so that there are some scans read, and that the scan index is ok
-    if (m_scanNum < 1 || scanNo > m_scanNum || scanNo < 0)
-        return false;
-
-    return m_scan[scanNo].IsWindMeasurement_Heidelberg();
 }
 
 /** Sorts the scans in order of collection */
@@ -1227,13 +1204,6 @@ RETURN_CODE CEvaluationLogFileHandler::WriteEvaluationLog(const CString fileName
         else
             string.AppendFormat("\tmode=plume\n");
 
-        // The type of instrument used...
-        if (scan.GetInstrumentType() == INSTR_GOTHENBURG) {
-            string.AppendFormat("\tinstrumenttype=gothenburg\n");
-        }
-        else if (scan.GetInstrumentType() == INSTR_HEIDELBERG) {
-            string.AppendFormat("\tinstrumenttype=heidelberg\n");
-        }
         double maxIntensity = CSpectrometerModel::GetMaxIntensity(m_specInfo.m_specModel);
 
         // Finally, the version of the file and the version of the program
@@ -1264,13 +1234,7 @@ RETURN_CODE CEvaluationLogFileHandler::WriteEvaluationLog(const CString fileName
         fprintf(f, string);
 
         // ----------------------- write the header --------------------------------
-        if (m_instrumentType == INSTR_GOTHENBURG) {
-            string.Format("#scanangle\t");
-        }
-        else if (m_instrumentType == INSTR_HEIDELBERG) {
-            string.Format("#observationangle\tazimuth\t");
-        }
-        string.AppendFormat("starttime\tstoptime\tname\tspecsaturation\tfitsaturation\tdelta\tchisquare\texposuretime\tnumspec\t");
+		string.Format("#scanangle\tstarttime\tstoptime\tname\tspecsaturation\tfitsaturation\tdelta\tchisquare\texposuretime\tnumspec\t");
 
         for (int itSpecie = 0; itSpecie < scan.GetSpecieNum(0); ++itSpecie) {
             specieName.Format("%s", scan.GetSpecieName(0, itSpecie).c_str());
@@ -1290,7 +1254,7 @@ RETURN_CODE CEvaluationLogFileHandler::WriteEvaluationLog(const CString fileName
             Evaluation::CEvaluationResult result;
             scan.GetResult(itSpectrum, result);
 
-            FormatEvaluationResult(&scan.GetSpectrumInfo(itSpectrum), &result, m_instrumentType, 0.0, scan.GetSpecieNum(itSpectrum), string);
+            FormatEvaluationResult(&scan.GetSpectrumInfo(itSpectrum), &result, 0.0, scan.GetSpecieNum(itSpectrum), string);
 
             // 3b. Write it to the evaluation log file
             fprintf(f, string);
@@ -1308,16 +1272,12 @@ RETURN_CODE CEvaluationLogFileHandler::WriteEvaluationLog(const CString fileName
     return SUCCESS;
 }
 
-RETURN_CODE CEvaluationLogFileHandler::FormatEvaluationResult(const CSpectrumInfo *info, const Evaluation::CEvaluationResult *result, INSTRUMENT_TYPE iType, double maxIntensity, int nSpecies, CString &string) {
+RETURN_CODE CEvaluationLogFileHandler::FormatEvaluationResult(const CSpectrumInfo *info, const Evaluation::CEvaluationResult *result, double maxIntensity, int nSpecies, CString &string) {
     int itSpecie;
     Common common;
 
     // 1. The Scan angle
     string.Format("%.0lf\t", info->m_scanAngle);
-
-    // 2. The azimuth angle
-    if (iType == INSTR_HEIDELBERG)
-        string.AppendFormat("%.0lf\t", info->m_scanAngle2);
 
     // 3. The start time
     string.AppendFormat("%02d:%02d:%02d\t", info->m_startTime.hour, info->m_startTime.minute, info->m_startTime.second);

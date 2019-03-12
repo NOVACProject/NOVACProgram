@@ -186,7 +186,6 @@ void CScannerConfiguration::OnScannerSelectionChange(NMHDR* pNMHDR, LRESULT* pRe
 }
 void CScannerConfiguration::OnChangeScanner(){
 	int nChannels;
-	INSTRUMENT_TYPE type;
 
 	// Get the currently selected spectrometer and scanning instrument
 
@@ -210,9 +209,6 @@ void CScannerConfiguration::OnChangeScanner(){
 		return;
 	}
 
-	// Get the instrument type
-	type = m_configuration->scanner[currentScanner].instrumentType;
-
 	// ---- This is a terribly ugly way to re-arrange the pages ----
 	bool change = false;
 	for(int k = 0; k < nChannels; ++k){
@@ -231,13 +227,9 @@ void CScannerConfiguration::OnChangeScanner(){
 	}
 
 	// Show or not to show the Version2 page
-	if(type != INSTR_HEIDELBERG && m_showVIIPage){
+	if (m_showVIIPage) {
 		m_sheet.RemovePage(&m_pageVII);
 		m_showVIIPage = false;
-	}
-	if(type == INSTR_HEIDELBERG && !m_showVIIPage){
-		m_sheet.AddPage(&m_pageVII);
-		m_showVIIPage = true;
 	}
 
 	// show or not to show the windpage
@@ -245,7 +237,8 @@ void CScannerConfiguration::OnChangeScanner(){
 		m_sheet.RemovePage(&m_pageWind);
 		m_showWindPage = false;
 	}
-	if((nChannels > 1 || type == INSTR_HEIDELBERG) && !m_showWindPage){
+
+	if (nChannels > 1 && !m_showWindPage) {
 		m_sheet.AddPage(&m_pageWind);
 		m_showWindPage = true;
 	}

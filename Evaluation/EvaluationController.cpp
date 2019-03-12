@@ -273,7 +273,6 @@ RETURN_CODE CEvaluationController::EvaluateScan(const CString &fileName, int vol
 	// 6. Get the result from the evaluation
 	if(ev != nullptr && ev->HasResult()){
 		m_lastResult = ev->GetResult();
-		m_lastResult->SetInstrumentType(spectrometer->m_scanner.instrumentType);
 	}
 
 	// 7. Get the mode of the evaluation
@@ -305,19 +304,6 @@ RETURN_CODE CEvaluationController::EvaluateScan(const CString &fileName, int vol
 		// 10a. Calculate the centre of the plume
 		bool inplume = m_lastResult->CalculatePlumeCentre("SO2");
 
-		// 10b. If this is a Heidelberg-instrument then we can use it
-		//	alone to calculate the wind-direction/plume height 
-		//	this value can then also be used in the flux-calculation later...
-		if(spectrometer->m_scanner.instrumentType == INSTR_HEIDELBERG){
-			// Use this measurement to calculate the wind-direction or plume height?
-			MakeGeometryCalculations_Heidelberg(spectrometer);
-			
-			// Retrieve the new wind-field...
-			if(SUCCESS != GetWind(windField, *spectrometer, startTime)){
-				spectrometer->m_logFileHandler.WriteErrorMessage(m_common.GetString(ERROR_WIND_NOT_FOUND));
-			}
-		}
-
 		// 10c. Calculate the flux...
 		if(SUCCESS != CalculateFlux(m_lastResult.get(), spectrometer, volcanoIndex, windField)){
 			Output_FluxFailure(m_lastResult.get(), spectrometer);
@@ -335,17 +321,6 @@ RETURN_CODE CEvaluationController::EvaluateScan(const CString &fileName, int vol
 
 	// 13. Check if we should do a wind-measurement or a composition mode measurement now
 	InitiateSpecialModeMeasurement(spectrometer, windField);
-
-	// 14. Check if we should change the cfg.txt file inside the instrument
-	if(spectrometer->m_scanner.instrumentType == INSTR_HEIDELBERG){
-		double alpha_min, alpha_max, phi_source, beta;
-		bool flat;
-
-		bool timeTochangeCfg = Geometry::CRealTimeSetupChanger::IsTimeToChangeCfg(spectrometer, alpha_min, alpha_max, phi_source, beta, flat);
-		if(timeTochangeCfg){
-			Geometry::CRealTimeSetupChanger::ChangeCfg(spectrometer, alpha_min, alpha_max, phi_source, beta, flat);
-		}
-	}
 
 	// 15. Calculate the time spent in this function
 	cFinish = clock();
@@ -633,12 +608,6 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *resu
 	else
 		string.AppendFormat("\tmode=plume\n");
 
-	// The type of instrument used...
-	if(spectrometer.m_scanner.instrumentType == INSTR_GOTHENBURG){
-		string.AppendFormat("\tinstrumenttype=gothenburg\n");
-	}else if(spectrometer.m_scanner.instrumentType == INSTR_HEIDELBERG){
-		string.AppendFormat("\tinstrumenttype=heidelberg\n");
-	}
 	double maxIntensity = std::max(spectrometer.GetMaxIntensity(), 1.0);
 
 	// Finally, the version of the file and the version of the program
@@ -673,8 +642,6 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *resu
 		string.AppendFormat("\tcompasssource=user\n");
 	string.AppendFormat("\tplumecompleteness=%.2lf\n",	plumeCompleteness);
 	string.AppendFormat("\tplumecentre=%.2lf\n",		plumeCentre1);
-	if(spectrometer.m_scanner.instrumentType == INSTR_HEIDELBERG)
-		string.AppendFormat("\tplumecentre_phi=%.2lf\n",plumeCentre2);
 	string.AppendFormat("\tplumeedge1=%.2lf\n",			plumeEdge1);
 	string.AppendFormat("\tplumeedge2=%.2lf\n",			plumeEdge2);
 	string.AppendFormat("</fluxinfo>\n");
@@ -727,12 +694,7 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *resu
 
 	// 1. write the header
 	const Evaluation::CFitWindow &window = settings.channel[0].fitWindow;
-	if(spectrometer.m_scanner.instrumentType == INSTR_GOTHENBURG){
-		string.AppendFormat("#scanangle\t");
-	}else if(spectrometer.m_scanner.instrumentType == INSTR_HEIDELBERG){
-		string.AppendFormat("#observationangle\tazimuth\t");
-	}
-	string.AppendFormat("starttime\tstoptime\tname\tspecsaturation\tfitsaturation\tcounts_ms\tdelta\tchisquare\texposuretime\tnumspec\t");
+	string.AppendFormat("#scanangle\tstarttime\tstoptime\tname\tspecsaturation\tfitsaturation\tcounts_ms\tdelta\tchisquare\texposuretime\tnumspec\t");
 
 	for(int itSpecie = 0; itSpecie < spectrometer.m_fitWindows[0].nRef; ++itSpecie){
 		string.AppendFormat("column(%s)\tcolumnerror(%s)\t", window.ref[itSpecie].m_specieName.c_str(), window.ref[itSpecie].m_specieName.c_str());
@@ -754,7 +716,7 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *resu
 		sky.m_info.m_fitIntensity = (float)(sky.MaxValue(window.fitLow, window.fitHigh));
 		if(sky.NumSpectra() > 0)
 			sky.Div(sky.NumSpectra());
-		CEvaluationLogFileHandler::FormatEvaluationResult(&sky.m_info,	NULL, spectrometer.m_scanner.instrumentType, maxIntensity*sky.NumSpectra(), spectrometer.m_fitWindows[0].nRef, string1);
+		CEvaluationLogFileHandler::FormatEvaluationResult(&sky.m_info,	NULL, maxIntensity*sky.NumSpectra(), spectrometer.m_fitWindows[0].nRef, string1);
 	}
 	scan->GetDark(dark);
 	if(dark.m_info.m_interlaceStep > 1)
@@ -763,7 +725,7 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *resu
 		dark.m_info.m_fitIntensity = (float)(dark.MaxValue(window.fitLow, window.fitHigh));
 		if(dark.NumSpectra() > 0)
 			dark.Div(dark.NumSpectra());	
-		CEvaluationLogFileHandler::FormatEvaluationResult(&dark.m_info, NULL, spectrometer.m_scanner.instrumentType, maxIntensity*dark.NumSpectra(), spectrometer.m_fitWindows[0].nRef, string2);
+		CEvaluationLogFileHandler::FormatEvaluationResult(&dark.m_info, NULL, maxIntensity*dark.NumSpectra(), spectrometer.m_fitWindows[0].nRef, string2);
 	}
 	scan->GetOffset(offset);
 	if(offset.m_info.m_interlaceStep > 1)
@@ -771,7 +733,7 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *resu
 	if(offset.m_length > 0){
 		offset.m_info.m_fitIntensity = (float)(offset.MaxValue(window.fitLow, window.fitHigh));
 		offset.Div(offset.NumSpectra());	
-		CEvaluationLogFileHandler::FormatEvaluationResult(&offset.m_info, NULL, spectrometer.m_scanner.instrumentType, maxIntensity * offset.NumSpectra(), spectrometer.m_fitWindows[0].nRef, string3);
+		CEvaluationLogFileHandler::FormatEvaluationResult(&offset.m_info, NULL, maxIntensity * offset.NumSpectra(), spectrometer.m_fitWindows[0].nRef, string3);
 	}
 	scan->GetDarkCurrent(darkCurrent);
 	if(darkCurrent.m_info.m_interlaceStep > 1)
@@ -779,7 +741,7 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *resu
 	if(darkCurrent.m_length > 0){
 		darkCurrent.m_info.m_fitIntensity = (float)(darkCurrent.MaxValue(window.fitLow, window.fitHigh));
 		darkCurrent.Div(darkCurrent.NumSpectra());	
-		CEvaluationLogFileHandler::FormatEvaluationResult(&darkCurrent.m_info, NULL, spectrometer.m_scanner.instrumentType, maxIntensity*darkCurrent.NumSpectra(), spectrometer.m_fitWindows[0].nRef, string4);
+		CEvaluationLogFileHandler::FormatEvaluationResult(&darkCurrent.m_info, NULL, maxIntensity*darkCurrent.NumSpectra(), spectrometer.m_fitWindows[0].nRef, string4);
 	}
 
 	string.AppendFormat("%s", (LPCSTR)string1);
@@ -797,7 +759,7 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *resu
         Evaluation::CEvaluationResult evResult;
         result->GetResult(itSpectrum, evResult);
 
-		CEvaluationLogFileHandler::FormatEvaluationResult(&result->GetSpectrumInfo(itSpectrum), &evResult, spectrometer.m_scanner.instrumentType, maxIntensity * nSpectra, spectrometer.m_fitWindows[0].nRef, string1);
+		CEvaluationLogFileHandler::FormatEvaluationResult(&result->GetSpectrumInfo(itSpectrum), &evResult, maxIntensity * nSpectra, spectrometer.m_fitWindows[0].nRef, string1);
 
 		string.AppendFormat("%s", (LPCSTR)string1);
 	}

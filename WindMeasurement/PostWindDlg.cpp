@@ -149,7 +149,7 @@ int CPostWindDlg::BrowseForEvalLog(int seriesNumber){
 		if(length <= 0) 
 			return 0; // <-- something's wrong here!!
 
-		if(scan.IsWindMeasurement_Gothenburg()){
+		if(scan.IsWindMeasurement()){
 			m_OriginalSeries[seriesNumber] = new WindSpeedMeasurement::CWindSpeedCalculator::CMeasurementSeries(length);
 			if(m_OriginalSeries[seriesNumber] == NULL)
 				return 0; // <-- failed to allocate enough memory
@@ -170,47 +170,6 @@ int CPostWindDlg::BrowseForEvalLog(int seriesNumber){
 			m_coneAngle = scan.GetConeAngle();
 			m_pitch			= scan.GetPitch();
 			m_scanAngle	= scan.GetScanAngle(scan.GetEvaluatedNum() / 2);
-		}else if(scan.IsWindMeasurement_Heidelberg()){
-			m_OriginalSeries[0] = new WindSpeedMeasurement::CWindSpeedCalculator::CMeasurementSeries(length / 2);
-			m_OriginalSeries[1] = new WindSpeedMeasurement::CWindSpeedCalculator::CMeasurementSeries(length / 2);
-			if(m_OriginalSeries[0] == NULL || m_OriginalSeries[1] == NULL)
-				return 0; // <-- failed to allocate enough memory
-
-			const CDateTime *startTime = scan.GetStartTime(0);
-			for(int k = 0; k < length; ++k){
-				const CDateTime *time = scan.GetStartTime(k);
-				m_OriginalSeries[k % 2]->column[k / 2] = scan.GetColumn(k, 0);
-
-				// Save the time difference
-				m_OriginalSeries[k % 2]->time[k / 2]		= 
-					3600 * (time->hour - startTime->hour) +
-					60	 * (time->minute - startTime->minute) +
-					(time->second - startTime->second);
-			}
-
-			// remember the settings for the instrument
-			m_coneAngle = scan.GetConeAngle();
-			m_pitch			= scan.GetPitch();
-			m_scanAngle	= scan.GetScanAngle(scan.GetEvaluatedNum() / 2);
-
-			// calculate the angle between the two...
-			int midpoint = (int)(length / 2);
-			double d1 = scan.GetScanAngle(midpoint) - scan.GetScanAngle(midpoint + 1);
-			double d2 = scan.GetScanAngle2(midpoint) - scan.GetScanAngle2(midpoint + 1);
-			m_settings.angleSeparation = sqrt(d1 * d1 + d2 * d2);
-
-			// For heidelberg measurements, we only need one eval-log file
-			if(seriesNumber == 0){
-				m_browseButton1.EnableWindow(TRUE);
-				m_editEvalLog1.EnableWindow(TRUE);
-				m_browseButton2.EnableWindow(FALSE);
-				m_editEvalLog2.EnableWindow(FALSE);
-			}else if(seriesNumber == 1){
-				m_browseButton1.EnableWindow(FALSE);
-				m_editEvalLog1.EnableWindow(FALSE);
-				m_browseButton2.EnableWindow(TRUE);
-				m_editEvalLog2.EnableWindow(TRUE);
-			}
 		}
 		return 1;
 	}

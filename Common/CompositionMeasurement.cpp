@@ -157,26 +157,14 @@ bool CCompositionMeasurement::IsTimeForCompositionMeasurement(const Evaluation::
 	// 2j. Check so that the average exposure-time over the last few scans is not
 	//			too large. This to ensure that we can measure fast enough
 	double expTime = spectrometer->m_history->GetExposureTime(stablePeriod);
-	if(spectrometer->m_scanner.instrumentType == INSTR_GOTHENBURG){
-		if(expTime < 0 || expTime > 300){
-			FILE *f = fopen(debugFile, "a+");
-			if(f != NULL){
-				fprintf(f, "%s\t%s\tNo measurement: Too long exptimes\n", (LPCSTR)timeStr, (LPCSTR)serial);
-				fclose(f);
-				UploadToNOVACServer(debugFile, thisVolcano, false);
-			}
-			return false;
+	if (expTime < 0 || expTime > 300) {
+		FILE *f = fopen(debugFile, "a+");
+		if (f != NULL) {
+			fprintf(f, "%s\t%s\tNo measurement: Too long exptimes\n", (LPCSTR)timeStr, (LPCSTR)serial);
+			fclose(f);
+			UploadToNOVACServer(debugFile, thisVolcano, false);
 		}
-	}else if(spectrometer->m_scanner.instrumentType == INSTR_HEIDELBERG){
-		if(expTime < 0 || expTime > 1000){
-			FILE *f = fopen(debugFile, "a+");
-			if(f != NULL){
-				fprintf(f, "%s\t%s\tNo measurement: Too long exptimes\n", (LPCSTR)timeStr, (LPCSTR)serial);
-				fclose(f);
-				UploadToNOVACServer(debugFile, thisVolcano, false);
-			}
-			return false;
-		}
+		return false;
 	}
 
 	FILE *f = fopen(debugFile, "a+");
@@ -209,12 +197,7 @@ void	CCompositionMeasurement::StartCompositionMeasurement(const Evaluation::CSpe
 	double stepAngle		= 360.0 / stepsPerRound;
 
 	// The maximum exposure-time that we can afford...
-	double	maxExpTime;
-	if(spec->m_scanner.instrumentType == INSTR_GOTHENBURG){
-		maxExpTime = 200;
-	}else if(spec->m_scanner.instrumentType == INSTR_HEIDELBERG){
-		maxExpTime = 1200;
-	}
+	double	maxExpTime = 200;
 
 	// Get the centre of the plume
 	plumeCentre = spec->m_history->GetPlumeCentre(stablePeriod);
@@ -224,26 +207,16 @@ void	CCompositionMeasurement::StartCompositionMeasurement(const Evaluation::CSpe
 	
 	// The number of measurement positions inside the plume...
 	measurementsInPlume	= (int)((plumeEdge[1] - plumeEdge[0]) / stepAngle);
-	if(spec->m_scanner.instrumentType == INSTR_GOTHENBURG){
-		if(measurementsInPlume < 5)
-			return; // there's not enough space to make 5 measurements in the plume. Quit!
-		measurementsInPlume	= std::min(measurementsInPlume, 8); // we can't make more than 8 measurements
-	}else if(spec->m_scanner.instrumentType == INSTR_HEIDELBERG){
-		if(measurementsInPlume < 2)
-			return; // there's not enough space to make 3 measurements in the plume. Quit!
-		measurementsInPlume	= std::min(measurementsInPlume, 4); // we can't make more than 8 measurements
-	}
+	if (measurementsInPlume < 5)
+		return; // there's not enough space to make 5 measurements in the plume. Quit!
+	measurementsInPlume = std::min(measurementsInPlume, 8); // we can't make more than 8 measurements
+
 	// The angle between each measurement
 	alphaStep						= (plumeEdge[1] - plumeEdge[0]) / measurementsInPlume;
 	alphaStep						= stepAngle * floor(alphaStep / stepAngle); // the steps has to be a multiple of 1.8 degrees
 
 	// The number of repetitions for the normal measurements, in the Manne-box only
 	int	repetitions = 67; 
-	if(spec->m_scanner.instrumentType == INSTR_GOTHENBURG){
-		repetitions = 67;
-	}else if(spec->m_scanner.instrumentType == INSTR_HEIDELBERG){
-		repetitions = 30;
-	}
 
 	// allocate the strings	
 	CString *serialNumber = new CString();
@@ -288,120 +261,55 @@ void	CCompositionMeasurement::StartCompositionMeasurement(const Evaluation::CSpe
 	fprintf(f, "%% If RealTime=0 then the spectra will be added to work.pak one scan at a time\n");
 	fprintf(f, "REALTIME=0\n\n");
 
-	if(spec->m_scanner.instrumentType == INSTR_GOTHENBURG){
+	// 3e. Write the motor information
+	//fprintf(f, "%% StepsPerRound defines the number of steps the steppermotor divides one round into\n");
+	//fprintf(f, "STEPSPERROUND=%d\n",	stepsPerRound);
+	//fprintf(f, "MOTORSTEPCOMP=%d\n",	spec->m_scanner.motor[0].motorStepsComp);
+	fprintf(f, "%% If Skipmotor=1 then the scanner will not be used. ONLY FOR TESTING PURPOSES\n");
+	fprintf(f, "SKIPMOTOR=0\n");
+	if(spec->m_scanner.coneAngle == 90.0)
+		fprintf(f, "DELAY=%d\n\n",				 200);
+	else
+		fprintf(f, "DELAY=%d\n\n",				 400);
 
-		// 3e. Write the motor information
-		//fprintf(f, "%% StepsPerRound defines the number of steps the steppermotor divides one round into\n");
-		//fprintf(f, "STEPSPERROUND=%d\n",	stepsPerRound);
-		//fprintf(f, "MOTORSTEPCOMP=%d\n",	spec->m_scanner.motor[0].motorStepsComp);
-		fprintf(f, "%% If Skipmotor=1 then the scanner will not be used. ONLY FOR TESTING PURPOSES\n");
-		fprintf(f, "SKIPMOTOR=0\n");
-		if(spec->m_scanner.coneAngle == 90.0)
-			fprintf(f, "DELAY=%d\n\n",				 200);
-		else
-			fprintf(f, "DELAY=%d\n\n",				 400);
+	// 3f. Write the geometry (compass, tilt...)
+	fprintf(f, "%% The geometry: compassDirection  tiltX(=roll)  tiltY(=pitch)  temperature\n");
+	fprintf(f, "COMPASS=%.1lf 0.0 0.0\n\n", spec->m_scanner.compass);
 
-		// 3f. Write the geometry (compass, tilt...)
-		fprintf(f, "%% The geometry: compassDirection  tiltX(=roll)  tiltY(=pitch)  temperature\n");
-		fprintf(f, "COMPASS=%.1lf 0.0 0.0\n\n", spec->m_scanner.compass);
+	// 3g. Write other things
+	fprintf(f, "%% Percent defines how big part of the spectrometers dynamic range we want to use\n");
+	fprintf(f,  "PERCENT=%.2lf\n\n",			0.6);
+	fprintf(f, "%% The maximum integration time that we allow the spectrometer to use. In milli seconds\n");
+	fprintf(f,	"MAXINTTIME=%.0lf\n\n",		maxExpTime);
+	fprintf(f, "%% The debug-level, the higher number the more output will be created\n");
+	fprintf(f,  "DEBUG=1\n\n");
 
-		// 3g. Write other things
-		fprintf(f, "%% Percent defines how big part of the spectrometers dynamic range we want to use\n");
-		fprintf(f,  "PERCENT=%.2lf\n\n",			0.6);
-		fprintf(f, "%% The maximum integration time that we allow the spectrometer to use. In milli seconds\n");
-		fprintf(f,	"MAXINTTIME=%.0lf\n\n",		maxExpTime);
-		fprintf(f, "%% The debug-level, the higher number the more output will be created\n");
-		fprintf(f,  "DEBUG=1\n\n");
+	// 3h. Write the measurement information
+	fprintf(f, "%% sum1 is inside the specrometer [1 to 15]\n%%-----pos----time-sum1-sum2--chn--basename----- repetitions\n");
 
-		// 3h. Write the measurement information
-		fprintf(f, "%% sum1 is inside the specrometer [1 to 15]\n%%-----pos----time-sum1-sum2--chn--basename----- repetitions\n");
-
-		// 3i. The offset-measurement
-		fprintf(f, "MEAS=100 3 15 100 0 offset 1 0\n");
+	// 3i. The offset-measurement
+	fprintf(f, "MEAS=100 3 15 100 0 offset 1 0\n");
 		
-		// 3j. The dark-current measurement
-		fprintf(f, "MEAS=100 10000 1 1 0 dark_cur 1 0\n");
+	// 3j. The dark-current measurement
+	fprintf(f, "MEAS=100 10000 1 1 0 dark_cur 1 0\n");
 
-		// 3k. Each of the measurements
+	// 3k. Each of the measurements
 		
-		// 3k1. The first of the measurements outside the plume...
-		alpha	= (plumeEdge[0] - 90) / 2;
-		fprintf(f, "MEAS=%.0lf -1 15 %d 0 sky 1 0\n", alpha / stepAngle, repetitions);
+	// 3k1. The first of the measurements outside the plume...
+	alpha	= (plumeEdge[0] - 90) / 2;
+	fprintf(f, "MEAS=%.0lf -1 15 %d 0 sky 1 0\n", alpha / stepAngle, repetitions);
 
-		// 3k2. The measurements inside the plume
-		alpha = plumeCentre - (measurementsInPlume - 1) * alphaStep / 2;
-		for(int k = 0; k < measurementsInPlume; ++k){
-			fprintf(f, "MEAS=%.0lf -1 15 %d 0 comp 1 0\n", alpha / stepAngle, repetitions);
+	// 3k2. The measurements inside the plume
+	alpha = plumeCentre - (measurementsInPlume - 1) * alphaStep / 2;
+	for(int k = 0; k < measurementsInPlume; ++k){
+		fprintf(f, "MEAS=%.0lf -1 15 %d 0 comp 1 0\n", alpha / stepAngle, repetitions);
 
-			alpha += alphaStep;
-		}
-
-		// 3k2. The second of the measurements outside the plume...
-		alpha	= (plumeEdge[1] + 90) / 2;
-		fprintf(f, "MEAS=%.0lf -1 15 %d 0 sky 1 0\n", alpha / stepAngle, repetitions);
-	}else{
-		// Heidelberg instrument!
-		double alpha_center_of_mass = spec->m_history->GetPlumeCentre(stablePeriod, 0);
-		double phi_center_of_mass		= spec->m_history->GetPlumeCentre(stablePeriod, 1);
-
-		int stepsPerRound1				=	abs (int(spec->m_scanner.motor[0].stepsPerRound));
-		int stepsPerRound2				= abs (int(spec->m_scanner.motor[1].stepsPerRound));
-		double stepsPerDegree1		=	stepsPerRound1/360.0;
-		double stepsPerDegree2		=	stepsPerRound2/360.0;
-
-		int motorPosition2				=	int (round(stepsPerDegree2*phi_center_of_mass));
-
-		if(!CSpectrometerModel::ToString(spec->m_scanner.spec[0].model, spectrometerType)){
-			spectrometerType = "HR2000";
-		}
-		fprintf (f, "SPECTROMETERTYPE=%s\n\n", spectrometerType.c_str());  //can spectrometertype be retrieved automatically from configuration?
-
-		// 3e. Write the motor information
-		//fprintf(f, "%% StepsPerRound defines the number of steps the steppermotor divides one round into\n");
-		//fprintf(f, "STEPSPERROUND=%d %d\n",	-stepsPerRound1, -stepsPerRound2); //2 motors HD
-		//fprintf(f, "MOTORSTEPSCOMP=%d %d\n",	int (round(spec->m_scanner.motor[0].motorStepsComp)), int (round(spec->m_scanner.motor[1].motorStepsComp))); //2 motors HD
-		fprintf(f, "%% If Skipmotor=1 then the scanner will not be used. ONLY FOR TESTING PURPOSES\n");
-		fprintf(f, "SKIPMOTOR=2\n");
-		fprintf(f, "DELAY=%d\n\n",	 2); // what is an appropriate value
-
-		// 3g. Write other things
-		fprintf(f, "%% Percent defines how big part of the spectrometers dynamic range we want to use\n");
-		fprintf(f,  "PERCENT=%.2lf\n\n",			0.8);
-		fprintf(f, "%% The maximum integration time that we allow the spectrometer to use. In milli seconds\n");
-		fprintf(f,	"MAXINTTIME=%.0lf\n\n",		1200.0);
-		fprintf(f, "%% The pixel where we want to measure the intensity of the spectra \n");
-		fprintf(f,	"CHANNEL=-1\n\n");
-		fprintf(f, "%% The debug-level, the higher number the more output will be created\n");
-		fprintf(f,  "DEBUG=1\n\n");
-
-		fprintf(f, "%% sum1 is inside the specrometer [1 to 15]\n%%--zenith----azimuth----time-sum1-sum2--chn--basename-----repetitions\n");
-
-		// 3i. The offset-measurement
-		fprintf(f, "MEAS=%d %d 3 15 50 0 offset 1 0\n", stepsPerRound1/180, motorPosition2);
-		
-		// 3j. The dark-current measurement
-		fprintf(f, "MEAS=%d %d 10000 1 1 0 dark_cur 1 0\n", stepsPerRound1/180, motorPosition2);
-
-		// 3h. Each of the measurements
-		
-		bool useFirstSky = (plumeCentre >= 0) ? true : false;
-		// 3k1. The first of the measurements outside the plume...
-		if(useFirstSky){
-			alpha	= (plumeEdge[0] - 90) / 2;
-			fprintf(f, "MEAS=%.0lf %d -1 15 %d 0 sky 1 0\n", alpha / stepAngle, motorPosition2, repetitions);
-		}
-
-		// 3k2. The measurements inside the plume
-		alpha = plumeCentre - (measurementsInPlume - 1) * alphaStep / 2;
-		
-		fprintf(f, "MEAS=%.0lf %d -1 15 %d 0 comp1 1 0\n", plumeCentre / stepAngle, motorPosition2, repetitions);
-
-		// 3k2. The second of the measurements outside the plume...
-		if(!useFirstSky){
-			alpha	= (plumeEdge[1] + 90) / 2;
-			fprintf(f, "MEAS=%.0lf %d -1 15 %d 0 sky2 1 0\n", alpha / stepAngle, motorPosition2, repetitions);
-		}
+		alpha += alphaStep;
 	}
+
+	// 3k2. The second of the measurements outside the plume...
+	alpha	= (plumeEdge[1] + 90) / 2;
+	fprintf(f, "MEAS=%.0lf -1 15 %d 0 sky 1 0\n", alpha / stepAngle, repetitions);
 
 	// Close the file
 	fclose(f);

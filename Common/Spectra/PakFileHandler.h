@@ -172,13 +172,6 @@ namespace FileHandler
 						or contains spectra which are not collected in a wind speed measurement mode. */
 		static bool IsWindSpeedMeasurement_Gothenburg(const CString &fileName);
 
-		/** This function checks the contents of the file 'fileName'.
-				@return true - if the spectra are collected in a wind speed measurement mode using
-					the heidelberg type of instrument.
-				@return false - if the file does not contain spectra, 
-						or contains spectra which are not collected in a wind speed measurement mode. */
-		static bool IsWindSpeedMeasurement_Heidelberg(const CString &fileName);
-
 
 	};
 
