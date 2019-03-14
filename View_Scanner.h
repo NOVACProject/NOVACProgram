@@ -70,22 +70,29 @@ public:
 	CString										m_siteName;
 
 	// ----------- PUBLIC METHODS ---------------
-	/** Draws the column for the last collected scan */
+	/** Draws the column for the last collected scan.*/
 	void DrawColumn();
 
 	/** Draws the flux for the last day */
 	void DrawFlux();
 
+	/** Draws the columns for the last day */
+	void DrawColumnDay();
+
 protected:
 	// ----------- DIALOG CONTROLS ---------------
 	/** The borders for the column and flux plots */
-	CStatic m_ColumnFrame, m_fluxFrame;
+	CStatic m_lastScanFrame, m_todayScanFrame;
 
 	/** The column plot */
-	Graph::CGraphCtrl m_columnPlot;
+	Graph::CGraphCtrl m_lastScanPlot;
 
-	/** The flux plot */
-	Graph::CGraphCtrl m_fluxPlot;
+	/** The flux plot in normal measurement mode.  
+	Turns into column plot if single direction mode. */
+	Graph::CGraphCtrl m_todayPlot;
+
+	/** Whether plots should be displayed as time series. */
+	bool m_isTimeSeries=false;
 
 	/** Status light to show the status of the evaluation */
 	CStatic m_statusLight;

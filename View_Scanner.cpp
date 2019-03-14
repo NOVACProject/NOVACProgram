@@ -40,8 +40,8 @@ CView_Scanner::~CView_Scanner()
 void CView_Scanner::DoDataExchange(CDataExchange* pDX)
 {
 	CPropertyPage::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_STATIC_COLUMN, m_ColumnFrame);
-	DDX_Control(pDX, IDC_STATIC_FLUX, m_fluxFrame);
+	DDX_Control(pDX, IDC_STATIC_COLUMN, m_lastScanFrame);
+	DDX_Control(pDX, IDC_STATIC_FLUX, m_todayScanFrame);
 
 	// The status lights
 	DDX_Control(pDX, IDC_STATUS_LIGHT,        m_statusLight);
@@ -103,21 +103,21 @@ void CView_Scanner::SetLayout(){
 	GetWindowRect(thisRect);
 
 	// Adjust the width of the column frame
-	if(this->m_ColumnFrame.m_hWnd != NULL){
-		m_ColumnFrame.GetWindowRect(&columnFrameRect);
+	if(this->m_lastScanFrame.m_hWnd != NULL){
+		m_lastScanFrame.GetWindowRect(&columnFrameRect);
 		columnFrameRect.right  = thisRect.right - 10;
 		columnFrameRect.top    -= thisRect.top;
 		columnFrameRect.bottom -= thisRect.top;
-		m_ColumnFrame.MoveWindow(columnFrameRect);
+		m_lastScanFrame.MoveWindow(columnFrameRect);
 	}
 
 	// Adjust the width of the flux frame
-	if(this->m_fluxFrame.m_hWnd != NULL){
-		m_fluxFrame.GetWindowRect(&fluxFrameRect);
+	if(this->m_todayScanFrame.m_hWnd != NULL){
+		m_todayScanFrame.GetWindowRect(&fluxFrameRect);
 		fluxFrameRect.right  = thisRect.right - 10;
 		fluxFrameRect.top    -= thisRect.top;
 		fluxFrameRect.bottom -= thisRect.top;
-		m_fluxFrame.MoveWindow(fluxFrameRect);
+		m_todayScanFrame.MoveWindow(fluxFrameRect);
 	}
 }
 
@@ -142,28 +142,24 @@ BOOL CView_Scanner::OnInitDialog()
 	}else{
 		columnAxisLabel.Format("%s [molec/cm²]", (LPCTSTR)common.GetString(AXIS_COLUMN));
 	}
-	if(g_userSettings.m_fluxUnit == UNIT_TONDAY){
-		fluxAxisLabel.Format("%s [ton/day]", (LPCTSTR)common.GetString(AXIS_FLUX));
-	}else{
-		fluxAxisLabel.Format("%s [kg/s]", (LPCTSTR)common.GetString(AXIS_FLUX));
-	}
 
-	// initialize the column plot
+
+	// initialize the last scan plot (columns)
 	CRect rect;
-	m_ColumnFrame.GetWindowRect(rect);
+	m_lastScanFrame.GetWindowRect(rect);
 	height = rect.bottom - rect.top;
 	width = rect.right - rect.left;
 	rect.top = 20; rect.bottom = height - 10;
 	rect.left = 10; rect.right = width - 10;
-	m_columnPlot.Create(WS_VISIBLE | WS_CHILD, rect, &m_ColumnFrame);
-	m_columnPlot.SetSecondYUnit(common.GetString(AXIS_INTENSITY));
-	m_columnPlot.SetSecondRangeY(0, 4096, 0);
-	m_columnPlot.SetXUnits(common.GetString(AXIS_ANGLE));
-	m_columnPlot.SetYUnits(columnAxisLabel);
-	m_columnPlot.SetBackgroundColor(RGB(0, 0, 0));
-	m_columnPlot.SetPlotColor(RGB(255, 0, 0));
-	m_columnPlot.SetGridColor(RGB(255, 255, 255));
-	m_columnPlot.SetRange(-90, 90, 0, 0, 100, 0);
+	m_lastScanPlot.Create(WS_VISIBLE | WS_CHILD, rect, &m_lastScanFrame);
+	m_lastScanPlot.SetSecondYUnit(common.GetString(AXIS_INTENSITY));
+	m_lastScanPlot.SetSecondRangeY(0, 4096, 0);
+	m_lastScanPlot.SetXUnits(common.GetString(AXIS_ANGLE));
+	m_lastScanPlot.SetYUnits(columnAxisLabel);
+	m_lastScanPlot.SetBackgroundColor(RGB(0, 0, 0));
+	m_lastScanPlot.SetPlotColor(RGB(255, 0, 0));
+	m_lastScanPlot.SetGridColor(RGB(255, 255, 255));
+	m_lastScanPlot.SetRange(-90, 90, 0, 0, 100, 0);
 
 	// The legend
 	m_legend_ColumnColor.SetBackgroundColor(RGB(255, 0, 0));
@@ -173,24 +169,22 @@ BOOL CView_Scanner::OnInitDialog()
 	m_legend_PeakIntensity.SetWindowText("");
 	m_legend_FitIntensity.SetWindowText("");
 
-	// initialize the flux plot
-	m_fluxFrame.GetWindowRect(rect);
+	// initialize today's plot (may be flux or columns)
+	m_todayScanFrame.GetWindowRect(rect);
 	height = rect.bottom - rect.top;
 	width = rect.right - rect.left;
 	rect.top = 20; rect.bottom = height - 10;
 	rect.left = 10; rect.right = width - 10;
-	m_fluxPlot.Create(WS_VISIBLE | WS_CHILD, rect, &m_fluxFrame);
-	m_fluxPlot.SetXUnits(common.GetString(AXIS_UTCTIME));
-	m_fluxPlot.SetXAxisNumberFormat(FORMAT_TIME);
-	m_fluxPlot.EnableGridLinesX(true);
-	m_fluxPlot.SetYUnits(fluxAxisLabel);
-	m_fluxPlot.SetPlotColor(RGB(255, 255, 255));
-	m_fluxPlot.SetGridColor(RGB(255, 255, 255));
-	m_fluxPlot.SetBackgroundColor(RGB(0, 0, 0));
-	m_fluxPlot.SetRange(0, 24*3600-1, 0, 0, 100, 0);
-	m_fluxPlot.SetLineWidth(2);               // Increases the line width to 2 pixels
-	m_fluxPlot.SetMinimumRangeY(1.0);
-	DrawFlux();
+	m_todayPlot.Create(WS_VISIBLE | WS_CHILD, rect, &m_todayScanFrame);
+	m_todayPlot.SetXUnits(common.GetString(AXIS_UTCTIME));
+	m_todayPlot.SetXAxisNumberFormat(FORMAT_TIME);
+	m_todayPlot.SetYUnits("Column");
+	m_todayPlot.EnableGridLinesX(true);
+	m_todayPlot.SetPlotColor(RGB(255, 255, 255));
+	m_todayPlot.SetGridColor(RGB(255, 255, 255));
+	m_todayPlot.SetBackgroundColor(RGB(0, 0, 0));
+	m_todayPlot.SetRange(0, 24*3600-1, 0, 0, 100, 0);
+	m_todayPlot.SetMinimumRangeY(1.0);
 
 	// Enable the tool tips
 	if(!m_toolTip.Create(this)){
@@ -203,7 +197,7 @@ BOOL CView_Scanner::OnInitDialog()
 	m_toolTip.AddTool(&m_plumeHeight,       IDC_EDIT_PLUMEHEIGHT);
 	m_toolTip.AddTool(&m_labelPlumeHeight,	IDC_EDIT_PLUMEHEIGHT);
 	m_toolTip.AddTool(&m_setButton,         IDC_BUTTON_SET_WINDFIELD);
-	m_toolTip.AddTool(&m_fluxPlot,          IDC_FLUX_PLOT);
+	m_toolTip.AddTool(&m_todayPlot,          IDC_FLUX_PLOT);
 	m_toolTip.AddTool(&m_infoSerial,        IDC_CONFINFO_SERIAL);
 	m_toolTip.AddTool(&m_infoCompass,       IDC_CONFINFO_COMPASS);
 	m_toolTip.AddTool(&m_infoLatitude,      IDC_CONFINFO_LATITUDE);
@@ -222,7 +216,14 @@ BOOL CView_Scanner::OnInitDialog()
 	m_toolTip.Activate(TRUE);
 
 	// Update the plot...
-	DrawFlux();
+	if (g_settings.scanner[m_scannerIndex].plotColumnOnly) {
+		m_todayPlot.SetCircleRadius(1);
+		DrawColumnDay();
+	}
+	else {
+		m_todayPlot.SetLineWidth(2);
+		DrawFlux();
+	};
 
 	// If the wind-field has been set automatically, then show it to the user
 	CWindField windField;
@@ -248,13 +249,13 @@ void CView_Scanner::DrawColumn(){
 	double maxAngle, minAngle, maxColumn, minColumn;
 
 	// remove the old plot
-	m_columnPlot.CleanPlot();
+	m_lastScanPlot.CleanPlot();
 
 	// Set the unit of the plot
 	if(g_userSettings.m_columnUnit == UNIT_PPMM)
-		m_columnPlot.SetYUnits("Column [ppmm]");
+		m_lastScanPlot.SetYUnits("Column [ppmm]");
 	else if(g_userSettings.m_columnUnit == UNIT_MOLEC_CM2)
-		m_columnPlot.SetYUnits("Column [molec/cm²]");
+		m_lastScanPlot.SetYUnits("Column [molec/cm²]");
 
 	// Get the data
 	int dataLength = m_evalDataStorage->GetColumnData(m_serial, column, columnError, BUFFER_SIZE);
@@ -266,22 +267,22 @@ void CView_Scanner::DrawColumn(){
 		return;
 
 	// Get the ranges for the data
-	m_evalDataStorage->GetAngleRange(m_serial, minAngle, maxAngle);
+	m_evalDataStorage->GetAngleRange(m_serial, minAngle, maxAngle); 
 	m_evalDataStorage->GetColumnRange(m_serial, minColumn,	maxColumn);
 
 	// Copy the bad-columns to the 'badColumn' - array
 	m_evalDataStorage->GetBadColumnData(m_serial, badColumn, BUFFER_SIZE);
 
 	// Check if this is a wind-measurement of if its a normal scan
-	bool isTimeSeries  = fabs(maxAngle - minAngle) < 1e-2;
+	m_isTimeSeries  = fabs(maxAngle - minAngle) < 1e-2;
 	int nRepetitions   = 0;
-	for(int i = 2; i < dataLength; ++i){
+	for (int i = 2; i < dataLength; ++i) {
 		if (angle[i] == angle[i - 2]) {
 			++nRepetitions;
 		}
 	}
 	if (nRepetitions > 50) {
-		isTimeSeries = true;
+		m_isTimeSeries = true;
 	}
 
 	// Check data ranges
@@ -320,63 +321,63 @@ void CView_Scanner::DrawColumn(){
 	}
 
 	// Set the range for the graph
-	if(isTimeSeries){
+	if(m_isTimeSeries){
 		// wind speed measurement?
 		// Get the timeOfDay for each spectrum
 		m_evalDataStorage->GetTimeData(m_serial, time, BUFFER_SIZE);
 
-		m_columnPlot.SetRange(Min(time, dataLength), Max(time, dataLength), 1, minColumn, maxColumn, 0);
-		m_columnPlot.SetXUnits(common.GetString(AXIS_TIMEOFDAY));
-		m_columnPlot.SetXAxisNumberFormat(Graph::FORMAT_TIME);
+		m_lastScanPlot.SetRange(Min(time, dataLength), Max(time, dataLength), 1, minColumn, maxColumn, 0);
+		m_lastScanPlot.SetXUnits(common.GetString(AXIS_TIMEOFDAY));
+		m_lastScanPlot.SetXAxisNumberFormat(Graph::FORMAT_TIME);
 	}else{
 		// normal scan
-		m_columnPlot.SetRange(minAngle, maxAngle, 1, minColumn, maxColumn, 0);
-		m_columnPlot.SetXUnits(common.GetString(AXIS_ANGLE));
-		m_columnPlot.SetXAxisNumberFormat(Graph::FORMAT_GENERAL);
+		m_lastScanPlot.SetRange(minAngle, maxAngle, 1, minColumn, maxColumn, 0);
+		m_lastScanPlot.SetXUnits(common.GetString(AXIS_ANGLE));
+		m_lastScanPlot.SetXAxisNumberFormat(Graph::FORMAT_GENERAL);
 	}
 
 	// If we know the dynamic range for the spectrometer, 
 	//	set the plot to show saturation-levels instead of intensities
 	double maxIntensity = m_evalDataStorage->GetDynamicRange(m_serial);
 	if(maxIntensity > 0){
-		m_columnPlot.SetSecondRangeY(0, 100, 0, false);
-		m_columnPlot.SetSecondYUnit(common.GetString(AXIS_SATURATION));
+		m_lastScanPlot.SetSecondRangeY(0, 100, 0, false);
+		m_lastScanPlot.SetSecondYUnit(common.GetString(AXIS_SATURATION));
 	}else{
-		m_columnPlot.SetSecondRangeY(0, 4096, 0, false);
-		m_columnPlot.SetSecondYUnit(common.GetString(AXIS_INTENSITY));
+		m_lastScanPlot.SetSecondRangeY(0, 4096, 0, false);
+		m_lastScanPlot.SetSecondYUnit(common.GetString(AXIS_INTENSITY));
 	}
 
 	// draw the columns
-	if(isTimeSeries){
-		m_columnPlot.XYPlot(time, column, dataLength, CGraphCtrl::PLOT_FIXED_AXIS | CGraphCtrl::PLOT_CONNECTED);
+	if(m_isTimeSeries){
+		m_lastScanPlot.XYPlot(time, column, dataLength, CGraphCtrl::PLOT_FIXED_AXIS | CGraphCtrl::PLOT_CONNECTED);
 
 		// draw the peak saturation
-		m_columnPlot.SetCircleColor(RGB(255, 255, 255));
-		m_columnPlot.DrawCircles(time, peakSat, dataLength, CGraphCtrl::PLOT_SECOND_AXIS);
+		m_lastScanPlot.SetCircleColor(RGB(255, 255, 255));
+		m_lastScanPlot.DrawCircles(time, peakSat, dataLength, CGraphCtrl::PLOT_SECOND_AXIS);
 
 		// draw the fit-saturation
-		m_columnPlot.SetCircleColor(RGB(255, 255, 0));
-		m_columnPlot.DrawCircles(time, fitSat, dataLength, CGraphCtrl::PLOT_SECOND_AXIS);
+		m_lastScanPlot.SetCircleColor(RGB(255, 255, 0));
+		m_lastScanPlot.DrawCircles(time, fitSat, dataLength, CGraphCtrl::PLOT_SECOND_AXIS);
 	}else{
 		// All the column-values
-		m_columnPlot.SetPlotColor(RGB(255, 0, 0));
-		m_columnPlot.BarChart(angle, column, columnError, dataLength, CGraphCtrl::PLOT_FIXED_AXIS | CGraphCtrl::PLOT_BAR_SHOW_X);
+		m_lastScanPlot.SetPlotColor(RGB(255, 0, 0));
+		m_lastScanPlot.BarChart(angle, column, columnError, dataLength, CGraphCtrl::PLOT_FIXED_AXIS | CGraphCtrl::PLOT_BAR_SHOW_X);
 
 		// The bad column-values
-		m_columnPlot.SetPlotColor(RGB(128, 0, 0));
-		m_columnPlot.BarChart(angle, badColumn, dataLength, CGraphCtrl::PLOT_FIXED_AXIS | CGraphCtrl::PLOT_BAR_SHOW_X);		
+		m_lastScanPlot.SetPlotColor(RGB(128, 0, 0));
+		m_lastScanPlot.BarChart(angle, badColumn, dataLength, CGraphCtrl::PLOT_FIXED_AXIS | CGraphCtrl::PLOT_BAR_SHOW_X);		
 
 		// draw the peak saturation
-		m_columnPlot.SetCircleColor(RGB(255, 255, 255));
-		m_columnPlot.DrawCircles(angle, peakSat, dataLength, CGraphCtrl::PLOT_SECOND_AXIS);
+		m_lastScanPlot.SetCircleColor(RGB(255, 255, 255));
+		m_lastScanPlot.DrawCircles(angle, peakSat, dataLength, CGraphCtrl::PLOT_SECOND_AXIS);
 
 		// draw the fit-saturation
-		m_columnPlot.SetCircleColor(RGB(255, 255, 0));
-		m_columnPlot.DrawCircles(angle, fitSat, dataLength, CGraphCtrl::PLOT_SECOND_AXIS);
+		m_lastScanPlot.SetCircleColor(RGB(255, 255, 0));
+		m_lastScanPlot.DrawCircles(angle, fitSat, dataLength, CGraphCtrl::PLOT_SECOND_AXIS);
 
 		// Draw the plume-centre position (if known);
 		if(plumeCentre > -200){
-			m_columnPlot.DrawLine(Graph::VERTICAL, plumeCentre, RGB(255, 255, 0), Graph::STYLE_DASHED);
+			m_lastScanPlot.DrawLine(Graph::VERTICAL, plumeCentre, RGB(255, 255, 0), Graph::STYLE_DASHED);
 		}
 	}
 
@@ -403,7 +404,7 @@ void CView_Scanner::DrawColumn(){
 				(LPCTSTR)g_settings.webSettings.imageFormat);
 
 			// Save the column-plot
-			m_columnPlot.SaveGraph(imageFileName);
+			m_lastScanPlot.SaveGraph(imageFileName);
 
 			// Also save a copy of the column-plot to an additional directory, if this is
 			//		the latest file received
@@ -414,7 +415,7 @@ void CView_Scanner::DrawColumn(){
 					return; // failed to create directory, no idea to try to continue...
 				}
 				lastImageFileName.AppendFormat("Image.jpg");
-				m_columnPlot.SaveGraph(lastImageFileName);
+				m_lastScanPlot.SaveGraph(lastImageFileName);
 			}
 
 			// Make a small file which contains the name of the last file generated
@@ -427,6 +428,153 @@ void CView_Scanner::DrawColumn(){
 
 			// if the user wants to call an external script, then do so
 			if(strlen(g_settings.externalSetting.imageScript) > 2){
+				ExecuteScript_Image(imageFileName);
+			}
+		}
+	}
+}
+
+/** For single direction measurements, do not plot flux.  Instead, plot columns for the day. */
+void CView_Scanner::DrawColumnDay() {	
+	Common common;
+
+	// variables
+	const int BUFFER_SIZE = 3000;
+	double time[BUFFER_SIZE], column[BUFFER_SIZE], columnError[BUFFER_SIZE], badColumn[BUFFER_SIZE], peakSat[BUFFER_SIZE], fitSat[BUFFER_SIZE];
+	double maxColumn, minColumn;
+
+	// Get the data
+	int dataLength = m_evalDataStorage->GetColumnData(m_serial, column, columnError, BUFFER_SIZE, true);
+	dataLength = min(dataLength, m_evalDataStorage->GetIntensityData(m_serial, peakSat, fitSat, BUFFER_SIZE, true));
+
+	// If there's no data then don't draw anything
+	if (dataLength <= 0)
+		return;
+
+	// remove the old plot
+	m_todayPlot.CleanPlot();
+
+	// Set the unit of the plot
+	if (g_userSettings.m_columnUnit == UNIT_PPMM)
+		m_todayPlot.SetYUnits("Column [ppmm]");
+	else if (g_userSettings.m_columnUnit == UNIT_MOLEC_CM2)
+		m_todayPlot.SetYUnits("Column [molec/cm²]");
+
+	// Get the ranges for the data
+	m_evalDataStorage->GetColumnRange(m_serial, minColumn, maxColumn, true);
+
+	// Check data ranges
+	minColumn = min(minColumn, 0);
+	if (fabs(maxColumn - minColumn) < 1E-2) {
+		minColumn -= 1;
+		maxColumn += 1;
+	}
+	// set limits on the data ranges
+	maxColumn = min(maxColumn, 1e22);
+	minColumn = max(minColumn, -1e22);
+
+	// Copy the bad-columns to the 'badColumn' - array
+	m_evalDataStorage->GetBadColumnData(m_serial, badColumn, BUFFER_SIZE, true);
+
+	// get the offset
+	double offset = m_evalDataStorage->GetOffset(m_serial);
+	
+	// remove the offset
+	for (int i = 0; i < dataLength; ++i) {
+		column[i] = column[i] - offset;
+		if (fabs(badColumn[i]) > 1.0) {
+			badColumn[i] -= offset;
+		}
+	}
+
+	minColumn -= offset;
+	maxColumn -= offset;
+	minColumn = (minColumn < 0) ? (minColumn * 1.25) : (minColumn / 1.5);
+	maxColumn = (maxColumn > 0) ? (maxColumn * 1.25) : (maxColumn / 1.5);
+
+	// Convert the saturation ratios to percent
+	for (int i = 0; i < dataLength; ++i) {
+		fitSat[i] *= 100.0;
+		peakSat[i] *= 100.0;
+	}
+	
+	m_todayPlot.SetRangeY(minColumn, maxColumn, 0);
+
+	// If we know the dynamic range for the spectrometer, 
+	//	set the plot to show saturation-levels instead of intensities
+	double maxIntensity = m_evalDataStorage->GetDynamicRange(m_serial);
+	if (maxIntensity > 0) {
+		m_todayPlot.SetSecondRangeY(0, 100, 0, false);
+		m_todayPlot.SetSecondYUnit(common.GetString(AXIS_SATURATION));
+	}
+	else {
+		m_todayPlot.SetSecondRangeY(0, 4096, 0, false);
+		m_todayPlot.SetSecondYUnit(common.GetString(AXIS_INTENSITY));
+	}
+
+	m_evalDataStorage->GetTimeData(m_serial, time, BUFFER_SIZE, true);
+
+	// draw the columns
+	m_todayPlot.SetCircleColor(RGB(255, 0, 0));
+	m_todayPlot.XYPlot(time, column, dataLength, CGraphCtrl::PLOT_FIXED_AXIS | CGraphCtrl::PLOT_CIRCLES);
+
+	// draw the peak saturation
+	m_todayPlot.SetCircleColor(RGB(255, 255, 255));
+	m_todayPlot.DrawCircles(time, peakSat, dataLength, CGraphCtrl::PLOT_SECOND_AXIS);
+
+	// draw the fit-saturation
+	m_todayPlot.SetCircleColor(RGB(255, 255, 0));
+	m_todayPlot.DrawCircles(time, fitSat, dataLength, CGraphCtrl::PLOT_SECOND_AXIS);
+
+	// If the user wants to save the graph, then do so
+	if (g_settings.webSettings.publish) {
+
+		// Strings used for the saving of images
+		CString sDate, sTime, imageFileName, lastImageFileName, directory, latestInfoFileName;
+
+		sDate.Format("%02d%02d%02d", m_lastScanStart.year % 1000, m_lastScanStart.month, m_lastScanStart.day);
+
+		if (strlen(g_settings.webSettings.localDirectory) > 0) {
+			// The directory where to store the images
+			directory.Format("%s\\%s", (LPCTSTR)g_settings.webSettings.localDirectory, (LPCTSTR)sDate);
+			if (CreateDirectoryStructure(directory)) {
+				ShowMessage("Could not create storage-directory for images. No image stored.");
+				return; // failed to create directory, no idea to try to continue...
+			}
+
+			// The name of the image-file
+			imageFileName.Format("%s\\%s_%s_%1d%s",
+				(LPCTSTR)directory,
+				(LPCTSTR)m_serial,
+				(LPCTSTR)sDate,
+				m_lastScanChannel,
+				(LPCTSTR)g_settings.webSettings.imageFormat);
+
+			// Save the column-plot
+			m_todayPlot.SaveGraph(imageFileName);
+
+			// Also save a copy of the column-plot to an additional directory, if this is
+			//		the latest file received
+			if (m_lastScanStart == m_mostRecentScanStart) {
+				lastImageFileName.Format("%s\\%s\\", (LPCTSTR)g_settings.webSettings.localDirectory, (LPCTSTR)m_serial);
+				if (CreateDirectoryStructure(lastImageFileName)) {
+					ShowMessage("Could not create storage-directory for images. No image stored.");
+					return; // failed to create directory, no idea to try to continue...
+				}
+				lastImageFileName.AppendFormat("Image.jpg");
+				m_todayPlot.SaveGraph(lastImageFileName);
+			}
+
+			// Make a small file which contains the name of the last file generated
+			latestInfoFileName.Format("%s\\DayColumnGraph_%s.txt", (LPCTSTR)g_settings.webSettings.localDirectory, (LPCTSTR)m_serial);
+			FILE *f = fopen(latestInfoFileName, "w");
+			if (f != NULL) {
+				fprintf(f, "%s\n", (LPCTSTR)imageFileName);
+				fclose(f);
+			}
+
+			// if the user wants to call an external script, then do so
+			if (strlen(g_settings.externalSetting.imageScript) > 2) {
 				ExecuteScript_Image(imageFileName);
 			}
 		}
@@ -465,7 +613,7 @@ void CView_Scanner::DrawFlux(){
 	}
 
 	// remove the old plot
-	m_fluxPlot.CleanPlot();
+	m_todayPlot.CleanPlot();
 
 	// Set the unit of the plot
 	if(g_userSettings.m_fluxUnit == UNIT_TONDAY){
@@ -473,7 +621,7 @@ void CView_Scanner::DrawFlux(){
 	}else{
 		fluxAxisLabel.Format("%s [kg/s]", (LPCTSTR)common.GetString(AXIS_FLUX));
 	}
-	m_fluxPlot.SetYUnits(fluxAxisLabel);
+	m_todayPlot.SetYUnits(fluxAxisLabel);
 
 	// If there's no data, don't draw anything
 	if(dataLength == 0)
@@ -483,17 +631,17 @@ void CView_Scanner::DrawFlux(){
 	maxFlux = Max(allFluxes, dataLength);
 
 	// set the range for the plot
-	m_fluxPlot.SetRangeY(0, maxFlux, 1);
+	m_todayPlot.SetRangeY(0, maxFlux, 1);
 
 	// TODO: update the time range for the plot
-	//m_fluxPlot.SetRange(0, 24 * 3600 - 1, 0, 0, 100, 0);
+	//m_todayPlot.SetRange(0, 24 * 3600 - 1, 0, 0, 100, 0);
 
 	// First draw the bad values, then the good ones
-	m_fluxPlot.SetCircleColor(RGB(150, 150, 150));
-	m_fluxPlot.XYPlot(badTime, badFluxes, nBadFluxes, CGraphCtrl::PLOT_FIXED_AXIS | CGraphCtrl::PLOT_CIRCLES);
+	m_todayPlot.SetCircleColor(RGB(150, 150, 150));
+	m_todayPlot.XYPlot(badTime, badFluxes, nBadFluxes, CGraphCtrl::PLOT_FIXED_AXIS | CGraphCtrl::PLOT_CIRCLES);
 
-	m_fluxPlot.SetCircleColor(RGB(255, 255, 255));
-	m_fluxPlot.XYPlot(goodTime, goodFluxes, nGoodFluxes, CGraphCtrl::PLOT_FIXED_AXIS | CGraphCtrl::PLOT_CIRCLES);
+	m_todayPlot.SetCircleColor(RGB(255, 255, 255));
+	m_todayPlot.XYPlot(goodTime, goodFluxes, nGoodFluxes, CGraphCtrl::PLOT_FIXED_AXIS | CGraphCtrl::PLOT_CIRCLES);
 
 
 	// If the user wants to save the graph, then do so
@@ -507,7 +655,7 @@ void CView_Scanner::DrawFlux(){
 				(LPCTSTR)m_serial, 
 				(LPCTSTR)sDate,
 				(LPCTSTR)g_settings.webSettings.imageFormat);
-			m_fluxPlot.SaveGraph(fileName);
+			m_todayPlot.SaveGraph(fileName);
 		}
 	}
 }
@@ -611,11 +759,16 @@ LRESULT CView_Scanner::OnUpdateEvalStatus(WPARAM wParam, LPARAM lParam){
 		m_lastScanChannel = result->GetSpectrumInfo(0).m_channel;
 	}
 
-	// update the column plot
+	// update the last scan plot
 	DrawColumn();
 
-	// update the flux plot
-	DrawFlux();
+	// update today's plot
+	if (g_settings.scanner[m_scannerIndex].plotColumnOnly) {
+		DrawColumnDay();
+	}
+	else {
+		DrawFlux();
+	}
 
 	return 0;
 }
@@ -718,8 +871,15 @@ BOOL CView_Scanner::OnSetActive()
 	OnUpdateEvalStatus(NULL, NULL);
 	OnUpdateWindParam(NULL, NULL);
 	
-	DrawColumn();
-	DrawFlux();
+	// already done in OnUpdateEvalStatus
+	//DrawColumn();
+	//// update today's plot
+	//if (g_settings.scanner[m_scannerIndex].plotColumnOnly) {
+	//	DrawColumnDay();
+	//}
+	//else {
+	//	DrawFlux();
+	//}
 
 	return CPropertyPage::OnSetActive();
 }

@@ -20,6 +20,7 @@
 #define IDD_ADVANCEDFTPUPLOADSETTINGS   103
 #define IDD_CONFIGURE_COM_PORT          106
 #define IDD_REEVAL_SCANFILES            107
+#define IDD_COLUMN_HISTORY_DLG          108
 #define IDR_MAINFRAME                   128
 #define IDR_NovacMasterProgTYPE         129
 #define ERROR_WIND_NOT_FOUND            129
@@ -239,6 +240,7 @@
 #define ID__SAVEASASCII                 296
 #define ID__SAVEASBITMAP                297
 #define IDD_REFERENCE_PLOT_DLG          299
+#define IDD_ANALYSIS_COLUMN_HISTORY_DLG 300
 #define IDC_STATIC_VERSIONNUMBER        1000
 #define IDC_STATIC_COPYRIGHT            1001
 #define IDC_BUTTON_TEST                 1002
@@ -481,7 +483,7 @@
 #define IDC_CHECK_PUBLISH               1117
 #define IDC_CHECK_INCLUDE_SUBDIRS       1117
 #define IDC_CHECK_ENABLE_REALTIME_CFG   1117
-#define IDC_CHECK_SINGLE_DIRECTION      1117
+#define IDC_CHECK_PLOT_COLUMN_ONLY      1117
 #define IDC_EDIT1                       1118
 #define IDC_FTPUSER                     1118
 #define IDC_EDIT_SELECTEDPOINTS         1118
@@ -783,14 +785,17 @@
 #define ID_VIEW_COLUMNERROR_BD          32781
 #define ID_VIEW_DELTA_BD                32782
 #define ID_VIEW_CHISQUARE_BD            32783
+#define ID_Menu32784                    32784
+#define ID_HISTORY                      32785
+#define ID_ANALYSIS_COLUMN_HISTORY      32787
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        307
-#define _APS_NEXT_COMMAND_VALUE         32784
-#define _APS_NEXT_CONTROL_VALUE         1344
-#define _APS_NEXT_SYMED_VALUE           104
+#define _APS_NEXT_RESOURCE_VALUE        312
+#define _APS_NEXT_COMMAND_VALUE         32788
+#define _APS_NEXT_CONTROL_VALUE         1345
+#define _APS_NEXT_SYMED_VALUE           109
 #endif
 #endif

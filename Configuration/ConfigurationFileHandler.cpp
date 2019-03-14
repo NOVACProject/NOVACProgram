@@ -282,6 +282,7 @@ int CConfigurationFileHandler::WriteConfigurationFile(CConfigurationSetting &con
 
 		// electronicsBox
 		str.Format("\t\t\t<electronics>%d</electronics>\n", conf->scanner[i].electronicsBox);
+		str.AppendFormat("\t\t\t<plotColumnOnly>%d</plotColumnOnly>\n", conf->scanner[i].plotColumnOnly);
 		fprintf(f, str);
 
 		// --- First write the spectrometer information
@@ -699,6 +700,12 @@ int CConfigurationFileHandler::Parse_ScanningInstrument(){
 			}else{
 				curScanner->electronicsBox = BOX_VERSION_2;
 			}
+			continue;
+		}
+
+		// if single direction
+		if (Equals(szToken, "plotColumnOnly")) {
+			Parse_IntItem(TEXT("/plotColumnOnly"), curScanner->plotColumnOnly);
 			continue;
 		}
 	}
