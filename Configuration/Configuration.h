@@ -271,6 +271,9 @@ public:
 			/** The type of the electronics box */
 			ELECTRONICS_BOX electronicsBox;
 
+			/** If single direction mode or not. */
+			int plotColumnOnly;
+
 			/** Assignment operator */
 			ScanningInstrumentSetting&  operator=(const ScanningInstrumentSetting &scanner2);
 	};

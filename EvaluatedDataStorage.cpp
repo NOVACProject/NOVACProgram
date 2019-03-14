@@ -98,6 +98,7 @@ CEvaluatedDataStorage::CEvaluatedDataStorage(void)
 	memset(m_temperatureRange[1], -999, MAX_NUMBER_OF_SCANNING_INSTRUMENTS * sizeof(double));
 
 	memset(m_fluxIndex, 0, MAX_NUMBER_OF_SCANNING_INSTRUMENTS * sizeof(int));
+	memset(m_specIndex, 0, MAX_NUMBER_OF_SCANNING_INSTRUMENTS * sizeof(int));
 
 	for(int i = 0; i < MAX_NUMBER_OF_SCANNING_INSTRUMENTS; ++i)
 		this->m_serials[i].Format("");
@@ -110,34 +111,34 @@ CEvaluatedDataStorage::~CEvaluatedDataStorage(void)
 	m_windData.RemoveAll();
 }
 
-int CEvaluatedDataStorage::AddData(const CString &serial, Evaluation::CScanResult *result){
+int CEvaluatedDataStorage::AddData(const CString &serial, Evaluation::CScanResult *result) {
 	CDateTime tid;
 	Common common;
 
 	// get the scanner index
 	int scannerIndex = GetScannerIndex(serial);
 
-	if((scannerIndex < 0)){
-		if(m_serialNum < MAX_NUMBER_OF_SCANNING_INSTRUMENTS){
+	if ((scannerIndex < 0)) {
+		if (m_serialNum < MAX_NUMBER_OF_SCANNING_INSTRUMENTS) {
 			// if the scanner is not in the list then insert it
 			scannerIndex = m_serialNum;
 			m_serials[m_serialNum].Format("%s", (LPCSTR)serial);
-			
+
 			// find the serial-number in the global configuration, to find the spectrometer-model
 			bool found = false;
-			for(unsigned int k = 0; k < g_settings.scannerNum; ++k){
-				if(found)	break;
+			for (unsigned int k = 0; k < g_settings.scannerNum; ++k) {
+				if (found)	break;
 
-				for(unsigned int j = 0; j < g_settings.scanner[k].specNum; ++j){
-					if(Equals(g_settings.scanner[k].spec[j].serialNumber, serial)){
+				for (unsigned int j = 0; j < g_settings.scanner[k].specNum; ++j) {
+					if (Equals(g_settings.scanner[k].spec[j].serialNumber, serial)) {
 						m_models[m_serialNum] = g_settings.scanner[k].spec[j].model;
 
 						// Get the distance to GMT...
 						m_hoursToGMT[m_serialNum] = 0;
 						CString volcano;
 						volcano.Format(g_settings.scanner[k].volcano);
-						for(unsigned int it = 0; it < g_volcanoes.m_volcanoNum; ++it){
-							if(Equals(volcano, g_volcanoes.m_name[it])){
+						for (unsigned int it = 0; it < g_volcanoes.m_volcanoNum; ++it) {
+							if (Equals(volcano, g_volcanoes.m_name[it])) {
 								m_hoursToGMT[m_serialNum] = g_volcanoes.m_hoursToGMT[it];
 								break;
 							}
@@ -147,40 +148,44 @@ int CEvaluatedDataStorage::AddData(const CString &serial, Evaluation::CScanResul
 					}
 				}
 			}
-			if(!found)
+			if (!found)
 				m_models[m_serialNum] = UNKNOWN_SPECTROMETER;
 
 			++m_serialNum;
-		}else{
+		}
+		else {
 			// could not insert the serial number
 			return -1;
 		}
 	}
 
-	if(result == NULL)
+	if (result == NULL) {
 		return 0;
+	}
 
 	// add the flux result, if the flux comes from a measurement today...
-	if(MODE_FLUX == result->CheckMeasurementMode()){
+	if (MODE_FLUX == result->CheckMeasurementMode()) {
+		// Get scan end time
 		CDateTime scanTime;
 		result->GetStopTime(0, scanTime);
-		if(scanTime.day == common.GetDay() && scanTime.month == common.GetMonth() && scanTime.year == common.GetYear()){
+		if (scanTime.day == common.GetDay() && scanTime.month == common.GetMonth() && scanTime.year == common.GetYear()) {
 			AppendFluxResult(scannerIndex, scanTime, result->GetFlux(), result->IsFluxOk(), result->GetBatteryVoltage(), result->GetTemperature(), result->GetSkySpectrumInfo().m_exposureTime);
 		}
+	}
+	if (MODE_WINDSPEED == result->CheckMeasurementMode()) {
+		result->GetStopTime(0, m_scanTime[scannerIndex]);
 	}
 
 	// Find the maximum intensity for this spectrometer
 	double maxIntensity = GetDynamicRange(serial);
-	if(fabs(maxIntensity) < 1e-5)
+	if (fabs(maxIntensity) < 1e-5) {
 		maxIntensity = 1;
+	}
 
 	// add the evaluated column values and their corresponding elevation angle and saturation-level
 	int nIgnored = 0;
 	for(unsigned long i = 0; i < result->GetEvaluatedNum(); ++i){
-		// Check so that we don't add too many data points here
-		if(i - nIgnored >= MAX_SPEC_PER_SCAN)
-			break;
-
+		
 		// Check if this is a dark measurement, if so then don't include it...
 		// 1. Clean the spectrum name from special characters...
         std::string spectrumName = CleanString(result->GetSpectrumInfo(i).m_name);
@@ -192,16 +197,38 @@ int CEvaluatedDataStorage::AddData(const CString &serial, Evaluation::CScanResul
 
 		int nSpec = max(1, result->GetSpecNum(i));
 
-		// All seems ok, add the data point
-		if(SUCCESS == result->GetStartTime(i, tid))
-			m_specData[scannerIndex][i-nIgnored].m_time = tid.hour * 3600 + tid.minute * 60 + tid.second;
+		// All seems ok
+		int time = 0;
+		if (SUCCESS == result->GetStartTime(i, tid)) {
+			time = tid.hour * 3600 + tid.minute * 60 + tid.second;
+		}
+		double column = result->GetColumn(i, 0);
+		double columnError = result->GetColumnError(i, 0);
+		double angle = result->GetScanAngle(i);
+		double peakSaturation = result->GetPeakIntensity(i) / maxIntensity / nSpec;
+		double fitSaturation = result->GetFitIntensity(i) / maxIntensity / nSpec;
+		bool isBadFit = result->IsBad(i);
 
-		m_specData[scannerIndex][i-nIgnored].m_column          = result->GetColumn(i, 0);
-		m_specData[scannerIndex][i-nIgnored].m_columnError     = result->GetColumnError(i, 0);
-		m_specData[scannerIndex][i-nIgnored].m_angle           = result->GetScanAngle(i);
-		m_specData[scannerIndex][i-nIgnored].m_peakSaturation  = result->GetPeakIntensity(i)	/ maxIntensity / nSpec;
-		m_specData[scannerIndex][i-nIgnored].m_fitSaturation   = result->GetFitIntensity(i)	/ maxIntensity / nSpec;
-		m_specData[scannerIndex][i-nIgnored].m_isBadFit        = (result->IsBad(i)) ? true : false;
+		// Add data point for current day
+		CDateTime scanTime;
+		result->GetStopTime(0, scanTime);
+		if (scanTime.day == common.GetDay() && scanTime.month == common.GetMonth() && scanTime.year == common.GetYear()) {
+			AppendSpecDataHistory(scannerIndex, time, column, columnError, peakSaturation, fitSaturation, angle, isBadFit);
+		}
+
+		// Check so that we don't add too many data points here
+		if (i - nIgnored >= MAX_SPEC_PER_SCAN) {
+			break;
+		}
+
+		// Add the data point for last scan
+		m_specData[scannerIndex][i - nIgnored].m_time		   = time;
+		m_specData[scannerIndex][i-nIgnored].m_column          = column;
+		m_specData[scannerIndex][i-nIgnored].m_columnError     = columnError;
+		m_specData[scannerIndex][i-nIgnored].m_angle           = angle;
+		m_specData[scannerIndex][i-nIgnored].m_peakSaturation  = peakSaturation;
+		m_specData[scannerIndex][i-nIgnored].m_fitSaturation   = fitSaturation;
+		m_specData[scannerIndex][i-nIgnored].m_isBadFit        = isBadFit;
 	}
 
 	// the number of positions in the scan
@@ -331,7 +358,7 @@ void CEvaluatedDataStorage::GetFluxRange(const CString &serial, double &minFlux,
 }
 
 /** Returns the smallest and the largest columns in the data bank */
-void CEvaluatedDataStorage::GetColumnRange(const CString &serial, double &minColumn, double &maxColumn){
+void CEvaluatedDataStorage::GetColumnRange(const CString &serial, double &minColumn, double &maxColumn, bool fullDay){
 	// get the scanner index
 	int scannerIndex = GetScannerIndex(serial);
 	if(scannerIndex < 0){
@@ -339,22 +366,32 @@ void CEvaluatedDataStorage::GetColumnRange(const CString &serial, double &minCol
 		return;
 	}
 
-	// The unit conversion
-	double unitConversionFactor = 1.0;
-	if(g_userSettings.m_columnUnit == UNIT_PPMM)
-		unitConversionFactor = 1.0;
-	else if(g_userSettings.m_columnUnit == UNIT_MOLEC_CM2)
-		unitConversionFactor = 2.5e15;
-
 	maxColumn = -1e9;
 	minColumn = 1e9;
 
-	for(int i = 0; i < m_positionsNum[scannerIndex]; ++i){
-		if(!m_specData[scannerIndex][i].m_isBadFit){
-			maxColumn = max(maxColumn, m_specData[scannerIndex][i].m_column);
-			minColumn = min(minColumn, m_specData[scannerIndex][i].m_column);
+	if (fullDay) {
+		for (int i = 0; i < m_specIndex[scannerIndex]; ++i) {
+			if (!m_specDataDay[scannerIndex][i].m_isBadFit) {
+				maxColumn = max(maxColumn, m_specDataDay[scannerIndex][i].m_column);
+				minColumn = min(minColumn, m_specDataDay[scannerIndex][i].m_column);
+			}
 		}
 	}
+	else {
+		for (int i = 0; i < m_positionsNum[scannerIndex]; ++i) {
+			if (!m_specData[scannerIndex][i].m_isBadFit) {
+				maxColumn = max(maxColumn, m_specData[scannerIndex][i].m_column);
+				minColumn = min(minColumn, m_specData[scannerIndex][i].m_column);
+			}
+		}
+	}
+
+	// The unit conversion
+	double unitConversionFactor = 1.0;
+	if (g_userSettings.m_columnUnit == UNIT_PPMM)
+		unitConversionFactor = 1.0;
+	else if (g_userSettings.m_columnUnit == UNIT_MOLEC_CM2)
+		unitConversionFactor = 2.5e15;
 
 	// convert to the correct unit
 	minColumn *= unitConversionFactor;
@@ -377,6 +414,42 @@ void CEvaluatedDataStorage::GetAngleRange(const CString &serial, double &minAngl
 		maxAngle  = max(maxAngle, m_specData[scannerIndex][i].m_angle);
 		minAngle  = min(minAngle, m_specData[scannerIndex][i].m_angle);
 	}
+}
+
+void CEvaluatedDataStorage::AppendSpecDataHistory(int scannerIndex, int time, double column, double columnError, 
+	double peakSaturation, double fitSaturation, double angle, bool isBadFit) {
+	// If there are any old values in the array then remove them before appending more data.
+	ResetSpecIndex(scannerIndex);
+
+	// m_specIndex[scannerIndex] is the number of data-points there are in
+	//	the array of col-values
+	if (m_specIndex[scannerIndex] < MAX_SPEC_PER_SCAN * 300) {
+		// insert the datapoint into the array
+		int index = m_specIndex[scannerIndex];
+		m_specDataDay[scannerIndex][index].m_time = time;
+		m_specDataDay[scannerIndex][index].m_column = column;
+		m_specDataDay[scannerIndex][index].m_columnError = columnError;
+		m_specDataDay[scannerIndex][index].m_peakSaturation = peakSaturation;
+		m_specDataDay[scannerIndex][index].m_fitSaturation = fitSaturation;
+		m_specDataDay[scannerIndex][index].m_angle = angle;
+		m_specDataDay[scannerIndex][index].m_isBadFit = isBadFit;
+		++m_specIndex[scannerIndex];
+	}
+}
+/** Removes old spec data */
+void  CEvaluatedDataStorage::ResetSpecIndex(int scannerIndex) {
+	static int lastDate; // the day of month when this function was last called
+
+	// todays date
+	Common common;
+	int today = common.GetDay();
+	
+	// if new day, reset spec index to 0
+	if (lastDate != today) {
+		m_specIndex[scannerIndex] = 0;
+	}
+
+	lastDate = today;
 }
 
 void CEvaluatedDataStorage::AppendFluxResult(int scannerIndex, const CDateTime &time, double fluxValue, bool fluxOk, double batteryVoltage, double temp, long expTime){
@@ -450,30 +523,44 @@ void  CEvaluatedDataStorage::RemoveOldFluxResults(){
 	lastDate = today;
 }
 
-/** Get Column data. 
+/** Get Column data for last scan. 
     @param scannerIndex - the scanner for which the data should be retrieved.
     @param dataBuffer - the column data will be copied into this buffer.
     @param dataErrorBuffer - the column error data will be copied into this buffer.
     @param bufferSize - the maximum number of data points that the buffer can handle.
+	@param fullDay - 0 if for last scan; 1 if for full day
     @return the number of data points copied into the dataBuffer*/
-long CEvaluatedDataStorage::GetColumnData(const CString &serial, double *dataBuffer, double *dataErrorBuffer, long bufferSize){
+long CEvaluatedDataStorage::GetColumnData(const CString &serial, double *dataBuffer, double *dataErrorBuffer, long bufferSize, bool fullDay) {
 	// get the scanner index
 	int scannerIndex = GetScannerIndex(serial);
 
-	if((scannerIndex < 0) || (scannerIndex > MAX_NUMBER_OF_SCANNING_INSTRUMENTS))
+	if ((scannerIndex < 0) || (scannerIndex > MAX_NUMBER_OF_SCANNING_INSTRUMENTS))
 		return 0;
 
 	// The unit conversion
 	double unitConversionFactor = 0;
-	if(g_userSettings.m_columnUnit == UNIT_PPMM)
+	if (g_userSettings.m_columnUnit == UNIT_PPMM)
 		unitConversionFactor = 1.0;
-	else if(g_userSettings.m_columnUnit == UNIT_MOLEC_CM2)
+	else if (g_userSettings.m_columnUnit == UNIT_MOLEC_CM2)
 		unitConversionFactor = 2.5e15;
 
-	int nCopy = min(bufferSize, m_positionsNum[scannerIndex]);
-	for(int i = 0; i < nCopy; ++i){
-		dataBuffer[i]      = m_specData[scannerIndex][i].m_column * unitConversionFactor;
-		dataErrorBuffer[i] = m_specData[scannerIndex][i].m_columnError * unitConversionFactor;
+	int nCopy;
+	if (fullDay) {
+		// full day
+		nCopy = min(bufferSize, m_specIndex[scannerIndex]);
+		for (int i = 0; i < nCopy; ++i) {
+			dataBuffer[i] = m_specDataDay[scannerIndex][i].m_column * unitConversionFactor;
+			dataErrorBuffer[i] = m_specDataDay[scannerIndex][i].m_columnError * unitConversionFactor;
+		}
+	}
+	else {
+		// last scan
+		nCopy = min(bufferSize, m_positionsNum[scannerIndex]);
+		for (int i = 0; i < nCopy; ++i) {
+			dataBuffer[i] = m_specData[scannerIndex][i].m_column * unitConversionFactor;
+			dataErrorBuffer[i] = m_specData[scannerIndex][i].m_columnError * unitConversionFactor;
+		}
+
 	}
 
 	return nCopy;
@@ -483,17 +570,27 @@ long CEvaluatedDataStorage::GetColumnData(const CString &serial, double *dataBuf
     @param scannerIndex - the scanner for which the data should be retrieved.
     @param dataBuffer - the time data will be copied into this buffer.
     @param bufferSize - the maximum number of data points that the buffer can handle.
+	@param fullDay - 0 if for last scan; 1 if for full day
     @return the number of data points copied into the dataBuffer*/
-long CEvaluatedDataStorage::GetTimeData(const CString &serial, double *dataBuffer, long bufferSize){
+long CEvaluatedDataStorage::GetTimeData(const CString &serial, double *dataBuffer, long bufferSize, bool fullDay){
 	// get the scanner index
 	int scannerIndex = GetScannerIndex(serial);
 
 	if((scannerIndex < 0) || (scannerIndex > MAX_NUMBER_OF_SCANNING_INSTRUMENTS))
 		return 0;
 
-	int nCopy = min(bufferSize, m_positionsNum[scannerIndex]);
-	for(int i = 0; i < nCopy; ++i){
-		dataBuffer[i] = (double)m_specData[scannerIndex][i].m_time;
+	int nCopy;
+	if (fullDay) {
+		nCopy = min(bufferSize, m_specIndex[scannerIndex]);
+		for (int i = 0; i < nCopy; ++i) {
+			dataBuffer[i] = (double)m_specDataDay[scannerIndex][i].m_time;
+		}
+	}
+	else {
+		nCopy = min(bufferSize, m_positionsNum[scannerIndex]);
+		for (int i = 0; i < nCopy; ++i) {
+			dataBuffer[i] = (double)m_specData[scannerIndex][i].m_time;
+		}
 	}
 
 	return nCopy;
@@ -503,8 +600,9 @@ long CEvaluatedDataStorage::GetTimeData(const CString &serial, double *dataBuffe
     @param serial - the serial number of the spectrometer for which the data should be retrieved.
     @param dataBuffer - the column data of the bad measurements will be copied into this buffer.
     @param bufferSize - the maximum number of data points that the buffer can handle.
+	@param fullDay - if data for full day (true) or just last scan (false)
     @return the number of data points copied into the dataBuffer*/
-long CEvaluatedDataStorage::GetBadColumnData(const CString &serial, double *dataBuffer, long bufferSize){
+long CEvaluatedDataStorage::GetBadColumnData(const CString &serial, double *dataBuffer, long bufferSize, bool fullDay){
 	// get the scanner index
 	int scannerIndex = GetScannerIndex(serial);
 
@@ -518,12 +616,24 @@ long CEvaluatedDataStorage::GetBadColumnData(const CString &serial, double *data
 	else if(g_userSettings.m_columnUnit == UNIT_MOLEC_CM2)
 		unitConversionFactor = 2.5e15;
 
-	int nCopy = min(bufferSize, m_positionsNum[scannerIndex]);
-	for(int k = 0; k < nCopy; ++k){
-		if(m_specData[scannerIndex][k].m_isBadFit)
-			dataBuffer[k] = m_specData[scannerIndex][k].m_column * unitConversionFactor;
-		else
-			dataBuffer[k] = 0;
+	int nCopy;
+	if (fullDay) {
+		nCopy = min(bufferSize, m_specIndex[scannerIndex]);
+		for (int k = 0; k < nCopy; ++k) {
+			if (m_specDataDay[scannerIndex][k].m_isBadFit)
+				dataBuffer[k] = m_specDataDay[scannerIndex][k].m_column * unitConversionFactor;
+			else
+				dataBuffer[k] = 0;
+		}
+	}
+	else {
+		nCopy = min(bufferSize, m_positionsNum[scannerIndex]);
+		for (int k = 0; k < nCopy; ++k) {
+			if (m_specData[scannerIndex][k].m_isBadFit)
+				dataBuffer[k] = m_specData[scannerIndex][k].m_column * unitConversionFactor;
+			else
+				dataBuffer[k] = 0;
+		}
 	}
 
 	return nCopy;
@@ -534,18 +644,29 @@ long CEvaluatedDataStorage::GetBadColumnData(const CString &serial, double *data
     @param peakSat - the peak saturation data will be copied into this buffer.
     @param fitSat	- the fit saturation data will be copied into this buffer.
     @param bufferSize - the maximum number of data points that the buffer can handle.
+	@param fullDay - whether to get for full day (true) or just last scan (false)
     @return the number of data points copied into the dataBuffer*/
-long CEvaluatedDataStorage::GetIntensityData(const CString &serial, double *peakSat, double *fitSat, long bufferSize){
+long CEvaluatedDataStorage::GetIntensityData(const CString &serial, double *peakSat, double *fitSat, long bufferSize, bool fullDay){
 	// get the scanner index
 	int scannerIndex = GetScannerIndex(serial);
 
 	if((scannerIndex < 0) || (scannerIndex > MAX_NUMBER_OF_SCANNING_INSTRUMENTS))
 		return 0;
 
-	int nCopy = min(bufferSize, m_positionsNum[scannerIndex]);
-	for(int i = 0; i < nCopy; ++i){
-		peakSat[i]	= m_specData[scannerIndex][i].m_peakSaturation; 
-		fitSat[i]		= m_specData[scannerIndex][i].m_fitSaturation;
+	int nCopy;
+	if (fullDay) {
+		nCopy = min(bufferSize, m_specIndex[scannerIndex]);
+		for (int i = 0; i < nCopy; ++i) {
+			peakSat[i] = m_specDataDay[scannerIndex][i].m_peakSaturation;
+			fitSat[i] = m_specDataDay[scannerIndex][i].m_fitSaturation;
+		}
+	}
+	else {
+		nCopy = min(bufferSize, m_positionsNum[scannerIndex]);
+		for (int i = 0; i < nCopy; ++i) {
+			peakSat[i] = m_specData[scannerIndex][i].m_peakSaturation;
+			fitSat[i] = m_specData[scannerIndex][i].m_fitSaturation;
+		}
 	}
 
 	return nCopy;

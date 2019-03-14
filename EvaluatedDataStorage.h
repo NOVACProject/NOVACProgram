@@ -87,36 +87,43 @@ public:
 	/** Adds flux result */
 	void AppendFluxResult(int scannerIndex, const CDateTime &time, double fluxValue, bool fluxOk, double batteryVoltage = -999, double temp = -999, long expTime = -999);
 
+	/** Add spec data to history */
+	void AppendSpecDataHistory(int scannerIndex, int time, double column, double columnError,
+		double peakSaturation, double fitSaturation, double angle, bool isBadFit);
+
 	/** Returns the smallest and the largest flux in the data bank */
 	void GetFluxRange(const CString &serial, double &minFlux, double &maxFlux);
 
 	/** Returns the smallest and the largest columns in the data bank */
-	void GetColumnRange(const CString &serial, double &minColumn, double &maxColumn);
+	void GetColumnRange(const CString &serial, double &minColumn, double &maxColumn, bool fullDay=false);
 
 	/** Returns the smallest and the largest angle in the data bank */
 	void GetAngleRange(const CString &serial, double &minAngle, double &maxAngle);
 
-	/** Get Column data. 
+	/** Get Column data for last scan. 
 	    @param serial - the serial number of the spectrometer for which the data should be retrieved.
 	    @param dataBuffer - the column data will be copied into this buffer.
 	    @param dataErrorBuffer - the column error data will be copied into this buffer.
 	    @param bufferSize - the maximum number of data points that the buffer can handle.
+		@param fullDay - whether to get for full day (true) or just last scan (false)
 	    @return the number of data points copied into the dataBuffer*/
-	long GetColumnData(const CString &serial, double *dataBuffer, double *dataErrorBuffer, long bufferSize);
-
+	long GetColumnData(const CString &serial, double *dataBuffer, double *dataErrorBuffer, long bufferSize, bool fullDay = false);
+	
 	/** Get Time data. 
 	    @param serial - the serial number of the spectrometer for which the data should be retrieved.
 	    @param dataBuffer - the time data will be copied into this buffer.
 	    @param bufferSize - the maximum number of data points that the buffer can handle.
+		@param fullDay - 0 if for last scan; 1 if for full day
 	    @return the number of data points copied into the dataBuffer*/
-	long GetTimeData(const CString &serial, double *dataBuffer, long bufferSize);
+	long GetTimeData(const CString &serial, double *dataBuffer, long bufferSize, bool fullDay=false);
 
 	/** Get the Column data for the measurements which are considered bad.
 	    @param serial - the serial number of the spectrometer for which the data should be retrieved.
 	    @param dataBuffer - the column data of the bad measurements will be copied into this buffer.
 	    @param bufferSize - the maximum number of data points that the buffer can handle.
+		@param fullDay - whether to get for full day (true) or just last scan (false)
 	    @return the number of column data points (good and bad) */
-	long GetBadColumnData(const CString &serial, double *dataBuffer, long bufferSize);
+	long GetBadColumnData(const CString &serial, double *dataBuffer, long bufferSize, bool fullDay=false);
 
 	/** Get Angle data. 
 	    @param serial - the serial number of the spectrometer for which the data should be retrieved.
@@ -130,8 +137,9 @@ public:
 	    @param peakSat - the peak saturation data will be copied into this buffer.
 	    @param fitSat - the fit saturation data will be copied into this buffer.
 	    @param bufferSize - the maximum number of data points that the buffer can handle.
+		@param fullDay - whether to get for full day (true) or just last scan (false)
 	    @return the number of data points copied into the dataBuffer*/
-	long GetIntensityData(const CString &serial, double *peakSat, double *fitSat, long bufferSize);
+	long GetIntensityData(const CString &serial, double *peakSat, double *fitSat, long bufferSize, bool fullDay=true);
 
 	/** Get Flux data. 
 	    @param serial - the serial number of the spectrometer for which the data should be retrieved.
@@ -219,7 +227,7 @@ public:
 
 	/** Gets the highest recorded battery voltage for the given spectrometer */
 	double GetMaxBatteryVoltage(const CString &serial);
-
+	
 private:
 	// ----------------------------------------------------------------------
 	// --------------------- PRIVATE DATA -----------------------------------
@@ -233,6 +241,12 @@ private:
 
 	/** The number of positions in each scan */
 	int m_positionsNum[MAX_NUMBER_OF_SCANNING_INSTRUMENTS];
+
+	/** The information about the spectra for the day */
+	CSpectrumData m_specDataDay[MAX_NUMBER_OF_SCANNING_INSTRUMENTS][MAX_SPEC_PER_SCAN*300];
+
+	/** The number of positions in each m_specDataDay */
+	int m_specIndex[MAX_NUMBER_OF_SCANNING_INSTRUMENTS];
 
 	/** The offset in the measurement */
 	double m_offset[MAX_NUMBER_OF_SCANNING_INSTRUMENTS];
@@ -264,12 +278,18 @@ private:
 	/** How many serial numbers have been inserted */
 	unsigned int m_serialNum;
 
+	/** Scan end time from evaluation result. */
+	CDateTime m_scanTime[MAX_NUMBER_OF_SCANNING_INSTRUMENTS];
+
 	// ----------------------------------------------------------------------
 	// -------------------- PRIVATE METHODS ---------------------------------
 	// ----------------------------------------------------------------------
 
 	/** Removes old flux results */
 	void RemoveOldFluxResults();
+
+	/** Reset spec index */
+	void  ResetSpecIndex(int scannerIndex);
 
 	/** Returns the spectrometer index given a serial number */
 	int GetScannerIndex(const CString &serial);

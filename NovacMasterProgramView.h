@@ -100,13 +100,12 @@ public:
 	afx_msg void OnMenuShowConfigurationDialog();
 	afx_msg void OnMenuViewInstrumentTab();
 	afx_msg void OnDestroy();
-	afx_msg void OnBnClickedButtonSetWindfield();
 	afx_msg void OnMenuAnalysisFlux();
 	afx_msg void OnMenuAnalysisReevaluate();
 	afx_msg void OnMenuAnalysisSetup();
 	afx_msg void OnMenuAnalysisWind();
-	afx_msg void OnMenuAnalysisBrowseData();
-	afx_msg void OnMenuAnalysisSummarizeFlux();
+	afx_msg void OnMenuAnalysisBrowseData(); 
+	afx_msg void OnMenuAnalysisColumnHistory();
 	afx_msg void OnMenuFileExport();
 	afx_msg void OnMenuFileImport();
 	afx_msg void OnMenuFileCheckPakFile();
@@ -169,13 +168,11 @@ private:
 	/** Called when the configuration file has been read */
 	int InitializeControls();
 
-	/** Finds the spectrometer number in the scanner which contains a 
-		spectrometer with the supplied serial number */
-	int FindSpectrometer(const CString *serial);
+	/** Read flux log */
+	void ReadFluxLog(int scannerIndex, CString dateStr, CString serialNumber);
 
-	/** Finds the scanner which contains a spectrometer with the 
-		supplied serial number */
-	int FindScanner(const CString *serial);
+	/** Read eval log */
+	void ReadEvalLog(int scannerIndex, CString dateStr, CString serialNumber);
 
 	/** Forwards messages to the different views */
 	void ForwardMessage(int message, WPARAM wParam, LPARAM lParam);

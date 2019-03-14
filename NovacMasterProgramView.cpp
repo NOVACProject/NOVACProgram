@@ -33,6 +33,7 @@
 #include "ReEvaluation/ReEval_MiscSettingsDlg.h"
 #include "ReEvaluation/ReEval_DoEvaluationDlg.h"
 
+#include "Dialogs/ColumnHistoryDlg.h"
 #include "Dialogs/ExportDlg.h"
 #include "Dialogs/ExportSpectraDlg.h"
 #include "Dialogs/ExportEvallogDlg.h"
@@ -92,7 +93,8 @@ BEGIN_MESSAGE_MAP(CNovacMasterProgramView, CFormView)
 	ON_COMMAND(ID_ANALYSIS_REEVALUATE,					OnMenuAnalysisReevaluate)
 	ON_COMMAND(ID_ANALYSIS_SETUP,						OnMenuAnalysisSetup)
 	ON_COMMAND(ID_ANALYSIS_BROWSEMEASUREDDATA,			OnMenuAnalysisBrowseData)
-	ON_COMMAND(ID_ANALYSIS_SUMMARIZEFLUXDATA,			OnMenuAnalysisSummarizeFlux)
+	ON_COMMAND(ID_ANALYSIS_COLUMN_HISTORY,				OnMenuAnalysisColumnHistory)
+	//ON_COMMAND(ID_ANALYSIS_SUMMARIZEFLUXDATA,			OnMenuAnalysisSummarizeFlux)
 	ON_COMMAND(ID_FILE_EXPORT,							OnMenuFileExport)
 	ON_COMMAND(ID_FILE_IMPORT,							OnMenuFileImport)
 	ON_COMMAND(ID_FILE_SPLITMERGE,						OnMenuFileSplitMergePak)
@@ -217,8 +219,7 @@ void CNovacMasterProgramView::OnInitialUpdate()
 	CString message;
 	CRect rect, rect2, tabRect;
 	CString fileName, windFieldFile, userSettingsFile;
-	CString path, serialNumber, dateStr;
-	FileHandler::CFluxLogFileHandler fluxLogReader;
+	CString serialNumber, dateStr;
 
 	CFormView::OnInitialUpdate();
 	GetParentFrame()->RecalcLayout();
@@ -251,51 +252,11 @@ void CNovacMasterProgramView::OnInitialUpdate()
 	dateStr.Format("%04d.%02d.%02d", m_common.GetYear(), m_common.GetMonth(), m_common.GetDay());
 	for(unsigned int it = 0; it < g_settings.scannerNum; ++it){
 		serialNumber.Format(g_settings.scanner[it].spec[0].serialNumber);
-		path.Format("%sOutput\\%s\\%s\\FluxLog_%s_%s.txt", 
-			(LPCTSTR)g_settings.outputDirectory, 
-			(LPCTSTR)dateStr, 
-			(LPCTSTR)serialNumber,
-			(LPCTSTR)serialNumber,
-			(LPCTSTR)dateStr);
-
-		m_evalDataStorage->AddData(serialNumber, NULL);
-
-		if(IsExistingFile(path)){
-			// Try to read the flux-log
-			fluxLogReader.m_fluxLog.Format(path);
-			if(FAIL == fluxLogReader.ReadFluxLog())
-				continue;
-
-			if(fluxLogReader.m_fluxesNum > 0){
-				// Copy the read-in data to the m_evalDataStorage
-				int fluxesNum = fluxLogReader.m_fluxesNum;
-
-				for(int it2 = 0; it2 < fluxesNum; ++it2){
-					Evaluation::CFluxResult &fl = fluxLogReader.m_fluxes[it2];
-					CSpectrumInfo &info					= fluxLogReader.m_scanInfo[it2];
-					m_evalDataStorage->AppendFluxResult(it, fl.m_startTime, fl.m_flux, fl.m_fluxOk, info.m_batteryVoltage, info.m_temperature, info.m_exposureTime);
-				}
-
-				// Insert the last used wind-field for the current spectrometer
-				CWindField windField;
-				if(fluxLogReader.m_fluxes[fluxesNum-1].m_plumeHeight > 0 && fluxLogReader.m_fluxes[fluxesNum-1].m_plumeHeight < 5000){
-					windField.SetPlumeHeight(fluxLogReader.m_fluxes[fluxesNum-1].m_plumeHeight,			fluxLogReader.m_fluxes[fluxesNum-1].m_plumeHeightSource);
-				}else{
-					windField.SetPlumeHeight(1000,	MET_DEFAULT);
-				}
-				if(fluxLogReader.m_fluxes[fluxesNum-1].m_windDirection > -180 && fluxLogReader.m_fluxes[fluxesNum-1].m_windDirection <= 360){
-					windField.SetWindDirection(fluxLogReader.m_fluxes[fluxesNum-1].m_windDirection,	fluxLogReader.m_fluxes[fluxesNum-1].m_windDirectionSource);
-				}else{
-					windField.SetWindDirection(0,		MET_DEFAULT);
-				}
-				if(fluxLogReader.m_fluxes[fluxesNum-1].m_windSpeed > -1 && fluxLogReader.m_fluxes[fluxesNum-1].m_windSpeed <= 30){
-					windField.SetWindSpeed(fluxLogReader.m_fluxes[fluxesNum-1].m_windSpeed,					fluxLogReader.m_fluxes[fluxesNum-1].m_windSpeedSource);
-				}else{
-					windField.SetWindSpeed(10,			MET_DEFAULT);
-				}
-
-				g_metData.SetWindField(serialNumber, windField);
-			}
+		if (g_settings.scanner[it].plotColumnOnly) {
+			ReadEvalLog(it, dateStr, serialNumber);
+		}
+		else {
+			ReadFluxLog(it, dateStr, serialNumber);
 		}
 	}
 
@@ -352,9 +313,105 @@ void CNovacMasterProgramView::OnInitialUpdate()
 	UpdateData(FALSE);
 }
 
+void CNovacMasterProgramView::ReadFluxLog(int scannerIndex, CString dateStr, CString serialNumber) {
+	FileHandler::CFluxLogFileHandler fluxLogReader;
+	CString path;
+	path.Format("%sOutput\\%s\\%s\\FluxLog_%s_%s.txt",
+		(LPCTSTR)g_settings.outputDirectory,
+		(LPCTSTR)dateStr,
+		(LPCTSTR)serialNumber,
+		(LPCTSTR)serialNumber,
+		(LPCTSTR)dateStr);
+
+	m_evalDataStorage->AddData(serialNumber, NULL);
+
+	if (IsExistingFile(path)) {
+		// Try to read the flux-log
+		fluxLogReader.m_fluxLog.Format(path);
+		if (FAIL == fluxLogReader.ReadFluxLog())
+			return;
+
+		if (fluxLogReader.m_fluxesNum > 0) {
+			// Copy the read-in data to the m_evalDataStorage
+			int fluxesNum = fluxLogReader.m_fluxesNum;
+
+			for (int it2 = 0; it2 < fluxesNum; ++it2) {
+				Evaluation::CFluxResult &fl = fluxLogReader.m_fluxes[it2];
+				CSpectrumInfo &info = fluxLogReader.m_scanInfo[it2];
+				m_evalDataStorage->AppendFluxResult(scannerIndex, fl.m_startTime, fl.m_flux, fl.m_fluxOk, info.m_batteryVoltage, info.m_temperature, info.m_exposureTime);
+			}
+
+			// Insert the last used wind-field for the current spectrometer
+			CWindField windField;
+			if (fluxLogReader.m_fluxes[fluxesNum - 1].m_plumeHeight > 0 && fluxLogReader.m_fluxes[fluxesNum - 1].m_plumeHeight < 5000) {
+				windField.SetPlumeHeight(fluxLogReader.m_fluxes[fluxesNum - 1].m_plumeHeight, fluxLogReader.m_fluxes[fluxesNum - 1].m_plumeHeightSource);
+			}
+			else {
+				windField.SetPlumeHeight(1000, MET_DEFAULT);
+			}
+			if (fluxLogReader.m_fluxes[fluxesNum - 1].m_windDirection > -180 && fluxLogReader.m_fluxes[fluxesNum - 1].m_windDirection <= 360) {
+				windField.SetWindDirection(fluxLogReader.m_fluxes[fluxesNum - 1].m_windDirection, fluxLogReader.m_fluxes[fluxesNum - 1].m_windDirectionSource);
+			}
+			else {
+				windField.SetWindDirection(0, MET_DEFAULT);
+			}
+			if (fluxLogReader.m_fluxes[fluxesNum - 1].m_windSpeed > -1 && fluxLogReader.m_fluxes[fluxesNum - 1].m_windSpeed <= 30) {
+				windField.SetWindSpeed(fluxLogReader.m_fluxes[fluxesNum - 1].m_windSpeed, fluxLogReader.m_fluxes[fluxesNum - 1].m_windSpeedSource);
+			}
+			else {
+				windField.SetWindSpeed(10, MET_DEFAULT);
+			}
+
+			g_metData.SetWindField(serialNumber, windField);
+		}
+	}
+}
+
+void CNovacMasterProgramView::ReadEvalLog(int scannerIndex, CString dateStr, CString serialNumber) {
+	FileHandler::CEvaluationLogFileHandler evalLogReader;
+	CString path;
+	path.Format("%sOutput\\%s\\%s\\EvaluationLog_%s_%s.txt",
+		(LPCTSTR)g_settings.outputDirectory,
+		(LPCTSTR)dateStr,
+		(LPCTSTR)serialNumber,
+		(LPCTSTR)serialNumber,
+		(LPCTSTR)dateStr);
+
+	m_evalDataStorage->AddData(serialNumber, NULL);
+
+	if (IsExistingFile(path)) {
+		// Try to read the eval-log
+		evalLogReader.m_evaluationLog.Format(path);
+		if (FAIL == evalLogReader.ReadEvaluationLog())
+			return;
+
+		if (evalLogReader.m_scanNum > 0) {
+			// Copy the read-in data to the m_evalDataStorage
+			int scanNum = evalLogReader.m_scanNum;
+
+			for (int i = 0; i < scanNum; ++i) {
+				Evaluation::CScanResult &sr = evalLogReader.m_scan[i];
+				for (unsigned long j = 0; j < sr.GetEvaluatedNum(); ++j) {
+					CDateTime st;
+					sr.GetStartTime(j, st);
+					int time = st.hour * 3600 + st.minute * 60 + st.second;
+					double column = sr.GetColumn(j, 0);
+					double columnError = sr.GetColumnError(j, 0);
+					double peakIntensity = sr.GetPeakIntensity(j);
+					double fitIntensity = sr.GetFitIntensity(j);
+					double angle = sr.GetScanAngle(j);
+					bool isBadFit = sr.IsBad(j);
+
+					m_evalDataStorage->AppendSpecDataHistory(scannerIndex, time, column, columnError, 
+						peakIntensity, fitIntensity, angle, isBadFit);
+
+				}
+			}
+		}
+	}
+}
 
 // CNovacMasterProgramView diagnostics
-
 #ifdef _DEBUG
 void CNovacMasterProgramView::AssertValid() const
 {
@@ -931,11 +988,9 @@ void CNovacMasterProgramView::OnMenuAnalysisBrowseData(){
 	dlg.DoModal();
 }
 
-void CNovacMasterProgramView::OnMenuAnalysisSummarizeFlux(){
-#ifdef _DEBUG
-	Dialogs::CSummarizeFluxDataDlg dlg;
+void CNovacMasterProgramView::OnMenuAnalysisColumnHistory() {
+	ColumnHistoryDlg dlg;
 	dlg.DoModal();
-#endif
 }
 
 void CNovacMasterProgramView::OnMenuAnalysisReevaluate()

@@ -48,17 +48,21 @@ void CLocationConfigurationDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT_OBSERVATORY,				m_editObservatory);
 	DDX_Control(pDX, IDC_EDIT_SERIALNUMBER,				m_editSerial);
 
-	DDX_Control(pDX, IDC_EDIT_STEPSPERROUND1,			m_editSPR1);
-	DDX_Control(pDX, IDC_EDIT_STEPSPERROUND2,			m_editSPR2);
-	DDX_Control(pDX, IDC_EDIT_MOTORSTEPSCOMPENSATION1,	m_editMSC1);
-	DDX_Control(pDX, IDC_EDIT_MOTORSTEPSCOMPENSATION2,	m_editMSC2);
-	DDX_Control(pDX, IDC_LABEL_STEPSPERROUND,			m_labelSPR);
+	//DDX_Control(pDX, IDC_EDIT_STEPSPERROUND1,			m_editSPR1);
+	//DDX_Control(pDX, IDC_EDIT_STEPSPERROUND2,			m_editSPR2);
+	//DDX_Control(pDX, IDC_EDIT_MOTORSTEPSCOMPENSATION1,	m_editMSC1);
+	//DDX_Control(pDX, IDC_EDIT_MOTORSTEPSCOMPENSATION2,	m_editMSC2);
+	//DDX_Control(pDX, IDC_LABEL_STEPSPERROUND,			m_labelSPR);
 
 	// The combo boxes
 	DDX_Control(pDX, IDC_COMBO_VOLCANO,					m_comboVolcano);
 	DDX_Control(pDX, IDC_COMBO_ELECTRONICS,				m_comboElectronics);
 	DDX_Control(pDX, IDC_COMBO_SPECTROMETERMODEL,		m_comboSpectrometerModel);
 	DDX_Control(pDX, IDC_COMBO_CHANNELS,				m_comboSpectrometerChannels);
+
+	// check box
+	DDX_Check(pDX, IDC_CHECK_PLOT_COLUMN_ONLY, m_plotColumnOnly);
+
 
 	if(m_curScanner != NULL){
 		DDX_Text(pDX, IDC_EDIT_SITE,					m_curScanner->site);
@@ -79,16 +83,17 @@ BEGIN_MESSAGE_MAP(CLocationConfigurationDlg, CPropertyPage)
 	ON_EN_CHANGE(IDC_EDIT_SITE,											SaveData)
 	ON_EN_CHANGE(IDC_EDIT_OBSERVATORY,				SaveData)
 	ON_EN_CHANGE(IDC_EDIT_SERIALNUMBER,					SaveData)
-	ON_EN_CHANGE(IDC_EDIT_STEPSPERROUND1,				SaveData)
-	ON_EN_CHANGE(IDC_EDIT_STEPSPERROUND2,				SaveData)
-	ON_EN_CHANGE(IDC_EDIT_MOTORSTEPSCOMPENSATION1,		SaveData)
-	ON_EN_CHANGE(IDC_EDIT_MOTORSTEPSCOMPENSATION2,		SaveData)
+	//ON_EN_CHANGE(IDC_EDIT_STEPSPERROUND1,				SaveData)
+	//ON_EN_CHANGE(IDC_EDIT_STEPSPERROUND2,				SaveData)
+	//ON_EN_CHANGE(IDC_EDIT_MOTORSTEPSCOMPENSATION1,		SaveData)
+	//ON_EN_CHANGE(IDC_EDIT_MOTORSTEPSCOMPENSATION2,		SaveData)
 
 	ON_CBN_SELCHANGE(IDC_COMBO_VOLCANO,					OnChangeVolcano)
 	ON_CBN_SELCHANGE(IDC_COMBO_SPECTROMETERMODEL,		OnChangeModel)
 	//ON_CBN_SELCHANGE(IDC_COMBO_OBSERVATORY,				SaveData)
 	ON_CBN_SELCHANGE(IDC_COMBO_CHANNELS,				OnChangeChannelNum)
 	ON_CBN_SELCHANGE(IDC_COMBO_ELECTRONICS, &CLocationConfigurationDlg::OnChangeElectronics)
+	ON_BN_CLICKED(IDC_CHECK_PLOT_COLUMN_ONLY, SaveData)
 END_MESSAGE_MAP()
 
 
@@ -101,13 +106,6 @@ BOOL CLocationConfigurationDlg::OnInitDialog()
 
 	// The volcanoes - combo box 
 	UpdateVolcanoList();
-
-	// The observatories - combo box 
-	//m_comboObservatory.ResetContent();
-	//for(unsigned int k = 0; k < g_observatories.m_observatoryNum; ++k){
-	//	str.Format("%s", g_observatories.m_name[k]);
-	//	m_comboObservatory.AddString(str);
-	//}
 
 	// The spectrometer models combo box
 	m_comboSpectrometerModel.ResetContent();
@@ -131,6 +129,8 @@ BOOL CLocationConfigurationDlg::OnInitDialog()
 	m_comboElectronics.ResetContent();
 	m_comboElectronics.AddString("Version 1");
 	m_comboElectronics.AddString("Version 3");
+
+	m_plotColumnOnly = 0;
 
 	UpdateData(FALSE);
 
@@ -201,17 +201,7 @@ BOOL CLocationConfigurationDlg::OnKillActive(){
 void CLocationConfigurationDlg::SaveData(){
 	UpdateData(TRUE);
 
-	// save the observatory-name
-	//if(m_curScanner != NULL){
-	//	int sel = m_comboObservatory.GetCurSel();
-	//	if(sel >= 0){
-	//		m_curScanner->observatory.Format("%s", g_observatories.m_name[sel]);
-	//	}else{
-	//		m_curScanner->observatory.Format("chalmers");
-	//	}
-	//}else{
-	//	
-	//}
+	m_curScanner->plotColumnOnly = m_plotColumnOnly;
 }
 
 void CLocationConfigurationDlg::UpdateDlg(){
@@ -251,12 +241,13 @@ void CLocationConfigurationDlg::OnChangeScanner(){
 		// Update the electronics
 		m_comboElectronics.SetCurSel((int)m_curScanner->electronicsBox);
 
+		m_plotColumnOnly = m_curScanner->plotColumnOnly;
 
 		m_comboSpectrometerChannels.EnableWindow(TRUE);
-		m_editSPR1.ShowWindow(FALSE);
-		m_editSPR2.ShowWindow(FALSE);
-		m_labelSPR.ShowWindow(FALSE);
-		m_editMSC2.ShowWindow(FALSE);
+		//m_editSPR1.ShowWindow(FALSE);
+		//m_editSPR2.ShowWindow(FALSE);
+		//m_labelSPR.ShowWindow(FALSE);
+		//m_editMSC2.ShowWindow(FALSE);
 
 		// Finally, update the screen to reflect the changes
 		UpdateData(FALSE);
@@ -400,3 +391,4 @@ void CLocationConfigurationDlg::OnChangeElectronics()
 
 	m_curScanner->electronicsBox = (ELECTRONICS_BOX)curSel;
 }
+
