@@ -122,10 +122,7 @@ namespace Evaluation
 
 		/** Returns true if this is a wind-speed measurement */
 		bool IsWindMeasurement() const;
-
-		/** Returns true if this is a wind-speed measurement of Gothenburg type */
-		bool IsWindMeasurement_Gothenburg() const;
-
+		
 		/** Returns true if this is a stratospheric mode measurement */
 		bool IsStratosphereMeasurement() const;
 
