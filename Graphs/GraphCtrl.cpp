@@ -1235,6 +1235,12 @@ void CGraphCtrl::SetGridSpacing(double &lower, double &upper, int dim, NUMBER_FO
 		double intervals[50];
 		int nIntervals;
 		switch (format) {
+		case FORMAT_DATE:
+			intervals[0] = 86400.0f;
+			rangeNorm = range;
+			nIntervals = 1;
+			magnitude = 1.0;
+			break;
 		case FORMAT_TIME:
 			intervals[0] = 14400.0f;
 			intervals[1] = 3600.0f;
@@ -1274,8 +1280,8 @@ void CGraphCtrl::SetGridSpacing(double &lower, double &upper, int dim, NUMBER_FO
 			}	
 		}
 
-		m_gridOptions.line[dim].lowestGridLine	= m_gridOptions.line[dim].gridSpacing * (double)ceil(lower / m_gridOptions.line[dim].gridSpacing);
-		if(m_gridOptions.line[dim].lowestGridLine == lower)
+		m_gridOptions.line[dim].lowestGridLine = m_gridOptions.line[dim].gridSpacing * (double)ceil(lower / m_gridOptions.line[dim].gridSpacing);
+		if (m_gridOptions.line[dim].lowestGridLine == lower)
 			m_gridOptions.line[dim].lowestGridLine += m_gridOptions.line[dim].Spacing();
 
 		if(m_gridOptions.line[dim].autoScale){
@@ -1415,6 +1421,19 @@ void	CGraphCtrl::PrintNumber(double number, int nDecimals, NUMBER_FORMAT format,
 		int minutes		= (number_int - hours * 3600) / 60;
 		int seconds		= number_int % 60;
 		str.Format("%02d:%02d:%02d", hours, minutes, seconds);
+		return;
+	}
+
+	// -------- printing date ------------
+	if (FORMAT_DATE == format) {
+		// interpret the number as epoch time (seconds after 1/1/1970).
+		//int number_int = (int)number;
+		const time_t epoch = number;
+		struct tm *dt = gmtime(&epoch);
+		int year = dt->tm_year + 1900;
+		int month = dt->tm_mon + 1;
+		int day = dt->tm_mday;
+		str.Format("%02d-%02d-%02d", year, month, day);
 		return;
 	}
 

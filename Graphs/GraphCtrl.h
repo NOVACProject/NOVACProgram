@@ -18,8 +18,7 @@ namespace Graph
 	const enum LINE_STYLE {STYLE_SOLID, STYLE_DASHED};
 
 	/** Defining number formats */
-	//const enum NUMBER_FORMAT {FORMAT_GENERAL, FORMAT_TIME, FORMAT_DATE, FORMAT_BINARY};
-	const enum NUMBER_FORMAT { FORMAT_GENERAL, FORMAT_TIME, FORMAT_BINARY };
+	const enum NUMBER_FORMAT {FORMAT_GENERAL, FORMAT_TIME, FORMAT_DATE, FORMAT_BINARY};
 
 	
 		/** <b>CGraphCtrl</b> is our class for drawing the output from the program in
