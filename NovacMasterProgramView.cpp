@@ -137,6 +137,7 @@ CNovacMasterProgramView::CNovacMasterProgramView()
 	pView = this;
 	m_evalDataStorage = new CEvaluatedDataStorage();
 	m_commDataStorage = new CCommunicationDataStorage();
+	m_columnHistory = nullptr;
 
 	m_overView			= NULL;
 	m_windOverView	= NULL;
@@ -989,8 +990,26 @@ void CNovacMasterProgramView::OnMenuAnalysisBrowseData(){
 }
 
 void CNovacMasterProgramView::OnMenuAnalysisColumnHistory() {
-	ColumnHistoryDlg dlg;
-	dlg.DoModal();
+
+	if (m_columnHistory == nullptr || m_columnHistory->m_hWnd == nullptr)
+	{
+		if (m_columnHistory == nullptr) {
+			m_columnHistory = new ColumnHistoryDlg();
+		}
+		if (!m_columnHistory->Create(IDD_COLUMN_HISTORY_DLG, this))
+		{
+			delete m_columnHistory;
+			m_columnHistory = nullptr;
+			return;
+		}
+	}
+	else {
+		/* already exists */
+		if (m_columnHistory->IsIconic()) { // in case the minimize button is enabled
+			m_columnHistory->ShowWindow(SW_RESTORE);
+		}
+	}
+
 }
 
 void CNovacMasterProgramView::OnMenuAnalysisReevaluate()

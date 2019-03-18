@@ -7,6 +7,7 @@
 #include "Configuration/Configuration.h"
 #include "Configuration/EvaluationConfigurationDlg.h"
 #include "Dialogs/ConfigurationDlg.h"
+#include "Dialogs/ColumnHistoryDlg.h"
 #include "EvaluatedDataStorage.h"
 #include "CommunicationDataStorage.h"
 #include "MeteorologicalData.h"
@@ -182,6 +183,9 @@ private:
 
 	/** Scan the last status-log file for interesting data */
 	void	ScanStatusLogFile();
+
+	// History dialogs
+	ColumnHistoryDlg *m_columnHistory;
 
 public:
 	afx_msg void OnUpdateMenuViewInstrumenttab(CCmdUI *pCmdUI);
