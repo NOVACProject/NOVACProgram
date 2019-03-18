@@ -570,6 +570,9 @@
     <ClCompile Include="SpectralEvaluation\src\File\File.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
+    <ClCompile Include="Dialogs\ColumnHistoryDlg.cpp">
+      <Filter>Source Files\Dialogs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Configuration\AdvancedFTPUploadSettings.h">
@@ -1168,6 +1171,9 @@
     </ClInclude>
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Spectra\SpectrumInfo.h">
       <Filter>Header Files\SpectralEvaluation\Spectra</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialogs\ColumnHistoryDlg.h">
+      <Filter>Header Files\Dialogs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

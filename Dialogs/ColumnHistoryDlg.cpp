@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "resource.h"
+#include "../resource.h"
 #include "ColumnHistoryDlg.h"
 #include "afxdialogex.h"
 

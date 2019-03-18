@@ -169,6 +169,7 @@
     <ClCompile Include="Configuration\SystemConfigurationPage.cpp" />
     <ClCompile Include="Configuration\VIIAdvancedConfigurationDlg.cpp" />
     <ClCompile Include="Configuration\WindConfigurationDlg.cpp" />
+    <ClCompile Include="Dialogs\ColumnHistoryDlg.cpp" />
     <ClCompile Include="Dialogs\ConfigurationDlg.cpp" />
     <ClCompile Include="Dialogs\DarkSettingsDialog.cpp" />
     <ClCompile Include="Dialogs\DataBrowserDlg.cpp" />
@@ -241,6 +242,7 @@
     <ClCompile Include="Dialogs\ReferencePlotDlg.cpp" />
     <ClCompile Include="ScannerFileInfo.cpp" />
     <ClCompile Include="ScannerFolderInfo.cpp" />
+    <ClInclude Include="Dialogs\ColumnHistoryDlg.h" />
     <ClInclude Include="Evaluation\EvaluationResultView.h" />
     <ClInclude Include="SpectralEvaluation\Fit\BSpline.cxx" />
     <ClInclude Include="SpectralEvaluation\Fit\BSplineD.cxx" />
