@@ -417,6 +417,7 @@
 #define IDC_DISKCOMBO                   1078
 #define IDC_COMBO_IMAGEFORMAT           1078
 #define IDC_COMBO_OFFSET                1078
+#define IDC_COMBO_SCANNER               1078
 #define IDC_SLEEPHR                     1079
 #define IDC_COMBO_DARKCURRENT           1079
 #define IDC_COMBO_VOLCANO2              1079
@@ -779,6 +780,8 @@
 #define IDC_CHECK2                      1342
 #define IDC_CHECK_USE_AUTOMATIC_PLUMEPARAM2 1342
 #define IDC_LABEL_SWITCHRANGE           1343
+#define IDC_COLUMN_30DAY_FRAME          1345
+#define IDC_COLUMN_10DAY_FRAME          1346
 #define ID_CONTROL_START                32771
 #define ID_VIEW_PEAKINTENSITY_BD        32779
 #define ID_VIEW_FITINTENSITY_BD         32780
@@ -793,9 +796,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        312
+#define _APS_NEXT_RESOURCE_VALUE        313
 #define _APS_NEXT_COMMAND_VALUE         32788
-#define _APS_NEXT_CONTROL_VALUE         1345
+#define _APS_NEXT_CONTROL_VALUE         1347
 #define _APS_NEXT_SYMED_VALUE           109
 #endif
 #endif

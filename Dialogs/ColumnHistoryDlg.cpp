@@ -5,16 +5,28 @@
 #include "../resource.h"
 #include "ColumnHistoryDlg.h"
 #include "afxdialogex.h"
+#include <afxwin.h>
+#include <ctime>
+#include <fstream>
+#include "../Configuration/Configuration.h"
+#include "../Configuration/ConfigurationFileHandler.h"
+#include "../UserSettings.h"
+#include "../Common/EvaluationLogFileHandler.h"
+#include <SpectralEvaluation/Utils.h>
 
+extern CConfigurationSetting	g_settings;
+extern CUserSettings			g_userSettings;
 
 // ColumnHistoryDlg dialog
+
+using namespace Graph;
+using namespace FileHandler;
 
 IMPLEMENT_DYNAMIC(ColumnHistoryDlg, CDialog)
 
 ColumnHistoryDlg::ColumnHistoryDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_COLUMN_HISTORY_DLG, pParent)
 {
-
 }
 
 ColumnHistoryDlg::~ColumnHistoryDlg()
@@ -24,11 +36,250 @@ ColumnHistoryDlg::~ColumnHistoryDlg()
 void ColumnHistoryDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
+
+	DDX_Control(pDX, IDC_COMBO_SCANNER, m_scanners);
+
+	DDX_Control(pDX, IDC_COLUMN_10DAY_FRAME, m_frame10);
+	DDX_Control(pDX, IDC_COLUMN_30DAY_FRAME, m_frame30);
 }
 
 
 BEGIN_MESSAGE_MAP(ColumnHistoryDlg, CDialog)
+	ON_WM_SIZE()
+	ON_WM_CLOSE()
+	ON_CBN_EDITCHANGE(IDC_COMBO_SCANNER, &ColumnHistoryDlg::UpdatePlots)
 END_MESSAGE_MAP()
 
 
+BOOL ColumnHistoryDlg::OnInitDialog()
+{
+	CDialog::OnInitDialog();
+
+	// Populater Scanner drop down
+	PopulateScannerList();
+
+	// Initialize plots
+	Init10DayPlot();
+	Init30DayPlot();
+
+	// Read evaluation logs and plot columns;
+	ReadEvalLogs();
+
+	return TRUE;
+}
+
+void ColumnHistoryDlg::Init10DayPlot() {
+
+	CRect rect;
+	m_frame10.GetWindowRect(rect);
+	int height = rect.bottom - rect.top;
+	int width = rect.right - rect.left;
+	rect.top = 20; rect.bottom = height - 10;
+	rect.left = 10; rect.right = width - 10;
+	m_plot10.Create(WS_VISIBLE | WS_CHILD, rect, &m_frame10);
+
+	Common common;
+	m_plot10.SetXUnits(common.GetString(AXIS_UTCTIME));
+	m_plot10.SetXAxisNumberFormat(FORMAT_DATE);
+	m_plot10.SetYUnits("Column");
+	m_plot10.EnableGridLinesX(true);
+	m_plot10.SetPlotColor(RGB(255, 255, 255));
+	m_plot10.SetGridColor(RGB(255, 255, 255));
+	m_plot10.SetBackgroundColor(RGB(0, 0, 0));
+	m_plot10.SetCircleColor(RGB(255, 0, 0));
+	m_plot10.SetCircleRadius(1);
+	m_plot10.SetRangeY(1.0, 500, 0);
+
+	// set time range
+	struct tm *tm;
+	time_t t;
+	time(&t);
+	tm = gmtime(&t);
+	time_t endtime = t - (3600 * tm->tm_hour + 60 * tm->tm_min + tm->tm_sec);
+	time_t starttime = endtime - 60 * 60 * 24 * 10;
+	m_plot10.SetRange(starttime, endtime, 0, 1, 500, 0);
+	m_plot10.SetMinimumRangeY(1.0);
+}
+
+void ColumnHistoryDlg::Init30DayPlot() {
+
+	CRect rect;
+	m_frame30.GetWindowRect(rect);
+	int height = rect.bottom - rect.top;
+	int width = rect.right - rect.left;
+	rect.top = 20; rect.bottom = height - 10;
+	rect.left = 10; rect.right = width - 10;
+	m_plot30.Create(WS_VISIBLE | WS_CHILD, rect, &m_frame30);
+
+	Common common;
+	m_plot30.SetXUnits(common.GetString(AXIS_UTCTIME));
+	m_plot30.SetXAxisNumberFormat(FORMAT_DATE);
+	m_plot30.SetYUnits("Column");
+	m_plot30.EnableGridLinesX(true);
+	m_plot30.SetPlotColor(RGB(255, 255, 255));
+	m_plot30.SetGridColor(RGB(255, 255, 255));
+	m_plot30.SetBackgroundColor(RGB(0, 0, 0));
+	m_plot30.SetCircleColor(RGB(255, 0, 0));
+	m_plot30.SetCircleRadius(1);
+
+	// set time range
+	struct tm *tm;
+	time_t t;
+	time(&t);
+	tm = gmtime(&t);
+	time_t endtime = t - (3600 * tm->tm_hour + 60 * tm->tm_min + tm->tm_sec);
+	time_t starttime = endtime - 60 * 60 * 24 * 30;
+	m_plot30.SetRange(starttime, endtime, 0, 1, 500, 0);
+	m_plot30.SetMinimumRangeY(1.0);
+}
+
+void ColumnHistoryDlg::PopulateScannerList() {
+	CString serialNumber;
+	for (unsigned int i = 0; i < g_settings.scannerNum; ++i) {
+		serialNumber.Format(g_settings.scanner[i].spec[0].serialNumber);
+		m_scanners.InsertString(i, serialNumber);
+	}
+	m_scanners.SetCurSel(0);
+}
+
+void ColumnHistoryDlg::ReadEvalLogs() {
+	// clean plots
+	if (!IsWindow(m_frame10.m_hWnd) || !IsWindow(m_frame30.m_hWnd) || !IsWindow(m_scanners.m_hWnd)) {
+		return;
+	}
+	m_plot10.CleanPlot();
+	m_plot30.CleanPlot();
+	double minColumn = -1;
+	double maxColumn = 1;
+
+	// get serial number
+	int scannerIndex = m_scanners.GetCurSel();
+	CString serialNumber;
+	serialNumber.Format(g_settings.scanner[scannerIndex].spec[0].serialNumber);
+
+	// get current time UTC
+	time_t rawtime;
+	struct tm * utc;
+	time(&rawtime);
+	utc = gmtime(&rawtime);
+	// make it midnight (00:00:00) of current day
+	utc->tm_hour = -1;
+	utc->tm_min = 0;
+	utc->tm_sec = 0;
+
+	// Read last 30 days worth of eval logs
+	int index = 0;
+	const int BUFFER_SIZE = 3000;
+	double time[BUFFER_SIZE], column[BUFFER_SIZE];
+	CString path, dateStr;
+	CWaitCursor wait;
+	for (int day = 0; day < 30; day++) {
+		FileHandler::CEvaluationLogFileHandler evalLogReader;
+
+		// get date
+		utc->tm_sec -= (24 * 60 * 60);
+		time_t epochDay = mktime(utc);
+		int year = utc->tm_year + 1900;
+		int month = utc->tm_mon + 1;
+		int mday = utc->tm_mday;
+		dateStr.Format("%04d.%02d.%02d", year, month, mday);
+
+		// Read file
+		path.Format("%sOutput\\%s\\%s\\EvaluationLog_%s_%s.txt",
+			(LPCTSTR)g_settings.outputDirectory,
+			(LPCTSTR)dateStr,
+			(LPCTSTR)serialNumber,
+			(LPCTSTR)serialNumber,
+			(LPCTSTR)dateStr);
+
+		// check if file exists
+		std::ifstream ifile(path);
+		if (!ifile) {
+			continue;
+		}
+
+		// Try to read the eval-log
+		evalLogReader.m_evaluationLog.Format(path);
+		if (FAIL == evalLogReader.ReadEvaluationLog())
+			continue;
+
+		// check if there are scan in log
+		if (evalLogReader.m_scanNum <= 0) {
+			continue;
+		}
+
+		// Plot the read in data
+		int scanNum = evalLogReader.m_scanNum;
+		for (int j = 0; j < scanNum; ++j) {
+			Evaluation::CScanResult &sr = evalLogReader.m_scan[j];
+			for (unsigned long k = 0; k < sr.GetEvaluatedNum(); ++k) {
+				// Check if this is a dark measurement, if so then don't include it...
+				// 1. Clean the spectrum name from special characters...
+				std::string spectrumName = CleanString(sr.GetSpectrumInfo(k).m_name);
+				Trim(spectrumName, " \t");
+				if (fabs(sr.GetScanAngle(k)) - 180.0 < 1e-3 && (EqualsIgnoringCase(spectrumName, "offset") || EqualsIgnoringCase(spectrumName, "dark_cur") || EqualsIgnoringCase(spectrumName, "dark"))) {
+					continue;
+				}
+
+				CDateTime st;
+				sr.GetStartTime(k, st);
+				int startsec = st.hour * 3600 + st.minute * 60 + st.second;
+				double epoch = (double)(epochDay + startsec);
+				double col = sr.GetColumn(k, 0); //TODO - ref index not always 0
+				minColumn = min(minColumn, col);
+				maxColumn = max(maxColumn, col);
+				//double columnError = sr.GetColumnError(j, 0);
+				//double peakIntensity = sr.GetPeakIntensity(j);
+				//double fitIntensity = sr.GetFitIntensity(j);
+				//double angle = sr.GetScanAngle(j);
+				bool isBadFit = sr.IsBad(k);
+				if (!isBadFit) {
+					time[index] = epoch;
+					column[index] = col;
+					index++;
+				}
+			}
+
+			index = min(BUFFER_SIZE, index); // make sure no overflow
+			if (day < 10) {
+				m_plot10.XYPlot(time, column, index, CGraphCtrl::PLOT_FIXED_AXIS | CGraphCtrl::PLOT_CIRCLES);
+			}
+			m_plot30.XYPlot(time, column, index, CGraphCtrl::PLOT_FIXED_AXIS | CGraphCtrl::PLOT_CIRCLES);
+
+			index = 0;
+		}
+	}
+	wait.Restore();
+}
+
+void ColumnHistoryDlg::DrawColumns() {
+
+}
+
 // ColumnHistoryDlg message handlers
+
+
+void ColumnHistoryDlg::OnSize(UINT nType, int cx, int cy)
+{
+	CDialog::OnSize(nType, cx, cy);
+
+	if (IsWindow(m_frame10.m_hWnd)) {
+		m_plot10.MoveWindow(10, 20, cx - 40, cy / 2 - 60);
+	}
+	if (IsWindow(m_frame30.m_hWnd)) {
+		m_plot30.MoveWindow(10, 20, cx - 40, cy / 2 - 60);
+	}
+	ReadEvalLogs();
+}
+
+
+void ColumnHistoryDlg::OnClose()
+{
+	DestroyWindow();
+}
+
+
+void ColumnHistoryDlg::UpdatePlots()
+{
+	ReadEvalLogs();
+}
