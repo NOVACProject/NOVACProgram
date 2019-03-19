@@ -27,7 +27,7 @@ protected:
 public:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	virtual BOOL OnSetActive();
-
+	void RedrawAll();
 
 	/** A pointer to a shared instance of 'CEvaluatedDataStorage' */
 	CEvaluatedDataStorage	*m_evalDataStorage;

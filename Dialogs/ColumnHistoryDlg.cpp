@@ -263,5 +263,16 @@ BOOL ColumnHistoryDlg::OnSetActive()
 	return CPropertyPage::OnSetActive();
 }
 
+void ColumnHistoryDlg::RedrawAll() {
 
+	if (g_userSettings.m_columnUnit == UNIT_PPMM) {
+		m_plot10.SetYUnits("Column [ppmm]");
+		m_plot30.SetYUnits("Column [ppmm]");
+	}
+	if (g_userSettings.m_columnUnit == UNIT_MOLEC_CM2) {
+		m_plot10.SetYUnits("Column [molec/cm²]");
+		m_plot30.SetYUnits("Column [molec/cm²]");
+	}
+	ReadEvalLogs();
+}
 

@@ -1295,7 +1295,12 @@ void CNovacMasterProgramView::OnChangeUnitOfColumnToPPMM(){
 		CView_Scanner *page = (CView_Scanner *)m_scannerPages[i];
 		if(page->m_hWnd != NULL){
 			page->DrawColumn();
-			return;
+		}
+	}
+	for (int i = 0; i < m_colHistoryPages.GetCount(); ++i) {
+		ColumnHistoryDlg *page = (ColumnHistoryDlg *)m_colHistoryPages[i];
+		if (page->m_hWnd != NULL) {
+			page->RedrawAll();
 		}
 	}
 }
@@ -1308,7 +1313,13 @@ void CNovacMasterProgramView::OnChangeUnitOfColumnToMolecCm2(){
 		CView_Scanner *page = (CView_Scanner *)m_scannerPages[i];
 		if(page->m_hWnd != NULL){
 			page->DrawColumn();
-			return;
+		}
+	}
+
+	for (int i = 0; i < m_colHistoryPages.GetCount(); ++i) {
+		ColumnHistoryDlg *page = (ColumnHistoryDlg *)m_colHistoryPages[i];
+		if (page->m_hWnd != NULL) {
+			page->RedrawAll();
 		}
 	}
 }
