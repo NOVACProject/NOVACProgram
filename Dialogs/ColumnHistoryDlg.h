@@ -55,5 +55,6 @@ private:
 
 	void Init10DayPlot();
 	void Init30DayPlot();
+	void SetTimeRange();
 	void ReadEvalLogs();
 };
