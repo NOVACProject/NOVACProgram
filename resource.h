@@ -252,7 +252,6 @@
 #define IDC_EDIT_COMPASSDIRECTION       1008
 #define IDC_EDIT_MINCOL                 1008
 #define IDC_EDIT_SYSTEMTILT             1009
-#define IDC_EDIT_MINCOL2                1009
 #define IDC_EDIT_MAXCOL                 1009
 #define IDC_EDIT_FITLOW                 1010
 #define IDC_EDIT_FITHIGH                1011
@@ -470,6 +469,7 @@
 #define IDC_CHECK_INCLUDE_SUBDIRS       1117
 #define IDC_CHECK_ENABLE_REALTIME_CFG   1117
 #define IDC_CHECK_PLOT_COLUMN_ONLY      1117
+#define IDC_CHECK_PLOT_COLUMN           1117
 #define IDC_EDIT1                       1118
 #define IDC_FTPUSER                     1118
 #define IDC_EDIT_SELECTEDPOINTS         1118
@@ -505,6 +505,7 @@
 #define IDC_IGNORE_NOTHING2             1119
 #define IDC_EDIT_PLUMEDGE_LOW           1119
 #define IDC_CHECK_SHOW_COLUMN_HISTORY   1119
+#define IDC_CHECK_PLOT_COLUMN_HISTORY   1119
 #define IDC_FTPPASS                     1120
 #define IDC_FTP_USERNAME                1120
 #define IDC_EDIT_REPETITIONS            1120

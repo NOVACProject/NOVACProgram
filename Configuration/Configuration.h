@@ -271,8 +271,13 @@ public:
 			/** The type of the electronics box */
 			ELECTRONICS_BOX electronicsBox;
 
-			/** If single direction mode or not. */
-			int plotColumnOnly;
+			/** Plot column under Today's Data. */
+			int plotColumn;
+
+			/** Plot column history. */
+			int plotColumnHistory;
+			int minColumn;
+			int maxColumn;
 
 			/** Assignment operator */
 			ScanningInstrumentSetting&  operator=(const ScanningInstrumentSetting &scanner2);

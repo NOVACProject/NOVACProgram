@@ -22,11 +22,15 @@ extern CUserSettings			g_userSettings;
 using namespace Graph;
 using namespace FileHandler;
 
-IMPLEMENT_DYNAMIC(ColumnHistoryDlg, CDialog)
+IMPLEMENT_DYNAMIC(ColumnHistoryDlg, CPropertyPage)
 
-ColumnHistoryDlg::ColumnHistoryDlg(CWnd* pParent /*=nullptr*/)
-	: CDialog(IDD_COLUMN_HISTORY_DLG, pParent)
+ColumnHistoryDlg::ColumnHistoryDlg()
+	: CPropertyPage(ColumnHistoryDlg::IDD)
 {
+	m_evalDataStorage = NULL;
+	m_scannerIndex = 0;
+	m_serialNumber.Format("");
+	m_siteName.Format("");
 }
 
 ColumnHistoryDlg::~ColumnHistoryDlg()
@@ -35,29 +39,27 @@ ColumnHistoryDlg::~ColumnHistoryDlg()
 
 void ColumnHistoryDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialog::DoDataExchange(pDX);
-
-	DDX_Control(pDX, IDC_COMBO_SCANNER, m_scanners);
-
+	CPropertyPage::DoDataExchange(pDX);
+	
 	DDX_Control(pDX, IDC_COLUMN_10DAY_FRAME, m_frame10);
 	DDX_Control(pDX, IDC_COLUMN_30DAY_FRAME, m_frame30);
 }
 
 
-BEGIN_MESSAGE_MAP(ColumnHistoryDlg, CDialog)
+BEGIN_MESSAGE_MAP(ColumnHistoryDlg, CPropertyPage)
 	ON_WM_SIZE()
-	ON_WM_CLOSE()
-	ON_CBN_EDITCHANGE(IDC_COMBO_SCANNER, &ColumnHistoryDlg::UpdatePlots)
+	//ON_WM_CLOSE()
 END_MESSAGE_MAP()
 
 
 BOOL ColumnHistoryDlg::OnInitDialog()
 {
-	CDialog::OnInitDialog();
 
-	// Populater Scanner drop down
-	PopulateScannerList();
+	CPropertyPage::OnInitDialog();
 
+	m_minColumn = g_settings.scanner[m_scannerIndex].minColumn;
+	m_maxColumn = g_settings.scanner[m_scannerIndex].maxColumn;
+	
 	// Initialize plots
 	Init10DayPlot();
 	Init30DayPlot();
@@ -81,14 +83,16 @@ void ColumnHistoryDlg::Init10DayPlot() {
 	Common common;
 	m_plot10.SetXUnits(common.GetString(AXIS_UTCTIME));
 	m_plot10.SetXAxisNumberFormat(FORMAT_DATE);
-	m_plot10.SetYUnits("Column");
+	if (g_userSettings.m_columnUnit == UNIT_PPMM)
+		m_plot10.SetYUnits("Column [ppmm]");
+	else if (g_userSettings.m_columnUnit == UNIT_MOLEC_CM2)
+		m_plot10.SetYUnits("Column [molec/cm²]");
 	m_plot10.EnableGridLinesX(true);
 	m_plot10.SetPlotColor(RGB(255, 255, 255));
 	m_plot10.SetGridColor(RGB(255, 255, 255));
 	m_plot10.SetBackgroundColor(RGB(0, 0, 0));
 	m_plot10.SetCircleColor(RGB(255, 0, 0));
 	m_plot10.SetCircleRadius(1);
-	m_plot10.SetRangeY(1.0, 500, 0);
 
 	// set time range
 	struct tm *tm;
@@ -97,8 +101,7 @@ void ColumnHistoryDlg::Init10DayPlot() {
 	tm = gmtime(&t);
 	time_t endtime = t - (3600 * tm->tm_hour + 60 * tm->tm_min + tm->tm_sec);
 	time_t starttime = endtime - 60 * 60 * 24 * 10;
-	m_plot10.SetRange(starttime, endtime, 0, 1, 500, 0);
-	m_plot10.SetMinimumRangeY(1.0);
+	m_plot10.SetRange(starttime, endtime, 0, m_minColumn, m_maxColumn, 0);
 }
 
 void ColumnHistoryDlg::Init30DayPlot() {
@@ -114,7 +117,10 @@ void ColumnHistoryDlg::Init30DayPlot() {
 	Common common;
 	m_plot30.SetXUnits(common.GetString(AXIS_UTCTIME));
 	m_plot30.SetXAxisNumberFormat(FORMAT_DATE);
-	m_plot30.SetYUnits("Column");
+	if (g_userSettings.m_columnUnit == UNIT_PPMM)
+		m_plot30.SetYUnits("Column [ppmm]");
+	else if (g_userSettings.m_columnUnit == UNIT_MOLEC_CM2)
+		m_plot30.SetYUnits("Column [molec/cm²]");
 	m_plot30.EnableGridLinesX(true);
 	m_plot30.SetPlotColor(RGB(255, 255, 255));
 	m_plot30.SetGridColor(RGB(255, 255, 255));
@@ -129,33 +135,23 @@ void ColumnHistoryDlg::Init30DayPlot() {
 	tm = gmtime(&t);
 	time_t endtime = t - (3600 * tm->tm_hour + 60 * tm->tm_min + tm->tm_sec);
 	time_t starttime = endtime - 60 * 60 * 24 * 30;
-	m_plot30.SetRange(starttime, endtime, 0, 1, 500, 0);
-	m_plot30.SetMinimumRangeY(1.0);
-}
-
-void ColumnHistoryDlg::PopulateScannerList() {
-	CString serialNumber;
-	for (unsigned int i = 0; i < g_settings.scannerNum; ++i) {
-		serialNumber.Format(g_settings.scanner[i].spec[0].serialNumber);
-		m_scanners.InsertString(i, serialNumber);
-	}
-	m_scanners.SetCurSel(0);
+	m_plot30.SetRange(starttime, endtime, 0, m_minColumn, m_maxColumn, 0);
 }
 
 void ColumnHistoryDlg::ReadEvalLogs() {
 	// clean plots
-	if (!IsWindow(m_frame10.m_hWnd) || !IsWindow(m_frame30.m_hWnd) || !IsWindow(m_scanners.m_hWnd)) {
+	if (!IsWindow(m_frame10.m_hWnd) || !IsWindow(m_frame30.m_hWnd)) {
 		return;
 	}
 	m_plot10.CleanPlot();
 	m_plot30.CleanPlot();
-	double minColumn = -1;
-	double maxColumn = 1;
 
-	// get serial number
-	int scannerIndex = m_scanners.GetCurSel();
-	CString serialNumber;
-	serialNumber.Format(g_settings.scanner[scannerIndex].spec[0].serialNumber);
+	// get column units
+	double unitConversionFactor = 0;
+	if (g_userSettings.m_columnUnit == UNIT_PPMM)
+		unitConversionFactor = 1.0;
+	else if (g_userSettings.m_columnUnit == UNIT_MOLEC_CM2)
+		unitConversionFactor = 2.5e15;
 
 	// get current time UTC
 	time_t rawtime;
@@ -188,8 +184,8 @@ void ColumnHistoryDlg::ReadEvalLogs() {
 		path.Format("%sOutput\\%s\\%s\\EvaluationLog_%s_%s.txt",
 			(LPCTSTR)g_settings.outputDirectory,
 			(LPCTSTR)dateStr,
-			(LPCTSTR)serialNumber,
-			(LPCTSTR)serialNumber,
+			(LPCTSTR)m_serialNumber,
+			(LPCTSTR)m_serialNumber,
 			(LPCTSTR)dateStr);
 
 		// check if file exists
@@ -226,16 +222,10 @@ void ColumnHistoryDlg::ReadEvalLogs() {
 				int startsec = st.hour * 3600 + st.minute * 60 + st.second;
 				double epoch = (double)(epochDay + startsec);
 				double col = sr.GetColumn(k, 0); //TODO - ref index not always 0
-				minColumn = min(minColumn, col);
-				maxColumn = max(maxColumn, col);
-				//double columnError = sr.GetColumnError(j, 0);
-				//double peakIntensity = sr.GetPeakIntensity(j);
-				//double fitIntensity = sr.GetFitIntensity(j);
-				//double angle = sr.GetScanAngle(j);
 				bool isBadFit = sr.IsBad(k);
 				if (!isBadFit) {
 					time[index] = epoch;
-					column[index] = col;
+					column[index] = col*unitConversionFactor;
 					index++;
 				}
 			}
@@ -252,16 +242,12 @@ void ColumnHistoryDlg::ReadEvalLogs() {
 	wait.Restore();
 }
 
-void ColumnHistoryDlg::DrawColumns() {
-
-}
-
 // ColumnHistoryDlg message handlers
 
 
 void ColumnHistoryDlg::OnSize(UINT nType, int cx, int cy)
 {
-	CDialog::OnSize(nType, cx, cy);
+	CPropertyPage::OnSize(nType, cx, cy);
 
 	if (IsWindow(m_frame10.m_hWnd)) {
 		m_plot10.MoveWindow(10, 20, cx - 40, cy / 2 - 60);
@@ -269,17 +255,13 @@ void ColumnHistoryDlg::OnSize(UINT nType, int cx, int cy)
 	if (IsWindow(m_frame30.m_hWnd)) {
 		m_plot30.MoveWindow(10, 20, cx - 40, cy / 2 - 60);
 	}
-	ReadEvalLogs();
+	//ReadEvalLogs();
+}
+
+BOOL ColumnHistoryDlg::OnSetActive()
+{	
+	return CPropertyPage::OnSetActive();
 }
 
 
-void ColumnHistoryDlg::OnClose()
-{
-	DestroyWindow();
-}
 
-
-void ColumnHistoryDlg::UpdatePlots()
-{
-	ReadEvalLogs();
-}
