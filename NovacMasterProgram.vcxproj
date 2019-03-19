@@ -164,7 +164,6 @@
     <ClCompile Include="Configuration\EvaluationConfigurationDlg.cpp" />
     <ClCompile Include="Configuration\GlobalConfiguration.cpp" />
     <ClCompile Include="Configuration\LocationConfigurationDlg.cpp" />
-    <ClCompile Include="Configuration\RemoteConfigurationDlg.cpp" />
     <ClCompile Include="Configuration\ScannerConfiguration.cpp" />
     <ClCompile Include="Configuration\SystemConfigurationPage.cpp" />
     <ClCompile Include="Configuration\VIIAdvancedConfigurationDlg.cpp" />
@@ -401,7 +400,6 @@
     <ClInclude Include="Configuration\FTPSettingsDlg.h" />
     <ClInclude Include="Configuration\GlobalConfiguration.h" />
     <ClInclude Include="Configuration\LocationConfigurationDlg.h" />
-    <ClInclude Include="Configuration\RemoteConfigurationDlg.h" />
     <ClInclude Include="Configuration\ScannerConfiguration.h" />
     <ClInclude Include="Configuration\SystemConfigurationPage.h" />
     <ClInclude Include="Configuration\VIIAdvancedConfigurationDlg.h" />

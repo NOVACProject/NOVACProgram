@@ -76,7 +76,10 @@ namespace ConfigurationDialog
 		CComboBox	m_comboSpectrometerModel;
 		CComboBox	m_comboSpectrometerChannels;
 
-		int m_plotColumnOnly; // 0 or 1 
+		int m_plotColumn; // 0 or 1 
+		int m_plotColumnHistory; // 0 or 1
+		CEdit m_minColumn;
+		CEdit m_maxColumn;
 
 		/** (Re-)initializes the list of volcanoes */
 		void UpdateVolcanoList();

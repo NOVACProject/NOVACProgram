@@ -134,7 +134,10 @@ void CConfigurationSetting::ScanningInstrumentSetting::Clear(){
 	electronicsBox = BOX_VERSION_2;
 	for(int i = 0; i < MAX_SPECTROMETERS_PER_SCANNER; ++i)
 		spec[i].Clear();
-	plotColumnOnly = 0;
+	plotColumn = 0;
+	plotColumnHistory = 0;
+	minColumn = 0;
+	maxColumn = 500;
 	windSettings.Clear();
 	scSettings.Clear();
 	motor[0].Clear();

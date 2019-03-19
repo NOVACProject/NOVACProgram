@@ -93,8 +93,6 @@ BEGIN_MESSAGE_MAP(CNovacMasterProgramView, CFormView)
 	ON_COMMAND(ID_ANALYSIS_REEVALUATE,					OnMenuAnalysisReevaluate)
 	ON_COMMAND(ID_ANALYSIS_SETUP,						OnMenuAnalysisSetup)
 	ON_COMMAND(ID_ANALYSIS_BROWSEMEASUREDDATA,			OnMenuAnalysisBrowseData)
-	ON_COMMAND(ID_ANALYSIS_COLUMN_HISTORY,				OnMenuAnalysisColumnHistory)
-	//ON_COMMAND(ID_ANALYSIS_SUMMARIZEFLUXDATA,			OnMenuAnalysisSummarizeFlux)
 	ON_COMMAND(ID_FILE_EXPORT,							OnMenuFileExport)
 	ON_COMMAND(ID_FILE_IMPORT,							OnMenuFileImport)
 	ON_COMMAND(ID_FILE_SPLITMERGE,						OnMenuFileSplitMergePak)
@@ -137,7 +135,6 @@ CNovacMasterProgramView::CNovacMasterProgramView()
 	pView = this;
 	m_evalDataStorage = new CEvaluatedDataStorage();
 	m_commDataStorage = new CCommunicationDataStorage();
-	m_columnHistory = nullptr;
 
 	m_overView			= NULL;
 	m_windOverView	= NULL;
@@ -157,6 +154,12 @@ CNovacMasterProgramView::~CNovacMasterProgramView()
 		delete page;
 	}
 	m_scannerPages.RemoveAll();
+
+	for (int i = 0; i < m_colHistoryPages.GetCount(); ++i) {
+		CPropertyPage *page = m_colHistoryPages[i];
+		delete page;
+	}
+	m_colHistoryPages.RemoveAll();
 }
 
 void CNovacMasterProgramView::DoDataExchange(CDataExchange* pDX)
@@ -229,7 +232,7 @@ void CNovacMasterProgramView::OnInitialUpdate()
 	m_common.GetExePath();
 
 	// Fix the layout of the main components to fit the screen
-//	SetLayout();
+	//SetLayout();
 
 	// Initialize the master-frame
 	m_sheet.Construct("", this);
@@ -253,7 +256,7 @@ void CNovacMasterProgramView::OnInitialUpdate()
 	dateStr.Format("%04d.%02d.%02d", m_common.GetYear(), m_common.GetMonth(), m_common.GetDay());
 	for(unsigned int it = 0; it < g_settings.scannerNum; ++it){
 		serialNumber.Format(g_settings.scanner[it].spec[0].serialNumber);
-		if (g_settings.scanner[it].plotColumnOnly) {
+		if (g_settings.scanner[it].plotColumn) {
 			ReadEvalLog(it, dateStr, serialNumber);
 		}
 		else {
@@ -280,12 +283,12 @@ void CNovacMasterProgramView::OnInitialUpdate()
 		TRACE0("Failed to create tooltip control\n"); 
 	}
 	CTabCtrl *tabPtr = m_sheet.GetTabControl();
-	int i;
-	for(i = 0; i < tabPtr->GetItemCount() - 1; ++i){
+
+	for (int i = 0; i < g_settings.scannerNum; ++i) {
 		tabPtr->GetItemRect(i, &tabRect);
 		m_toolTip.AddTool(tabPtr, IDD_VIEW_SCANNERSTATUS, &tabRect, IDD_VIEW_SCANNERSTATUS);
 	}
-	tabPtr->GetItemRect(i, &tabRect);
+	tabPtr->GetItemRect(g_settings.scannerNum, &tabRect);
 	m_toolTip.AddTool(tabPtr, IDD_VIEW_OVERVIEW, &tabRect, IDD_VIEW_OVERVIEW);
 	tabPtr->SetToolTips(&m_toolTip);
 	tabPtr->EnableToolTips(TRUE);
@@ -868,12 +871,12 @@ int CNovacMasterProgramView::InitializeControls(){
 	// Initialize the master frame
 	CRect rect, rect2;
 	CView_Scanner *page;
+	ColumnHistoryDlg *histPage;
 	CString site;
-	unsigned int i;
 	TCITEM tcItem;
 	m_showWindOverView = false;
 
-	// Add the pages, one for every spectrometer configured
+	// Add the scanner view pages, one for every spectrometer configured
 	if(g_settings.scannerNum == 0){
 			page = new CView_Scanner();
 			page->Construct(IDD_VIEW_SCANNERSTATUS);
@@ -886,7 +889,7 @@ int CNovacMasterProgramView::InitializeControls(){
 			m_sheet.AddPage(page);
 			m_scannerPages.Add(page);
 	}else{
-		for(i = 0; i < g_settings.scannerNum; ++i){
+		for(int i = 0; i < g_settings.scannerNum; ++i){
 			page = new CView_Scanner();
 			page->Construct(IDD_VIEW_SCANNERSTATUS);
 
@@ -921,6 +924,22 @@ int CNovacMasterProgramView::InitializeControls(){
 	m_sheet.AddPage(m_instrumentView);
 	m_instrumentViewVisible	= true;
 
+	// Add the column history pages, one for every spectrometer if configured to show
+	for (int i = 0; i < g_settings.scannerNum; ++i) {
+		if (g_settings.scanner[i].plotColumnHistory) {
+			histPage = new ColumnHistoryDlg();
+			histPage->Construct(IDD_COLUMN_HISTORY_DLG);
+
+			//histPage->m_evalDataStorage = this->m_evalDataStorage;
+			histPage->m_scannerIndex = i;
+			histPage->m_serialNumber.Format("%s", (LPCTSTR)g_settings.scanner[i].spec[0].serialNumber);
+			histPage->m_siteName.Format("%s", (LPCTSTR)g_settings.scanner[i].site);
+
+			m_sheet.AddPage(histPage);
+			m_colHistoryPages.Add(histPage);
+		}
+	}
+
 	// At last, add the wind-measurements overview page, 
 	//	if there is at least one instrument which is capable of making wind-measurements
 	if(m_showWindOverView){
@@ -940,15 +959,6 @@ int CNovacMasterProgramView::InitializeControls(){
 	m_sheet.MoveWindow(rect2.left, rect.top - rect2.top, rect2.Width(), rect.Height());
 	m_masterFrame.GetWindowRect(rect);
 
-	//for(i = 0; i < m_scannerPages.GetCount(); ++i){
-	//	CPropertyPage *page = m_scannerPages.GetAt(i);
-	//	page->GetWindowRect(rect2);
-	//	rect2.right		= rect.right - 10;
-	//	rect2.top			-= rect.top;
-	//	rect2.bottom	-= rect.top;
-	//	page->MoveWindow(rect2);
-	//}
-
 	// Get the tab control and set the title of each tab to the serial number of the spectrometer
 	CTabCtrl *tabPtr = m_sheet.GetTabControl();
 	if(g_settings.scannerNum <= 0){
@@ -963,7 +973,7 @@ int CNovacMasterProgramView::InitializeControls(){
 		// Update the tab with the updated 'item'
 		tabPtr->SetItem(0, &tcItem);
 	}else{
-		for(i = 0; i < g_settings.scannerNum; ++i){
+		for(int i = 0; i < g_settings.scannerNum; ++i){
 			tcItem.mask = TCIF_TEXT;
 
 			// Set the text in the 'item'. !!!! The serial-string is necessary
@@ -973,6 +983,22 @@ int CNovacMasterProgramView::InitializeControls(){
 			
 			// Update the tab with the updated 'item'
 			tabPtr->SetItem(i, &tcItem);
+		}
+		int histCount = 0;
+		for (int i =0; i < g_settings.scannerNum; ++i) {
+			if (g_settings.scanner[i].plotColumnHistory) {
+				tcItem.mask = TCIF_TEXT;
+
+				// Set the text in the 'item'. !!!! The serial-string is necessary
+				//	otherwise this function changes the global object !!!!!!!!!!!
+				site.Format("%s History", (LPCTSTR)g_settings.scanner[i].site);
+				tcItem.pszText = site.GetBuffer(256);
+
+				// Update the tab with the updated 'item'
+				int tabIndex = g_settings.scannerNum + 2 + histCount;
+				tabPtr->SetItem(tabIndex, &tcItem);
+				histCount++;
+			}
 		}
 	}
 	return 0;
@@ -989,28 +1015,28 @@ void CNovacMasterProgramView::OnMenuAnalysisBrowseData(){
 	dlg.DoModal();
 }
 
-void CNovacMasterProgramView::OnMenuAnalysisColumnHistory() {
-
-	if (m_columnHistory == nullptr || m_columnHistory->m_hWnd == nullptr)
-	{
-		if (m_columnHistory == nullptr) {
-			m_columnHistory = new ColumnHistoryDlg();
-		}
-		if (!m_columnHistory->Create(IDD_COLUMN_HISTORY_DLG, this))
-		{
-			delete m_columnHistory;
-			m_columnHistory = nullptr;
-			return;
-		}
-	}
-	else {
-		/* already exists */
-		if (m_columnHistory->IsIconic()) { // in case the minimize button is enabled
-			m_columnHistory->ShowWindow(SW_RESTORE);
-		}
-	}
-
-}
+//void CNovacMasterProgramView::OnMenuAnalysisColumnHistory() {
+//
+//	if (m_columnHistory == nullptr || m_columnHistory->m_hWnd == nullptr)
+//	{
+//		if (m_columnHistory == nullptr) {
+//			m_columnHistory = new ColumnHistoryDlg();
+//		}
+//		if (!m_columnHistory->Create(IDD_COLUMN_HISTORY_DLG, this))
+//		{
+//			delete m_columnHistory;
+//			m_columnHistory = nullptr;
+//			return;
+//		}
+//	}
+//	else {
+//		/* already exists */
+//		if (m_columnHistory->IsIconic()) { // in case the minimize button is enabled
+//			m_columnHistory->ShowWindow(SW_RESTORE);
+//		}
+//	}
+//
+//}
 
 void CNovacMasterProgramView::OnMenuAnalysisReevaluate()
 {

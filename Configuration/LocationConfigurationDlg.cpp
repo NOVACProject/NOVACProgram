@@ -14,7 +14,6 @@
 using namespace ConfigurationDialog;
 
 extern CVolcanoInfo			g_volcanoes;
-//extern CObservatoryInfo g_observatories;
 
 // CLocationConfigurationDlg dialog
 
@@ -47,27 +46,29 @@ void CLocationConfigurationDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT_SITE,						m_editSite);
 	DDX_Control(pDX, IDC_EDIT_OBSERVATORY,				m_editObservatory);
 	DDX_Control(pDX, IDC_EDIT_SERIALNUMBER,				m_editSerial);
-
-	//DDX_Control(pDX, IDC_EDIT_STEPSPERROUND1,			m_editSPR1);
-	//DDX_Control(pDX, IDC_EDIT_STEPSPERROUND2,			m_editSPR2);
-	//DDX_Control(pDX, IDC_EDIT_MOTORSTEPSCOMPENSATION1,	m_editMSC1);
-	//DDX_Control(pDX, IDC_EDIT_MOTORSTEPSCOMPENSATION2,	m_editMSC2);
-	//DDX_Control(pDX, IDC_LABEL_STEPSPERROUND,			m_labelSPR);
-
+	
 	// The combo boxes
 	DDX_Control(pDX, IDC_COMBO_VOLCANO,					m_comboVolcano);
 	DDX_Control(pDX, IDC_COMBO_ELECTRONICS,				m_comboElectronics);
 	DDX_Control(pDX, IDC_COMBO_SPECTROMETERMODEL,		m_comboSpectrometerModel);
 	DDX_Control(pDX, IDC_COMBO_CHANNELS,				m_comboSpectrometerChannels);
 
-	// check box
-	DDX_Check(pDX, IDC_CHECK_PLOT_COLUMN_ONLY, m_plotColumnOnly);
-
-
+	// plot options
+	
+	DDX_Check(pDX, IDC_CHECK_PLOT_COLUMN, m_plotColumn);
+	DDX_Check(pDX, IDC_CHECK_PLOT_COLUMN_HISTORY, m_plotColumnHistory);
+	DDX_Control(pDX, IDC_EDIT_MINCOL, m_minColumn);
+	DDX_Control(pDX, IDC_EDIT_MAXCOL, m_maxColumn);
+	
 	if(m_curScanner != NULL){
 		DDX_Text(pDX, IDC_EDIT_SITE,					m_curScanner->site);
 		DDX_Text(pDX, IDC_EDIT_OBSERVATORY,			m_curScanner->observatory);
 		DDX_Text(pDX, IDC_EDIT_SERIALNUMBER,			m_curScanner->spec[0].serialNumber);
+
+		DDX_Check(pDX, IDC_CHECK_PLOT_COLUMN, m_curScanner->plotColumn);
+		DDX_Check(pDX, IDC_CHECK_SHOW_COLUMN_HISTORY, m_curScanner->plotColumnHistory);
+		DDX_Text(pDX, IDC_EDIT_MINCOL, m_curScanner->minColumn);
+		DDX_Text(pDX, IDC_EDIT_MAXCOL, m_curScanner->maxColumn);
 
 	}else{
 		CString site, observatory, serialNumber;
@@ -83,17 +84,16 @@ BEGIN_MESSAGE_MAP(CLocationConfigurationDlg, CPropertyPage)
 	ON_EN_CHANGE(IDC_EDIT_SITE,											SaveData)
 	ON_EN_CHANGE(IDC_EDIT_OBSERVATORY,				SaveData)
 	ON_EN_CHANGE(IDC_EDIT_SERIALNUMBER,					SaveData)
-	//ON_EN_CHANGE(IDC_EDIT_STEPSPERROUND1,				SaveData)
-	//ON_EN_CHANGE(IDC_EDIT_STEPSPERROUND2,				SaveData)
-	//ON_EN_CHANGE(IDC_EDIT_MOTORSTEPSCOMPENSATION1,		SaveData)
-	//ON_EN_CHANGE(IDC_EDIT_MOTORSTEPSCOMPENSATION2,		SaveData)
 
 	ON_CBN_SELCHANGE(IDC_COMBO_VOLCANO,					OnChangeVolcano)
 	ON_CBN_SELCHANGE(IDC_COMBO_SPECTROMETERMODEL,		OnChangeModel)
-	//ON_CBN_SELCHANGE(IDC_COMBO_OBSERVATORY,				SaveData)
 	ON_CBN_SELCHANGE(IDC_COMBO_CHANNELS,				OnChangeChannelNum)
 	ON_CBN_SELCHANGE(IDC_COMBO_ELECTRONICS, &CLocationConfigurationDlg::OnChangeElectronics)
-	ON_BN_CLICKED(IDC_CHECK_PLOT_COLUMN_ONLY, SaveData)
+
+	ON_BN_CLICKED(IDC_CHECK_PLOT_COLUMN, SaveData)
+	ON_BN_CLICKED(IDC_CHECK_PLOT_COLUMN_HISTORY, SaveData)
+	ON_EN_CHANGE(IDC_EDIT_MINCOL, SaveData)
+	ON_EN_CHANGE(IDC_EDIT_MAXCOL, SaveData)
 END_MESSAGE_MAP()
 
 
@@ -130,7 +130,7 @@ BOOL CLocationConfigurationDlg::OnInitDialog()
 	m_comboElectronics.AddString("Version 1");
 	m_comboElectronics.AddString("Version 3");
 
-	m_plotColumnOnly = 0;
+	//m_plotColumn = 0;
 
 	UpdateData(FALSE);
 
@@ -138,8 +138,8 @@ BOOL CLocationConfigurationDlg::OnInitDialog()
 	InitToolTips();
 
 	// Setup the label.
-	str.Format("* The serial number is used to identify spectra\n\n* Data from connected scanners will only be evaluated if the serial-number is configured\n");
-	SetDlgItemText(IDC_LABEL_MESSAGE, str);
+	//str.Format("* The serial number is used to identify spectra\n\n* Data from connected scanners will only be evaluated if the serial-number is configured\n");
+	//SetDlgItemText(IDC_LABEL_MESSAGE, str);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
@@ -169,39 +169,11 @@ void CLocationConfigurationDlg::InitToolTips(){
 }
 
 BOOL CLocationConfigurationDlg::OnKillActive(){
-
-	//SaveData();
-
-	//HTREEITEM hTree = m_scannerTree->GetSelectedItem();
-	//int currentScanner = GetScanner(m_scannerTree->GetItemText(hTree));
-	//int currentSpec    = GetSpectrometer(m_scannerTree->GetItemText(hTree));
-
-	//if(currentSpec == -1){
-	//  if((currentScanner == -1) || (m_configuration->scanner[currentScanner].specNum > 1))
-	//    return CPropertyPage::OnKillActive();
-	//  else{
-	//    hTree = m_scannerTree->GetChildItem(hTree);
-	//    currentSpec = 0;
-	//  }
-	//}
-
-	//// Check if the site and observatory are defined
-	//if(strlen(m_configuration->scanner[currentScanner].observatory) == 0){
-	//  MessageBox("Please write the name of the observatory");
-	//  return 0;
-	//}
-	//if(strlen(m_configuration->scanner[currentScanner].site) == 0){
-	//  MessageBox("Please write the name of the site where the scanner is");
-	//  return 0;
-	//}
-
 	return CPropertyPage::OnKillActive();
 }
 
 void CLocationConfigurationDlg::SaveData(){
 	UpdateData(TRUE);
-
-	m_curScanner->plotColumnOnly = m_plotColumnOnly;
 }
 
 void CLocationConfigurationDlg::UpdateDlg(){
@@ -241,13 +213,15 @@ void CLocationConfigurationDlg::OnChangeScanner(){
 		// Update the electronics
 		m_comboElectronics.SetCurSel((int)m_curScanner->electronicsBox);
 
-		m_plotColumnOnly = m_curScanner->plotColumnOnly;
+		// Update the plot options
+		/**
+		m_plotColumn = m_curScanner->plotColumn;
+		m_plotColumnHistory = m_curScanner->plotColumnHistory;
+		m_minColumn = m_curScanner->minColumn;
+		m_maxColumn = m_curScanner->maxColumn;
+		*/
 
 		m_comboSpectrometerChannels.EnableWindow(TRUE);
-		//m_editSPR1.ShowWindow(FALSE);
-		//m_editSPR2.ShowWindow(FALSE);
-		//m_labelSPR.ShowWindow(FALSE);
-		//m_editMSC2.ShowWindow(FALSE);
 
 		// Finally, update the screen to reflect the changes
 		UpdateData(FALSE);

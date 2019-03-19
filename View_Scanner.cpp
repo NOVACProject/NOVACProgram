@@ -216,7 +216,7 @@ BOOL CView_Scanner::OnInitDialog()
 	m_toolTip.Activate(TRUE);
 
 	// Update the plot...
-	if (g_settings.scanner[m_scannerIndex].plotColumnOnly) {
+	if (g_settings.scanner[m_scannerIndex].plotColumn) {
 		m_todayPlot.SetCircleRadius(1);
 		DrawColumnDay();
 	}
@@ -763,7 +763,7 @@ LRESULT CView_Scanner::OnUpdateEvalStatus(WPARAM wParam, LPARAM lParam){
 	DrawColumn();
 
 	// update today's plot
-	if (g_settings.scanner[m_scannerIndex].plotColumnOnly) {
+	if (g_settings.scanner[m_scannerIndex].plotColumn) {
 		DrawColumnDay();
 	}
 	else {
@@ -874,7 +874,7 @@ BOOL CView_Scanner::OnSetActive()
 	// already done in OnUpdateEvalStatus
 	//DrawColumn();
 	//// update today's plot
-	//if (g_settings.scanner[m_scannerIndex].plotColumnOnly) {
+	//if (g_settings.scanner[m_scannerIndex].plotColumn) {
 	//	DrawColumnDay();
 	//}
 	//else {

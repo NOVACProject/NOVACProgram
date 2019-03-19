@@ -106,7 +106,6 @@ public:
 	afx_msg void OnMenuAnalysisSetup();
 	afx_msg void OnMenuAnalysisWind();
 	afx_msg void OnMenuAnalysisBrowseData(); 
-	afx_msg void OnMenuAnalysisColumnHistory();
 	afx_msg void OnMenuFileExport();
 	afx_msg void OnMenuFileImport();
 	afx_msg void OnMenuFileCheckPakFile();
@@ -135,6 +134,9 @@ public:
 
 	// The property pages
 	CArray<CView_Scanner *, CView_Scanner *> m_scannerPages;
+
+	// The column history pages
+	CArray<ColumnHistoryDlg *, ColumnHistoryDlg *> m_colHistoryPages;
 
 	// The overview page
 	CView_OverView					*m_overView;
@@ -184,8 +186,6 @@ private:
 	/** Scan the last status-log file for interesting data */
 	void	ScanStatusLogFile();
 
-	// History dialogs
-	ColumnHistoryDlg *m_columnHistory;
 
 public:
 	afx_msg void OnUpdateMenuViewInstrumenttab(CCmdUI *pCmdUI);

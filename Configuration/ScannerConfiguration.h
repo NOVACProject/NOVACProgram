@@ -3,7 +3,6 @@
 #include "ConfigureCOMPortDlg.h"
 #include "EvaluationConfigurationDlg.h"
 #include "DarkConfigurationDlg.h"
-#include "RemoteConfigurationDlg.h"
 #include "LocationConfigurationDlg.h"
 #include "WindConfigurationDlg.h"
 #include "VIIAdvancedConfigurationDlg.h"
@@ -55,9 +54,6 @@ namespace ConfigurationDialog
 
 		/** The communication configuration */
 		CConfigureCOMPortDlg        m_pageCommunication;
-
-		/** The remote configuration */
-		CRemoteConfigurationDlg     m_pageRemote;
 
 		/** The add scanner button */
 		CButton m_addScannerBtn;

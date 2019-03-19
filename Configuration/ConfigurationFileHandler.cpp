@@ -282,7 +282,13 @@ int CConfigurationFileHandler::WriteConfigurationFile(CConfigurationSetting &con
 
 		// electronicsBox
 		str.Format("\t\t\t<electronics>%d</electronics>\n", conf->scanner[i].electronicsBox);
-		str.AppendFormat("\t\t\t<plotColumnOnly>%d</plotColumnOnly>\n", conf->scanner[i].plotColumnOnly);
+		fprintf(f, str);
+
+		// plot options
+		str.Format("\t\t\t<plotColumn>%d</plotColumn>\n", conf->scanner[i].plotColumn);
+		str.AppendFormat("\t\t\t<plotColumnHistory>%d</plotColumnHistory>\n", conf->scanner[i].plotColumnHistory);
+		str.AppendFormat("\t\t\t<minColumn>%d</minColumn>\n", conf->scanner[i].minColumn);
+		str.AppendFormat("\t\t\t<maxColumn>%d</maxColumn>\n", conf->scanner[i].maxColumn);
 		fprintf(f, str);
 
 		// --- First write the spectrometer information
@@ -703,9 +709,21 @@ int CConfigurationFileHandler::Parse_ScanningInstrument(){
 			continue;
 		}
 
-		// if single direction
-		if (Equals(szToken, "plotColumnOnly")) {
-			Parse_IntItem(TEXT("/plotColumnOnly"), curScanner->plotColumnOnly);
+		// plot options
+		if (Equals(szToken, "plotColumn")) {
+			Parse_IntItem(TEXT("/plotColumn"), curScanner->plotColumn);
+			continue;
+		}
+		if (Equals(szToken, "plotColumnHistory")) {
+			Parse_IntItem(TEXT("/plotColumnHistory"), curScanner->plotColumnHistory);
+			continue;
+		}
+		if (Equals(szToken, "minColumn")) {
+			Parse_IntItem(TEXT("/minColumn"), curScanner->minColumn);
+			continue;
+		}
+		if (Equals(szToken, "maxColumn")) {
+			Parse_IntItem(TEXT("/maxColumn"), curScanner->maxColumn);
 			continue;
 		}
 	}
