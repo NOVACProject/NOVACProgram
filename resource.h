@@ -63,7 +63,6 @@
 #define MSG_UPLOADPAK_NOT_FOUND         148
 #define ID_CONTROL_START149             149
 #define MSG_UPLOADPAK_SIZE_IS_OK        149
-#define IDD_CONFIGURATION_REMOTE        149
 #define IDR_MENU1                       149
 #define IDR_MEASUREMENT_MENU            149
 #define MSG_PROGRAM_STARTED_SUCESSFULLY 150
@@ -251,7 +250,10 @@
 #define IDC_EDIT_SITE                   1006
 #define IDC_EDIT_OBSERVATORY            1007
 #define IDC_EDIT_COMPASSDIRECTION       1008
+#define IDC_EDIT_MINCOL                 1008
 #define IDC_EDIT_SYSTEMTILT             1009
+#define IDC_EDIT_MINCOL2                1009
+#define IDC_EDIT_MAXCOL                 1009
 #define IDC_EDIT_FITLOW                 1010
 #define IDC_EDIT_FITHIGH                1011
 #define IDC_EDIT_OUTPUTDIR              1012
@@ -309,28 +311,17 @@
 #define IDC_CONFINFO_CONEORFLAT         1051
 #define IDC_STATIC_CONNECTION_INTERVAL  1052
 #define IDC_SCANINFO_STARTTIME          1052
-#define IDC_FTP_SERVER_IP               1053
 #define IDC_CONFINFO_LONGITUDE3         1053
 #define IDC_SCANINFO_STOPTIME           1053
-#define IDC_FTP_SERVER_USERNAME         1054
 #define IDC_SCANINFO_EXPTIME            1054
-#define IDC_FTP_SERVER_PASSWORD         1055
 #define IDC_SCANINFO_EXPTIME2           1055
 #define IDC_SCANINFO_NSPEC              1055
-#define IDC_MOTOR_STEPSPERROUND         1056
 #define IDC_SCANINFO_NSPEC2             1056
 #define IDC_SCANINFO_CALC_WD            1056
 #define IDC_MOTOR_ANGLECOMP             1057
-#define IDC_MOTOR_STEPCOMP              1057
 #define IDC_SCANINFO_DATE               1057
-#define IDC_CHECK_REALTIME              1058
 #define IDC_CONFINFO_LATITUDE2          1058
-#define IDC_SPECTRUM_CHANNEL_START      1059
-#define IDC_SPECTRUM_CHANNEL_STOP       1060
-#define IDC_EXPTIME_MAX                 1061
-#define IDC_EXPTIME_PERCENT             1062
 #define IDC_BUTTON1                     1063
-#define IDC_UPLOADCFGBTN                1063
 #define IDC_BTN_BROWSE_SCANFILES        1063
 #define IDC_BTN_BROWSESCANFILE          1063
 #define IDC_REEVAL_DOEVAL               1063
@@ -351,7 +342,6 @@
 #define IDC_REEVAL_CANCEL               1064
 #define IDC_BROWSE_PAKFILE_BTN          1064
 #define IDC_DOWNLOAD_BTN                1064
-#define IDC_MOTOR_DELAY                 1064
 #define IDC_BUTTON_REMOVE_REFERENCE     1064
 #define IDC_BROWSE_SERIES1              1064
 #define IDC_BTN_BROWSEOUTPUTDIR         1064
@@ -359,7 +349,6 @@
 #define IDC_BUTTON_BROWSE_DARKCURRENT   1064
 #define IDC_BTN_BROWSEOFFSETSPEC        1064
 #define IDC_BUTTON_DARK_SETTINGS        1064
-#define IDC_MEASUREMENTS_FRAME          1065
 #define IDC_BROWSE_EXPORTDIR            1065
 #define IDC_BUTTON_REFERENCE_PROEPERTIES 1065
 #define IDC_BROWSE_SERIES2              1065
@@ -367,14 +356,10 @@
 #define IDC_BTN_BROWSESKY3              1065
 #define IDC_BTN_BROWSEDARKCURRENTSPEC   1065
 #define IDC_BTN_BROWSEEVALLOG3          1065
-#define IDC_DNLDCFGBTN                  1066
 #define IDC_BUTTON_BROWSE_DARKCURRENT2  1066
 #define IDC_BTN_BROWSEEVALLOG4          1066
 #define IDC_BUTTON_REFERENCE_VIEW       1066
-#define IDC_GEOM_COMPASS                1067
-#define IDC_GEOM_ROLL                   1068
 #define IDC_PF_WINDSPEED                1069
-#define IDC_GEOM_PITCH                  1069
 #define IDC_PF_WINDDIRECTION            1070
 #define IDC_PF_COMPASS                  1071
 #define IDC_PF_PLUMEHEIGHT              1072
@@ -519,6 +504,7 @@
 #define IDC_EDIT_SPECERROR              1119
 #define IDC_IGNORE_NOTHING2             1119
 #define IDC_EDIT_PLUMEDGE_LOW           1119
+#define IDC_CHECK_SHOW_COLUMN_HISTORY   1119
 #define IDC_FTPPASS                     1120
 #define IDC_FTP_USERNAME                1120
 #define IDC_EDIT_REPETITIONS            1120
@@ -591,7 +577,9 @@
 #define IDC_LABEL_SITE                  1156
 #define IDC_LABEL_OBSERVATORY           1157
 #define IDC_LABEL_FITLOW                1158
+#define IDC_LABEL_MINCOLUMN             1158
 #define IDC_LABEL_FITHIGH               1159
+#define IDC_LABEL_MAXCOLUMN             1159
 #define IDC_LABEL_COMPASSDIRECTION      1160
 #define IDC_LABEL_OUTPUT_DIRECTORY      1161
 #define IDC_LABEL_SYSTEMTILT            1161
@@ -782,6 +770,7 @@
 #define IDC_LABEL_SWITCHRANGE           1343
 #define IDC_COLUMN_30DAY_FRAME          1345
 #define IDC_COLUMN_10DAY_FRAME          1346
+#define IDC_STATIC_PLOT_OPTIONS         1347
 #define ID_CONTROL_START                32771
 #define ID_VIEW_PEAKINTENSITY_BD        32779
 #define ID_VIEW_FITINTENSITY_BD         32780
@@ -798,7 +787,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        313
 #define _APS_NEXT_COMMAND_VALUE         32788
-#define _APS_NEXT_CONTROL_VALUE         1347
+#define _APS_NEXT_CONTROL_VALUE         1348
 #define _APS_NEXT_SYMED_VALUE           109
 #endif
 #endif

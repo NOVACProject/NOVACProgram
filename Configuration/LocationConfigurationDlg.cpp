@@ -138,8 +138,8 @@ BOOL CLocationConfigurationDlg::OnInitDialog()
 	InitToolTips();
 
 	// Setup the label.
-	str.Format("* The serial number is used to identify spectra\n\n* Data from connected scanners will only be evaluated if the serial-number is configured\n");
-	SetDlgItemText(IDC_LABEL_MESSAGE, str);
+	//str.Format("* The serial number is used to identify spectra\n\n* Data from connected scanners will only be evaluated if the serial-number is configured\n");
+	//SetDlgItemText(IDC_LABEL_MESSAGE, str);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE

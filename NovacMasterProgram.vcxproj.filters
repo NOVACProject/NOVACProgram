@@ -333,9 +333,6 @@
     <ClCompile Include="Configuration\GlobalConfiguration.cpp">
       <Filter>Source Files\Configuration</Filter>
     </ClCompile>
-    <ClCompile Include="Configuration\RemoteConfigurationDlg.cpp">
-      <Filter>Source Files\Configuration</Filter>
-    </ClCompile>
     <ClCompile Include="Configuration\ScannerConfiguration.cpp">
       <Filter>Source Files\Configuration</Filter>
     </ClCompile>
@@ -804,9 +801,6 @@
       <Filter>Header Files\Configuration</Filter>
     </ClInclude>
     <ClInclude Include="Configuration\GlobalConfiguration.h">
-      <Filter>Header Files\Configuration</Filter>
-    </ClInclude>
-    <ClInclude Include="Configuration\RemoteConfigurationDlg.h">
       <Filter>Header Files\Configuration</Filter>
     </ClInclude>
     <ClInclude Include="Configuration\ScannerConfiguration.h">
