@@ -63,6 +63,7 @@ BOOL ColumnHistoryDlg::OnInitDialog()
 	// Initialize plots
 	Init10DayPlot();
 	Init30DayPlot();
+	SetTimeRange();
 
 	// Read evaluation logs and plot columns;
 	ReadEvalLogs();
@@ -93,15 +94,6 @@ void ColumnHistoryDlg::Init10DayPlot() {
 	m_plot10.SetBackgroundColor(RGB(0, 0, 0));
 	m_plot10.SetCircleColor(RGB(255, 0, 0));
 	m_plot10.SetCircleRadius(1);
-
-	// set time range
-	struct tm *tm;
-	time_t t;
-	time(&t);
-	tm = gmtime(&t);
-	time_t endtime = t - (3600 * tm->tm_hour + 60 * tm->tm_min + tm->tm_sec);
-	time_t starttime = endtime - 60 * 60 * 24 * 10;
-	m_plot10.SetRange(starttime, endtime, 0, m_minColumn, m_maxColumn, 0);
 }
 
 void ColumnHistoryDlg::Init30DayPlot() {
@@ -128,14 +120,6 @@ void ColumnHistoryDlg::Init30DayPlot() {
 	m_plot30.SetCircleColor(RGB(255, 0, 0));
 	m_plot30.SetCircleRadius(1);
 
-	// set time range
-	struct tm *tm;
-	time_t t;
-	time(&t);
-	tm = gmtime(&t);
-	time_t endtime = t - (3600 * tm->tm_hour + 60 * tm->tm_min + tm->tm_sec);
-	time_t starttime = endtime - 60 * 60 * 24 * 30;
-	m_plot30.SetRange(starttime, endtime, 0, m_minColumn, m_maxColumn, 0);
 }
 
 void ColumnHistoryDlg::ReadEvalLogs() {
@@ -263,5 +247,32 @@ BOOL ColumnHistoryDlg::OnSetActive()
 	return CPropertyPage::OnSetActive();
 }
 
+void ColumnHistoryDlg::SetTimeRange() {
+	// get end time
+	struct tm *tm;
+	time_t t;
+	time(&t);
+	tm = gmtime(&t);
+	time_t endtime = t - (3600 * tm->tm_hour + 60 * tm->tm_min + tm->tm_sec);
+	// get start time and set 10 day plot
+	time_t starttime = endtime - 60 * 60 * 24 * 10;
+	m_plot10.SetRange(starttime, endtime, 0, m_minColumn, m_maxColumn, 0);
+	// get start time and set 30 day plot
+	starttime = endtime - 60 * 60 * 24 * 30;
+	m_plot30.SetRange(starttime, endtime, 0, m_minColumn, m_maxColumn, 0);
+}
 
+void ColumnHistoryDlg::RedrawAll() {
+
+	if (g_userSettings.m_columnUnit == UNIT_PPMM) {
+		m_plot10.SetYUnits("Column [ppmm]");
+		m_plot30.SetYUnits("Column [ppmm]");
+	}
+	if (g_userSettings.m_columnUnit == UNIT_MOLEC_CM2) {
+		m_plot10.SetYUnits("Column [molec/cm²]");
+		m_plot30.SetYUnits("Column [molec/cm²]");
+	}
+	SetTimeRange();
+	ReadEvalLogs();
+}
 

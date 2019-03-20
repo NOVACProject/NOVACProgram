@@ -118,8 +118,6 @@ BOOL CScannerConfiguration::OnInitDialog()
 	m_sheet.AddPage(&m_pageWind);
 	m_sheet.AddPage(&m_pageVII);
 	m_sheet.AddPage(&m_pageCommunication);
-	//m_sheet.AddPage(&m_pageDark);
-	//m_sheet.AddPage(&m_pageRemote);
 
 	// find the position of the sheet
 	CRect rect, rect2;
@@ -131,7 +129,6 @@ BOOL CScannerConfiguration::OnInitDialog()
 
 	m_sheet.Create(this, WS_CHILD | WS_VISIBLE | WS_TABSTOP);
 	m_sheet.ModifyStyleEx(0, WS_EX_CONTROLPARENT);
-	//m_sheet.MoveWindow(rect2.right + margin, margin, width, height, TRUE);
 	m_sheet.MoveWindow(rect2.right + 2 * margin - rect2.left, margin, width, height, TRUE);
 
 
@@ -155,17 +152,8 @@ BOOL CScannerConfiguration::OnInitDialog()
 	tabPtr->GetItemRect(2, &rect);
 	m_toolTip.AddTool(tabPtr, IDD_CONFIGURE_COM_PORT, &rect, IDD_CONFIGURE_COM_PORT);
 
-	//m_toolTip.AddTool(tabPtr, IDD_CONFIGURE_EVALUATION, &rect, IDD_CONFIGURE_EVALUATION);
-	//tabPtr->GetItemRect(3, &rect);
-	//m_toolTip.AddTool(tabPtr, IDD_CONFIGURE_WIND, &rect, IDD_CONFIGURE_WIND);
-	//tabPtr->GetItemRect(4, &rect);
-	//m_toolTip.AddTool(tabPtr, IDD_CONFIGURE_COM_PORT, &rect, IDD_CONFIGURE_COM_PORT);
-	//tabPtr->GetItemRect(5, &rect);
-	//m_toolTip.AddTool(tabPtr, ID_CONFIGURATION_REMOTE, &rect, ID_CONFIGURATION_REMOTE);
-
 	tabPtr->SetToolTips(&m_toolTip);
 	tabPtr->EnableToolTips(TRUE);
-
 
 	m_toolTip.SetMaxTipWidth(SHRT_MAX);
 	m_toolTip.Activate(TRUE);
@@ -176,7 +164,6 @@ BOOL CScannerConfiguration::OnInitDialog()
 		OnChangeScanner();
 		m_removeScannerBtn.EnableWindow(FALSE);
 	}
-
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 }
@@ -246,17 +233,12 @@ void CScannerConfiguration::OnChangeScanner(){
 	if(change){
 		int active = m_sheet.GetActiveIndex();
 		m_sheet.RemovePage(&m_pageCommunication);
-		//m_sheet.RemovePage(&m_pageDark);
-		//m_sheet.RemovePage(&m_pageRemote);
 		m_sheet.AddPage(&m_pageCommunication);
-		//m_sheet.AddPage(&m_pageDark);
-		//m_sheet.AddPage(&m_pageRemote);
 		m_sheet.SetActivePage(active);
 	}
 
 	// Tell all windows that we've changed scanner
 	m_pageCommunication.OnChangeScanner();
-	//m_pageDark.OnChangeScanner();
 	m_pageLocation.OnChangeScanner();
 	for(int k = 0; k < MAX_CHANNEL_NUM; ++k){
 		if(m_showEvalPage[k])

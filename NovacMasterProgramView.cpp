@@ -956,7 +956,7 @@ int CNovacMasterProgramView::InitializeControls(){
 	// Move everything into place...
 	m_masterFrame.GetWindowRect(rect);
 	GetWindowRect(rect2);
-	m_sheet.MoveWindow(rect2.left, rect.top - rect2.top, rect2.Width(), rect.Height());
+	m_sheet.MoveWindow(rect.left, 5 + rect.top - rect2.top, rect2.Width(), rect.Height());
 	m_masterFrame.GetWindowRect(rect);
 
 	// Get the tab control and set the title of each tab to the serial number of the spectrometer
@@ -1295,7 +1295,12 @@ void CNovacMasterProgramView::OnChangeUnitOfColumnToPPMM(){
 		CView_Scanner *page = (CView_Scanner *)m_scannerPages[i];
 		if(page->m_hWnd != NULL){
 			page->DrawColumn();
-			return;
+		}
+	}
+	for (int i = 0; i < m_colHistoryPages.GetCount(); ++i) {
+		ColumnHistoryDlg *page = (ColumnHistoryDlg *)m_colHistoryPages[i];
+		if (page->m_hWnd != NULL) {
+			page->RedrawAll();
 		}
 	}
 }
@@ -1308,7 +1313,13 @@ void CNovacMasterProgramView::OnChangeUnitOfColumnToMolecCm2(){
 		CView_Scanner *page = (CView_Scanner *)m_scannerPages[i];
 		if(page->m_hWnd != NULL){
 			page->DrawColumn();
-			return;
+		}
+	}
+
+	for (int i = 0; i < m_colHistoryPages.GetCount(); ++i) {
+		ColumnHistoryDlg *page = (ColumnHistoryDlg *)m_colHistoryPages[i];
+		if (page->m_hWnd != NULL) {
+			page->RedrawAll();
 		}
 	}
 }
@@ -1437,3 +1448,5 @@ LRESULT CNovacMasterProgramView::OnRewriteConfigurationXml(WPARAM wParam, LPARAM
 
 	return 0;
 }
+
+
