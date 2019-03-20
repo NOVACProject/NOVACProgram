@@ -77,8 +77,10 @@ void ColumnHistoryDlg::Init10DayPlot() {
 	m_frame10.GetWindowRect(rect);
 	int height = rect.bottom - rect.top;
 	int width = rect.right - rect.left;
-	rect.top = 20; rect.bottom = height - 10;
-	rect.left = 10; rect.right = width - 10;
+	rect.top = 20;
+	rect.bottom = height - 10;
+	rect.left = 10;
+	rect.right = width - 10;
 	m_plot10.Create(WS_VISIBLE | WS_CHILD, rect, &m_frame10);
 
 	Common common;
@@ -102,8 +104,10 @@ void ColumnHistoryDlg::Init30DayPlot() {
 	m_frame30.GetWindowRect(rect);
 	int height = rect.bottom - rect.top;
 	int width = rect.right - rect.left;
-	rect.top = 20; rect.bottom = height - 10;
-	rect.left = 10; rect.right = width - 10;
+	rect.top = 20; 
+	rect.bottom = height - 10;
+	rect.left = 10; 
+	rect.right = width - 10;
 	m_plot30.Create(WS_VISIBLE | WS_CHILD, rect, &m_frame30);
 
 	Common common;
@@ -142,8 +146,18 @@ void ColumnHistoryDlg::ReadEvalLogs() {
 	struct tm * utc;
 	time(&rawtime);
 	utc = gmtime(&rawtime);
+	// get time offset
+	time_t offset = mktime(utc) - rawtime;
+	if (utc->tm_isdst) {
+		offset -= 3600;
+	}
 	// make it midnight (00:00:00) of current day
-	utc->tm_hour = -1;
+	if (utc->tm_isdst) {
+		utc->tm_hour = -1;
+	}
+	else {
+		utc->tm_hour = 0;
+	}
 	utc->tm_min = 0;
 	utc->tm_sec = 0;
 
@@ -204,7 +218,8 @@ void ColumnHistoryDlg::ReadEvalLogs() {
 				CDateTime st;
 				sr.GetStartTime(k, st);
 				int startsec = st.hour * 3600 + st.minute * 60 + st.second;
-				double epoch = (double)(epochDay + startsec);
+				double epoch = (double)(epochDay + startsec - offset);
+				epoch -= (23 * 60 * 60); // hack to fix plot being 23 hours ahead for some reason.
 				double col = sr.GetColumn(k, 0); //TODO - ref index not always 0
 				bool isBadFit = sr.IsBad(k);
 				if (!isBadFit) {
@@ -232,14 +247,15 @@ void ColumnHistoryDlg::ReadEvalLogs() {
 void ColumnHistoryDlg::OnSize(UINT nType, int cx, int cy)
 {
 	CPropertyPage::OnSize(nType, cx, cy);
-
+	/**
 	if (IsWindow(m_frame10.m_hWnd)) {
 		m_plot10.MoveWindow(10, 20, cx - 40, cy / 2 - 60);
 	}
 	if (IsWindow(m_frame30.m_hWnd)) {
 		m_plot30.MoveWindow(10, 20, cx - 40, cy / 2 - 60);
 	}
-	//ReadEvalLogs();
+	ReadEvalLogs();
+	*/
 }
 
 BOOL ColumnHistoryDlg::OnSetActive()
