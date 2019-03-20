@@ -66,7 +66,7 @@ void CLocationConfigurationDlg::DoDataExchange(CDataExchange* pDX)
 		DDX_Text(pDX, IDC_EDIT_SERIALNUMBER,			m_curScanner->spec[0].serialNumber);
 
 		DDX_Check(pDX, IDC_CHECK_PLOT_COLUMN, m_curScanner->plotColumn);
-		DDX_Check(pDX, IDC_CHECK_SHOW_COLUMN_HISTORY, m_curScanner->plotColumnHistory);
+		DDX_Check(pDX, IDC_CHECK_PLOT_COLUMN_HISTORY, m_curScanner->plotColumnHistory);
 		DDX_Text(pDX, IDC_EDIT_MINCOL, m_curScanner->minColumn);
 		DDX_Text(pDX, IDC_EDIT_MAXCOL, m_curScanner->maxColumn);
 
