@@ -146,8 +146,18 @@ void ColumnHistoryDlg::ReadEvalLogs() {
 	struct tm * utc;
 	time(&rawtime);
 	utc = gmtime(&rawtime);
+	// get time offset
+	time_t offset = mktime(utc) - rawtime;
+	if (utc->tm_isdst) {
+		offset -= 3600;
+	}
 	// make it midnight (00:00:00) of current day
-	utc->tm_hour = -1;
+	if (utc->tm_isdst) {
+		utc->tm_hour = -1;
+	}
+	else {
+		utc->tm_hour = 0;
+	}
 	utc->tm_min = 0;
 	utc->tm_sec = 0;
 
@@ -208,7 +218,8 @@ void ColumnHistoryDlg::ReadEvalLogs() {
 				CDateTime st;
 				sr.GetStartTime(k, st);
 				int startsec = st.hour * 3600 + st.minute * 60 + st.second;
-				double epoch = (double)(epochDay + startsec);
+				double epoch = (double)(epochDay + startsec - offset);
+				epoch -= (23 * 60 * 60); // hack to fix plot being 23 hours ahead for some reason.
 				double col = sr.GetColumn(k, 0); //TODO - ref index not always 0
 				bool isBadFit = sr.IsBad(k);
 				if (!isBadFit) {
