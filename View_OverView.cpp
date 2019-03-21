@@ -212,13 +212,14 @@ void CView_OverView::DrawFlux(){
 		nGoodFluxes = 0;
 		nBadFluxes = 0;
 		for(int k = 0; k < dataLength; ++k){
+			int secAfterMidnight = ((int)tid[k]) % 86400;
 			if(fluxOk[k]){
 				goodFluxes[nGoodFluxes] = allFluxes[k];
-				goodTime[nGoodFluxes]   = tid[k];
+				goodTime[nGoodFluxes]   = secAfterMidnight; 
 				++nGoodFluxes;
 			}else{
 				badFluxes[nBadFluxes] = allFluxes[k];
-				badTime[nBadFluxes]   = tid[k];
+				badTime[nBadFluxes]   = secAfterMidnight; 
 				++nBadFluxes;
 			}
 		}

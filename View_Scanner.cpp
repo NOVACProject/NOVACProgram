@@ -177,14 +177,15 @@ BOOL CView_Scanner::OnInitDialog()
 	rect.left = 10; rect.right = width - 10;
 	m_todayPlot.Create(WS_VISIBLE | WS_CHILD, rect, &m_todayScanFrame);
 	m_todayPlot.SetXUnits(common.GetString(AXIS_UTCTIME));
-	m_todayPlot.SetXAxisNumberFormat(FORMAT_TIME);
+	m_todayPlot.SetXAxisNumberFormat(FORMAT_DATETIME);
 	m_todayPlot.SetYUnits("Column");
 	m_todayPlot.EnableGridLinesX(true);
 	m_todayPlot.SetPlotColor(RGB(255, 255, 255));
 	m_todayPlot.SetGridColor(RGB(255, 255, 255));
 	m_todayPlot.SetBackgroundColor(RGB(0, 0, 0));
-	m_todayPlot.SetRange(0, 24*3600-1, 0, 0, 100, 0);
 	m_todayPlot.SetMinimumRangeY(1.0);
+	m_todayPlot.SetRangeY(0, 100, 0);
+	SetTodayRange();
 
 	// Enable the tool tips
 	if(!m_toolTip.Create(this)){
@@ -237,6 +238,16 @@ BOOL CView_Scanner::OnInitDialog()
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
+}
+
+void CView_Scanner::SetTodayRange() {
+	// set time range for last day plot
+	struct tm *tm;
+	time_t endtime;
+	time(&endtime);
+	tm = gmtime(&endtime);
+	time_t starttime = endtime - 60 * 60 * 24;
+	m_todayPlot.SetRangeX(starttime, endtime, 0);
 }
 
 void CView_Scanner::DrawColumn(){
@@ -439,7 +450,7 @@ void CView_Scanner::DrawColumnDay() {
 	Common common;
 
 	// variables
-	const int BUFFER_SIZE = 3000;
+	const int BUFFER_SIZE = 10000;
 	double time[BUFFER_SIZE], column[BUFFER_SIZE], columnError[BUFFER_SIZE], badColumn[BUFFER_SIZE], peakSat[BUFFER_SIZE], fitSat[BUFFER_SIZE];
 	double maxColumn, minColumn;
 
@@ -499,6 +510,7 @@ void CView_Scanner::DrawColumnDay() {
 	}
 	
 	m_todayPlot.SetRangeY(minColumn, maxColumn, 0);
+	SetTodayRange();
 
 	// If we know the dynamic range for the spectrometer, 
 	//	set the plot to show saturation-levels instead of intensities
@@ -632,9 +644,7 @@ void CView_Scanner::DrawFlux(){
 
 	// set the range for the plot
 	m_todayPlot.SetRangeY(0, maxFlux, 1);
-
-	// TODO: update the time range for the plot
-	//m_todayPlot.SetRange(0, 24 * 3600 - 1, 0, 0, 100, 0);
+	SetTodayRange();
 
 	// First draw the bad values, then the good ones
 	m_todayPlot.SetCircleColor(RGB(150, 150, 150));
@@ -870,17 +880,6 @@ BOOL CView_Scanner::OnSetActive()
 	// Redraw the screen
 	OnUpdateEvalStatus(NULL, NULL);
 	OnUpdateWindParam(NULL, NULL);
-	
-	// already done in OnUpdateEvalStatus
-	//DrawColumn();
-	//// update today's plot
-	//if (g_settings.scanner[m_scannerIndex].plotColumn) {
-	//	DrawColumnDay();
-	//}
-	//else {
-	//	DrawFlux();
-	//}
-
 	return CPropertyPage::OnSetActive();
 }
 

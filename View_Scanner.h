@@ -70,6 +70,9 @@ public:
 	CString										m_siteName;
 
 	// ----------- PUBLIC METHODS ---------------
+	/** Set time range for current day plot */
+	void SetTodayRange();
+
 	/** Draws the column for the last collected scan.*/
 	void DrawColumn();
 

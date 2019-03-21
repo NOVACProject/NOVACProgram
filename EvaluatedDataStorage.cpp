@@ -168,7 +168,7 @@ int CEvaluatedDataStorage::AddData(const CString &serial, Evaluation::CScanResul
 		// Get scan end time
 		CDateTime scanTime;
 		result->GetStopTime(0, scanTime);
-		if (scanTime.day == common.GetDay() && scanTime.month == common.GetMonth() && scanTime.year == common.GetYear()) {
+		if (common.Epoch() - common.Epoch(scanTime) <= 86400) {
 			AppendFluxResult(scannerIndex, scanTime, result->GetFlux(), result->IsFluxOk(), result->GetBatteryVoltage(), result->GetTemperature(), result->GetSkySpectrumInfo().m_exposureTime);
 		}
 	}
@@ -212,8 +212,8 @@ int CEvaluatedDataStorage::AddData(const CString &serial, Evaluation::CScanResul
 		// Add data point for current day
 		CDateTime scanTime;
 		result->GetStopTime(0, scanTime);
-		if (scanTime.day == common.GetDay() && scanTime.month == common.GetMonth() && scanTime.year == common.GetYear()) {
-			AppendSpecDataHistory(scannerIndex, time, column, columnError, peakSaturation, fitSaturation, angle, isBadFit);
+		if (common.Epoch() - common.Epoch(scanTime) <= 86400) {
+			AppendSpecDataHistory(scannerIndex, common.Epoch(scanTime), column, columnError, peakSaturation, fitSaturation, angle, isBadFit);
 		}
 
 		// Check so that we don't add too many data points here
@@ -419,7 +419,7 @@ void CEvaluatedDataStorage::GetAngleRange(const CString &serial, double &minAngl
 void CEvaluatedDataStorage::AppendSpecDataHistory(int scannerIndex, int time, double column, double columnError, 
 	double peakSaturation, double fitSaturation, double angle, bool isBadFit) {
 	// If there are any old values in the array then remove them before appending more data.
-	ResetSpecIndex(scannerIndex);
+	RemoveOldSpec(scannerIndex);
 
 	// m_specIndex[scannerIndex] is the number of data-points there are in
 	//	the array of col-values
@@ -437,33 +437,43 @@ void CEvaluatedDataStorage::AppendSpecDataHistory(int scannerIndex, int time, do
 	}
 }
 /** Removes old spec data */
-void  CEvaluatedDataStorage::ResetSpecIndex(int scannerIndex) {
-	static int lastDate; // the day of month when this function was last called
-
-	// todays date
+void  CEvaluatedDataStorage::RemoveOldSpec(int scannerIndex) {
 	Common common;
-	int today = common.GetDay();
-	
-	// if new day, reset spec index to 0
-	if (lastDate != today) {
-		m_specIndex[scannerIndex] = 0;
+	for (unsigned int scannerIndex = 0; scannerIndex < m_serialNum; ++scannerIndex) {
+		int nRecords = m_specIndex[scannerIndex];
+		int remove = 0;
+		// count how many records to remove
+		for(int i=0; i < nRecords; i++){
+			if (m_specDataDay[scannerIndex][i].m_time < (common.Epoch() - 86400)) {
+				remove = i;
+			}
+			else {
+				// theoretically they are in time order so if timestamp is 
+				// from last 24 hours just break.
+				break;  
+			}
+		}
+		// remove the records
+		m_specIndex[scannerIndex] = m_specIndex[scannerIndex] - remove;
+		for (int i = 0; i < m_specIndex[scannerIndex]; ++i) {
+			m_specDataDay[scannerIndex][i] = m_specDataDay[scannerIndex][i + remove];
+		}
 	}
-
-	lastDate = today;
 }
 
 void CEvaluatedDataStorage::AppendFluxResult(int scannerIndex, const CDateTime &time, double fluxValue, bool fluxOk, double batteryVoltage, double temp, long expTime){
 	// If there are any old values in the array then remove them before appending more data.
 	RemoveOldFluxResults();
-
 	// m_fluxIndex[scannerIndex] is the number of data-points there are in
 	//	the array of flux-values
+
+	Common common;
 	if(m_fluxIndex[scannerIndex] < MAX_HISTORY){
 		// insert the datapoint into the array
 		int index = m_fluxIndex[scannerIndex];
 		m_data[scannerIndex][index].m_flux      = fluxValue;
 		m_data[scannerIndex][index].m_fluxOk    = fluxOk;
-		m_data[scannerIndex][index].m_time      = (time.hour + m_hoursToGMT[scannerIndex])* 3600 + time.minute * 60 + time.second;
+		m_data[scannerIndex][index].m_time = common.Epoch(time);
 		m_data[scannerIndex][index].m_date      = time.day;
 		m_data[scannerIndex][index].m_battery   = batteryVoltage;
 		m_data[scannerIndex][index].m_temp      = temp;
@@ -474,8 +484,30 @@ void CEvaluatedDataStorage::AppendFluxResult(int scannerIndex, const CDateTime &
 
 /** Removes old flux results */
 void  CEvaluatedDataStorage::RemoveOldFluxResults(){
-	static int lastDate; // the day of month when this function was last called
 	Common common;
+	for (unsigned int scannerIndex = 0; scannerIndex < m_serialNum; ++scannerIndex) {
+		int nRecords = m_fluxIndex[scannerIndex];
+		int remove = 0;
+		// count how many records to remove
+		for (int i = 0; i < nRecords; i++) {
+			if (m_specDataDay[scannerIndex][i].m_time < (common.Epoch() - 86400)) {
+				remove = i;
+			}
+			else {
+				// theoretically they are in time order so if timestamp is 
+				// from last 24 hours just break.
+				break;
+			}
+		}
+		// remove the records
+		m_fluxIndex[scannerIndex] = m_fluxIndex[scannerIndex] - remove;
+		for (int i = 0; i < m_fluxIndex[scannerIndex]; ++i) {
+			m_data[scannerIndex][i] = m_data[scannerIndex][i + remove];
+		}
+	}
+
+	// other clean up below (for new UTC day)
+	static int lastDate; // the day of month when this part of function was last called
 
 	// todays date
 	int today = common.GetDay();
@@ -484,24 +516,8 @@ void  CEvaluatedDataStorage::RemoveOldFluxResults(){
 	if(lastDate == today)
 		return;
 
-	// Clear flux-results
+	// clear the minimum and maximum temperatures
 	for(unsigned int scannerIndex = 0; scannerIndex < m_serialNum; ++scannerIndex){
-		int k = 0;
-		int nRecords = m_fluxIndex[scannerIndex];
-
-		while(k < m_fluxIndex[scannerIndex]){
-			if(m_data[scannerIndex][k].m_date == today){
-				++k;
-			}else{
-				// if this measurement is not from today, then remove it
-				for(int j = k; j < m_fluxIndex[scannerIndex]-1; ++j){
-					m_data[scannerIndex][j]	= m_data[scannerIndex][j+1];
-				}
-				--m_fluxIndex[scannerIndex];
-			}
-		}
-
-		// also clear the minimum and maximum temperatures
 		m_temperatureRange[0][scannerIndex] = 999.0;
 		m_temperatureRange[1][scannerIndex] = -999.0;
 	}
@@ -695,7 +711,7 @@ long CEvaluatedDataStorage::GetAngleData(const CString &serial, double *dataBuff
 
 /** Get Flux data. 
     @param scannerIndex - the scanner for which the data should be retrieved.
-    @param timeBuffer - the time-data will be copied into this buffer. The time format is the number of seconds since midnight
+    @param timeBuffer - the time-data will be copied into this buffer. The time format is epoch (seconds since 1/1/1970).
     @param dataBuffer - the column data will be copied into this buffer.
     @param qualityBuffer - the quality of the data will be copied into this buffer
     @param bufferSize - the maximum number of data points that the buffer can handle.
