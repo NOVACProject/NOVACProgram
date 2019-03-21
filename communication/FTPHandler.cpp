@@ -170,6 +170,10 @@ bool CFTPHandler::DownloadAllOldPak()
 		CList <CString, CString &> localFolderList;
 		localFolderList.AddTail(&m_rFolderList);
 
+
+		time_t start;
+		time(&start);
+		time_t current;
 		while(localFolderList.GetCount() > 0){
 			m_fileInfoList.RemoveAll();
 
@@ -196,6 +200,12 @@ bool CFTPHandler::DownloadAllOldPak()
 			{
 				// we failed to download the files...
 				Disconnect(); //get out of loop 2007.4.30
+			}
+			time(&current);
+			double seconds = current - start;
+			long queryPeriod = g_settings.scanner[m_mainIndex].comm.queryPeriod;
+			if (seconds > queryPeriod) {
+				break; // spent long enough on one scanner; move to next
 			}
 		}// end while
 	}
