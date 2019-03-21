@@ -7,6 +7,8 @@ Bug fixes
 * Fix issue with flux data with different UTC date plotted as if it would have the same date (#56)
 
 New features
+* Option to show columns for current day plot to support fixed view measurements(#53)
+* Addition of column history tab (#57)
 * Status Message area resizes when window is resized
 * FTP upload server login information is now stored in a separate ftplogin.xml file
 
