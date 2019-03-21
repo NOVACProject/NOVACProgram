@@ -9,6 +9,7 @@ Bug fixes
 New features
 * Option to show columns for current day plot to support fixed view measurements(#53)
 * Addition of column history tab (#57)
+* Show last 24 hours of data instead of just current UTC day (#70)
 * Status Message area resizes when window is resized
 * FTP upload server login information is now stored in a separate ftplogin.xml file
 
