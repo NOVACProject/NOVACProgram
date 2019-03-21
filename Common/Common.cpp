@@ -704,6 +704,33 @@ double Common::JulianDay(const CDateTime &utcTime){
 	return JD;
 }
 
+double Common::Epoch() {
+	time_t rawtime;
+	struct tm * utc;
+	time(&rawtime);
+	utc = gmtime(&rawtime);
+	return mktime(utc);
+}
+
+double Common::Epoch(const CDateTime &utcTime) {
+	time_t rawtime;
+	struct tm * utc;
+	time(&rawtime);
+	utc = gmtime(&rawtime);
+	time_t offset = mktime(utc) - rawtime;
+	if (utc->tm_isdst) {
+		offset -= 3600;
+	}
+	utc->tm_year = utcTime.year - 1900;
+	utc->tm_mon = utcTime.month - 1;
+	utc->tm_mday = utcTime.day;
+	utc->tm_hour = utcTime.hour;
+	utc->tm_min = utcTime.minute;
+	utc->tm_sec = utcTime.second;
+	double epoch = mktime(utc)-offset;
+	return epoch;
+}
+
 /** Retrieves the solar zenith angle (SZA) and the solar azimuth angle (SAZ)
 		for the site specified by (lat, lon) and for the time given in gmtTime. 
 		Note that the returned angles are in degrees and that the specified
