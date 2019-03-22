@@ -41,7 +41,6 @@ void ColumnHistoryDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CPropertyPage::DoDataExchange(pDX);
 	
-
 	DDX_Control(pDX, IDC_COLUMN_FRAME, m_frame);
 	DDX_Control(pDX, IDC_COLUMN_10DAY_FRAME, m_frame10);
 	DDX_Control(pDX, IDC_COLUMN_30DAY_FRAME, m_frame30);
@@ -56,7 +55,6 @@ END_MESSAGE_MAP()
 
 BOOL ColumnHistoryDlg::OnInitDialog()
 {
-
 	CPropertyPage::OnInitDialog();
 
 	m_minColumn = g_settings.scanner[m_scannerIndex].minColumn;

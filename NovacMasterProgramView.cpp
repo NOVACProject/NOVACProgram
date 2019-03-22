@@ -194,9 +194,6 @@ void CNovacMasterProgramView::OnInitialUpdate()
 
 	m_common.GetExePath();
 
-	// Fix the layout of the main components to fit the screen
-	//SetLayout();
-
 	// Initialize the master-frame
 	m_sheet.Construct("", this);
 
@@ -425,7 +422,6 @@ CNovacMasterProgramDoc* CNovacMasterProgramView::GetDocument() const // non-debu
 }
 #endif //_DEBUG
 
-
 // CNovacMasterProgramView message handlers
 
 // updates the status bar
@@ -441,6 +437,7 @@ LRESULT CNovacMasterProgramView::OnShowStatus(WPARAM wParam, LPARAM lParam){
 	
 	return 0;
 }
+
 //update the first message of list box
 LRESULT CNovacMasterProgramView::OnUpdateMessage(WPARAM wParam,LPARAM lParam)
 {
@@ -452,6 +449,7 @@ LRESULT CNovacMasterProgramView::OnUpdateMessage(WPARAM wParam,LPARAM lParam)
 	delete msg;
 	return 0;
 }
+
 LRESULT CNovacMasterProgramView::OnShowMessage(WPARAM wParam, LPARAM lParam){
 	CString *msg = (CString *)wParam;
 	CString logFile,dateStr,logPath;
@@ -515,6 +513,7 @@ LRESULT CNovacMasterProgramView::OnShowMessage(WPARAM wParam, LPARAM lParam){
 
 	return 0;
 }
+
 void CNovacMasterProgramView::ForwardMessage(int message, WPARAM wParam, LPARAM lParam){
 	unsigned int i;
 
@@ -562,6 +561,7 @@ LRESULT CNovacMasterProgramView::OnScannerRun(WPARAM wParam, LPARAM lParam)
 
 	return 0;
 }
+
 LRESULT CNovacMasterProgramView::OnScannerSleep(WPARAM wParam, LPARAM lParam)
 {
 	CString *serialID = (CString *)wParam;
@@ -590,7 +590,6 @@ LRESULT CNovacMasterProgramView::OnNewWindField(WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-
 LRESULT CNovacMasterProgramView::OnDownloadFinished(WPARAM wParam, LPARAM lParam)
 {
 	CString *serialID			= (CString *)wParam;
@@ -609,7 +608,6 @@ LRESULT CNovacMasterProgramView::OnUploadFinished(WPARAM wParam, LPARAM lParam)
 	
 	return 0;
 }
-
 
 LRESULT CNovacMasterProgramView::OnEvalSucess(WPARAM wParam, LPARAM lParam){
 	// the serial number of the spectrometer that has sucessfully evaluated one scan
@@ -641,8 +639,7 @@ LRESULT CNovacMasterProgramView::OnEvalSucess(WPARAM wParam, LPARAM lParam){
 			}
 		}
 	}
-
-
+	
 	// See if we need to upload any auxilliary data to the FTP-server
 	UploadAuxData();
 
@@ -792,7 +789,6 @@ void CNovacMasterProgramView::OnMenuShowConfigurationDialog()
 }
 
 void CNovacMasterProgramView::OnMenuViewInstrumentTab(){
-//	m_instrumentView->SetActiveWindow();
 	if(m_instrumentViewVisible){
 		m_sheet.RemovePage(m_instrumentView);
 		m_instrumentViewVisible = false;
@@ -805,7 +801,6 @@ void CNovacMasterProgramView::OnMenuViewInstrumentTab(){
 void CNovacMasterProgramView::OnDestroy()
 {
 	this->m_controller.Stop();
-
 	CFormView::OnDestroy();
 }
 
@@ -825,18 +820,7 @@ void CNovacMasterProgramView::OnMenuStartMasterController(){
 
 	// check if the controller is already running, if not then start it.
 	if(!m_controller.m_fRunning){
-
-		// (Re-) Read the configuration file
-		//g_settings.Clear();
-		//fileName.Format("%sconfiguration.xml", m_common.m_exePath);
-		//FileHandler::CConfigurationFileHandler reader;
-		//reader.ReadConfigurationFile(g_settings, &fileName);
-		//ShowMessage("Read configuration file - configuration.xml");
-		//InitializeControls(); // update the view
-
-
 		m_controller.Start();
-
 	}else{
 		ShowMessage(m_common.GetString(MSG_PROGRAM_ALREADY_RUNNING));
 	}
@@ -1005,29 +989,6 @@ void CNovacMasterProgramView::OnMenuAnalysisBrowseData(){
 	Dialogs::CDataBrowserDlg dlg;
 	dlg.DoModal();
 }
-
-//void CNovacMasterProgramView::OnMenuAnalysisColumnHistory() {
-//
-//	if (m_columnHistory == nullptr || m_columnHistory->m_hWnd == nullptr)
-//	{
-//		if (m_columnHistory == nullptr) {
-//			m_columnHistory = new ColumnHistoryDlg();
-//		}
-//		if (!m_columnHistory->Create(IDD_COLUMN_HISTORY_DLG, this))
-//		{
-//			delete m_columnHistory;
-//			m_columnHistory = nullptr;
-//			return;
-//		}
-//	}
-//	else {
-//		/* already exists */
-//		if (m_columnHistory->IsIconic()) { // in case the minimize button is enabled
-//			m_columnHistory->ShowWindow(SW_RESTORE);
-//		}
-//	}
-//
-//}
 
 void CNovacMasterProgramView::OnMenuAnalysisReevaluate()
 {
