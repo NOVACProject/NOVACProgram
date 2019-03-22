@@ -233,10 +233,19 @@ void CNovacMasterProgramView::OnInitialUpdate()
 	dateStr2.Format("%04d.%02d.%02d", year, month, mday); // yesterday
 	for(unsigned int it = 0; it < g_settings.scannerNum; ++it){
 		serialNumber.Format(g_settings.scanner[it].spec[0].serialNumber);
-		if (g_settings.scanner[it].plotColumn) {
+		// show both last 24 hour column plot on main screen and column history tab
+		if (g_settings.scanner[it].plotColumn && g_settings.scanner[it].plotColumnHistory) {
 			ReadEvalLog(it, dateStr, serialNumber);
 			ReadEvalLog(it, dateStr2, serialNumber);
 		}
+		// show column history tab but flux on main screen
+		else if (!g_settings.scanner[it].plotColumn && g_settings.scanner[it].plotColumnHistory) {
+			ReadEvalLog(it, dateStr, serialNumber);
+			ReadEvalLog(it, dateStr2, serialNumber);
+			ReadFluxLog(it, dateStr, serialNumber);
+			ReadFluxLog(it, dateStr2, serialNumber);
+		}
+		// no column history tab and flux on main screen
 		else {
 			ReadFluxLog(it, dateStr, serialNumber);
 			ReadFluxLog(it, dateStr2, serialNumber);
@@ -378,7 +387,6 @@ void CNovacMasterProgramView::ReadEvalLog(int scannerIndex, CString dateStr, CSt
 				for (unsigned long j = 0; j < sr.GetEvaluatedNum(); ++j) {
 					CDateTime st;
 					sr.GetStopTime(j, st);
-					//int time = st.hour * 3600 + st.minute * 60 + st.second;
 					int time = common.Epoch(st);
 					double column = sr.GetColumn(j, 0);
 					double columnError = sr.GetColumnError(j, 0);
@@ -386,9 +394,11 @@ void CNovacMasterProgramView::ReadEvalLog(int scannerIndex, CString dateStr, CSt
 					double fitIntensity = sr.GetFitIntensity(j);
 					double angle = sr.GetScanAngle(j);
 					bool isBadFit = sr.IsBad(j);
-
-					m_evalDataStorage->AppendSpecDataHistory(scannerIndex, time, column, columnError, 
-						peakIntensity, fitIntensity, angle, isBadFit);
+					int now = common.Epoch();
+					if ((now - time) <= 86400) {
+						m_evalDataStorage->AppendSpecDataHistory(scannerIndex, time, column, columnError,
+							peakIntensity, fitIntensity, angle, isBadFit);
+					}
 
 				}
 			}
@@ -911,7 +921,7 @@ int CNovacMasterProgramView::InitializeControls(){
 			histPage = new ColumnHistoryDlg();
 			histPage->Construct(IDD_COLUMN_HISTORY_DLG);
 
-			//histPage->m_evalDataStorage = this->m_evalDataStorage;
+			histPage->m_evalDataStorage = this->m_evalDataStorage;
 			histPage->m_scannerIndex = i;
 			histPage->m_serialNumber.Format("%s", (LPCTSTR)g_settings.scanner[i].spec[0].serialNumber);
 			histPage->m_siteName.Format("%s", (LPCTSTR)g_settings.scanner[i].site);
