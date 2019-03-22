@@ -361,6 +361,7 @@ void CNovacMasterProgramView::ReadFluxLog(int scannerIndex, CString dateStr, CSt
 
 void CNovacMasterProgramView::ReadEvalLog(int scannerIndex, CString dateStr, CString serialNumber) {
 	Common common;
+	int now = common.Epoch();
 	FileHandler::CEvaluationLogFileHandler evalLogReader;
 	CString path;
 	path.Format("%sOutput\\%s\\%s\\EvaluationLog_%s_%s.txt",
@@ -394,7 +395,6 @@ void CNovacMasterProgramView::ReadEvalLog(int scannerIndex, CString dateStr, CSt
 					double fitIntensity = sr.GetFitIntensity(j);
 					double angle = sr.GetScanAngle(j);
 					bool isBadFit = sr.IsBad(j);
-					int now = common.Epoch();
 					if ((now - time) <= 86400) {
 						m_evalDataStorage->AppendSpecDataHistory(scannerIndex, time, column, columnError,
 							peakIntensity, fitIntensity, angle, isBadFit);

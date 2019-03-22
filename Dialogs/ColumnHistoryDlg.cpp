@@ -64,10 +64,8 @@ BOOL ColumnHistoryDlg::OnInitDialog()
 	
 	// Initialize plots
 	InitPlot();
-	SetRange();
 	Init10DayPlot();
 	Init30DayPlot();
-	SetHistoryRange();
 
 	// Read evaluation logs and plot columns
 	DrawHistoryPlots();
@@ -176,15 +174,6 @@ void ColumnHistoryDlg::DrawPlot() {
 		m_plot.SetYUnits("Column [ppmm]");
 	else if (g_userSettings.m_columnUnit == UNIT_MOLEC_CM2)
 		m_plot.SetYUnits("Column [molec/cm²]");
-	/**
-	// get the offset
-	double offset = m_evalDataStorage->GetOffset(m_serialNumber);
-
-	// remove the offset
-	for (int i = 0; i < dataLength; ++i) {
-		column[i] = column[i] - offset;
-	}
-	*/
 
 	SetRange();
 	
@@ -208,6 +197,9 @@ void ColumnHistoryDlg::DrawHistoryPlots() {
 		unitConversionFactor = 1.0;
 	else if (g_userSettings.m_columnUnit == UNIT_MOLEC_CM2)
 		unitConversionFactor = 2.5e15;
+
+	// set time range
+	SetHistoryRange();
 
 	// get current time UTC
 	time_t rawtime;
@@ -322,13 +314,7 @@ void ColumnHistoryDlg::OnSize(UINT nType, int cx, int cy)
 
 BOOL ColumnHistoryDlg::OnSetActive()
 {	
-	// we can remove this if we get an event to kick off DrawHistoryPlots() on new day
-	//static int lastDay = 0;
-	//static int today = common.GetDay();
-	//if (lastDay != today) {
-	//	RedrawAll();
-	//}
-	//lastDay = today;
+
 	DrawPlot();
 	return CPropertyPage::OnSetActive();
 }
@@ -357,18 +343,8 @@ void ColumnHistoryDlg::SetHistoryRange() {
 	starttime = endtime - SECONDS_IN_DAY * 30;
 	m_plot30.SetRange(starttime, endtime, 0, m_minColumn, m_maxColumn, 0);
 }
-
 void ColumnHistoryDlg::RedrawAll() {
-
-	if (g_userSettings.m_columnUnit == UNIT_PPMM) {
-		m_plot10.SetYUnits("Column [ppmm]");
-		m_plot30.SetYUnits("Column [ppmm]");
-	}
-	if (g_userSettings.m_columnUnit == UNIT_MOLEC_CM2) {
-		m_plot10.SetYUnits("Column [molec/cm²]");
-		m_plot30.SetYUnits("Column [molec/cm²]");
-	}
-	SetHistoryRange();
+	DrawPlot();
 	DrawHistoryPlots();
 }
 
