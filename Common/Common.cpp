@@ -709,7 +709,7 @@ double Common::Epoch() {
 	struct tm * utc;
 	time(&rawtime);
 	utc = gmtime(&rawtime);
-	return mktime(utc);
+	return rawtime;
 }
 
 double Common::Epoch(const CDateTime &utcTime) {

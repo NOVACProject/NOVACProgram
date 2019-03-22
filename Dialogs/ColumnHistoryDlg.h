@@ -27,7 +27,6 @@ protected:
 public:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	virtual BOOL OnSetActive();
-	void RedrawAll();
 
 	/** A pointer to a shared instance of 'CEvaluatedDataStorage' */
 	CEvaluatedDataStorage	*m_evalDataStorage;
@@ -37,14 +36,20 @@ public:
 	CString m_serialNumber;
 	CString m_siteName;
 
+	void DrawPlot();
+	void DrawHistoryPlots();
+	void RedrawAll();
 private:
-	RECT minSize;
 
 	Common common;
 
 	// min and max column (Y-axis range)
 	int m_minColumn;
 	int m_maxColumn;
+	
+	// last 24 hour plot
+	CStatic m_frame;
+	Graph::CGraphCtrl m_plot;
 
 	// 10 day plot
 	CStatic m_frame10;
@@ -54,8 +59,14 @@ private:
 	CStatic m_frame30;
 	Graph::CGraphCtrl m_plot30;
 
+	// last 24 hour plot
+	void InitPlot();
+	void SetRange();
+
+	// 10 and 30 day plots
 	void Init10DayPlot();
 	void Init30DayPlot();
-	void SetTimeRange();
-	void ReadEvalLogs();
+	void SetHistoryRange();
+	
+	int SECONDS_IN_DAY = 86400;
 };

@@ -212,7 +212,7 @@ int CEvaluatedDataStorage::AddData(const CString &serial, Evaluation::CScanResul
 		// Add data point for current day
 		CDateTime scanTime;
 		result->GetStopTime(0, scanTime);
-		if (common.Epoch() - common.Epoch(scanTime) <= 86400) {
+		if ((common.Epoch() - common.Epoch(scanTime)) <= 86400) {
 			AppendSpecDataHistory(scannerIndex, common.Epoch(scanTime), column, columnError, peakSaturation, fitSaturation, angle, isBadFit);
 		}
 
@@ -444,7 +444,7 @@ void  CEvaluatedDataStorage::RemoveOldSpec(int scannerIndex) {
 		int remove = 0;
 		// count how many records to remove
 		for(int i=0; i < nRecords; i++){
-			if (m_specDataDay[scannerIndex][i].m_time < (common.Epoch() - 86400)) {
+			if ((common.Epoch() - m_specDataDay[scannerIndex][i].m_time) > 86400) {
 				remove = i;
 			}
 			else {
