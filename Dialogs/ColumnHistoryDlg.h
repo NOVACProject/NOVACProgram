@@ -40,6 +40,7 @@ public:
 private:
 	RECT minSize;
 
+	Common common;
 
 	// min and max column (Y-axis range)
 	int m_minColumn;

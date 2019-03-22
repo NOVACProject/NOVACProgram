@@ -401,7 +401,6 @@
 #define IDC_DISKCOMBO                   1078
 #define IDC_COMBO_IMAGEFORMAT           1078
 #define IDC_COMBO_OFFSET                1078
-#define IDC_COMBO_SCANNER               1078
 #define IDC_SLEEPHR                     1079
 #define IDC_COMBO_DARKCURRENT           1079
 #define IDC_COMBO_VOLCANO2              1079
@@ -504,7 +503,6 @@
 #define IDC_EDIT_SPECERROR              1119
 #define IDC_IGNORE_NOTHING2             1119
 #define IDC_EDIT_PLUMEDGE_LOW           1119
-#define IDC_CHECK_SHOW_COLUMN_HISTORY   1119
 #define IDC_CHECK_PLOT_COLUMN_HISTORY   1119
 #define IDC_FTPPASS                     1120
 #define IDC_FTP_USERNAME                1120
@@ -772,6 +770,8 @@
 #define IDC_COLUMN_30DAY_FRAME          1345
 #define IDC_COLUMN_10DAY_FRAME          1346
 #define IDC_STATIC_PLOT_OPTIONS         1347
+#define IDC_COLUMN_10DAY_FRAME2         1347
+#define IDC_COLUMN_1DAY_FRAME           1347
 #define ID_CONTROL_START                32771
 #define ID_VIEW_PEAKINTENSITY_BD        32779
 #define ID_VIEW_FITINTENSITY_BD         32780
@@ -788,7 +788,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        313
 #define _APS_NEXT_COMMAND_VALUE         32788
-#define _APS_NEXT_CONTROL_VALUE         1348
+#define _APS_NEXT_CONTROL_VALUE         1349
 #define _APS_NEXT_SYMED_VALUE           109
 #endif
 #endif

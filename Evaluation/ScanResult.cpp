@@ -929,9 +929,9 @@ bool CScanResult::GetStopTime(unsigned long index, CDateTime &t) const {
     t.second = (unsigned char)m_specInfo[index].m_stopTime.second;
 
     // The date
-    t.year = m_specInfo[index].m_startTime.year;
-    t.month = (unsigned char)m_specInfo[index].m_startTime.month;
-    t.day = (unsigned char)m_specInfo[index].m_startTime.day;
+    t.year = m_specInfo[index].m_stopTime.year;
+    t.month = (unsigned char)m_specInfo[index].m_stopTime.month;
+    t.day = (unsigned char)m_specInfo[index].m_stopTime.day;
 
     return true;
 }

@@ -1241,6 +1241,7 @@ void CGraphCtrl::SetGridSpacing(double &lower, double &upper, int dim, NUMBER_FO
 			nIntervals = 1;
 			magnitude = 1.0;
 			break;
+		case FORMAT_DATETIME:
 		case FORMAT_TIME:
 			intervals[0] = 14400.0f;
 			intervals[1] = 3600.0f;
@@ -1421,6 +1422,21 @@ void	CGraphCtrl::PrintNumber(double number, int nDecimals, NUMBER_FORMAT format,
 		int minutes		= (number_int - hours * 3600) / 60;
 		int seconds		= number_int % 60;
 		str.Format("%02d:%02d:%02d", hours, minutes, seconds);
+		return;
+	}
+
+	// -------- printing a date and time of day ------------
+	if (FORMAT_DATETIME == format) {
+		// interpret the number as epoch time (seconds after 1/1/1970).
+		const time_t epoch = number;
+		struct tm *dt = gmtime(&epoch);
+		int year = dt->tm_year + 1900;
+		int month = dt->tm_mon + 1;
+		int day = dt->tm_mday;
+		int hours = dt->tm_hour;
+		int minutes = dt->tm_min;
+		int seconds = dt->tm_sec;
+		str.Format("%02d-%02d-%02d %02d:%02d:%02d", year, month, day, hours, minutes, seconds);
 		return;
 	}
 

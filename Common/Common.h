@@ -438,9 +438,16 @@ public:
 	/** Takes a given date and calculates the day of the year. 
 			An illegal day will return 0. */
 	static int	DayNr(const CDateTime &day);
-
+	
 	/** Returns the Julian Day corresponding to the given date and time of day. */
 	static double JulianDay(const CDateTime &utcTime);
+
+
+	/** Returns the current seconds since 1/1/1970 . */
+	static double Epoch();
+
+	/** Returns the seconds since 1/1/1970 for given date time. */
+	static double Epoch(const CDateTime &utcTime);
 
 	// --------------------------------------------------------------------
 	// -------------------- SUN - FUNCTIONS -------------------------------

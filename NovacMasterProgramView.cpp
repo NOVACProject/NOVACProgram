@@ -1,4 +1,3 @@
-
 // NovacMasterProgramView.cpp : implementation of the CNovacMasterProgramView class
 //
 
@@ -125,6 +124,7 @@ BEGIN_MESSAGE_MAP(CNovacMasterProgramView, CFormView)
 	// Windows messages
 	ON_WM_DESTROY()
 	ON_WM_SIZE()
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 // CNovacMasterProgramView construction/destruction
@@ -181,49 +181,12 @@ BOOL CNovacMasterProgramView::PreCreateWindow(CREATESTRUCT& cs)
 	return CFormView::PreCreateWindow(cs);
 }
 
-void CNovacMasterProgramView::SetLayout(){
-	// Resize this window to the size of the main-window
-	int bottomMargin = 30;
-	int screenHeight	= GetSystemMetrics(SM_CYSCREEN);
-	int screenWidth		= GetSystemMetrics(SM_CXSCREEN);
-	CRect thisRect;
-	GetWindowRect(thisRect);
-	thisRect.right	= thisRect.left + screenWidth;
-	thisRect.bottom = screenHeight - bottomMargin;
-	this->MoveWindow(thisRect);
-
-	// Put the status-list frame where it should be
-	CRect statusFrameRect, statusListRect, masterFrameRect;
-	m_statusFrame.GetWindowRect(statusFrameRect);
-	int height = statusFrameRect.Height();
-	statusFrameRect.right = thisRect.Width()	- statusFrameRect.left;
-	statusFrameRect.top		= thisRect.Height() - height - bottomMargin;
-	statusFrameRect.bottom= thisRect.Height() - bottomMargin;
-	m_statusFrame.MoveWindow(statusFrameRect);
-
-	// Put the status-list box where it should be
-	this->m_statusListBox.GetWindowRect(statusListRect);
-	statusListRect.left		= statusFrameRect.left		+ 10;
-	statusListRect.top		= statusFrameRect.top			+ 20;
-	statusListRect.right	= statusFrameRect.right		- 10;
-	statusListRect.bottom = statusFrameRect.bottom	- 10;
-	m_statusListBox.MoveWindow(statusListRect);
-
-	// Put the master frame where it should be
-	this->m_masterFrame.GetWindowRect(masterFrameRect);
-	masterFrameRect.left		= thisRect.left				+ 10;
-	masterFrameRect.top			= 0;
-	masterFrameRect.right		= thisRect.right			- 10;
-	masterFrameRect.bottom	= statusFrameRect.top	- 10;
-	m_masterFrame.MoveWindow(masterFrameRect);
-}
-
 void CNovacMasterProgramView::OnInitialUpdate()
 {
 	CString message;
 	CRect rect, rect2, tabRect;
 	CString fileName, windFieldFile, userSettingsFile;
-	CString serialNumber, dateStr;
+	CString serialNumber, dateStr, dateStr2;
 
 	CFormView::OnInitialUpdate();
 	GetParentFrame()->RecalcLayout();
@@ -241,6 +204,7 @@ void CNovacMasterProgramView::OnInitialUpdate()
 	fileName.Format("%sconfiguration.xml", (LPCTSTR)m_common.m_exePath);
 	FileHandler::CConfigurationFileHandler reader;
 	reader.ReadConfigurationFile(g_settings, &fileName);
+	fileName.Format("%sftplogin.xml", (LPCTSTR)m_common.m_exePath);
 	reader.ReadFtpLoginConfigurationFile(g_settings, &fileName);
 
 	// Read the user settings
@@ -252,15 +216,30 @@ void CNovacMasterProgramView::OnInitialUpdate()
 		g_settings.outputDirectory.Format(m_common.m_exePath);
 	}
 
-	// Check if there's any flux-logs with data from earlier today
-	dateStr.Format("%04d.%02d.%02d", m_common.GetYear(), m_common.GetMonth(), m_common.GetDay());
+	// Check if there's any flux-logs with data from last 24 hours
+	time_t rawtime;
+	struct tm * utc;
+	time(&rawtime);
+	utc = gmtime(&rawtime);
+	int year = utc->tm_year + 1900;
+	int month = utc->tm_mon + 1;
+	int mday = utc->tm_mday;
+	dateStr.Format("%04d.%02d.%02d", year, month, mday); // today
+	rawtime -= 86400;
+	utc = gmtime(&rawtime);
+	year = utc->tm_year + 1900;
+	month = utc->tm_mon + 1;
+	mday = utc->tm_mday;
+	dateStr2.Format("%04d.%02d.%02d", year, month, mday); // yesterday
 	for(unsigned int it = 0; it < g_settings.scannerNum; ++it){
 		serialNumber.Format(g_settings.scanner[it].spec[0].serialNumber);
 		if (g_settings.scanner[it].plotColumn) {
 			ReadEvalLog(it, dateStr, serialNumber);
+			ReadEvalLog(it, dateStr2, serialNumber);
 		}
 		else {
 			ReadFluxLog(it, dateStr, serialNumber);
+			ReadFluxLog(it, dateStr2, serialNumber);
 		}
 	}
 
@@ -372,6 +351,7 @@ void CNovacMasterProgramView::ReadFluxLog(int scannerIndex, CString dateStr, CSt
 }
 
 void CNovacMasterProgramView::ReadEvalLog(int scannerIndex, CString dateStr, CString serialNumber) {
+	Common common;
 	FileHandler::CEvaluationLogFileHandler evalLogReader;
 	CString path;
 	path.Format("%sOutput\\%s\\%s\\EvaluationLog_%s_%s.txt",
@@ -397,8 +377,9 @@ void CNovacMasterProgramView::ReadEvalLog(int scannerIndex, CString dateStr, CSt
 				Evaluation::CScanResult &sr = evalLogReader.m_scan[i];
 				for (unsigned long j = 0; j < sr.GetEvaluatedNum(); ++j) {
 					CDateTime st;
-					sr.GetStartTime(j, st);
-					int time = st.hour * 3600 + st.minute * 60 + st.second;
+					sr.GetStopTime(j, st);
+					//int time = st.hour * 3600 + st.minute * 60 + st.second;
+					int time = common.Epoch(st);
 					double column = sr.GetColumn(j, 0);
 					double columnError = sr.GetColumnError(j, 0);
 					double peakIntensity = sr.GetPeakIntensity(j);
@@ -956,7 +937,7 @@ int CNovacMasterProgramView::InitializeControls(){
 	// Move everything into place...
 	m_masterFrame.GetWindowRect(rect);
 	GetWindowRect(rect2);
-	m_sheet.MoveWindow(rect.left, 5 + rect.top - rect2.top, rect2.Width(), rect.Height());
+	m_sheet.MoveWindow(rect.left, rect.top - rect2.top, rect2.Width(), rect.Height());
 	m_masterFrame.GetWindowRect(rect);
 
 	// Get the tab control and set the title of each tab to the serial number of the spectrometer
@@ -1450,3 +1431,42 @@ LRESULT CNovacMasterProgramView::OnRewriteConfigurationXml(WPARAM wParam, LPARAM
 }
 
 
+
+
+void CNovacMasterProgramView::OnSize(UINT nType, int cx, int cy)
+{
+	// NOT WORKING 
+	CFormView::OnSize(nType, cx, cy);
+	if (IsWindow(this->m_hWnd)) {
+		// move the main window
+		//this->MoveWindow(0, 0, cx, cy);
+		// Resize this window to the size of the main-window
+		int screenHeight	= GetSystemMetrics(SM_CYSCREEN);
+		int screenWidth		= GetSystemMetrics(SM_CXSCREEN);
+		//this->MoveWindow(0,0,screenWidth, screenHeight);
+
+		// move the tab sheet
+		if (IsWindow(m_masterFrame.m_hWnd) && IsWindow(m_sheet.m_hWnd)) {
+			CRect rect;
+			m_masterFrame.GetWindowRect(rect);
+			rect.left = rect.left + 10;
+			rect.right = rect.right - 10;
+			rect.top = rect.top + 15;
+			rect.bottom = rect.bottom - 10;
+			//m_sheet.MoveWindow(rect.left, rect.top, rect.Width(), rect.Height());
+
+			//m_sheet.MoveWindow(rect.left, rect.top, cx, rect.Height());
+			if (m_sheet.GetTabControl()) {
+				//m_sheet.GetTabControl()->MoveWindow(rect.left, rect.top, cx, rect.Height());
+				//m_sheet.GetActivePage()->MoveWindow(15, 35, width, height);
+				/**
+				int pageCount = m_sheet.GetPageCount();
+				for (int i = 0; i < pageCount; i++) {
+					CPropertyPage* page = m_sheet.GetPage(i);
+					page->MoveWindow(15, 20, width, height);
+				}
+				*/
+			}
+		}
+	}
+}

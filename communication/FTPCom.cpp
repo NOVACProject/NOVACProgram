@@ -61,7 +61,7 @@ int CFTPCom::Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, BOOL 
 	
 	//	int nTimeout = AfxGetApp()->GetProfileInt("Settings", "ConnectionTimeout", 30);
 	//int nTimeout = 30 * 60; // timeout = 30 minutes
-	int nTimeout = 30; // timeout = 30 seconds
+	int nTimeout = 60; // seconds
 	if (dwServiceType == INTERNET_SERVICE_FTP)// && !siteName.IsEmpty())
 	{
 		try

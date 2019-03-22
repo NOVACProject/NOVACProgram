@@ -243,7 +243,7 @@ private:
 	int m_positionsNum[MAX_NUMBER_OF_SCANNING_INSTRUMENTS];
 
 	/** The information about the spectra for the day */
-	CSpectrumData m_specDataDay[MAX_NUMBER_OF_SCANNING_INSTRUMENTS][MAX_SPEC_PER_SCAN*300];
+	CSpectrumData m_specDataDay[MAX_NUMBER_OF_SCANNING_INSTRUMENTS][MAX_SPEC_PER_SCAN*30];
 
 	/** The number of positions in each m_specDataDay */
 	int m_specIndex[MAX_NUMBER_OF_SCANNING_INSTRUMENTS];
@@ -289,7 +289,7 @@ private:
 	void RemoveOldFluxResults();
 
 	/** Reset spec index */
-	void  ResetSpecIndex(int scannerIndex);
+	void  RemoveOldSpec(int scannerIndex);
 
 	/** Returns the spectrometer index given a serial number */
 	int GetScannerIndex(const CString &serial);

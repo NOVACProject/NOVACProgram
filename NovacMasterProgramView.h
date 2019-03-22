@@ -44,8 +44,6 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	virtual void OnInitialUpdate(); // called first time after construct
 
-	/** Fixes the layout of the components to fit the screen resolution*/
-	void				 SetLayout();
 
 // Implementation
 public:
@@ -189,6 +187,7 @@ private:
 
 public:
 	afx_msg void OnUpdateMenuViewInstrumenttab(CCmdUI *pCmdUI);
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 };
 
 #ifndef _DEBUG  // debug version in NovacMasterProgramView.cpp

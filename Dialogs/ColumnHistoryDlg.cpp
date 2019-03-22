@@ -66,7 +66,7 @@ BOOL ColumnHistoryDlg::OnInitDialog()
 	SetTimeRange();
 
 	// Read evaluation logs and plot columns;
-	ReadEvalLogs();
+	//ReadEvalLogs();
 
 	return TRUE;
 }
@@ -152,12 +152,7 @@ void ColumnHistoryDlg::ReadEvalLogs() {
 		offset -= 3600;
 	}
 	// make it midnight (00:00:00) of current day
-	if (utc->tm_isdst) {
-		utc->tm_hour = -1;
-	}
-	else {
-		utc->tm_hour = 0;
-	}
+	utc->tm_hour = 0;
 	utc->tm_min = 0;
 	utc->tm_sec = 0;
 
@@ -218,9 +213,8 @@ void ColumnHistoryDlg::ReadEvalLogs() {
 				CDateTime st;
 				sr.GetStartTime(k, st);
 				int startsec = st.hour * 3600 + st.minute * 60 + st.second;
-				double epoch = (double)(epochDay + startsec - offset);
-				epoch -= (23 * 60 * 60); // hack to fix plot being 23 hours ahead for some reason.
-				double col = sr.GetColumn(k, 0); //TODO - ref index not always 0
+				double epoch = (double)(epochDay + startsec - offset); // unsure why offset substraction is needed but it is
+				double col = sr.GetColumn(k, 0); //Assumes SO2 ref is at index 0
 				bool isBadFit = sr.IsBad(k);
 				if (!isBadFit) {
 					time[index] = epoch;
@@ -260,6 +254,13 @@ void ColumnHistoryDlg::OnSize(UINT nType, int cx, int cy)
 
 BOOL ColumnHistoryDlg::OnSetActive()
 {	
+	// we can remove this if we get an event to kick off ReadEvalLogs() on new day
+	static int lastDay = 0;
+	static int today = common.GetDay();
+	if (lastDay != today) {
+		RedrawAll();
+	}
+	lastDay = today;
 	return CPropertyPage::OnSetActive();
 }
 
