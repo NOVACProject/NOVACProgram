@@ -1406,38 +1406,24 @@ LRESULT CNovacMasterProgramView::OnRewriteConfigurationXml(WPARAM wParam, LPARAM
 
 void CNovacMasterProgramView::OnSize(UINT nType, int cx, int cy)
 {
-	// NOT WORKING 
 	CFormView::OnSize(nType, cx, cy);
-	if (IsWindow(this->m_hWnd)) {
-		// move the main window
-		//this->MoveWindow(0, 0, cx, cy);
-		// Resize this window to the size of the main-window
-		int screenHeight	= GetSystemMetrics(SM_CYSCREEN);
-		int screenWidth		= GetSystemMetrics(SM_CXSCREEN);
-		//this->MoveWindow(0,0,screenWidth, screenHeight);
+	if (IsWindow(this->m_hWnd))
+    {
+        // Move the m_sheet into place...
+        if(m_masterFrame.m_hWnd != NULL && m_sheet.m_hWnd != NULL)
+        {
+            CRect masterFrameOnScreenRegion;
+            m_masterFrame.GetWindowRect(masterFrameOnScreenRegion);
+            CRect windowOnScreenRegion; // Coordinates on screen (relative to upper-left corner of screen)
+            GetWindowRect(windowOnScreenRegion);
+            m_sheet.MoveWindow(masterFrameOnScreenRegion.left - windowOnScreenRegion.left, masterFrameOnScreenRegion.top - windowOnScreenRegion.top, masterFrameOnScreenRegion.Width(), masterFrameOnScreenRegion.Height());
 
-		// move the tab sheet
-		if (IsWindow(m_masterFrame.m_hWnd) && IsWindow(m_sheet.m_hWnd)) {
-			CRect rect;
-			m_masterFrame.GetWindowRect(rect);
-			rect.left = rect.left + 10;
-			rect.right = rect.right - 10;
-			rect.top = rect.top + 15;
-			rect.bottom = rect.bottom - 10;
-			//m_sheet.MoveWindow(rect.left, rect.top, rect.Width(), rect.Height());
-
-			//m_sheet.MoveWindow(rect.left, rect.top, cx, rect.Height());
-			if (m_sheet.GetTabControl()) {
-				//m_sheet.GetTabControl()->MoveWindow(rect.left, rect.top, cx, rect.Height());
-				//m_sheet.GetActivePage()->MoveWindow(15, 35, width, height);
-				/**
-				int pageCount = m_sheet.GetPageCount();
-				for (int i = 0; i < pageCount; i++) {
-					CPropertyPage* page = m_sheet.GetPage(i);
-					page->MoveWindow(15, 20, width, height);
-				}
-				*/
-			}
-		}
+            CTabCtrl *tabPtr = m_sheet.GetTabControl();
+            if (NULL != tabPtr)
+            {
+                tabPtr->MoveWindow(2, 2, masterFrameOnScreenRegion.Width(), masterFrameOnScreenRegion.Height());
+                m_sheet.GetActivePage()->MoveWindow(15, 35, masterFrameOnScreenRegion.Width(), masterFrameOnScreenRegion.Height());
+            }
+        }
 	}
 }
