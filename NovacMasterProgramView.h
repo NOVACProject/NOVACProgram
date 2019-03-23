@@ -151,9 +151,6 @@ public:
 	CPropertySheet	m_sheet;
 
 	/** */
-	CTabCtrl  m_spectrometerTab;
-	
-	/** */
 	CStatic m_masterFrame;
 private:
 	// --------------- DATA STRUCTURES FOR SHOWING THE EVALUATION RESULT -------------

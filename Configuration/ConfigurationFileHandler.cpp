@@ -1061,17 +1061,19 @@ int CConfigurationFileHandler::Parse_Reference(CConfigurationSetting::Spectromet
 
 		// found the shift
 		if(Equals(szToken, "shift")){
-			Evaluation::CReferenceFile &ref = curChannel->fitWindow.ref[refIndex];
-			if(curChannel != NULL)
+			if(curChannel != NULL) {
+                Evaluation::CReferenceFile &ref = curChannel->fitWindow.ref[refIndex];
 				Parse_ShiftOrSqueeze(TEXT("/shift"), ref.m_shiftOption, ref.m_shiftValue, ref.m_shiftMaxValue);
+            }
 			continue;
 		}
 
 		// found the squeeze
 		if(Equals(szToken, "squeeze")){
-			Evaluation::CReferenceFile &ref = curChannel->fitWindow.ref[refIndex];
-			if(curChannel != NULL)
+			if(curChannel != NULL) {
+                Evaluation::CReferenceFile &ref = curChannel->fitWindow.ref[refIndex];
 				Parse_ShiftOrSqueeze(TEXT("/squeeze"), ref.m_squeezeOption, ref.m_squeezeValue, ref.m_squeezeMaxValue);
+            }
 			continue;
 		}
 	}
@@ -1181,57 +1183,49 @@ int	CConfigurationFileHandler::Parse_WindMeasurement(){
 
 		// found the interval between the measurements
 		if(Equals(szToken, "interval")){
-			if(wind != NULL)
-				Parse_IntItem("/interval", wind->interval);
+            Parse_IntItem("/interval", wind->interval);
 			continue;
 		}
 
 		// found the duration of each measurement
 		if(Equals(szToken, "duration")){
-			if(wind != NULL)
-				Parse_IntItem("/duration", wind->duration);
+            Parse_IntItem("/duration", wind->duration);
 			continue;
 		}
 
 		// found the maxangle of each measurement
 		if(Equals(szToken, "maxangle")){
-			if(wind != NULL)
-				Parse_FloatItem("/maxangle", wind->maxAngle);
+            Parse_FloatItem("/maxangle", wind->maxAngle);
 			continue;
 		}
 
 		// found the time of required stability before performing a measurement
 		if(Equals(szToken, "stableperiod")){
-			if(wind != NULL)
-				Parse_IntItem("/stableperiod", wind->stablePeriod);
+            Parse_IntItem("/stableperiod", wind->stablePeriod);
 			continue;
 		}	
 
 		// found the minimum required column 
 		if(Equals(szToken, "minpeakcolumn")){
-			if(wind != NULL)
-				Parse_FloatItem("/minpeakcolumn", wind->minPeakColumn);
+            Parse_FloatItem("/minpeakcolumn", wind->minPeakColumn);
 			continue;
 		}
 
 		// found the desired angle
 		if(Equals(szToken, "desiredAngle")){
-			if(wind != NULL)
-				Parse_FloatItem("/desiredAngle", wind->desiredAngle);
+            Parse_FloatItem("/desiredAngle", wind->desiredAngle);
 			continue;
 		}
 
 		// found the settings for using calculated wind-fields...
 		if(Equals(szToken, "useCalcWind")){
-			if(wind != NULL)
-				Parse_IntItem("/useCalcWind", wind->useCalculatedPlumeParameters);
+            Parse_IntItem("/useCalcWind", wind->useCalculatedPlumeParameters);
 			continue;
 		}
 
 		// found the desired angle
 		if(Equals(szToken, "switchRange")){
-			if(wind != NULL)
-				Parse_FloatItem("/switchRange", wind->SwitchRange);
+            Parse_FloatItem("/switchRange", wind->SwitchRange);
 			continue;
 		}
 		// found the motor steps comp - THIS IS OUTDATED, THE PARAMETER IS NOW
@@ -1274,22 +1268,19 @@ int CConfigurationFileHandler::Parse_RealTimeSetup(){
 
 		// should we use the calculated plume-heights and plume-directions?
 		if(Equals(szToken, "usecalculatedplumeparam")){
-			if(scs != NULL)
-				Parse_IntItem("/usecalculatedplumeparam", scs->useCalculatedPlumeParameters);
+            Parse_IntItem("/usecalculatedplumeparam", scs->useCalculatedPlumeParameters);
 			continue;
 		}
 
 		// the measurement mode
 		if(Equals(szToken, "mode")){
-			if(scs != NULL)
-				Parse_IntItem("/mode", scs->mode);
+            Parse_IntItem("/mode", scs->mode);
 			continue;
 		}
 
 		// the tolerance for changes in wind-direction
 		if(Equals(szToken, "winddirtol")){
-			if(scs != NULL)
-				Parse_FloatItem("/winddirtol", scs->windDirectionTolerance);
+            Parse_FloatItem("/winddirtol", scs->windDirectionTolerance);
 			continue;
 		}
 	}

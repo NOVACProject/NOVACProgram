@@ -425,13 +425,12 @@ RETURN_CODE CSerialControllerWithTx::GetFile(char* fileName,CString filePath,cha
 
 RETURN_CODE CSerialControllerWithTx::WriteSpectraFile(BYTE* mem, long fileSize,CString filePath)
 {
-	FILE *localFile;
-	localFile=fopen(filePath,"r+b");
-	if(localFile<(FILE *)1)
+	FILE *localFile = fopen(filePath,"r+b");
+	if(localFile == NULL)
 	{
-		localFile=fopen(filePath,"w+b");
+		localFile = fopen(filePath,"w+b");
 	}
-	if(localFile<(FILE *)1)
+	if(localFile == NULL)
 	{
 		m_ErrorMsg.Format("Fail to write %s", (LPCSTR)filePath);
 		ShowMessage(m_ErrorMsg , m_connectionID);
@@ -1062,7 +1061,7 @@ bool CSerialControllerWithTx::PutFile(char *name, CString fileFullPath,char disk
 	long retries;
 	unsigned long rstart,start;
 	unsigned short rlen,sendlen,chksum2;
-	unsigned char *mem,ok;
+	unsigned char ok;
 	time_t startTime,stopTime;
 
 	// High resolution counter
@@ -1097,7 +1096,7 @@ bool CSerialControllerWithTx::PutFile(char *name, CString fileFullPath,char disk
 		}
 	}
 	localFile=fopen(fileFullPath,"rb");
-	if(localFile<(FILE *)1)
+	if(localFile == NULL)
 	{
 		m_ErrorMsg.Format("Can not open %s", (LPCSTR)fileFullPath);
 		ShowMessage(m_ErrorMsg); 
@@ -1105,10 +1104,11 @@ bool CSerialControllerWithTx::PutFile(char *name, CString fileFullPath,char disk
 		return false; 
 	}
 
-	mem = (unsigned char*)malloc(SEND_SIZE);
-	if(mem==0)
+	unsigned char* mem = (unsigned char*)malloc(SEND_SIZE);
+	if(mem == NULL)
 	{
 		ShowMessage("Could not get enough memory to upload file"); 
+        fclose(localFile);
 		return false; 
 	}
 	start=0;
@@ -1901,9 +1901,8 @@ bool CSerialControllerWithTx::MakeCommandFile(char* content)
 {
 	CString fileName;
 	fileName.Format("%scommand.txt",(LPCSTR)m_storageDirectory);
-	FILE *f;
-	f=fopen(fileName,"w");
-	if(f<(FILE*)1)
+	FILE *f = fopen(fileName,"w");
+	if(f == NULL)
 		return false;
 	fprintf(f,content); 
 	fclose(f);

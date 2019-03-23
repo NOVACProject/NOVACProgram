@@ -24,6 +24,9 @@ using namespace FileHandler;
 
 IMPLEMENT_DYNAMIC(ColumnHistoryDlg, CPropertyPage)
 
+// Implemented in View_Scanner
+void ResizeGraphControl(CGraphCtrl& controlToResize, CStatic& boundingFrame, CWnd* owningWindow);
+
 ColumnHistoryDlg::ColumnHistoryDlg()
 	: CPropertyPage(ColumnHistoryDlg::IDD)
 {
@@ -300,15 +303,57 @@ void ColumnHistoryDlg::DrawHistoryPlots() {
 void ColumnHistoryDlg::OnSize(UINT nType, int cx, int cy)
 {
 	CPropertyPage::OnSize(nType, cx, cy);
-	/**
-	if (IsWindow(m_frame10.m_hWnd)) {
-		m_plot10.MoveWindow(10, 20, cx - 40, cy / 2 - 60);
-	}
-	if (IsWindow(m_frame30.m_hWnd)) {
-		m_plot30.MoveWindow(10, 20, cx - 40, cy / 2 - 60);
-	}
-	DrawHistoryPlots();
-	*/
+
+    const int rightMargin = 20;
+
+    CRect thisClientRegion;
+    GetWindowRect(thisClientRegion);
+    this->ScreenToClient(thisClientRegion);
+
+    const int oneThirdScreenHeight = (int)(thisClientRegion.Height() / 3);
+
+    // Adjust the width of each of the column plots
+    if (this->m_frame.m_hWnd != NULL) {
+        CRect frameClientRegion;
+        m_frame.GetWindowRect(&frameClientRegion);
+        this->ScreenToClient(frameClientRegion);
+
+        frameClientRegion.top    = 0;
+        frameClientRegion.left   = 0;
+        frameClientRegion.right  = thisClientRegion.right - rightMargin;
+        frameClientRegion.bottom = oneThirdScreenHeight;
+        m_frame.MoveWindow(frameClientRegion);
+
+        ResizeGraphControl(m_plot, m_frame, this);
+    }
+
+    if (this->m_frame10.m_hWnd != NULL) {
+        CRect frameClientRegion;
+        m_frame10.GetWindowRect(&frameClientRegion);
+        this->ScreenToClient(frameClientRegion);
+
+        frameClientRegion.top    = oneThirdScreenHeight;
+        frameClientRegion.left   = 0;
+        frameClientRegion.right  = thisClientRegion.right - rightMargin;
+        frameClientRegion.bottom = 2 * oneThirdScreenHeight;
+        m_frame10.MoveWindow(frameClientRegion);
+
+        ResizeGraphControl(m_plot10, m_frame10, this);
+    }
+
+    if (this->m_frame30.m_hWnd != NULL) {
+        CRect frameClientRegion;
+        m_frame30.GetWindowRect(&frameClientRegion);
+        this->ScreenToClient(frameClientRegion);
+
+        frameClientRegion.top    = 2 * oneThirdScreenHeight;
+        frameClientRegion.left   = 0;
+        frameClientRegion.right  = thisClientRegion.right - rightMargin;
+        frameClientRegion.bottom = 3 * oneThirdScreenHeight;
+        m_frame30.MoveWindow(frameClientRegion);
+
+        ResizeGraphControl(m_plot30, m_frame30, this);
+    }
 }
 
 BOOL ColumnHistoryDlg::OnSetActive()

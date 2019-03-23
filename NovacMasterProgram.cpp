@@ -133,14 +133,14 @@ BOOL CNovacMasterProgramApp::InitInstance()
 	int cy = GetSystemMetrics(SM_CYSCREEN);
 
 	//m_pMainWnd->ShowWindow(SW_SHOWMAXIMIZED);
-	if(cx <= 1024){
+	// if(cx <= 1024){
 		m_pMainWnd->ShowWindow(SW_SHOWMAXIMIZED);
-	}else{
-		int width = 1050;
-		int height = 750;
-		m_pMainWnd->ShowWindow(SW_SHOWNORMAL);
-		m_pMainWnd->MoveWindow((cx-width)/2, (cy-height)/2, width, height);
-	}
+	// }else{
+	// 	int width = 1050;
+	// 	int height = 750;
+	// 	m_pMainWnd->ShowWindow(SW_SHOWNORMAL);
+	// 	m_pMainWnd->MoveWindow((cx-width)/2, (cy-height)/2, width, height);
+	// }
 
 	// call DragAcceptFiles only if there's a suffix
 	//  In an SDI app, this should occur after ProcessShellCommand

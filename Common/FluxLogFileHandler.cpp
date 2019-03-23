@@ -271,6 +271,8 @@ RETURN_CODE CFluxLogFileHandler::ReadFluxLog(){
 		}
 	} // end while(fgets...)
 
+    fclose(f);
+
 	return SUCCESS;
 }
 

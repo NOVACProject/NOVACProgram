@@ -85,7 +85,7 @@ void CConfigurationTreeCtrl::PopulateTreeControl(){
 	}
 
 	HTREEITEM hTree;
-	HTREEITEM *firstItem = NULL;
+	HTREEITEM firstItem = NULL;
 	int first = true;
 	// now loop through each of the volcanoes and for each, insert the 
 	//	scanners that belong to this volcano
@@ -97,7 +97,7 @@ void CConfigurationTreeCtrl::PopulateTreeControl(){
 				for (unsigned long k = 0; k < m_configuration->scanner[j].specNum; ++k) {
 					HTREEITEM item = InsertItem(m_configuration->scanner[j].spec[k].serialNumber, hTree);
 					if (first) {
-						firstItem = &item;
+						firstItem = item;
 						first = false;
 					}
 				}
@@ -110,7 +110,7 @@ void CConfigurationTreeCtrl::PopulateTreeControl(){
 
 	// Select the first scanner
 	if(firstItem != NULL){
-		SelectItem(*firstItem);		
+		SelectItem(firstItem);
 	}
 }
 

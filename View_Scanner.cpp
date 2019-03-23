@@ -18,6 +18,24 @@ using namespace Graph;
 
 void DDX_Text_Formatted(CDataExchange* pDX, int nIDC, double& value, LPCTSTR lpszOutFormat=_T("%f"), LPCTSTR lpszInFormat=_T("%lf"));
 
+// General method for rescaling a CGraphCtrl which is bounded inside a CStatic (owned by a window...)
+void ResizeGraphControl(CGraphCtrl& controlToResize, CStatic& boundingFrame, CWnd* owningWindow)
+{
+    CRect boundingFramClientRegion;
+    boundingFrame.GetWindowRect(&boundingFramClientRegion);
+    owningWindow->ScreenToClient(boundingFramClientRegion);
+
+    CRect plotControlClientRegion;
+    controlToResize.GetWindowRect(&plotControlClientRegion);
+    boundingFrame.ScreenToClient(plotControlClientRegion);
+
+    plotControlClientRegion.right = boundingFramClientRegion.Width() - 20;
+    plotControlClientRegion.bottom = boundingFramClientRegion.Height() - 10;
+
+    controlToResize.MoveWindow(plotControlClientRegion);
+    controlToResize.InvalidateCtrl();
+}
+
 IMPLEMENT_DYNAMIC(CView_Scanner, CPropertyPage)
 CView_Scanner::CView_Scanner()
 	: CPropertyPage(CView_Scanner::IDD)
@@ -99,25 +117,34 @@ END_MESSAGE_MAP()
 // CView_Scanner message handlers
 
 void CView_Scanner::SetLayout(){
-	CRect thisRect, columnFrameRect, fluxFrameRect;
-	GetWindowRect(thisRect);
+    const int rightMargin = 25;
+
+	CRect thisClientRegion;
+	GetWindowRect(thisClientRegion);
+    this->ScreenToClient(thisClientRegion);
 
 	// Adjust the width of the column frame
 	if(this->m_lastScanFrame.m_hWnd != NULL){
-		m_lastScanFrame.GetWindowRect(&columnFrameRect);
-		columnFrameRect.right  = thisRect.right - 10;
-		columnFrameRect.top    -= thisRect.top;
-		columnFrameRect.bottom -= thisRect.top;
-		m_lastScanFrame.MoveWindow(columnFrameRect);
+        CRect lastScanFrameClientRegion;
+		m_lastScanFrame.GetWindowRect(&lastScanFrameClientRegion);
+        this->ScreenToClient(lastScanFrameClientRegion);
+
+        lastScanFrameClientRegion.right  = thisClientRegion.right - rightMargin;
+		m_lastScanFrame.MoveWindow(lastScanFrameClientRegion);
+
+        ResizeGraphControl(m_lastScanPlot, m_lastScanFrame, this);
 	}
 
 	// Adjust the width of the flux frame
 	if(this->m_todayScanFrame.m_hWnd != NULL){
-		m_todayScanFrame.GetWindowRect(&fluxFrameRect);
-		fluxFrameRect.right  = thisRect.right - 10;
-		fluxFrameRect.top    -= thisRect.top;
-		fluxFrameRect.bottom -= thisRect.top;
-		m_todayScanFrame.MoveWindow(fluxFrameRect);
+        CRect fluxFrameClientRegion;
+		m_todayScanFrame.GetWindowRect(&fluxFrameClientRegion);
+        this->ScreenToClient(fluxFrameClientRegion);
+
+        fluxFrameClientRegion.right  = thisClientRegion.right - rightMargin;
+		m_todayScanFrame.MoveWindow(fluxFrameClientRegion);
+
+        ResizeGraphControl(m_todayPlot, m_todayScanFrame, this);
 	}
 }
 

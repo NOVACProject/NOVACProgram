@@ -136,7 +136,10 @@ void CManualCompositionDlg::OnSend(){
 	// The number of measurement positions inside the plume...
 	int measurementsInPlume	= (int)(abs(m_plumeEdgeHigh - m_plumeEdgeLow) / stepAngle);
 	if(measurementsInPlume < 5)
+    {
+        fclose(f);
 		return; // there's not enough space to make 5 measurements in the plume. Quit!
+    }
 	measurementsInPlume	= min(measurementsInPlume, 8); // we can't make more than 8 measurements
 
 	double alphaStep		= abs(m_plumeEdgeHigh - m_plumeEdgeLow) / measurementsInPlume;
