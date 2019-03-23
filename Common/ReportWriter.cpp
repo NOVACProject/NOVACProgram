@@ -132,7 +132,9 @@ void CReportWriter::WriteReport(CEvaluatedDataStorage *evalDataStorage, CCommuni
 	// Open the file
 	FILE *f = fopen(reportFileName, "w");
 	if(f == NULL){
-		delete [] timeBuffer, qualityBuffer, dataBuffer;
+		delete [] timeBuffer;
+        delete [] qualityBuffer;
+        delete [] dataBuffer;
 		return;
 	}
 
@@ -325,6 +327,9 @@ long CReportWriter::RemoveBadFluxData(double *timeBuffer, double *dataBuffer, in
 		memcpy(dataBuffer, tempDataBuffer, nGoodFluxes * sizeof(double));
 		memcpy(timeBuffer, tempTimeBuffer, nGoodFluxes * sizeof(double));
 	}
+    
+    delete [] tempDataBuffer;
+    delete [] tempTimeBuffer;
 
 	// Return the number of data points in the buffers now
 	return nGoodFluxes;

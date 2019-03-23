@@ -227,12 +227,13 @@ UINT MergePakFiles_Concatenate(LPVOID pParam){
 	CString outputFile = CString(dialog->m_outputFile);
 
 	// create a spectrum reader/writer
-	SpectrumIO::CSpectrumIO *specHandler = new SpectrumIO::CSpectrumIO();
+	SpectrumIO::CSpectrumIO specHandler;
 
 	// Try to open the output-file
-	FILE *uf	= fopen(outputFile, "wb");
+	FILE *uf = fopen(outputFile, "wb");
 	if(uf == NULL){
 		MessageBox(NULL, "Could not open output-file for writing. Please check file-name and try again", "Error", MB_OK);
+        free(spectrumHeader);
 		return 1;
 	}
 
@@ -285,7 +286,7 @@ UINT MergePakFiles_Concatenate(LPVOID pParam){
 
 	fclose(uf);
 
-	delete(specHandler);
+    free(spectrumHeader);
 
 	return 0;
 }
@@ -306,7 +307,7 @@ UINT MergePakFiles_Combine(LPVOID pParam){
 	CString outputFile = CString(dialog->m_outputFile);
 
 	// create a spectrum reader/writer
-	SpectrumIO::CSpectrumIO *specHandler = new SpectrumIO::CSpectrumIO();
+	SpectrumIO::CSpectrumIO specHandler;
 
 	// Try to open the output-file
 	FILE *uf	= fopen(outputFile, "wb");
@@ -354,7 +355,7 @@ UINT MergePakFiles_Combine(LPVOID pParam){
 				}
 
 				// Read the next spectrum in each file
-				const bool success = specHandler->ReadNextSpectrum(f[fileIndex], tmpSpec);
+				const bool success = specHandler.ReadNextSpectrum(f[fileIndex], tmpSpec);
 				if(!success){
 					// Ignore this spectrum and try to find the spectrum in the next file
 					isFinished[fileIndex] = 1;
@@ -373,7 +374,7 @@ UINT MergePakFiles_Combine(LPVOID pParam){
 			if(curSpec.m_length > 0)
             {
                 const std::string outputFileName((LPCSTR)outputFile);
-				specHandler->AddSpectrumToFile(outputFileName, curSpec);
+				specHandler.AddSpectrumToFile(outputFileName, curSpec);
             }
 		}
 
@@ -388,8 +389,6 @@ UINT MergePakFiles_Combine(LPVOID pParam){
 	}
 
 	fclose(uf);
-
-	delete(specHandler);
 
 	return 0;
 }

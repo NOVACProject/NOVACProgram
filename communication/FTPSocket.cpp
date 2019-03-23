@@ -365,10 +365,8 @@ bool CFTPSocket::FindFile(CString fileName)
 }
 void CFTPSocket::WriteVectorFile(CString fileName, const TByteVector& vBuffer, long receivedBytes)
 {
-	FILE *localFile;
-	
-	localFile = fopen(fileName,"w");
-	if(localFile < (FILE*)1)
+	FILE *localFile = fopen(fileName,"w");
+	if(localFile == NULL)
 	{
 		CString message;
 		message.Format("%s cannot be written", (LPCSTR)fileName);

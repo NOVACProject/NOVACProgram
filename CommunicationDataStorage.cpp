@@ -106,7 +106,7 @@ void	CCommunicationDataStorage::AddDownloadData(const CString &serial, double li
 		// First check if the data-buffer is full
 		if(m_nFTPServerLinkInformation == MAX_HISTORY){
 			// shift all data-bits down one step
-			for(int i = 0; i < MAX_HISTORY; ++i){
+			for(int i = 0; i < MAX_HISTORY - 1; ++i){
 				m_ftpServerLinkInformation[i] = m_ftpServerLinkInformation[i+1];
 			}
 			--m_nFTPServerLinkInformation;

@@ -979,14 +979,15 @@ LRESULT CFileTransferDlg::OnUpdateFileTree(WPARAM wParam, LPARAM lParam)
 	m_busy = false;
 	return 0;
 }
+
 void CFileTransferDlg::SetFilter(TCHAR *filterText)
 {
 	CString subfix = m_selItemText.Right(3);
 
 	if(subfix = _T("PAK"))
-		sprintf(filterText,"compressed spectra file\0*.pak\0\0");
+		sprintf(filterText,"Compressed spectrum file\0*.pak\0\0");
 	else if(subfix = _T("EXE") )
-		sprintf(filterText,"execution file\0*.exe\0\0");
+		sprintf(filterText,"Executable file\0*.exe\0\0");
 	else
 		sprintf(filterText,"%s file\0*.%s\0\0", (LPCSTR)subfix);
 }
@@ -1590,7 +1591,10 @@ void CFileTransferDlg::OnBnClickedUpdatefilebtn()
 	}
 	int fileLength = m_fileContentEdit.GetWindowTextLength() + 1;
 	if (fileLength < 2)
+    {
+        fclose(f);
 		return;
+    }
 	buffer = (char*)malloc(fileLength);
 	m_fileContentEdit.GetWindowText(buffer, fileLength);
 	fprintf(f, "%s", buffer);

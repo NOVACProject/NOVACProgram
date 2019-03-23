@@ -74,7 +74,7 @@ long CFTPController::GetFtpSpeed()
 }
 bool CFTPController::DownloadOldPak(long interval)
 {
-	int fileListSum;	
+	int fileListSum = 0;	
 	CString folder;
 	folder.Format("");
 	//get file and folder list	
@@ -290,9 +290,8 @@ bool CFTPController::MakeCommandFile(char* cmdString)
 {
 	CString fileName;
 	fileName.Format("%scommand.txt",m_storageDirectory);
-	FILE *f;
-	f=fopen(fileName,"w");
-	if(f<(FILE*)1)
+	FILE *f = fopen(fileName,"w");
+	if(f == NULL)
 		return false;
 	fprintf(f,cmdString); 
 	fclose(f);

@@ -617,9 +617,8 @@ bool CFTPHandler::MakeCommandFile(char* cmdString)
 {
 	CString fileName;
 	fileName.Format("%scommand.txt", (LPCSTR)m_storageDirectory);
-	FILE *f;
-	f = fopen(fileName,"w");
-	if(f < (FILE*)1)
+	FILE *f = fopen(fileName,"w");
+	if(f == NULL)
 		return false; // could not open file for writing
 
 	fprintf(f,cmdString);
