@@ -303,11 +303,13 @@ void ColumnHistoryDlg::OnSize(UINT nType, int cx, int cy)
 {
 	CPropertyPage::OnSize(nType, cx, cy);
 
-    const int rightMargin = 50;
+    const int rightMargin = 20;
 
     CRect thisClientRegion;
     GetWindowRect(thisClientRegion);
     this->ScreenToClient(thisClientRegion);
+
+    const int oneThirdScreenHeight = (int)(thisClientRegion.Height() / 3);
 
     // Adjust the width of each of the column plots
     if (this->m_frame.m_hWnd != NULL) {
@@ -315,7 +317,10 @@ void ColumnHistoryDlg::OnSize(UINT nType, int cx, int cy)
         m_frame.GetWindowRect(&frameClientRegion);
         this->ScreenToClient(frameClientRegion);
 
-        frameClientRegion.right = thisClientRegion.right - rightMargin;
+        frameClientRegion.top    = 0;
+        frameClientRegion.left   = 0;
+        frameClientRegion.right  = thisClientRegion.right - rightMargin;
+        frameClientRegion.bottom = oneThirdScreenHeight;
         m_frame.MoveWindow(frameClientRegion);
 
         ResizeGraphControl(m_plot, m_frame, this);
@@ -326,7 +331,10 @@ void ColumnHistoryDlg::OnSize(UINT nType, int cx, int cy)
         m_frame10.GetWindowRect(&frameClientRegion);
         this->ScreenToClient(frameClientRegion);
 
-        frameClientRegion.right = thisClientRegion.right - rightMargin;
+        frameClientRegion.top    = oneThirdScreenHeight;
+        frameClientRegion.left   = 0;
+        frameClientRegion.right  = thisClientRegion.right - rightMargin;
+        frameClientRegion.bottom = 2 * oneThirdScreenHeight;
         m_frame10.MoveWindow(frameClientRegion);
 
         ResizeGraphControl(m_plot10, m_frame10, this);
@@ -337,7 +345,10 @@ void ColumnHistoryDlg::OnSize(UINT nType, int cx, int cy)
         m_frame30.GetWindowRect(&frameClientRegion);
         this->ScreenToClient(frameClientRegion);
 
-        frameClientRegion.right = thisClientRegion.right - rightMargin;
+        frameClientRegion.top    = 2 * oneThirdScreenHeight;
+        frameClientRegion.left   = 0;
+        frameClientRegion.right  = thisClientRegion.right - rightMargin;
+        frameClientRegion.bottom = 3 * oneThirdScreenHeight;
         m_frame30.MoveWindow(frameClientRegion);
 
         ResizeGraphControl(m_plot30, m_frame30, this);

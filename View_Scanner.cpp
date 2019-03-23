@@ -117,7 +117,7 @@ END_MESSAGE_MAP()
 // CView_Scanner message handlers
 
 void CView_Scanner::SetLayout(){
-    const int rightMargin = 50;
+    const int rightMargin = 25;
 
 	CRect thisClientRegion;
 	GetWindowRect(thisClientRegion);
