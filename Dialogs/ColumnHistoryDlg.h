@@ -27,6 +27,8 @@ protected:
 public:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	virtual BOOL OnSetActive();
+	LRESULT OnEvalSuccess(WPARAM wParam, LPARAM lParam);
+	LRESULT OnScannerRun(WPARAM wParam, LPARAM lParam);
 
 	/** A pointer to a shared instance of 'CEvaluatedDataStorage' */
 	CEvaluatedDataStorage	*m_evalDataStorage;
@@ -69,4 +71,6 @@ private:
 	void SetHistoryRange();
 	
 	int SECONDS_IN_DAY = 86400;
+
+
 };

@@ -52,7 +52,8 @@ void ColumnHistoryDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(ColumnHistoryDlg, CPropertyPage)
 	ON_WM_SIZE()
-	//ON_WM_CLOSE()
+	ON_MESSAGE(WM_EVAL_SUCCESS, OnEvalSuccess)
+	ON_MESSAGE(WM_SCANNER_RUN, OnScannerRun)
 END_MESSAGE_MAP()
 
 
@@ -69,7 +70,8 @@ BOOL ColumnHistoryDlg::OnInitDialog()
 	Init30DayPlot();
 
 	// Read evaluation logs and plot columns
-	DrawHistoryPlots();
+	//DrawPlot();
+	//DrawHistoryPlots();
 
 	return TRUE;
 }
@@ -99,6 +101,8 @@ void ColumnHistoryDlg::InitPlot() {
 	m_plot.SetBackgroundColor(RGB(0, 0, 0));
 	m_plot.SetCircleColor(RGB(255,0,0));
 	m_plot.SetCircleRadius(1);
+
+	SetRange();
 }
 
 void ColumnHistoryDlg::Init10DayPlot() {
@@ -353,12 +357,11 @@ void ColumnHistoryDlg::OnSize(UINT nType, int cx, int cy)
 
         ResizeGraphControl(m_plot30, m_frame30, this);
     }
+	RedrawAll();
 }
 
 BOOL ColumnHistoryDlg::OnSetActive()
 {	
-
-	DrawPlot();
 	return CPropertyPage::OnSetActive();
 }
 
@@ -391,3 +394,12 @@ void ColumnHistoryDlg::RedrawAll() {
 	DrawHistoryPlots();
 }
 
+LRESULT ColumnHistoryDlg::OnEvalSuccess(WPARAM wParam, LPARAM lParam) {
+	DrawPlot();
+	return 0;
+}
+
+LRESULT ColumnHistoryDlg::OnScannerRun(WPARAM wParam, LPARAM lParam) {
+	DrawHistoryPlots();
+	return 0;
+}
