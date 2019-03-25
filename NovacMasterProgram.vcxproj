@@ -72,7 +72,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>$(SolutionDir)\SpectralEvaluation\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\curl\win32\include\;$(SolutionDir)\SpectralEvaluation\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -81,6 +81,7 @@
       <EnableCOMDATFolding>false</EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
       <TypeLibraryResourceID>1</TypeLibraryResourceID>
+      <AdditionalDependencies>$(SolutionDir)curl\win32\lib\libcurl_imp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -110,7 +111,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>$(SolutionDir)\SpectralEvaluation\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\curl\win32\include\;$(SolutionDir)\SpectralEvaluation\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -119,6 +120,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
       <TypeLibraryResourceID>1</TypeLibraryResourceID>
+      <AdditionalDependencies>$(SolutionDir)curl\win32\lib\libcurl_imp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -148,6 +150,7 @@
     <ClCompile Include="Common\XMLFileReader.cpp" />
     <ClCompile Include="CommunicationDataStorage.cpp" />
     <ClCompile Include="communication\CommunicationController.cpp" />
+    <ClCompile Include="communication\SFTPCom.cpp" />
     <ClCompile Include="communication\FTPCom.cpp" />
     <ClCompile Include="communication\FTPHandler.cpp" />
     <ClCompile Include="communication\FTPServerContacter.cpp" />
@@ -241,6 +244,7 @@
     <ClCompile Include="Dialogs\ReferencePlotDlg.cpp" />
     <ClCompile Include="ScannerFileInfo.cpp" />
     <ClCompile Include="ScannerFolderInfo.cpp" />
+    <ClInclude Include="communication\SFTPCom.h" />
     <ClInclude Include="Dialogs\ColumnHistoryDlg.h" />
     <ClInclude Include="Evaluation\EvaluationResultView.h" />
     <ClInclude Include="SpectralEvaluation\Fit\BSpline.cxx" />
