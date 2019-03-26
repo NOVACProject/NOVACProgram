@@ -212,7 +212,9 @@ int CEvaluatedDataStorage::AddData(const CString &serial, Evaluation::CScanResul
 		// Add data point for current day
 		CDateTime scanTime;
 		result->GetStopTime(0, scanTime);
-		if ((common.Epoch() - common.Epoch(scanTime)) <= 86400) {
+		int now = common.Epoch();
+		int scanEpoch = common.Epoch(scanTime);
+		if ((now-scanEpoch) <= 86400) {
 			AppendSpecDataHistory(scannerIndex, common.Epoch(scanTime), column, columnError, peakSaturation, fitSaturation, angle, isBadFit);
 		}
 
@@ -440,23 +442,19 @@ void CEvaluatedDataStorage::AppendSpecDataHistory(int scannerIndex, int time, do
 void  CEvaluatedDataStorage::RemoveOldSpec(int scannerIndex) {
 	Common common;
 	for (unsigned int scannerIndex = 0; scannerIndex < m_serialNum; ++scannerIndex) {
-		int nRecords = m_specIndex[scannerIndex];
-		int remove = 0;
+		int k = 0;
 		// count how many records to remove
-		for(int i=0; i < nRecords; i++){
-			if ((common.Epoch() - m_specDataDay[scannerIndex][i].m_time) > 86400) {
-				remove = i;
+		while (k < m_specIndex[scannerIndex]) {
+			if (common.Epoch() - m_specDataDay[scannerIndex][k].m_time <= 86400) {
+				++k;
 			}
 			else {
-				// theoretically they are in time order so if timestamp is 
-				// from last 24 hours just break.
-				break;  
+				// if this measurement is not from today, then remove it
+				for (int j = k; j < m_specIndex[scannerIndex] - 1; ++j) {
+					m_specDataDay[scannerIndex][j] = m_specDataDay[scannerIndex][j + 1];
+				}
+				--m_specIndex[scannerIndex];
 			}
-		}
-		// remove the records
-		m_specIndex[scannerIndex] = m_specIndex[scannerIndex] - remove;
-		for (int i = 0; i < m_specIndex[scannerIndex]; ++i) {
-			m_specDataDay[scannerIndex][i] = m_specDataDay[scannerIndex][i + remove];
 		}
 	}
 }
@@ -486,23 +484,19 @@ void CEvaluatedDataStorage::AppendFluxResult(int scannerIndex, const CDateTime &
 void  CEvaluatedDataStorage::RemoveOldFluxResults(){
 	Common common;
 	for (unsigned int scannerIndex = 0; scannerIndex < m_serialNum; ++scannerIndex) {
-		int nRecords = m_fluxIndex[scannerIndex];
-		int remove = 0;
+		int k = 0;
 		// count how many records to remove
-		for (int i = 0; i < nRecords; i++) {
-			if (m_specDataDay[scannerIndex][i].m_time < (common.Epoch() - 86400)) {
-				remove = i;
+		while (k < m_fluxIndex[scannerIndex]) {
+			if (common.Epoch() - m_data[scannerIndex][k].m_time <= 86400) {
+				++k;
 			}
 			else {
-				// theoretically they are in time order so if timestamp is 
-				// from last 24 hours just break.
-				break;
+				// if this measurement is not from today, then remove it
+				for (int j = k; j < m_fluxIndex[scannerIndex] - 1; ++j) {
+					m_data[scannerIndex][j] = m_data[scannerIndex][j + 1];
+				}
+				--m_fluxIndex[scannerIndex];
 			}
-		}
-		// remove the records
-		m_fluxIndex[scannerIndex] = m_fluxIndex[scannerIndex] - remove;
-		for (int i = 0; i < m_fluxIndex[scannerIndex]; ++i) {
-			m_data[scannerIndex][i] = m_data[scannerIndex][i + remove];
 		}
 	}
 
