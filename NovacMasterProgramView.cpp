@@ -559,11 +559,6 @@ LRESULT CNovacMasterProgramView::OnScannerRun(WPARAM wParam, LPARAM lParam)
 	// forward the message to the correct scanner view
 	ForwardMessage(WM_SCANNER_RUN, wParam, lParam);
 
-	// also forward to column history page to redraw 
-	for (int i = 0; i < m_colHistoryPages.GetCount(); ++i) {
-		ColumnHistoryDlg *page = (ColumnHistoryDlg *)m_colHistoryPages[i];
-		page->PostMessage(WM_SCANNER_RUN, wParam, lParam);
-	}
 	return 0;
 }
 
