@@ -28,7 +28,6 @@ public:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	virtual BOOL OnSetActive();
 	LRESULT OnEvalSuccess(WPARAM wParam, LPARAM lParam);
-	LRESULT OnScannerRun(WPARAM wParam, LPARAM lParam);
 
 	/** A pointer to a shared instance of 'CEvaluatedDataStorage' */
 	CEvaluatedDataStorage	*m_evalDataStorage;
@@ -37,6 +36,9 @@ public:
 	int m_scannerIndex;
 	CString m_serialNumber;
 	CString m_siteName;
+
+	// last day history plot was drawn
+	int m_lastDay;
 
 	void DrawPlot();
 	void DrawHistoryPlots();

@@ -34,6 +34,7 @@ ColumnHistoryDlg::ColumnHistoryDlg()
 	m_scannerIndex = 0;
 	m_serialNumber.Format("");
 	m_siteName.Format("");
+	m_lastDay = 0;
 }
 
 ColumnHistoryDlg::~ColumnHistoryDlg()
@@ -53,13 +54,14 @@ void ColumnHistoryDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(ColumnHistoryDlg, CPropertyPage)
 	ON_WM_SIZE()
 	ON_MESSAGE(WM_EVAL_SUCCESS, OnEvalSuccess)
-	ON_MESSAGE(WM_SCANNER_RUN, OnScannerRun)
 END_MESSAGE_MAP()
 
 
 BOOL ColumnHistoryDlg::OnInitDialog()
 {
 	CPropertyPage::OnInitDialog();
+
+	m_lastDay = common.GetDay();
 
 	m_minColumn = g_settings.scanner[m_scannerIndex].minColumn;
 	m_maxColumn = g_settings.scanner[m_scannerIndex].maxColumn;
@@ -357,7 +359,9 @@ void ColumnHistoryDlg::OnSize(UINT nType, int cx, int cy)
 
         ResizeGraphControl(m_plot30, m_frame30, this);
     }
-	RedrawAll();
+	if (this->m_frame.m_hWnd != NULL) {
+		RedrawAll();
+	}
 }
 
 BOOL ColumnHistoryDlg::OnSetActive()
@@ -396,10 +400,13 @@ void ColumnHistoryDlg::RedrawAll() {
 
 LRESULT ColumnHistoryDlg::OnEvalSuccess(WPARAM wParam, LPARAM lParam) {
 	DrawPlot();
-	return 0;
-}
 
-LRESULT ColumnHistoryDlg::OnScannerRun(WPARAM wParam, LPARAM lParam) {
+	// check to see if new UTC day. If so, draw history plot too.
+	int today = common.GetDay();
+	if (m_lastDay == today) {
+		return 0;
+	}
 	DrawHistoryPlots();
+	m_lastDay = today;
 	return 0;
 }
