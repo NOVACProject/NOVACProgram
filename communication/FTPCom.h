@@ -21,7 +21,7 @@ namespace Communication
 		*						 Passive mode is for client behind a firewall; it is safer comparing 
 		*						 with active mode.
 		*/
-		int Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, BOOL mode= FALSE);
+		int Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, int timeout, BOOL mode= FALSE);
 
 		int Disconnect();
 

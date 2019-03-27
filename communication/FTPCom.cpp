@@ -2,7 +2,9 @@
 #include "ftpcom.h"
 #include "../Common/common.h"
 #include "Winsock2.h"
+
 using namespace Communication;
+
 CFTPCom::CFTPCom(void)
 {
 	m_FtpConnection = NULL;
@@ -18,7 +20,7 @@ CFTPCom::~CFTPCom(void)
 //return 2 - ftp address parsing problem
 //return 3 - can not connect to internet
 //return 4 - ftp exception
-int CFTPCom::Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, BOOL mode)
+int CFTPCom::Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, int timeout, BOOL mode)
 {
 
 	INTERNET_PORT  port = 21;
@@ -61,14 +63,14 @@ int CFTPCom::Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, BOOL 
 	
 	//	int nTimeout = AfxGetApp()->GetProfileInt("Settings", "ConnectionTimeout", 30);
 	//int nTimeout = 30 * 60; // timeout = 30 minutes
-	int nTimeout = 60; // seconds
+	//int nTimeout = 60; // seconds
 	if (dwServiceType == INTERNET_SERVICE_FTP)// && !siteName.IsEmpty())
 	{
 		try
 			{
-				m_InternetSession->SetOption(INTERNET_OPTION_CONNECT_TIMEOUT, nTimeout * 1000);
-				m_InternetSession->SetOption(INTERNET_OPTION_RECEIVE_TIMEOUT, nTimeout * 1000);
-				m_InternetSession->SetOption(INTERNET_OPTION_SEND_TIMEOUT, nTimeout * 1000);
+				m_InternetSession->SetOption(INTERNET_OPTION_CONNECT_TIMEOUT, timeout * 1000);
+				m_InternetSession->SetOption(INTERNET_OPTION_RECEIVE_TIMEOUT, timeout * 1000);
+				m_InternetSession->SetOption(INTERNET_OPTION_SEND_TIMEOUT, timeout * 1000);
 			
 				m_FtpConnection = m_InternetSession->GetFtpConnection(siteName,userName,password,21,mode);
 				m_ErrorMsg.Format("CONNECTED to FTP server: %s", siteName); 

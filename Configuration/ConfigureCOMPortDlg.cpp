@@ -429,19 +429,19 @@ void CConfigureCOMPortDlg::ShowFTP(){
 	SetDlgItemText(IDC_LABEL1, "IP-Address");
 	SetDlgItemText(IDC_LABEL2, "Username");
 	SetDlgItemText(IDC_LABEL3, "Password");
-	SetDlgItemText(IDC_LABEL4, "");
+	SetDlgItemText(IDC_LABEL4, "Timeout");
 
 	// 2. Show the controls we want to use
 	m_IPAddress.ShowWindow(SW_SHOW);
 	m_editUserName.ShowWindow(SW_SHOW);
 	m_editPassword.ShowWindow(SW_SHOW);
+	m_editTimeOut.ShowWindow(SW_SHOW);
+	m_label5.ShowWindow(SW_SHOW);
 
 	// 3. Hide the controls we don't want to use
 	m_comPort.ShowWindow(SW_HIDE);
 	m_baudrate.ShowWindow(SW_HIDE);
 	m_handshake.ShowWindow(SW_HIDE);
-	m_editTimeOut.ShowWindow(SW_HIDE);
-	m_label5.ShowWindow(SW_HIDE);
 	m_editRadioID.ShowWindow(SW_HIDE);
 	m_labelRadioID.ShowWindow(SW_HIDE);
 }
