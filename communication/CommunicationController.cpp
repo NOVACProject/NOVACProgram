@@ -211,7 +211,8 @@ UINT ConnectByFTP( LPVOID pParam)
 	ftpHandler->SetFTPInfo(mainIndex, ip, g_settings.scanner[mainIndex].comm.ftpUserName,
 	                                      g_settings.scanner[mainIndex].comm.ftpPassword,
 	                                      g_settings.scanner[mainIndex].comm.ftpAdminUserName,
-	                                      g_settings.scanner[mainIndex].comm.ftpAdminPassword);
+	                                      g_settings.scanner[mainIndex].comm.ftpAdminPassword,
+											g_settings.scanner[mainIndex].comm.timeout/1000);
 
 	spectrometerSerialID.Format("%s", (LPCSTR)g_settings.scanner[mainIndex].spec[0].serialNumber);
 
@@ -297,7 +298,7 @@ void UploadFile_FTP(int mainIndex, CFTPHandler* ftpHandler){
 			g_settings.scanner[mainIndex].comm.ftpIP[3]);
 
 		// Connect to the server
-		if(ftpHandler->Connect(ip, "administrator", "1225")){
+		if(ftpHandler->Connect(ip, "administrator", "1225", g_settings.scanner[mainIndex].comm.timeout)){
 
 			// Upload the file
 			if(ftpHandler->UploadFile(fileName, remoteFile)){
@@ -317,7 +318,7 @@ void UploadFile_FTP(int mainIndex, CFTPHandler* ftpHandler){
 		// Remove the string, so we don't upload the file again...
 		fileName.Format("");
 		g_fileToUpload.SetAt(mainIndex, fileName);
-			}
+	}
 }
 
 

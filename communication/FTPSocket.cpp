@@ -6,9 +6,9 @@ using namespace Communication;
 
 extern CConfigurationSetting g_settings;
 
-CFTPSocket::CFTPSocket(void)
+CFTPSocket::CFTPSocket(int timeout)
 {
-	m_timeout = 15;
+	m_timeout = timeout;
 }
 
 CFTPSocket::~CFTPSocket(void)

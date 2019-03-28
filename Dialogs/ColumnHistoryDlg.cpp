@@ -71,9 +71,8 @@ BOOL ColumnHistoryDlg::OnInitDialog()
 	Init10DayPlot();
 	Init30DayPlot();
 
-	// Read evaluation logs and plot columns
-	//DrawPlot();
-	//DrawHistoryPlots();
+	// Read evaluation logs 
+	ReadEvalLogs();
 
 	return TRUE;
 }
@@ -190,7 +189,7 @@ void ColumnHistoryDlg::DrawPlot() {
 	m_plot.XYPlot(time, column, dataLength, CGraphCtrl::PLOT_FIXED_AXIS | CGraphCtrl::PLOT_CIRCLES);
 }
 
-void ColumnHistoryDlg::DrawHistoryPlots() {
+void ColumnHistoryDlg::ReadEvalLogs() {
 	// clean plots
 	if (!IsWindow(m_frame10.m_hWnd) || !IsWindow(m_frame30.m_hWnd)) {
 		return;
@@ -224,12 +223,13 @@ void ColumnHistoryDlg::DrawHistoryPlots() {
 	utc->tm_sec = 0;
 
 	// Read last 30 days worth of eval logs
-	int index = 0;
-	const int BUFFER_SIZE = 3000;
-	double time[BUFFER_SIZE], column[BUFFER_SIZE];
+	//int index = 0;
+	//const int BUFFER_SIZE = 3000;
+	//double time[BUFFER_SIZE], column[BUFFER_SIZE];
 	CString path, dateStr;
 	CWaitCursor wait;
 	for (int day = 0; day < 30; day++) {
+		m_index[day] = 0;
 		FileHandler::CEvaluationLogFileHandler evalLogReader;
 
 		// get date
@@ -283,25 +283,26 @@ void ColumnHistoryDlg::DrawHistoryPlots() {
 				double epoch = (double)(epochDay + startsec - offset); // unsure why offset substraction is needed but it is
 				double col = sr.GetColumn(k, 0); //Assumes SO2 ref is at index 0
 				bool isBadFit = sr.IsBad(k);
-				if (!isBadFit) {
-					time[index] = epoch;
-					column[index] = col*unitConversionFactor;
-					index++;
+				if (!isBadFit && m_index[day] < 10000) {
+					m_time[day][m_index[day]] = epoch;
+					m_column[day][m_index[day]] = col*unitConversionFactor;
+					m_index[day]++;
 				}
 			}
 
-			index = min(BUFFER_SIZE, index); // make sure no overflow
-			if (day < 10) {
-				m_plot10.XYPlot(time, column, index, CGraphCtrl::PLOT_FIXED_AXIS | CGraphCtrl::PLOT_CIRCLES);
-			}
-			m_plot30.XYPlot(time, column, index, CGraphCtrl::PLOT_FIXED_AXIS | CGraphCtrl::PLOT_CIRCLES);
-
-			index = 0;
 		}
 	}
 	wait.Restore();
 }
 
+void ColumnHistoryDlg::DrawHistoryPlots() {
+	for (int day = 0; day < 30; day++) {
+		if (day < 10) {
+			m_plot10.XYPlot(m_time[day], m_column[day], m_index[day], CGraphCtrl::PLOT_FIXED_AXIS | CGraphCtrl::PLOT_CIRCLES);
+		}
+		m_plot30.XYPlot(m_time[day], m_column[day], m_index[day], CGraphCtrl::PLOT_FIXED_AXIS | CGraphCtrl::PLOT_CIRCLES);
+	}
+}
 // ColumnHistoryDlg message handlers
 
 
@@ -406,6 +407,7 @@ LRESULT ColumnHistoryDlg::OnEvalSuccess(WPARAM wParam, LPARAM lParam) {
 	if (m_lastDay == today) {
 		return 0;
 	}
+	ReadEvalLogs();
 	DrawHistoryPlots();
 	m_lastDay = today;
 	return 0;

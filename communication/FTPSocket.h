@@ -14,7 +14,7 @@ namespace Communication
 	{
 		typedef std::vector<char> TByteVector;
 	public:
-		CFTPSocket(void);
+		CFTPSocket(int timeout=30);
 		
 		~CFTPSocket(void);
 		// ----------------------------------------------------------------------

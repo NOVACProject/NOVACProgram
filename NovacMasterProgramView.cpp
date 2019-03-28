@@ -640,7 +640,9 @@ LRESULT CNovacMasterProgramView::OnEvalSucess(WPARAM wParam, LPARAM lParam){
 		}
 		for (int i = 0; i < m_colHistoryPages.GetCount(); ++i) {
 			ColumnHistoryDlg *page = (ColumnHistoryDlg *)m_colHistoryPages[i];
-			page->PostMessage(WM_EVAL_SUCCESS, wParam, lParam);
+			if (page->m_hWnd != NULL) {
+				page->PostMessage(WM_EVAL_SUCCESS, wParam, lParam);
+			}
 		}
 	}
 	

@@ -34,7 +34,7 @@ CFTPHandler::~CFTPHandler(void)
 }
 
 /**set ftp information*/
-void CFTPHandler::SetFTPInfo(int mainIndex, CString& IP, CString& userName,CString &pwd,long portNumber)
+void CFTPHandler::SetFTPInfo(int mainIndex, CString& IP, CString& userName,CString &pwd, int timeOut ,long portNumber)
 {
 	CString errorMsg;
 
@@ -43,6 +43,7 @@ void CFTPHandler::SetFTPInfo(int mainIndex, CString& IP, CString& userName,CStri
 	m_ftpInfo.userName  = userName;
 	m_ftpInfo.password  = pwd;
 	m_ftpInfo.port      = portNumber;
+	m_ftpInfo.timeout = timeOut;
 	m_spectrometerSerialID.Format("%s", (LPCSTR)g_settings.scanner[mainIndex].spec[0].serialNumber);
 
 	m_storageDirectory.Format("%sTemp\\%s\\", (LPCSTR)g_settings.outputDirectory, (LPCSTR)m_spectrometerSerialID);
@@ -56,12 +57,12 @@ void CFTPHandler::SetFTPInfo(int mainIndex, CString& IP, CString& userName,CStri
 	}
 }
 
-void CFTPHandler::SetFTPInfo(int mainIndex, CString& IP, CString& userName, CString &pwd, CString &admUserName, CString &admPwd, long portNumber){
+void CFTPHandler::SetFTPInfo(int mainIndex, CString& IP, CString& userName, CString &pwd, CString &admUserName, CString &admPwd, int timeOut, long portNumber){
 
 	this->m_ftpInfo.adminUserName.Format(admUserName);
 	this->m_ftpInfo.adminPassword.Format(admPwd);
 
-	this->SetFTPInfo(mainIndex, IP, userName, pwd, portNumber);
+	this->SetFTPInfo(mainIndex, IP, userName, pwd, timeOut, portNumber);
 }
 
 /**poll the scanner for upload*.pak files */
@@ -85,7 +86,7 @@ bool CFTPHandler::DownloadPakFiles(const CString& folder)
 	CScannerFileInfo* fileInfo = new CScannerFileInfo();
 
 	//connect to server
-	if(Connect(m_ftpInfo.IPAddress, m_ftpInfo.userName, m_ftpInfo.password)!=1)
+	if(Connect(m_ftpInfo.IPAddress, m_ftpInfo.userName, m_ftpInfo.password, m_ftpInfo.timeout)!=1)
 	{
 		pView->PostMessage(WM_SCANNER_NOT_CONNECT,(WPARAM)&(m_spectrometerSerialID),0);
 		return false;
@@ -188,7 +189,7 @@ bool CFTPHandler::DownloadAllOldPak()
 			if(DownloadPakFiles(folder))
 			{
 				// we managed to download the files, now remove the folder
-				if(Connect(m_ftpInfo.IPAddress, m_ftpInfo.userName, m_ftpInfo.password)!=1)
+				if(Connect(m_ftpInfo.IPAddress, m_ftpInfo.userName, m_ftpInfo.password, m_ftpInfo.timeout)!=1)
 				{
 					pView->PostMessage(WM_SCANNER_NOT_CONNECT,(WPARAM)&(m_spectrometerSerialID),0);
 					return false;
@@ -250,7 +251,7 @@ long CFTPHandler::GetPakFileList(CString& folder)
 {
 	long pakFileSum = 0;
 	CString fileList,listFilePath, msg;
-	CFTPSocket* ftpSocket = new CFTPSocket();
+	CFTPSocket* ftpSocket = new CFTPSocket(m_ftpInfo.timeout);
 	char ipAddr[16];
 	sprintf(ipAddr,"%s", (LPCSTR)m_ftpInfo.IPAddress);
 
@@ -428,7 +429,6 @@ void CFTPHandler::ParseFileInfo(CString line, char disk)
 
 	line.Remove('\n');
 	line.Remove('\r');
-//	if(line.Find("drw-------") != -1)
 	if(line.Find("drw") != -1) // Changed 2008.06.30
 	{
 		AddFolderInfo(line);
@@ -540,7 +540,7 @@ BOOL CFTPHandler::DeleteRemoteFile(const CString& remoteFile)
 
 	if(m_FtpConnection == NULL)
 	{
-		if(Connect(m_ftpInfo.IPAddress, m_ftpInfo.userName, m_ftpInfo.password)!=1)
+		if(Connect(m_ftpInfo.IPAddress, m_ftpInfo.userName, m_ftpInfo.password, m_ftpInfo.timeout)!=1)
 		{
 			pView->PostMessage(WM_SCANNER_NOT_CONNECT,(WPARAM)&(m_spectrometerSerialID),0);
 			return FALSE;
@@ -635,7 +635,7 @@ bool CFTPHandler::SendCommand(char* cmd)
 		return false;
 
 	//connect to the ftp server
-	if(!Connect(m_ftpInfo.IPAddress, m_ftpInfo.userName, m_ftpInfo.password)==1)
+	if(!Connect(m_ftpInfo.IPAddress, m_ftpInfo.userName, m_ftpInfo.password, m_ftpInfo.timeout)==1)
 		return false;
 
 	//upload file to the server
@@ -709,7 +709,7 @@ int CFTPHandler::DownloadCfgTxt(){
 	CString remoteFileName, localFileName, copyFileName;
 	
 	// Connect to the administrators account
-	if(Connect(m_ftpInfo.IPAddress, m_ftpInfo.adminUserName, m_ftpInfo.adminPassword) != 1){
+	if(Connect(m_ftpInfo.IPAddress, m_ftpInfo.adminUserName, m_ftpInfo.adminPassword, m_ftpInfo.timeout) != 1){
 		return 0; // failed to connect
 	}
 
@@ -735,14 +735,6 @@ int CFTPHandler::DownloadCfgTxt(){
 	if(0 == cfgTxtReader.ReadCfgTxt(localFileName)){
 		return 0;
 	}
-	//if(cfgTxtReader.m_motorStepsComp[0] != 0){ // If we've found a motor steps comp...
-	//	g_settings.scanner[m_mainIndex].motor[0].motorStepsComp = cfgTxtReader.m_motorStepsComp[0];
-	//	g_settings.scanner[m_mainIndex].motor[0].stepsPerRound = cfgTxtReader.m_motorStepsPerRound[0];
-	//	if(cfgTxtReader.m_nMotors == 2){
-	//		g_settings.scanner[m_mainIndex].motor[1].motorStepsComp = cfgTxtReader.m_motorStepsComp[1];
-	//		g_settings.scanner[m_mainIndex].motor[1].stepsPerRound = cfgTxtReader.m_motorStepsPerRound[1];
-	//	}
-	//}
 
 	// if todays date is dividable by 7 then try to upload the file
 	int todaysDate = Common::GetDay();
