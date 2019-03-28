@@ -64,4 +64,8 @@ protected:
 
 	/** The label that tells the average flux of each system */
 	CArray<CStatic *, CStatic *> m_fluxLabel;
+
+private:
+	/** Set the graph's time range */
+	void SetTodayRange(Graph::CGraphCtrl *graph);
 };

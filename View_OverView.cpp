@@ -120,13 +120,13 @@ BOOL CView_OverView::OnInitDialog()
 		CGraphCtrl *graph = new CGraphCtrl();
 
 		if(i == nSpectrometers - 1){
-			graph->SetXUnits(m_common.GetString(AXIS_LOCALTIME));
+			graph->SetXUnits(m_common.GetString(AXIS_UTCTIME));
 		}else{
 			graph->HideXScale();
 		}
 		graph->Create(WS_VISIBLE | WS_CHILD, rect, this);
 		graph->SetFontHeight((int)(14 - 0.3*nSpectrometers));
-		graph->SetXAxisNumberFormat(FORMAT_TIME);
+		graph->SetXAxisNumberFormat(FORMAT_DATETIME);
 		graph->EnableGridLinesX(true);
 		graph->SetYUnits(fluxAxisLabel);
 		graph->SetLineWidth(2);               // Increases the line width to 2 pixels
@@ -134,7 +134,7 @@ BOOL CView_OverView::OnInitDialog()
 		graph->SetPlotColor(RGB(255, 255, 255));
 		graph->SetGridColor(RGB(255, 255, 255));
 		graph->SetBackgroundColor(RGB(0, 0, 0));
-		graph->SetRange(0, 24*3600-1, 0, 0, 100, 0);
+		SetTodayRange(graph);
 		m_graphs.Add(graph);
 
 		// Create the label with the name of the graph
@@ -152,7 +152,7 @@ BOOL CView_OverView::OnInitDialog()
 
 		rect2.top = rect.top + (rect.bottom - rect.top) * 1 / 5;
 		rect2.bottom = rect2.top + 15;
-		statusString[i].Format("Scans received today: 0");
+		statusString[i].Format("Scans received last 24 hours: 0");
 		statusLabel->Create(statusString[i], WS_VISIBLE | WS_CHILD, rect2, this);
 		statusLabel->SetFont(font);
 		m_statusLabel.Add(statusLabel);
@@ -212,14 +212,13 @@ void CView_OverView::DrawFlux(){
 		nGoodFluxes = 0;
 		nBadFluxes = 0;
 		for(int k = 0; k < dataLength; ++k){
-			int secAfterMidnight = ((int)tid[k]) % 86400;
 			if(fluxOk[k]){
 				goodFluxes[nGoodFluxes] = allFluxes[k];
-				goodTime[nGoodFluxes]   = secAfterMidnight; 
+				goodTime[nGoodFluxes]   = tid[k]; 
 				++nGoodFluxes;
 			}else{
 				badFluxes[nBadFluxes] = allFluxes[k];
-				badTime[nBadFluxes]   = secAfterMidnight; 
+				badTime[nBadFluxes]   = tid[k];
 				++nBadFluxes;
 			}
 		}
@@ -248,6 +247,7 @@ void CView_OverView::DrawFlux(){
 
 		// set the range for the plot
 		graph->SetRangeY(0, maxFlux, 1);
+		SetTodayRange(graph);
 
 		// First draw the bad values, then the good ones
 		graph->SetCircleColor(RGB(150, 150, 150));
@@ -257,7 +257,7 @@ void CView_OverView::DrawFlux(){
 		graph->XYPlot(goodTime, goodFluxes, nGoodFluxes, CGraphCtrl::PLOT_FIXED_AXIS | CGraphCtrl::PLOT_CIRCLES);
 
 		// Update the status-label...
-		statusStr.Format("Scans received today: %02d", dataLength);
+		statusStr.Format("Scans received last 24 hours: %02d", dataLength);
 		m_statusLabel.GetAt(i)->SetWindowText(statusStr);
 
 		// Update the flux-label
@@ -279,4 +279,14 @@ BOOL CView_OverView::OnSetActive()
 	DrawFlux();
 
 	return CPropertyPage::OnSetActive();
+}
+
+void CView_OverView::SetTodayRange(CGraphCtrl *graph) {
+	// set time range for last day plot
+	struct tm *tm;
+	time_t endtime;
+	time(&endtime);
+	tm = gmtime(&endtime);
+	time_t starttime = endtime - 60 * 60 * 24;
+	graph->SetRangeX(starttime, endtime, 0);
 }
