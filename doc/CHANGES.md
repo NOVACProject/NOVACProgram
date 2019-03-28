@@ -1,6 +1,6 @@
 NOVAC Program Release Notes
 -----------------------------------------------------
-Version 3.1 (TBD)
+Version 3.1 (April 2019)
 
 Bug fixes
 * Set time limit on how much time to spend downloading pak files from one spectrometer (#43)
