@@ -17,6 +17,7 @@ namespace Communication
 			CString adminUserName;
 			CString adminPassword;
 			long    port;
+			int		timeout;
 		};
 
 	/** <b>CFTPHandler</b> class handles one link of downloading and uploading file 
@@ -34,8 +35,8 @@ namespace Communication
 		//-------------------------------------------//
 
 		/**set ftp information*/
-		void SetFTPInfo(int mainIndex, CString& IP, CString& userName, CString &pwd, long portNumber= 5551);
-		void SetFTPInfo(int mainIndex, CString& IP, CString& userName, CString &pwd, CString &admUserName, CString &admPwd, long portNumber= 5551);
+		void SetFTPInfo(int mainIndex, CString& IP, CString& userName, CString &pwd, int timeOut, long portNumber= 5551);
+		void SetFTPInfo(int mainIndex, CString& IP, CString& userName, CString &pwd, CString &admUserName, CString &admPwd, int timeOut, long portNumber= 5551);
 
 		/**poll one instrument*/
 		bool PollScanner();

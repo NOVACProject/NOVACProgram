@@ -185,7 +185,8 @@ UINT DownloadFileWithFTP(LPVOID pParam)
 	if(disk == 'B'){
 		if(dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.IPAddress,
 			dlg->m_ftpController->m_ftpInfo.userName, 
-			dlg->m_ftpController->m_ftpInfo.password)!=1)
+			dlg->m_ftpController->m_ftpInfo.password,
+			dlg->m_ftpController->m_ftpInfo.timeout)!=1)
 		{
 			msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.IPAddress);
 			dlg->m_fileStatusEdit.SetWindowText(msg);
@@ -195,7 +196,8 @@ UINT DownloadFileWithFTP(LPVOID pParam)
 	}else{
 		if(dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.IPAddress,
 			dlg->m_ftpController->m_ftpInfo.adminUserName, 
-			dlg->m_ftpController->m_ftpInfo.adminPassword)!=1)
+			dlg->m_ftpController->m_ftpInfo.adminPassword,
+			dlg->m_ftpController->m_ftpInfo.timeout)!=1)
 		{
 			msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.IPAddress);
 			dlg->m_fileStatusEdit.SetWindowText(msg);
@@ -346,7 +348,8 @@ UINT DownloadFolderWithFTP(LPVOID pParam)
 
 	if(dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.IPAddress,
 		dlg->m_ftpController->m_ftpInfo.userName, 
-		dlg->m_ftpController->m_ftpInfo.password)!=1)
+		dlg->m_ftpController->m_ftpInfo.password,
+		dlg->m_ftpController->m_ftpInfo.timeout)!=1)
 	{
 		msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.IPAddress);
 		dlg->m_fileStatusEdit.SetWindowText(msg);
@@ -411,7 +414,8 @@ UINT ViewFileByFTP(LPVOID pParam)
 	if(disk == 'B'){
 		if(dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.IPAddress,
 			dlg->m_ftpController->m_ftpInfo.userName, 
-			dlg->m_ftpController->m_ftpInfo.password)!=1)
+			dlg->m_ftpController->m_ftpInfo.password,
+			dlg->m_ftpController->m_ftpInfo.timeout)!=1)
 		{
 			msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.IPAddress);
 			dlg->m_fileStatusEdit.SetWindowText(msg);
@@ -421,7 +425,8 @@ UINT ViewFileByFTP(LPVOID pParam)
 	}else{
 		if(dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.IPAddress,
 			dlg->m_ftpController->m_ftpInfo.adminUserName, 
-			dlg->m_ftpController->m_ftpInfo.adminPassword)!=1)
+			dlg->m_ftpController->m_ftpInfo.adminPassword,
+			dlg->m_ftpController->m_ftpInfo.timeout)!=1)
 		{
 			msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.IPAddress);
 			dlg->m_fileStatusEdit.SetWindowText(msg);
@@ -611,7 +616,8 @@ UINT UpdateFileWithFTP(LPVOID pParam)
 	if(disk == 'B'){
 		if(dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.IPAddress,
 			dlg->m_ftpController->m_ftpInfo.userName, 
-			dlg->m_ftpController->m_ftpInfo.password)!=1)
+			dlg->m_ftpController->m_ftpInfo.password,
+			dlg->m_ftpController->m_ftpInfo.timeout)!=1)
 		{
 			msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.IPAddress);
 			dlg->m_fileStatusEdit.SetWindowText(msg);
@@ -621,7 +627,8 @@ UINT UpdateFileWithFTP(LPVOID pParam)
 	}else{
 		if(dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.IPAddress,
 			dlg->m_ftpController->m_ftpInfo.adminUserName, 
-			dlg->m_ftpController->m_ftpInfo.adminPassword)!=1)
+			dlg->m_ftpController->m_ftpInfo.adminPassword,
+			dlg->m_ftpController->m_ftpInfo.timeout)!=1)
 		{
 			msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.IPAddress);
 			dlg->m_fileStatusEdit.SetWindowText(msg);
@@ -650,7 +657,8 @@ UINT UploadFileWithFTP(LPVOID pParam)
 	if(disk == 'B'){
 		if(dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.IPAddress,
 			dlg->m_ftpController->m_ftpInfo.userName, 
-			dlg->m_ftpController->m_ftpInfo.password)!=1)
+			dlg->m_ftpController->m_ftpInfo.password,
+			dlg->m_ftpController->m_ftpInfo.timeout)!=1)
 		{
 			msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.IPAddress);
 			dlg->m_fileStatusEdit.SetWindowText(msg);
@@ -660,7 +668,8 @@ UINT UploadFileWithFTP(LPVOID pParam)
 	}else{
 		if(dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.IPAddress,
 			dlg->m_ftpController->m_ftpInfo.adminUserName, 
-			dlg->m_ftpController->m_ftpInfo.adminPassword)!=1)
+			dlg->m_ftpController->m_ftpInfo.adminPassword,
+			dlg->m_ftpController->m_ftpInfo.timeout)!=1)
 		{
 			msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.IPAddress);
 			dlg->m_fileStatusEdit.SetWindowText(msg);
@@ -709,7 +718,8 @@ UINT DeleteFileByFTP(LPVOID pParam)
 	if(disk == 'B'){
 		if(dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.IPAddress,
 			dlg->m_ftpController->m_ftpInfo.userName, 
-			dlg->m_ftpController->m_ftpInfo.password)!=1)
+			dlg->m_ftpController->m_ftpInfo.password,
+			dlg->m_ftpController->m_ftpInfo.timeout)!=1)
 		{
 			msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.IPAddress);
 			dlg->m_fileStatusEdit.SetWindowText(msg);
@@ -719,7 +729,8 @@ UINT DeleteFileByFTP(LPVOID pParam)
 	}else{
 		if(dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.IPAddress,
 			dlg->m_ftpController->m_ftpInfo.adminUserName, 
-			dlg->m_ftpController->m_ftpInfo.adminPassword)!=1)
+			dlg->m_ftpController->m_ftpInfo.adminPassword,
+			dlg->m_ftpController->m_ftpInfo.timeout)!=1)
 		{
 			msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.IPAddress);
 			dlg->m_fileStatusEdit.SetWindowText(msg);
@@ -1447,10 +1458,9 @@ void CFileTransferDlg::OnLbnSelchangeScannerList()
 			g_settings.scanner[curScanner].comm.ftpIP[1],
 			g_settings.scanner[curScanner].comm.ftpIP[2],
 			g_settings.scanner[curScanner].comm.ftpIP[3]);
-//			m_ftpController->SetFTPInfo(curScanner, ip, g_settings.scanner[curScanner].comm.ftpUserName,
-//													g_settings.scanner[curScanner].comm.ftpPassword);
 			m_ftpController->SetFTPInfo(curScanner, ip, g_settings.scanner[curScanner].comm.ftpUserName,
-													g_settings.scanner[curScanner].comm.ftpPassword, admUserName, admPwd);
+													g_settings.scanner[curScanner].comm.ftpPassword, admUserName, admPwd,
+													g_settings.scanner[curScanner].comm.timeout/1000);
 			AfxBeginThread(DownloadFileListWithFTP,this,THREAD_PRIORITY_NORMAL,0,0,NULL);
 			break;
 		default:

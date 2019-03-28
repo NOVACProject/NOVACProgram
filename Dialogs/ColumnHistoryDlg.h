@@ -71,8 +71,12 @@ private:
 	void Init10DayPlot();
 	void Init30DayPlot();
 	void SetHistoryRange();
+
+	// data for 10 and 30 day plots
+	double m_time[30][10000];
+	double m_column[30][10000];
+	int m_index[30];
+	void ReadEvalLogs();
 	
 	int SECONDS_IN_DAY = 86400;
-
-
 };

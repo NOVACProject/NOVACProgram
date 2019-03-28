@@ -180,7 +180,7 @@ BOOL CFTPServerContacter::OnIdle(LONG lCount){
 	}
 
 	// upload file since the latest
-	if(m_ftp->Connect(g_settings.ftpSetting.ftpAddress,g_settings.ftpSetting.userName, g_settings.ftpSetting.password,TRUE)==1)
+	if(m_ftp->Connect(g_settings.ftpSetting.ftpAddress,g_settings.ftpSetting.userName, g_settings.ftpSetting.password, 60,TRUE)==1)
 	{
 		while(m_fileList.GetCount() > 0)
 		{

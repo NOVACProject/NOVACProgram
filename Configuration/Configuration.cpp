@@ -53,7 +53,7 @@ CConfigurationSetting::CommunicationSetting::CommunicationSetting(){
 
 	// General Settings
 	this->queryPeriod = 10*60; // <-- query every 10 minutes
-	this->timeout = 5000;
+	this->timeout = 30000;
 	this->sleepTime.hour = 20;
 	this->sleepTime.minute = 0;
 	this->sleepTime.second = 0;
