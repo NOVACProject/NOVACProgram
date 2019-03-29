@@ -1,7 +1,6 @@
 #pragma once
 #include <afxtempl.h>
 #include "../Common/Common.h"
-#include "ftpcom.h"
 #include "LinkStatistics.h"
 
 namespace Communication
@@ -11,6 +10,7 @@ namespace Communication
 		bool  deleteFile;   // true if the file shall be deleted once it is uploaded
 	};
 
+    class CSFTPCom;
 
 	/** The class CFTPServerContacter is responsible for the uploading of 
 			spectra and results to the data-server. */
@@ -81,7 +81,7 @@ namespace Communication
 		CString m_listLogFile_Temp;
 
 		/** The ftp-communciation handler */
-		CFTPCom* m_ftp;
+        CSFTPCom* m_ftp = nullptr;
 
 		/** Timer */
 		UINT_PTR m_nTimerID;

@@ -8,6 +8,11 @@ namespace Communication
 {
     struct CSFTPCom::SftpConnection
     {
+        SftpConnection()
+        {
+            this->curlHandle = curl_easy_init();
+        }
+
         ~SftpConnection()
         {
             DeInit();
@@ -15,7 +20,6 @@ namespace Communication
 
         int Open(const char* siteName, const char* userName, const char* password)
         {
-            this->curlHandle = curl_easy_init();
             // curl_easy_setopt(curlHandle, CURLOPT_URL, "sftp://iceland@ec2-13-53-136-215.eu-north-1.compute.amazonaws.com");
         }
 
@@ -28,12 +32,16 @@ namespace Communication
     };
 
     CSFTPCom::CSFTPCom()
-     : m_FTPSite(""), m_currentDirectory("/")
+     : m_FTPSite("")
     {
     }
 
     CSFTPCom::~CSFTPCom()
     {
+        if (nullptr != m_FtpConnection)
+        {
+            delete m_FtpConnection;
+        }
     }
 
     //Connect to FTP server
@@ -42,8 +50,14 @@ namespace Communication
     //return 2 - ftp address parsing problem
     //return 3 - can not connect to internet
     //return 4 - ftp exception
-    int CSFTPCom::Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, BOOL mode)
+    int CSFTPCom::Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, int timeout, BOOL mode)
     {
+        if (nullptr != m_FtpConnection)
+        {
+            delete m_FtpConnection;
+        }
+        m_FtpConnection = new SftpConnection();
+
         CURLcode returnCode;
 
         returnCode = curl_easy_setopt(m_FtpConnection->curlHandle, CURLOPT_USERNAME, (const char*)userName);
@@ -52,75 +66,16 @@ namespace Communication
         returnCode = curl_easy_setopt(m_FtpConnection->curlHandle, CURLOPT_PASSWORD, (const char*)password);
         assert(returnCode == CURLE_OK);
 
+        returnCode = curl_easy_setopt(m_FtpConnection->curlHandle, CURLOPT_FTP_CREATE_MISSING_DIRS, CURLFTP_CREATE_DIR_RETRY);
+        assert(returnCode == CURLE_OK);
+
+        /* Switch on full protocol/debug output */
+        returnCode = curl_easy_setopt(m_FtpConnection->curlHandle, CURLOPT_VERBOSE, 1L);
+        assert(returnCode == CURLE_OK);
+
         m_FTPSite = CString("sftp://") + CString(siteName);
 
         return 1;
-        /*
-        INTERNET_PORT  port = 21;
-        DWORD dwServiceType = AFX_INET_SERVICE_FTP;
-        CString strServer;
-        CString strObject;
-        CString urlAddress = _T("sftp://") + CString(siteName);
-        m_FTPSite.Format("%s", siteName);
-
-        // If already connected, then re-connect
-        if (m_FtpConnection != nullptr)
-        {
-            m_FtpConnection->Close();
-        }
-        delete m_FtpConnection;
-        m_FtpConnection = nullptr;
-
-        if (!AfxParseURL(siteName, dwServiceType, (CString)siteName, strObject, port))
-        {
-            // try adding the "ftp://" protocol		
-
-            if (!AfxParseURL(urlAddress, dwServiceType, (CString)siteName, strObject, port))
-            {
-                m_ErrorMsg = TEXT("Can not parse  ftp address");
-                ShowMessage(m_ErrorMsg);
-                return 2;
-            }
-        }
-
-        if (m_InternetSession == nullptr)
-        {
-            m_InternetSession = new CInternetSession(NULL, 1, INTERNET_OPEN_TYPE_DIRECT, NULL, NULL, 0);//INTERNET_FLAG_NO_CACHE_WRITE );
-        }
-
-        int nTimeout = 60; // seconds
-        try
-        {
-            // m_InternetSession->SetOption(INTERNET_OPTION_CONNECT_TIMEOUT, nTimeout * 1000);
-            // m_InternetSession->SetOption(INTERNET_OPTION_RECEIVE_TIMEOUT, nTimeout * 1000);
-            // m_InternetSession->SetOption(INTERNET_OPTION_SEND_TIMEOUT, nTimeout * 1000);
-
-            m_FtpConnection = m_InternetSession->GetFtpConnection(siteName, userName, password, 21, mode);
-            m_ErrorMsg.Format("CONNECTED to FTP server: %s", siteName);
-            ShowMessage(m_ErrorMsg);
-            return 1;
-        }
-        catch (CInternetException* pEx)
-        {
-            // catch errors from WinINet
-            TCHAR szErr[255];
-            if (pEx->GetErrorMessage(szErr, 255))
-            {
-                m_ErrorMsg.Format("FTP error from connecting %s: %s", (LPCSTR)m_FTPSite, (LPCSTR)szErr);
-                ShowMessage(m_ErrorMsg);
-            }
-            else
-            {
-                m_ErrorMsg.Format("FTP exception");
-                ShowMessage(m_ErrorMsg);
-            }
-            pEx->Delete();
-
-            m_FtpConnection = nullptr;
-            return 4;
-        }
-        return 1;
-        */
     }
 
     int CSFTPCom::Disconnect()
@@ -139,10 +94,62 @@ namespace Communication
         */
     }
 
-
-    int CSFTPCom::UpdateFile(LPCTSTR localFile, LPCTSTR remoteFile)
+    /* read data to upload */
+    static size_t readfunc(void *ptr, size_t size, size_t nmemb, void *stream)
     {
-        return 1;
+        FILE *f = (FILE *)stream;
+
+        if (ferror(f))
+            return CURL_READFUNC_ABORT;
+
+        size_t n = fread(ptr, size, nmemb, f) * size;
+
+        return n;
+    }
+
+    int CSFTPCom::UpdateRemoteFile(LPCTSTR localFile, LPCTSTR remoteFile)
+    {
+        if (nullptr == m_FtpConnection || nullptr == m_FtpConnection->curlHandle)
+        {
+            ShowMessage("ERROR: Attempted to update file using FTP while not connected!");
+            return 0;
+        }
+
+        CString remoteUrl;
+        remoteUrl.Format("%s%s%s", m_FTPSite, GetCurrentPath(), remoteFile);
+
+        CURLcode returnCode;
+        returnCode = curl_easy_setopt(m_FtpConnection->curlHandle, CURLOPT_URL, (const char*)remoteUrl);
+        assert(returnCode == CURLE_OK);
+
+        returnCode = curl_easy_setopt(m_FtpConnection->curlHandle, CURLOPT_UPLOAD, 1L);
+        assert(returnCode == CURLE_OK);
+
+        FILE* f = fopen(localFile, "rb");
+        if (nullptr == f) {
+            return 0;
+        }
+
+        // read the data from the file
+        returnCode = curl_easy_setopt(m_FtpConnection->curlHandle, CURLOPT_READDATA, f);
+        assert(returnCode == CURLE_OK);
+
+        // reading-function
+        returnCode = curl_easy_setopt(m_FtpConnection->curlHandle, CURLOPT_READFUNCTION, readfunc);
+        assert(returnCode == CURLE_OK);
+
+        // to the upload
+        returnCode = curl_easy_perform(m_FtpConnection->curlHandle);
+
+        fclose(f);
+
+        if (returnCode == CURLE_OK) {
+            return 1;
+        }
+        else {
+            fprintf(stderr, "%s\n", curl_easy_strerror(returnCode));
+            return 0;
+        }
         /*
         int result = 0;
         if (m_FtpConnection == nullptr) {
@@ -273,15 +280,17 @@ namespace Communication
         return 1;
     }
 
-    BOOL CSFTPCom::SetCurDirectory(LPCTSTR curDirName)
+    BOOL CSFTPCom::SetCurDirectory(CString curDirName)
     {
         if (0 == strcmp(curDirName, ".."))
         {
-
+            m_currentPath.pop_back();
         }
         else
         {
-            m_currentDirectory = m_currentDirectory + CString(curDirName);
+            // remove any forward or backward slashes in the path
+            curDirName.Trim("/");
+            m_currentPath.push_back(std::string(curDirName));
         }
         return TRUE;
     }
@@ -376,9 +385,20 @@ namespace Communication
 
     BOOL CSFTPCom::GotoTopDirectory()
     {
-        m_currentDirectory = "/";
+        m_currentPath.clear();
         return TRUE;
     }
+
+    CString CSFTPCom::GetCurrentPath() const
+    {
+        CString currentPath = "/";
+        for (const std::string& dir : m_currentPath)
+        {
+            currentPath.AppendFormat("%s/", dir.c_str());
+        }
+        return currentPath;
+    }
+
 
 }
 

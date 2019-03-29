@@ -11,7 +11,7 @@ namespace Communication
 		CFtpConnection* m_FtpConnection;
 		CString m_FTPSite;
 		CString m_ErrorMsg;
-	public:
+
 		/**Connect to one FTP server
 		*@siteName - address of the FTP server
 		*@userName - user name for login
@@ -25,11 +25,15 @@ namespace Communication
 
 		int Disconnect();
 
+        /** Sends a local file to the FTP-server, this will skip the upload if the remove file exists. 
+            @return 0 on success
+            @return 1 if the file already exists. */
 		int UploadFile(LPCTSTR localFile, LPCTSTR remoteFile);
 
 		BOOL DownloadAFile(LPCTSTR remoteFile, LPCTSTR fileFullName);
 
-		int UpdateFile(LPCTSTR localFile, LPCTSTR remoteFile);
+        /** Sends a local file to the FTP-server, if the remote file exists then it will be overwritten. */
+		int UpdateRemoteFile(LPCTSTR localFile, LPCTSTR remoteFile);
 
 		int CreateDirectory(LPCTSTR remoteDirectory);
 

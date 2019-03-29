@@ -1,5 +1,7 @@
-#include <afxinet.h>
 #pragma once
+
+#include <list>
+#include <string>
 
 namespace Communication
 {
@@ -21,15 +23,19 @@ namespace Communication
         *						 Passive mode is for client behind a firewall; it is safer comparing
         *						 with active mode.
         */
-        int Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, BOOL mode = FALSE);
+        int Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, int timeout, BOOL mode = FALSE);
 
         int Disconnect();
 
+        /** Sends a local file to the FTP-server, this will skip the upload if the remove file exists.
+            @return 0 on success
+            @return 1 if the file already exists. */
         int UploadFile(LPCTSTR localFile, LPCTSTR remoteFile);
 
         BOOL DownloadAFile(LPCTSTR remoteFile, LPCTSTR fileFullName);
 
-        int UpdateFile(LPCTSTR localFile, LPCTSTR remoteFile);
+        /** Sends a local file to the FTP-server, if the remote file exists then it will be overwritten. */
+        int UpdateRemoteFile(LPCTSTR localFile, LPCTSTR remoteFile);
 
         int CreateDirectory(LPCTSTR remoteDirectory);
 
@@ -42,7 +48,7 @@ namespace Communication
             *@param curDirName current directory name
             *return TRUE  - success
         */
-        BOOL SetCurDirectory(LPCTSTR curDirName);
+        BOOL SetCurDirectory(CString curDirName);
 
         /*Remove a folder*/
         BOOL DeleteFolder(const CString& folder);
@@ -60,6 +66,8 @@ namespace Communication
         struct SftpConnection;
         SftpConnection* m_FtpConnection = nullptr;
 
-        CString m_currentDirectory;
+        std::list<std::string> m_currentPath;
+
+        CString GetCurrentPath() const;
     };
 }
