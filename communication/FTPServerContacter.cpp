@@ -1,12 +1,16 @@
 #include "StdAfx.h"
 #include "FTPServerContacter.h"
 #include "SFTPCom.h"
-#include "..\Common\Common.h"
+#include "../Common/Common.h"
 #include "../Configuration/configuration.h"
 #include "../VolcanoInfo.h"
 
 // Include synchronization classes
 #include <afxmt.h>
+
+// Use warning level 4 here
+#pragma warning(push, 4)
+
 
 using namespace Communication;
 
@@ -25,7 +29,7 @@ BEGIN_MESSAGE_MAP(CFTPServerContacter, CWinThread)
     ON_THREAD_MESSAGE(WM_TIMER, OnTimer)
 END_MESSAGE_MAP()
 
-CFTPServerContacter::CFTPServerContacter(void)
+CFTPServerContacter::CFTPServerContacter()
 {
     m_ftp = new CSFTPCom();
     m_listLogFile.Format("%s\\Temp\\UploadFileList.txt", (LPCSTR)g_settings.outputDirectory);
@@ -36,31 +40,31 @@ CFTPServerContacter::CFTPServerContacter(void)
     time(&m_lastExportTime);
 }
 
-CFTPServerContacter::~CFTPServerContacter(void)
+CFTPServerContacter::~CFTPServerContacter()
 {
-    if (m_ftp != NULL) {
+    if (m_ftp != nullptr) {
         delete(m_ftp);
-        m_ftp = NULL;
+        m_ftp = nullptr;
     }
 
     ExportList();
 }
 
 /** Quits the thread */
-void CFTPServerContacter::OnQuit(WPARAM wp, LPARAM lp)
+void CFTPServerContacter::OnQuit(WPARAM /*wp*/, LPARAM /*lp*/)
 {
     //Write log file of ftp quit. What need to be uploaded.
     //Close ftp connection
-    if (m_ftp != NULL) {
+    if (m_ftp != nullptr) {
         delete(m_ftp);
-        m_ftp = NULL;
+        m_ftp = nullptr;
     }
 
     ExportList();
 }
 
 /**When the thread is started, copy the UploadFileList.txt's content into m_fileList*/
-void CFTPServerContacter::OnStartFTP(WPARAM wp, LPARAM lp)
+void CFTPServerContacter::OnStartFTP(WPARAM /*wp*/, LPARAM /*lp*/)
 {
     if (!IsExistingFile(m_listLogFile)) {
         // If we have a temporary-file, then parse that instead
@@ -75,7 +79,7 @@ void CFTPServerContacter::OnStartFTP(WPARAM wp, LPARAM lp)
     m_hasReadInFileList = true;
 }
 
-void CFTPServerContacter::OnTimer(UINT nIDEvent, LPARAM lp) {
+void CFTPServerContacter::OnTimer(UINT /*nIDEvent*/, LPARAM /*lp*/) {
     // Call the uploading thing...
     OnIdle(0);
 }
@@ -92,7 +96,7 @@ void CFTPServerContacter::OnArrivedFile(WPARAM wp, LPARAM lp)
     int volcanoIndex = options->volcanoIndex;
 
     // Check the inputs
-    if (fileName == NULL || fileName->GetLength() <= 4) {
+    if (fileName == nullptr || fileName->GetLength() <= 4) {
         ShowMessage("ERROR: Received command to upload file which does not exist");
         return; // quit, error in input-data
     }
@@ -103,7 +107,7 @@ void CFTPServerContacter::OnArrivedFile(WPARAM wp, LPARAM lp)
 
     // Check if the file already exists in the list, if so then don't add it
     POSITION listPos = m_fileList.GetHeadPosition();
-    while (listPos != NULL) {
+    while (listPos != nullptr) {
         UploadFile &f = m_fileList.GetNext(listPos);
 
         if (Equals(f.fileName, *fileName) && (f.volcanoIndex == volcanoIndex)) {
@@ -130,7 +134,7 @@ void CFTPServerContacter::OnArrivedFile(WPARAM wp, LPARAM lp)
     delete options;
 }
 
-BOOL CFTPServerContacter::OnIdle(LONG lCount) {
+BOOL CFTPServerContacter::OnIdle(LONG /*lCount*/) {
     CString localFile, remoteFile, volcano, message;
     CString dateText, timeText;
     double linkSpeed;
@@ -261,6 +265,7 @@ BOOL CFTPServerContacter::OnIdle(LONG lCount) {
             }
             else {
                 // Failed to upload the file...
+                ShowMessage(m_ftp->m_ErrorMsg);
                 m_linkStatistics.AppendFailedUpload();
                 break;
             }
@@ -299,7 +304,7 @@ BOOL CFTPServerContacter::InitInstance() {
     CWinThread::InitInstance();
 
     // Set a timer to wake up every 10 minutes
-    m_nTimerID = ::SetTimer(NULL, 0, 10 * 60 * 1000, NULL);
+    m_nTimerID = ::SetTimer(nullptr, 0, 10 * 60 * 1000, nullptr);
 
     return 1;
 }
@@ -307,7 +312,7 @@ BOOL CFTPServerContacter::InitInstance() {
 int Communication::CFTPServerContacter::ExitInstance()
 {
     if (0 != m_nTimerID) {
-        KillTimer(NULL, m_nTimerID);
+        KillTimer(nullptr, m_nTimerID);
     }
 
     return CWinThread::ExitInstance();
@@ -319,7 +324,6 @@ bool CFTPServerContacter::ParseAFile(const CString& fileName)
     CStdioFile fileRef;
     CFileException exceFile;
     CString line, token;
-    int curPos = 0;
     int lastVolcanoIndex = -1;
     bool duplicates = false; // true if there are duplicates in the list...
 
@@ -393,7 +397,7 @@ bool CFTPServerContacter::ParseAFile(const CString& fileName)
             // Check if the file already exists in the list, if so then don't add it
             bool isAlreadyInList = false;
             POSITION listPos = m_fileList.GetHeadPosition();
-            while (listPos != NULL) {
+            while (listPos != nullptr) {
                 UploadFile &f = m_fileList.GetNext(listPos);
                 if (Equals(f.fileName, fileName)) {
                     // don't add this to the list
@@ -413,7 +417,7 @@ bool CFTPServerContacter::ParseAFile(const CString& fileName)
             }
 
             // init to get next token
-            szToken = NULL;
+            szToken = nullptr;
         }
     }
     fileRef.Close();
@@ -428,6 +432,7 @@ bool CFTPServerContacter::ParseAFile(const CString& fileName)
 
     return true;
 }
+
 void CFTPServerContacter::ExportList()
 {
     POSITION	listPos;
@@ -455,9 +460,9 @@ void CFTPServerContacter::ExportList()
 
     //write log file into output directory \\temp\\fileList_temp.txt
     FILE *f = fopen(m_listLogFile_Temp, "w");
-    if (f != NULL) {
+    if (f != nullptr) {
         listPos = m_fileList.GetHeadPosition();
-        while (listPos != NULL)
+        while (listPos != nullptr)
         {
             UploadFile &upload = m_fileList.GetNext(listPos);
 

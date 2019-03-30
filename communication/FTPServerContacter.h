@@ -5,96 +5,97 @@
 
 namespace Communication
 {
-	struct FTPUploadOptions{
-		int   volcanoIndex; // the index of the volcano to upload to...
-		bool  deleteFile;   // true if the file shall be deleted once it is uploaded
-	};
+    struct FTPUploadOptions {
+        int   volcanoIndex; // the index of the volcano to upload to...
+        bool  deleteFile;   // true if the file shall be deleted once it is uploaded
+    };
 
     class CSFTPCom;
 
-	/** The class CFTPServerContacter is responsible for the uploading of 
-			spectra and results to the data-server. */
+    /** The class CFTPServerContacter is responsible for the uploading of
+            spectra and results to the data-server. 
+        This is designed as a soliton class and there must be only one instance of this class running. */
 
-	class CFTPServerContacter :
-		public CWinThread
-	{
-	public:
-		CFTPServerContacter(void);
-		~CFTPServerContacter(void);
-		DECLARE_DYNCREATE(CFTPServerContacter);
-		DECLARE_MESSAGE_MAP()
-		
-		// ----------------------------------------------------------------------
-		// --------------------- PUBLIC METHODS ---------------------------------
-		// ----------------------------------------------------------------------
-	
-		/** Handling uploading file and file queueing. 
-			@param wp is a pointer to a CString object telling the filename of the file to be uploaded. 
-			@param lp - unused. */
-		afx_msg void OnArrivedFile(WPARAM wp, LPARAM lp);		
+    class CFTPServerContacter : public CWinThread
+    {
+    public:
+        CFTPServerContacter();
+        ~CFTPServerContacter();
 
-		/** Called when the thread is to be stopped */
-		afx_msg void OnQuit(WPARAM wp, LPARAM lp);
+        DECLARE_DYNCREATE(CFTPServerContacter);
+        DECLARE_MESSAGE_MAP()
 
-		/**Called when the thread is started*/
-		afx_msg void OnStartFTP(WPARAM wp, LPARAM lp);
+        // ----------------------------------------------------------------------
+        // --------------------- PUBLIC METHODS ---------------------------------
+        // ----------------------------------------------------------------------
 
-		/** */
-		afx_msg void OnTimer(UINT nIDEvent, LPARAM lp);
+        /** Handling uploading file and file queueing.
+            @param wp is a pointer to a CString object telling the filename of the file to be uploaded.
+            @param lp - unused. */
+        afx_msg void OnArrivedFile(WPARAM wp, LPARAM lp);
 
-		/** Called when the thread is starting */
-		virtual BOOL InitInstance();
+        /** Called when the thread is to be stopped */
+        afx_msg void OnQuit(WPARAM wp, LPARAM lp);
 
-		/** Called when the thread is stopping */
-		virtual int ExitInstance();
+        /**Called when the thread is started*/
+        afx_msg void OnStartFTP(WPARAM wp, LPARAM lp);
 
-		/** Called when there's nothing else to do. */
-		virtual BOOL OnIdle(LONG lCount);
+        /** */
+        afx_msg void OnTimer(UINT nIDEvent, LPARAM lp);
 
-		/**set the current directory to volcanoName\yyyy.mm.dd*/
-		void SetRemoteDirectory(const CString &volcanoName);
+        /** Called when the thread is starting */
+        virtual BOOL InitInstance();
 
-		/**parse a file by \n, fill in m_fileList*/
-		bool ParseAFile(const CString& fileName);
+        /** Called when the thread is stopping */
+        virtual int ExitInstance();
 
-		/**export the  file list to UploadFileList.txt*/
-		void ExportList();
+        /** Called when there's nothing else to do. */
+        virtual BOOL OnIdle(LONG lCount);
 
-		// ----------------------------------------------------------------------
-		// --------------------- PUBLIC VARIABLES --------------------------------
-		// ----------------------------------------------------------------------
+        /**set the current directory to volcanoName\yyyy.mm.dd*/
+        void SetRemoteDirectory(const CString &volcanoName);
 
-		typedef struct UploadFile{
-			CString    fileName;      // <-- the name of the file to upload
-			int        volcanoIndex;  // <-- the volcano to which the file belongs
-			bool       deleteFile;    // <-- true if the file should be deleted when successfully uploaded
-		}UploadFile;
+        /**parse a file by \n, fill in m_fileList*/
+        bool ParseAFile(const CString& fileName);
 
-		/** List to stored file names that should be uploaded*/
-		CList<UploadFile, UploadFile&> m_fileList;
+        /**export the  file list to UploadFileList.txt*/
+        void ExportList();
 
-		/** Error message */
-		CString m_ErrorMsg;
+        // ----------------------------------------------------------------------
+        // --------------------- PUBLIC VARIABLES --------------------------------
+        // ----------------------------------------------------------------------
 
-		/** log file (with path) to record file list */
-		CString m_listLogFile;
-		CString m_listLogFile_Temp;
+        typedef struct UploadFile {
+            CString    fileName;      // <-- the name of the file to upload
+            int        volcanoIndex;  // <-- the volcano to which the file belongs
+            bool       deleteFile;    // <-- true if the file should be deleted when successfully uploaded
+        }UploadFile;
 
-		/** The ftp-communciation handler */
+        /** List to stored file names that should be uploaded*/
+        CList<UploadFile, UploadFile&> m_fileList;
+
+        /** Error message */
+        CString m_ErrorMsg;
+
+        /** log file (with path) to record file list */
+        CString m_listLogFile;
+        CString m_listLogFile_Temp;
+
+        /** The ftp-communciation handler */
         CSFTPCom* m_ftp = nullptr;
 
-		/** Timer */
-		UINT_PTR m_nTimerID;
+        /** Timer */
+        UINT_PTR m_nTimerID;
 
-		/** True if this thread has initialized properly and read in the 
-				old list of files to upload. */
-		bool m_hasReadInFileList;
+        /** True if this thread has initialized properly and read in the
+                old list of files to upload. */
+        bool m_hasReadInFileList;
 
-		/** The time of the last exporting of the file-list. This is 
-				to prevent the program from writing too often to disk. */
-		time_t m_lastExportTime;
+        /** The time of the last exporting of the file-list. This is
+                to prevent the program from writing too often to disk. */
+        time_t m_lastExportTime;
 
-		/** The statistics of the upload-link */
-		CLinkStatistics	m_linkStatistics;
-	};
+        /** The statistics of the upload-link */
+        CLinkStatistics	m_linkStatistics;
+    };
 }
