@@ -101,7 +101,7 @@ void ColumnHistoryDlg::InitPlot() {
 	m_plot.SetGridColor(RGB(255, 255, 255));
 	m_plot.SetBackgroundColor(RGB(0, 0, 0));
 	m_plot.SetCircleColor(RGB(255,0,0));
-	m_plot.SetCircleRadius(1);
+	m_plot.SetCircleRadius(2);
 
 	SetRange();
 }
@@ -130,7 +130,7 @@ void ColumnHistoryDlg::Init10DayPlot() {
 	m_plot10.SetGridColor(RGB(255, 255, 255));
 	m_plot10.SetBackgroundColor(RGB(0, 0, 0));
 	m_plot10.SetCircleColor(RGB(255, 0, 0));
-	m_plot10.SetCircleRadius(1);
+	m_plot10.SetCircleRadius(2);
 }
 
 void ColumnHistoryDlg::Init30DayPlot() {
@@ -157,7 +157,7 @@ void ColumnHistoryDlg::Init30DayPlot() {
 	m_plot30.SetGridColor(RGB(255, 255, 255));
 	m_plot30.SetBackgroundColor(RGB(0, 0, 0));
 	m_plot30.SetCircleColor(RGB(255, 0, 0));
-	m_plot30.SetCircleRadius(1);
+	m_plot30.SetCircleRadius(2);
 
 }
 void ColumnHistoryDlg::DrawPlot() {
