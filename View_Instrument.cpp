@@ -381,7 +381,7 @@ void CView_Instrument::DrawLinkSpeedGraph(){
 	}
 	maxDataRate /= divisor;
 	//m_linkSpeedGraph.SetRangeY(0, maxDataRate, 0);
-	SetRange(m_linkSpeedGraph, maxDataRate);
+	SetRange(m_linkSpeedGraph, maxDataRate + 5);
 
 	// loop through all spectrometers
 	pos = m_serialLegend.GetHeadPosition();
