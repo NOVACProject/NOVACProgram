@@ -73,7 +73,7 @@ private:
 
 	/** Holds a list of the information we have on the data-links */
 	CLinkInfo	m_dataLinkInformation[MAX_NUMBER_OF_SCANNING_INSTRUMENTS][MAX_HISTORY];
-	int				m_nDataLinkInformation[MAX_NUMBER_OF_SCANNING_INSTRUMENTS];
+	int				m_dataLinkIndex[MAX_NUMBER_OF_SCANNING_INSTRUMENTS];
 
 	/** Holds the information about the FTP-uploading data link */
 	CLinkInfo m_ftpServerLinkInformation[MAX_HISTORY];

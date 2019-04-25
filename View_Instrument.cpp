@@ -109,60 +109,64 @@ BOOL CView_Instrument::OnInitDialog()
 
 	// Create the graphs
 	// 1. The battery voltage graph
-	m_batteryGraph.SetXUnits(m_common.GetString(AXIS_LOCALTIME));
+	m_batteryGraph.SetXUnits(m_common.GetString(AXIS_UTCTIME));
 	m_batteryGraph.HideXScale();
 	m_batteryGraph.Create(WS_VISIBLE | WS_CHILD, batteryGraphRect, this);
 	m_batteryGraph.SetFontHeight((int)(14 - 0.3*nSpectrometers));
-	m_batteryGraph.SetXAxisNumberFormat(FORMAT_TIME);
+	m_batteryGraph.SetXAxisNumberFormat(FORMAT_DATETIME);
 	m_batteryGraph.EnableGridLinesX(true);
 	m_batteryGraph.SetYUnits("Battery [V]");
 	m_batteryGraph.SetLineWidth(2);               // Increases the line width to 2 pixels
 	m_batteryGraph.SetMinimumRangeY(1.0);
 	m_batteryGraph.SetGridColor(RGB(255, 255, 255));
 	m_batteryGraph.SetBackgroundColor(RGB(0, 0, 0));
-	m_batteryGraph.SetRange(0, 24*3600-1, 0, 0, 20, 0);
+	//m_batteryGraph.SetRange(0, 24*3600-1, 0, 0, 20, 0);
 	m_batteryGraph.HideXScale();
+	SetRange(m_batteryGraph, 20);
 
 	// 2. The temperature graph
-	m_temperatureGraph.SetXUnits(m_common.GetString(AXIS_LOCALTIME));
+	m_temperatureGraph.SetXUnits(m_common.GetString(AXIS_UTCTIME));
 	m_temperatureGraph.HideXScale();
 	m_temperatureGraph.Create(WS_VISIBLE | WS_CHILD, tempGraphRect, this);
 	m_temperatureGraph.SetFontHeight((int)(14 - 0.3*nSpectrometers));
-	m_temperatureGraph.SetXAxisNumberFormat(FORMAT_TIME);
+	m_temperatureGraph.SetXAxisNumberFormat(FORMAT_DATETIME);
 	m_temperatureGraph.EnableGridLinesX(true);
 	m_temperatureGraph.SetYUnits("Temp [°C]");
 	m_temperatureGraph.SetLineWidth(2);               // Increases the line width to 2 pixels
 	m_temperatureGraph.SetMinimumRangeY(1.0);
 	m_temperatureGraph.SetGridColor(RGB(255, 255, 255));
 	m_temperatureGraph.SetBackgroundColor(RGB(0, 0, 0));
-	m_temperatureGraph.SetRange(0, 24*3600-1, 0, 0, 60, 0);
+	//m_temperatureGraph.SetRange(0, 24*3600-1, 0, 0, 60, 0);
+	SetRange(m_temperatureGraph, 60);
 
 	// 3. The exposure time graph
-	m_expTimeGraph.SetXUnits(m_common.GetString(AXIS_LOCALTIME));
+	m_expTimeGraph.SetXUnits(m_common.GetString(AXIS_UTCTIME));
 	m_expTimeGraph.HideXScale();
 	m_expTimeGraph.Create(WS_VISIBLE | WS_CHILD, expTimeGraphRect, this);
 	m_expTimeGraph.SetFontHeight((int)(14 - 0.3*nSpectrometers));
-	m_expTimeGraph.SetXAxisNumberFormat(FORMAT_TIME);
+	m_expTimeGraph.SetXAxisNumberFormat(FORMAT_DATETIME);
 	m_expTimeGraph.EnableGridLinesX(true);
 	m_expTimeGraph.SetYUnits("Exp. time [ms]");
 	m_expTimeGraph.SetLineWidth(2);               // Increases the line width to 2 pixels
 	m_expTimeGraph.SetMinimumRangeY(1.0);
 	m_expTimeGraph.SetGridColor(RGB(255, 255, 255));
 	m_expTimeGraph.SetBackgroundColor(RGB(0, 0, 0));
-	m_expTimeGraph.SetRange(0, 24*3600-1, 0, 0, 1000, 0);
+	//m_expTimeGraph.SetRange(0, 24*3600-1, 0, 0, 1000, 0);
+	SetRange(m_expTimeGraph, 1000);
 
 	// 4. The data-link speed graph
-	m_linkSpeedGraph.SetXUnits(m_common.GetString(AXIS_LOCALTIME));
+	m_linkSpeedGraph.SetXUnits(m_common.GetString(AXIS_UTCTIME));
 	m_linkSpeedGraph.Create(WS_VISIBLE | WS_CHILD, linkSpeedGraphRect, this);
 	m_linkSpeedGraph.SetFontHeight((int)(14 - 0.3*nSpectrometers));
-	m_linkSpeedGraph.SetXAxisNumberFormat(FORMAT_TIME);
+	m_linkSpeedGraph.SetXAxisNumberFormat(FORMAT_DATETIME);
 	m_linkSpeedGraph.EnableGridLinesX(true);
 	m_linkSpeedGraph.SetYUnits("Link [kb/s]");
 	m_linkSpeedGraph.SetLineWidth(2);               // Increases the line width to 2 pixels
 	m_linkSpeedGraph.SetMinimumRangeY(1.0);
 	m_linkSpeedGraph.SetGridColor(RGB(255, 255, 255));
 	m_linkSpeedGraph.SetBackgroundColor(RGB(0, 0, 0));
-	m_linkSpeedGraph.SetRange(0, 24*3600-1, 0, 0, 1000, 0);
+	//m_linkSpeedGraph.SetRange(0, 24*3600-1, 0, 0, 1000, 0);
+	SetRange(m_linkSpeedGraph, 1000);
 
 	// if there are no spectrometers then we don't have anything more to do
 	if(nSpectrometers == 0)
@@ -248,6 +252,7 @@ void CView_Instrument::DrawTempGraph(){
 	// Clear the plot
 	m_temperatureGraph.CleanPlot();
 
+	SetRange(m_temperatureGraph, 60);
 	// loop through all double-spectrometers
 	if(m_serialLegend.GetCount() == 0)
 		return;
@@ -281,6 +286,7 @@ void CView_Instrument::DrawBatteryGraph(){
 
 	// Clear the plot
 	m_batteryGraph.CleanPlot();
+	SetRange(m_batteryGraph, 20);
 
 	// loop through all double-spectrometers
 	POSITION pos = m_serialLegend.GetHeadPosition();
@@ -313,6 +319,7 @@ void CView_Instrument::DrawExpTimeGraph(){
 
 	// Clear the plot
 	m_expTimeGraph.CleanPlot();
+	SetRange(m_expTimeGraph, 1000);
 
 	// loop through all double-spectrometers
 	POSITION pos = m_serialLegend.GetHeadPosition();
@@ -373,7 +380,8 @@ void CView_Instrument::DrawLinkSpeedGraph(){
 		m_linkSpeedGraph.SetYUnits("Link [kB/s]");
 	}
 	maxDataRate /= divisor;
-	m_linkSpeedGraph.SetRangeY(0, maxDataRate, 0);
+	//m_linkSpeedGraph.SetRangeY(0, maxDataRate, 0);
+	SetRange(m_linkSpeedGraph, maxDataRate);
 
 	// loop through all spectrometers
 	pos = m_serialLegend.GetHeadPosition();
@@ -403,4 +411,14 @@ void CView_Instrument::DrawLinkSpeedGraph(){
 
 	delete[] timeBuffer;
 	delete[] linkSpeed;
+}
+
+void CView_Instrument::SetRange(Graph::CGraphCtrl &graph, int maxy) {
+	struct tm *tm;
+	time_t t;
+	time(&t);
+	tm = gmtime(&t);
+	time_t endtime = t;
+	time_t starttime = endtime - 86400;
+	graph.SetRange(starttime, endtime, 0, 0, maxy, 0);
 }
