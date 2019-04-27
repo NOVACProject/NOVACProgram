@@ -184,24 +184,25 @@ UINT DownloadFileWithFTP(LPVOID pParam)
     time(&startTime);
     char disk = dlg->m_diskName[0];
     if (disk == 'B') {
-        if (dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.IPAddress,
+        if (dlg->m_ftpController->Connect(
+            dlg->m_ftpController->m_ftpInfo.hostName,
             dlg->m_ftpController->m_ftpInfo.userName,
             dlg->m_ftpController->m_ftpInfo.password,
             dlg->m_ftpController->m_ftpInfo.timeout) != 1)
         {
-            msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.IPAddress);
+            msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.hostName);
             dlg->m_fileStatusEdit.SetWindowText(msg);
             dlg->m_ftpController->Disconnect();
             return 0;
         }
     }
     else {
-        if (dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.IPAddress,
+        if (dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.hostName,
             dlg->m_ftpController->m_ftpInfo.adminUserName,
             dlg->m_ftpController->m_ftpInfo.adminPassword,
             dlg->m_ftpController->m_ftpInfo.timeout) != 1)
         {
-            msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.IPAddress);
+            msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.hostName);
             dlg->m_fileStatusEdit.SetWindowText(msg);
             dlg->m_ftpController->Disconnect();
             return 0;
@@ -223,7 +224,7 @@ UINT DownloadFileWithFTP(LPVOID pParam)
         fileName.Format("%s", dlg->m_remoteFileName);
     }
     fileFullName.Format("%s%s", (LPCSTR)dlg->m_storagePath, (LPCSTR)fileName);
-    msg.Format("Begin to download %s from %s", (LPCSTR)fileName, (LPCSTR)dlg->m_ftpController->m_ftpInfo.IPAddress);
+    msg.Format("Begin to download %s from %s", (LPCSTR)fileName, (LPCSTR)dlg->m_ftpController->m_ftpInfo.hostName);
     ShowMessage(msg);
 
     if (!dlg->m_ftpController->DownloadAFile(fileName, fileFullName))
@@ -349,12 +350,12 @@ UINT DownloadFolderWithFTP(LPVOID pParam)
     if (list == NULL)
         return 1; // ERROR...
 
-    if (dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.IPAddress,
+    if (dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.hostName,
         dlg->m_ftpController->m_ftpInfo.userName,
         dlg->m_ftpController->m_ftpInfo.password,
         dlg->m_ftpController->m_ftpInfo.timeout) != 1)
     {
-        msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.IPAddress);
+        msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.hostName);
         dlg->m_fileStatusEdit.SetWindowText(msg);
         dlg->m_ftpController->Disconnect();
         return false;
@@ -372,7 +373,7 @@ UINT DownloadFolderWithFTP(LPVOID pParam)
         fileName.Format("%s.%s", (LPCSTR)folderItem->fileName, (LPCSTR)folderItem->fileSubfix);
         fileFullName.Format("%s%s", (LPCSTR)dlg->m_storagePath, (LPCSTR)fileName);
 
-        msg.Format("Begin to download %s from %s", (LPCSTR)fileName, (LPCSTR)dlg->m_ftpController->m_ftpInfo.IPAddress);
+        msg.Format("Begin to download %s from %s", (LPCSTR)fileName, (LPCSTR)dlg->m_ftpController->m_ftpInfo.hostName);
         ShowMessage(msg);
 
         // Download the file
@@ -415,24 +416,24 @@ UINT ViewFileByFTP(LPVOID pParam)
     char disk = dlg->m_diskName[0];
     time(&startTime);
     if (disk == 'B') {
-        if (dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.IPAddress,
+        if (dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.hostName,
             dlg->m_ftpController->m_ftpInfo.userName,
             dlg->m_ftpController->m_ftpInfo.password,
             dlg->m_ftpController->m_ftpInfo.timeout) != 1)
         {
-            msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.IPAddress);
+            msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.hostName);
             dlg->m_fileStatusEdit.SetWindowText(msg);
             dlg->m_ftpController->Disconnect();
             return 0;
         }
     }
     else {
-        if (dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.IPAddress,
+        if (dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.hostName,
             dlg->m_ftpController->m_ftpInfo.adminUserName,
             dlg->m_ftpController->m_ftpInfo.adminPassword,
             dlg->m_ftpController->m_ftpInfo.timeout) != 1)
         {
-            msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.IPAddress);
+            msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.hostName);
             dlg->m_fileStatusEdit.SetWindowText(msg);
             dlg->m_ftpController->Disconnect();
             return 0;
@@ -453,7 +454,7 @@ UINT ViewFileByFTP(LPVOID pParam)
         fileName.Format("%s", dlg->m_remoteFileName);
     }
     fullFileName.Format("%s%s", (LPCSTR)dlg->m_storagePath, (LPCSTR)fileName);
-    msg.Format("Begin to download %s from %s", (LPCSTR)fileName, (LPCSTR)dlg->m_ftpController->m_ftpInfo.IPAddress);
+    msg.Format("Begin to download %s from %s", (LPCSTR)fileName, (LPCSTR)dlg->m_ftpController->m_ftpInfo.hostName);
     ShowMessage(msg);
 
     if (!dlg->m_ftpController->DownloadAFile(fileName, fullFileName))
@@ -619,24 +620,24 @@ UINT UpdateFileWithFTP(LPVOID pParam)
     //connect with ftp server
     char disk = dlg->m_diskName[0];
     if (disk == 'B') {
-        if (dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.IPAddress,
+        if (dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.hostName,
             dlg->m_ftpController->m_ftpInfo.userName,
             dlg->m_ftpController->m_ftpInfo.password,
             dlg->m_ftpController->m_ftpInfo.timeout) != 1)
         {
-            msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.IPAddress);
+            msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.hostName);
             dlg->m_fileStatusEdit.SetWindowText(msg);
             dlg->m_ftpController->Disconnect();
             return 0;
         }
     }
     else {
-        if (dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.IPAddress,
+        if (dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.hostName,
             dlg->m_ftpController->m_ftpInfo.adminUserName,
             dlg->m_ftpController->m_ftpInfo.adminPassword,
             dlg->m_ftpController->m_ftpInfo.timeout) != 1)
         {
-            msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.IPAddress);
+            msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.hostName);
             dlg->m_fileStatusEdit.SetWindowText(msg);
             dlg->m_ftpController->Disconnect();
             return 0;
@@ -661,24 +662,24 @@ UINT UploadFileWithFTP(LPVOID pParam)
     //connect with ftp server
     char disk = dlg->m_diskName[0];
     if (disk == 'B') {
-        if (dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.IPAddress,
+        if (dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.hostName,
             dlg->m_ftpController->m_ftpInfo.userName,
             dlg->m_ftpController->m_ftpInfo.password,
             dlg->m_ftpController->m_ftpInfo.timeout) != 1)
         {
-            msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.IPAddress);
+            msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.hostName);
             dlg->m_fileStatusEdit.SetWindowText(msg);
             dlg->m_ftpController->Disconnect();
             return 0;
         }
     }
     else {
-        if (dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.IPAddress,
+        if (dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.hostName,
             dlg->m_ftpController->m_ftpInfo.adminUserName,
             dlg->m_ftpController->m_ftpInfo.adminPassword,
             dlg->m_ftpController->m_ftpInfo.timeout) != 1)
         {
-            msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.IPAddress);
+            msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.hostName);
             dlg->m_fileStatusEdit.SetWindowText(msg);
             dlg->m_ftpController->Disconnect();
             return 0;
@@ -723,24 +724,24 @@ UINT DeleteFileByFTP(LPVOID pParam)
 
     char disk = dlg->m_diskName[0];
     if (disk == 'B') {
-        if (dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.IPAddress,
+        if (dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.hostName,
             dlg->m_ftpController->m_ftpInfo.userName,
             dlg->m_ftpController->m_ftpInfo.password,
             dlg->m_ftpController->m_ftpInfo.timeout) != 1)
         {
-            msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.IPAddress);
+            msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.hostName);
             dlg->m_fileStatusEdit.SetWindowText(msg);
             dlg->m_ftpController->Disconnect();
             return 0;
         }
     }
     else {
-        if (dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.IPAddress,
+        if (dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.hostName,
             dlg->m_ftpController->m_ftpInfo.adminUserName,
             dlg->m_ftpController->m_ftpInfo.adminPassword,
             dlg->m_ftpController->m_ftpInfo.timeout) != 1)
         {
-            msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.IPAddress);
+            msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.hostName);
             dlg->m_fileStatusEdit.SetWindowText(msg);
             dlg->m_ftpController->Disconnect();
             return 0;
@@ -748,7 +749,7 @@ UINT DeleteFileByFTP(LPVOID pParam)
     }
     if (!dlg->m_ftpController->DeleteRemoteFile(remoteFileName))
     {
-        msg.Format("%s can not be deleted from %s", (LPCSTR)dlg->m_remoteFileName, (LPCSTR)dlg->m_ftpController->m_ftpInfo.IPAddress);
+        msg.Format("%s can not be deleted from %s", (LPCSTR)dlg->m_remoteFileName, (LPCSTR)dlg->m_ftpController->m_ftpInfo.hostName);
     }
     dlg->m_ftpController->Disconnect();
     AfxBeginThread(DownloadFileListWithFTP, dlg, THREAD_PRIORITY_NORMAL, 0, 0, NULL);

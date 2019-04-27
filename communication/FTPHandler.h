@@ -12,13 +12,13 @@ namespace Communication
 {
     struct FTPInformation
     {
-        CString IPAddress;
+        CString hostName; // ip-address or host-name
         CString userName;
         CString password;
         CString adminUserName;
         CString adminPassword;
         long    port;
-        int		timeout;
+        int     timeout;
     };
 
     /** <b>CFTPHandler</b> class handles one link of downloading and uploading file
@@ -36,8 +36,8 @@ namespace Communication
         //-------------------------------------------//
 
         /**set ftp information*/
-        void SetFTPInfo(int mainIndex, CString& IP, CString& userName, CString &pwd, int timeOut, long portNumber = 5551);
-        void SetFTPInfo(int mainIndex, CString& IP, CString& userName, CString &pwd, CString &admUserName, CString &admPwd, int timeOut, long portNumber = 5551);
+        void SetFTPInfo(int mainIndex, CString& hostName, CString& userName, CString &pwd, int timeOut, long portNumber = 5551);
+        void SetFTPInfo(int mainIndex, CString& hostName, CString& userName, CString &pwd, CString &admUserName, CString &admPwd, int timeOut, long portNumber = 5551);
 
         /**poll one instrument*/
         bool PollScanner();
@@ -140,7 +140,7 @@ namespace Communication
         CString m_spectrometerSerialID;
 
         /** The .pak-file-handler, used to check the downloaded .pak-files */
-        FileHandler::CPakFileHandler* m_pakFileHandler;
+        FileHandler::CPakFileHandler m_pakFileHandler;
 
         CString m_localFileFullPath;
         CString m_storageDirectory;
