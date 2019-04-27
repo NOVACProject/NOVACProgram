@@ -374,6 +374,7 @@
 #define IDC_EDIT_SKYINDEX               1073
 #define IDC_EDIT_ANGLE                  1073
 #define IDC_EDIT_MOTORSTEPSCOMPENSATION1 1073
+#define IDC_FTP_HOSTNAME                1073
 #define IDC_STATUSBAR                   1074
 #define IDC_EDIT_SQUEEZE_FIX            1074
 #define IDC_EDIT_SHIFT_MAX              1074

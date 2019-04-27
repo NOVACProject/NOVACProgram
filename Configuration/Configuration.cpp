@@ -42,10 +42,7 @@ CConfigurationSetting::CommunicationSetting::CommunicationSetting(){
 	radioID.Format("0");
 
 	// FTP - Settings
-	ftpIP[0]= 192;
-	ftpIP[1]= 168;
-	ftpIP[2]= 0;
-	ftpIP[3]= 1;
+    ftpHostName = "192.168.0.1";
 	ftpUserName.Format("novac");
 	ftpPassword.Format("1225");
 	ftpAdminUserName.Format("administrator");
@@ -78,10 +75,7 @@ void CConfigurationSetting::CommunicationSetting::Clear(){
 	radioID.Format("0");
 
 	// FTP - Settings
-	ftpIP[0]= 192;
-	ftpIP[1]= 168;
-	ftpIP[2]= 0;
-	ftpIP[3]= 1;
+    ftpHostName = "192.168.0.1";
 	ftpUserName.Format("novac");
 	ftpPassword.Format("1225");
 	ftpAdminUserName.Format("administrator");
@@ -236,10 +230,7 @@ CConfigurationSetting::CommunicationSetting &CConfigurationSetting::Communicatio
 	radioID.Format("%s", (LPCSTR)comm2.radioID);
 
 	// FTP - Settings
-	ftpIP[0] = comm2.ftpIP[0];
-	ftpIP[1] = comm2.ftpIP[1];
-	ftpIP[2] = comm2.ftpIP[2];
-	ftpIP[3] = comm2.ftpIP[3];
+    ftpHostName.Format("%s", (LPCSTR)comm2.ftpHostName);
 	ftpUserName.Format("%s", (LPCSTR)comm2.ftpUserName);
 	ftpPassword.Format("%s", (LPCSTR)comm2.ftpPassword);
 

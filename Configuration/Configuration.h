@@ -53,8 +53,8 @@ public:
 
 		// ----------- The settings for FTP communication --------------
 
-		/** The IP-number of the scanning instrument */
-		BYTE ftpIP[4];
+		/** The IP-number / Host name of the scanning instrument */
+        CString ftpHostName;
 
 		/** The username at the scanning instrument */
 		CString ftpUserName;
