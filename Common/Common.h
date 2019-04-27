@@ -389,9 +389,6 @@ public:
 	/** Returns the current second */
 	static int   GetSecond();
 
-	/** Converts a time, given in seconds since midnight to hour, minutes and seconds */
-	static void		ConvertToHMS(const int time, int &hours, int &minutes, int &seconds);
-
 	/** pretty prints the current date into the string 'txt' */
 	static void GetDateText(CString &txt);
 

@@ -23,14 +23,14 @@ namespace Communication
 
         virtual bool SetCurDirectory(CString curDirName) override;
 
+        virtual bool DownloadAFile(LPCTSTR remoteFile, LPCTSTR fileFullName) override;
+
         // ------------------------ Implementation of FTP data upload and download ------------------------
 
         /** Sends a local file to the FTP-server, this will skip the upload if the remove file exists.
             @return 0 on success
             @return 1 if the file already exists. */
         int UploadFile(LPCTSTR localFile, LPCTSTR remoteFile);
-
-        BOOL DownloadAFile(LPCTSTR remoteFile, LPCTSTR fileFullName);
 
         int CreateDirectory(LPCTSTR remoteDirectory);
 

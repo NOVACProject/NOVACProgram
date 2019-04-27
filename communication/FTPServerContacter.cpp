@@ -1,7 +1,6 @@
 #include "StdAfx.h"
 #include "FTPServerContacter.h"
-#include "SFTPCom.h"
-#include "FTPCom.h"
+#include "IFTPDataUpload.h"
 #include "../Common/Common.h"
 #include "../Configuration/configuration.h"
 #include "../VolcanoInfo.h"
@@ -182,14 +181,7 @@ BOOL CFTPServerContacter::OnIdle(LONG /*lCount*/) {
     // upload file since the latest
     if(!m_ftp)
     {
-        if (0)
-        {
-            m_ftp.reset(new CSFTPCom());
-        }
-        else
-        {
-            m_ftp.reset(new CFTPCom());
-        }
+        m_ftp = IFTPDataUpload::Create(g_settings.ftpSetting.protocol);
     }
 
     if (m_ftp->Connect(g_settings.ftpSetting.ftpAddress, g_settings.ftpSetting.userName, g_settings.ftpSetting.password, 60, TRUE) == 1)
@@ -224,7 +216,7 @@ BOOL CFTPServerContacter::OnIdle(LONG /*lCount*/) {
             Common::GetFileName(remoteFile);
 
             // Get the size of the file, to be able to calculate the size of the link
-            double fileSize = Common::RetrieveFileSize(localFile) / 1024.0;
+            const double fileSize_kB = Common::RetrieveFileSize(localFile) / 1024.0;
 
             // Make sure that no-one else is trying to access this file...
             CSingleLock singleLock(&g_evalLogCritSect);
@@ -250,9 +242,9 @@ BOOL CFTPServerContacter::OnIdle(LONG /*lCount*/) {
                 double elapsedTime2 = ((double)timingStop.LowPart - (double)timingStart.LowPart) / (double)lpFrequency.LowPart;
 
                 if (useHighResolutionCounter)
-                    linkSpeed = fileSize / elapsedTime;
+                    linkSpeed = fileSize_kB / elapsedTime;
                 else
-                    linkSpeed = fileSize / elapsedTime2;
+                    linkSpeed = fileSize_kB / elapsedTime2;
 
                 m_linkStatistics.AppendDownloadSpeed(linkSpeed);
 
@@ -264,7 +256,7 @@ BOOL CFTPServerContacter::OnIdle(LONG /*lCount*/) {
                 m_fileList.RemoveTail();
 
                 // Tell the world!
-                message.Format("Finished uploading file %s to FTP-Server @ %.1lf kb/s", (LPCSTR)remoteFile, linkSpeed);
+                message.Format("Finished uploading file %s to FTP-Server @ %.1lf kB/s", (LPCSTR)remoteFile, linkSpeed);
                 ShowMessage(message);
 
                 pView->PostMessage(WM_FINISH_UPLOAD, (WPARAM)linkSpeed);

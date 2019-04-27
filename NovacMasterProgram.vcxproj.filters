@@ -573,6 +573,9 @@
     <ClCompile Include="communication\SFTPCom.cpp">
       <Filter>Source Files\Communication</Filter>
     </ClCompile>
+    <ClCompile Include="communication\IFTPDataUpload.cpp">
+      <Filter>Source Files\Communication</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Configuration\AdvancedFTPUploadSettings.h">

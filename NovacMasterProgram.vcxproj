@@ -73,6 +73,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <AdditionalIncludeDirectories>$(SolutionDir)\curl\win32\include\;$(SolutionDir)\SpectralEvaluation\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -157,6 +158,7 @@
     <ClCompile Include="Common\XMLFileReader.cpp" />
     <ClCompile Include="CommunicationDataStorage.cpp" />
     <ClCompile Include="communication\CommunicationController.cpp" />
+    <ClCompile Include="communication\IFTPDataUpload.cpp" />
     <ClCompile Include="communication\SFTPCom.cpp" />
     <ClCompile Include="communication\FTPCom.cpp" />
     <ClCompile Include="communication\FTPHandler.cpp" />

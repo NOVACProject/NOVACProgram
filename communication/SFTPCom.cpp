@@ -270,7 +270,7 @@ namespace Communication
     {
         if (nullptr == m_FtpConnection || nullptr == m_FtpConnection->curlHandle)
         {
-            ShowMessage("ERROR: Attempted to update file using SFTP while not connected!");
+            ShowMessage("ERROR: Attempted to download file using SFTP while not connected!");
             return 0;
         }
 

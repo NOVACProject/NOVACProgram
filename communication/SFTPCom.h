@@ -23,6 +23,8 @@ namespace Communication
 
         virtual bool SetCurDirectory(CString curDirName) override { return EnterFolder(curDirName); }
 
+        virtual bool DownloadAFile(LPCTSTR remoteFile, LPCTSTR fileFullName) override;
+
 
         // ------------------------ Implementation of SFTP data upload ------------------------
 
@@ -30,12 +32,6 @@ namespace Communication
             @return 0 on success.
             @return 1 if the upload failed for some reason. */
         int UploadFile(LPCTSTR localFile, LPCTSTR remoteFile);
-
-        /** Downloads a remote file.
-            @param remoteFile the name of the remote file to download, in the current remote directory.
-            @param fillFileName the local file name where to save the dta, this must be a full path. 
-            @reutrn 0 on success. */
-        bool DownloadAFile(LPCTSTR remoteFile, LPCTSTR fileFullName);
 
         /** Searches for a file in the current folder on the SFTP server.
             @return true if the file exists. */

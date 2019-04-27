@@ -130,15 +130,16 @@ int CFTPCom::UpdateRemoteFile(LPCTSTR localFile, LPCTSTR remoteFile)
     result = m_FtpConnection->PutFile(localFile, remoteFile);
     return result;
 }
-BOOL CFTPCom::DownloadAFile(LPCTSTR remoteFile, LPCTSTR fileFullName)
+
+bool CFTPCom::DownloadAFile(LPCTSTR remoteFile, LPCTSTR fileFullName)
 {
-    BOOL result = FALSE;
+    bool result = false;
     CString msg;
 
     // Check that we're connected...
     if (m_FtpConnection == nullptr) {
         ShowMessage("ERROR: Attempted to upload file using FTP while not connected!");
-        return FALSE;
+        return false;
     }
 
     msg.Format("Trying to download %s", fileFullName);
@@ -147,7 +148,8 @@ BOOL CFTPCom::DownloadAFile(LPCTSTR remoteFile, LPCTSTR fileFullName)
     try
     {
         // Try to download the file
-        result = m_FtpConnection->GetFile(remoteFile, fileFullName, FALSE);
+        BOOL r = m_FtpConnection->GetFile(remoteFile, fileFullName, FALSE);
+        result = (r == TRUE);
 
         if (0 == result) { // this means something went wrong
             int ftpError = GetLastError();
