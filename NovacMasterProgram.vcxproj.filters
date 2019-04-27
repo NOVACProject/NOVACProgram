@@ -1175,6 +1175,9 @@
     <ClInclude Include="communication\SFTPCom.h">
       <Filter>Header Files\Communication</Filter>
     </ClInclude>
+    <ClInclude Include="communication\IFTPDataUpload.h">
+      <Filter>Header Files\Communication</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\NOVAClogo2.ico">

@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "FTPServerContacter.h"
 #include "SFTPCom.h"
+#include "FTPCom.h"
 #include "../Common/Common.h"
 #include "../Configuration/configuration.h"
 #include "../VolcanoInfo.h"
@@ -31,7 +32,6 @@ END_MESSAGE_MAP()
 
 CFTPServerContacter::CFTPServerContacter()
 {
-    m_ftp = new CSFTPCom();
     m_listLogFile.Format("%s\\Temp\\UploadFileList.txt", (LPCSTR)g_settings.outputDirectory);
     m_listLogFile_Temp.Format("%s\\Temp\\UploadFileList_Temp.txt", (LPCSTR)g_settings.outputDirectory);
 
@@ -42,10 +42,7 @@ CFTPServerContacter::CFTPServerContacter()
 
 CFTPServerContacter::~CFTPServerContacter()
 {
-    if (m_ftp != nullptr) {
-        delete(m_ftp);
-        m_ftp = nullptr;
-    }
+    m_ftp.reset();
 
     ExportList();
 }
@@ -55,10 +52,7 @@ void CFTPServerContacter::OnQuit(WPARAM /*wp*/, LPARAM /*lp*/)
 {
     //Write log file of ftp quit. What need to be uploaded.
     //Close ftp connection
-    if (m_ftp != nullptr) {
-        delete(m_ftp);
-        m_ftp = nullptr;
-    }
+    m_ftp.reset();
 
     ExportList();
 }
@@ -186,6 +180,18 @@ BOOL CFTPServerContacter::OnIdle(LONG /*lCount*/) {
     }
 
     // upload file since the latest
+    if(!m_ftp)
+    {
+        if (0)
+        {
+            m_ftp.reset(new CSFTPCom());
+        }
+        else
+        {
+            m_ftp.reset(new CFTPCom());
+        }
+    }
+
     if (m_ftp->Connect(g_settings.ftpSetting.ftpAddress, g_settings.ftpSetting.userName, g_settings.ftpSetting.password, 60, TRUE) == 1)
     {
         while (m_fileList.GetCount() > 0)

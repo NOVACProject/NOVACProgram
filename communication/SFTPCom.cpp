@@ -76,7 +76,7 @@ namespace Communication
     };
 
     CSFTPCom::CSFTPCom()
-        : m_ErrorMsg(""), m_site("")
+        : m_site("")
     {
     }
 
@@ -140,7 +140,8 @@ namespace Communication
         returnCode = curl_easy_setopt(m_FtpConnection->curlHandle, CURLOPT_NOPROGRESS, FALSE);
         assert(returnCode == CURLE_OK);
 
-        returnCode = curl_easy_setopt(m_FtpConnection->curlHandle, CURLOPT_XFERINFOFUNCTION, libcurl_transfer_progress_callback);        assert(returnCode == CURLE_OK);
+        returnCode = curl_easy_setopt(m_FtpConnection->curlHandle, CURLOPT_XFERINFOFUNCTION, libcurl_transfer_progress_callback);
+        assert(returnCode == CURLE_OK);
 
         returnCode = curl_easy_setopt(m_FtpConnection->curlHandle, CURLOPT_VERBOSE, 1L);
         assert(returnCode == CURLE_OK);
@@ -336,7 +337,7 @@ namespace Communication
         }
     }
 
-    int CSFTPCom::CreateDirectory(LPCTSTR remoteDirectory)
+    int CSFTPCom::CreateDirectory(LPCTSTR /*remoteDirectory*/)
     {
         // This doesn't work here. The paths are created as files are updated.
         return 1;
@@ -409,13 +410,7 @@ namespace Communication
 
         return (GetFileSize(remoteFile) > 0);
     }
-
-    // @return 0 if fail...
-    bool CSFTPCom::DeleteFolder(const CString& folder)
-    {
-        return 1;
-    }
-
+    
     bool CSFTPCom::EnterFolder(CString folder)
     {
         if (0 == strcmp(folder, ".."))

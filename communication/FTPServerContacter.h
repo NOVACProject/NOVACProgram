@@ -1,7 +1,11 @@
 #pragma once
+
 #include <afxtempl.h>
+#include <memory>
+
 #include "../Common/Common.h"
 #include "LinkStatistics.h"
+#include "IFTPDataUpload.h"
 
 namespace Communication
 {
@@ -9,8 +13,6 @@ namespace Communication
         int   volcanoIndex; // the index of the volcano to upload to...
         bool  deleteFile;   // true if the file shall be deleted once it is uploaded
     };
-
-    class CSFTPCom;
 
     /** The class CFTPServerContacter is responsible for the uploading of
             spectra and results to the data-server. 
@@ -82,7 +84,7 @@ namespace Communication
         CString m_listLogFile_Temp;
 
         /** The ftp-communciation handler */
-        CSFTPCom* m_ftp = nullptr;
+        std::unique_ptr<IFTPDataUpload> m_ftp;
 
         /** Timer */
         UINT_PTR m_nTimerID;

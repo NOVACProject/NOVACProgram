@@ -22,7 +22,7 @@ namespace Communication
 
 	/** <b>CFTPHandler</b> class handles one link of downloading and uploading file 
 	*to the remote PC */
-	class CFTPHandler :
+	class CFTPHandler : 
 		public CFTPCom
 	{
 	public:

@@ -20,7 +20,7 @@ CFTPCom::~CFTPCom(void)
 //return 2 - ftp address parsing problem
 //return 3 - can not connect to internet
 //return 4 - ftp exception
-int CFTPCom::Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, int timeout, BOOL mode)
+int CFTPCom::Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, int timeout, bool mode)
 {
 
     INTERNET_PORT  port = 21;
@@ -72,7 +72,8 @@ int CFTPCom::Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, int t
             m_InternetSession->SetOption(INTERNET_OPTION_RECEIVE_TIMEOUT, timeout * 1000);
             m_InternetSession->SetOption(INTERNET_OPTION_SEND_TIMEOUT, timeout * 1000);
 
-            m_FtpConnection = m_InternetSession->GetFtpConnection(siteName, userName, password, 21, mode);
+            BOOL bPassiveMode = (mode) ? TRUE : FALSE;
+            m_FtpConnection = m_InternetSession->GetFtpConnection(siteName, userName, password, 21, bPassiveMode);
             m_ErrorMsg.Format("CONNECTED to FTP server: %s", siteName);
             ShowMessage(m_ErrorMsg);
             return 1;
@@ -242,15 +243,15 @@ int CFTPCom::CreateDirectory(LPCTSTR remoteDirectory)
     return result;
 }
 
-BOOL CFTPCom::SetCurDirectory(LPCTSTR curDirName)
+bool CFTPCom::SetCurDirectory(CString curDirName)
 {
     if (m_FtpConnection == nullptr) {
         ShowMessage("ERROR: Attempted to set directory using FTP while not connected!");
-        return 0; // cannot connect...
+        return false; // cannot connect...
     }
 
     BOOL result = m_FtpConnection->SetCurrentDirectory(curDirName);
-    return result;
+    return (result == TRUE);
 }
 
 int CFTPCom::FindFile(CString& fileName)

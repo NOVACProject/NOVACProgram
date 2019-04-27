@@ -251,6 +251,7 @@
     <ClCompile Include="Dialogs\ReferencePlotDlg.cpp" />
     <ClCompile Include="ScannerFileInfo.cpp" />
     <ClCompile Include="ScannerFolderInfo.cpp" />
+    <ClInclude Include="communication\IFTPDataUpload.h" />
     <ClInclude Include="communication\SFTPCom.h" />
     <ClInclude Include="Dialogs\ColumnHistoryDlg.h" />
     <ClInclude Include="Evaluation\EvaluationResultView.h" />
