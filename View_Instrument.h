@@ -88,4 +88,7 @@ protected:
 
 	/** Draws the link-speed graph */
 	void DrawLinkSpeedGraph();
+
+	/** Set x-axix range */
+	void SetRange(Graph::CGraphCtrl &graph, int maxy);
 };

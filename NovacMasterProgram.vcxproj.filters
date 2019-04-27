@@ -570,9 +570,6 @@
     <ClCompile Include="Dialogs\ColumnHistoryDlg.cpp">
       <Filter>Source Files\Dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="communication\SFTPCom.cpp">
-      <Filter>Source Files\Communication</Filter>
-    </ClCompile>
     <ClCompile Include="communication\IFTPDataUpload.cpp">
       <Filter>Source Files\Communication</Filter>
     </ClCompile>
@@ -1174,9 +1171,6 @@
     </ClInclude>
     <ClInclude Include="Dialogs\ColumnHistoryDlg.h">
       <Filter>Header Files\Dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="communication\SFTPCom.h">
-      <Filter>Header Files\Communication</Filter>
     </ClInclude>
     <ClInclude Include="communication\IFTPDataUpload.h">
       <Filter>Header Files\Communication</Filter>

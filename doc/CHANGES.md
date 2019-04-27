@@ -1,6 +1,6 @@
 NOVAC Program Release Notes
 -----------------------------------------------------
-Version 3.1 (TBD)
+Version 3.1 (May 2019)
 
 Bug fixes
 * Set time limit on how much time to spend downloading pak files from one spectrometer (#43)
@@ -9,7 +9,7 @@ Bug fixes
 New features
 * Option to show columns for current day plot to support fixed view measurements(#53)
 * Addition of column history tab (#57)
-* Show last 24 hours of data instead of just current UTC day on main tab and overview tab (#70, #78)
+* Show last 24 hours of data instead of just current UTC day on main tab, overview tab, and instrument tab (#70, #78, #82)
 * Allow configurable FTP timeout to instrument (#76)
 * FTP upload server login information is now stored in a separate ftplogin.xml file
 * Status Message area resizes when window is resized

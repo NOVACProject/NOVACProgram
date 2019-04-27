@@ -230,22 +230,12 @@ void CNovacMasterProgramView::OnInitialUpdate()
 	dateStr2.Format("%04d.%02d.%02d", year, month, mday); // yesterday
 	for(unsigned int it = 0; it < g_settings.scannerNum; ++it){
 		serialNumber.Format(g_settings.scanner[it].spec[0].serialNumber);
+		ReadFluxLog(it, dateStr, serialNumber);
+		ReadFluxLog(it, dateStr2, serialNumber);
 		// show both last 24 hour column plot on main screen and column history tab
-		if (g_settings.scanner[it].plotColumn && g_settings.scanner[it].plotColumnHistory) {
+		if (g_settings.scanner[it].plotColumn || g_settings.scanner[it].plotColumnHistory) {
 			ReadEvalLog(it, dateStr, serialNumber);
 			ReadEvalLog(it, dateStr2, serialNumber);
-		}
-		// show column history tab but flux on main screen
-		else if (!g_settings.scanner[it].plotColumn && g_settings.scanner[it].plotColumnHistory) {
-			ReadEvalLog(it, dateStr, serialNumber);
-			ReadEvalLog(it, dateStr2, serialNumber);
-			ReadFluxLog(it, dateStr, serialNumber);
-			ReadFluxLog(it, dateStr2, serialNumber);
-		}
-		// no column history tab and flux on main screen
-		else {
-			ReadFluxLog(it, dateStr, serialNumber);
-			ReadFluxLog(it, dateStr2, serialNumber);
 		}
 	}
 
@@ -1304,7 +1294,7 @@ void CNovacMasterProgramView::ScanStatusLogFile(){
 	char *szLine = new char[BUFFER_SIZE];
 	CString serial;
 	double linkSpeed;
-	int dHour, dMinute, dSecond;
+	int dYear, dMonth, dDay, dHour, dMinute, dSecond;
 	CDateTime today, timeOfDownload;
 	unsigned int nDownloadsFound = 0;
 
@@ -1335,11 +1325,14 @@ void CNovacMasterProgramView::ScanStatusLogFile(){
 				*(pt2 - 1) = '\0'; // make an end of string just before the '@'
 				serial.Format(pt1 + 6);
 				nFound += sscanf(pt2 + 2, "%lf",	&linkSpeed);
-				nFound += sscanf(&szLine[lineLength - 9], "%02d:%02d:%02d", &dHour, &dMinute, &dSecond);
-				if(nFound == 4){
-					timeOfDownload.hour		= dHour;
-					timeOfDownload.minute	= dMinute;
-					timeOfDownload.second	= dSecond;
+				nFound += sscanf(&szLine[lineLength - 21], "%04d.%02d.%02d  %02d:%02d:%02d", &dYear, &dMonth, &dDay,&dHour, &dMinute, &dSecond);
+				if (nFound == 7) {
+					timeOfDownload.year = dYear;
+					timeOfDownload.month = dMonth;
+					timeOfDownload.day = dDay;
+					timeOfDownload.hour = dHour;
+					timeOfDownload.minute = dMinute;
+					timeOfDownload.second = dSecond;
 					m_commDataStorage->AddDownloadData(serial, linkSpeed, &timeOfDownload);
 
 					++nDownloadsFound;
@@ -1355,8 +1348,11 @@ void CNovacMasterProgramView::ScanStatusLogFile(){
 			size_t lineLength	= strlen(szLine);
 			if(pt != NULL){
 				nFound += sscanf(pt + 2, "%lf",	&linkSpeed);
-				nFound += sscanf(&szLine[lineLength - 9], "%02d:%02d:%02d", &dHour, &dMinute, &dSecond);
-				if(nFound == 4){
+				nFound += sscanf(&szLine[lineLength - 21], "%04d.%02d.%02d  %02d:%02d:%02d", &dYear, &dMonth, &dDay, &dHour, &dMinute, &dSecond);
+				if(nFound == 7){
+					timeOfDownload.year = dYear;
+					timeOfDownload.month = dMonth;
+					timeOfDownload.day = dDay;
 					timeOfDownload.hour		= dHour;
 					timeOfDownload.minute	= dMinute;
 					timeOfDownload.second	= dSecond;
