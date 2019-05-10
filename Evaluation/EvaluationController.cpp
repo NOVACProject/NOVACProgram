@@ -190,6 +190,8 @@ void CEvaluationController::OnArrivedSpectra(WPARAM wp, LPARAM lp){
 		message.Format("Recieved lunar measurement from %s. Scan evaluated and stored as %s.", (LPCSTR)serialNumber, (LPCSTR)storeFileName_pak);
 	}else if(MODE_COMPOSITION == measurementMode){
 		message.Format("Recieved composition measurement from %s. Scan evaluated and stored as %s.", (LPCSTR)serialNumber, (LPCSTR)storeFileName_pak);
+	}else if (MODE_FIXED == measurementMode) {
+		message.Format("Recieved fixed angle measurement from %s. Scan evaluated and stored as %s.", (LPCSTR)serialNumber, (LPCSTR)storeFileName_pak);
 	}else{
 		if(isFullScan){
 			message.Format("Received full scan from %s. Scan evaluated and stored as %s.", (LPCSTR)serialNumber, (LPCSTR)storeFileName_pak);

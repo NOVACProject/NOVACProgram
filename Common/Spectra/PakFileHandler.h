@@ -128,6 +128,11 @@ namespace FileHandler
 		/** Saves a newly found corrupted spectrum into the appropriate folder */
 		RETURN_CODE SaveCorruptSpectrum(const CSpectrum &curSpec, int specHeaderSie, const char *spectrumHeader);
 
+		/** This function checks the contents of the file 'fileName'.
+		@return true - if the spectra are collected in a fixed angle measurement mode.
+		@return false - if the file does not contain spectra,
+				or contains spectra which are not collected in a fixed angle measurement mode. */
+		static bool IsFixedAngleMeasurement(const CString &fileName);
 
 		/** This function checks the contents of the file 'fileName'.
 				@return true - if the spectra are collected in a wind speed measurement mode. 
@@ -164,14 +169,6 @@ namespace FileHandler
 				@return false - if the file does not contain readable spectra,
 						or contains spectra which are not collected in a composition measurment - mode.*/
 		static bool IsCompositionMeasurement(const CString &fileName);
-
-		/** This function checks the contents of the file 'fileName'.
-				@return true - if the spectra are collected in a wind speed measurement mode using
-					the gothenburg type of instrument.
-				@return false - if the file does not contain spectra, 
-						or contains spectra which are not collected in a wind speed measurement mode. */
-		static bool IsWindSpeedMeasurement_Gothenburg(const CString &fileName);
-
 
 	};
 

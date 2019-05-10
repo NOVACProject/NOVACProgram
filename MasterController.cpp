@@ -229,6 +229,7 @@ void CheckForSpectraInDir(const CString &path, CList <CString, CString&> &fileLi
 	// Find all .pak-files in the specified directory
 
 	sprintf(fileToFind, "%s\\?????????.pak", (LPCTSTR)path);
+	//sprintf(fileToFind, "%s\\*.pak", (LPCTSTR)path);
 
 	// Search for the file
 	HANDLE hFile = FindFirstFile(fileToFind, &FindFileData);

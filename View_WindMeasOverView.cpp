@@ -90,7 +90,7 @@ BOOL CView_WindMeasOverView::OnInitDialog()
                        DEFAULT_PITCH|FF_SWISS, "Arial") ;
 
 	// Create the graph
-	m_graph.SetXUnits(m_common.GetString(AXIS_LOCALTIME));
+	m_graph.SetXUnits(m_common.GetString(AXIS_UTCTIME));
 	m_graph.Create(WS_VISIBLE | WS_CHILD, graphRect, this);
 	m_graph.SetFontHeight((int)(14 - 0.3*nSpectrometers));
 	m_graph.SetXAxisNumberFormat(FORMAT_TIME);

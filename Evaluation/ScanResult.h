@@ -120,6 +120,9 @@ namespace Evaluation
 		/** Returns true if this is a flux measurement */
 		bool IsFluxMeasurement();
 
+		/** Returns true if this is a fixed angle measurement */
+		bool IsFixedAngleMeasurement() const;
+
 		/** Returns true if this is a wind-speed measurement */
 		bool IsWindMeasurement() const;
 		

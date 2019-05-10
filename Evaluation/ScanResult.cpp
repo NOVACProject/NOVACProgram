@@ -717,6 +717,9 @@ MEASUREMENT_MODE CScanResult::CheckMeasurementMode() {
     else if (IsWindMeasurement()) {
         m_measurementMode = MODE_WINDSPEED;
     }
+	else if (IsFixedAngleMeasurement()) {
+		m_measurementMode = MODE_FIXED;
+	}
     else if (this->IsDirectSunMeasurement()) {
         m_measurementMode = MODE_DIRECT_SUN;
     }
@@ -788,6 +791,50 @@ bool CScanResult::IsFluxMeasurement() {
     else {
         return false;
     }
+}
+bool CScanResult::IsFixedAngleMeasurement() const {
+	double SZA, SAZ;
+	CDateTime startTime;
+
+	// Check so that the measurement is not too long
+	if (m_specNum > 52)
+		return false;
+
+	// Check if we've already checked the mode
+	if (m_measurementMode == MODE_FIXED)
+		return true;
+
+	// If the measurement started at a time when the Solar Zenith Angle 
+	//	was larger than 85 degrees then it is not a wind-speed measurement
+	this->GetStartTime(0, startTime);
+	if (SUCCESS != Common::GetSunPosition(startTime, GetLatitude(), GetLongitude(), SZA, SAZ))
+		return false; // error
+	if (fabs(SZA) >= 85.0)
+		return false;
+
+	// Check if this is a wind-measurement in the Gothenburg method...
+	int nRepetitions = 0; // <-- the number of repetitions in one position
+	float lastPos = GetScanAngle(3);
+	float lastPos2 = GetScanAngle2(3);
+
+	// It is here assumed that the measurement is a wind speed measurment
+	//	if there are more then 50 repetitions in one measurement positon
+	for (unsigned long k = 4; k < m_specNum; ++k) {
+		float pos = GetScanAngle(k);
+		float pos2 = GetScanAngle2(k);
+		if ((fabs(pos - lastPos) < 1e-2) && (fabs(pos2 - lastPos2) < 1e-2))
+			++nRepetitions;
+		else {
+			nRepetitions = 0;
+			lastPos = pos;
+			lastPos2 = pos2;
+		}
+	}
+
+	if (nRepetitions >=25 && nRepetitions < 50) {
+		return true;
+	}
+	return false;
 }
 
 bool CScanResult::IsWindMeasurement() const {
