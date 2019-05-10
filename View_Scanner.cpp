@@ -311,7 +311,7 @@ void CView_Scanner::DrawColumn(){
 	// Copy the bad-columns to the 'badColumn' - array
 	m_evalDataStorage->GetBadColumnData(m_serial, badColumn, BUFFER_SIZE);
 
-	// Check if this is a wind-measurement of if its a normal scan
+	// Check if this is a fixed-angle or wind-measurement of if its a normal scan
 	m_isTimeSeries  = fabs(maxAngle - minAngle) < 1e-2;
 	int nRepetitions   = 0;
 	for (int i = 2; i < dataLength; ++i) {
@@ -319,7 +319,7 @@ void CView_Scanner::DrawColumn(){
 			++nRepetitions;
 		}
 	}
-	if (nRepetitions > 50) {
+	if (nRepetitions > 5) {
 		m_isTimeSeries = true;
 	}
 
