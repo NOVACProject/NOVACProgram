@@ -564,7 +564,7 @@
     <ClCompile Include="Dialogs\ColumnHistoryDlg.cpp">
       <Filter>Source Files\Dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="communication\NodeControlInfo.cpp">
+    <ClCompile Include="communication\IFTPDataUpload.cpp">
       <Filter>Source Files\Communication</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1164,6 +1164,9 @@
       <Filter>Header Files\Configuration</Filter>
     </ClInclude>
     <ClInclude Include="communication\NodeControlInfo.h">
+      <Filter>Header Files\Communication</Filter>
+    </ClInclude>
+    <ClInclude Include="communication\IFTPDataUpload.h">
       <Filter>Header Files\Communication</Filter>
     </ClInclude>
   </ItemGroup>

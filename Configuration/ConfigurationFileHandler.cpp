@@ -186,17 +186,19 @@ int CConfigurationFileHandler::WriteConfigurationFile(CConfigurationSetting &con
 
     // 4a. The output directory
     if (strlen(conf->outputDirectory) > 0)
+    {
         fprintf(f, TEXT("\t<outputDir>") + conf->outputDirectory + TEXT("</outputDir>\n"));
+    }
 
     // 4b. The startup method
     str.Format("\t<startup>%d</startup>\n", conf->startup);
     fprintf(f, str);
-    // 4c. The ftp server setting - address
+    // 4c. The data-upload server setting - address
     str.Format("\t<ftpAddress>%s</ftpAddress>\n", (LPCSTR)conf->ftpSetting.ftpAddress);
     fprintf(f, str);
-    // // 4d. The ftp server setting - username
-    //str.Format("\t<ftpUserName>%s</ftpUserName>\n", (LPCSTR)conf->ftpSetting.userName);
-    //fprintf(f, str);
+    // 4d. The data-upload setting - protocol
+    str.Format("\t<ftpProtocol>%s</ftpProtocol>\n", (LPCSTR)conf->ftpSetting.protocol);
+    fprintf(f, str);
     //// 4e. The ftp server setting - password
     //str.Format("\t<ftpPassword>%s</ftpPassword>\n", (LPCSTR)conf->ftpSetting.password);
     //fprintf(f, str);
@@ -552,14 +554,12 @@ int CConfigurationFileHandler::Parse() {
             Parse_StringItem(TEXT("/ftpAddress"), conf->ftpSetting.ftpAddress);
             continue;
         }
-        //if(Equals(szToken,"ftpUserName")){
-        //	Parse_StringItem(TEXT("/ftpUserName"),conf->ftpSetting.userName);
-        //	continue;
-        //}
-        //if(Equals(szToken,"ftpPassword")){
-        //	Parse_StringItem(TEXT("/ftpPassword"),conf->ftpSetting.password);
-        //	continue;
-        //}
+        if (Equals(szToken, "ftpProtocol")) {
+            CString protocol;
+            Parse_StringItem(TEXT("/ftpProtocol"), protocol);
+            conf->ftpSetting.protocol = (Equals(protocol, "FTP")) ? "FTP" : "SFTP";
+            continue;
+        }
         if (Equals(szToken, "ftpStartTime")) {
             Parse_IntItem(TEXT("/ftpStartTime"), conf->ftpSetting.ftpStartTime);
             conf->ftpSetting.ftpStartTime = abs(conf->ftpSetting.ftpStartTime);
@@ -792,7 +792,6 @@ int CConfigurationFileHandler::Parse_Communication() {
             Parse_StringItem(TEXT("/host"), curComm->ftpHostName); // Parsing the old 'IP' configuration makes sure that the transit from using IP to using host-names is smooth
             continue;
         }
-
 
         if (Equals(szToken, "username")) {
             Parse_StringItem(TEXT("/username"), curComm->ftpUserName);

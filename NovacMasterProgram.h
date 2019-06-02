@@ -3,7 +3,7 @@
 #pragma once
 
 #ifndef __AFXWIN_H__
-	#error include 'stdafx.h' before including this file for PCH
+#error include 'stdafx.h' before including this file for PCH
 #endif
 
 #include "resource.h"       // main symbols
@@ -16,17 +16,18 @@
 class CNovacMasterProgramApp : public CWinApp
 {
 public:
-	CNovacMasterProgramApp();
+    CNovacMasterProgramApp();
 
 
-// Overrides
+    // Overrides
 public:
-	virtual BOOL InitInstance();
+    virtual BOOL InitInstance() override;
+    virtual BOOL ExitInstance() override;
 
-// Implementation
-	afx_msg void OnAppAbout();
-	DECLARE_MESSAGE_MAP()
-  virtual BOOL OnIdle(LONG lCount);
+    // Implementation
+    afx_msg void OnAppAbout();
+    DECLARE_MESSAGE_MAP()
+    virtual BOOL OnIdle(LONG lCount);
 };
 
 extern CNovacMasterProgramApp theApp;
