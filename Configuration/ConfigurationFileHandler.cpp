@@ -40,11 +40,10 @@ int CConfigurationFileHandler::ReadConfigurationFile(CConfigurationSetting &conf
 	if(!file.Open(tmp_fileName, CFile::modeRead | CFile::typeText, &exceFile)){
 		return 1;
 	}
-	this->m_File = &file;
+	this->SetFile(&file);
 
 	// 2b. Reset the current configuration
 	conf->scannerNum = 0;
-	this->nLinesRead = 0;
 
 	// 3. Parse the file
 	if(Parse()){
@@ -84,7 +83,7 @@ int CConfigurationFileHandler::ReadFtpLoginConfigurationFile(CConfigurationSetti
 	if (!file.Open(tmp_fileName, CFile::modeRead | CFile::typeText, &exceFile)) {
 		return 1;
 	}
-	this->m_File = &file;
+    this->SetFile(&file);
 
 
 	while (szToken = NextToken()) {

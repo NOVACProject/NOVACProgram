@@ -92,7 +92,7 @@ RETURN_CODE CReEvalSettingsFileHandler::ReadSettings(ReEvaluation::CReEvaluator 
   if(!file.Open(fileName, CFile::modeRead | CFile::typeText, &exceFile)){
     return FAIL;
   }
-  this->m_File = &file;
+  this->SetFile(&file);
 
 	// parse the file
 	while(szToken = NextToken()){

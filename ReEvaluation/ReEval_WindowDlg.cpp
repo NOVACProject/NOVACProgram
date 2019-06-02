@@ -412,18 +412,23 @@ void ReEvaluation::CReEval_WindowDlg::OnShowReferenceGraph()
     dlg.DoModal();
 }
 
-/** Updates the controls */
-void CReEval_WindowDlg::UpdateControls() {
+void CReEval_WindowDlg::UpdateControls()
+{
+    const CFitWindow& currentWindow = m_reeval->m_window[m_reeval->m_curWindow];
+
     // Update the shift-sky check-box
-    if (m_reeval->m_window[m_reeval->m_curWindow].fitType == FIT_HP_DIV) {
-        m_checkShiftSky.EnableWindow(FALSE);
-    }
-    else {
-        m_checkShiftSky.EnableWindow(TRUE);
-    }
+    const BOOL enableShiftSky = (m_reeval->m_window[m_reeval->m_curWindow].fitType == FIT_HP_DIV) ? FALSE : TRUE;
+    m_checkShiftSky.EnableWindow(enableShiftSky);
+
+    m_fraunhoferReferenceName.Format("%s", currentWindow.fraunhoferRef.m_path.c_str());
+
+    // Disable the 'Find Optimal Shift' check-box if there is a fraunhofer-reference present
+    const BOOL enableFindOptimalShift = (currentWindow.fraunhoferRef.m_path.size() <= 4) ? TRUE : FALSE;
+    m_checkFindOptimalShift.EnableWindow(enableFindOptimalShift);
 }
 
-void CReEval_WindowDlg::OnBrowseSolarSpectrum() {
+void CReEval_WindowDlg::OnBrowseSolarSpectrum()
+{
     CString fileName;
     Common common;
     TCHAR filter[512];
@@ -443,12 +448,9 @@ void CReEval_WindowDlg::OnBrowseSolarSpectrum() {
     m_reeval->m_window[m_reeval->m_curWindow].fraunhoferRef.m_path = std::string((LPCTSTR)fileName);
     m_fraunhoferReferenceName = fileName;
 
-    // Disable the 'Find Optimal Shift' check-box
-    m_checkFindOptimalShift.EnableWindow(FALSE);
-
     // Update the window
+    UpdateControls();
     UpdateData(FALSE);
-
 }
 
 
