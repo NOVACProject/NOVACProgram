@@ -247,7 +247,7 @@ const enum MEASUREMENT_MODE {MODE_UNKNOWN, MODE_FLUX, MODE_FIXED, MODE_WINDSPEED
 #define WM_NEW_SCAN_EVALLOG				WM_USER + 25
 
 //signal to upload cfgonce file
-#define  WM_STATUS_UPLOAD					WM_USER + 26
+#define  WM_UPLOAD_CFGONCE					WM_USER + 26
 
 //signal from one thread which is going to download pak file
 #define WM_START_DOWNLOAD					WM_USER + 27

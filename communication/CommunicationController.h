@@ -7,10 +7,10 @@
 
 #include "../NodeControlInfo.h"
 
-UINT ConnectBySerialWithTX( LPVOID pParam );
-UINT ConnectBySerialTXZM( LPVOID pParam );
-UINT ConnectByFTP( LPVOID pParam);
-void Pause(double startTime, double stopTime,int serialID);
+UINT ConnectBySerialWithTX(LPVOID pParam);
+UINT ConnectBySerialTXZM(LPVOID pParam);
+UINT ConnectByFTP(LPVOID pParam);
+void Pause(double startTime, double stopTime, int serialID);
 
 namespace Communication
 {
@@ -18,99 +18,99 @@ namespace Communication
 #define FTP_CONNECTION 2
 #define HTTP_CONNECTION 3
 
-	class CCommunicationController
-		:public CWinThread
-	{
-		class CFTPInfo
-		{
-		public: 
-			CFTPInfo();
-			~CFTPInfo();
-			CFTPInfo(CString ftpIP, CString userName, CString password);
-			//-- variables ---//
-			CString m_ftpIP;
-			CString m_userName;
-			CString m_password;
-		};
-			class CSerialInfo
-		{
-		public:
-			/**index in the total setting list*/
-			int m_mainIndex;	
-			/**sleep status, true - sleeping*/
-			bool m_sleepFlag;
-			/**medium type*/
-			int m_medium;
-			CSerialInfo(void);
-			~CSerialInfo(void);
-			CSerialInfo(int index, bool sleep,int medium);
-		};
-	public:
-		CCommunicationController(void);
-		~CCommunicationController(void);
+    class CCommunicationController
+        :public CWinThread
+    {
+        class CFTPInfo
+        {
+        public:
+            CFTPInfo();
+            ~CFTPInfo();
+            CFTPInfo(CString ftpIP, CString userName, CString password);
+            //-- variables ---//
+            CString m_ftpIP;
+            CString m_userName;
+            CString m_password;
+        };
+        class CSerialInfo
+        {
+        public:
+            /**index in the total setting list*/
+            int m_mainIndex;
+            /**sleep status, true - sleeping*/
+            bool m_sleepFlag;
+            /**medium type*/
+            int m_medium;
+            CSerialInfo(void);
+            ~CSerialInfo(void);
+            CSerialInfo(int index, bool sleep, int medium);
+        };
+    public:
+        CCommunicationController(void);
+        ~CCommunicationController(void);
 
-		DECLARE_DYNCREATE(CCommunicationController);
-		DECLARE_MESSAGE_MAP()
+        DECLARE_DYNCREATE(CCommunicationController);
+        DECLARE_MESSAGE_MAP()
 
-			
-		//---------------------------------------------//
-		//-------------public functions----------------//
-		//---------------------------------------------//
-		/** Called when the thred is starting */
-		virtual BOOL InitInstance();
 
-		/** Called when the thread is to be stopped */
-		afx_msg void OnQuit(WPARAM wp, LPARAM lp);
+        //---------------------------------------------//
+        //-------------public functions----------------//
+        //---------------------------------------------//
+        /** Called when the thred is starting */
+        virtual BOOL InitInstance();
 
-		/** Called when a special cfgOnce file will be uploaded 
-			@param wp is a pointer to a CString object telling the 
-				spectrometer ID 
-				@param lp - full path of the file to be uploaded. */
-		afx_msg void OnStatusUpload(WPARAM wp, LPARAM lp);
+        /** Called when the thread is to be stopped */
+        afx_msg void OnQuit(WPARAM wp, LPARAM lp);
 
-		/**start communication threads*/
-		void StartCommunicationThreads();
+        /** Called when a special cfgOnce file will be uploaded
+            @param wp is a pointer to a CString object telling the
+                spectrometer ID
+            @param lp - full path of the file to be uploaded. */
+        afx_msg void OnUploadCfgOnce(WPARAM wp, LPARAM lp);
 
-	public:
+        /**start communication threads*/
+        void StartCommunicationThreads();
 
-		/**set parameters for all the serial connections*/
-		void SetSerialConnections();
-		void Pause(double startTime, double stopTime,int serialID);
-	
-		void SleepAllNodes(int connectionType);
+    public:
 
-		/**start ftp connections for polling scanners*/
-		void StartFTP();
+        /**set parameters for all the serial connections*/
+        void SetSerialConnections();
+        void Pause(double startTime, double stopTime, int serialID);
 
-		//---------------------------------------------//
-		//-------------public variables----------------//
-		//---------------------------------------------//
+        void SleepAllNodes(int connectionType);
 
-		// store the indexes of serial connection in configuration.xml
-		CArray<CSerialInfo*, CSerialInfo*> m_serialList;
-		
-		// store the indexes of ftp connection in configuration.xml
-		CList<int, int> m_ftpList;
+        /**start ftp connections for polling scanners*/
+        void StartFTP();
 
-		// store the indexes of http connection in configuration.xml
-		CList<int, int> m_httpList;
-	
-		//the sum of the serial connections
-		int m_totalSerialConnection;
+        //---------------------------------------------//
+        //-------------public variables----------------//
+        //---------------------------------------------//
 
-		//the sum of the ftp connections
-		int m_totalFTPConnection;
+        // store the indexes of serial connection in configuration.xml
+        CArray<CSerialInfo*, CSerialInfo*> m_serialList;
 
-		//the sum of the http connections
-		int m_totalHttpConnection;
+        // store the indexes of ftp connection in configuration.xml
+        CList<int, int> m_ftpList;
 
-		/** The array of serial-controllers */
-		CArray<CSerialControllerWithTx*,CSerialControllerWithTx*> m_SerialControllerTx;
+        // store the indexes of http connection in configuration.xml
+        CList<int, int> m_httpList;
 
-		/** The array of ftp-handlers */
-		CArray<CFTPHandler*, CFTPHandler*> m_FTPHandler;
+        //the sum of the serial connections
+        int m_totalSerialConnection;
 
-		/** store node control informations */
-		CNodeControlInfo* m_nodeControl;
-	};
+        //the sum of the ftp connections
+        int m_totalFTPConnection;
+
+        //the sum of the http connections
+        int m_totalHttpConnection;
+
+        /** The array of serial-controllers */
+        CArray<CSerialControllerWithTx*, CSerialControllerWithTx*> m_SerialControllerTx;
+
+        /** The array of ftp-handlers */
+        CArray<CFTPHandler*, CFTPHandler*> m_FTPHandler;
+
+        /** store node control informations */
+        CNodeControlInfo* m_nodeControl;
+    };
 }
