@@ -397,18 +397,17 @@ void ReEvaluation::CReEval_WindowDlg::OnShowReferenceGraph()
     UpdateData(TRUE);
 
     // Get the currently selected fit window
-    int curSel = m_windowList.GetCurSel();
-    if (curSel < 0)
-        curSel = 0;
-    CFitWindow &window = m_reeval->m_window[curSel];
+    const int curSel = std::max(0, m_windowList.GetCurSel());
 
     // if there's no reference file, then there's nothing to remove
-    if (window.nRef <= 0)
+    if (m_reeval->m_window[curSel].nRef <= 0)
+    {
         return;
+    }
 
     // Open the dialog
     Dialogs::CReferencePlotDlg dlg;
-    dlg.m_window = m_reeval->m_window;
+    dlg.m_window = &m_reeval->m_window[curSel];
     dlg.DoModal();
 }
 
