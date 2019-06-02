@@ -73,6 +73,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <AdditionalIncludeDirectories>$(SolutionDir)\SpectralEvaluation\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -116,6 +117,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <AdditionalIncludeDirectories>$(SolutionDir)\SpectralEvaluation\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -222,7 +224,6 @@
     <ClCompile Include="Geometry\GeometryCalculator.cpp" />
     <ClCompile Include="Geometry\GeometryEvaluator.cpp" />
     <ClCompile Include="Geometry\GeometryResult.cpp" />
-    <ClCompile Include="Geometry\RealTimeSetupChanger.cpp" />
     <ClCompile Include="Graphs\DOASFitGraph.cpp" />
     <ClCompile Include="Graphs\GraphCtrl.cpp" />
     <ClCompile Include="Graphs\OScopeCtrl.cpp" />
@@ -459,7 +460,6 @@
     <ClInclude Include="Geometry\GeometryCalculator.h" />
     <ClInclude Include="Geometry\GeometryEvaluator.h" />
     <ClInclude Include="Geometry\GeometryResult.h" />
-    <ClInclude Include="Geometry\RealTimeSetupChanger.h" />
     <ClInclude Include="Graphs\DOASFitGraph.h" />
     <ClInclude Include="Graphs\GraphCtrl.h" />
     <ClInclude Include="Graphs\OScopeCtrl.h" />

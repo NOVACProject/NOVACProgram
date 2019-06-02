@@ -225,9 +225,6 @@
     <ClCompile Include="ReEvaluation\ReEvalSettingsFileHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Geometry\RealTimeSetupChanger.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="WindMeasurement\RealTimeWind.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -675,9 +672,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ReEvaluation\ReEvalSettingsFileHandler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Geometry\RealTimeSetupChanger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="WindMeasurement\RealTimeWind.h">

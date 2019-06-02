@@ -14,9 +14,6 @@
 // ... the judgements for making real-time composition measurements
 #include "../Common/CompositionMeasurement.h"
 
-// ... the judgements for making real-time changes to the instrument configuration
-#include "../Geometry/RealTimeSetupChanger.h"
-
 // ... support for handling the evaluation-log files...
 #include "../Common/EvaluationLogFileHandler.h"
 
