@@ -1,127 +1,130 @@
 #pragma once
 
 #include "SystemConfigurationPage.h"
+#include "afxwin.h"
 
 namespace ConfigurationDialog
 {
 
-	// CConfigureCOMPortDlg dialog
+    // CConfigureCOMPortDlg dialog
 
-	class CConfigureCOMPortDlg : public CSystemConfigurationPage
-	{
-		DECLARE_DYNAMIC(CConfigureCOMPortDlg)
+    class CConfigureCOMPortDlg : public CSystemConfigurationPage
+    {
+        DECLARE_DYNAMIC(CConfigureCOMPortDlg)
 
-	public:
-		CConfigureCOMPortDlg();
-		virtual ~CConfigureCOMPortDlg();
+    public:
+        CConfigureCOMPortDlg();
+        virtual ~CConfigureCOMPortDlg();
 
-	// Dialog Data
-		enum { IDD = IDD_CONFIGURE_COM_PORT };
+        // Dialog Data
+        enum { IDD = IDD_CONFIGURE_COM_PORT };
 
-		/** Called when the current selection changes */
-		void  OnChangeScanner();
+        /** Called when the current selection changes */
+        void  OnChangeScanner();
 
-		/** Saving the data in the control */
-		afx_msg void SaveData();
+        /** Saving the data in the control */
+        afx_msg void SaveData();
 
-		/** Changing the communication protocol */
-		afx_msg void OnChangeMethod();
+        /** Changing the communication protocol */
+        afx_msg void OnChangeMethod();
 
-		/** Updating the data in the control */
-		afx_msg void UpdateDlg();
+        /** Updating the data in the control */
+        afx_msg void UpdateDlg();
 
-		/** Handling the tool tips */
-		virtual BOOL PreTranslateMessage(MSG* pMsg); 
+        /** Handling the tool tips */
+        virtual BOOL PreTranslateMessage(MSG* pMsg);
 
-		/** Initializing the dialog */
-		virtual BOOL OnInitDialog();
+        /** Initializing the dialog */
+        virtual BOOL OnInitDialog();
 
-		/** Initializing the tooltips */
-		void InitToolTips();
+        /** Initializing the tooltips */
+        void InitToolTips();
 
-		/** Called when the current page becomes the active one */
-		virtual BOOL OnSetActive();
-	protected:
-		virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+        /** Called when the current page becomes the active one */
+        virtual BOOL OnSetActive();
+    protected:
+        virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
-		DECLARE_MESSAGE_MAP()
+        DECLARE_MESSAGE_MAP()
 
-		/** The Connection Interval */
-		int m_intervalHr;
-		int m_intervalMin;
-		int m_intervalSec;
+        /** The Connection Interval */
+        int m_intervalHr;
+        int m_intervalMin;
+        int m_intervalSec;
 
-		/**Sleep time*/
-		int m_sleepHr;
-		int m_sleepMin;
-		int m_sleepSec;
+        /** Sleep time*/
+        int m_sleepHr;
+        int m_sleepMin;
+        int m_sleepSec;
 
-		/**Wake up time*/
-		int m_wakeHr;
-		int m_wakeMin;
-		int m_wakeSec;
+        /** Wake up time*/
+        int m_wakeHr;
+        int m_wakeMin;
+        int m_wakeSec;
 
-		/** FTP - Password */
-		CString	m_ftpPassword;
+        /** FTP - Hostname/IP-number */
+        CString m_ftpHostName;
 
-		/** FTP - UserName */
-		CString m_ftpUserName;
+        /** FTP - Password */
+        CString	m_ftpPassword;
 
-		CStatic m_connectionIntervalLabel;
+        /** FTP - UserName */
+        CString m_ftpUserName;
 
-	private:
+        CStatic m_connectionIntervalLabel;
 
-		// ------- The serial settings controls --------
-		// The combo-boxes for the serial-settings
-		CComboBox	m_comPort, m_baudrate, m_handshake;
-	
-		/** A list of the available baudrates */
-		int m_availableBaudrates[5];
+    private:
 
-		/** The control for the timeout- edit */
-		CEdit		m_editTimeOut;
+        // ------- The serial settings controls --------
+        // The combo-boxes for the serial-settings
+        CComboBox	m_comPort, m_baudrate, m_handshake;
 
-		/** The time out */
-		int m_timeout;
-	
-		/** The edit for callbooknumber/RadioID */
-		CEdit m_editRadioID;
+        /** A list of the available baudrates */
+        int m_availableBaudrates[5];
 
-		/** The radio ID */
-		CString m_radioID;
+        /** The control for the timeout- edit */
+        CEdit		m_editTimeOut;
 
-		// ------- The FTP settings controls --------
-		
-		/** The ip-address for the FTP-settings */
-		CIPAddressCtrl m_IPAddress;
+        /** The time out */
+        int m_timeout;
 
-		/** The login information for the FTP-settings */
-		CEdit m_editUserName, m_editPassword;
+        /** The edit for callbooknumber/RadioID */
+        CEdit m_editRadioID;
 
-		// ------- The sleeping controls --------
-		// The edits for the sleeping
-		CEdit		m_editSleepHr, m_editSleepMin, m_editSleepSec;
-		CEdit		m_editWakeHr, m_editWakeMin, m_editWakeSec;
+        /** The radio ID */
+        CString m_radioID;
 
-		// ------- The labels controls --------
-		// The labels, only used for tooltips
-		CStatic	m_labelSleepFrom, m_labelSleepTo;
-		CStatic m_label1, m_label2, m_label3, m_label4, m_label5, m_labelRadioID;
+        // ------- The FTP settings controls --------
 
-		/** The current selection of settings
-				0 == FTP - Communication
-				1 == Serial Cable 
-				2 == Freewave Serial Radio modem
-		*/
-		int m_curSetting = 2;
+        /** The login information for the FTP-settings */
+        CEdit m_editUserName;
+        CEdit m_editPassword;
+        CEdit m_editFtpHostname;
 
-		/** Showing the settings for connecting through a serial cable */
-		void ShowSerialCable();
+        // ------- The sleeping controls --------
+        // The edits for the sleeping
+        CEdit		m_editSleepHr, m_editSleepMin, m_editSleepSec;
+        CEdit		m_editWakeHr, m_editWakeMin, m_editWakeSec;
 
-		/** Showing the settings for connecting using a Freewave serial modem */
-		void ShowFreewaveSerial();
+        // ------- The labels controls --------
+        // The labels, only used for tooltips
+        CStatic	m_labelSleepFrom, m_labelSleepTo;
+        CStatic m_label1, m_label2, m_label3, m_label4, m_label5, m_labelRadioID;
 
-		/** Showing the settings for connecting using FTP-Protocol*/
-		void ShowFTP();
-	};
+        /** The current selection of settings
+                0 == FTP - Communication
+                1 == Serial Cable
+                2 == Freewave Serial Radio modem
+        */
+        int m_curSetting = 2;
+
+        /** Showing the settings for connecting through a serial cable */
+        void ShowSerialCable();
+
+        /** Showing the settings for connecting using a Freewave serial modem */
+        void ShowFreewaveSerial();
+
+        /** Showing the settings for connecting using FTP-Protocol*/
+        void ShowFTP();
+};
 }

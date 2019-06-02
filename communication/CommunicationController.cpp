@@ -19,7 +19,7 @@ UINT ConnectByFTP(LPVOID pParam);
 void Pause(double startTime, double stopTime, int serialID);
 
 void UploadFile_SerialTx(int i, Communication::CCommunicationController *mainController, Communication::CSerialControllerWithTx *cable);
-void UploadFile_FTP(int mainIndex, Communication::CFTPHandler* ftpHandler);
+void UploadFile_FTP(int mainIndex, Communication::CFTPHandler& ftpHandler);
 
 
 IMPLEMENT_DYNCREATE(CCommunicationController, CWinThread)
@@ -216,16 +216,14 @@ UINT ConnectByFTP(LPVOID pParam)
     bool sleepFlag = false;
     clock_t startTime, stopTime;
     long sleepPeriod;
-    CString remoteFile, message, ip, spectrometerSerialID;
+    CString remoteFile, message, spectrometerSerialID;
 
     // Setup the ftp-handler for this connection
-    CFTPHandler* ftpHandler;
-    ftpHandler = new CFTPHandler(g_settings.scanner[mainIndex].electronicsBox);
-    ip.Format("%d.%d.%d.%d", g_settings.scanner[mainIndex].comm.ftpIP[0],
-        g_settings.scanner[mainIndex].comm.ftpIP[1],
-        g_settings.scanner[mainIndex].comm.ftpIP[2],
-        g_settings.scanner[mainIndex].comm.ftpIP[3]);
-    ftpHandler->SetFTPInfo(mainIndex, ip, g_settings.scanner[mainIndex].comm.ftpUserName,
+    CFTPHandler ftpHandler(g_settings.scanner[mainIndex].electronicsBox);
+
+    ftpHandler.SetFTPInfo(mainIndex,
+        g_settings.scanner[mainIndex].comm.ftpHostName,
+        g_settings.scanner[mainIndex].comm.ftpUserName,
         g_settings.scanner[mainIndex].comm.ftpPassword,
         g_settings.scanner[mainIndex].comm.ftpAdminUserName,
         g_settings.scanner[mainIndex].comm.ftpAdminPassword,
@@ -242,7 +240,7 @@ UINT ConnectByFTP(LPVOID pParam)
         if (sleepPeriod > 0)
         {
             sleepFlag = true;
-            ftpHandler->GotoSleep();
+            ftpHandler.GotoSleep();
             Sleep(sleepPeriod);
             nRoundsAfterWakeUp = 0;
             continue;
@@ -251,7 +249,7 @@ UINT ConnectByFTP(LPVOID pParam)
         {
             if (sleepFlag || nRoundsAfterWakeUp == 0)
             {
-                ftpHandler->WakeUp();
+                ftpHandler.WakeUp();
                 sleepFlag = false;
             }
         }
@@ -264,7 +262,7 @@ UINT ConnectByFTP(LPVOID pParam)
 
         // ----------- DOWNLOAD DATA ------------------
         startTime = clock();
-        ftpHandler->PollScanner();
+        ftpHandler.PollScanner();
         stopTime = clock();
 
         // if there's no file to upload then we can take a pause...
@@ -275,7 +273,7 @@ UINT ConnectByFTP(LPVOID pParam)
     }
 
     // Quit!
-    ftpHandler->Disconnect();
+    ftpHandler.Disconnect();
     return 0;
 }
 
@@ -307,7 +305,7 @@ void UploadFile_SerialTx(int i, Communication::CCommunicationController *mainCon
     }
 }
 
-void UploadFile_FTP(int mainIndex, CFTPHandler* ftpHandler)
+void UploadFile_FTP(int mainIndex, CFTPHandler& ftpHandler)
 {
     CString message;
 
@@ -319,18 +317,12 @@ void UploadFile_FTP(int mainIndex, CFTPHandler* ftpHandler)
         CString remoteFile = fullLocalFileName;
         Common::GetFileName(remoteFile);
 
-        CString ip;
-        ip.Format("%d.%d.%d.%d", 
-            g_settings.scanner[mainIndex].comm.ftpIP[0],
-            g_settings.scanner[mainIndex].comm.ftpIP[1],
-            g_settings.scanner[mainIndex].comm.ftpIP[2],
-            g_settings.scanner[mainIndex].comm.ftpIP[3]);
-
-        // Connect to the device
-        if (ftpHandler->Connect(ip, "administrator", "1225", g_settings.scanner[mainIndex].comm.timeout))
+        // Connect to the server
+        // TODO: Why is there a hard-coded username and password here??
+        if (ftpHandler.Connect(g_settings.scanner[mainIndex].comm.ftpHostName, "administrator", "1225", g_settings.scanner[mainIndex].comm.timeout))
         {
             // Upload the file
-            if (ftpHandler->UploadFile(fullLocalFileName, remoteFile))
+            if (ftpHandler.UploadFile(fullLocalFileName, remoteFile))
             {
                 message.Format("Failed to upload %s to node %d", (LPCSTR)fullLocalFileName, mainIndex);
             }
@@ -341,7 +333,7 @@ void UploadFile_FTP(int mainIndex, CFTPHandler* ftpHandler)
 
             ShowMessage(message);
 
-            ftpHandler->Disconnect();
+            ftpHandler.Disconnect();
         }
         else
         {
@@ -378,6 +370,7 @@ UINT ConnectBySerialWithTX(LPVOID pParam)
     nRound = 0;
 
     CSerialControllerWithTx *cable = nullptr;
+
     while (1)
     {
         for (j = 0; j < mainController->m_totalSerialConnection; j++)
@@ -538,7 +531,6 @@ void CCommunicationController::SetupSerialConnections()
     }
 }
 //--------------End of CCommunicationController --------//
-
 
 #ifdef _MSC_VER
 #pragma warning (pop)
