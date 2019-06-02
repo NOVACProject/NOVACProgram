@@ -6,6 +6,10 @@
 #include "SerialControllerWithTx.h"
 #include "NodeControlInfo.h"
 
+#ifdef _MSC_VER
+// Make sure to use warning level 4
+#pragma warning (push, 4)
+#endif
 
 using namespace Communication;
 #define SMALL_NODE_SUM 5
@@ -60,11 +64,12 @@ CCommunicationController::~CCommunicationController()
 {
 }
 
-//-----finsh downloading file control ----
+//-----finish downloading file control ----
 /** Quits the thread */
-void CCommunicationController::OnQuit(WPARAM wp, LPARAM lp) {
-
+void CCommunicationController::OnQuit(WPARAM /*wp*/, LPARAM /*lp*/)
+{
 }
+
 BOOL CCommunicationController::InitInstance()
 {
     CWinThread::InitInstance();
@@ -79,40 +84,41 @@ void CCommunicationController::OnUploadCfgOnce(WPARAM wp, LPARAM lp)
 {
     //set spectrometer id from param wp and mode from param lp
     CString* spectrometerID = (CString*)wp;
-    CString* filePath = (CString*)lp;
-    CString message;
+    CString* localFilePath = (CString*)lp;
 
     // Check the data...
-    if (filePath == NULL || !IsExistingFile(*filePath)) {
+    if (localFilePath == nullptr || !IsExistingFile(*localFilePath)) {
         ShowMessage("Recieved upload command for non-existing file");
         delete spectrometerID;
-        delete filePath;
+        delete localFilePath;
         return;
     }
 
-    int mainIndex = m_nodeControl->GetMainIndex(*spectrometerID);
-    if (mainIndex < 0 || mainIndex >= g_settings.scannerNum) {
+    int scannerIndex = m_nodeControl->GetMainIndex(*spectrometerID);
+    if ((unsigned long)scannerIndex >= g_settings.scannerNum) {
         ShowMessage("Received upload command for non-existing instrument");
         delete spectrometerID;
-        delete filePath;
+        delete localFilePath;
         return;
     }
 
     // Store the name to upload
-    if (FTP_CONNECTION == g_settings.scanner[mainIndex].comm.connectionType) {
-        g_fileToUpload.SetAtGrow(mainIndex, *filePath);
+    if (FTP_CONNECTION == g_settings.scanner[scannerIndex].comm.connectionType)
+    {
+        g_fileToUpload.SetAtGrow(scannerIndex, *localFilePath);
     }
     else
     {
-        m_nodeControl->SetNodeStatus(mainIndex, DeviceMode::Special, *filePath);
+        m_nodeControl->SetNodeToUploadFile(scannerIndex, *localFilePath);
     }
 
-    message.Format("File %s added to upload-queue for node %d", (LPCSTR)*filePath, mainIndex);
+    CString message;
+    message.Format("File %s added to upload-queue for node %d", (LPCSTR)*localFilePath, scannerIndex);
     ShowMessage(message);
 
     // clear up...
     delete spectrometerID;
-    delete filePath;
+    delete localFilePath;
 }
 
 void CCommunicationController::StartCommunicationThreads()
@@ -131,11 +137,10 @@ void CCommunicationController::StartCommunicationThreads()
     for (unsigned long i = 0; i < g_settings.scannerNum; ++i)
     {
         CConfigurationSetting::CommunicationSetting &comm = g_settings.scanner[i].comm;
-        ELECTRONICS_BOX	box = g_settings.scanner[i].electronicsBox;
 
         unsigned int connectionType = comm.connectionType;
 
-        m_nodeControl->FillinNodeInfo(i, DeviceMode::Sleep, g_settings.scanner[i].spec[0].serialNumber, "");
+        m_nodeControl->FillinNodeInfo(i, DeviceMode::Sleep, g_settings.scanner[i].spec[0].serialNumber);
 
         switch (connectionType)
         {
@@ -161,7 +166,7 @@ void CCommunicationController::StartCommunicationThreads()
 
     if (m_totalSerialConnection > 0)
     {
-        AfxBeginThread(ConnectBySerialWithTX, this, THREAD_PRIORITY_NORMAL, 0, 0, NULL);
+        AfxBeginThread(ConnectBySerialWithTX, this, THREAD_PRIORITY_NORMAL, 0, 0, nullptr);
     }
 
     if (m_totalFTPConnection > 0)
@@ -176,10 +181,10 @@ void CCommunicationController::StartFTP()
 
     // 1. Make sure that there are no duplicates in the list
     if (m_ftpList.GetSize() > 1) {
-        while (pos != NULL) {
+        while (pos != nullptr) {
             POSITION pos2 = pos;
             m_ftpList.GetNext(pos2);
-            while (pos2 != NULL) {
+            while (pos2 != nullptr) {
                 int index = m_ftpList.GetNext(pos2);
                 if (index == m_ftpList.GetAt(pos)) {
                     // there are duplicates in the list. Start over!
@@ -194,10 +199,10 @@ void CCommunicationController::StartFTP()
 
     // 2. Start the FTP-threads
     pos = m_ftpList.GetHeadPosition();
-    while (pos != NULL) {
+    while (pos != nullptr) {
         int *index = new int;
         *index = m_ftpList.GetNext(pos);
-        AfxBeginThread(ConnectByFTP, index, THREAD_PRIORITY_NORMAL, 0, 0, NULL);
+        AfxBeginThread(ConnectByFTP, index, THREAD_PRIORITY_NORMAL, 0, 0, nullptr);
     }
 }
 
@@ -206,7 +211,6 @@ void CCommunicationController::StartFTP()
 */
 UINT ConnectByFTP(LPVOID pParam)
 {
-    int i = 0;
     long nRoundsAfterWakeUp = 0;
     int mainIndex = *(int*)pParam;
     bool sleepFlag = false;
@@ -275,74 +279,83 @@ UINT ConnectByFTP(LPVOID pParam)
     return 0;
 }
 
-void UploadFile_SerialTx(int i, Communication::CCommunicationController *mainController, CSerialControllerWithTx *cable) {
-    CString strFileName;		//file name in remote PC in CString type
-    CString uploadFilePath; // full file path to be uploaded in special_mode
-    CString uploadFileFolder; // the folder that the file to be uploaded locates
-    char fileName[56];			//file name in remote PC
+void UploadFile_SerialTx(int i, Communication::CCommunicationController *mainController, CSerialControllerWithTx *cable)
+{
     Common common;
 
-    //run the special mode,upload special file
-    mainController->m_nodeControl->GetNodeCfgFilePath(i, strFileName);
-    if (IsExistingFile(strFileName)) {
-        uploadFilePath.Format(strFileName);
-        uploadFileFolder.Format(strFileName);
-        common.GetDirectory(uploadFileFolder);
-        common.GetFileName(strFileName);
-        sprintf(fileName, "%s", (LPCSTR)strFileName);
+    CString fullLocalFileName;
+    mainController->m_nodeControl->GetNodeCfgFilePath(i, fullLocalFileName);
 
-        cable->UploadFile(uploadFileFolder, fileName, 'A');
-        mainController->m_nodeControl->SetNodeStatus(i, DeviceMode::Run, uploadFilePath);
+    if (IsExistingFile(fullLocalFileName))
+    {
+        // Extract the directory from the filename
+        CString localFolder = fullLocalFileName;
+        common.GetDirectory(localFolder);
+
+        // Remove the path to get the filename only
+        CString fileName = fullLocalFileName;
+        common.GetFileName(fileName);
+
+        char fileNameInRemoteDevice[56];
+        sprintf(fileNameInRemoteDevice, "%s", (LPCSTR)fileName);
+
+        cable->UploadFile(localFolder, fileNameInRemoteDevice, 'A');
+
+        mainController->m_nodeControl->SetNodeStatus(i, DeviceMode::Run);
+
         cable->CloseSerialPort();
     }
 }
 
 void UploadFile_FTP(int mainIndex, CFTPHandler* ftpHandler)
 {
-    CString ip, message, remoteFile;
+    CString message;
 
-    CString &fileName = g_fileToUpload.GetAt(mainIndex);
-    if (fileName.GetLength() > 4) {
+    CString fullLocalFileName = g_fileToUpload.GetAt(mainIndex);
+
+    if (fullLocalFileName.GetLength() > 4)
+    {
         // Get the name of the remote file...
-        remoteFile.Format(fileName);
+        CString remoteFile = fullLocalFileName;
         Common::GetFileName(remoteFile);
 
-        ip.Format("%d.%d.%d.%d", g_settings.scanner[mainIndex].comm.ftpIP[0],
+        CString ip;
+        ip.Format("%d.%d.%d.%d", 
+            g_settings.scanner[mainIndex].comm.ftpIP[0],
             g_settings.scanner[mainIndex].comm.ftpIP[1],
             g_settings.scanner[mainIndex].comm.ftpIP[2],
             g_settings.scanner[mainIndex].comm.ftpIP[3]);
 
-        // Connect to the server
-        if (ftpHandler->Connect(ip, "administrator", "1225", g_settings.scanner[mainIndex].comm.timeout)) {
-
+        // Connect to the device
+        if (ftpHandler->Connect(ip, "administrator", "1225", g_settings.scanner[mainIndex].comm.timeout))
+        {
             // Upload the file
-            if (ftpHandler->UploadFile(fileName, remoteFile)) {
-                message.Format("Failed to upload %s to node %d", (LPCSTR)fileName, mainIndex);
+            if (ftpHandler->UploadFile(fullLocalFileName, remoteFile))
+            {
+                message.Format("Failed to upload %s to node %d", (LPCSTR)fullLocalFileName, mainIndex);
             }
-            else {
-                message.Format("Successfully uploaded %s to node %d", (LPCSTR)fileName, mainIndex);
+            else
+            {
+                message.Format("Successfully uploaded %s to node %d", (LPCSTR)fullLocalFileName, mainIndex);
             }
+
             ShowMessage(message);
 
-            // Disconnect again...
             ftpHandler->Disconnect();
         }
-        else {
+        else
+        {
             message.Format("Cannot connect to administrator account on node %d", mainIndex);
             ShowMessage(message);
         }
 
         // Remove the string, so we don't upload the file again...
-        fileName.Format("");
-        g_fileToUpload.SetAt(mainIndex, fileName);
+        fullLocalFileName = "";
+        g_fileToUpload.SetAt(mainIndex, fullLocalFileName);
     }
 }
 
 
-/** connect to remote PC by serial method. This function uses Manne's tx serial
-* communication protocol
-*@param pParam - the object of the CommunicationController
-*/
 UINT ConnectBySerialWithTX(LPVOID pParam)
 {
     CString msg, timetxt;
@@ -364,7 +377,7 @@ UINT ConnectBySerialWithTX(LPVOID pParam)
     // --------------- RUNNING ----------------
     nRound = 0;
 
-    CSerialControllerWithTx *cable = NULL;
+    CSerialControllerWithTx *cable = nullptr;
     while (1)
     {
         for (j = 0; j < mainController->m_totalSerialConnection; j++)
@@ -402,14 +415,14 @@ UINT ConnectBySerialWithTX(LPVOID pParam)
                 if (mainController->m_serialList[i]->m_sleepFlag)
                 {
                     cable->WakeUp();
-                    mainController->m_nodeControl->SetNodeStatus(i, DeviceMode::Run, g_settings.outputDirectory);	//SET node status to run
+                    mainController->m_nodeControl->SetNodeStatus(i, DeviceMode::Run);
                     mainController->m_serialList[i]->m_sleepFlag = false;
                 }
             }
 
             // Ok, we're not sleeping. check if we should upload something to the
             //  instrument...
-            if (mainController->m_nodeControl->GetNodeStatus(i) == DeviceMode::Special)
+            if (mainController->m_nodeControl->GetNodeStatus(i) == DeviceMode::FileUpload)
             {
                 UploadFile_SerialTx(i, mainController, cable);
             }
@@ -419,7 +432,7 @@ UINT ConnectBySerialWithTX(LPVOID pParam)
 
             nRound++;
 
-            if (nRound > 0 && mainController->m_nodeControl->GetNodeStatus(i) != DeviceMode::Special)
+            if (nRound > 0 && mainController->m_nodeControl->GetNodeStatus(i) != DeviceMode::FileUpload)
             {
                 //calculate pause time and pause
                 Pause((double)cPrevStart[i], (double)cStart[i], i);
@@ -526,3 +539,7 @@ void CCommunicationController::SetupSerialConnections()
 }
 //--------------End of CCommunicationController --------//
 
+
+#ifdef _MSC_VER
+#pragma warning (pop)
+#endif

@@ -1084,6 +1084,7 @@ bool CSerialControllerWithTx::PutFile(char *name, CString fileFullPath,char disk
 	}else{
 		sprintf(nametoset,"%c:\\%s",diskName,name);
 	}
+
 	if(!SetName(nametoset))
 	{
 		if(Resync()== FAIL){

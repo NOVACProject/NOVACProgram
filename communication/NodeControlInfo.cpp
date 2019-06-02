@@ -2,16 +2,14 @@
 #include "NodeControlInfo.h"
 #include "../Common/Common.h"
 
-//--------------------------------class CControlInfo------------------//
-
 namespace Communication
 {
-    CNodeControlInfo::CControlInfo::CControlInfo(int mainIndex, DeviceMode mode, CString spectrometerID, CString cfgFilePath)
+    CNodeControlInfo::CControlInfo::CControlInfo(int mainIndex, DeviceMode mode, const CString& spectrometerID, const CString& localFilePath)
+        : m_mainIndex(mainIndex),
+            m_mode(mode),
+            m_spectrometerID(spectrometerID),
+            m_localPathToFileToUpload(localFilePath)
     {
-        m_mainIndex = mainIndex;
-        m_mode = mode;
-        m_spectrometerID.Format("%s", (LPCTSTR)spectrometerID);
-        m_cfgFilePath.Format("%s", (LPCTSTR)cfgFilePath);
     }
 
     //---------------------------class CNodeControlInfo------------------//
@@ -25,10 +23,9 @@ namespace Communication
         m_controlInfoArray.RemoveAll();
     }
 
-    void CNodeControlInfo::FillinNodeInfo(int mainIndex, DeviceMode mode, const CString spectrometerID, CString cfgFilePath)
+    void CNodeControlInfo::FillinNodeInfo(int mainIndex, DeviceMode mode, const CString spectrometerID)
     {
-        m_controlInfoArray.SetAtGrow(mainIndex, new CControlInfo(mainIndex, mode, spectrometerID, cfgFilePath));
-
+        m_controlInfoArray.SetAtGrow(mainIndex, new CControlInfo(mainIndex, mode, spectrometerID, ""));
     }
 
     int CNodeControlInfo::GetNodeSum()
@@ -36,7 +33,7 @@ namespace Communication
         return (int)m_controlInfoArray.GetCount();
     }
 
-    DeviceMode CNodeControlInfo::GetNodeStatus(int mainIndex)
+    DeviceMode CNodeControlInfo::GetNodeStatus(int mainIndex) const
     {
         if (mainIndex < 0 || mainIndex >= m_controlInfoArray.GetSize())
         {
@@ -49,18 +46,34 @@ namespace Communication
         }
     }
 
-    void CNodeControlInfo::SetNodeStatus(int mainIndex, DeviceMode status, CString& filePath)
+    void CNodeControlInfo::SetNodeStatus(int mainIndex, DeviceMode status)
     {
-        // Error Check!
         if (mainIndex < 0 || mainIndex >= m_controlInfoArray.GetCount())
+        {
             return; // <-- added 2007.09.11
+        }
+
         CControlInfo* controlInfo = m_controlInfoArray.GetAt(mainIndex);
         controlInfo->m_mode = status;
-        controlInfo->m_cfgFilePath = filePath;
+        controlInfo->m_localPathToFileToUpload = "";
         m_controlInfoArray.SetAt(mainIndex, controlInfo);
     }
 
-    void CNodeControlInfo::GetNodeCfgFilePath(int mainIndex, CString& filePath)
+    void CNodeControlInfo::SetNodeToUploadFile(int mainIndex, CString& localFilePath)
+    {
+        if (mainIndex < 0 || mainIndex >= m_controlInfoArray.GetCount())
+        {
+            return; // <-- added 2007.09.11
+        }
+
+        CControlInfo* controlInfo = m_controlInfoArray.GetAt(mainIndex);
+        controlInfo->m_mode = DeviceMode::FileUpload;
+        controlInfo->m_localPathToFileToUpload = localFilePath;
+        m_controlInfoArray.SetAt(mainIndex, controlInfo);
+    }
+
+
+    void CNodeControlInfo::GetNodeCfgFilePath(int mainIndex, CString& filePath) const
     {
         if (mainIndex < 0 || mainIndex >= m_controlInfoArray.GetSize()) {
             filePath.Format("");
@@ -69,11 +82,11 @@ namespace Communication
         else
         {
             CControlInfo* controlInfo = m_controlInfoArray.GetAt(mainIndex);
-            filePath = controlInfo->m_cfgFilePath;
+            filePath = controlInfo->m_localPathToFileToUpload;
         }
     }
 
-    int CNodeControlInfo::GetMainIndex(CString spectrometerID)
+    int CNodeControlInfo::GetMainIndex(CString spectrometerID) const
     {
         for (int i = 0; i < m_controlInfoArray.GetCount(); i++)
         {
@@ -85,5 +98,4 @@ namespace Communication
         }
         return -1;
     }
-
 }
