@@ -134,9 +134,6 @@ const enum MEASUREMENT_MODE {MODE_UNKNOWN, MODE_FLUX, MODE_FIXED, MODE_WINDSPEED
 //size  of max buffer
 #define MAXBUFFER 65536
 
-// The options for the sky spectrum
-enum SKY_OPTION {SKY_FIRST, SKY_AVERAGE_OF_GOOD, SKY_INDEX, SKY_USER };
-
 // Defining the types of connection with the scanning instrument
 #define SERIAL_CONNECTION 1
 #define FTP_CONNECTION 2

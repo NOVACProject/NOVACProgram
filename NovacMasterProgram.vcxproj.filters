@@ -1169,6 +1169,9 @@
     <ClInclude Include="Dialogs\ColumnHistoryDlg.h">
       <Filter>Header Files\Dialogs</Filter>
     </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Configuration\SkySettings.h">
+      <Filter>Header Files\Configuration</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\NOVAClogo2.ico">

@@ -489,6 +489,7 @@
     <ClInclude Include="ScannerFileInfo.h" />
     <ClInclude Include="ScannerFolderInfo.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Configuration\DarkSettings.h" />
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Configuration\SkySettings.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\DateTime.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Evaluation\CrossSectionData.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Evaluation\EvaluationBase.h" />
