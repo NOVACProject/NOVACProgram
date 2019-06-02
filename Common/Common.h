@@ -151,14 +151,6 @@ const enum MEASUREMENT_MODE {MODE_UNKNOWN, MODE_FLUX, MODE_FIXED, MODE_WINDSPEED
 	#define LINUX 1
 #endif
 
-//node operating message
-
-#define SLEEP_MODE		0
-#define RUN_MODE		1
-#define PAUSE_MODE		2
-#define OFF_MODE		3
-#define SPECIAL_MODE	4
-
 //download status message for CCommunicationController
 #define START_DOWNLOADING	11
 #define FINISH_DOWNLOADING	12

@@ -1,10 +1,18 @@
 #include "StdAfx.h"
-#include "communicationcontroller.h"
+#include "CommunicationController.h"
 #include "../Configuration/configuration.h"
-#include "ftpCom.h"
+#include "FTPCom.h"
+#include "FTPHandler.h"
+#include "SerialControllerWithTx.h"
+#include "../NodeControlInfo.h"
+
+
 using namespace Communication;
-extern CFormView *pView;
 #define SMALL_NODE_SUM 5
+
+UINT ConnectBySerialWithTX(LPVOID pParam);
+UINT ConnectByFTP(LPVOID pParam);
+void Pause(double startTime, double stopTime, int serialID);
 
 void UploadFile_SerialTx(int i, Communication::CCommunicationController *mainController, Communication::CSerialControllerWithTx *cable);
 void UploadFile_FTP(int mainIndex, Communication::CFTPHandler* ftpHandler);
@@ -13,7 +21,7 @@ void UploadFile_FTP(int mainIndex, Communication::CFTPHandler* ftpHandler);
 IMPLEMENT_DYNCREATE(CCommunicationController, CWinThread)
 
 BEGIN_MESSAGE_MAP(CCommunicationController, CWinThread)
-    ON_THREAD_MESSAGE(WM_QUIT,          OnQuit)
+    ON_THREAD_MESSAGE(WM_QUIT, OnQuit)
     ON_THREAD_MESSAGE(WM_UPLOAD_CFGONCE, OnUploadCfgOnce)
 END_MESSAGE_MAP()
 
@@ -25,7 +33,7 @@ bool g_runFlag;
 //	of the file to upload to instrument with mainIndex=i
 CArray <CString, CString &> g_fileToUpload;
 
-CCommunicationController::CCommunicationController(void)
+CCommunicationController::CCommunicationController()
 {
     //the sum of the serial connections
     m_totalSerialConnection = 0;
@@ -44,11 +52,11 @@ CCommunicationController::CCommunicationController(void)
 
     //set member array of ftp handler object
     m_FTPHandler.SetSize(SMALL_NODE_SUM);
-    m_nodeControl = new CNodeControlInfo();
+    m_nodeControl.reset(new CNodeControlInfo());
     g_runFlag = true;
 }
 
-CCommunicationController::~CCommunicationController(void)
+CCommunicationController::~CCommunicationController()
 {
 }
 
@@ -94,9 +102,11 @@ void CCommunicationController::OnUploadCfgOnce(WPARAM wp, LPARAM lp)
     if (FTP_CONNECTION == g_settings.scanner[mainIndex].comm.connectionType) {
         g_fileToUpload.SetAtGrow(mainIndex, *filePath);
     }
-    else {
-        m_nodeControl->SetNodeStatus(mainIndex, SPECIAL_MODE, *filePath);
+    else
+    {
+        m_nodeControl->SetNodeStatus(mainIndex, DeviceMode::Special, *filePath);
     }
+
     message.Format("File %s added to upload-queue for node %d", (LPCSTR)*filePath, mainIndex);
     ShowMessage(message);
 
@@ -107,8 +117,6 @@ void CCommunicationController::OnUploadCfgOnce(WPARAM wp, LPARAM lp)
 
 void CCommunicationController::StartCommunicationThreads()
 {
-    unsigned int i, connectionType;
-
     // Clear all lists and variables...
     m_totalSerialConnection = 0;
     m_totalFTPConnection = 0;
@@ -120,14 +128,15 @@ void CCommunicationController::StartCommunicationThreads()
     // Allocate enough size for the buffer of files to upload
     g_fileToUpload.SetSize(g_settings.scannerNum);
 
-    for (i = 0; i < g_settings.scannerNum; ++i)
+    for (unsigned long i = 0; i < g_settings.scannerNum; ++i)
     {
         CConfigurationSetting::CommunicationSetting &comm = g_settings.scanner[i].comm;
         ELECTRONICS_BOX	box = g_settings.scanner[i].electronicsBox;
 
-        connectionType = comm.connectionType;
+        unsigned int connectionType = comm.connectionType;
 
-        m_nodeControl->FillinNodeInfo(i, SLEEP_MODE, g_settings.scanner[i].spec[0].serialNumber, "");
+        m_nodeControl->FillinNodeInfo(i, DeviceMode::Sleep, g_settings.scanner[i].spec[0].serialNumber, "");
+
         switch (connectionType)
         {
             //when it is serial connection
@@ -151,9 +160,14 @@ void CCommunicationController::StartCommunicationThreads()
     }
 
     if (m_totalSerialConnection > 0)
+    {
         AfxBeginThread(ConnectBySerialWithTX, this, THREAD_PRIORITY_NORMAL, 0, 0, NULL);
+    }
+
     if (m_totalFTPConnection > 0)
+    {
         StartFTP();
+    }
 }
 
 void CCommunicationController::StartFTP()
@@ -239,7 +253,8 @@ UINT ConnectByFTP(LPVOID pParam)
         }
 
         // ---------- Check if we should upload something to the instrument ------
-        if (mainIndex < g_fileToUpload.GetCount()) {
+        if (mainIndex < g_fileToUpload.GetCount())
+        {
             UploadFile_FTP(mainIndex, ftpHandler);
         }
 
@@ -277,12 +292,13 @@ void UploadFile_SerialTx(int i, Communication::CCommunicationController *mainCon
         sprintf(fileName, "%s", (LPCSTR)strFileName);
 
         cable->UploadFile(uploadFileFolder, fileName, 'A');
-        mainController->m_nodeControl->SetNodeStatus(i, RUN_MODE, uploadFilePath);
+        mainController->m_nodeControl->SetNodeStatus(i, DeviceMode::Run, uploadFilePath);
         cable->CloseSerialPort();
     }
 }
 
-void UploadFile_FTP(int mainIndex, CFTPHandler* ftpHandler) {
+void UploadFile_FTP(int mainIndex, CFTPHandler* ftpHandler)
+{
     CString ip, message, remoteFile;
 
     CString &fileName = g_fileToUpload.GetAt(mainIndex);
@@ -343,7 +359,7 @@ UINT ConnectBySerialWithTX(LPVOID pParam)
     CCommunicationController* mainController = (CCommunicationController*)pParam;
 
     // ------- SETUP THE CONNECTIONS ------------
-    mainController->SetSerialConnections();
+    mainController->SetupSerialConnections();
 
     // --------------- RUNNING ----------------
     nRound = 0;
@@ -386,14 +402,14 @@ UINT ConnectBySerialWithTX(LPVOID pParam)
                 if (mainController->m_serialList[i]->m_sleepFlag)
                 {
                     cable->WakeUp();
-                    mainController->m_nodeControl->SetNodeStatus(i, RUN_MODE, g_settings.outputDirectory);	//SET node status to run
+                    mainController->m_nodeControl->SetNodeStatus(i, DeviceMode::Run, g_settings.outputDirectory);	//SET node status to run
                     mainController->m_serialList[i]->m_sleepFlag = false;
                 }
             }
 
             // Ok, we're not sleeping. check if we should upload something to the
             //  instrument...
-            if (mainController->m_nodeControl->GetNodeStatus(i) == SPECIAL_MODE)
+            if (mainController->m_nodeControl->GetNodeStatus(i) == DeviceMode::Special)
             {
                 UploadFile_SerialTx(i, mainController, cable);
             }
@@ -403,7 +419,7 @@ UINT ConnectBySerialWithTX(LPVOID pParam)
 
             nRound++;
 
-            if (nRound > 0 && mainController->m_nodeControl->GetNodeStatus(i) != SPECIAL_MODE)
+            if (nRound > 0 && mainController->m_nodeControl->GetNodeStatus(i) != DeviceMode::Special)
             {
                 //calculate pause time and pause
                 Pause((double)cPrevStart[i], (double)cStart[i], i);
@@ -476,14 +492,11 @@ void CCommunicationController::SleepAllNodes(int connectionType)
     }
 }
 
-/**Set parameters for all the serial communications*/
-void CCommunicationController::SetSerialConnections()
+void CCommunicationController::SetupSerialConnections()
 {
-    CString msg;
-    int i, mainIndex;
-    for (i = 0; i < m_totalSerialConnection; i++)
+    for (int i = 0; i < m_totalSerialConnection; i++)
     {
-        mainIndex = m_serialList.GetAt(i)->m_mainIndex;
+        int mainIndex = m_serialList.GetAt(i)->m_mainIndex;
 
         m_SerialControllerTx.SetAtGrow(i, new CSerialControllerWithTx(g_settings.scanner[mainIndex].electronicsBox));
 
@@ -497,47 +510,19 @@ void CCommunicationController::SetSerialConnections()
 
 
         // Show the connection to the user
+        CString msg;
         msg.Format("<Serial%d>: COM%d, baudrate %dbps,flowControl %d.", i,
             g_settings.scanner[mainIndex].comm.port,
             g_settings.scanner[mainIndex].comm.baudrate,
             g_settings.scanner[mainIndex].comm.flowControl);
         ShowMessage(msg);
+
         if (g_settings.scanner[mainIndex].comm.medium == MEDIUM_FREEWAVE_SERIAL_MODEM)
             m_SerialControllerTx[i]->SetModem(g_settings.scanner[mainIndex].comm.radioID);
+
         m_SerialControllerTx[i]->WakeUp(0);
         Sleep(1000);
     }
 }
 //--------------End of CCommunicationController --------//
 
-CCommunicationController::CSerialInfo::CSerialInfo(void)
-{
-}
-CCommunicationController::CSerialInfo::~CSerialInfo(void)
-{
-}
-CCommunicationController::CSerialInfo::CSerialInfo(int index, bool sleep, int medium)
-{
-    m_mainIndex = index;
-    m_sleepFlag = sleep;
-    m_medium = medium;
-}
-//------------------------------------------------------//
-//------------------------------------------------------//
-//------------------------------------------------------//
-//----------------CSerialInfo class --------------------//
-//------------------------------------------------------//
-CCommunicationController::CFTPInfo::CFTPInfo(void)
-{
-}
-CCommunicationController::CFTPInfo::~CFTPInfo(void)
-{
-}
-CCommunicationController::CFTPInfo::CFTPInfo(CString ip, CString userName, CString pwd)
-{
-    m_ftpIP = ip;
-    m_userName = userName;
-    m_password = pwd;
-}
-//------------------------------------------------------//
-//------------------------------------------------------//
