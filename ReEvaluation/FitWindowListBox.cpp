@@ -137,17 +137,13 @@ void CFitWindowListBox::OnLoadFitWindows() {
     // let the user browse for an evaluation log file and if one is selected, read it
     if (common.BrowseForFile(filter, fileName))
     {
-        int index = 0;              // <-- the fit window index in the file
-        m_reeval->m_windowNum = 0;  // <-- empty the list of fit-windows
+        std::vector<Evaluation::CFitWindow> windowsInFile = fitWindowReader.ReadFitWindowFile(fileName);
 
-        while (m_reeval->m_windowNum < m_reeval->MAX_N_WINDOWS) {
-            if (SUCCESS == fitWindowReader.ReadFitWindow(m_reeval->m_window[m_reeval->m_windowNum], fileName, index)) {
-                ++index;
-                ++m_reeval->m_windowNum;
-            }
-            else {
-                break;
-            }
+        // Set the windows of the evaluator
+        m_reeval->m_windowNum = windowsInFile.size();
+        for (size_t ii = 0; ii < windowsInFile.size(); ++ii)
+        {
+            m_reeval->m_window[ii] = windowsInFile[ii];
         }
     }
 
@@ -157,7 +153,7 @@ void CFitWindowListBox::OnLoadFitWindows() {
 
     // Need to tell the parent window to update
     CWnd *pWnd = GetParent();
-    if (pWnd)
+    if (nullptr != pWnd)
         pWnd->SendMessage(WM_COMMAND, MAKEWPARAM(GetDlgCtrlID(), LBN_SELCHANGE), (LPARAM)m_hWnd);
 }
 

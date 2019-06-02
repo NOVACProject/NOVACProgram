@@ -11,48 +11,44 @@ CFitWindowFileHandler::~CFitWindowFileHandler()
 {
 }
 
-RETURN_CODE CFitWindowFileHandler::ReadFitWindow(Evaluation::CFitWindow &window, const CString &fileName, int index)
+std::vector<Evaluation::CFitWindow> CFitWindowFileHandler::ReadFitWindowFile(const CString &fileName)
 {
+    std::vector<Evaluation::CFitWindow> allWindowsRead;
+
     CFileException exceFile;
     CStdioFile file;
-    Evaluation::CFitWindow tmpWindow;
-    int curWindow = 0;
 
     // 1. Open the file
-    if (!file.Open(fileName, CFile::modeRead | CFile::typeText, &exceFile)) {
-        return FAIL;
+    if (!file.Open(fileName, CFile::modeRead | CFile::typeText, &exceFile))
+    {
+        return allWindowsRead;
     }
     this->SetFile(&file);
 
     // parse the file
-    while (szToken = NextToken()) {
+    while (szToken = NextToken())
+    {
         // no use to parse empty lines
         if (strlen(szToken) < 3)
             continue;
 
-        if (Equals(szToken, "fitWindow", 9)) {
-            if (SUCCESS == Parse_FitWindow(tmpWindow)) {
-
-                if (index == curWindow) {
-                    window = tmpWindow;
-                    file.Close();
-                    return SUCCESS;
-                }
-                else {
-                    ++curWindow;
-                }
-
+        if (Equals(szToken, "fitWindow", 9))
+        {
+            Evaluation::CFitWindow tmpWindow;
+            if (SUCCESS == Parse_FitWindow(tmpWindow))
+            {
+                allWindowsRead.push_back(tmpWindow);
             }
-            else {
+            else
+            {
                 // parse_fit window has failed!
-                file.Close();
-                return FAIL;
+                break;
             }
         }
     }
 
-    // should not get here
-    return FAIL;
+    file.Close();
+    return allWindowsRead;
 }
 
 RETURN_CODE CFitWindowFileHandler::Parse_FitWindow(Evaluation::CFitWindow &window)

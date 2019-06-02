@@ -13,13 +13,11 @@ namespace FileHandler {
         CFitWindowFileHandler();
         ~CFitWindowFileHandler();
 
-        /** Reads the desired fit window from the file.
-                @param window - will be filled with the read fit-window settings if successfull
-                @param fileName - the name and path of the file to read from
-                @param index - the zero-based index of the fit window to read (each .nfw file
-                    can contain several fit-windows)
-                @return SUCCESS on success */
-        RETURN_CODE ReadFitWindow(Evaluation::CFitWindow &window, const CString &fileName, int index = 0);
+        /** Reads the fit windows which are defined in the provided file.
+                @param fileName The name and path of the file to read from
+                @return A vector with all the fit windows defined in the file.
+                @return An empty vector if the reading failed. */
+        std::vector<Evaluation::CFitWindow> ReadFitWindowFile(const CString &fileName);
 
         /** Writes the supplied fit-window to a file.
                 @param window - the fit window to be written to file
