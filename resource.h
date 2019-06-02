@@ -772,6 +772,7 @@
 #define IDC_STATIC_PLOT_OPTIONS         1347
 #define IDC_COLUMN_10DAY_FRAME2         1347
 #define IDC_COLUMN_1DAY_FRAME           1347
+#define IDC_LABEL_SOLARSPECTRUMPATH     1349
 #define ID_CONTROL_START                32771
 #define ID_VIEW_PEAKINTENSITY_BD        32779
 #define ID_VIEW_FITINTENSITY_BD         32780
@@ -788,7 +789,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        313
 #define _APS_NEXT_COMMAND_VALUE         32788
-#define _APS_NEXT_CONTROL_VALUE         1349
+#define _APS_NEXT_CONTROL_VALUE         1350
 #define _APS_NEXT_SYMED_VALUE           109
 #endif
 #endif
