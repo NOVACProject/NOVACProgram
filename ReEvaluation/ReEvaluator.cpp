@@ -30,12 +30,10 @@ CReEvaluator::CReEvaluator(void)
     m_windowNum = 1;
     m_curWindow = 0;
 
-    pView = NULL;
+    pView = nullptr;
     m_progress = 0;
 
     m_statusMsg.Format("");
-
-    m_curScanFile = -1;
 
     // ignoring
     m_ignore_Lower.m_channel = 1144;
@@ -60,19 +58,8 @@ bool CReEvaluator::Stop() {
     return true;
 }
 
-/** This function takes care of the actual evaluation */
-bool CReEvaluator::DoEvaluation() {
-#ifdef _DEBUG
-    // this is for searching for memory leaks
-    CMemoryState newMem, oldMem, diffMem;
-    oldMem.Checkpoint();
-#endif
-
-    long nDone = 0;		// <-- number of scans evaluated
-    double nToDo = (double)m_scanFileNum;	// <-- number of scans to evaluate
-
-    CString message;
-
+bool CReEvaluator::DoEvaluation()
+{
     /* Check the settings before we start */
     if (!MakeInitialSanityCheck())
     {
@@ -100,9 +87,9 @@ bool CReEvaluator::DoEvaluation() {
     ev.SetOption_AveragedSpectra(m_averagedSpectra);
 
     // loop through all the scan files
-    for (m_curScanFile = 0; m_curScanFile < m_scanFileNum; ++m_curScanFile)
+    for (int curScanFile = 0; curScanFile < m_scanFileNum; ++curScanFile)
     {
-        m_progress = m_curScanFile / (double)m_scanFileNum;
+        m_progress = curScanFile / (double)m_scanFileNum;
         if (pView != nullptr)
         {
             pView->PostMessage(WM_PROGRESS, (WPARAM)m_progress);
@@ -112,29 +99,33 @@ bool CReEvaluator::DoEvaluation() {
         FileHandler::CScanFileHandler scan;
 
         // Check the scan file
-        const std::string scanFileName((LPCSTR)m_scanFile[m_curScanFile]);
-        if (SUCCESS != scan.CheckScanFile(scanFileName)) {
+        const std::string scanFileName((LPCSTR)m_scanFile[curScanFile]);
+        if (SUCCESS != scan.CheckScanFile(scanFileName))
+        {
             CString errStr;
-            errStr.Format("Could not read scan-file %s", (LPCTSTR)m_scanFile[m_curScanFile]);
+            errStr.Format("Could not read scan-file %s", (LPCTSTR)m_scanFile[curScanFile]);
             MessageBox(NULL, errStr, "Error", MB_OK);
             continue;
         }
 
         // update the status window
-        m_statusMsg.Format("Evaluating scan number %d", m_curScanFile);
+        m_statusMsg.Format("Evaluating scan number %d", curScanFile);
         ShowMessage(m_statusMsg);
 
         // For each scanfile: loop through the fit windows
-        for (m_curWindow = 0; m_curWindow < m_windowNum; ++m_curWindow) {
+        for (m_curWindow = 0; m_curWindow < m_windowNum; ++m_curWindow)
+        {
             CFitWindow &thisWindow = m_window[m_curWindow];
 
             // Check the interlace steps
             CSpectrum skySpec;
             scan.GetSky(skySpec);
 
-            if (skySpec.Channel() > MAX_CHANNEL_NUM) {
+            if (skySpec.Channel() > MAX_CHANNEL_NUM)
+            {
                 // We should use an interlaced window instead
-                if (-1 == Common::GetInterlaceSteps(skySpec.Channel(), skySpec.m_info.m_interlaceStep)) {
+                if (-1 == Common::GetInterlaceSteps(skySpec.Channel(), skySpec.m_info.m_interlaceStep))
+                {
                     return 0; // WRONG!!
                 }
 
@@ -142,29 +133,35 @@ bool CReEvaluator::DoEvaluation() {
                 thisWindow.specLength = skySpec.m_length * skySpec.m_info.m_interlaceStep;
             }
 
-            if (skySpec.m_info.m_startChannel > 0 || skySpec.m_length != thisWindow.specLength / thisWindow.interlaceStep) {
+            if (skySpec.m_info.m_startChannel > 0 || skySpec.m_length != thisWindow.specLength / thisWindow.interlaceStep)
+            {
                 // If the spectra are too short or the start channel is not zero
                 //	then they are read out as partial spectra. Lets adapt the evaluator to that
                 thisWindow.specLength = skySpec.m_length;
                 thisWindow.startChannel = skySpec.m_info.m_startChannel;
             }
 
-            if (skySpec.m_info.m_interlaceStep > 1) {
+            if (skySpec.m_info.m_interlaceStep > 1)
+            {
                 skySpec.InterpolateSpectrum();
             }
 
             // check the quality of the sky-spectrum
-            if (skySpec.AverageValue(thisWindow.fitLow, thisWindow.fitHigh) >= 4090 * skySpec.NumSpectra()) {
-                if (skySpec.NumSpectra() > 0) {
+            if (skySpec.AverageValue(thisWindow.fitLow, thisWindow.fitHigh) >= 4090 * skySpec.NumSpectra())
+            {
+                if (skySpec.NumSpectra() > 0)
+                {
+                    CString message;
                     message.Format("It seems like the sky-spectrum is saturated in the fit-region. Continue?");
-                    if (IDNO == MessageBox(NULL, message, "Saturated sky spectrum?", MB_YESNO)) {
+                    if (IDNO == MessageBox(NULL, message, "Saturated sky spectrum?", MB_YESNO))
+                    {
                         break; // continue with the next scan-file
                     }
                 }
             }
 
             // Evaluate the scan-file
-            int success = ev.EvaluateScan(m_scanFile[m_curScanFile], m_window[m_curWindow], &fRun, &m_darkSettings);
+            int success = ev.EvaluateScan(m_scanFile[curScanFile], m_window[m_curWindow], &fRun, &m_darkSettings);
 
             // Check if the user wants to stop
             if (!fRun)
@@ -173,31 +170,23 @@ bool CReEvaluator::DoEvaluation() {
             }
 
             // get the result of the evaluation and write them to file
-            if (success) {
+            if (success)
+            {
                 std::unique_ptr<CScanResult> res = ev.GetResult();
-                AppendResultToEvaluationLog(res.get(), &scan);
+                AppendResultToEvaluationLog(*res.get(), scan, m_curWindow);
             }
 
         }//end for m_curWindow...
         m_curWindow = 0;
 
-    } // end for(m_curScanFile...
+    } // end for(curScanFile...
 
-    if (pView != NULL)
+    if (pView != nullptr)
     {
         pView->PostMessage(WM_DONE);
     }
 
     fRun = false;
-
-#ifdef _DEBUG
-    // this is for searching for memory leaks
-    newMem.Checkpoint();
-    if (diffMem.Difference(oldMem, newMem)) {
-        diffMem.DumpStatistics();
-        //		diffMem.DumpAllObjectsSince();
-    }
-#endif
 
     return true;
 }
@@ -219,38 +208,8 @@ bool CReEvaluator::MakeInitialSanityCheck() {
     return true;
 }
 
-
-//bool CReEvaluator::ReadReferences(CEvaluation *evaluator, CFitWindow &window){
-//	CString refFileList[MAX_N_REFERENCES];
-//	CString solarSpectrumFile;
-//	int ret;
-//
-//	if(window.nRef == 0){
-//		MessageBox(NULL, "No reference files selected, cannot reevaluate", "Error", MB_OK);
-//		return false;
-//	}
-//
-//	for(int i = 0; i < window.nRef; ++i){
-//		refFileList[i].Format(window.ref[i].m_path);
-//	}
-//
-//	// if we have a solar-spectrum then read that too...
-//	if(window.fraunhoferRef.m_path.GetLength() > 6){
-//		solarSpectrumFile.Format(window.fraunhoferRef.m_path);
-//
-//		ret = evaluator->ReadRefList(refFileList, &solarSpectrumFile, window.nRef, MAX_SPECTRUM_LENGTH);
-//	}else{
-//		// read the reference files
-//		ret = evaluator->ReadRefList(refFileList, NULL, window.nRef, MAX_SPECTRUM_LENGTH);
-//	}
-//	if(!ret){
-//		return false;
-//	}
-//
-//	return true;
-//}
-
-bool CReEvaluator::CreateOutputDirectory() {
+bool CReEvaluator::CreateOutputDirectory()
+{
     CString cDateTime, path, fileName;
     struct tm *tim;
     time_t t;
@@ -260,8 +219,8 @@ bool CReEvaluator::CreateOutputDirectory() {
     cDateTime.Format("%04d%02d%02d_%02d%02d", tim->tm_year + 1900, tim->tm_mon + 1, tim->tm_mday, tim->tm_hour, tim->tm_min);
 
     // Get the directory name
-    path.Format("%s", (LPCTSTR)m_scanFile[m_curScanFile]);
-    fileName.Format("%s", (LPCTSTR)m_scanFile[m_curScanFile]);
+    path.Format("%s", (LPCTSTR)m_scanFile[0]);
+    fileName.Format("%s", (LPCTSTR)m_scanFile[0]);
     Common::GetDirectory(path); // gets the directory of the scan-file
     Common::GetFileName(fileName);
     m_outputDir.Format("%s\\ReEvaluation_%s_%s", (LPCTSTR)path, (LPCTSTR)fileName, (LPCTSTR)cDateTime);
@@ -295,20 +254,22 @@ bool CReEvaluator::CreateOutputDirectory() {
     return true;
 }
 
-bool CReEvaluator::WriteEvaluationLogHeader() {
+bool CReEvaluator::WriteEvaluationLogHeader(int fitWindowIndex)
+{
     CString time, date, name;
     Common::GetDateText(date);
     Common::GetTimeText(time);
 
     // simplify the syntax a little bit
-    CFitWindow &window = m_window[m_curWindow];
+    const CFitWindow &window = m_window[fitWindowIndex];
 
     // Get the name of the evaluation log file
-    m_evalLog[m_curWindow] = m_outputDir + "\\ReEvaluationLog_" + CString(window.name.c_str()) + ".txt";
+    m_evalLog[fitWindowIndex] = m_outputDir + "\\ReEvaluationLog_" + CString(window.name.c_str()) + ".txt";
 
     // Try to open the log file
-    FILE *f = fopen(m_evalLog[m_curWindow], "w");
-    if (f == 0) {
+    FILE *f = fopen(m_evalLog[fitWindowIndex], "w");
+    if (f == nullptr)
+    {
         MessageBox(NULL, "Could not create evaluation-log file, evaluation aborted", "FileError", MB_OK);
         return false; // failed to open the file, quit it
     }
@@ -386,52 +347,53 @@ bool CReEvaluator::WriteEvaluationLogHeader() {
     return true;
 }
 
-bool CReEvaluator::AppendResultToEvaluationLog(const CScanResult *result, const FileHandler::CScanFileHandler *scan) {
-    CString name;
+bool CReEvaluator::AppendResultToEvaluationLog(const Evaluation::CScanResult& result, const FileHandler::CScanFileHandler& scan, int fitWindowIndex)
+{
     CSpectrum skySpec;
-    Common common;
-    double *evResult = 0;
-    FILE *f = fopen(m_evalLog[m_curWindow], "a+");
-    if (0 == f)
+
+    FILE *f = fopen(m_evalLog[fitWindowIndex], "a+");
+    if (nullptr == f)
+    {
         return false;
+    }
 
     // simplify the syntax a little bit
-    CFitWindow &window = m_window[m_curWindow];
+    const CFitWindow &window = m_window[fitWindowIndex];
 
     // Write the scan-information to file
     fprintf(f, "<scaninformation>\n");
-    fprintf(f, "\tdate=%02d.%02d.%04d\n", scan->m_startTime.day, scan->m_startTime.month, scan->m_startTime.year);
-    fprintf(f, "\tstarttime=%02d:%02d:%02d\n", scan->m_startTime.hour, scan->m_startTime.minute, scan->m_startTime.second);
-    fprintf(f, "\tcompass=%.1lf\n", scan->GetCompass());
+    fprintf(f, "\tdate=%02d.%02d.%04d\n", scan.m_startTime.day, scan.m_startTime.month, scan.m_startTime.year);
+    fprintf(f, "\tstarttime=%02d:%02d:%02d\n", scan.m_startTime.hour, scan.m_startTime.minute, scan.m_startTime.second);
+    fprintf(f, "\tcompass=%.1lf\n", scan.GetCompass());
     fprintf(f, "\ttilt=%.1lf\n", skySpec.m_info.m_pitch);
 
-    const CGPSData &gps = scan->GetGPS();
+    const CGPSData &gps = scan.GetGPS();
     fprintf(f, "\tlat=%.6lf\n", gps.m_latitude);
     fprintf(f, "\tlong=%.6lf\n", gps.m_longitude);
     fprintf(f, "\talt=%.3lf\n", gps.m_altitude);
 
-    fprintf(f, "\tserial=%s\n", scan->m_device.c_str());
-    fprintf(f, "\tchannel=%d\n", scan->m_channel);
+    fprintf(f, "\tserial=%s\n", scan.m_device.c_str());
+    fprintf(f, "\tchannel=%d\n", scan.m_channel);
 
-    scan->GetSky(skySpec);
+    scan.GetSky(skySpec);
     fprintf(f, "\tconeangle=%.1lf\n", skySpec.m_info.m_coneAngle);
-    fprintf(f, "\tinterlacesteps=%d\n", scan->GetInterlaceSteps());
-    fprintf(f, "\tstartchannel=%d\n", scan->GetStartChannel());
-    fprintf(f, "\tspectrumlength=%d\n", scan->GetSpectrumLength());
+    fprintf(f, "\tinterlacesteps=%d\n", scan.GetInterlaceSteps());
+    fprintf(f, "\tstartchannel=%d\n", scan.GetStartChannel());
+    fprintf(f, "\tspectrumlength=%d\n", scan.GetSpectrumLength());
 
     fprintf(f, "\tbattery=%.2f\n", skySpec.m_info.m_batteryVoltage);
     fprintf(f, "\ttemperature=%.2f\n", skySpec.m_info.m_temperature);
 
     // The mode
-    if (result->IsDirectSunMeasurement())
+    if (result.IsDirectSunMeasurement())
         fprintf(f, "\tmode=direct_sun\n");
-    if (result->IsLunarMeasurement())
+    if (result.IsLunarMeasurement())
         fprintf(f, "\tmode=lunar\n");
-    else if (result->IsWindMeasurement())
+    else if (result.IsWindMeasurement())
         fprintf(f, "\tmode=wind\n");
-    else if (result->IsStratosphereMeasurement())
+    else if (result.IsStratosphereMeasurement())
         fprintf(f, "\tmode=stratospheric\n");
-    else if (result->IsCompositionMeasurement())
+    else if (result.IsCompositionMeasurement())
         fprintf(f, "\tmode=composition\n");
     else
         fprintf(f, "\tmode=plume\n");
@@ -445,7 +407,9 @@ bool CReEvaluator::AppendResultToEvaluationLog(const CScanResult *result, const 
 
     // Write the header
     fprintf(f, "#scanangle\tstarttime\tstoptime\tname\tdelta\tchisquare\texposuretime\tnumspec\tintensity\tfitintensity\tisgoodpoint\toffset\tflag\t");
-    for (int i = 0; i < window.nRef; ++i) {
+    for (int i = 0; i < window.nRef; ++i)
+    {
+        CString name;
         name.Format("%s", window.ref[i].m_specieName.c_str());
 
         fprintf(f, "column(%s)\tcolumnerror(%s)\t", (LPCTSTR)name, (LPCTSTR)name);
@@ -453,8 +417,9 @@ bool CReEvaluator::AppendResultToEvaluationLog(const CScanResult *result, const 
         fprintf(f, "squeeze(%s)\tsqueezeerror(%s)\t", (LPCTSTR)name, (LPCTSTR)name);
     }
 
-    if (window.fitType == FIT_HP_SUB || window.fitType == FIT_POLY) {
-        name.Format("fraunhoferref");
+    if (window.fitType == FIT_HP_SUB || window.fitType == FIT_POLY)
+    {
+        CString name = "fraunhoferref";
 
         fprintf(f, "column(%s)\tcolumnerror(%s)\t", (LPCTSTR)name, (LPCTSTR)name);
         fprintf(f, "shift(%s)\tshifterror(%s)\t", (LPCTSTR)name, (LPCTSTR)name);
@@ -463,8 +428,9 @@ bool CReEvaluator::AppendResultToEvaluationLog(const CScanResult *result, const 
 
     fprintf(f, "\n<spectraldata>\n");
 
-    for (unsigned long i = 0; i < result->GetEvaluatedNum(); ++i) {
-        const CSpectrumInfo &info = result->GetSpectrumInfo(i);
+    for (unsigned long i = 0; i < result.GetEvaluatedNum(); ++i)
+    {
+        const CSpectrumInfo &info = result.GetSpectrumInfo(i);
 
         // The scan angle
         fprintf(f, "%.0f\t", info.m_scanAngle);
@@ -480,10 +446,10 @@ bool CReEvaluator::AppendResultToEvaluationLog(const CScanResult *result, const 
         fprintf(f, "%s\t", spectrumName.c_str());
 
         // The delta of the fit
-        fprintf(f, "%.2e\t", result->GetDelta(i));
+        fprintf(f, "%.2e\t", result.GetDelta(i));
 
         // The chi-square of the fit
-        fprintf(f, "%.2e\t", result->GetChiSquare(i));
+        fprintf(f, "%.2e\t", result.GetChiSquare(i));
 
         // The exposure time of the spectrum
         fprintf(f, "%d\t", info.m_exposureTime);
@@ -498,7 +464,7 @@ bool CReEvaluator::AppendResultToEvaluationLog(const CScanResult *result, const 
         fprintf(f, "%.0f\t", info.m_fitIntensity);
 
         // The quality of the fit
-        fprintf(f, "%d\t", result->IsOk(i));
+        fprintf(f, "%d\t", result.IsOk(i));
 
         // The electronic offset
         fprintf(f, "%.1f\t", info.m_offset);
@@ -509,19 +475,21 @@ bool CReEvaluator::AppendResultToEvaluationLog(const CScanResult *result, const 
         //		fprintf(f, "%.0lf\t", spec.MaxValue(m_window[m_curWindow].fitLow, m_window[m_curWindow].fitHigh));
 
         // the number of references
-        int nRef = m_window[m_curWindow].nRef;
+        int nRef = window.nRef;
         if (window.fitType == FIT_HP_SUB || window.fitType == FIT_POLY)
+        {
             ++nRef;
+        }
 
         // The Result
         for (int j = 0; j < nRef; ++j) {
 
-            fprintf(f, "%.2e\t", result->GetColumn(i, j));
-            fprintf(f, "%.2e\t", result->GetColumnError(i, j));
-            fprintf(f, "%.2e\t", result->GetShift(i, j));
-            fprintf(f, "%.2e\t", result->GetShiftError(i, j));
-            fprintf(f, "%.2e\t", result->GetSqueeze(i, j));
-            fprintf(f, "%.2e\t", result->GetSqueezeError(i, j));
+            fprintf(f, "%.2e\t", result.GetColumn(i, j));
+            fprintf(f, "%.2e\t", result.GetColumnError(i, j));
+            fprintf(f, "%.2e\t", result.GetShift(i, j));
+            fprintf(f, "%.2e\t", result.GetShiftError(i, j));
+            fprintf(f, "%.2e\t", result.GetSqueeze(i, j));
+            fprintf(f, "%.2e\t", result.GetSqueezeError(i, j));
         }
 
         fprintf(f, "\n");
@@ -536,23 +504,21 @@ bool CReEvaluator::AppendResultToEvaluationLog(const CScanResult *result, const 
 
 bool CReEvaluator::PrepareEvaluation()
 {
-    m_curScanFile = 0;
-
-    for (m_curWindow = 0; m_curWindow < m_windowNum; ++m_curWindow)
+    for (int curWindow = 0; curWindow < m_windowNum; ++curWindow)
     {
         if (!CreateOutputDirectory())
         {
             return false;
         }
 
-        if (!ReadReferences(m_window[m_curWindow]))
+        if (!ReadReferences(m_window[curWindow]))
         {
             MessageBox(NULL, "Not all references could be read. Please check settings and start again", "Error in settings", MB_OK);
             return false;
         }
 
         /* then create the evaluation log and write its header */
-        if (!WriteEvaluationLogHeader())
+        if (!WriteEvaluationLogHeader(curWindow))
         {
             return false;
         }

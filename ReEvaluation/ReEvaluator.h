@@ -40,9 +40,6 @@ namespace ReEvaluation
         /** The number of pak-files opened */
         long    m_scanFileNum;
 
-        /** The index of the pak-file we're currently working on */
-        long    m_curScanFile;
-
         /** The fit windows */
         Evaluation::CFitWindow  m_window[MAX_N_WINDOWS];
 
@@ -53,11 +50,11 @@ namespace ReEvaluation
         long        m_curWindow;
 
         /** True if the spectra that we're treating are averaged, not summed */
-        bool				m_averagedSpectra;
+        bool        m_averagedSpectra;
 
         /** a string that is updated with information about progres in the calculations.
             every time the string is changed a message is sent to 'pView' */
-        CString			m_statusMsg;
+        CString     m_statusMsg;
 
         /** The fit results */
         Evaluation::CEvaluationResult m_results;
@@ -97,18 +94,15 @@ namespace ReEvaluation
         /** Checks the settings before the evaluation */
         bool MakeInitialSanityCheck();
 
-        ///** Reads the references defined in the FitWindow into the evaluator provided. s*/
-        //bool ReadReferences(Evaluation::CEvaluation *evaluator, Evaluation::CFitWindow &window);
-
         /** Creates the output directory for the current scan file */
         bool CreateOutputDirectory();
 
         /** Creates, and writes the header in the evaluation log for
             the current scan file and the current fit window. */
-        bool  WriteEvaluationLogHeader();
+        bool  WriteEvaluationLogHeader(int fitWindowIndex);
 
         /** Appends the evaluation result to the evaluation log */
-        bool AppendResultToEvaluationLog(const Evaluation::CScanResult *result, const FileHandler::CScanFileHandler *scan);
+        bool AppendResultToEvaluationLog(const Evaluation::CScanResult& result, const FileHandler::CScanFileHandler& scan, int fitWindowIndex);
 
         /** Sorts the scans in the array 'm_scanFile' in alphabetical order */
         void SortScans();
