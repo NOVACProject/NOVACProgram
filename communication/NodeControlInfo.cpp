@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "NodeControlInfo.h"
-#include "Common/Common.h"
+#include "../Common/Common.h"
 
 //--------------------------------class CControlInfo------------------//
 
@@ -49,7 +49,6 @@ namespace Communication
         }
     }
 
-    //set node operating status
     void CNodeControlInfo::SetNodeStatus(int mainIndex, DeviceMode status, CString& filePath)
     {
         // Error Check!
@@ -60,27 +59,29 @@ namespace Communication
         controlInfo->m_cfgFilePath = filePath;
         m_controlInfoArray.SetAt(mainIndex, controlInfo);
     }
+
     void CNodeControlInfo::GetNodeCfgFilePath(int mainIndex, CString& filePath)
     {
         if (mainIndex < 0 || mainIndex >= m_controlInfoArray.GetSize()) {
             filePath.Format("");
             return;
         }
-        else {
+        else
+        {
             CControlInfo* controlInfo = m_controlInfoArray.GetAt(mainIndex);
             filePath = controlInfo->m_cfgFilePath;
         }
     }
-    //get main index by spectrometer id
+
     int CNodeControlInfo::GetMainIndex(CString spectrometerID)
     {
-        int i;
-        CControlInfo* controlInfo;
-        for (i = 0; i < m_controlInfoArray.GetCount(); i++)
+        for (int i = 0; i < m_controlInfoArray.GetCount(); i++)
         {
-            controlInfo = m_controlInfoArray.GetAt(i);
+            CControlInfo* controlInfo = m_controlInfoArray.GetAt(i);
             if (Equals(controlInfo->m_spectrometerID, spectrometerID))
+            {
                 return i;
+            }
         }
         return -1;
     }

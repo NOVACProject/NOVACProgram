@@ -164,6 +164,7 @@
     <ClCompile Include="communication\FTPServerContacter.cpp" />
     <ClCompile Include="communication\FTPSocket.cpp" />
     <ClCompile Include="communication\LinkStatistics.cpp" />
+    <ClCompile Include="communication\NodeControlInfo.cpp" />
     <ClCompile Include="communication\SerialCOM.cpp" />
     <ClCompile Include="communication\SerialControllerWithTx.cpp" />
     <ClCompile Include="Configuration\AdvancedFTPUploadSettings.cpp" />
@@ -232,7 +233,6 @@
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="MasterController.cpp" />
     <ClCompile Include="MeteorologicalData.cpp" />
-    <ClCompile Include="NodeControlInfo.cpp" />
     <ClCompile Include="NovacMasterProgram.cpp" />
     <ClCompile Include="NovacMasterProgramDoc.cpp" />
     <ClCompile Include="NovacMasterProgramView.cpp" />
@@ -251,6 +251,7 @@
     <ClCompile Include="Dialogs\ReferencePlotDlg.cpp" />
     <ClCompile Include="ScannerFileInfo.cpp" />
     <ClCompile Include="ScannerFolderInfo.cpp" />
+    <ClInclude Include="communication\NodeControlInfo.h" />
     <ClInclude Include="Dialogs\ColumnHistoryDlg.h" />
     <ClInclude Include="Evaluation\EvaluationResultView.h" />
     <ClInclude Include="SpectralEvaluation\Fit\BSpline.cxx" />
@@ -468,7 +469,6 @@
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="MasterController.h" />
     <ClInclude Include="MeteorologicalData.h" />
-    <ClInclude Include="NodeControlInfo.h" />
     <ClInclude Include="NovacMasterProgram.h" />
     <ClInclude Include="NovacMasterProgramDoc.h" />
     <ClInclude Include="NovacMasterProgramView.h" />

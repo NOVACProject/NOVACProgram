@@ -4,7 +4,7 @@
 #include "FTPCom.h"
 #include "FTPHandler.h"
 #include "SerialControllerWithTx.h"
-#include "../NodeControlInfo.h"
+#include "NodeControlInfo.h"
 
 
 using namespace Communication;
