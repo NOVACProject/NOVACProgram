@@ -38,8 +38,8 @@ namespace Communication
         //--------------------------------------------------------------//
         //-------------------------public functions---------------------//
         //--------------------------------------------------------------//
-        CNodeControlInfo(void);
-        ~CNodeControlInfo(void);
+        CNodeControlInfo();
+        ~CNodeControlInfo();
 
         /**get the total number of nodes
             *return total number of nodes */

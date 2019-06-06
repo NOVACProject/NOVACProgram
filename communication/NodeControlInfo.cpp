@@ -13,12 +13,12 @@ namespace Communication
     }
 
     //---------------------------class CNodeControlInfo------------------//
-    CNodeControlInfo::CNodeControlInfo(void)
+    CNodeControlInfo::CNodeControlInfo()
     {
         m_controlInfoArray.SetSize(1);
     }
 
-    CNodeControlInfo::~CNodeControlInfo(void)
+    CNodeControlInfo::~CNodeControlInfo()
     {
         m_controlInfoArray.RemoveAll();
     }
@@ -39,11 +39,14 @@ namespace Communication
         {
             return DeviceMode::Run;
         }
-        else
+
+        const CControlInfo* controlInfo = m_controlInfoArray.GetAt(mainIndex);
+        if (nullptr == controlInfo)
         {
-            CControlInfo* controlInfo = m_controlInfoArray.GetAt(mainIndex);
-            return controlInfo->m_mode;
+            return DeviceMode::Run;
         }
+
+        return controlInfo->m_mode;
     }
 
     void CNodeControlInfo::SetNodeStatus(int mainIndex, DeviceMode status)
@@ -75,23 +78,28 @@ namespace Communication
 
     void CNodeControlInfo::GetNodeCfgFilePath(int mainIndex, CString& filePath) const
     {
-        if (mainIndex < 0 || mainIndex >= m_controlInfoArray.GetSize()) {
+        if (mainIndex < 0 || mainIndex >= m_controlInfoArray.GetSize())
+        {
             filePath.Format("");
             return;
         }
-        else
+
+        const CControlInfo* controlInfo = m_controlInfoArray.GetAt(mainIndex);
+        if (nullptr == controlInfo)
         {
-            CControlInfo* controlInfo = m_controlInfoArray.GetAt(mainIndex);
-            filePath = controlInfo->m_localPathToFileToUpload;
+            filePath.Format("");
+            return;
         }
+
+        filePath = controlInfo->m_localPathToFileToUpload;
     }
 
     int CNodeControlInfo::GetMainIndex(CString spectrometerID) const
     {
         for (int i = 0; i < m_controlInfoArray.GetCount(); i++)
         {
-            CControlInfo* controlInfo = m_controlInfoArray.GetAt(i);
-            if (Equals(controlInfo->m_spectrometerID, spectrometerID))
+            const CControlInfo* controlInfo = m_controlInfoArray.GetAt(i);
+            if (nullptr != controlInfo && Equals(controlInfo->m_spectrometerID, spectrometerID))
             {
                 return i;
             }
