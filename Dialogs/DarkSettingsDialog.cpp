@@ -108,12 +108,12 @@ void CDarkSettingsDialog::OnOK()
 		return; // shouldn't happen...
 
 	// Initialize the values of the dialog
-	m_darkSettings->m_darkSpecOption				= (Configuration::DARK_SPEC_OPTION)m_darkSpecOption;
+	m_darkSettings->m_darkSpecOption			= (Configuration::DARK_SPEC_OPTION)m_darkSpecOption;
 	m_darkSettings->m_darkCurrentOption			= (Configuration::DARK_MODEL_OPTION)m_dcSpecOption;
-	m_darkSettings->m_offsetOption					= (Configuration::DARK_MODEL_OPTION)m_offsetSpecOption;
+	m_darkSettings->m_offsetOption				= (Configuration::DARK_MODEL_OPTION)m_offsetSpecOption;
 
 	// the files
-	if(m_darkSettings->m_darkSpecOption	== Configuration::DARK_SPEC_OPTION::DARK_USER_SUPPLIED){
+	if(m_darkSettings->m_darkSpecOption	== Configuration::DARK_SPEC_OPTION::USER_SUPPLIED){
 		m_darkSettings->m_offsetSpec = std::string((LPCSTR)m_darkSpectrum_UserSupplied);
 	}else{
 		m_darkSettings->m_offsetSpec = std::string((LPCSTR)m_offsetPath1);
@@ -139,7 +139,7 @@ BOOL CDarkSettingsDialog::OnInitDialog(){
 	m_offsetSpecOption				= (int)m_darkSettings->m_offsetOption;
 
 	// the files
-	if(m_darkSpecOption == (int)Configuration::DARK_SPEC_OPTION::DARK_USER_SUPPLIED){
+	if(m_darkSpecOption == (int)Configuration::DARK_SPEC_OPTION::USER_SUPPLIED){
 		m_darkSpectrum_UserSupplied.Format("%s", m_darkSettings->m_offsetSpec.c_str());
 	}else{
 		m_offsetPath1.Format("%s", m_darkSettings->m_offsetSpec.c_str());
@@ -244,25 +244,25 @@ void CDarkSettingsDialog::UpdateControls(){
 // The 'Browse' buttons
 void CDarkSettingsDialog::OnBrowseOffset1(){
 	if(1 == BrowseFile(IDC_EDIT_OFFSETSPECTRUM))
-		m_offsetSpecOption = (int)Configuration::DARK_SPEC_OPTION::DARK_USER_SUPPLIED;
+		m_offsetSpecOption = (int)Configuration::DARK_SPEC_OPTION::USER_SUPPLIED;
 
 	UpdateData(FALSE);
 }
 void CDarkSettingsDialog::OnBrowseOffset2(){
 	if(1 == BrowseFile(IDC_EDIT_OFFSETSPECTRUM2))
-		m_offsetSpecOption = (int)Configuration::DARK_SPEC_OPTION::DARK_USER_SUPPLIED;
+		m_offsetSpecOption = (int)Configuration::DARK_SPEC_OPTION::USER_SUPPLIED;
 
 	UpdateData(FALSE);
 }
 void CDarkSettingsDialog::OnBrowseDC1(){
 	if(1 == BrowseFile(IDC_EDIT_DARKCURRENT_SPECTRUM))
-		m_dcSpecOption = (int)Configuration::DARK_SPEC_OPTION::DARK_USER_SUPPLIED;
+		m_dcSpecOption = (int)Configuration::DARK_SPEC_OPTION::USER_SUPPLIED;
 
 	UpdateData(FALSE);
 }
 void CDarkSettingsDialog::OnBrowseDC2(){
 	if(1 == BrowseFile(IDC_EDIT_DARKCURRENT_SPECTRUM2))
-		m_dcSpecOption = (int)Configuration::DARK_SPEC_OPTION::DARK_USER_SUPPLIED;
+		m_dcSpecOption = (int)Configuration::DARK_SPEC_OPTION::USER_SUPPLIED;
 
 	UpdateData(FALSE);
 }

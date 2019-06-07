@@ -99,7 +99,7 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
 	// Check the scan file, make sure it's correct and that the file
 	//	actually contains spectra
     const std::string scanFileName((LPCSTR)scanfile);
-	if(SUCCESS != scan.CheckScanFile(scanFileName)) {
+	if(!scan.CheckScanFile(scanFileName)) {
 		return 0;
 	}
 

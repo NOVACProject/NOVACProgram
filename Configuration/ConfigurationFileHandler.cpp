@@ -356,7 +356,7 @@ int CConfigurationFileHandler::WriteConfigurationFile(CConfigurationSetting &con
 				fprintf(f, str);
 
 				// The options for the dark-current
-				if(spec.channel[l].m_darkSettings.m_darkSpecOption != Configuration::DARK_SPEC_OPTION::MEASURE){
+				if(spec.channel[l].m_darkSettings.m_darkSpecOption != Configuration::DARK_SPEC_OPTION::MEASURED_IN_SCAN){
 					// How to get the dark-spectrum
 					str.Format("\t%s<dark>%d</dark>\n", (LPCSTR)indent, (int)spec.channel[l].m_darkSettings.m_darkSpecOption);
 					fprintf(f, str);
