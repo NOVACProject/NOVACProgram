@@ -199,14 +199,16 @@ int CFTPCom::UploadFile(LPCTSTR localFile, LPCTSTR remoteFile)
     int result;
 
     // Check that we are connected
-    if (m_FtpConnection == nullptr) {
+    if (m_FtpConnection == nullptr)
+    {
         ShowMessage("ERROR: Attempted to upload file using FTP while not connected!");
         return 0;
     }
 
     // See if we can find the file on the remote computer, if so
     //	then we can't upload it...
-    if (FindFile((CString&)remoteFile) == TRUE) {
+    if (FindFile((CString&)remoteFile) == TRUE)
+    {
         return 1;
     }
 

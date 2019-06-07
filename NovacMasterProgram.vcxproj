@@ -159,6 +159,7 @@
     <ClCompile Include="Common\XMLFileReader.cpp" />
     <ClCompile Include="CommunicationDataStorage.cpp" />
     <ClCompile Include="communication\CommunicationController.cpp" />
+    <ClCompile Include="communication\ElectronicsBoxProperties.cpp" />
     <ClCompile Include="communication\IFTPDataUpload.cpp" />
     <ClCompile Include="communication\SFTPCom.cpp" />
     <ClCompile Include="communication\FTPCom.cpp" />
@@ -253,6 +254,7 @@
     <ClCompile Include="Dialogs\ReferencePlotDlg.cpp" />
     <ClCompile Include="ScannerFileInfo.cpp" />
     <ClCompile Include="ScannerFolderInfo.cpp" />
+    <ClInclude Include="communication\ElectronicsBoxProperties.h" />
     <ClInclude Include="communication\NodeControlInfo.h" />
     <ClInclude Include="communication\IFTPDataUpload.h" />
     <ClInclude Include="communication\SFTPCom.h" />

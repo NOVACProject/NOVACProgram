@@ -41,7 +41,7 @@ namespace Communication
 		*/
 		void SetSerialPort(int COMPort,int baudrate,int parity,int length,int stopBit,int fRTS,bool fCTS);
 		int InitialSerialPort();
-		BOOL WriteSerial(void *sendText,long sentByteNum);
+		BOOL WriteSerial(const void *sendText,long sentByteNum);
 		/**Close serial communication*/
 		void CloseSerialPort();
 		/**Read information from serial port.

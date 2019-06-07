@@ -8,8 +8,8 @@ namespace Communication
     class CFTPCom : public IFTPDataUpload
     {
     public:
-        CFTPCom(void);
-        ~CFTPCom(void);
+        CFTPCom();
+        ~CFTPCom();
 
         CString m_FTPSite;
 

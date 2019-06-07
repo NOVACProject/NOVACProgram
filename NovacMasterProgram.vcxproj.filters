@@ -567,6 +567,15 @@
     <ClCompile Include="communication\IFTPDataUpload.cpp">
       <Filter>Source Files\Communication</Filter>
     </ClCompile>
+    <ClCompile Include="communication\SFTPCom.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="communication\NodeControlInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="communication\ElectronicsBoxProperties.cpp">
+      <Filter>Source Files\Communication</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Configuration\AdvancedFTPUploadSettings.h">
@@ -1167,6 +1176,12 @@
       <Filter>Header Files\Communication</Filter>
     </ClInclude>
     <ClInclude Include="communication\IFTPDataUpload.h">
+      <Filter>Header Files\Communication</Filter>
+    </ClInclude>
+    <ClInclude Include="communication\SFTPCom.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="communication\ElectronicsBoxProperties.h">
       <Filter>Header Files\Communication</Filter>
     </ClInclude>
   </ItemGroup>
