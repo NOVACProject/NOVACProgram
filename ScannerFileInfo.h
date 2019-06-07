@@ -1,24 +1,25 @@
 #pragma once
 
-class CScannerFileInfo
+/** The struct CScannerFileInfo stores information regarding one file in a remote scanner device */
+struct CScannerFileInfo
 {
 public:
-	CScannerFileInfo(void);
-	~CScannerFileInfo(void);
-	CScannerFileInfo(char pDiskName,CString pFileName,CString pFileSubfix, long pFileSize, CString pDate,CString pTime);
-	CScannerFileInfo(const CScannerFileInfo &info2);
+    CScannerFileInfo();
 
-	CString info;
+    CScannerFileInfo(char diskName, CString pFileName, CString pFileSubfix, long pFileSize, CString pDate, CString pTime);
 
-	char		diskName;
+    CScannerFileInfo(const CScannerFileInfo &info2);
+    CScannerFileInfo& operator=(const CScannerFileInfo& info2);
 
-	CString	fileName;
+    char diskName;
 
-	CString fileSubfix;
+    CString	fileName;
 
-	long		fileSize;
+    CString fileSubfix;
 
-	CString date;
+    long fileSize;
 
-	CString time;
+    CString date;
+
+    CString time;
 };
