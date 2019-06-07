@@ -4,7 +4,7 @@
 #include "../Common/Spectra/PakFileHandler.h"
 #include "../StatusFileReader.h"
 #include "../Common/Common.h"
-#include "../FileInfo.h"
+#include "FileInfo.h"
 #include "LinkStatistics.h"
 #include "ElectronicsBoxProperties.h"
 

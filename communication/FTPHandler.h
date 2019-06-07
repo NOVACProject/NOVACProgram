@@ -5,7 +5,6 @@
 #include "../Common/Spectra/PakFileHandler.h"
 #include "../Common/Common.h"
 #include "../Configuration/configuration.h"
-#include "../FileInfo.h"
 #include "../scannerfileinfo.h"
 #include "ElectronicsBoxProperties.h"
 

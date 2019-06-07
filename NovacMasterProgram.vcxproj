@@ -160,6 +160,7 @@
     <ClCompile Include="CommunicationDataStorage.cpp" />
     <ClCompile Include="communication\CommunicationController.cpp" />
     <ClCompile Include="communication\ElectronicsBoxProperties.cpp" />
+    <ClCompile Include="communication\FileInfo.cpp" />
     <ClCompile Include="communication\IFTPDataUpload.cpp" />
     <ClCompile Include="communication\SFTPCom.cpp" />
     <ClCompile Include="communication\FTPCom.cpp" />
@@ -223,7 +224,6 @@
     <ClCompile Include="Evaluation\ScanResult.cpp" />
     <ClCompile Include="Evaluation\Spectrometer.cpp" />
     <ClCompile Include="Evaluation\SpectrometerHistory.cpp" />
-    <ClCompile Include="FileInfo.cpp" />
     <ClCompile Include="FileTreeCtrl.cpp" />
     <ClCompile Include="Geometry\GeometryCalculator.cpp" />
     <ClCompile Include="Geometry\GeometryEvaluator.cpp" />
@@ -255,14 +255,12 @@
     <ClCompile Include="ScannerFileInfo.cpp" />
     <ClCompile Include="ScannerFolderInfo.cpp" />
     <ClInclude Include="communication\ElectronicsBoxProperties.h" />
+    <ClInclude Include="communication\FileInfo.h" />
     <ClInclude Include="communication\NodeControlInfo.h" />
     <ClInclude Include="communication\IFTPDataUpload.h" />
     <ClInclude Include="communication\SFTPCom.h" />
     <ClInclude Include="Dialogs\ColumnHistoryDlg.h" />
     <ClInclude Include="Evaluation\EvaluationResultView.h" />
-    <ClInclude Include="SpectralEvaluation\Fit\BSpline.cxx" />
-    <ClInclude Include="SpectralEvaluation\Fit\BSplineD.cxx" />
-    <ClInclude Include="SpectralEvaluation\Fit\BSplineF.cxx" />
     <ClCompile Include="SpectralEvaluation\src\DateTime.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
@@ -462,7 +460,6 @@
     <ClInclude Include="Evaluation\ScanResult.h" />
     <ClInclude Include="Evaluation\Spectrometer.h" />
     <ClInclude Include="Evaluation\SpectrometerHistory.h" />
-    <ClInclude Include="FileInfo.h" />
     <ClInclude Include="FileTreeCtrl.h" />
     <ClInclude Include="Geometry\GeometryCalculator.h" />
     <ClInclude Include="Geometry\GeometryEvaluator.h" />

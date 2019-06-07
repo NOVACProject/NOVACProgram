@@ -150,9 +150,6 @@
     <ClCompile Include="Common\EvaluationLogFileHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FileInfo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="FileTreeCtrl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -175,9 +172,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Geometry\GeometryResult.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="communication\LinkStatistics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Configuration\LocationConfigurationDlg.cpp">
@@ -567,13 +561,19 @@
     <ClCompile Include="communication\IFTPDataUpload.cpp">
       <Filter>Source Files\Communication</Filter>
     </ClCompile>
-    <ClCompile Include="communication\SFTPCom.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="communication\NodeControlInfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="communication\ElectronicsBoxProperties.cpp">
+      <Filter>Source Files\Communication</Filter>
+    </ClCompile>
+    <ClCompile Include="communication\FileInfo.cpp">
+      <Filter>Source Files\Communication</Filter>
+    </ClCompile>
+    <ClCompile Include="communication\LinkStatistics.cpp">
+      <Filter>Source Files\Communication</Filter>
+    </ClCompile>
+    <ClCompile Include="communication\SFTPCom.cpp">
       <Filter>Source Files\Communication</Filter>
     </ClCompile>
   </ItemGroup>
@@ -608,9 +608,6 @@
     <ClInclude Include="Configuration\FTPSettingsDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="FileInfo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="FileTreeCtrl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -633,9 +630,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Geometry\GeometryResult.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="communication\LinkStatistics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Configuration\LocationConfigurationDlg.h">
@@ -956,15 +950,6 @@
     <ClInclude Include="Dialogs\ReferencePlotDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SpectralEvaluation\Fit\BSpline.cxx">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SpectralEvaluation\Fit\BSplineD.cxx">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SpectralEvaluation\Fit\BSplineF.cxx">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="Evaluation\EvaluationResultView.h">
       <Filter>Header Files\Evaluation</Filter>
     </ClInclude>
@@ -1178,10 +1163,16 @@
     <ClInclude Include="communication\IFTPDataUpload.h">
       <Filter>Header Files\Communication</Filter>
     </ClInclude>
-    <ClInclude Include="communication\SFTPCom.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="communication\ElectronicsBoxProperties.h">
+      <Filter>Header Files\Communication</Filter>
+    </ClInclude>
+    <ClInclude Include="communication\SFTPCom.h">
+      <Filter>Header Files\Communication</Filter>
+    </ClInclude>
+    <ClInclude Include="communication\LinkStatistics.h">
+      <Filter>Header Files\Communication</Filter>
+    </ClInclude>
+    <ClInclude Include="communication\FileInfo.h">
       <Filter>Header Files\Communication</Filter>
     </ClInclude>
   </ItemGroup>
