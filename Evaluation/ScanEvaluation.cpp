@@ -91,8 +91,7 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
     // Check the scan file, make sure it's correct and that the file
     //	actually contains spectra
     const std::string scanFileName((LPCSTR)scanfile);
-    if (SUCCESS != scan.CheckScanFile(scanFileName))
-    {
+    if (!scan.CheckScanFile(scanFileName)) {
         return 0;
     }
 
@@ -115,9 +114,9 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
 
     // Get some important information about the spectra, like
     //	interlace steps, spectrum length and start-channel
-    copyOfWindow.interlaceStep  = scan.GetInterlaceSteps();
-    copyOfWindow.specLength     = scan.GetSpectrumLength() * copyOfWindow.interlaceStep;
-    copyOfWindow.startChannel   = scan.GetStartChannel();
+    copyOfWindow.interlaceStep = scan.GetInterlaceSteps();
+    copyOfWindow.specLength = scan.GetSpectrumLength() * copyOfWindow.interlaceStep;
+    copyOfWindow.startChannel = scan.GetStartChannel();
 
     // Adjust the fit-low and fit-high parameters according to the spectra
     m_fitLow = copyOfWindow.fitLow - copyOfWindow.startChannel;

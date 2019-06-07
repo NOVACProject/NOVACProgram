@@ -245,7 +245,7 @@ RETURN_CODE CEvaluationController::EvaluateScan(const CString &fileName, int vol
 
 	// 2. Read the scan file
     const std::string fileNameStr((LPCSTR)fileName);
-	if(SUCCESS != scan->CheckScanFile(fileNameStr)){
+	if(!scan->CheckScanFile(fileNameStr)){
 		m_logFileWriter.WriteErrorMessage(TEXT("Could not read recieved scan"));
 		delete scan;
 		return FAIL;
