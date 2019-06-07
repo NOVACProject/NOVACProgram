@@ -731,7 +731,7 @@ bool CPakFileHandler::IsDirectSunMeasurement(const CString &fileName){
 	// It is here assumed that the measurement is a direct-sun measurment
 	//	if there is at least 5 spectrum with the name 'direct_sun'
     const std::string fileNameStr((LPCSTR)fileName);
-	if(SUCCESS != scan.CheckScanFile(fileNameStr)){
+	if(!scan.CheckScanFile(fileNameStr)){
 		return false; // failed to check the file
 	}
 	while(scan.GetNextSpectrum(spec)){
@@ -757,7 +757,7 @@ bool CPakFileHandler::IsLunarMeasurement(const CString &fileName){
 	// It is here assumed that the measurement is a direct-sun measurment
     const std::string fileNameStr((LPCSTR)fileName);
 	//	if there is at least 5 spectrum with the name 'direct_sun'
-	if(SUCCESS != scan.CheckScanFile(fileNameStr)){
+	if(!scan.CheckScanFile(fileNameStr)){
 		return false; // failed to check the file
 	}
 	while(scan.GetNextSpectrum(spec)){
@@ -795,7 +795,7 @@ bool CPakFileHandler::IsCompositionMeasurement(const CString &fileName){
 	//		* at least 1 spectrum with the name 'dark_cur'
 	//		* at least 1 spectrum with the name 'comp'
     const std::string fileNameStr((LPCSTR)fileName);
-	if(SUCCESS != scan.CheckScanFile(fileNameStr)){
+	if(!scan.CheckScanFile(fileNameStr)){
 		return false; // failed to check the file
 	}
 	scan.ResetCounter();
