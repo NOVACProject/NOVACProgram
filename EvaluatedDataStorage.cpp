@@ -884,10 +884,6 @@ double CEvaluatedDataStorage::GetDynamicRange(const CString &serial){
 	int scannerIndex = GetScannerIndex(serial);
 	if(scannerIndex < 0)
 		return -1;
-
-	if(m_models[scannerIndex] == UNKNOWN_SPECTROMETER)
-		return 0;
-
 	return CSpectrometerModel::GetMaxIntensity(m_models[scannerIndex]);
 }
 

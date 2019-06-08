@@ -306,8 +306,7 @@ int CConfigurationFileHandler::WriteConfigurationFile(CConfigurationSetting &con
             fprintf(f, str);
 
             // model Number
-            CSpectrometerModel::ToString(spec.model, modelStr);
-            str.Format("%s<model>%s</model>\n", (LPCSTR)indent, modelStr.c_str());
+            str.Format("%s<model>%s</model>\n", (LPCSTR)indent, spec.model.c_str());
             fprintf(f, str);
 
             if (conf->scanner[i].spec[j].channelNum > 1)

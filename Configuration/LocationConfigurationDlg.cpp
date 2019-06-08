@@ -109,12 +109,10 @@ BOOL CLocationConfigurationDlg::OnInitDialog()
 
 	// The spectrometer models combo box
 	m_comboSpectrometerModel.ResetContent();
-	for(int j = 0; j < CSpectrometerModel::GetNumSpectrometerModels()-1; ++j)
+    std::vector<std::string> modelNames = CSpectrometerDatabase::GetInstance().ListModels();
+	for(size_t j = 0; j < modelNames.size(); ++j)
     {
-        std::string model;
-		CSpectrometerModel::ToString((SPECTROMETER_MODEL)j, model);
-
-        CString modelStr(model.c_str());
+        CString modelStr(modelNames[j].c_str());
 		m_comboSpectrometerModel.AddString(modelStr);
 	}
 
@@ -205,7 +203,8 @@ void CLocationConfigurationDlg::OnChangeScanner(){
 		}
 
 		// Then update the spectrometer model
-		m_comboSpectrometerModel.SetCurSel((int)m_curScanner->spec[0].model);
+        const int spectrometerTypeIdx = CSpectrometerDatabase::GetInstance().GetModelIndex(m_curScanner->spec[0].model);
+		m_comboSpectrometerModel.SetCurSel(spectrometerTypeIdx);
 
 		// Then update the channel numbers
 		m_comboSpectrometerChannels.SetCurSel(m_curScanner->spec[0].channelNum - 1);

@@ -114,7 +114,7 @@ public:
         CString serialNumber;
 
         /** The model-number of this spectrometer */
-        SPECTROMETER_MODEL	model;
+        std::string model;
 
         /** The number of channels defined in this spectrometer */
         unsigned char channelNum;
