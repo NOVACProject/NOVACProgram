@@ -4,7 +4,6 @@
 #include <SpectralEvaluation/GPSData.h>
 #include <SpectralEvaluation/Evaluation/ReferenceFile.h>
 #include <SpectralEvaluation/Evaluation/FitWindow.h>
-#include <SpectralEvaluation/Spectra/SpectrometerModel.h>
 #include <SpectralEvaluation/Configuration/DarkSettings.h>
 
 #ifndef _CCONFIGURATIONSETTINGS_H_
@@ -114,7 +113,7 @@ public:
         CString serialNumber;
 
         /** The model-number of this spectrometer */
-        std::string model;
+        std::string modelName;
 
         /** The number of channels defined in this spectrometer */
         unsigned char channelNum;

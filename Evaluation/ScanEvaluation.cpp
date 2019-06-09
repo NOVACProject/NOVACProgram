@@ -6,6 +6,7 @@
 #include <SpectralEvaluation/File/SpectrumIO.h>
 #include <SpectralEvaluation/File/STDFile.h>
 #include <SpectralEvaluation/File/TXTFile.h>
+#include <SpectralEvaluation/Spectra/SpectrometerModel.h>
 #include <SpectralEvaluation/Utils.h>
 
 using namespace Evaluation;
@@ -656,7 +657,7 @@ CFitWindow* CScanEvaluation::FindOptimumShiftAndSqueeze_Fraunhofer(const CEvalua
     int indexOfMostSuitableSpectrum = NO_SPECTRUM_INDEX;
     scan->GetSky(spectrum);
     fitIntensity = spectrum.MaxValue(fitLow, fitHigh);
-    maxInt = CSpectrometerModel::GetMaxIntensity(spectrum.m_info.m_specModel);
+    maxInt = CSpectrometerDatabase::GetInstance().GetModel(spectrum.m_info.m_specModelName).maximumIntensity;
     if (spectrum.NumSpectra() > 0) {
         fitSaturation = fitIntensity / (spectrum.NumSpectra() * maxInt);
     }
@@ -674,7 +675,7 @@ CFitWindow* CScanEvaluation::FindOptimumShiftAndSqueeze_Fraunhofer(const CEvalua
 
     while (scan->GetNextSpectrum(spectrum)) {
         fitIntensity = spectrum.MaxValue(fitLow, fitHigh);
-        maxInt = CSpectrometerModel::GetMaxIntensity(spectrum.m_info.m_specModel);
+        maxInt = CSpectrometerDatabase::GetInstance().GetModel(spectrum.m_info.m_specModelName).maximumIntensity; 
 
         // Get the saturation-ratio for this spectrum
         if (spectrum.NumSpectra() > 0) {

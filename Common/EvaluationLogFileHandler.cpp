@@ -587,7 +587,7 @@ RETURN_CODE CEvaluationLogFileHandler::ReadEvaluationLog() {
 
             double dynamicRange = 1.0; // <-- unknown
             if (m_col.peakSaturation != -1) { // If the intensity is specified as a saturation ratio...
-                dynamicRange = CSpectrometerModel::GetMaxIntensity(m_specInfo.m_specModel);
+                dynamicRange = CSpectrometerDatabase::GetInstance().GetModel(m_specInfo.m_specModelName).maximumIntensity;
             }
             m_scan[sortOrder[m_scanNum]].CheckGoodnessOfFit(m_specInfo);
             ++measNr;
@@ -837,31 +837,7 @@ void CEvaluationLogFileHandler::ParseScanInformation(CSpectrumInfo &scanInfo, do
             MakeUpper(scanInfo.m_device);	// Convert the serial-number to all upper case letters
 
             // Extract the spectrometer-model from the serial-number of the spectrometer
-            if (Contains(scanInfo.m_device, "D2J")) {
-                scanInfo.m_specModel = S2000;
-            }
-            else if (Contains(scanInfo.m_device, "I2J")) {
-                scanInfo.m_specModel = S2000;
-            }
-            else if (Contains(scanInfo.m_device, "USB2")) {
-                scanInfo.m_specModel = USB2000;
-            }
-            else if (Contains(scanInfo.m_device, "USB4C")) {
-                scanInfo.m_specModel = USB4000;
-            }
-            else if (Contains(scanInfo.m_device, "HR2")) {
-                scanInfo.m_specModel = HR2000;
-            }
-            else if (Contains(scanInfo.m_device, "HR4")) {
-                scanInfo.m_specModel = HR4000;
-            }
-            else if (Contains(scanInfo.m_device, "QE")) {
-                scanInfo.m_specModel = QE65000;
-            }
-            else if (Contains(scanInfo.m_device, "MAYAPRO")) {
-                scanInfo.m_specModel = MAYAPRO;
-            }
-
+            scanInfo.m_specModelName = CSpectrometerDatabase::GetInstance().GuessModelFromSerial(scanInfo.m_device).modelName;
             continue;
         }
         if (pt = strstr(szLine, "spectrometer=")) {
@@ -1172,16 +1148,7 @@ RETURN_CODE CEvaluationLogFileHandler::WriteEvaluationLog(const CString fileName
         string.AppendFormat("\tobservatory=%s\n", m_specInfo.m_observatory.c_str());
 
         string.AppendFormat("\tserial=%s\n", scan.GetSerial().c_str());
-        switch (m_specInfo.m_specModel) {
-        case S2000:				string.AppendFormat("\tspectrometer=s2000\n");	break;
-        case USB2000:			string.AppendFormat("\tspectrometer=usb2000\n");	break;
-        case USB4000:			string.AppendFormat("\tspectrometer=usb4000\n");	break;
-        case HR2000:			string.AppendFormat("\tspectrometer=hr2000\n");	break;
-        case HR4000:			string.AppendFormat("\tspectrometer=hr4000\n");	break;
-        case QE65000:			string.AppendFormat("\tspectrometer=qe65000\n");	break;
-        case MAYAPRO:			string.AppendFormat("\tspectrometer=mayapro\n");	break;
-        default:					string.AppendFormat("\tspectrometer=s2000\n");	break;
-        }
+        string.AppendFormat("\tspectrometer=%s\n", m_specInfo.m_specModelName.c_str());
         string.AppendFormat("\tchannel=%d\n", m_specInfo.m_channel);
         string.AppendFormat("\tconeangle=%.1lf\n", scan.GetConeAngle());
         string.AppendFormat("\tinterlacesteps=%d\n", m_specInfo.m_interlaceStep);
@@ -1204,7 +1171,7 @@ RETURN_CODE CEvaluationLogFileHandler::WriteEvaluationLog(const CString fileName
         else
             string.AppendFormat("\tmode=plume\n");
 
-        double maxIntensity = CSpectrometerModel::GetMaxIntensity(m_specInfo.m_specModel);
+        double maxIntensity = CSpectrometerDatabase::GetInstance().GetModel(m_specInfo.m_specModelName).maximumIntensity;
 
         // Finally, the version of the file and the version of the program
         string.AppendFormat("\tversion=2.0\n");

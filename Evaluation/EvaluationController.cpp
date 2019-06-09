@@ -581,7 +581,7 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *resu
 	string.AppendFormat("\tobservatory=%s\n", (LPCSTR)m_common.SimplifyString(spectrometer.m_scanner.observatory));
 
 	string.AppendFormat("\tserial=%s\n", (LPCSTR)settings.serialNumber);
-	string.AppendFormat("\tspectrometer=%s\n", spectrometer.m_settings.model.c_str());
+	string.AppendFormat("\tspectrometer=%s\n", spectrometer.m_settings.modelName.c_str());
 	string.AppendFormat("\tchannel=%d\n", spectrometer.m_channel);
 	string.AppendFormat("\tconeangle=%.1lf\n", spectrometer.m_scanner.coneAngle);
 	string.AppendFormat("\tinterlacesteps=%d\n", scan->GetInterlaceSteps());
@@ -646,7 +646,7 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *resu
 
 	string.AppendFormat("<spectrometer>\n");
 	string.AppendFormat("\t<serialNumber>%s</serialNumber>\n", (LPCSTR)settings.serialNumber);
-	string.AppendFormat("\t<model>%s</model>\n", spectrometer.m_settings.model.c_str());
+	string.AppendFormat("\t<model>%s</model>\n", spectrometer.m_settings.modelName.c_str());
 	for (int i = 0; i < settings.channelNum; i++) {
 		string.AppendFormat("\t<channel number='%d'>\n", i);
 		const Evaluation::CFitWindow &fitWindow = settings.channel[i].fitWindow;

@@ -20,348 +20,352 @@ extern CVolcanoInfo			g_volcanoes;
 IMPLEMENT_DYNAMIC(CLocationConfigurationDlg, CSystemConfigurationPage)
 
 CLocationConfigurationDlg::CLocationConfigurationDlg()
-	: CSystemConfigurationPage(CLocationConfigurationDlg::IDD)
+    : CSystemConfigurationPage(CLocationConfigurationDlg::IDD)
 {
-	m_configuration = NULL;
-	m_scannerTree = NULL;
-	m_parent = NULL;
+    m_configuration = NULL;
+    m_scannerTree = NULL;
+    m_parent = NULL;
 }
 
 CLocationConfigurationDlg::~CLocationConfigurationDlg()
 {
-	m_configuration = NULL;
-	m_scannerTree = NULL;
-	m_parent = NULL;
+    m_configuration = NULL;
+    m_scannerTree = NULL;
+    m_parent = NULL;
 }
 
 void CLocationConfigurationDlg::DoDataExchange(CDataExchange* pDX)
-{	CSystemConfigurationPage::DoDataExchange(pDX);
+{
+    CSystemConfigurationPage::DoDataExchange(pDX);
 
-	// The labels (only used for showing tooltips);
-	DDX_Control(pDX, IDC_LABEL_VOLCANO,					m_labelVolcano);
-	DDX_Control(pDX, IDC_LABEL_SITE,					m_labelSite);
-	DDX_Control(pDX, IDC_LABEL_OBSERVATORY,				m_labelObservatory);
+    // The labels (only used for showing tooltips);
+    DDX_Control(pDX, IDC_LABEL_VOLCANO, m_labelVolcano);
+    DDX_Control(pDX, IDC_LABEL_SITE, m_labelSite);
+    DDX_Control(pDX, IDC_LABEL_OBSERVATORY, m_labelObservatory);
 
-	// The edits (only used for showing tooltips);
-	DDX_Control(pDX, IDC_EDIT_SITE,						m_editSite);
-	DDX_Control(pDX, IDC_EDIT_OBSERVATORY,				m_editObservatory);
-	DDX_Control(pDX, IDC_EDIT_SERIALNUMBER,				m_editSerial);
-	
-	// The combo boxes
-	DDX_Control(pDX, IDC_COMBO_VOLCANO,					m_comboVolcano);
-	DDX_Control(pDX, IDC_COMBO_ELECTRONICS,				m_comboElectronics);
-	DDX_Control(pDX, IDC_COMBO_SPECTROMETERMODEL,		m_comboSpectrometerModel);
-	DDX_Control(pDX, IDC_COMBO_CHANNELS,				m_comboSpectrometerChannels);
+    // The edits (only used for showing tooltips);
+    DDX_Control(pDX, IDC_EDIT_SITE, m_editSite);
+    DDX_Control(pDX, IDC_EDIT_OBSERVATORY, m_editObservatory);
+    DDX_Control(pDX, IDC_EDIT_SERIALNUMBER, m_editSerial);
 
-	// plot options
-	
-	DDX_Check(pDX, IDC_CHECK_PLOT_COLUMN, m_plotColumn);
-	DDX_Check(pDX, IDC_CHECK_PLOT_COLUMN_HISTORY, m_plotColumnHistory);
-	DDX_Control(pDX, IDC_EDIT_MINCOL, m_minColumn);
-	DDX_Control(pDX, IDC_EDIT_MAXCOL, m_maxColumn);
-	
-	if(m_curScanner != NULL){
-		DDX_Text(pDX, IDC_EDIT_SITE,					m_curScanner->site);
-		DDX_Text(pDX, IDC_EDIT_OBSERVATORY,			m_curScanner->observatory);
-		DDX_Text(pDX, IDC_EDIT_SERIALNUMBER,			m_curScanner->spec[0].serialNumber);
+    // The combo boxes
+    DDX_Control(pDX, IDC_COMBO_VOLCANO, m_comboVolcano);
+    DDX_Control(pDX, IDC_COMBO_ELECTRONICS, m_comboElectronics);
+    DDX_Control(pDX, IDC_COMBO_SPECTROMETERMODEL, m_comboSpectrometerModel);
+    DDX_Control(pDX, IDC_COMBO_CHANNELS, m_comboSpectrometerChannels);
 
-		DDX_Check(pDX, IDC_CHECK_PLOT_COLUMN, m_curScanner->plotColumn);
-		DDX_Check(pDX, IDC_CHECK_PLOT_COLUMN_HISTORY, m_curScanner->plotColumnHistory);
-		DDX_Text(pDX, IDC_EDIT_MINCOL, m_curScanner->minColumn);
-		DDX_Text(pDX, IDC_EDIT_MAXCOL, m_curScanner->maxColumn);
+    // plot options
 
-	}else{
-		CString site, observatory, serialNumber;
-		DDX_Text(pDX, IDC_EDIT_SITE,					site);
-		DDX_Text(pDX, IDC_EDIT_OBSERVATORY,			observatory);
-		DDX_Text(pDX, IDC_EDIT_SERIALNUMBER,			serialNumber);
-	}
+    DDX_Check(pDX, IDC_CHECK_PLOT_COLUMN, m_plotColumn);
+    DDX_Check(pDX, IDC_CHECK_PLOT_COLUMN_HISTORY, m_plotColumnHistory);
+    DDX_Control(pDX, IDC_EDIT_MINCOL, m_minColumn);
+    DDX_Control(pDX, IDC_EDIT_MAXCOL, m_maxColumn);
+
+    if (m_curScanner != NULL) {
+        DDX_Text(pDX, IDC_EDIT_SITE, m_curScanner->site);
+        DDX_Text(pDX, IDC_EDIT_OBSERVATORY, m_curScanner->observatory);
+        DDX_Text(pDX, IDC_EDIT_SERIALNUMBER, m_curScanner->spec[0].serialNumber);
+
+        DDX_Check(pDX, IDC_CHECK_PLOT_COLUMN, m_curScanner->plotColumn);
+        DDX_Check(pDX, IDC_CHECK_PLOT_COLUMN_HISTORY, m_curScanner->plotColumnHistory);
+        DDX_Text(pDX, IDC_EDIT_MINCOL, m_curScanner->minColumn);
+        DDX_Text(pDX, IDC_EDIT_MAXCOL, m_curScanner->maxColumn);
+
+    }
+    else {
+        CString site, observatory, serialNumber;
+        DDX_Text(pDX, IDC_EDIT_SITE, site);
+        DDX_Text(pDX, IDC_EDIT_OBSERVATORY, observatory);
+        DDX_Text(pDX, IDC_EDIT_SERIALNUMBER, serialNumber);
+    }
 }
 
 
 BEGIN_MESSAGE_MAP(CLocationConfigurationDlg, CPropertyPage)
-	// immediately save all changes made in the dialog
-	ON_EN_CHANGE(IDC_EDIT_SITE,											SaveData)
-	ON_EN_CHANGE(IDC_EDIT_OBSERVATORY,				SaveData)
-	ON_EN_CHANGE(IDC_EDIT_SERIALNUMBER,					SaveData)
+    // immediately save all changes made in the dialog
+    ON_EN_CHANGE(IDC_EDIT_SITE, SaveData)
+    ON_EN_CHANGE(IDC_EDIT_OBSERVATORY, SaveData)
+    ON_EN_CHANGE(IDC_EDIT_SERIALNUMBER, SaveData)
 
-	ON_CBN_SELCHANGE(IDC_COMBO_VOLCANO,					OnChangeVolcano)
-	ON_CBN_SELCHANGE(IDC_COMBO_SPECTROMETERMODEL,		OnChangeModel)
-	ON_CBN_SELCHANGE(IDC_COMBO_CHANNELS,				OnChangeChannelNum)
-	ON_CBN_SELCHANGE(IDC_COMBO_ELECTRONICS, &CLocationConfigurationDlg::OnChangeElectronics)
+    ON_CBN_SELCHANGE(IDC_COMBO_VOLCANO, OnChangeVolcano)
+    ON_CBN_SELCHANGE(IDC_COMBO_SPECTROMETERMODEL, OnChangeModel)
+    ON_CBN_SELCHANGE(IDC_COMBO_CHANNELS, OnChangeChannelNum)
+    ON_CBN_SELCHANGE(IDC_COMBO_ELECTRONICS, &CLocationConfigurationDlg::OnChangeElectronics)
 
-	ON_BN_CLICKED(IDC_CHECK_PLOT_COLUMN, SaveData)
-	ON_BN_CLICKED(IDC_CHECK_PLOT_COLUMN_HISTORY, SaveData)
-	ON_EN_CHANGE(IDC_EDIT_MINCOL, SaveData)
-	ON_EN_CHANGE(IDC_EDIT_MAXCOL, SaveData)
+    ON_BN_CLICKED(IDC_CHECK_PLOT_COLUMN, SaveData)
+    ON_BN_CLICKED(IDC_CHECK_PLOT_COLUMN_HISTORY, SaveData)
+    ON_EN_CHANGE(IDC_EDIT_MINCOL, SaveData)
+    ON_EN_CHANGE(IDC_EDIT_MAXCOL, SaveData)
 END_MESSAGE_MAP()
 
 
 BOOL CLocationConfigurationDlg::OnInitDialog()
 {
-	Common common;
-	CString str;
+    Common common;
+    CString str;
 
-	CDialog::OnInitDialog();
+    CDialog::OnInitDialog();
 
-	// The volcanoes - combo box 
-	UpdateVolcanoList();
+    // The volcanoes - combo box 
+    UpdateVolcanoList();
 
-	// The spectrometer models combo box
-	m_comboSpectrometerModel.ResetContent();
+    // The spectrometer models combo box
+    m_comboSpectrometerModel.ResetContent();
     std::vector<std::string> modelNames = CSpectrometerDatabase::GetInstance().ListModels();
-	for(size_t j = 0; j < modelNames.size(); ++j)
+    for (size_t j = 0; j < modelNames.size(); ++j)
     {
         CString modelStr(modelNames[j].c_str());
-		m_comboSpectrometerModel.AddString(modelStr);
-	}
+        m_comboSpectrometerModel.AddString(modelStr);
+    }
 
-	// The channels combo box
-	m_comboSpectrometerChannels.ResetContent();
-	for(int k = 0; k < MAX_CHANNEL_NUM; ++k){
-		str.Format("%d", k+1);
-		m_comboSpectrometerChannels.AddString(str);
-	}
+    // The channels combo box
+    m_comboSpectrometerChannels.ResetContent();
+    for (int k = 0; k < MAX_CHANNEL_NUM; ++k) {
+        str.Format("%d", k + 1);
+        m_comboSpectrometerChannels.AddString(str);
+    }
 
-	// The electronics combo-box
-	m_comboElectronics.ResetContent();
-	m_comboElectronics.AddString("Version 1");
-	m_comboElectronics.AddString("Version 3");
+    // The electronics combo-box
+    m_comboElectronics.ResetContent();
+    m_comboElectronics.AddString("Version 1");
+    m_comboElectronics.AddString("Version 3");
 
-	//m_plotColumn = 0;
+    //m_plotColumn = 0;
 
-	UpdateData(FALSE);
+    UpdateData(FALSE);
 
-	// setup the tool tips
-	InitToolTips();
+    // setup the tool tips
+    InitToolTips();
 
-	// Setup the label.
-	//str.Format("* The serial number is used to identify spectra\n\n* Data from connected scanners will only be evaluated if the serial-number is configured\n");
-	//SetDlgItemText(IDC_LABEL_MESSAGE, str);
+    // Setup the label.
+    //str.Format("* The serial number is used to identify spectra\n\n* Data from connected scanners will only be evaluated if the serial-number is configured\n");
+    //SetDlgItemText(IDC_LABEL_MESSAGE, str);
 
-	return TRUE;  // return TRUE unless you set the focus to a control
-	// EXCEPTION: OCX Property Pages should return FALSE
+    return TRUE;  // return TRUE unless you set the focus to a control
+    // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CLocationConfigurationDlg::InitToolTips(){
-	// Don't initialize the tool tips twice
-	if(m_toolTip.m_hWnd != NULL)
-		return;
+void CLocationConfigurationDlg::InitToolTips() {
+    // Don't initialize the tool tips twice
+    if (m_toolTip.m_hWnd != NULL)
+        return;
 
-	// Enable the tool tips
-	if(!m_toolTip.Create(this)){
-		TRACE0("Failed to create tooltip control\n"); 
-	}
-	m_toolTip.AddTool(&m_labelVolcano,					IDC_EDIT_VOLCANO);
-	m_toolTip.AddTool(&m_comboVolcano,					IDC_EDIT_VOLCANO);
-	m_toolTip.AddTool(&m_labelSite,						IDC_EDIT_SITE);
-	m_toolTip.AddTool(&m_editSite,						IDC_EDIT_SITE);
-	m_toolTip.AddTool(&m_labelObservatory,				IDC_EDIT_OBSERVATORY);
-	m_toolTip.AddTool(&m_editObservatory,				IDC_EDIT_OBSERVATORY);
-	m_toolTip.AddTool(&m_comboSpectrometerModel,		IDC_COMBO_SPECTROMETERMODEL);
-	m_toolTip.AddTool(&m_comboSpectrometerChannels,		IDC_COMBO_CHANNELS);
-	m_toolTip.AddTool(&m_editSerial,					IDC_EDIT_SERIALNUMBER);
+    // Enable the tool tips
+    if (!m_toolTip.Create(this)) {
+        TRACE0("Failed to create tooltip control\n");
+    }
+    m_toolTip.AddTool(&m_labelVolcano, IDC_EDIT_VOLCANO);
+    m_toolTip.AddTool(&m_comboVolcano, IDC_EDIT_VOLCANO);
+    m_toolTip.AddTool(&m_labelSite, IDC_EDIT_SITE);
+    m_toolTip.AddTool(&m_editSite, IDC_EDIT_SITE);
+    m_toolTip.AddTool(&m_labelObservatory, IDC_EDIT_OBSERVATORY);
+    m_toolTip.AddTool(&m_editObservatory, IDC_EDIT_OBSERVATORY);
+    m_toolTip.AddTool(&m_comboSpectrometerModel, IDC_COMBO_SPECTROMETERMODEL);
+    m_toolTip.AddTool(&m_comboSpectrometerChannels, IDC_COMBO_CHANNELS);
+    m_toolTip.AddTool(&m_editSerial, IDC_EDIT_SERIALNUMBER);
 
-	m_toolTip.SetMaxTipWidth(SHRT_MAX);
-	m_toolTip.Activate(TRUE);
+    m_toolTip.SetMaxTipWidth(SHRT_MAX);
+    m_toolTip.Activate(TRUE);
 }
 
-BOOL CLocationConfigurationDlg::OnKillActive(){
-	return CPropertyPage::OnKillActive();
+BOOL CLocationConfigurationDlg::OnKillActive() {
+    return CPropertyPage::OnKillActive();
 }
 
-void CLocationConfigurationDlg::SaveData(){
-	UpdateData(TRUE);
+void CLocationConfigurationDlg::SaveData() {
+    UpdateData(TRUE);
 }
 
-void CLocationConfigurationDlg::UpdateDlg(){
-	UpdateData(FALSE);
+void CLocationConfigurationDlg::UpdateDlg() {
+    UpdateData(FALSE);
 }
 
-BOOL CLocationConfigurationDlg::PreTranslateMessage(MSG* pMsg){
-	m_toolTip.RelayEvent(pMsg);
+BOOL CLocationConfigurationDlg::PreTranslateMessage(MSG* pMsg) {
+    m_toolTip.RelayEvent(pMsg);
 
-	return CPropertyPage::PreTranslateMessage(pMsg);
+    return CPropertyPage::PreTranslateMessage(pMsg);
 }
 
-void CLocationConfigurationDlg::OnChangeScanner(){
-	if(UpdateData(TRUE)){ // <-- first save the data in the dialog
+void CLocationConfigurationDlg::OnChangeScanner() {
+    if (UpdateData(TRUE)) { // <-- first save the data in the dialog
 
-		// Then change the settings so that we're using the newly selected scanner
-		CSystemConfigurationPage::OnChangeScanner();
+        // Then change the settings so that we're using the newly selected scanner
+        CSystemConfigurationPage::OnChangeScanner();
 
-		if(m_curScanner == NULL){
-			return;
-		}
+        if (m_curScanner == NULL) {
+            return;
+        }
 
-		// Then Update the volcano combo-box
-		for(unsigned int i = 0; i < g_volcanoes.m_volcanoNum; ++i){
-			if(Equals(g_volcanoes.m_name[i], m_curScanner->volcano)){
-				m_comboVolcano.SetCurSel(i);
-				break;
-			}
-		}
+        // Then Update the volcano combo-box
+        for (unsigned int i = 0; i < g_volcanoes.m_volcanoNum; ++i) {
+            if (Equals(g_volcanoes.m_name[i], m_curScanner->volcano)) {
+                m_comboVolcano.SetCurSel(i);
+                break;
+            }
+        }
 
-		// Then update the spectrometer model
-        const int spectrometerTypeIdx = CSpectrometerDatabase::GetInstance().GetModelIndex(m_curScanner->spec[0].model);
-		m_comboSpectrometerModel.SetCurSel(spectrometerTypeIdx);
+        // Then update the spectrometer model
+        const int spectrometerTypeIdx = CSpectrometerDatabase::GetInstance().GetModelIndex(m_curScanner->spec[0].modelName);
+        m_comboSpectrometerModel.SetCurSel(spectrometerTypeIdx);
 
-		// Then update the channel numbers
-		m_comboSpectrometerChannels.SetCurSel(m_curScanner->spec[0].channelNum - 1);
-		
-		// Update the electronics
-		m_comboElectronics.SetCurSel((int)m_curScanner->electronicsBox);
+        // Then update the channel numbers
+        m_comboSpectrometerChannels.SetCurSel(m_curScanner->spec[0].channelNum - 1);
 
-		// Update the plot options
-		/**
-		m_plotColumn = m_curScanner->plotColumn;
-		m_plotColumnHistory = m_curScanner->plotColumnHistory;
-		m_minColumn = m_curScanner->minColumn;
-		m_maxColumn = m_curScanner->maxColumn;
-		*/
+        // Update the electronics
+        m_comboElectronics.SetCurSel((int)m_curScanner->electronicsBox);
 
-		m_comboSpectrometerChannels.EnableWindow(TRUE);
+        // Update the plot options
+        /**
+        m_plotColumn = m_curScanner->plotColumn;
+        m_plotColumnHistory = m_curScanner->plotColumnHistory;
+        m_minColumn = m_curScanner->minColumn;
+        m_maxColumn = m_curScanner->maxColumn;
+        */
 
-		// Finally, update the screen to reflect the changes
-		UpdateData(FALSE);
-	}
+        m_comboSpectrometerChannels.EnableWindow(TRUE);
+
+        // Finally, update the screen to reflect the changes
+        UpdateData(FALSE);
+    }
 }
 
 BOOL ConfigurationDialog::CLocationConfigurationDlg::OnSetActive()
 {
-	UpdateData(FALSE);
-	return CSystemConfigurationPage::OnSetActive();
+    UpdateData(FALSE);
+    return CSystemConfigurationPage::OnSetActive();
 }
 
-void CLocationConfigurationDlg::OnChangeVolcano(){
+void CLocationConfigurationDlg::OnChangeVolcano() {
 
-	if(m_curScanner == NULL)
-		return;
+    if (m_curScanner == NULL)
+        return;
 
-	int curSel = m_comboVolcano.GetCurSel();
-	if(curSel < 0)
-		return;
+    int curSel = m_comboVolcano.GetCurSel();
+    if (curSel < 0)
+        return;
 
-	if(curSel == g_volcanoes.m_volcanoNum){
-		// The user has selected the 'Other' - volcano, add one more volcano to the list
-		AddAVolcano();
-	}
+    if (curSel == g_volcanoes.m_volcanoNum) {
+        // The user has selected the 'Other' - volcano, add one more volcano to the list
+        AddAVolcano();
+    }
 
-	curSel = m_comboVolcano.GetCurSel();
-	m_curScanner->volcano.Format("%s", (LPCSTR)g_volcanoes.m_name[curSel]);
+    curSel = m_comboVolcano.GetCurSel();
+    m_curScanner->volcano.Format("%s", (LPCSTR)g_volcanoes.m_name[curSel]);
 
-	m_scannerTree->UpdateTree();
+    m_scannerTree->UpdateTree();
 
-	// Also update the name of the file that the program should read from the server...
-	m_configuration->windSourceSettings.windFieldFile.Format("ftp://129.16.35.206/wind/wind_%s.txt", (LPCSTR)g_volcanoes.m_simpleName[curSel]);
+    // Also update the name of the file that the program should read from the server...
+    m_configuration->windSourceSettings.windFieldFile.Format("ftp://129.16.35.206/wind/wind_%s.txt", (LPCSTR)g_volcanoes.m_simpleName[curSel]);
 }
 
 /** The user has changed the model of the spectrometer */
-void CLocationConfigurationDlg::OnChangeModel(){
-	if(m_curScanner == NULL)
-		return;
+void CLocationConfigurationDlg::OnChangeModel() {
+    if (m_curScanner == NULL)
+        return;
 
-	int curSel = m_comboSpectrometerModel.GetCurSel();
-	if(curSel < 0)
-		return;
+    int curSel = m_comboSpectrometerModel.GetCurSel();
+    if (curSel < 0)
+        return;
 
-	m_curScanner->spec[0].model = (SPECTROMETER_MODEL)curSel;
+    SpectrometerModel modelName = CSpectrometerDatabase::GetInstance().GetModel(curSel);
+
+    m_curScanner->spec[0].modelName = modelName.modelName;
 }
 
 /** The user has changed the number of channels in the spectrometer */
-void CLocationConfigurationDlg::OnChangeChannelNum(){
-	if(m_curScanner == NULL)
-		return;
+void CLocationConfigurationDlg::OnChangeChannelNum() {
+    if (m_curScanner == NULL)
+        return;
 
-	int curSel = m_comboSpectrometerChannels.GetCurSel();
-	if(curSel < 0)
-		return;
+    int curSel = m_comboSpectrometerChannels.GetCurSel();
+    if (curSel < 0)
+        return;
 
-	m_curScanner->spec[0].channelNum = curSel + 1;
+    m_curScanner->spec[0].channelNum = curSel + 1;
 
-	((CScannerConfiguration *)m_parent)->OnChangeScanner();
+    ((CScannerConfiguration *)m_parent)->OnChangeScanner();
 }
 
 
 /** Adds a volcano to the list of volcanoes */
-void	CLocationConfigurationDlg::AddAVolcano(){
-	CString name, tempStr;
-	Common common;
-	double latitude, longitude;
-	long	altitude;
+void	CLocationConfigurationDlg::AddAVolcano() {
+    CString name, tempStr;
+    Common common;
+    double latitude, longitude;
+    long	altitude;
 
-	// 1. Ask the user about the name of the volcano
-	Dialogs::CQueryStringDialog nameDlg;
-	nameDlg.m_windowText.Format("What is the name of the source?");
-	nameDlg.m_inputString = &name;
-	INT_PTR ret = nameDlg.DoModal();
+    // 1. Ask the user about the name of the volcano
+    Dialogs::CQueryStringDialog nameDlg;
+    nameDlg.m_windowText.Format("What is the name of the source?");
+    nameDlg.m_inputString = &name;
+    INT_PTR ret = nameDlg.DoModal();
 
-	if(IDCANCEL == ret)
-		return;
+    if (IDCANCEL == ret)
+        return;
 
-	// 2. Ask the user about the latitude, longitude and altitude of the source
-	nameDlg.m_windowText.Format("The latitude of the source?");
-	nameDlg.m_inputString = &tempStr;
-	tempStr.Format("0.0");
-	ret = nameDlg.DoModal();
+    // 2. Ask the user about the latitude, longitude and altitude of the source
+    nameDlg.m_windowText.Format("The latitude of the source?");
+    nameDlg.m_inputString = &tempStr;
+    tempStr.Format("0.0");
+    ret = nameDlg.DoModal();
 
-	if(IDCANCEL == ret || 1 != sscanf(tempStr, "%lf", &latitude))
-		return;
+    if (IDCANCEL == ret || 1 != sscanf(tempStr, "%lf", &latitude))
+        return;
 
-	nameDlg.m_windowText.Format("The longitude of the source?");
-	tempStr.Format("0.0");
-	ret = nameDlg.DoModal();
+    nameDlg.m_windowText.Format("The longitude of the source?");
+    tempStr.Format("0.0");
+    ret = nameDlg.DoModal();
 
-	if(IDCANCEL == ret || 1 != sscanf(tempStr, "%lf", &longitude))
-		return;
+    if (IDCANCEL == ret || 1 != sscanf(tempStr, "%lf", &longitude))
+        return;
 
-	nameDlg.m_windowText.Format("The altitude of the source?");
-	tempStr.Format("0");
-	ret = nameDlg.DoModal();
+    nameDlg.m_windowText.Format("The altitude of the source?");
+    tempStr.Format("0");
+    ret = nameDlg.DoModal();
 
-	if(IDCANCEL == ret || 1 != sscanf(tempStr, "%ld", &altitude))
-		return;
+    if (IDCANCEL == ret || 1 != sscanf(tempStr, "%ld", &altitude))
+        return;
 
-	// 3. Add the user-given source to the list of volcanoes
-	unsigned int index = g_volcanoes.m_volcanoNum;
-	g_volcanoes.m_name[index].Format(name);
-	g_volcanoes.m_simpleName[index].Format(common.SimplifyString(name));
-	g_volcanoes.m_peakLatitude[index]		= latitude;
-	g_volcanoes.m_peakLongitude[index]		= longitude;
-	g_volcanoes.m_peakHeight[index]			= altitude;
-	g_volcanoes.m_hoursToGMT[index]			= 0;
-	g_volcanoes.m_observatory[index]		= 1;
-	++g_volcanoes.m_volcanoNum;
+    // 3. Add the user-given source to the list of volcanoes
+    unsigned int index = g_volcanoes.m_volcanoNum;
+    g_volcanoes.m_name[index].Format(name);
+    g_volcanoes.m_simpleName[index].Format(common.SimplifyString(name));
+    g_volcanoes.m_peakLatitude[index] = latitude;
+    g_volcanoes.m_peakLongitude[index] = longitude;
+    g_volcanoes.m_peakHeight[index] = altitude;
+    g_volcanoes.m_hoursToGMT[index] = 0;
+    g_volcanoes.m_observatory[index] = 1;
+    ++g_volcanoes.m_volcanoNum;
 
-	// Update the list of volcanoes
-	UpdateVolcanoList();
+    // Update the list of volcanoes
+    UpdateVolcanoList();
 
-	// Set the new volcano to be the currently selected
-	m_comboVolcano.SetCurSel(g_volcanoes.m_volcanoNum - 1);
+    // Set the new volcano to be the currently selected
+    m_comboVolcano.SetCurSel(g_volcanoes.m_volcanoNum - 1);
 }
 
 /** (Re-)initializes the list of volcanoes */
-void CLocationConfigurationDlg::UpdateVolcanoList(){
-	CString str;
+void CLocationConfigurationDlg::UpdateVolcanoList() {
+    CString str;
 
-	m_comboVolcano.ResetContent();
-	for(unsigned int k = 0; k < g_volcanoes.m_volcanoNum; ++k){
-		str.Format("%s", (LPCSTR)g_volcanoes.m_name[k]);
-		m_comboVolcano.AddString(str);
-	}
-	m_comboVolcano.AddString("Other...");
+    m_comboVolcano.ResetContent();
+    for (unsigned int k = 0; k < g_volcanoes.m_volcanoNum; ++k) {
+        str.Format("%s", (LPCSTR)g_volcanoes.m_name[k]);
+        m_comboVolcano.AddString(str);
+    }
+    m_comboVolcano.AddString("Other...");
 }
 
 
 void CLocationConfigurationDlg::OnChangeElectronics()
 {
-	if (m_curScanner == NULL)
-		return;
+    if (m_curScanner == NULL)
+        return;
 
-	int curSel = m_comboElectronics.GetCurSel();
-	if (curSel < 0)
-		return;
+    int curSel = m_comboElectronics.GetCurSel();
+    if (curSel < 0)
+        return;
 
-	m_curScanner->electronicsBox = (ELECTRONICS_BOX)curSel;
+    m_curScanner->electronicsBox = (ELECTRONICS_BOX)curSel;
 }
 

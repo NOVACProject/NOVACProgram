@@ -165,7 +165,7 @@ CConfigurationSetting::SpectrometerChannelSetting &CConfigurationSetting::Spectr
 CConfigurationSetting::SpectrometerSetting::SpectrometerSetting() {
     channelNum = 0;
     serialNumber.Format("");
-    model = "S2000";
+    modelName = "S2000";
 }
 
 CConfigurationSetting::SpectrometerSetting::~SpectrometerSetting() {
@@ -174,7 +174,7 @@ CConfigurationSetting::SpectrometerSetting::~SpectrometerSetting() {
 void CConfigurationSetting::SpectrometerSetting::Clear() {
     channelNum = 0;
     serialNumber.Format("");
-    model = "S2000";
+    modelName = "S2000";
     for (int i = 0; i < MAX_CHANNEL_NUM; ++i)
         channel[i].Clear();
 }
@@ -186,7 +186,7 @@ CConfigurationSetting::SpectrometerSetting &CConfigurationSetting::SpectrometerS
         channel[i] = spec2.channel[i];
 
     serialNumber.Format("%s", (LPCSTR)spec2.serialNumber);
-    model = spec2.model;
+    modelName = spec2.modelName;
 
     return *this;
 }

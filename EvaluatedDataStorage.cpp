@@ -4,6 +4,7 @@
 #include "VolcanoInfo.h"
 #include "UserSettings.h"
 #include <SpectralEvaluation/Utils.h>
+#include <SpectralEvaluation/Spectra/SpectrometerModel.h>
 
 extern CConfigurationSetting g_settings;   // <-- The settings
 extern CVolcanoInfo g_volcanoes;           // <-- The global database of volcanoes
@@ -131,7 +132,7 @@ int CEvaluatedDataStorage::AddData(const CString &serial, Evaluation::CScanResul
 
 				for (unsigned int j = 0; j < g_settings.scanner[k].specNum; ++j) {
 					if (Equals(g_settings.scanner[k].spec[j].serialNumber, serial)) {
-						m_models[m_serialNum] = g_settings.scanner[k].spec[j].model;
+						m_models[m_serialNum] = g_settings.scanner[k].spec[j].modelName;
 
 						// Get the distance to GMT...
 						m_hoursToGMT[m_serialNum] = 0;
@@ -149,7 +150,7 @@ int CEvaluatedDataStorage::AddData(const CString &serial, Evaluation::CScanResul
 				}
 			}
 			if (!found)
-				m_models[m_serialNum] = UNKNOWN_SPECTROMETER;
+				m_models[m_serialNum] = "";
 
 			++m_serialNum;
 		}
@@ -282,7 +283,7 @@ int CEvaluatedDataStorage::AddWindData(const CString &serial, WindSpeedMeasureme
 
 				for(unsigned int j = 0; j < g_settings.scanner[k].specNum; ++j){
 					if(Equals(g_settings.scanner[k].spec[j].serialNumber, serial)){
-						m_models[m_serialNum] = g_settings.scanner[k].spec[j].model;
+						m_models[m_serialNum] = g_settings.scanner[k].spec[j].modelName;
 
 						// Get the distance to GMT...
 						m_hoursToGMT[m_serialNum] = 0;
@@ -300,7 +301,7 @@ int CEvaluatedDataStorage::AddWindData(const CString &serial, WindSpeedMeasureme
 				}
 			}
 			if(!found)
-				m_models[m_serialNum] = UNKNOWN_SPECTROMETER;
+				m_models[m_serialNum] = "";
 
 			++m_serialNum;
 		}else{
@@ -884,7 +885,7 @@ double CEvaluatedDataStorage::GetDynamicRange(const CString &serial){
 	int scannerIndex = GetScannerIndex(serial);
 	if(scannerIndex < 0)
 		return -1;
-	return CSpectrometerModel::GetMaxIntensity(m_models[scannerIndex]);
+	return CSpectrometerDatabase::GetInstance().GetModel(m_models[scannerIndex]).maximumIntensity;
 }
 
 /** Gets the temperature of the last scan */
