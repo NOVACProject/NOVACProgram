@@ -980,9 +980,9 @@ double Common::CalculateFlux(const double *scanAngle, const double *scanAngle2, 
     double plumeHeight = wind.GetPlumeHeight();
 
 	if (fabs(coneAngle - 90.0) < 1.0)
-		return CalculateFluxFlatScanner(scanAngle, column, offset, nDataPoints, windSpeed, windDirection, plumeHeight, compass);
+		return CalculateFluxFlatScanner(scanAngle, column, offset, nDataPoints, windSpeed, windDirection, plumeHeight, compass, gasFactor);
 	else
-		return CalculateFluxConicalScanner(scanAngle, column, offset, nDataPoints, windSpeed, windDirection, plumeHeight, compass, coneAngle, tilt);
+		return CalculateFluxConicalScanner(scanAngle, column, offset, nDataPoints, windSpeed, windDirection, plumeHeight, compass, gasFactor, coneAngle, tilt);
 }
 
 
