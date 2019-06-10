@@ -275,6 +275,7 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
 			current.Sub(dark);
 
 			// e. Evaluate the spectrum
+			eval->SetSkySpectrum(sky);
 			if(eval->Evaluate(current))
             {
 				CString str;
@@ -339,8 +340,9 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
 
                                                      // 5. Set the shift for all references to this value
                 for (int k = 0; k < newWindow.nRef; ++k) {
-                    if (newWindow.ref[k].m_specieName.compare("FraunhoferRef") == 0)
-                        continue;
+					if (newWindow.ref[k].m_specieName.compare("FraunhoferRef") == 0) {
+						continue;
+					}
 
                     newWindow.ref[k].m_shiftOption   = SHIFT_FIX;
                     newWindow.ref[k].m_squeezeOption = SHIFT_FIX;
@@ -562,7 +564,6 @@ bool CScanEvaluation::Ignore(const CSpectrum &spec, const CFitWindow window){
 
 CEvaluationResult CScanEvaluation::FindOptimumShiftAndSqueeze(const CEvaluationBase *originalEvaluation, FileHandler::CScanFileHandler *scan, CScanResult *result)
 {
-	int k;
 	CSpectrum spec, sky, dark;
 	int specieNum = 0;
 	CString message;
@@ -586,9 +587,10 @@ CEvaluationResult CScanEvaluation::FindOptimumShiftAndSqueeze(const CEvaluationB
     newFitWindow.ref[0].m_shiftOption   = SHIFT_FREE;
     newFitWindow.ref[0].m_squeezeOption = SHIFT_FIX;
     newFitWindow.ref[0].m_squeezeValue  = 1.0;
-	for(k = 1; k < newFitWindow.nRef; ++k){
-		if(EqualsIgnoringCase(newFitWindow.ref[k].m_specieName, "FraunhoferRef"))
+	for(int k = 1; k < newFitWindow.nRef; ++k){
+		if (EqualsIgnoringCase(newFitWindow.ref[k].m_specieName, "FraunhoferRef")) {
 			continue;
+		}
 
 		newFitWindow.ref[k].m_shiftOption   = SHIFT_LINK;
 		newFitWindow.ref[k].m_squeezeOption = SHIFT_LINK;
@@ -612,10 +614,12 @@ CEvaluationResult CScanEvaluation::FindOptimumShiftAndSqueeze(const CEvaluationB
 
 	// Get the measured spectrum
 	scan->GetSpectrum(spec, 2 + m_indexOfMostAbsorbingSpectrum); // The two comes from the sky and the dark spectra in the beginning
-	if(spec.m_info.m_interlaceStep > 1)
+	if (spec.m_info.m_interlaceStep > 1) {
 		spec.InterpolateSpectrum();
-	if(spec.NumSpectra() > 0  && !m_averagedSpectra)
+	}
+	if (spec.NumSpectra() > 0 && !m_averagedSpectra) {
 		spec.Div(spec.NumSpectra());
+	}
 
 	// Get the dark-spectrum and remove it
 	GetDark(scan, spec, dark);
