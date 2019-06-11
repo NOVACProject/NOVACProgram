@@ -41,23 +41,22 @@ void CReEval_WindowDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Radio(pDX, IDC_FIT_HP_DIV, (int &)window.fitType);
 
 	// The extra options
-	DDX_Check(pDX, IDC_CHECK_UV,            (int&)window.UV);
-	DDX_Check(pDX, IDC_CHECK_FIND_OPTIMAL,  (int&)window.findOptimalShift);
-	DDX_Check(pDX, IDC_CHECK_SHIFT_SKY,     (int&)window.shiftSky);
+	DDX_Check(pDX, IDC_CHECK_UV,			window.UV);
+	DDX_Check(pDX, IDC_CHECK_FIND_OPTIMAL,	window.findOptimalShift);
+	DDX_Check(pDX, IDC_CHECK_SHIFT_SKY,		window.shiftSky);
 
 	//This list of fit-windows
 	DDX_Control(pDX, IDC_FITWINDOW_LIST, m_windowList);
 
 	// The three buttons, 'insert', 'remove', and 'properties'
-	DDX_Control(pDX, IDC_BUTTON_INSERT_REFERENCE,				m_btnInsertRef);
-	DDX_Control(pDX, IDC_BUTTON_REMOVE_REFERENCE,				m_btnRemoveRef);
+	DDX_Control(pDX, IDC_BUTTON_INSERT_REFERENCE,		m_btnInsertRef);
+	DDX_Control(pDX, IDC_BUTTON_REMOVE_REFERENCE,		m_btnRemoveRef);
 	DDX_Control(pDX, IDC_BUTTON_REFERENCE_PROEPERTIES,	m_btnRefProp);
-
-	// The shift-sky checkbox
-	DDX_Control(pDX, IDC_CHECK_SHIFT_SKY,								m_checkShiftSky);
-		
-	// The 'find optimal shift' checkbox
-	DDX_Control(pDX, IDC_CHECK_FIND_OPTIMAL,								m_checkFindOptimalShift);
+			
+	// Controls for extra options
+	DDX_Control(pDX, IDC_CHECK_UV, m_checkUV);
+	DDX_Control(pDX, IDC_CHECK_FIND_OPTIMAL, m_checkFindOptimalShift);
+	DDX_Control(pDX, IDC_CHECK_SHIFT_SKY, m_checkShiftSky);
 }
 
 
@@ -80,12 +79,12 @@ BEGIN_MESSAGE_MAP(CReEval_WindowDlg, CPropertyPage)
 	// The user has pressed the 'browse' button next to the solar-spectrum edit-box
 	ON_BN_CLICKED(IDC_BUTTON_BROWSE_SOLARSPECTRUM, OnBrowseSolarSpectrum)
 
-	ON_BN_CLICKED(IDC_CHECK_FIND_OPTIMAL, SaveData)
-	ON_BN_CLICKED(IDC_CHECK_UV,						SaveData)
+	ON_BN_CLICKED(IDC_CHECK_UV, SaveData)
+	ON_BN_CLICKED(IDC_CHECK_FIND_OPTIMAL,	SaveData)
 	ON_BN_CLICKED(IDC_CHECK_SHIFT_SKY,		SaveData)
-	ON_EN_CHANGE(IDC_EDIT_FITLOW,					SaveData)
-	ON_EN_CHANGE(IDC_EDIT_FITHIGH,				SaveData)
-	ON_EN_CHANGE(IDC_EDIT_POLYNOM,				SaveData)
+	ON_EN_CHANGE(IDC_EDIT_FITLOW,			SaveData)
+	ON_EN_CHANGE(IDC_EDIT_FITHIGH,			SaveData)
+	ON_EN_CHANGE(IDC_EDIT_POLYNOM,			SaveData)
 
 	// When the user changes type of fitting
 	ON_BN_CLICKED(IDC_FIT_HP_DIV,					SaveData)
@@ -102,6 +101,7 @@ BOOL CReEval_WindowDlg::OnInitDialog()
 {
 	CPropertyPage::OnInitDialog();
 
+
 	// Initialize the fit window-list
 	m_windowList.m_reeval = this->m_reeval;
 	m_windowList.PopulateList();
@@ -111,10 +111,15 @@ BOOL CReEval_WindowDlg::OnInitDialog()
 	InitReferenceFileControl();
 
 	// Populate the reference grid control
-	PopulateReferenceFileControl();
+	//PopulateReferenceFileControl();
 
 	// Update the controls
-	UpdateControls();
+	//UpdateControls();
+	m_checkUV.SetCheck(TRUE);
+	m_checkFindOptimalShift.SetCheck(FALSE);
+	m_checkShiftSky.SetCheck(TRUE);
+	m_checkShiftSky.EnableWindow(FALSE);
+	UpdateData(TRUE);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
@@ -173,9 +178,19 @@ void CReEval_WindowDlg::OnChangeFitWindow()
 	m_referenceGrid.m_window = &m_reeval->m_window[curWindow];
 	PopulateReferenceFileControl();
 
-	// Update the controls
-	UpdateControls();
-
+	// update the solar spec and controls
+	m_fraunhoferReferenceName = m_reeval->m_window[curWindow].fraunhoferRef.m_path.c_str();
+	//SetDlgItemText(IDC_EDIT_SOLARSPECTRUMPATH, );
+	if (m_reeval->m_window[curWindow].fraunhoferRef.m_path != "") {
+		m_checkFindOptimalShift.EnableWindow(FALSE);
+		m_checkFindOptimalShift.SetCheck(FALSE);
+	}
+	else {
+		m_checkFindOptimalShift.EnableWindow(TRUE);
+		m_checkFindOptimalShift.SetCheck(m_reeval->m_window[m_reeval->m_curWindow].findOptimalShift);
+	}
+	m_checkUV.SetCheck(m_reeval->m_window[m_reeval->m_curWindow].UV);
+	
 	// Update the rest of the controls on the screen
 	UpdateData(FALSE);
 }
@@ -412,8 +427,10 @@ void ReEvaluation::CReEval_WindowDlg::OnShowReferenceGraph()
 
 /** Updates the controls */
 void CReEval_WindowDlg::UpdateControls(){
+
 	// Update the shift-sky check-box
-	if(m_reeval->m_window[m_reeval->m_curWindow].fitType == FIT_HP_DIV){
+	CFitWindow window = m_reeval->m_window[m_reeval->m_curWindow];
+	if(window.fitType == FIT_HP_DIV){
 		m_checkShiftSky.EnableWindow(FALSE);
 	}else{
 		m_checkShiftSky.EnableWindow(TRUE);
@@ -438,12 +455,12 @@ void CReEval_WindowDlg::OnBrowseSolarSpectrum(){
 
 	// The user has selected a solar-spectrum file
 	m_reeval->m_window[m_reeval->m_curWindow].fraunhoferRef.m_path = std::string((LPCTSTR)fileName);
+	SetDlgItemText(IDC_EDIT_SOLARSPECTRUMPATH, (LPCTSTR)fileName);
 
 	// Disable the 'Find Optimal Shift' check-box
+	m_checkFindOptimalShift.SetCheck(FALSE);
 	m_checkFindOptimalShift.EnableWindow(FALSE);
 
-	// Update the window
-	UpdateData(FALSE);
 
 }
 

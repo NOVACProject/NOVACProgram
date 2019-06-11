@@ -116,7 +116,7 @@ void CExportEvallogDlg::OnExportLog()
   }
 
   // 1. Write (a small version of) the header of the evaluation log file
-  fprintf(f, "***ScanDOAS***\nVERSION=3.30\nFILETYPE=Scan Evaluation Log\n");
+  fprintf(f, "***ScanDOAS***\nFILETYPE=Scan Evaluation Log\n");
   fprintf(f, "STEPSPERROUND=200\nGASFACTOR=2.66\n");
   fprintf(f, "PLUME_HEIGHT=1000\nWIND_SPEED=10\nWIND_DIRECTION=180\n");
   fprintf(f, "%%--pos -- time -- sum1 -- sum2 -- chn -- basename\n");
