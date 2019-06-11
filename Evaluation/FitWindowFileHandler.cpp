@@ -140,6 +140,11 @@ RETURN_CODE CFitWindowFileHandler::Parse_FitWindow(Evaluation::CFitWindow &windo
 			window.interlaceStep += 1;
 			continue;
 		}
+		if (Equals(szToken, "solarSpectrum")) {
+			Parse_StringItem(TEXT("/solarSpectrum"), window.fraunhoferRef.m_path);
+			window.fraunhoferRef.m_specieName = "SolarSpec";
+			continue;
+		}
 		//if(Equals(szToken, "nRef")){
 		//	Parse_IntItem(TEXT("/nRef"), window.nRef);
 	//		continue;
@@ -279,6 +284,7 @@ RETURN_CODE CFitWindowFileHandler::WriteFitWindow(const Evaluation::CFitWindow &
 	fprintf(f, "%s<UV>%d</UV>\n", (LPCSTR)indent, window.UV);
 	fprintf(f, "%s<shiftSky>%d</shiftSky>\n", (LPCSTR)indent, window.shiftSky);
 	fprintf(f, "%s<interlaceStep>%d</interlaceStep>\n", (LPCSTR)indent, window.interlaceStep);
+	fprintf(f, "%s<solarSpectrum>%s</solarSpectrum>\n", (LPCSTR)indent, window.fraunhoferRef.m_path.c_str());
 
 	fprintf(f, "%s<nRef>%d</nRef>\n", (LPCSTR)indent, window.nRef);
 
