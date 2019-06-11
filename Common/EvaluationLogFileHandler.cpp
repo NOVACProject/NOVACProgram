@@ -1207,7 +1207,6 @@ RETURN_CODE CEvaluationLogFileHandler::WriteEvaluationLog(const CString fileName
         double maxIntensity = CSpectrometerModel::GetMaxIntensity(m_specInfo.m_specModel);
 
         // Finally, the version of the file and the version of the program
-        string.AppendFormat("\tversion=2.0\n");
         string.AppendFormat("\tsoftwareversion=%d.%d\n", CVersion::majorNumber, CVersion::minorNumber);
         string.AppendFormat("\tcompiledate=%s\n", __DATE__);
 

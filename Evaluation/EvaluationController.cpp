@@ -608,7 +608,6 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *resu
 	double maxIntensity = std::max(spectrometer.GetMaxIntensity(), 1.0);
 
 	// Finally, the version of the file and the version of the program
-	string.AppendFormat("\tversion=3.0\n");
 	string.AppendFormat("\tsoftwareversion=%d.%d\n",	CVersion::majorNumber, CVersion::minorNumber);
 	string.AppendFormat("\tcompiledate=%s\n",			__DATE__);
 
