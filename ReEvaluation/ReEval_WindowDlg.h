@@ -53,12 +53,14 @@ namespace ReEvaluation
 		/** The remove reference button */
 		CButton m_btnRemoveRef;
 
-		/** The 'shift-sky' checkbox */
-		CButton m_checkShiftSky;
+		/** The 'UV' checkbox */
+		CButton m_checkUV;
 
 		/** The 'find optimal shift' checkbox */
 		CButton m_checkFindOptimalShift;
 
+		/** The 'shift-sky' checkbox */
+		CButton m_checkShiftSky;
 		// --------------------------- PUBLIC METHODS --------------------------
 
 		/** Initialize the dialog and its controls */
@@ -95,6 +97,7 @@ namespace ReEvaluation
 		afx_msg void OnBrowseSolarSpectrum();
 
     private:
-        CString m_fraunhoferReferenceName;
+		CString m_fraunhoferReferenceName;
+
 	};
 }
