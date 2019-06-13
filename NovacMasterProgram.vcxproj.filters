@@ -576,6 +576,9 @@
     <ClCompile Include="communication\SFTPCom.cpp">
       <Filter>Source Files\Communication</Filter>
     </ClCompile>
+    <ClCompile Include="CustomSpectrometerModelDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Configuration\AdvancedFTPUploadSettings.h">
@@ -1174,6 +1177,9 @@
     </ClInclude>
     <ClInclude Include="communication\FileInfo.h">
       <Filter>Header Files\Communication</Filter>
+    </ClInclude>
+    <ClInclude Include="CustomSpectrometerModelDlg.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

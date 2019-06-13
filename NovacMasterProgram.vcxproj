@@ -184,6 +184,7 @@
     <ClCompile Include="Configuration\SystemConfigurationPage.cpp" />
     <ClCompile Include="Configuration\VIIAdvancedConfigurationDlg.cpp" />
     <ClCompile Include="Configuration\WindConfigurationDlg.cpp" />
+    <ClCompile Include="CustomSpectrometerModelDlg.cpp" />
     <ClCompile Include="Dialogs\ColumnHistoryDlg.cpp" />
     <ClCompile Include="Dialogs\ConfigurationDlg.cpp" />
     <ClCompile Include="Dialogs\DarkSettingsDialog.cpp" />
@@ -259,6 +260,7 @@
     <ClInclude Include="communication\NodeControlInfo.h" />
     <ClInclude Include="communication\IFTPDataUpload.h" />
     <ClInclude Include="communication\SFTPCom.h" />
+    <ClInclude Include="CustomSpectrometerModelDlg.h" />
     <ClInclude Include="Dialogs\ColumnHistoryDlg.h" />
     <ClInclude Include="Evaluation\EvaluationResultView.h" />
     <ClCompile Include="SpectralEvaluation\src\DateTime.cpp">

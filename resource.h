@@ -240,6 +240,7 @@
 #define ID__SAVEASBITMAP                297
 #define IDD_REFERENCE_PLOT_DLG          299
 #define IDD_ANALYSIS_COLUMN_HISTORY_DLG 300
+#define IDD_CONFIGURE_SPECTROMETERMODEL 314
 #define IDC_STATIC_VERSIONNUMBER        1000
 #define IDC_STATIC_COPYRIGHT            1001
 #define IDC_BUTTON_TEST                 1002
@@ -492,6 +493,7 @@
 #define IDC_EDIT_WD_TOLERANCE           1118
 #define IDC_EDIT_PLUMECENTRE            1118
 #define IDC_EDIT_SOLARSPECTRUMPATH      1118
+#define IDC_EDIT_MODELNAME              1118
 #define IDC_FTPIP                       1119
 #define IDC_EDIT_EXPORTDIR              1119
 #define IDC_REEVAL_LBL_DELTA2           1119
@@ -506,6 +508,7 @@
 #define IDC_IGNORE_NOTHING2             1119
 #define IDC_EDIT_PLUMEDGE_LOW           1119
 #define IDC_CHECK_PLOT_COLUMN_HISTORY   1119
+#define IDC_EDIT_MAXIMUMINTENSITY       1119
 #define IDC_FTPPASS                     1120
 #define IDC_FTP_USERNAME                1120
 #define IDC_EDIT_REPETITIONS            1120
@@ -789,7 +792,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        314
+#define _APS_NEXT_RESOURCE_VALUE        316
 #define _APS_NEXT_COMMAND_VALUE         32788
 #define _APS_NEXT_CONTROL_VALUE         1350
 #define _APS_NEXT_SYMED_VALUE           109

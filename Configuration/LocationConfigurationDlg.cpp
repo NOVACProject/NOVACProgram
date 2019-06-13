@@ -7,6 +7,7 @@
 #include "ScannerConfiguration.h"
 #include "../VolcanoInfo.h"
 #include "../ObservatoryInfo.h"
+#include "../CustomSpectrometerModelDlg.h"
 #include <SpectralEvaluation/Spectra/SpectrometerModel.h>
 
 #include "../Dialogs/QueryStringDialog.h"
@@ -98,7 +99,6 @@ BEGIN_MESSAGE_MAP(CLocationConfigurationDlg, CPropertyPage)
     ON_EN_CHANGE(IDC_EDIT_MAXCOL, SaveData)
 END_MESSAGE_MAP()
 
-
 BOOL CLocationConfigurationDlg::OnInitDialog()
 {
     Common common;
@@ -110,17 +110,12 @@ BOOL CLocationConfigurationDlg::OnInitDialog()
     UpdateVolcanoList();
 
     // The spectrometer models combo box
-    m_comboSpectrometerModel.ResetContent();
-    std::vector<std::string> modelNames = CSpectrometerDatabase::GetInstance().ListModels();
-    for (size_t j = 0; j < modelNames.size(); ++j)
-    {
-        CString modelStr(modelNames[j].c_str());
-        m_comboSpectrometerModel.AddString(modelStr);
-    }
+    RecreateSpectrometerModelCombo();
 
     // The channels combo box
     m_comboSpectrometerChannels.ResetContent();
-    for (int k = 0; k < MAX_CHANNEL_NUM; ++k) {
+    for (int k = 0; k < MAX_CHANNEL_NUM; ++k)
+    {
         str.Format("%d", k + 1);
         m_comboSpectrometerChannels.AddString(str);
     }
@@ -258,18 +253,53 @@ void CLocationConfigurationDlg::OnChangeVolcano() {
     m_configuration->windSourceSettings.windFieldFile.Format("ftp://129.16.35.206/wind/wind_%s.txt", (LPCSTR)g_volcanoes.m_simpleName[curSel]);
 }
 
+void CLocationConfigurationDlg::RecreateSpectrometerModelCombo()
+{
+    m_comboSpectrometerModel.ResetContent();
+    std::vector<std::string> modelNames = CSpectrometerDatabase::GetInstance().ListModels();
+    for (size_t j = 0; j < modelNames.size(); ++j)
+    {
+        CString modelStr(modelNames[j].c_str());
+        m_comboSpectrometerModel.AddString(modelStr);
+    }
+    m_comboSpectrometerModel.AddString("Custom...");
+}
+
 /** The user has changed the model of the spectrometer */
-void CLocationConfigurationDlg::OnChangeModel() {
-    if (m_curScanner == NULL)
+void CLocationConfigurationDlg::OnChangeModel()
+{
+    if (m_curScanner == nullptr)
         return;
 
-    int curSel = m_comboSpectrometerModel.GetCurSel();
+    const int curSel = m_comboSpectrometerModel.GetCurSel();
     if (curSel < 0)
         return;
 
-    SpectrometerModel modelName = CSpectrometerDatabase::GetInstance().GetModel(curSel);
+    SpectrometerModel spectrometerModel = CSpectrometerDatabase::GetInstance().GetModel(curSel);
 
-    m_curScanner->spec[0].modelName = modelName.modelName;
+    if (spectrometerModel.IsUnknown())
+    {
+        CustomSpectrometerModelDlg dlg;
+        INT_PTR ret = dlg.DoModal();
+        if (ret == IDCANCEL)
+        {
+            return;
+        }
+        else
+        {
+            CSpectrometerDatabase::GetInstance().AddModel(dlg.m_configuredSpectrometer);
+            RecreateSpectrometerModelCombo();
+
+            m_curScanner->spec[0].modelName = dlg.m_configuredSpectrometer.modelName;
+
+            const int spectrometerTypeIdx = CSpectrometerDatabase::GetInstance().GetModelIndex(m_curScanner->spec[0].modelName);
+            m_comboSpectrometerModel.SetCurSel(spectrometerTypeIdx);
+        }
+    }
+    else
+    {
+        m_curScanner->spec[0].modelName = spectrometerModel.modelName;
+    }
 }
 
 /** The user has changed the number of channels in the spectrometer */
