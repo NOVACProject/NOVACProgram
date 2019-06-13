@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "configurationfilehandler.h"
+#include <SpectralEvaluation/Spectra/SpectrometerModel.h>
 #include "../VolcanoInfo.h"
 #include "../resource.h"
 
@@ -306,8 +307,27 @@ int CConfigurationFileHandler::WriteConfigurationFile(CConfigurationSetting &con
             fprintf(f, str);
 
             // model Number
-            str.Format("%s<model>%s</model>\n", (LPCSTR)indent, spec.modelName.c_str());
-            fprintf(f, str);
+            {
+                const SpectrometerModel spectrometerModel = CSpectrometerDatabase::GetInstance().GetModel(spec.modelName);
+                if (spectrometerModel.isCustom)
+                {
+                    str.Format("%s<customSpectrometer>\n", (LPCSTR)indent);
+                    str.AppendFormat("%s\t<name>%s</name>\n", (LPCSTR)indent, spectrometerModel.modelName.c_str());
+                    str.AppendFormat("%s\t<maxIntensity>%lf</maxIntensity>\n", (LPCSTR)indent, spectrometerModel.maximumIntensity);
+
+                    if (spectrometerModel.numberOfChannels != 1)
+                    {
+                        str.AppendFormat("%s\t<numChannels>%d</numChannels>\n", (LPCSTR)indent, spectrometerModel.numberOfChannels);
+                    }
+
+                    str.AppendFormat("%s</customSpectrometer>\n", (LPCSTR)indent);
+                }
+                else
+                {
+                    str.Format("%s<model>%s</model>\n", (LPCSTR)indent, spec.modelName.c_str());
+                }
+                fprintf(f, str);
+            }
 
             if (conf->scanner[i].spec[j].channelNum > 1)
                 hasDoubleSpectrometer = true;
@@ -847,7 +867,8 @@ int CConfigurationFileHandler::Parse_Communication() {
     return 0;
 }
 
-int CConfigurationFileHandler::Parse_Spectrometer() {
+int CConfigurationFileHandler::Parse_Spectrometer()
+{
     CConfigurationSetting::SpectrometerSetting *curSpec = &(curScanner->spec[curScanner->specNum]);
 
     // the actual reading loop
@@ -872,6 +893,13 @@ int CConfigurationFileHandler::Parse_Spectrometer() {
         if (Equals(szToken, "serialNumber")) {
             if (curSpec != NULL)
                 Parse_StringItem(TEXT("/serialNumber"), curSpec->serialNumber);
+            continue;
+        }
+
+        // found a custom spectrometer
+        if (Equals(szToken, "customSpectrometer"))
+        {
+            Parse_CustomSpectrometerModel(curSpec);
             continue;
         }
 
@@ -916,7 +944,85 @@ int CConfigurationFileHandler::Parse_Spectrometer() {
     return 0;
 }
 
-int CConfigurationFileHandler::Parse_Channel() {
+int CConfigurationFileHandler::Parse_CustomSpectrometerModel(CConfigurationSetting::SpectrometerSetting *curSpec)
+{
+    if (nullptr == curSpec)
+    {
+        return 1;
+    }
+
+    SpectrometerModel thisModel;
+
+    while (szToken = NextToken())
+    {
+        if (strlen(szToken) < 3)
+        {
+            continue;
+        }
+
+        if (Equals(szToken, "!--", 3))
+        {
+            continue;
+        }
+
+        // the end of the spectrometer section
+        if (Equals(szToken, "/customSpectrometer"))
+        {
+            // Save the values
+            curSpec->modelName = thisModel.modelName;
+
+            const int currentModelIndex = CSpectrometerDatabase::GetInstance().GetModelIndex(thisModel.modelName);
+
+            if (currentModelIndex >= 0)
+            {
+                SpectrometerModel existingModel = CSpectrometerDatabase::GetInstance().GetModel(currentModelIndex);
+
+                if (std::abs(existingModel.maximumIntensity - thisModel.maximumIntensity) > 1.0)
+                {
+                    CString errorMessage;
+                    errorMessage.Format("Could not configure new custom spectrometer model with name %s, such a model already exists with a different maximum intensity.", thisModel.modelName);
+                    MessageBox(NULL, errorMessage, "Error", MB_OK);
+                    return 1;
+                }
+
+                // The model already exists in the database, but with the same properties, don't insert again into database.
+            }
+            else
+            {
+                // Insert the new model into the database
+                CSpectrometerDatabase::GetInstance().AddModel(thisModel);
+            }
+
+            return 0;
+        }
+
+        // found the model name 
+        if (Equals(szToken, "name"))
+        {
+            Parse_StringItem("/name", thisModel.modelName);
+            continue;
+        }
+
+        // found the maximum intensity 
+        if (Equals(szToken, "maxIntensity"))
+        {
+            Parse_FloatItem("/maxIntensity", thisModel.maximumIntensity);
+            continue;
+        }
+
+        // found the number of channels 
+        if (Equals(szToken, "numChannels"))
+        {
+            Parse_IntItem("/numChannels", thisModel.numberOfChannels);
+            continue;
+        }
+    }
+
+    return 0;
+}
+
+int CConfigurationFileHandler::Parse_Channel()
+{
     CConfigurationSetting::SpectrometerSetting *curSpec = &(curScanner->spec[curScanner->specNum]);
     CConfigurationSetting::SpectrometerChannelSetting *curChannel = &curSpec->channel[curSpec->channelNum];
     int tmpInt;

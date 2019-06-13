@@ -399,7 +399,6 @@ bool CReEvaluator::AppendResultToEvaluationLog(const Evaluation::CScanResult& re
         fprintf(f, "\tmode=plume\n");
 
     // Finally, the version of the file and the version of the program
-    fprintf(f, "\tversion=2.1\n");
     fprintf(f, "\tsoftwareversion=%d.%d\n", CVersion::majorNumber, CVersion::minorNumber);
     fprintf(f, "\tcompiledate=%s\n", __DATE__);
 

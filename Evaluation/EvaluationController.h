@@ -141,7 +141,7 @@ namespace Evaluation
 		/** Indentifies the scanning instrument from which this scan was generated. 
 			@param scan a reference to a scan that should be identified. 
 			@return a pointer to the spectrometer. @return NULL if no spectrometer found */
-		CSpectrometer *IdentifySpectrometer(const FileHandler::CScanFileHandler *scan);
+		CSpectrometer *IdentifySpectrometer(const FileHandler::CScanFileHandler& scan);
 
 		/** Calculates the flux from the provided scan using the information given in 'scan' 
 			@param scan - The scan, including evaluated results of the scan, this will be updated with information on the flux. 
@@ -163,13 +163,13 @@ namespace Evaluation
 			@param scan - the scan itself, also containing information about the evaluation and the flux.
 			@param scanningInstrument - information about the scanning instrument that generated the scan. 
 			@return SUCCESS if operation completed sucessfully. */
-		RETURN_CODE WriteEvaluationResult(const CScanResult *result, const FileHandler::CScanFileHandler *scan, const CSpectrometer &spectrometer, CWindField &windField);
+		RETURN_CODE WriteEvaluationResult(const CScanResult *result, const FileHandler::CScanFileHandler& scan, const CSpectrometer &spectrometer, CWindField &windField);
 
 		/** Handles the connection of a un-identified spectrometer to the network.
 			@param serialNumber - the serial number of the newly connected spectrometer. 
 			@return a pointer to the newly connected spectrometer. 
 			@return NULL upon failure. */
-		CSpectrometer *HandleUnIdentifiedSpectrometer(const CString &serialNumber, const FileHandler::CScanFileHandler *scan);
+		CSpectrometer *HandleUnIdentifiedSpectrometer(const CString &serialNumber, const FileHandler::CScanFileHandler& scan);
 
 		/** Initializes the output logs that are generated. One error-log, one status-log, and one
 			result-log for every spectrometer, and a similar set for the evaluationController as a whole.

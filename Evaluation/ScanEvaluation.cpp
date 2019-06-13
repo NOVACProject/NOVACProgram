@@ -201,7 +201,8 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
             success = true; // assume that we will succeed in evaluating this spectrum
 
             // If the user wants to exit this thread then do so.
-            if (fRun != nullptr && *fRun == false) {
+            if (fRun != nullptr && *fRun == false)
+            {
                 ShowMessage("Scan Evaluation cancelled by user");
                 return 0;
             }
@@ -240,17 +241,20 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
 
             // If the read spectrum is the sky or the dark spectrum, 
             //	then don't evaluate it...
-            if (current.ScanIndex() == sky.ScanIndex() || current.ScanIndex() == dark.ScanIndex()) {
+            if (current.ScanIndex() == sky.ScanIndex() || current.ScanIndex() == dark.ScanIndex())
+            {
                 continue;
             }
 
             // If the spectrum is read out in an interlaced way then interpolate it back to it's original state
-            if (current.m_info.m_interlaceStep > 1) {
+            if (current.m_info.m_interlaceStep > 1)
+            {
                 current.InterpolateSpectrum();
             }
 
             // b. Get the dark spectrum for this measured spectrum
-            if (SUCCESS != GetDark(&scan, current, dark, darkSettings)) {
+            if (SUCCESS != GetDark(&scan, current, dark, darkSettings))
+            {
                 return 0;
             }
 
@@ -261,7 +265,8 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
 
             // c. Divide the measured spectrum with the number of co-added spectra
             //     The sky and dark spectra should already be divided before this loop.
-            if (current.NumSpectra() > 0 && !m_averagedSpectra) {
+            if (current.NumSpectra() > 0 && !m_averagedSpectra)
+            {
                 current.Div(current.NumSpectra());
             }
 
@@ -275,7 +280,8 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
 
             // d2. Now subtract the dark (if we did this earlier, then the 'Ignore' - function would
             //		not function properly)
-            if (dark.NumSpectra() > 0 && !m_averagedSpectra) {
+            if (dark.NumSpectra() > 0 && !m_averagedSpectra)
+            {
                 dark.Div(dark.NumSpectra());
             }
 
@@ -345,9 +351,12 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
                 CFitWindow newWindow = copyOfWindow; // create a new copy
 
                                                      // 5. Set the shift for all references to this value
-                for (int k = 0; k < newWindow.nRef; ++k) {
+                for (int k = 0; k < newWindow.nRef; ++k)
+                {
                     if (newWindow.ref[k].m_specieName.compare("FraunhoferRef") == 0)
+                    {
                         continue;
+                    }
 
                     newWindow.ref[k].m_shiftOption = SHIFT_FIX;
                     newWindow.ref[k].m_squeezeOption = SHIFT_FIX;
@@ -356,6 +365,12 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
                 }
 
                 eval.reset(new CEvaluationBase{ newWindow });
+
+                // tell the new evaluator which sky-spectrum to use
+                eval->SetSkySpectrum(sky);
+
+                // drop the old result and start anew
+                newResult = std::make_shared<CScanResult>();
             }
         }
     }
@@ -561,7 +576,6 @@ bool CScanEvaluation::Ignore(const CSpectrum &spec, const CFitWindow window) {
 
 CEvaluationResult CScanEvaluation::FindOptimumShiftAndSqueeze(const CEvaluationBase *originalEvaluation, FileHandler::CScanFileHandler *scan, CScanResult *result)
 {
-    int k;
     CSpectrum spec, sky, dark;
     int specieNum = 0;
     CString message;
@@ -585,9 +599,10 @@ CEvaluationResult CScanEvaluation::FindOptimumShiftAndSqueeze(const CEvaluationB
     newFitWindow.ref[0].m_shiftOption = SHIFT_FREE;
     newFitWindow.ref[0].m_squeezeOption = SHIFT_FIX;
     newFitWindow.ref[0].m_squeezeValue = 1.0;
-    for (k = 1; k < newFitWindow.nRef; ++k) {
-        if (EqualsIgnoringCase(newFitWindow.ref[k].m_specieName, "FraunhoferRef"))
+    for (int k = 1; k < newFitWindow.nRef; ++k) {
+        if (EqualsIgnoringCase(newFitWindow.ref[k].m_specieName, "FraunhoferRef")) {
             continue;
+        }
 
         newFitWindow.ref[k].m_shiftOption = SHIFT_LINK;
         newFitWindow.ref[k].m_squeezeOption = SHIFT_LINK;
@@ -611,10 +626,12 @@ CEvaluationResult CScanEvaluation::FindOptimumShiftAndSqueeze(const CEvaluationB
 
     // Get the measured spectrum
     scan->GetSpectrum(spec, 2 + m_indexOfMostAbsorbingSpectrum); // The two comes from the sky and the dark spectra in the beginning
-    if (spec.m_info.m_interlaceStep > 1)
+    if (spec.m_info.m_interlaceStep > 1) {
         spec.InterpolateSpectrum();
-    if (spec.NumSpectra() > 0 && !m_averagedSpectra)
+    }
+    if (spec.NumSpectra() > 0 && !m_averagedSpectra) {
         spec.Div(spec.NumSpectra());
+    }
 
     // Get the dark-spectrum and remove it
     GetDark(scan, spec, dark);
