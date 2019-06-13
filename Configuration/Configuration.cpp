@@ -136,14 +136,12 @@ void CConfigurationSetting::ScanningInstrumentSetting::Clear() {
 }
 
 /** --------- Constructor for the spectrometer channel settings ------------- */
-CConfigurationSetting::SpectrometerChannelSetting::SpectrometerChannelSetting() {
-    detectorSize = 2048; // default;
+CConfigurationSetting::SpectrometerChannelSetting::SpectrometerChannelSetting()
+{
 }
 
-CConfigurationSetting::SpectrometerChannelSetting::~SpectrometerChannelSetting() {
-}
-void CConfigurationSetting::SpectrometerChannelSetting::Clear() {
-    detectorSize = 2048;
+void CConfigurationSetting::SpectrometerChannelSetting::Clear()
+{
     fitWindow.name = "";
     fitWindow.nRef = 0;
     fitWindow.polyOrder = 5;
@@ -153,8 +151,8 @@ void CConfigurationSetting::SpectrometerChannelSetting::Clear() {
 }
 
 // assignment
-CConfigurationSetting::SpectrometerChannelSetting &CConfigurationSetting::SpectrometerChannelSetting::operator =(const CConfigurationSetting::SpectrometerChannelSetting &spec2) {
-    detectorSize = spec2.detectorSize;
+CConfigurationSetting::SpectrometerChannelSetting &CConfigurationSetting::SpectrometerChannelSetting::operator =(const CConfigurationSetting::SpectrometerChannelSetting &spec2)
+{
     fitWindow = spec2.fitWindow;
 
     m_darkSettings = spec2.m_darkSettings;

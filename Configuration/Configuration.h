@@ -83,14 +83,10 @@ public:
     class SpectrometerChannelSetting {
     public:
         SpectrometerChannelSetting();
-        ~SpectrometerChannelSetting();
 
         /** Resets all values to default */
         void Clear();
-
-        /** The size of the detector */
-        unsigned int  detectorSize;
-
+        
         /** The fit settings that are defined for this spectrometer */
         Evaluation::CFitWindow fitWindow;
 
