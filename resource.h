@@ -409,6 +409,7 @@
 #define IDC_DISKCOMBO                   1078
 #define IDC_COMBO_IMAGEFORMAT           1078
 #define IDC_COMBO_OFFSET                1078
+#define IDC_COMBO_WAVELENGTH_CONVERSION 1078
 #define IDC_SLEEPHR                     1079
 #define IDC_COMBO_DARKCURRENT           1079
 #define IDC_COMBO_VOLCANO2              1079
@@ -805,7 +806,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        318
+#define _APS_NEXT_RESOURCE_VALUE        319
 #define _APS_NEXT_COMMAND_VALUE         32789
 #define _APS_NEXT_CONTROL_VALUE         1355
 #define _APS_NEXT_SYMED_VALUE           109
