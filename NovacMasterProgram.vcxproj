@@ -184,6 +184,7 @@
     <ClCompile Include="Configuration\SystemConfigurationPage.cpp" />
     <ClCompile Include="Configuration\VIIAdvancedConfigurationDlg.cpp" />
     <ClCompile Include="Configuration\WindConfigurationDlg.cpp" />
+    <ClCompile Include="CreateReferencesDlg.cpp" />
     <ClCompile Include="CustomSpectrometerModelDlg.cpp" />
     <ClCompile Include="Dialogs\ColumnHistoryDlg.cpp" />
     <ClCompile Include="Dialogs\ConfigurationDlg.cpp" />
@@ -260,6 +261,7 @@
     <ClInclude Include="communication\NodeControlInfo.h" />
     <ClInclude Include="communication\IFTPDataUpload.h" />
     <ClInclude Include="communication\SFTPCom.h" />
+    <ClInclude Include="CreateReferencesDlg.h" />
     <ClInclude Include="CustomSpectrometerModelDlg.h" />
     <ClInclude Include="Dialogs\ColumnHistoryDlg.h" />
     <ClInclude Include="Evaluation\EvaluationResultView.h" />

@@ -347,10 +347,10 @@ public:
 	CString   m_exeFileName;
 
 	/** Opens a dialog window and lets the user browse for a file */
-	bool BrowseForFile(TCHAR *filter, CString &fileName);
+	static bool BrowseForFile(TCHAR *filter, CString &fileName);
 
 	/** Opens a dialog window and lets the user browse for a filename to save to */
-	bool BrowseForFile_SaveAs(TCHAR *filter, CString &fileName);
+	static bool BrowseForFile_SaveAs(TCHAR *filter, CString &fileName);
 
 	/** Opens a dialog window and lets the user browse for a directory.
 			@return true if all is ok,
