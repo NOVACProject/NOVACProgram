@@ -1,10 +1,11 @@
 NOVAC Program Release Notes
 -----------------------------------------------------
-Version 3.1 (May 2019)
+Version 3.1 (June 2019)
 
 Bug fixes
 * Set time limit on how much time to spend downloading pak files from one spectrometer (#43)
 * Fix issue with flux data with different UTC date plotted as if it would have the same date (#56)
+* Fix duplicate spectral data entries when 'Find Optimal Shift' is checked in ReEvaluation dialog Fit Window tab (#89)
 
 New features
 * Option to show columns for current day plot to support fixed view measurements(#53)
@@ -14,6 +15,9 @@ New features
 * FTP upload server login information is now stored in a separate ftplogin.xml file
 * Status Message area resizes when window is resized
 * Open application with size maximized
+
+Other
+* Refactoring and separation of shared spectral evaluation code into its own project.
 
 -----------------------------------------------------
 Version 3.0 (February 2018)
