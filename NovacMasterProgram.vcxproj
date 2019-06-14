@@ -72,7 +72,8 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>$(SolutionDir)\SpectralEvaluation\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\curl\win32\include\;$(SolutionDir)\SpectralEvaluation\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -81,7 +82,7 @@
       <EnableCOMDATFolding>false</EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
       <TypeLibraryResourceID>1</TypeLibraryResourceID>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)curl\win32\lib\libcurl-d_imp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -115,7 +116,8 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>$(SolutionDir)\SpectralEvaluation\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\curl\win32\include\;$(SolutionDir)\SpectralEvaluation\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -124,7 +126,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
       <TypeLibraryResourceID>1</TypeLibraryResourceID>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)curl\win32\lib\libcurl_imp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -157,11 +159,16 @@
     <ClCompile Include="Common\XMLFileReader.cpp" />
     <ClCompile Include="CommunicationDataStorage.cpp" />
     <ClCompile Include="communication\CommunicationController.cpp" />
+    <ClCompile Include="communication\ElectronicsBoxProperties.cpp" />
+    <ClCompile Include="communication\FileInfo.cpp" />
+    <ClCompile Include="communication\IFTPDataUpload.cpp" />
+    <ClCompile Include="communication\SFTPCom.cpp" />
     <ClCompile Include="communication\FTPCom.cpp" />
     <ClCompile Include="communication\FTPHandler.cpp" />
     <ClCompile Include="communication\FTPServerContacter.cpp" />
     <ClCompile Include="communication\FTPSocket.cpp" />
     <ClCompile Include="communication\LinkStatistics.cpp" />
+    <ClCompile Include="communication\NodeControlInfo.cpp" />
     <ClCompile Include="communication\SerialCOM.cpp" />
     <ClCompile Include="communication\SerialControllerWithTx.cpp" />
     <ClCompile Include="Configuration\AdvancedFTPUploadSettings.cpp" />
@@ -177,6 +184,8 @@
     <ClCompile Include="Configuration\SystemConfigurationPage.cpp" />
     <ClCompile Include="Configuration\VIIAdvancedConfigurationDlg.cpp" />
     <ClCompile Include="Configuration\WindConfigurationDlg.cpp" />
+    <ClCompile Include="CreateReferencesDlg.cpp" />
+    <ClCompile Include="CustomSpectrometerModelDlg.cpp" />
     <ClCompile Include="Dialogs\ColumnHistoryDlg.cpp" />
     <ClCompile Include="Dialogs\ConfigurationDlg.cpp" />
     <ClCompile Include="Dialogs\DarkSettingsDialog.cpp" />
@@ -217,12 +226,10 @@
     <ClCompile Include="Evaluation\ScanResult.cpp" />
     <ClCompile Include="Evaluation\Spectrometer.cpp" />
     <ClCompile Include="Evaluation\SpectrometerHistory.cpp" />
-    <ClCompile Include="FileInfo.cpp" />
     <ClCompile Include="FileTreeCtrl.cpp" />
     <ClCompile Include="Geometry\GeometryCalculator.cpp" />
     <ClCompile Include="Geometry\GeometryEvaluator.cpp" />
     <ClCompile Include="Geometry\GeometryResult.cpp" />
-    <ClCompile Include="Geometry\RealTimeSetupChanger.cpp" />
     <ClCompile Include="Graphs\DOASFitGraph.cpp" />
     <ClCompile Include="Graphs\GraphCtrl.cpp" />
     <ClCompile Include="Graphs\OScopeCtrl.cpp" />
@@ -231,7 +238,6 @@
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="MasterController.cpp" />
     <ClCompile Include="MeteorologicalData.cpp" />
-    <ClCompile Include="NodeControlInfo.cpp" />
     <ClCompile Include="NovacMasterProgram.cpp" />
     <ClCompile Include="NovacMasterProgramDoc.cpp" />
     <ClCompile Include="NovacMasterProgramView.cpp" />
@@ -250,11 +256,15 @@
     <ClCompile Include="Dialogs\ReferencePlotDlg.cpp" />
     <ClCompile Include="ScannerFileInfo.cpp" />
     <ClCompile Include="ScannerFolderInfo.cpp" />
+    <ClInclude Include="communication\ElectronicsBoxProperties.h" />
+    <ClInclude Include="communication\FileInfo.h" />
+    <ClInclude Include="communication\NodeControlInfo.h" />
+    <ClInclude Include="communication\IFTPDataUpload.h" />
+    <ClInclude Include="communication\SFTPCom.h" />
+    <ClInclude Include="CreateReferencesDlg.h" />
+    <ClInclude Include="CustomSpectrometerModelDlg.h" />
     <ClInclude Include="Dialogs\ColumnHistoryDlg.h" />
     <ClInclude Include="Evaluation\EvaluationResultView.h" />
-    <ClInclude Include="SpectralEvaluation\Fit\BSpline.cxx" />
-    <ClInclude Include="SpectralEvaluation\Fit\BSplineD.cxx" />
-    <ClInclude Include="SpectralEvaluation\Fit\BSplineF.cxx" />
     <ClCompile Include="SpectralEvaluation\src\DateTime.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
@@ -454,12 +464,10 @@
     <ClInclude Include="Evaluation\ScanResult.h" />
     <ClInclude Include="Evaluation\Spectrometer.h" />
     <ClInclude Include="Evaluation\SpectrometerHistory.h" />
-    <ClInclude Include="FileInfo.h" />
     <ClInclude Include="FileTreeCtrl.h" />
     <ClInclude Include="Geometry\GeometryCalculator.h" />
     <ClInclude Include="Geometry\GeometryEvaluator.h" />
     <ClInclude Include="Geometry\GeometryResult.h" />
-    <ClInclude Include="Geometry\RealTimeSetupChanger.h" />
     <ClInclude Include="Graphs\DOASFitGraph.h" />
     <ClInclude Include="Graphs\GraphCtrl.h" />
     <ClInclude Include="Graphs\OScopeCtrl.h" />
@@ -468,7 +476,6 @@
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="MasterController.h" />
     <ClInclude Include="MeteorologicalData.h" />
-    <ClInclude Include="NodeControlInfo.h" />
     <ClInclude Include="NovacMasterProgram.h" />
     <ClInclude Include="NovacMasterProgramDoc.h" />
     <ClInclude Include="NovacMasterProgramView.h" />
@@ -489,6 +496,7 @@
     <ClInclude Include="ScannerFileInfo.h" />
     <ClInclude Include="ScannerFolderInfo.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Configuration\DarkSettings.h" />
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Configuration\SkySettings.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\DateTime.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Evaluation\CrossSectionData.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Evaluation\EvaluationBase.h" />

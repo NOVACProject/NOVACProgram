@@ -1,48 +1,46 @@
 #pragma once
 
-#include "Common/Common.h"
-
 /** The class CWindFileController is responsible for the downloading
-		of wind-field files from the FTP-server and occasional re-reading. */
+        of wind-field files from the FTP-server and occasional re-reading. */
 class CWindFileController : public CWinThread
 {
 public:
-	CWindFileController(void);
-	~CWindFileController(void);
-	DECLARE_DYNCREATE(CWindFileController);
-	DECLARE_MESSAGE_MAP()
+    CWindFileController(void);
 
-	// ----------------------------------------------------------------------
-	// --------------------- PUBLIC METHODS ---------------------------------
-	// ----------------------------------------------------------------------
+    DECLARE_DYNCREATE(CWindFileController);
+    DECLARE_MESSAGE_MAP()
 
-	/** Called when the thread is to be stopped */
-	afx_msg void OnQuit(WPARAM wp, LPARAM lp);
+    // ----------------------------------------------------------------------
+    // --------------------- PUBLIC METHODS ---------------------------------
+    // ----------------------------------------------------------------------
 
-	/** */
-	afx_msg void OnTimer(UINT nIDEvent, LPARAM lp);
+    /** Called when the thread is to be stopped */
+    afx_msg void OnQuit(WPARAM wp, LPARAM lp);
 
-	/** Called when the thread is starting */
-	virtual BOOL InitInstance();
+    /** */
+    afx_msg void OnTimer(UINT nIDEvent, LPARAM lp);
 
-	/** Called when the thread is stopping */
-	virtual int ExitInstance();
+    /** Called when the thread is starting */
+    virtual BOOL InitInstance();
 
-	/** Called when there's nothing else to do. */
-	virtual BOOL OnIdle(LONG lCount);
+    /** Called when the thread is stopping */
+    virtual int ExitInstance();
 
-	// ----------------------------------------------------------------------
-	// --------------------- PUBLIC VARIABLES --------------------------------
-	// ----------------------------------------------------------------------
+    /** Called when there's nothing else to do. */
+    virtual BOOL OnIdle(LONG lCount);
 
-	/** Timer */
-	UINT_PTR m_nTimerID;
+    // ----------------------------------------------------------------------
+    // --------------------- PUBLIC VARIABLES --------------------------------
+    // ----------------------------------------------------------------------
+
+    /** Timer */
+    UINT_PTR m_nTimerID;
 
 protected:
-	// ----------------------------------------------------------------------
-	// --------------------- PROTECTED METHODS ------------------------------
-	// ----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
+    // --------------------- PROTECTED METHODS ------------------------------
+    // ----------------------------------------------------------------------
 
-	/** Tries to download the file by connecting to an FTP-server */
-	void DownloadFileByFTP();
+    /** Tries to download the file by connecting to an FTP-server */
+    void DownloadFileByFTP();
 };

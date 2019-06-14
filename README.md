@@ -12,3 +12,9 @@ git submodule init
 git submodule update
 
 to checkout the correct commit of SpectralEvaluation to the working directory.
+
+## Version 3.2
+Version 3.2 of the NovacProgram is, during development, tied to the branch 'dynamic_spectrometer_model' of SpectralEvaluation.
+To build NovacProgram in the branch 3.2, make sure the folder 'SpectralEvaluation' is set to branch 'dynamic_spectrometer_model'.
+
+'
