@@ -137,17 +137,17 @@ namespace FileHandler
                         or contains spectra which are not collected in a wind speed measurement mode. */
         static bool IsWindSpeedMeasurement(const CString &fileName);
 
-        /** This function checks the contents of the file 'fileName'.
+        /** This function checks the contents of the opened scan file.
                 @return true - if the spectra are collected in a stratospheric measurement mode.
                 @return false - if the file does not contain spectra,
                         or contains spectra which are not collected in a stratospheric measurement mode. */
         static bool IsStratosphericMeasurement(CScanFileHandler& file);
 
-        /** This function checks the contents of the file 'fileName'.
+        /** This function checks the contents of the opened scan file.
                 @return true - if the spectra are collected in a direct-sun mode.
                 @return false - if the file does not contain spectra,
                         or contains spectra which are not collected in a direct-sun measurement mode. */
-        static bool IsDirectSunMeasurement(const CString &fileName);
+        static bool IsDirectSunMeasurement(CScanFileHandler& file);
 
         /** This function checks the contents of the file 'fileName'.
                 @return true - if the spectra are collected in a lunar mode.

@@ -560,7 +560,8 @@ MEASUREMENT_MODE CPakFileHandler::GetMeasurementMode(const CString &fileName)
     {
         return MODE_STRATOSPHERE;
     }
-    else if (CPakFileHandler::IsDirectSunMeasurement(fileName)) {
+    else if (CPakFileHandler::IsDirectSunMeasurement(scan))
+    {
         return MODE_DIRECT_SUN;
     }
     else if (CPakFileHandler::IsLunarMeasurement(fileName)) {
@@ -800,27 +801,23 @@ bool CPakFileHandler::IsStratosphericMeasurement(CScanFileHandler& scan)
     return false;
 }
 
-/** This function checks the contents of the file 'fileName'.
-        @return true - if the spectra are collected in a direct-sun mode.
-        @return false - if the file does not contain spectra,
-                or contains spectra which are not collected in a direct-sun measurement mode. */
-bool CPakFileHandler::IsDirectSunMeasurement(const CString &fileName) {
-    CScanFileHandler scan;
+bool CPakFileHandler::IsDirectSunMeasurement(CScanFileHandler& file)
+{
     CSpectrum spec;
-    int nFound = 0;
+    int numberOfFoundDirectSunSpectra = 0;
 
     // It is here assumed that the measurement is a direct-sun measurment
-    //	if there is at least 5 spectrum with the name 'direct_sun'
-    const std::string fileNameStr((LPCSTR)fileName);
-    if (!scan.CheckScanFile(fileNameStr)) {
-        return false; // failed to check the file
-    }
-    while (scan.GetNextSpectrum(spec)) {
-        CString name = CString(spec.m_info.m_name.c_str());
-        if (Equals(name, "direct_sun")) {
-            ++nFound;
-            if (nFound == 5)
+    //  if there is at least 5 spectrum with the name 'direct_sun'
+    file.ResetCounter();
+    while (file.GetNextSpectrum(spec))
+    {
+        if (EqualsIgnoringCase(spec.m_info.m_name, "direct_sun"))
+        {
+            ++numberOfFoundDirectSunSpectra;
+            if (numberOfFoundDirectSunSpectra == 5)
+            {
                 return true;
+            }
         }
     }
 
