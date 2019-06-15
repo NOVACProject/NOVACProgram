@@ -1,5 +1,7 @@
 #include "StdAfx.h"
 #include "pakfilehandler.h"
+#include <SpectralEvaluation/Utils.h>
+#include <SpectralEvaluation/File/ScanFileHandler.h>
 
 #ifdef _MSC_VER
 #pragma warning (push, 4)
@@ -19,17 +21,10 @@ CPakFileHandler::CPakFileHandler(void)
 {
     m_tempIndex = 0;
     m_initializedOutput = false;
-    m_serialNumbers.SetSize(3); // make room for 3 spectrometers
-}
 
-CPakFileHandler::~CPakFileHandler(void)
-{
-    int N = m_serialNumbers.GetSize();
-    for (int k = 0; k < N; ++k) {
-        CString *str = m_serialNumbers.GetAt(k);
-        delete(str);
-    }
-    m_serialNumbers.RemoveAll();
+    // make room for 3 spectrometers
+    m_serialNumbers.resize(3);
+    m_lastLostIndex.resize(3);
 }
 
 void CPakFileHandler::InitializeDirectories(const CString &serialNumber, const CString *outputDir) {
@@ -392,20 +387,20 @@ int CPakFileHandler::ReadDownloadedFile(const CString &fileName, bool deletePakF
                 }
 
                 // 6d3. Add the spectrum to the scan-file
-                const std::string fileNameStr((LPCSTR)m_scanFile[k]);
+                const std::string scanFileName((LPCSTR)m_scanFile[k]);
                 if (isMultiChannelSpec)
                 {
-                    writer.AddSpectrumToFile(fileNameStr, *mSpec[k]);
+                    writer.AddSpectrumToFile(scanFileName, *mSpec[k]);
                 }
                 else
                 {
                     if (specHeaderSize > 0)
                     {
-                        writer.AddSpectrumToFile(fileNameStr, curSpec, spectrumHeader.data(), specHeaderSize);
+                        writer.AddSpectrumToFile(scanFileName, curSpec, spectrumHeader.data(), specHeaderSize);
                     }
                     else
                     {
-                        writer.AddSpectrumToFile(fileNameStr, curSpec);
+                        writer.AddSpectrumToFile(scanFileName, curSpec);
                     }
                 }
 
@@ -483,11 +478,11 @@ int CPakFileHandler::ReadDownloadedFile(const CString &fileName, bool deletePakF
             //      then move it to the 'lost' folder.
             if (IsExistingFile(incompleteFileName)) {
                 int index = GetSpectrometerIndex(serialNumber);
-                int it = 1 + m_lastLostIndex.GetAt(index);
+                int it = 1 + m_lastLostIndex[index];
                 while (IsExistingFile(lostFile[i]))
                     lostFile[i].Format("%s\\Incomplete_%s_%1d_%d.pak", (LPCSTR)m_lostDir, (LPCSTR)serialNumber, i, it++);
 
-                m_lastLostIndex.SetAt(index, it);
+                m_lastLostIndex[index] = it;
                 if (0 == MoveFile(incompleteFileName, lostFile[i])) {
                     // TODO!!!
                     ShowMessage("Error, could not move incomplete file!!");
@@ -522,35 +517,47 @@ int CPakFileHandler::ReadDownloadedFile(const CString &fileName, bool deletePakF
     return 0;
 }
 
-/** Looks up the index for the supplied serialNumber into the array of
-        serialNumbers. If the serialNumber does not exist in the array, it will be
-        inserted and it's index will be returned */
-int CPakFileHandler::GetSpectrometerIndex(const CString &serialNumber) {
-    CString message;
-    int ret = 0;
-    int nSpec = (int)m_serialNumbers.GetSize();
+int CPakFileHandler::GetSpectrometerIndex(const CString &serialNumber)
+{
+    const std::string serialtoSearchFor((LPCSTR)serialNumber);
+    int spectrometerIndex = 0;
+    int nSpec = (int)m_serialNumbers.size();
 
     // look for the serial number in the array
-    for (ret = 0; ret < nSpec; ++ret) {
-        CString *str = m_serialNumbers.GetAt(ret);
-        if (str == nullptr || str->GetLength() == 0)
+    for (spectrometerIndex = 0; spectrometerIndex < nSpec; ++spectrometerIndex)
+    {
+        std::string str = m_serialNumbers[spectrometerIndex];
+        if (str.size() == 0)
+        {
             break;
-
-        if (Equals(serialNumber, *str))
-            return ret;
+        }
+        if (EqualsIgnoringCase(serialtoSearchFor, str))
+        {
+            return spectrometerIndex;
+        }
     }
 
     // the serial number does not exist in the array, insert it!
-    m_serialNumbers.SetAtGrow(ret, new CString(serialNumber));
-    m_lastLostIndex.SetAtGrow(ret, 0);
+    if (m_serialNumbers.size() <= (size_t)spectrometerIndex)
+    {
+        m_serialNumbers.resize(spectrometerIndex + 1);
+        m_lastLostIndex.resize(spectrometerIndex + 1);
+    }
+    m_serialNumbers[spectrometerIndex] = serialNumber;
+    m_lastLostIndex[spectrometerIndex] = 0;
 
-    return ret;
+    return spectrometerIndex;
 }
 
-/** This function checks the contents of the .pak-file 'fileName'
-        and returns the type of measurement which is inside the file */
-MEASUREMENT_MODE CPakFileHandler::GetMeasurementMode(const CString &fileName) {
-    if (CPakFileHandler::IsStratosphericMeasurement(fileName)) {
+MEASUREMENT_MODE CPakFileHandler::GetMeasurementMode(const CString &fileName)
+{
+    const std::string fileNameStr((LPCSTR)fileName);
+
+    FileHandler::CScanFileHandler scan;
+    scan.CheckScanFile(fileNameStr);
+
+    if (CPakFileHandler::IsStratosphericMeasurement(scan))
+    {
         return MODE_STRATOSPHERE;
     }
     else if (CPakFileHandler::IsDirectSunMeasurement(fileName)) {
@@ -721,59 +728,73 @@ bool CPakFileHandler::IsWindSpeedMeasurement(const CString &fileName) {
     return false;
 }
 
-/** This function checks the contents of the file 'fileName'.
-        @return true - if the spectra are collected in a stratospheric measurement mode.
-        @return false - if the file does not contain spectra,
-                or contains spectra which are not collected in a stratospheric measurement mode. */
-bool CPakFileHandler::IsStratosphericMeasurement(const CString &fileName) {
-    SpectrumIO::CSpectrumIO reader;
-    double scanAngle = 0;
-    CSpectrum spectrum;
-    CDateTime gpsTime;
-    double saz, sza;
+bool CPakFileHandler::IsStratosphericMeasurement(CScanFileHandler& scan)
+{
     int nRepetitions = 0; // <-- The number of repetitions at one specific scan angle
 
     // 1. Count the number of spectra
-    const std::string fileNameStr((LPCSTR)fileName);
-    int numSpec = reader.CountSpectra(fileNameStr);
+    const int numSpec = scan.GetSpectrumNumInFile();
     if (numSpec <= 2 || numSpec > 50)
+    {
         return false; // <-- If file is not readable/empty/contains only a few spectra then return false.
+    }
 
     // 2. Check the Solar Zenith Angle at the time when the measurement started
-    //			If this is larger than 75, then the measurement is a stratospheric measurement
-    //			and not a wind-speed measurement
-    if (SUCCESS != reader.ReadSpectrum(fileNameStr, 0, spectrum))
+    //      If this is larger than 75, then the measurement is a stratospheric measurement
+    //      and not a wind-speed measurement
+    CSpectrum spectrum;
+    if (1 != scan.GetSpectrum(spectrum, 0))
+    {
         return false;
+    }
+
+    CDateTime gpsTime;
     gpsTime.year = spectrum.m_info.m_startTime.year;
     gpsTime.month = (unsigned char)spectrum.m_info.m_startTime.month;
     gpsTime.day = (unsigned char)spectrum.m_info.m_startTime.day;
     gpsTime.hour = (unsigned char)spectrum.m_info.m_startTime.hour;
     gpsTime.minute = (unsigned char)spectrum.m_info.m_startTime.minute;
     gpsTime.second = (unsigned char)spectrum.m_info.m_startTime.second;
-    if (SUCCESS != Common::GetSunPosition(gpsTime, spectrum.Latitude(), spectrum.Longitude(), sza, saz))
+
+    double solarAzimuth = 0;
+    double solarZenithAngle = 0;
+    if (SUCCESS != Common::GetSunPosition(gpsTime, spectrum.Latitude(), spectrum.Longitude(), solarZenithAngle, solarAzimuth))
+    {
         return false;
-    if (fabs(sza) < 75)
+    }
+    if (std::abs(solarZenithAngle) < 75.0)
+    {
         return false;
+    }
 
     // 3. Go through the file, starting at the second last spectrum in the file.
-    for (int specIndex = numSpec - 2; specIndex > 0; --specIndex) {
-        if (SUCCESS != reader.ReadSpectrum(fileNameStr, specIndex, spectrum)) {
+    for (int specIndex = numSpec - 2; specIndex > 0; --specIndex)
+    {
+        if (1 != scan.GetSpectrum(spectrum, specIndex))
+        {
             // failed to read the spectrum
             break;
         }
+
+        const double scanAngle = spectrum.ScanAngle();
+
         // if this is the same scan angle as in the last spectrum, 
         //	then increase the number of repetitions.
-        if (fabs(scanAngle) < 1e-2) {
+        if (std::abs(scanAngle) < 1e-2)
+        {
             ++nRepetitions;
         }
-        else {
-            break;
+        else
+        {
+            return false;
         }
 
         /** If there are more than 3 repetitions in the zenith
                 then the measurement is considered to be a stratospheric measurement */
         if (nRepetitions > 3)
+        {
             return true;
+        }
     }
 
     return false;
@@ -897,12 +918,11 @@ RETURN_CODE	CPakFileHandler::ArchiveScan(const CString &scanFileName) {
     return SUCCESS;
 }
 
-/** Adjusts the channel number to be in the range 0 - MAX_CHANNEL_NUM
-        @return true if the spectrum is a multichannel spectrum and should be split. */
-bool CPakFileHandler::CorrectChannelNumber(unsigned char &channel) {
-
+bool CPakFileHandler::CorrectChannelNumber(unsigned char &channel)
+{
     // If the channel number is >= 129 then the spectra are interlaced
-    if (channel > 128) {
+    if (channel > 128)
+    {
         channel -= 128;
         return true;
     }
@@ -910,14 +930,16 @@ bool CPakFileHandler::CorrectChannelNumber(unsigned char &channel) {
     // If the channel number in the spectral header is 128, then the user has 
     //	typed chn=256 in the cfg-file. This produces spectra only from the 
     //	master channel,even if the user might think otherwise
-    if (channel == 128) {
+    if (channel == 128)
+    {
         channel = 0;
         return false;
     }
 
     // If the spectra are larger than 16, then they are single, interlaced spectra
     //	Get the channel number out from it...
-    if (channel >= 16) {
+    if (channel >= 16)
+    {
         channel = channel % 16;
         return false;
     }

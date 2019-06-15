@@ -1,21 +1,21 @@
 #pragma once
 
-#include <afxtempl.h>
+#include <string>
+#include <vector>
 #include "../../Common/Common.h"
 #include <SpectralEvaluation/File/SpectrumIO.h>
 
 namespace FileHandler
 {
+    class CScanFileHandler;
+
     /** The <b>CPakFileHandler</b> takes care of the downloaded pak-files from the scanning instrument
         and splits them up into several pak-files, each containing the data from one single scan. */
     class CPakFileHandler
     {
     public:
         /** Default constructor */
-        CPakFileHandler(void);
-
-        /** Default destructor */
-        ~CPakFileHandler(void);
+        CPakFileHandler();
 
         // ----------------------------------------------------------------------
         // ---------------------- PUBLIC DATA -----------------------------------
@@ -78,10 +78,10 @@ namespace FileHandler
 
         /** An array with all the serial numbers that have passed through
                 this instance of CPakFileHandler*/
-        CArray<CString *, CString *> m_serialNumbers;
+        std::vector<std::string> m_serialNumbers;
 
         /** The index for the last 'lost' file. */
-        CArray<int, int> m_lastLostIndex;
+        std::vector<int> m_lastLostIndex;
 
         // ----------------------------------------------------------------------
         // --------------------- PRIVATE METHODS --------------------------------
@@ -141,7 +141,7 @@ namespace FileHandler
                 @return true - if the spectra are collected in a stratospheric measurement mode.
                 @return false - if the file does not contain spectra,
                         or contains spectra which are not collected in a stratospheric measurement mode. */
-        static bool IsStratosphericMeasurement(const CString &fileName);
+        static bool IsStratosphericMeasurement(CScanFileHandler& file);
 
         /** This function checks the contents of the file 'fileName'.
                 @return true - if the spectra are collected in a direct-sun mode.
