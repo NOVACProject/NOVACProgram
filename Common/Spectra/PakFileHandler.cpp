@@ -564,57 +564,65 @@ MEASUREMENT_MODE CPakFileHandler::GetMeasurementMode(const CString &fileName)
     {
         return MODE_DIRECT_SUN;
     }
-    else if (CPakFileHandler::IsLunarMeasurement(fileName)) {
+    else if (CPakFileHandler::IsLunarMeasurement(scan))
+    {
         return MODE_LUNAR;
     }
-    else if (CPakFileHandler::IsWindSpeedMeasurement(fileName)) {
+    else if (CPakFileHandler::IsWindSpeedMeasurement(scan))
+    {
         return MODE_WINDSPEED;
     }
-    else if (CPakFileHandler::IsFixedAngleMeasurement(fileName)) {
+    else if (CPakFileHandler::IsFixedAngleMeasurement(scan))
+    {
         return MODE_FIXED;
     }
-    else if (CPakFileHandler::IsCompositionMeasurement(fileName)) {
+    else if (CPakFileHandler::IsCompositionMeasurement(scan))
+    {
         return MODE_COMPOSITION;
     }
-    else {
+    else
+    {
         // if nothing else then assume that this is a flux-measurement
         return MODE_FLUX;
     }
 }
 
-/** This function checks the contents of the file 'fileName'.
-        @return true - if the spectra are collected in a fixed angle measurement mode.
-        @return false - if the file does not contain spectra,
-                or contains spectra which are not collected in a fixed angle measurement mode. */
-bool CPakFileHandler::IsFixedAngleMeasurement(const CString &fileName) {
-    SpectrumIO::CSpectrumIO reader;
-    double scanAngle = 0, scanAngle2 = 0;
-    CSpectrum spectrum;
-    CDateTime gpsTime;
-    double saz, sza;
-    int nRepetitions = 0; // <-- The number of repetitions at one specific scan angle
-
+bool CPakFileHandler::IsFixedAngleMeasurement(CScanFileHandler& file)
+{
     // 1. Count the number of spectra
-    const std::string fileNameStr((LPCSTR)fileName);
-    int numSpec = reader.CountSpectra(fileNameStr);
+    const int numSpec = file.GetSpectrumNumInFile();
     if (numSpec <= 2)
+    {
         return false; // <-- If file is not readable/empty/contains only a few spectra then return false.
+    }
 
     // 2. Check the Solar Zenith Angle at the time when the measurement started
-    //			If this is larger than 75, then the measurement is a stratospheric measurement
-    //			and not a wind-speed measurement
-    if (SUCCESS != reader.ReadSpectrum(fileNameStr, 0, spectrum))
+    //      If this is larger than 75, then the measurement is a stratospheric measurement
+    //      and not a wind-speed measurement
+    CSpectrum spectrum;
+    if (1 != file.GetSpectrum(spectrum, 0))
+    {
         return false;
+    }
+
+    CDateTime gpsTime;
     gpsTime.year = spectrum.m_info.m_startTime.year;
     gpsTime.month = (unsigned char)spectrum.m_info.m_startTime.month;
     gpsTime.day = (unsigned char)spectrum.m_info.m_startTime.day;
     gpsTime.hour = (unsigned char)spectrum.m_info.m_startTime.hour;
     gpsTime.minute = (unsigned char)spectrum.m_info.m_startTime.minute;
     gpsTime.second = (unsigned char)spectrum.m_info.m_startTime.second;
-    if (SUCCESS != Common::GetSunPosition(gpsTime, spectrum.Latitude(), spectrum.Longitude(), sza, saz))
+
+    double solarAzimuth = 0;
+    double solarZenithAngle = 0;
+    if (SUCCESS != Common::GetSunPosition(gpsTime, spectrum.Latitude(), spectrum.Longitude(), solarZenithAngle, solarAzimuth))
+    {
         return false;
-    if (fabs(sza) > 75)
+    }
+    if (std::abs(solarZenithAngle) > 75.0)
+    {
         return false;
+    }
 
     /* In a windspeed measurement we expect to have one/several sky+dark spectra
         and then a long series of measurements at one single scan angle.
@@ -623,24 +631,32 @@ bool CPakFileHandler::IsFixedAngleMeasurement(const CString &fileName) {
             to be a wind-speed measurement if there are more than 50
             repetitions at a single scan-angle.  */
 
-            // 3. Go through the file, starting at the last spectrum in the file.
-    if (SUCCESS != reader.ReadSpectrum(fileNameStr, numSpec - 3, spectrum))
+    // 3. Go through the file, starting at the last spectrum in the file.
+    //      Skip the last few spectra since there might be a dark measurement in the end...
+    if (1 != file.GetSpectrum(spectrum, numSpec - 3))
+    {
         return false;
-    scanAngle = spectrum.ScanAngle();
-    scanAngle2 = spectrum.ScanAngle2();
+    }
+    const double scanAngle = spectrum.ScanAngle();
+    const double scanAngle2 = spectrum.ScanAngle2();
 
-    // why numSpec - 4?
-    for (int specIndex = numSpec - 4; specIndex > 0; --specIndex) {
-        if (SUCCESS != reader.ReadSpectrum(fileNameStr, specIndex, spectrum)) {
+    int nRepetitions = 0; // <-- The number of repetitions at one specific scan angle
+    for (int specIndex = numSpec - 4; specIndex > 0; --specIndex)
+    {
+        if (1 != file.GetSpectrum(spectrum, specIndex))
+        {
             // failed to read the spectrum
             break;
         }
+
         // if this is the same scan angle as in the last spectrum, 
-        //	then increase the number of repetitions.
-        if ((fabs(scanAngle - spectrum.ScanAngle()) < 1e-2) && (fabs(scanAngle2 - spectrum.ScanAngle2()) < 1e-2)) {
+        //      then increase the number of repetitions.
+        if ((std::abs(scanAngle - spectrum.ScanAngle()) < 1e-2) && (std::abs(scanAngle2 - spectrum.ScanAngle2()) < 1e-2))
+        {
             ++nRepetitions;
         }
-        else {
+        else
+        {
             break;
         }
 
@@ -649,46 +665,45 @@ bool CPakFileHandler::IsFixedAngleMeasurement(const CString &fileName) {
     // IF THERE ARE MORE THAN 50 REPETITIONS IN ONE SINGLE SCAN ANGLE
     //	THEN WE CONSIDER THIS MEASUREMENT TO BE A WINDSPEED MEASUREMENT
     // Fixed-angle measurements should have between 25 and 49 repetitions.
-    if (nRepetitions >= 15 && nRepetitions < 50) {
-        return true;
-    }
-
-    return false;
+    return (nRepetitions >= 15 && nRepetitions < 50);
 }
 
-/** This function checks the contents of the file 'fileName'.
-        @return true - if the spectra are collected in a wind speed measurement mode.
-        @return false - if the file does not contain spectra,
-                or contains spectra which are not collected in a wind speed measurement mode. */
-bool CPakFileHandler::IsWindSpeedMeasurement(const CString &fileName) {
-    SpectrumIO::CSpectrumIO reader;
-    double scanAngle = 0, scanAngle2 = 0;
-    CSpectrum spectrum;
-    CDateTime gpsTime;
-    double saz, sza;
-    int nRepetitions = 0; // <-- The number of repetitions at one specific scan angle
-
+bool CPakFileHandler::IsWindSpeedMeasurement(CScanFileHandler& file)
+{
     // 1. Count the number of spectra
-    const std::string fileNameStr((LPCSTR)fileName);
-    int numSpec = reader.CountSpectra(fileNameStr);
+    const int numSpec = file.GetSpectrumNumInFile();
     if (numSpec <= 2)
+    {
         return false; // <-- If file is not readable/empty/contains only a few spectra then return false.
+    }
 
     // 2. Check the Solar Zenith Angle at the time when the measurement started
-    //			If this is larger than 75, then the measurement is a stratospheric measurement
-    //			and not a wind-speed measurement
-    if (SUCCESS != reader.ReadSpectrum(fileNameStr, 0, spectrum))
+    //      If this is larger than 75, then the measurement is a stratospheric measurement
+    //      and not a wind-speed measurement
+    CSpectrum spectrum;
+    if (SUCCESS != file.GetSpectrum(spectrum, 0))
+    {
         return false;
+    }
+
+    CDateTime gpsTime;
     gpsTime.year = spectrum.m_info.m_startTime.year;
     gpsTime.month = (unsigned char)spectrum.m_info.m_startTime.month;
     gpsTime.day = (unsigned char)spectrum.m_info.m_startTime.day;
     gpsTime.hour = (unsigned char)spectrum.m_info.m_startTime.hour;
     gpsTime.minute = (unsigned char)spectrum.m_info.m_startTime.minute;
     gpsTime.second = (unsigned char)spectrum.m_info.m_startTime.second;
-    if (SUCCESS != Common::GetSunPosition(gpsTime, spectrum.Latitude(), spectrum.Longitude(), sza, saz))
+
+    double solarAzimuth = 0;
+    double solarZenithAngle = 0;
+    if (SUCCESS != Common::GetSunPosition(gpsTime, spectrum.Latitude(), spectrum.Longitude(), solarZenithAngle, solarAzimuth))
+    {
         return false;
-    if (fabs(sza) > 75)
+    }
+    if (std::abs(solarZenithAngle) > 75.0)
+    {
         return false;
+    }
 
     /* In a windspeed measurement we expect to have one/several sky+dark spectra
         and then a long series of measurements at one single scan angle.
@@ -698,35 +713,42 @@ bool CPakFileHandler::IsWindSpeedMeasurement(const CString &fileName) {
             repetitions at a single scan-angle.  */
 
             // 3. Go through the file, starting at the last spectrum in the file.
-    if (SUCCESS != reader.ReadSpectrum(fileNameStr, numSpec - 3, spectrum))
+    if (1 != file.GetSpectrum(spectrum, numSpec - 3))
+    {
         return false;
-    scanAngle = spectrum.ScanAngle();
-    scanAngle2 = spectrum.ScanAngle2();
+    }
+    const double scanAngle = spectrum.ScanAngle();
+    const double scanAngle2 = spectrum.ScanAngle2();
 
-    for (int specIndex = numSpec - 4; specIndex > 0; --specIndex) {
-        if (SUCCESS != reader.ReadSpectrum(fileNameStr, specIndex, spectrum)) {
+    int nRepetitions = 0; // <-- The number of repetitions at one specific scan angle
+    for (int specIndex = numSpec - 4; specIndex > 0; --specIndex)
+    {
+        if (1 != file.GetSpectrum(spectrum, specIndex))
+        {
             // failed to read the spectrum
             break;
         }
+
         // if this is the same scan angle as in the last spectrum, 
-        //	then increase the number of repetitions.
-        if ((fabs(scanAngle - spectrum.ScanAngle()) < 1e-2) && (fabs(scanAngle2 - spectrum.ScanAngle2()) < 1e-2)) {
+        //  then increase the number of repetitions.
+        if ((std::abs(scanAngle - spectrum.ScanAngle()) < 1e-2) && (std::abs(scanAngle2 - spectrum.ScanAngle2()) < 1e-2))
+        {
             ++nRepetitions;
         }
-        else {
+        else
+        {
             break;
         }
 
         if (nRepetitions >= 50)
+        {
             return true;
+        }
     }
 
     // IF THERE ARE MORE THAN 50 REPETITIONS IN ONE SINGLE SCAN ANGLE
-    //	THEN WE CONSIDER THIS MEASUREMENT TO BE A WINDSPEED MEASUREMENT
-    if (nRepetitions >= 50)
-        return true;
-
-    return false;
+    //  THEN WE CONSIDER THIS MEASUREMENT TO BE A WINDSPEED MEASUREMENT
+    return (nRepetitions >= 50);
 }
 
 bool CPakFileHandler::IsStratosphericMeasurement(CScanFileHandler& scan)
@@ -823,54 +845,44 @@ bool CPakFileHandler::IsDirectSunMeasurement(CScanFileHandler& file)
 
     return false;
 }
-/** This function checks the contents of the file 'fileName'.
-        @return true - if the spectra are collected in a lunar mode.
-        @return false - if the file does not contain spectra,
-                or contains spectra which are not collected in a lunar measurement mode. */
-bool CPakFileHandler::IsLunarMeasurement(const CString &fileName) {
-    CScanFileHandler scan;
-    CSpectrum spec;
-    int nFound = 0;
+
+bool CPakFileHandler::IsLunarMeasurement(CScanFileHandler& file)
+{
+    int numberOfFoundLunarSpectra = 0;
 
     // It is here assumed that the measurement is a direct-sun measurment
-    const std::string fileNameStr((LPCSTR)fileName);
-    //	if there is at least 5 spectrum with the name 'direct_sun'
-    if (!scan.CheckScanFile(fileNameStr)) {
-        return false; // failed to check the file
-    }
-    while (scan.GetNextSpectrum(spec)) {
-        CString name = CString(spec.m_info.m_name.c_str());
-        if (Equals(name, "lunar")) {
-            ++nFound;
-            if (nFound == 5)
+    //   if there is at least 5 spectrum with the name 'lunar'
+    file.ResetCounter();
+    CSpectrum spec;
+    while (file.GetNextSpectrum(spec))
+    {
+        if (EqualsIgnoringCase(spec.m_info.m_name, "lunar"))
+        {
+            ++numberOfFoundLunarSpectra;
+            if (numberOfFoundLunarSpectra == 5)
+            {
                 return true;
+            }
         }
     }
 
     return false;
 }
 
-/** This function checks the contents of the file 'fileName'.
-        @return true - if the spectra are collected in a composition measurment - mode.
-        @return false - if the file does not contain readable spectra,
-                or contains spectra which are not collected in a composition measurment - mode.*/
-bool CPakFileHandler::IsCompositionMeasurement(const CString &fileName) {
-    CScanFileHandler scan;
-    CSpectrum spec;
-
+bool CPakFileHandler::IsCompositionMeasurement(CScanFileHandler& file)
+{
     // It is here assumed that the measurement is a composition measurment
-    //	if there is 
-    //		* at least 1 spectrum with the name 'offset'
-    //		* at least 1 spectrum with the name 'dark_cur'
-    //		* at least 1 spectrum with the name 'comp'
-    const std::string fileNameStr((LPCSTR)fileName);
-    if (!scan.CheckScanFile(fileNameStr)) {
-        return false; // failed to check the file
-    }
-    scan.ResetCounter();
-    while (scan.GetNextSpectrum(spec)) {
-        CString name = CString(spec.m_info.m_name.c_str());
-        if (Equals(name, "comp")) {
+    //  if there is 
+    //      * at least 1 spectrum with the name 'offset'
+    //      * at least 1 spectrum with the name 'dark_cur'
+    //      * at least 1 spectrum with the name 'comp'
+    file.ResetCounter();
+
+    CSpectrum spec;
+    while (file.GetNextSpectrum(spec))
+    {
+        if (EqualsIgnoringCase(spec.m_info.m_name, "comp"))
+        {
             return true;
         }
     }
