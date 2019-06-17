@@ -268,21 +268,12 @@ int CFTPCom::FindFile(CString& fileName)
     // use a file find object to enumerate files
     CFtpFileFind finder(m_FtpConnection);
     BOOL result = finder.FindFile(_T(fileName));
-    // DLN 12/19/17: The above seems to return 1 if the file does not exists, instead of 0 that is expected.
-    // A brief search of internet seemed to say that when running this on Unix/Linux system
-    // the return codes are backwards.
-    //if (0 != result) {
-    //	result = finder.FindNextFile();
-    //	CString name = finder.GetFileURL();	// Just here for debugging
-    //}
-    //TODO:  Need to check for instrumentation box.  This fix will work for Moxa but will break it for older DOS based boxes.
-
-    if (0 < result) {
+    if (0 == result) {
         DWORD retcode = GetLastError();
         //ShowMessage("Could not find remote file");
     }
 
-    return !result;
+    return result;
 }
 
 // @return 0 if fail...
