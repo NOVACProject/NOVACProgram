@@ -13,7 +13,7 @@ namespace Communication
         std::string name = "Axis";
 
         // File system: The (case sensitive) file extension of the .pak files
-        std::string pakFileEnding = ".PAK";
+        std::string pakFileEnding = "PAK";
 
         // File system: The location of the .pak files
         std::string pakFileLocation = "/mnt/flash/novac";
