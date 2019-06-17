@@ -7,7 +7,7 @@ namespace Communication
 {
     void SetupBoxVersion1(ElectronicsBoxProperties& box)
     {
-        box.pakFileEnding = ".PAK";
+        box.pakFileEnding = "PAK";
         box.pakFileLocation = "B:";
         box.configurationFileLocation = "A:";
         box.temporaryUploadFileName = "A:\\tempUpload"; // shouldn't be used
@@ -28,7 +28,7 @@ namespace Communication
 
     void SetupBoxVersion2(ElectronicsBoxProperties& box)
     {
-        box.pakFileEnding = ".pak";
+        box.pakFileEnding = "pak";
         box.pakFileLocation = "/mnt/flash/novac";
         box.configurationFileLocation = "/mnt/flash";
         box.temporaryUploadFileName = "/mnt/flash/XYZ";
