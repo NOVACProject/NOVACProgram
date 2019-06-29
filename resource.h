@@ -478,6 +478,7 @@
 #define IDC_CHECK_ENABLE_REALTIME_CFG   1117
 #define IDC_CHECK_PLOT_COLUMN_ONLY      1117
 #define IDC_CHECK_PLOT_COLUMN           1117
+#define IDC_CHECK_HP500                 1117
 #define IDC_EDIT1                       1118
 #define IDC_FTPUSER                     1118
 #define IDC_EDIT_SELECTEDPOINTS         1118

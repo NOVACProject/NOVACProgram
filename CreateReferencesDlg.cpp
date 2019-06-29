@@ -17,6 +17,7 @@ IMPLEMENT_DYNAMIC(CCreateReferencesDlg, CDialog)
 
 CCreateReferencesDlg::CCreateReferencesDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(IDD_CREATE_REFERENCES_DIALOG, pParent)
+    , m_highPassFilter(1)
 {
 }
 
@@ -33,6 +34,7 @@ void CCreateReferencesDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Text(pDX, IDC_STATIC_CROSSSECTIONFILENAME, m_crossSectionFile);
     DDX_Text(pDX, IDC_STATIC_OUTPUTFILENAME, m_outputFile);
     DDX_Control(pDX, IDC_COMBO_WAVELENGTH_CONVERSION, m_wavelengthConversionCombo);
+    DDX_Check(pDX, IDC_CHECK_HP500, m_highPassFilter);
 }
 
 BOOL CCreateReferencesDlg::OnInitDialog()
@@ -145,6 +147,8 @@ WavelengthConversion GetWavelengthConversion(const CComboBox& comboSelector)
 
 void CCreateReferencesDlg::OnButtonRunConvolution()
 {
+    UpdateData(TRUE); // Get the data from the dialog
+
     const std::string slf((LPCSTR)m_slfFile);
     const std::string calibration((LPCSTR)m_calibrationFile);
     const std::string highResReference((LPCSTR)m_crossSectionFile);
@@ -195,8 +199,10 @@ void CCreateReferencesDlg::OnButtonRunConvolution()
         return;
     }
 
-
-    HighPassFilter(result, true);
+    if(m_highPassFilter)
+    {
+        HighPassFilter(result, true);
+    }
 
     // Save the result to file
     const std::string outputPath((LPCSTR)m_outputFile);
