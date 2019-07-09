@@ -38,4 +38,5 @@ private:
     CComboBox m_wavelengthConversionCombo;
 
     void UpdateRunConvolutionButton();
+    int m_highPassFilter;
 };
