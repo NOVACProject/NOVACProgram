@@ -82,7 +82,7 @@ void CSerialCOM::CloseSerialPort()
 	hComPort = NULL;
 }
 //-----------------------------------------------------------------
-BOOL CSerialCOM::WriteSerial(void *sendText,long sentByteNum)
+BOOL CSerialCOM::WriteSerial(const void *sendText,long sentByteNum)
 {
 	DWORD dwWritten;
 	BOOL result = WriteFile(hComPort, sendText, sentByteNum, &dwWritten, NULL);

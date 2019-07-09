@@ -1,21 +1,21 @@
 #pragma once
 
-#include <afxtempl.h>
+#include <string>
+#include <vector>
 #include "../../Common/Common.h"
 #include <SpectralEvaluation/File/SpectrumIO.h>
 
 namespace FileHandler
 {
+    class CScanFileHandler;
+
     /** The <b>CPakFileHandler</b> takes care of the downloaded pak-files from the scanning instrument
         and splits them up into several pak-files, each containing the data from one single scan. */
     class CPakFileHandler
     {
     public:
         /** Default constructor */
-        CPakFileHandler(void);
-
-        /** Default destructor */
-        ~CPakFileHandler(void);
+        CPakFileHandler();
 
         // ----------------------------------------------------------------------
         // ---------------------- PUBLIC DATA -----------------------------------
@@ -78,10 +78,10 @@ namespace FileHandler
 
         /** An array with all the serial numbers that have passed through
                 this instance of CPakFileHandler*/
-        CArray<CString *, CString *> m_serialNumbers;
+        std::vector<std::string> m_serialNumbers;
 
         /** The index for the last 'lost' file. */
-        CArray<int, int> m_lastLostIndex;
+        std::vector<int> m_lastLostIndex;
 
         // ----------------------------------------------------------------------
         // --------------------- PRIVATE METHODS --------------------------------
@@ -125,41 +125,41 @@ namespace FileHandler
         /** Saves a newly found corrupted spectrum into the appropriate folder */
         RETURN_CODE SaveCorruptSpectrum(const CSpectrum &curSpec, int specHeaderSie, const char *spectrumHeader);
 
-        /** This function checks the contents of the file 'fileName'.
-        @return true - if the spectra are collected in a fixed angle measurement mode.
-        @return false - if the file does not contain spectra,
-                or contains spectra which are not collected in a fixed angle measurement mode. */
-        static bool IsFixedAngleMeasurement(const CString &fileName);
+        /** This function checks the contents of the opened scan file.
+                @return true - if the spectra are collected in a fixed angle measurement mode.
+                @return false - if the file does not contain spectra,
+                        or contains spectra which are not collected in a fixed angle measurement mode. */
+        static bool IsFixedAngleMeasurement(CScanFileHandler& file);
 
-        /** This function checks the contents of the file 'fileName'.
+        /** This function checks the contents of the opened scan file.
                 @return true - if the spectra are collected in a wind speed measurement mode.
                 @return false - if the file does not contain spectra,
                         or contains spectra which are not collected in a wind speed measurement mode. */
-        static bool IsWindSpeedMeasurement(const CString &fileName);
+        static bool IsWindSpeedMeasurement(CScanFileHandler& file);
 
-        /** This function checks the contents of the file 'fileName'.
+        /** This function checks the contents of the opened scan file.
                 @return true - if the spectra are collected in a stratospheric measurement mode.
                 @return false - if the file does not contain spectra,
                         or contains spectra which are not collected in a stratospheric measurement mode. */
-        static bool IsStratosphericMeasurement(const CString &fileName);
+        static bool IsStratosphericMeasurement(CScanFileHandler& file);
 
-        /** This function checks the contents of the file 'fileName'.
+        /** This function checks the contents of the opened scan file.
                 @return true - if the spectra are collected in a direct-sun mode.
                 @return false - if the file does not contain spectra,
                         or contains spectra which are not collected in a direct-sun measurement mode. */
-        static bool IsDirectSunMeasurement(const CString &fileName);
+        static bool IsDirectSunMeasurement(CScanFileHandler& file);
 
-        /** This function checks the contents of the file 'fileName'.
+        /** This function checks the contents of the opened scan file.
                 @return true - if the spectra are collected in a lunar mode.
                 @return false - if the file does not contain spectra,
                         or contains spectra which are not collected in a lunar measurement mode. */
-        static bool IsLunarMeasurement(const CString &fileName);
+        static bool IsLunarMeasurement(CScanFileHandler& file);
 
-        /** This function checks the contents of the file 'fileName'.
+        /** This function checks the contents of the opened scan file.
                 @return true - if the spectra are collected in a composition measurment - mode.
                 @return false - if the file does not contain readable spectra,
                         or contains spectra which are not collected in a composition measurment - mode.*/
-        static bool IsCompositionMeasurement(const CString &fileName);
+        static bool IsCompositionMeasurement(CScanFileHandler& file);
 
     };
 

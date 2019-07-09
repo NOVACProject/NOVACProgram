@@ -240,6 +240,8 @@
 #define ID__SAVEASBITMAP                297
 #define IDD_REFERENCE_PLOT_DLG          299
 #define IDD_ANALYSIS_COLUMN_HISTORY_DLG 300
+#define IDD_CONFIGURE_SPECTROMETERMODEL 314
+#define IDD_CREATE_REFERENCES_DIALOG    316
 #define IDC_STATIC_VERSIONNUMBER        1000
 #define IDC_STATIC_COPYRIGHT            1001
 #define IDC_BUTTON_TEST                 1002
@@ -266,11 +268,13 @@
 #define IDC_COMBO2                      1021
 #define IDC_GAS_COMBO                   1021
 #define IDC_COMBO_SPECTROMETERMODEL     1021
+#define IDC_DATA_UPLOAD_SERVER_PROTOCOL 1021
 #define IDC_STATIC_FRAME                1023
 #define IDC_EDIT_OUTPUT_DIRECTORY       1025
 #define IDC_BUTTON_BROWSE_OUTPUTPATH    1026
 #define IDC_BUTTON_BROWSE_OUTPUTPATH2   1027
 #define IDC_BUTTON_BROWSE_WINDFIELDFILE 1027
+#define IDC_BUTTON_BROWSE_OUTPUT        1027
 #define IDC_SCANNER_LIST                1028
 #define IDC_BUTTON_ADD_SCANNER          1029
 #define IDC_BUTTON_REMOVE_SCANNER       1030
@@ -336,6 +340,7 @@
 #define IDC_OPEN_PAKFILE                1063
 #define IDC_BUTTON_ADVANCED_FTP         1063
 #define IDC_BUTTON_SEARCH               1063
+#define IDC_BUTTON_BROWSE_SLF           1063
 #define IDC_BUTTON2                     1064
 #define IDC_BTN_CALC_FLUX               1064
 #define IDC_REEVAL_CANCEL               1064
@@ -348,6 +353,7 @@
 #define IDC_BUTTON_BROWSE_DARKCURRENT   1064
 #define IDC_BTN_BROWSEOFFSETSPEC        1064
 #define IDC_BUTTON_DARK_SETTINGS        1064
+#define IDC_BUTTON_BROWSE_CLB           1064
 #define IDC_BROWSE_EXPORTDIR            1065
 #define IDC_BUTTON_REFERENCE_PROEPERTIES 1065
 #define IDC_BROWSE_SERIES2              1065
@@ -355,6 +361,7 @@
 #define IDC_BTN_BROWSESKY3              1065
 #define IDC_BTN_BROWSEDARKCURRENTSPEC   1065
 #define IDC_BTN_BROWSEEVALLOG3          1065
+#define IDC_BUTTON_BROWSE_XS            1065
 #define IDC_BUTTON_BROWSE_DARKCURRENT2  1066
 #define IDC_BTN_BROWSEEVALLOG4          1066
 #define IDC_BUTTON_REFERENCE_VIEW       1066
@@ -374,6 +381,7 @@
 #define IDC_EDIT_SKYINDEX               1073
 #define IDC_EDIT_ANGLE                  1073
 #define IDC_EDIT_MOTORSTEPSCOMPENSATION1 1073
+#define IDC_FTP_HOSTNAME                1073
 #define IDC_STATUSBAR                   1074
 #define IDC_EDIT_SQUEEZE_FIX            1074
 #define IDC_EDIT_SHIFT_MAX              1074
@@ -401,6 +409,7 @@
 #define IDC_DISKCOMBO                   1078
 #define IDC_COMBO_IMAGEFORMAT           1078
 #define IDC_COMBO_OFFSET                1078
+#define IDC_COMBO_WAVELENGTH_CONVERSION 1078
 #define IDC_SLEEPHR                     1079
 #define IDC_COMBO_DARKCURRENT           1079
 #define IDC_COMBO_VOLCANO2              1079
@@ -469,6 +478,7 @@
 #define IDC_CHECK_ENABLE_REALTIME_CFG   1117
 #define IDC_CHECK_PLOT_COLUMN_ONLY      1117
 #define IDC_CHECK_PLOT_COLUMN           1117
+#define IDC_CHECK_HP500                 1117
 #define IDC_EDIT1                       1118
 #define IDC_FTPUSER                     1118
 #define IDC_EDIT_SELECTEDPOINTS         1118
@@ -490,6 +500,7 @@
 #define IDC_EDIT_WD_TOLERANCE           1118
 #define IDC_EDIT_PLUMECENTRE            1118
 #define IDC_EDIT_SOLARSPECTRUMPATH      1118
+#define IDC_EDIT_MODELNAME              1118
 #define IDC_FTPIP                       1119
 #define IDC_EDIT_EXPORTDIR              1119
 #define IDC_REEVAL_LBL_DELTA2           1119
@@ -504,6 +515,7 @@
 #define IDC_IGNORE_NOTHING2             1119
 #define IDC_EDIT_PLUMEDGE_LOW           1119
 #define IDC_CHECK_PLOT_COLUMN_HISTORY   1119
+#define IDC_EDIT_MAXIMUMINTENSITY       1119
 #define IDC_FTPPASS                     1120
 #define IDC_FTP_USERNAME                1120
 #define IDC_EDIT_REPETITIONS            1120
@@ -764,6 +776,7 @@
 #define IDC_LIST_SPECTROMETERS          1340
 #define IDC_BUTTON3                     1341
 #define IDC_BUTTON_BROWSE_SOLARSPECTRUM 1341
+#define IDC_BUTTON_RUNCONVOLUTION       1341
 #define IDC_CHECK2                      1342
 #define IDC_CHECK_USE_AUTOMATIC_PLUMEPARAM2 1342
 #define IDC_LABEL_SWITCHRANGE           1343
@@ -772,6 +785,13 @@
 #define IDC_STATIC_PLOT_OPTIONS         1347
 #define IDC_COLUMN_10DAY_FRAME2         1347
 #define IDC_COLUMN_1DAY_FRAME           1347
+#define IDC_LABEL_SOLARSPECTRUMPATH     1349
+#define IDC_STATIC_SLITFUNCTIONFILENAME 1351
+#define IDC_STATIC_CALIBRATIONFILENAME  1352
+#define IDC_STATIC_CROSSSECTIONFILENAME 1353
+#define IDC_HIGHRES_XS                  1354
+#define IDC_OUTPUT                      1355
+#define IDC_STATIC_OUTPUTFILENAME       1356
 #define ID_CONTROL_START                32771
 #define ID_VIEW_PEAKINTENSITY_BD        32779
 #define ID_VIEW_FITINTENSITY_BD         32780
@@ -781,14 +801,15 @@
 #define ID_Menu32784                    32784
 #define ID_HISTORY                      32785
 #define ID_ANALYSIS_COLUMN_HISTORY      32787
+#define ID_FILE_CREATEREFERENCES        32788
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        313
-#define _APS_NEXT_COMMAND_VALUE         32788
-#define _APS_NEXT_CONTROL_VALUE         1349
+#define _APS_NEXT_RESOURCE_VALUE        319
+#define _APS_NEXT_COMMAND_VALUE         32789
+#define _APS_NEXT_CONTROL_VALUE         1355
 #define _APS_NEXT_SYMED_VALUE           109
 #endif
 #endif

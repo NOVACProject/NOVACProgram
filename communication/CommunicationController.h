@@ -1,16 +1,6 @@
 #pragma once
 #include "afxwin.h"
-#include "../resource.h"
-#include "../Common/common.h"
-#include "FTPHandler.h"
-#include "SerialControllerWithTx.h"
-
-#include "../NodeControlInfo.h"
-
-UINT ConnectBySerialWithTX( LPVOID pParam );
-UINT ConnectBySerialTXZM( LPVOID pParam );
-UINT ConnectByFTP( LPVOID pParam);
-void Pause(double startTime, double stopTime,int serialID);
+#include <memory>
 
 namespace Communication
 {
@@ -18,99 +8,99 @@ namespace Communication
 #define FTP_CONNECTION 2
 #define HTTP_CONNECTION 3
 
-	class CCommunicationController
-		:public CWinThread
-	{
-		class CFTPInfo
-		{
-		public: 
-			CFTPInfo();
-			~CFTPInfo();
-			CFTPInfo(CString ftpIP, CString userName, CString password);
-			//-- variables ---//
-			CString m_ftpIP;
-			CString m_userName;
-			CString m_password;
-		};
-			class CSerialInfo
-		{
-		public:
-			/**index in the total setting list*/
-			int m_mainIndex;	
-			/**sleep status, true - sleeping*/
-			bool m_sleepFlag;
-			/**medium type*/
-			int m_medium;
-			CSerialInfo(void);
-			~CSerialInfo(void);
-			CSerialInfo(int index, bool sleep,int medium);
-		};
-	public:
-		CCommunicationController(void);
-		~CCommunicationController(void);
+    class CFTPHandler;
+    class CSerialControllerWithTx;
+    class CNodeControlInfo;
 
-		DECLARE_DYNCREATE(CCommunicationController);
-		DECLARE_MESSAGE_MAP()
+    class CCommunicationController
+        :public CWinThread
+    {
 
-			
-		//---------------------------------------------//
-		//-------------public functions----------------//
-		//---------------------------------------------//
-		/** Called when the thred is starting */
-		virtual BOOL InitInstance();
+    private:
+        struct CSerialInfo
+        {
+        public:
+            /** index in the total setting list */
+            int m_mainIndex;
 
-		/** Called when the thread is to be stopped */
-		afx_msg void OnQuit(WPARAM wp, LPARAM lp);
+            /** sleep status, true - sleeping */
+            bool m_sleepFlag;
 
-		/** Called when a special cfgOnce file will be uploaded 
-			@param wp is a pointer to a CString object telling the 
-				spectrometer ID 
-				@param lp - full path of the file to be uploaded. */
-		afx_msg void OnStatusUpload(WPARAM wp, LPARAM lp);
+            /**medium type*/
+            int m_medium;
 
-		/**start communication threads*/
-		void StartCommunicationThreads();
+            CSerialInfo(int index, bool sleep, int medium)
+                : m_mainIndex(index), m_sleepFlag(sleep), m_medium(medium)
+                {}
+        };
 
-	public:
+    public:
+        CCommunicationController(void);
+        ~CCommunicationController(void);
 
-		/**set parameters for all the serial connections*/
-		void SetSerialConnections();
-		void Pause(double startTime, double stopTime,int serialID);
-	
-		void SleepAllNodes(int connectionType);
+        DECLARE_DYNCREATE(CCommunicationController);
+        DECLARE_MESSAGE_MAP()
 
-		/**start ftp connections for polling scanners*/
-		void StartFTP();
 
-		//---------------------------------------------//
-		//-------------public variables----------------//
-		//---------------------------------------------//
+        //---------------------------------------------//
+        //-------------public functions----------------//
+        //---------------------------------------------//
+        /** Called when the thred is starting */
+        virtual BOOL InitInstance();
 
-		// store the indexes of serial connection in configuration.xml
-		CArray<CSerialInfo*, CSerialInfo*> m_serialList;
-		
-		// store the indexes of ftp connection in configuration.xml
-		CList<int, int> m_ftpList;
+        /** Called when the thread is to be stopped */
+        afx_msg void OnQuit(WPARAM wp, LPARAM lp);
 
-		// store the indexes of http connection in configuration.xml
-		CList<int, int> m_httpList;
-	
-		//the sum of the serial connections
-		int m_totalSerialConnection;
+        /** Called when a special cfgOnce file will be uploaded
+            @param wp is a pointer to a CString object telling the
+                spectrometer ID
+            @param lp - full path of the file to be uploaded. */
+        afx_msg void OnUploadCfgOnce(WPARAM wp, LPARAM lp);
 
-		//the sum of the ftp connections
-		int m_totalFTPConnection;
+        /**start communication threads*/
+        void StartCommunicationThreads();
 
-		//the sum of the http connections
-		int m_totalHttpConnection;
+    public:
 
-		/** The array of serial-controllers */
-		CArray<CSerialControllerWithTx*,CSerialControllerWithTx*> m_SerialControllerTx;
+        /**set parameters for all the serial connections*/
+        void SetupSerialConnections();
 
-		/** The array of ftp-handlers */
-		CArray<CFTPHandler*, CFTPHandler*> m_FTPHandler;
+        void SleepAllNodes(int connectionType);
 
-		/** store node control informations */
-		CNodeControlInfo* m_nodeControl;
-	};
+        /**start ftp connections for polling scanners*/
+        void StartFTP();
+
+        //---------------------------------------------//
+        //-------------public variables----------------//
+        //---------------------------------------------//
+
+        // store the indexes of serial connection in configuration.xml
+        CArray<CSerialInfo*, CSerialInfo*> m_serialList;
+
+        /** The array of serial-controllers */
+        CArray<CSerialControllerWithTx*, CSerialControllerWithTx*> m_SerialControllerTx;
+
+        /** The array of ftp-handlers */
+        CArray<CFTPHandler*, CFTPHandler*> m_FTPHandler;
+
+        /** store node control informations */
+        std::unique_ptr<CNodeControlInfo> m_nodeControl;
+
+        //the sum of the serial connections
+        int m_totalSerialConnection;
+
+    private:
+        // store the indexes of ftp connection in configuration.xml
+        CList<int, int> m_ftpList;
+
+        // store the indexes of http connection in configuration.xml
+        CList<int, int> m_httpList;
+
+        //the sum of the ftp connections
+        int m_totalFTPConnection;
+
+        //the sum of the http connections
+        int m_totalHttpConnection;
+
+    };
 }

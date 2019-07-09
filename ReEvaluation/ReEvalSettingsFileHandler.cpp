@@ -42,10 +42,10 @@ RETURN_CODE CReEvalSettingsFileHandler::WriteSettings(const ReEvaluation::CReEva
 
 	// 3. How to get the sky-spectrum
 	fprintf(f, "\t<SkySpectrum>\n");
-	fprintf(f, "\t\t<Option>%d</Option>\n",						(int)reeval.m_skyOption);
-	fprintf(f, "\t\t<Index>%d</Index>\n",							(int)reeval.m_skyIndex);
-	if(reeval.m_skySpectrum.GetLength() > 1){
-		fprintf(f, "\t\t<Path>%s</Path>\n", (LPCTSTR)reeval.m_skySpectrum);
+	fprintf(f, "\t\t<Option>%d</Option>\n",						(int)reeval.m_skySettings.skyOption);
+	fprintf(f, "\t\t<Index>%d</Index>\n",							(int)reeval.m_skySettings.indexInScan);
+	if(reeval.m_skySettings.skySpectrumFile.size() > 1){
+		fprintf(f, "\t\t<Path>%s</Path>\n", reeval.m_skySettings.skySpectrumFile.c_str());
 	}
 	fprintf(f, "\t</SkySpectrum>\n");
 
@@ -54,7 +54,7 @@ RETURN_CODE CReEvalSettingsFileHandler::WriteSettings(const ReEvaluation::CReEva
 	fprintf(f, "\t\t<Option>%d</Option>\n",							(int)reeval.m_darkSettings.m_darkSpecOption);
 	fprintf(f, "\t\t<OffsetOption>%d</OffsetOption>\n",	(int)reeval.m_darkSettings.m_offsetOption);
 	fprintf(f, "\t\t<DCOption>%d</DCOption>\n",					(int)reeval.m_darkSettings.m_darkCurrentOption);
-	fprintf(f, "\t\t<Index>%d</Index>\n",							(int)reeval.m_skyIndex);
+	fprintf(f, "\t\t<Index>%d</Index>\n",							(int)reeval.m_skySettings.indexInScan);
 	if(reeval.m_darkSettings.m_offsetSpec.size() > 1){
 		fprintf(f, "\t\t<Offset_Path>%s</Offset_Path>\n", reeval.m_darkSettings.m_offsetSpec.c_str());
 	}
@@ -92,7 +92,7 @@ RETURN_CODE CReEvalSettingsFileHandler::ReadSettings(ReEvaluation::CReEvaluator 
   if(!file.Open(fileName, CFile::modeRead | CFile::typeText, &exceFile)){
     return FAIL;
   }
-  this->m_File = &file;
+  this->SetFile(&file);
 
 	// parse the file
 	while(szToken = NextToken()){
@@ -223,17 +223,17 @@ RETURN_CODE CReEvalSettingsFileHandler::Parse_SkySpecSection(ReEvaluation::CReEv
 
 		if(Equals(szToken, "Option")){
 			Parse_IntItem(TEXT("/Option"), tmpInt);
-			reeval.m_skyOption = (SKY_OPTION)tmpInt;
+			reeval.m_skySettings.skyOption = (Configuration::SKY_OPTION)tmpInt;
 			continue;
 		}
 
 		if(Equals(szToken, "Index")){
-			Parse_LongItem(TEXT("/Index"), reeval.m_skyIndex);
+			Parse_IntItem(TEXT("/Index"), reeval.m_skySettings.indexInScan);
 			continue;
 		}
 
 		if(Equals(szToken, "Path")){
-			Parse_StringItem(TEXT("/Path"), reeval.m_skySpectrum);
+			Parse_StringItem(TEXT("/Path"), reeval.m_skySettings.skySpectrumFile);
 			continue;
 		}
 	}

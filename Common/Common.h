@@ -134,9 +134,6 @@ const enum MEASUREMENT_MODE {MODE_UNKNOWN, MODE_FLUX, MODE_FIXED, MODE_WINDSPEED
 //size  of max buffer
 #define MAXBUFFER 65536
 
-// The options for the sky spectrum
-enum SKY_OPTION {SKY_FIRST, SKY_AVERAGE_OF_GOOD, SKY_INDEX, SKY_USER };
-
 // Defining the types of connection with the scanning instrument
 #define SERIAL_CONNECTION 1
 #define FTP_CONNECTION 2
@@ -153,14 +150,6 @@ enum SKY_OPTION {SKY_FIRST, SKY_AVERAGE_OF_GOOD, SKY_INDEX, SKY_USER };
 #else
 	#define LINUX 1
 #endif
-
-//node operating message
-
-#define SLEEP_MODE		0
-#define RUN_MODE		1
-#define PAUSE_MODE		2
-#define OFF_MODE		3
-#define SPECIAL_MODE	4
 
 //download status message for CCommunicationController
 #define START_DOWNLOADING	11
@@ -250,7 +239,7 @@ enum SKY_OPTION {SKY_FIRST, SKY_AVERAGE_OF_GOOD, SKY_INDEX, SKY_USER };
 #define WM_NEW_SCAN_EVALLOG				WM_USER + 25
 
 //signal to upload cfgonce file
-#define  WM_STATUS_UPLOAD					WM_USER + 26
+#define  WM_UPLOAD_CFGONCE					WM_USER + 26
 
 //signal from one thread which is going to download pak file
 #define WM_START_DOWNLOAD					WM_USER + 27
@@ -358,10 +347,10 @@ public:
 	CString   m_exeFileName;
 
 	/** Opens a dialog window and lets the user browse for a file */
-	bool BrowseForFile(TCHAR *filter, CString &fileName);
+	static bool BrowseForFile(TCHAR *filter, CString &fileName);
 
 	/** Opens a dialog window and lets the user browse for a filename to save to */
-	bool BrowseForFile_SaveAs(TCHAR *filter, CString &fileName);
+	static bool BrowseForFile_SaveAs(TCHAR *filter, CString &fileName);
 
 	/** Opens a dialog window and lets the user browse for a directory.
 			@return true if all is ok,
@@ -388,9 +377,6 @@ public:
 
 	/** Returns the current second */
 	static int   GetSecond();
-
-	/** Converts a time, given in seconds since midnight to hour, minutes and seconds */
-	static void		ConvertToHMS(const int time, int &hours, int &minutes, int &seconds);
 
 	/** pretty prints the current date into the string 'txt' */
 	static void GetDateText(CString &txt);

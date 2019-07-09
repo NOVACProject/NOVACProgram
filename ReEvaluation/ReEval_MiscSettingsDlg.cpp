@@ -34,8 +34,8 @@ void CReEval_MiscSettingsDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_UPPER_IGNORE_INTENSITY,	(double &)m_reeval->m_ignore_Upper.m_intensity);
 	DDX_Text(pDX, IDC_EDIT_UPPER_IGNORE_CHANNEL,		(int &)m_reeval->m_ignore_Upper.m_channel);
 
-	DDX_Radio(pDX, IDC_RADIO_SKYSPECTRUM_FIRST,			(int &)m_reeval->m_skyOption);
-	DDX_Text(pDX, IDC_EDIT_SKYINDEX,								(long &)m_reeval->m_skyIndex);
+	DDX_Radio(pDX, IDC_RADIO_SKYSPECTRUM_FIRST,			(int &)m_reeval->m_skySettings.skyOption);
+	DDX_Text(pDX, IDC_EDIT_SKYINDEX,								(long &)m_reeval->m_skySettings.indexInScan);
 
 	DDX_Check(pDX, IDC_CHECK_AVERAGEDSPECTRA,				(int &)m_reeval->m_averagedSpectra);
 
@@ -44,7 +44,8 @@ void CReEval_MiscSettingsDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX,	ID_FILE_SAVEMISC,							m_saveBtn);
 
 	// The user supplied sky-spectrum
-	DDX_Text(pDX,	IDC_EDIT_USER_SKY,								m_reeval->m_skySpectrum);
+    // TODO: Fix this.
+	//DDX_Text(pDX,	IDC_EDIT_USER_SKY,								m_reeval->m_skySettings.skySpectrumFile);
 }
 
 
@@ -72,10 +73,10 @@ void CReEval_MiscSettingsDlg::OnBrowseSkySpectrum(){
 
 	// let the user browse for a spectrum-file
 	if(common.BrowseForFile(filter, skySpec)){
-		m_reeval->m_skySpectrum.Format("%s", (LPCTSTR)skySpec);
+		m_reeval->m_skySettings.skySpectrumFile = std::string((LPCTSTR)skySpec);
 		SetDlgItemText(IDC_EDIT_USER_SKY, skySpec);
 
-		m_reeval->m_skyOption = SKY_USER;
+		m_reeval->m_skySettings.skyOption = Configuration::SKY_OPTION::USER_SUPPLIED;
 	}
 
 	// Update the screen

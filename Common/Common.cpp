@@ -417,13 +417,6 @@ int Common::GetSecond()
 	return tim->tm_sec;
 }
 
-/** Converts a time, given in seconds since midnight to hour, minutes and seconds */
-void Common::ConvertToHMS(const int time, int &hours, int &minutes, int &seconds){
-	hours			= (int)(time / 3600);
-	minutes		= (time - hours * 3600) / 60;
-	seconds		= time % 60;	
-}
-
 /* pretty prints the current time into the string 'txt' */
 void Common::GetTimeText(CString &txt)
 {
