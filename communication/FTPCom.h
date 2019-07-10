@@ -1,57 +1,61 @@
-#include <afxinet.h>
 #pragma once
+
+#include <afxinet.h>
+#include "IFTPDataUpload.h"
+
 namespace Communication
 {
-	class CFTPCom
-	{
-	public:
-		CFTPCom(void);
-		~CFTPCom(void);
-		CInternetSession* m_InternetSession;
-		CFtpConnection* m_FtpConnection;
-		CString m_FTPSite;
-		CString m_ErrorMsg;
-	public:
-		/**Connect to one FTP server
-		*@siteName - address of the FTP server
-		*@userName - user name for login
-		*@password - password for login
-		*@mode		 - Specifies passive(TRUE) or active mode(FASLE) for this FTP session. 
-		*						 If set to TRUE, it sets the Win32 API dwFlag to INTERNET_FLAG_PASSIVE. 
-		*						 Passive mode is for client behind a firewall; it is safer comparing 
-		*						 with active mode.
-		*/
-		int Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, int timeout, BOOL mode= FALSE);
+    class CFTPCom : public IFTPDataUpload
+    {
+    public:
+        CFTPCom();
+        ~CFTPCom();
 
-		int Disconnect();
+        CString m_FTPSite;
 
-		int UploadFile(LPCTSTR localFile, LPCTSTR remoteFile);
+        // ------------------------ Implementing IFTPDatapload ------------------------
 
-		BOOL DownloadAFile(LPCTSTR remoteFile, LPCTSTR fileFullName);
+        virtual int Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, int timeout, bool passiveMode = false) override;
 
-		int UpdateFile(LPCTSTR localFile, LPCTSTR remoteFile);
+        virtual int Disconnect() override;
 
-		int CreateDirectory(LPCTSTR remoteDirectory);
+        virtual int UpdateRemoteFile(LPCTSTR localFile, LPCTSTR remoteFile) override;
 
-		/**find file in the current ftp folder
-		*return TRUE if exists
-		*/
-		int FindFile(CString& fileName);
+        virtual bool SetCurDirectory(CString curDirName) override;
 
-		/**Set current directory
-		*@param curDirName current directory name
-		*return TRUE  - success
-		*/
-		BOOL SetCurDirectory(LPCTSTR curDirName);
-		/*Remove a folder*/
-		BOOL DeleteFolder(const CString& folder);
-		/*Enter a folder*/
-		BOOL EnterFolder(const CString& folder);
-		/*Go to top directory "/"*/
-		BOOL GotoTopDirectory();
-		/*read response from the ftp server*/
-		void ReadResponse(CInternetFile* file);
-		/*send command to ftp server*/
-		//bool FTPCommand(CString& pCommand, bool getResponse= false);
-	};
+        virtual bool DownloadAFile(LPCTSTR remoteFile, LPCTSTR fileFullName) override;
+
+        // ------------------------ Implementation of FTP data upload and download ------------------------
+
+        /** Sends a local file to the FTP-server, this will skip the upload if the remove file exists.
+            @return 0 on success
+            @return 1 if the file already exists. */
+        int UploadFile(LPCTSTR localFile, LPCTSTR remoteFile);
+
+        int CreateDirectory(LPCTSTR remoteDirectory);
+
+        /**find file in the current ftp folder
+        *return TRUE if exists
+        */
+        int FindFile(CString& fileName);
+
+        /*Remove a folder*/
+        BOOL DeleteFolder(const CString& folder);
+
+        /*Enter a folder*/
+        BOOL EnterFolder(const CString& folder);
+
+        /*Go to top directory "/"*/
+        BOOL GotoTopDirectory();
+
+        /*read response from the ftp server*/
+        void ReadResponse(CInternetFile* file);
+
+    protected:
+        CFtpConnection* m_FtpConnection = nullptr;
+
+    private:
+        CInternetSession* m_InternetSession = nullptr;
+
+    };
 }

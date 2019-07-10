@@ -6,18 +6,16 @@
 #include <SpectralEvaluation/File/SpectrumIO.h>
 #include <SpectralEvaluation/File/STDFile.h>
 #include <SpectralEvaluation/File/TXTFile.h>
+#include <SpectralEvaluation/Spectra/SpectrometerModel.h>
 #include <SpectralEvaluation/Utils.h>
 
 using namespace Evaluation;
 
-CScanEvaluation::CScanEvaluation(void)
+CScanEvaluation::CScanEvaluation()
 {
     m_result = nullptr;
-    pView = NULL;
-    m_skyOption = SKY_FIRST;
-    m_skyIndex = 0;
-    m_pause = NULL;
-    m_sleeping = NULL;
+    m_skySettings.skyOption = Configuration::SKY_OPTION::MEASURED_IN_SCAN;
+    m_skySettings.indexInScan = 0;
 
     // In real-time, nothing should be ignored
     m_ignore_Lower.m_type = IGNORE_NOTHING;
@@ -67,14 +65,8 @@ bool CScanEvaluation::HasResult()
 }
 
 /** Called to evaluate one scan */
-long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& window, bool *fRun, const Configuration::CDarkSettings *darkSettings) {
-
-#ifdef _DEBUG
-    // this is for searching for memory leaks
-    CMemoryState newMem, oldMem, diffMem;
-    oldMem.Checkpoint();
-#endif
-
+long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& window, bool *fRun, const Configuration::CDarkSettings *darkSettings)
+{
     CString message;	// used for ShowMessage messages
     int	index = 0;		// keeping track of the index of the current spectrum into the .pak-file
     double highestColumn = 0.0;	// the highest column-value in the evaluation
@@ -88,7 +80,8 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
     m_fitHigh = window.fitHigh;
 
     // Check so that the file exists
-    if (!IsExistingFile(scanfile)) {
+    if (!IsExistingFile(scanfile))
+    {
         return 0;
     }
 
@@ -120,56 +113,69 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
         }
     }
 
-    // Get the sky and dark spectra and divide them by the number of 
-    //     co-added spectra in it
-    if (SUCCESS != GetSky(&scan, sky))
-    {
-        return 0;
-    }
-    CSpectrum original_sky = sky; // original_sky is the sky-spectrum without dark-spectrum corrections...
-
-    if (m_skyOption != SKY_USER) {
-        if (SUCCESS != GetDark(&scan, sky, dark, darkSettings)) {
-            return 0;
-        }
-        sky.Sub(dark);
-    }
-
-    if (sky.NumSpectra() > 0 && !m_averagedSpectra) {
-        sky.Div(sky.NumSpectra());
-        original_sky.Div(original_sky.NumSpectra());
-    }
-
     // Get some important information about the spectra, like
     //	interlace steps, spectrum length and start-channel
     copyOfWindow.interlaceStep = scan.GetInterlaceSteps();
     copyOfWindow.specLength = scan.GetSpectrumLength() * copyOfWindow.interlaceStep;
     copyOfWindow.startChannel = scan.GetStartChannel();
 
-    // Create our evaluator
-    std::unique_ptr<CEvaluationBase> eval = std::make_unique<CEvaluationBase>(copyOfWindow);
-
-    // tell the evaluator which sky-spectrum to use
-    eval->SetSkySpectrum(sky);
-
     // Adjust the fit-low and fit-high parameters according to the spectra
     m_fitLow = copyOfWindow.fitLow - copyOfWindow.startChannel;
     m_fitHigh = copyOfWindow.fitHigh - copyOfWindow.startChannel;
+
+    // Create our evaluator
+    std::unique_ptr<CEvaluationBase> eval;
 
     // If we have a solar-spectrum that we can use to determine the shift
     //	& squeeze then fit that first so that we know the wavelength calibration
     if (copyOfWindow.fraunhoferRef.m_path.size() > 4)
     {
-        // TODO: Implement this properly...
-        CFitWindow* newWindow = FindOptimumShiftAndSqueeze_Fraunhofer(eval.get(), &scan);
+        m_lastErrorMessage = "";
 
-        if (nullptr != newWindow)
+        copyOfWindow.fraunhoferRef.ReadCrossSectionDataFromFile();
+
+        CEvaluationBase* newEval = FindOptimumShiftAndSqueezeFromFraunhoferReference(copyOfWindow, *darkSettings, m_skySettings, scan);
+
+        if (nullptr != newEval)
         {
-            copyOfWindow = *newWindow; // copy the good window here.
-            eval.reset(new CEvaluationBase{ copyOfWindow });
-            delete newWindow;
+            copyOfWindow = newEval->FitWindow();
+            eval.reset(newEval);
+        }
+        else
+        {
+            ShowMessage(m_lastErrorMessage.c_str());
         }
     }
+    else
+    {
+        eval = std::make_unique<CEvaluationBase>(copyOfWindow);
+    }
+
+    // Get the sky and dark spectra and divide them by the number of 
+    //     co-added spectra in it
+    if (SUCCESS != GetSky(&scan, sky))
+    {
+        return 0;
+    }
+    CSpectrum skySpectrumWithoutDarkCorrection = sky;
+
+    if (m_skySettings.skyOption != Configuration::SKY_OPTION::USER_SUPPLIED)
+    {
+        if (SUCCESS != GetDark(&scan, sky, dark, darkSettings))
+        {
+            return 0;
+        }
+        sky.Sub(dark);
+    }
+
+    if (sky.NumSpectra() > 0 && !m_averagedSpectra)
+    {
+        sky.Div(sky.NumSpectra());
+        skySpectrumWithoutDarkCorrection.Div(skySpectrumWithoutDarkCorrection.NumSpectra());
+    }
+
+    // tell the evaluator which sky-spectrum to use
+    eval->SetSkySpectrum(sky);
 
     // the data structure to keep track of the evaluation results
     std::shared_ptr<CScanResult> newResult = std::make_shared<CScanResult>();
@@ -183,7 +189,7 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
         index = -1; // we're at spectrum number 0 in the .pak-file
         m_indexOfMostAbsorbingSpectrum = -1;	// as far as we know, there's no absorption in any spectrum...
 
-        newResult->SetSkySpecInfo(original_sky.m_info);
+        newResult->SetSkySpecInfo(skySpectrumWithoutDarkCorrection.m_info);
         newResult->SetDarkSpecInfo(dark.m_info);
 
         // Make sure that we'll start with the first spectrum in the scan
@@ -451,7 +457,7 @@ RETURN_CODE CScanEvaluation::GetSky(FileHandler::CScanFileHandler *scan, CSpectr
     CString errorMsg;
 
     // If the sky spectrum is the first spectrum in the scan
-    if (m_skyOption == SKY_FIRST) {
+    if (m_skySettings.skyOption == Configuration::SKY_OPTION::MEASURED_IN_SCAN) {
         scan->GetSky(sky);
 
         if (sky.m_info.m_interlaceStep > 1)
@@ -461,7 +467,7 @@ RETURN_CODE CScanEvaluation::GetSky(FileHandler::CScanFileHandler *scan, CSpectr
     }
 
     // If the sky spectrum is the average of all credible spectra
-    if (m_skyOption == SKY_AVERAGE_OF_GOOD) {
+    if (m_skySettings.skyOption == Configuration::SKY_OPTION::AVERAGE_OF_GOOD_SPECTRA_IN_SCAN) {
         int interlaceSteps = scan->GetInterlaceSteps();
         int startChannel = scan->GetStartChannel();
         int fitLow = m_fitLow / interlaceSteps - startChannel;
@@ -489,8 +495,8 @@ RETURN_CODE CScanEvaluation::GetSky(FileHandler::CScanFileHandler *scan, CSpectr
     }
 
     // If the user wants to use another spectrum than 'sky' as reference-spectrum...
-    if (m_skyOption == SKY_INDEX) {
-        if (0 == scan->GetSpectrum(sky, m_skyIndex))
+    if (m_skySettings.skyOption == Configuration::SKY_OPTION::SPECTRUM_INDEX_IN_SCAN) {
+        if (0 == scan->GetSpectrum(sky, m_skySettings.indexInScan))
             return FAIL;
 
         if (sky.m_info.m_interlaceStep > 1)
@@ -500,20 +506,18 @@ RETURN_CODE CScanEvaluation::GetSky(FileHandler::CScanFileHandler *scan, CSpectr
     }
 
     // If the user has supplied a special sky-spectrum to use
-    if (m_skyOption == SKY_USER) {
-        if (Equals(m_userSkySpectrum.Right(4), ".pak", 4)) {
+    if (m_skySettings.skyOption == Configuration::SKY_OPTION::USER_SUPPLIED) {
+        if (EqualsIgnoringCase(Right(m_skySettings.skySpectrumFile, 4), ".pak", 4)) {
             // If the spectrum is in .pak format
             SpectrumIO::CSpectrumIO reader;
-            const std::string userSkyFileName((LPCSTR)m_userSkySpectrum);
-            if (reader.ReadSpectrum(userSkyFileName, 0, sky))
+            if (reader.ReadSpectrum(m_skySettings.skySpectrumFile, 0, sky))
                 return SUCCESS;
             else
                 return FAIL;
         }
-        else if (Equals(m_userSkySpectrum.Right(4), ".std", 4)) {
+        else if (EqualsIgnoringCase(Right(m_skySettings.skySpectrumFile, 4), ".std", 4)) {
             // If the spectrum is in .std format
-            const std::string fileName((LPCSTR)m_userSkySpectrum);
-            if (SpectrumIO::CSTDFile::ReadSpectrum(sky, fileName))
+            if (SpectrumIO::CSTDFile::ReadSpectrum(sky, m_skySettings.skySpectrumFile))
                 return SUCCESS;
             else
                 return FAIL;
@@ -530,17 +534,9 @@ RETURN_CODE CScanEvaluation::GetSky(FileHandler::CScanFileHandler *scan, CSpectr
     return FAIL;
 }
 
-/** Setting the option for how to get the sky spectrum */
-void  CScanEvaluation::SetOption_Sky(SKY_OPTION skyOption, long skyIndex, const CString *skySpecPath) {
-    if (skySpecPath != NULL)
-        m_userSkySpectrum.Format("%s", (LPCSTR)*skySpecPath);
-
-    if (skyOption == SKY_USER && skySpecPath == NULL)
-        m_skyOption = SKY_FIRST;
-    else
-        m_skyOption = skyOption;
-
-    m_skyIndex = skyIndex;
+void CScanEvaluation::SetOption_Sky(const Configuration::CSkySettings& settings)
+{
+    this->m_skySettings = settings;
 }
 
 void  CScanEvaluation::SetOption_Ignore(IgnoreOption lowerLimit, IgnoreOption upperLimit) {
@@ -678,7 +674,7 @@ CFitWindow* CScanEvaluation::FindOptimumShiftAndSqueeze_Fraunhofer(const CEvalua
     int indexOfMostSuitableSpectrum = NO_SPECTRUM_INDEX;
     scan->GetSky(spectrum);
     fitIntensity = spectrum.MaxValue(fitLow, fitHigh);
-    maxInt = CSpectrometerModel::GetMaxIntensity(spectrum.m_info.m_specModel);
+    maxInt = CSpectrometerDatabase::GetInstance().GetModel(spectrum.m_info.m_specModelName).maximumIntensity;
     if (spectrum.NumSpectra() > 0) {
         fitSaturation = fitIntensity / (spectrum.NumSpectra() * maxInt);
     }
@@ -696,7 +692,7 @@ CFitWindow* CScanEvaluation::FindOptimumShiftAndSqueeze_Fraunhofer(const CEvalua
 
     while (scan->GetNextSpectrum(spectrum)) {
         fitIntensity = spectrum.MaxValue(fitLow, fitHigh);
-        maxInt = CSpectrometerModel::GetMaxIntensity(spectrum.m_info.m_specModel);
+        maxInt = CSpectrometerDatabase::GetInstance().GetModel(spectrum.m_info.m_specModelName).maximumIntensity; 
 
         // Get the saturation-ratio for this spectrum
         if (spectrum.NumSpectra() > 0) {

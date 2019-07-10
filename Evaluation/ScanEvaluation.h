@@ -6,144 +6,136 @@
 
 #include <SpectralEvaluation/Evaluation/ScanEvaluationBase.h>
 #include <SpectralEvaluation/Evaluation/FitParameter.h>
+#include <SpectralEvaluation/Configuration/SkySettings.h>
 #include "../Common/Common.h"
 #include "../Configuration/Configuration.h"
 
 class CSpectrum;
 namespace FileHandler
 {
-class CScanFileHandler;
+    class CScanFileHandler;
 }
 
 namespace Evaluation
 {
-	class CEvaluationBase;
+    class CEvaluationBase;
 
-	/** 
-		An object of the <b>CScanEvaluation</b>-class handles the evaluation of one
-		scan.
-	*/
-	class CScanEvaluation : public ScanEvaluationBase
-	{
+    /**
+        An object of the <b>CScanEvaluation</b>-class handles the evaluation of one
+        scan.
+    */
+    class CScanEvaluation : public ScanEvaluationBase
+    {
 
-	public:
-		/** Default constructor */
-		CScanEvaluation(void);
+    public:
+        CScanEvaluation(void);
+        virtual ~CScanEvaluation();
 
-		/** Default destructor */
-		~CScanEvaluation(void);
+        /** If the contents of m_pause is true then the current thread will
+            be suspended between each iteration. Useful for reevaluation as it
+            lets the user have a look at each fitted spectrum before continuing. */
+        int* m_pause = nullptr;
 
-		/** If the contents of m_pause is true then the current thread will 
-			be suspended between each iteration. Useful for reevaluation as it
-			lets the user have a look at each fitted spectrum before continuing. */
-		int *m_pause;
+        /** The state of the evaluation. If m_sleeping is true then the
+            thread is sleeping and needs to be woken up. */
+        bool* m_sleeping = nullptr;
 
-		/** The state of the evaluation. If m_sleeping is true then the
-			thread is sleeping and needs to be woken up. */
-		bool *m_sleeping;
+        /** if pView != NULL then after the evaluation of a spectrum, a 'WM_EVAL_SUCCESS'
+            message will be sent to pView. */
+        CWnd* pView = nullptr;
 
-		/** if pView != NULL then after the evaluation of a spectrum, a 'WM_EVAL_SUCCESS'
-			message will be sent to pView. */
-		CWnd *pView;
+        /** Called to evaluate one scan.
+                @return the number of spectra evaluated. */
+        long EvaluateScan(const CString &scanfile, const CFitWindow& window, bool *fRun = NULL, const Configuration::CDarkSettings *darkSettings = NULL);
 
-		/** Called to evaluate one scan.
-				@return the number of spectra evaluated. */
-		long EvaluateScan(const CString &scanfile, const CFitWindow& window, bool *fRun = NULL, const Configuration::CDarkSettings *darkSettings = NULL);
+        /** Setting the option for how to get the sky spectrum. */
+        void SetOption_Sky(const Configuration::CSkySettings& settings);
 
-		/** Setting the option for how to get the sky spectrum.
-			@param skySpecPath - if not null and skyOption == SKY_USER, then this string will be used
-				as sky-spectrum. 
-			If skyOption==SKY_USER and skySpecPath ==NULL then SKY_FIRST will be
-				used instead*/
-		void SetOption_Sky(SKY_OPTION skyOption, long skyIndex, const CString *skySpecPath = NULL);
+        /** Setting the option for which spectra to ignore */
+        void SetOption_Ignore(IgnoreOption lowerLimit, IgnoreOption upperLimit);
 
-		/** Setting the option for which spectra to ignore */
-		void SetOption_Ignore(IgnoreOption lowerLimit, IgnoreOption upperLimit);
+        /** Setting the option for wheather the spectra are averaged or not. */
+        void SetOption_AveragedSpectra(bool averaged);
 
-		/** Setting the option for wheather the spectra are averaged or not. */
-		void SetOption_AveragedSpectra(bool averaged);
+        /** @return a copy of the scan result */
+        std::unique_ptr<CScanResult> GetResult();
 
-		/** @return a copy of the scan result */
-		std::unique_ptr<CScanResult> GetResult();
+        /** @return true if a result has been produced here */
+        bool HasResult();
 
-		/** @return true if a result has been produced here */
-		bool HasResult();
+        /** @return the number of spectra in the last scan evaluated */
+        int NumberOfSpectraInLastResult();
 
-		/** @return the number of spectra in the last scan evaluated */
-		int NumberOfSpectraInLastResult();
+    private:
 
-	private:
+        /** The evaluation results from the last scan evaluated */
+        std::shared_ptr<CScanResult> m_result;
 
-		/** The evaluation results from the last scan evaluated */
-		std::shared_ptr<CScanResult> m_result;
-	
-		/** A mutex to protect the scan result from bein updated/deleted/altered from two threads simultaneously */
-		std::mutex m_resultMutex;
+        /** A mutex to protect the scan result from bein updated/deleted/altered from two threads simultaneously */
+        std::mutex m_resultMutex;
 
-		// ----------------------- PRIVATE METHODS ---------------------------
+        // ----------------------- PRIVATE METHODS ---------------------------
 
-		/** This returns the sky spectrum that is to be used in the fitting. */
-		RETURN_CODE GetSky(FileHandler::CScanFileHandler *scan, CSpectrum &sky);
+        /** This returns the sky spectrum that is to be used in the fitting. */
+        RETURN_CODE GetSky(FileHandler::CScanFileHandler *scan, CSpectrum &sky);
 
-		/** This returns the dark spectrum that is to be used in the fitting. 
-			@param scan - the scan-file handler from which to get the dark spectrum
-			@param spec - the spectrum for which the dark spectrum should be retrieved
-			@param dark - will on return be filled with the dark spectrum 
-			@param darkSettings - the settings for how to get the dark spectrum from this spectrometer */
-		RETURN_CODE GetDark(FileHandler::CScanFileHandler *scan, const CSpectrum &spec, CSpectrum &dark, const Configuration::CDarkSettings *darkSettings = NULL);
+        /** This returns the dark spectrum that is to be used in the fitting.
+            @param scan - the scan-file handler from which to get the dark spectrum
+            @param spec - the spectrum for which the dark spectrum should be retrieved
+            @param dark - will on return be filled with the dark spectrum
+            @param darkSettings - the settings for how to get the dark spectrum from this spectrometer */
+        RETURN_CODE GetDark(FileHandler::CScanFileHandler *scan, const CSpectrum &spec, CSpectrum &dark, const Configuration::CDarkSettings *darkSettings = NULL);
 
-		/** checks the spectrum to the settings and returns 'true' if the spectrum should not be evaluated */
-		bool Ignore(const CSpectrum &spec, const CFitWindow window);
+        /** checks the spectrum to the settings and returns 'true' if the spectrum should not be evaluated */
+        bool Ignore(const CSpectrum &spec, const CFitWindow window);
 
-		/** This function updates the 'm_residual' and 'm_fitResult' spectra
-			and sends the 'WM_EVAL_SUCCESS' message to the pView-window. */
-		void ShowResult(const CSpectrum &spec, const CEvaluationBase *eval, long curSpecIndex, long specNum);
+        /** This function updates the 'm_residual' and 'm_fitResult' spectra
+            and sends the 'WM_EVAL_SUCCESS' message to the pView-window. */
+        void ShowResult(const CSpectrum &spec, const CEvaluationBase *eval, long curSpecIndex, long specNum);
 
-		/** Updates the m_result in a thread safe manner (locking the m_resultMutex) */
-		void UpdateResult(std::shared_ptr<CScanResult> newResult);
+        /** Updates the m_result in a thread safe manner (locking the m_resultMutex) */
+        void UpdateResult(std::shared_ptr<CScanResult> newResult);
 
-		/** Finds the optimum shift and squeeze for an evaluated scan 
-					by looking at the spectrum with the highest absorption of the evaluated specie
-					and evaluate it with shift and squeeze free
+        /** Finds the optimum shift and squeeze for an evaluated scan
+                    by looking at the spectrum with the highest absorption of the evaluated specie
+                    and evaluate it with shift and squeeze free
              @return the fit-result for the evaluated specie. */
         CEvaluationResult FindOptimumShiftAndSqueeze(const CEvaluationBase *originalEvaluation, FileHandler::CScanFileHandler *scan, CScanResult *result);
 
-		/** Finds the optimum shift and squeeze for an scan by evaluating
-			with a solar-reference spectrum and studying the shift of the 
-			Fraunhofer-lines. 
-			@param eval - the evaluator to use for the evaluation. On successful determination
-				of the shift and squeeze then the shift and squeeze of the reference-files
-				in the CEvaluationBase-objects CFitWindow will be fixed to the optimum value found
-			@param scan - a handle to the spectrum file. 
+        /** Finds the optimum shift and squeeze for an scan by evaluating
+            with a solar-reference spectrum and studying the shift of the
+            Fraunhofer-lines.
+            @param eval - the evaluator to use for the evaluation. On successful determination
+                of the shift and squeeze then the shift and squeeze of the reference-files
+                in the CEvaluationBase-objects CFitWindow will be fixed to the optimum value found
+            @param scan - a handle to the spectrum file.
             @return a new CFitWindow to use with the references shift and squeeze fixed to the found optimal value.
             @return nullptr if an optimal shift and squeeze could not be found. */
         CFitWindow* FindOptimumShiftAndSqueeze_Fraunhofer(const CEvaluationBase *originalEvaluation, FileHandler::CScanFileHandler *scan);
 
-		// ------------------------ THE PARAMETERS FOR THE EVALUATION ------------------
-		/** This is the options for the sky spectrum */
-		SKY_OPTION  m_skyOption;
-		long        m_skyIndex;
-		CString     m_userSkySpectrum; // the sky-spectrum, only used if m_skyOption is SKY_USER
+        // ------------------------ THE PARAMETERS FOR THE EVALUATION ------------------
+        /** This is the options for the sky spectrum */
+        Configuration::CSkySettings m_skySettings;
 
-		/** The options for which spectra to ignore */
-		IgnoreOption m_ignore_Lower;
-		IgnoreOption m_ignore_Upper;
+        /** The options for which spectra to ignore */
+        IgnoreOption m_ignore_Lower;
+        IgnoreOption m_ignore_Upper;
 
-		/** This is the fit region */
-		long m_fitLow;
-		long m_fitHigh;
+        /** This is the fit region */
+        long m_fitLow;
+        long m_fitHigh;
 
-		/** True if the spectra are averaged, not summed */
-		bool m_averagedSpectra;
+        /** True if the spectra are averaged, not summed */
+        bool m_averagedSpectra;
 
-		/** Remember the index of the spectrum with the highest absorption, to be able to
-			adjust the shift and squeeze with it later */
-		int m_indexOfMostAbsorbingSpectrum;
+        /** Remember the index of the spectrum with the highest absorption, to be able to
+            adjust the shift and squeeze with it later */
+        int m_indexOfMostAbsorbingSpectrum;
 
-		/** how many spectra there are in the current scan-file (for showing the progress) */
-		long m_prog_SpecNum;
+        /** how many spectra there are in the current scan-file (for showing the progress) */
+        long m_prog_SpecNum;
 
-		/** which spectrum we are on in the current scan-file (for showing the progress) */
-		long m_prog_SpecCur;
-	};
+        /** which spectrum we are on in the current scan-file (for showing the progress) */
+        long m_prog_SpecCur;
+    };
 }

@@ -51,8 +51,8 @@ namespace FileHandler
 
     // -------------------- PRIVATE METHODS --------------------------
 
-		/** Makes a sanity check of the settings just read in */
-		int CheckSettings();
+    /** Makes a sanity check of the settings just read in */
+    int CheckSettings();
 
     /** Starts the parsing */
     int Parse();
@@ -63,26 +63,29 @@ namespace FileHandler
     /** Parses one 'spectrometer' section */
     int Parse_Spectrometer();
 
+    /** Parses one custom spectrometer model section */
+    int Parse_CustomSpectrometerModel(CConfigurationSetting::SpectrometerSetting *curSpec);
+
     /** Parses one 'channel' section */
     int Parse_Channel();
-		
-		/** Parses one 'communication' section */
+
+    /** Parses one 'communication' section */
     int Parse_Communication();
 
-		/** Parses one 'windmeasurement' section */
-		int	Parse_WindMeasurement();
+    /** Parses one 'windmeasurement' section */
+    int	Parse_WindMeasurement();
 
-		/** Parses one 'realtimesetup' section */
-		int Parse_RealTimeSetup();
+    /** Parses one 'realtimesetup' section */
+    int Parse_RealTimeSetup();
 
     /** Parses the 'Specie' section. Deprecated!, replaced by 'reference' */
     int Parse_Specie(CConfigurationSetting::SpectrometerChannelSetting *curSpec);
 
-		/** Parses a shift or squeeze section */
-		int Parse_ShiftOrSqueeze(const CString &label, Evaluation::SHIFT_TYPE &option, double &lowValue, double &highValue);
+    /** Parses a shift or squeeze section */
+    int Parse_ShiftOrSqueeze(const CString &label, Evaluation::SHIFT_TYPE &option, double &lowValue, double &highValue);
 
-		/** Parses the 'Reference'-section. */
-		int Parse_Reference(CConfigurationSetting::SpectrometerChannelSetting *curChannel);
+    /** Parses the 'Reference'-section. */
+    int Parse_Reference(CConfigurationSetting::SpectrometerChannelSetting *curChannel);
 
     /** Parses the 'outputDir' section */
     int Parse_OutputDir();
@@ -90,16 +93,16 @@ namespace FileHandler
     /** Parses the 'sourceInfo' section */
     int Parse_SourceInfo();
 
-		/** Parses the 'localPublishDir' - section */
-		int Parse_LocalPublishDir();
-
-		/** Parses the 'windImport' - section */
-		int Parse_WindImport();
-
-		/** Parses the 'motor' - section */
-		int Parse_Motor();
-
-		/** Parses the 'medium' section */
-		int Parse_Medium(CConfigurationSetting::CommunicationSetting *curComm);
+    /** Parses the 'localPublishDir' - section */
+    int Parse_LocalPublishDir();
+    
+    /** Parses the 'windImport' - section */
+    int Parse_WindImport();
+    
+    /** Parses the 'motor' - section */
+    int Parse_Motor();
+    
+    /** Parses the 'medium' section */
+    int Parse_Medium(CConfigurationSetting::CommunicationSetting *curComm);
   };
 }

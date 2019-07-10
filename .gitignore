@@ -1,2 +1,6 @@
 /Release
 /Debug
+*.aps
+/Data
+/*.aps
+/NovacMasterProgram.vcxproj.user

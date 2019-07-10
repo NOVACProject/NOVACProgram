@@ -55,7 +55,7 @@ const CString &CSpectrometer::SerialNumber() const{
 }
 
 double CSpectrometer::GetMaxIntensity() const{
-	return CSpectrometerModel::GetMaxIntensity(m_settings.model);
+	return CSpectrometerDatabase::GetInstance().GetModel(m_settings.modelName).maximumIntensity;
 }
 
 /** Adds the result from the supplied evaluation to the history

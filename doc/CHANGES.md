@@ -1,5 +1,15 @@
 NOVAC Program Release Notes
 -----------------------------------------------------
+Version 3.2 (TBD)
+
+New features
+* Support for user-configurable spectrometer (#6)
+* Dialog to create reference files from spectrometer calibration (#51)
+* SFTP support for uploading pak files to offsite server (#58)
+* Hostname support for FTP to instrument computer (#81)
+
+-----------------------------------------------------
+
 Version 3.1 (June 2019)
 
 Bug fixes

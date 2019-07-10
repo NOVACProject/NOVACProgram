@@ -71,7 +71,6 @@ namespace ConfigurationDialog
 
 		// The combo controls on the screen
 		CComboBox	m_comboVolcano;
-		//CComboBox	m_comboObservatory;
 		CComboBox	m_comboElectronics;
 		CComboBox	m_comboSpectrometerModel;
 		CComboBox	m_comboSpectrometerChannels;
@@ -83,6 +82,8 @@ namespace ConfigurationDialog
 
 		/** (Re-)initializes the list of volcanoes */
 		void UpdateVolcanoList();
+
+        void RecreateSpectrometerModelCombo();
 
 	public:
 		virtual BOOL OnSetActive();

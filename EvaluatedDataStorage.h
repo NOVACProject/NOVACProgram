@@ -270,7 +270,7 @@ private:
 	CString m_serials[MAX_NUMBER_OF_SCANNING_INSTRUMENTS];
 
 	/** The spectrometer-model that corresponds to each serial-number */
-	SPECTROMETER_MODEL m_models[MAX_NUMBER_OF_SCANNING_INSTRUMENTS];
+	std::string m_models[MAX_NUMBER_OF_SCANNING_INSTRUMENTS];
 
 	/** The time-difference between GMT and the position of each scanner */
 	double	m_hoursToGMT[MAX_NUMBER_OF_SCANNING_INSTRUMENTS];
