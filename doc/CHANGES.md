@@ -9,6 +9,7 @@ New features
 * Hostname support for FTP to instrument computer (#81)
 
 -----------------------------------------------------
+
 Version 3.1 (June 2019)
 
 Bug fixes
