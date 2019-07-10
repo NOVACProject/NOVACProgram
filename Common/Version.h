@@ -12,5 +12,5 @@ public:
 	static const int majorNumber = 3;
 
 	/** The minor version number */
-	static const int minorNumber = 1;
+	static const int minorNumber = 2;
 };
