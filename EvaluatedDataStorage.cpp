@@ -212,11 +212,11 @@ int CEvaluatedDataStorage::AddData(const CString &serial, Evaluation::CScanResul
 
 		// Add data point for current day
 		CDateTime scanTime;
-		result->GetStopTime(0, scanTime);
+		result->GetStopTime(i, scanTime);
 		int now = common.Epoch();
 		int scanEpoch = common.Epoch(scanTime);
 		if ((now-scanEpoch) <= 86400) {
-			AppendSpecDataHistory(scannerIndex, common.Epoch(scanTime), column, columnError, peakSaturation, fitSaturation, angle, isBadFit);
+			AppendSpecDataHistory(scannerIndex, scanEpoch, column, columnError, peakSaturation, fitSaturation, angle, isBadFit);
 		}
 
 		// Check so that we don't add too many data points here
