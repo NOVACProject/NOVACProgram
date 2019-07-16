@@ -2,6 +2,9 @@ NOVAC Program Release Notes
 -----------------------------------------------------
 Version 3.2 (TBD)
 
+Bug fixes
+* Fix issue with columns from same scan initially plotting at same time in history (#99)
+
 New features
 * Support for user-configurable spectrometer (#6)
 * Dialog to create reference files from spectrometer calibration (#51)
