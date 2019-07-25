@@ -4,6 +4,7 @@ Version 3.2 (TBD)
 
 Bug fixes
 * Fix issue with columns from same scan initially plotting at same time in history (#99)
+* Fix issue with software crashing on re-evaluation when solar spectrum file is used (#103)
 
 New features
 * Support for user-configurable spectrometer (#6)
