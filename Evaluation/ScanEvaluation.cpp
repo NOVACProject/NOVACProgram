@@ -415,9 +415,9 @@ void CScanEvaluation::ShowResult(const CSpectrum &spec, const CEvaluationBase *e
     // copy the scaled referencefiles
     for (size_t tmpRefIndex = 0; tmpRefIndex < eval->NumberOfReferencesFitted(); ++tmpRefIndex)
     {
-        for (int i = fitLow; i < fitHigh; ++i)
+        for (int i = 0; i < fitHigh - fitLow; ++i)
         {
-            resultView->scaledReference[tmpRefIndex].m_data[i] = eval->m_fitResult[tmpRefIndex + 1].GetAt(i);
+            resultView->scaledReference[tmpRefIndex].m_data[i + fitLow] = eval->m_fitResult[tmpRefIndex + 1].GetAt(i);
         }
     }
 
