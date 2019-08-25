@@ -261,7 +261,7 @@ void CNovacMasterProgramView::OnInitialUpdate()
 	}
 	CTabCtrl *tabPtr = m_sheet.GetTabControl();
 
-	for (int i = 0; i < g_settings.scannerNum; ++i) {
+	for (int i = 0; i < (int)g_settings.scannerNum; ++i) {
 		tabPtr->GetItemRect(i, &tabRect);
 		m_toolTip.AddTool(tabPtr, IDD_VIEW_SCANNERSTATUS, &tabRect, IDD_VIEW_SCANNERSTATUS);
 	}
@@ -350,7 +350,7 @@ void CNovacMasterProgramView::ReadFluxLog(int scannerIndex, CString dateStr, CSt
 
 void CNovacMasterProgramView::ReadEvalLog(int scannerIndex, CString dateStr, CString serialNumber) {
 	Common common;
-	int now = common.Epoch();
+    __int64 now = common.Epoch();
 	FileHandler::CEvaluationLogFileHandler evalLogReader;
 	CString path;
 	path.Format("%sOutput\\%s\\%s\\EvaluationLog_%s_%s.txt",
@@ -377,7 +377,7 @@ void CNovacMasterProgramView::ReadEvalLog(int scannerIndex, CString dateStr, CSt
 				for (unsigned long j = 0; j < sr.GetEvaluatedNum(); ++j) {
 					CDateTime st;
 					sr.GetStopTime(j, st);
-					int time = common.Epoch(st);
+                    int time = (int)common.Epoch(st);
 					double column = sr.GetColumn(j, 0);
 					double columnError = sr.GetColumnError(j, 0);
 					double peakIntensity = sr.GetPeakIntensity(j);
@@ -862,7 +862,7 @@ int CNovacMasterProgramView::InitializeControls(){
 			m_sheet.AddPage(page);
 			m_scannerPages.Add(page);
 	}else{
-		for(int i = 0; i < g_settings.scannerNum; ++i){
+		for(int i = 0; i < (int)g_settings.scannerNum; ++i){
 			page = new CView_Scanner();
 			page->Construct(IDD_VIEW_SCANNERSTATUS);
 
@@ -898,7 +898,7 @@ int CNovacMasterProgramView::InitializeControls(){
 	m_instrumentViewVisible	= true;
 
 	// Add the column history pages, one for every spectrometer if configured to show
-	for (int i = 0; i < g_settings.scannerNum; ++i) {
+	for (int i = 0; i < (int)g_settings.scannerNum; ++i) {
 		if (g_settings.scanner[i].plotColumnHistory) {
 			histPage = new ColumnHistoryDlg();
 			histPage->Construct(IDD_COLUMN_HISTORY_DLG);
@@ -946,7 +946,7 @@ int CNovacMasterProgramView::InitializeControls(){
 		// Update the tab with the updated 'item'
 		tabPtr->SetItem(0, &tcItem);
 	}else{
-		for(int i = 0; i < g_settings.scannerNum; ++i){
+		for(int i = 0; i < (int)g_settings.scannerNum; ++i){
 			tcItem.mask = TCIF_TEXT;
 
 			// Set the text in the 'item'. !!!! The serial-string is necessary
@@ -958,7 +958,7 @@ int CNovacMasterProgramView::InitializeControls(){
 			tabPtr->SetItem(i, &tcItem);
 		}
 		int histCount = 0;
-		for (int i =0; i < g_settings.scannerNum; ++i) {
+		for (int i =0; i < (int)g_settings.scannerNum; ++i) {
 			if (g_settings.scanner[i].plotColumnHistory) {
 				tcItem.mask = TCIF_TEXT;
 

@@ -697,7 +697,7 @@ double Common::JulianDay(const CDateTime &utcTime){
 	return JD;
 }
 
-double Common::Epoch() {
+__int64 Common::Epoch() {
 	time_t rawtime;
 	struct tm * utc;
 	time(&rawtime);
@@ -705,7 +705,7 @@ double Common::Epoch() {
 	return rawtime;
 }
 
-double Common::Epoch(const CDateTime &utcTime) {
+__int64 Common::Epoch(const CDateTime &utcTime) {
 	time_t rawtime;
 	struct tm * utc;
 	time(&rawtime);
@@ -720,7 +720,7 @@ double Common::Epoch(const CDateTime &utcTime) {
 	utc->tm_hour = utcTime.hour;
 	utc->tm_min = utcTime.minute;
 	utc->tm_sec = utcTime.second;
-	double epoch = mktime(utc)-offset;
+    __int64 epoch = mktime(utc)-offset;
 	return epoch;
 }
 

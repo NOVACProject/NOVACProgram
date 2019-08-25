@@ -430,10 +430,10 @@ public:
 
 
 	/** Returns the current seconds since 1/1/1970 . */
-	static double Epoch();
+	static __int64 Epoch();
 
 	/** Returns the seconds since 1/1/1970 for given date time. */
-	static double Epoch(const CDateTime &utcTime);
+	static __int64 Epoch(const CDateTime &utcTime);
 
 	// --------------------------------------------------------------------
 	// -------------------- SUN - FUNCTIONS -------------------------------
