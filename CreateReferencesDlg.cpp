@@ -13,6 +13,9 @@
 
 // CCreateReferencesDlg dialog
 
+namespace Dialogs
+{
+
 IMPLEMENT_DYNAMIC(CCreateReferencesDlg, CDialog)
 
 CCreateReferencesDlg::CCreateReferencesDlg(CWnd* pParent /*=NULL*/)
@@ -241,3 +244,4 @@ void CCreateReferencesDlg::OnButtonRunConvolution()
 
 }
 
+}

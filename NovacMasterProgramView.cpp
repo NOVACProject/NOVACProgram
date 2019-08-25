@@ -1429,11 +1429,11 @@ void CNovacMasterProgramView::OnSize(UINT nType, int cx, int cy)
                 m_sheet.GetActivePage()->MoveWindow(15, 35, masterFrameOnScreenRegion.Width(), masterFrameOnScreenRegion.Height());
             }
         }
-	}
+    }
 }
 
 void CNovacMasterProgramView::OnMenuFileCreatereferences()
 {
-    CCreateReferencesDlg dlg;
+    Dialogs::CCreateReferencesDlg dlg;
     dlg.DoModal();
 }

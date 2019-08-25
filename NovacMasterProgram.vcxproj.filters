@@ -579,11 +579,11 @@
     <ClCompile Include="CustomSpectrometerModelDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CreateReferencesDlg.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SpectralEvaluation\src\Evaluation\DarkSpectrum.cpp">
       <Filter>Source Files\Evaluation</Filter>
+    </ClCompile>
+    <ClCompile Include="CreateReferencesDlg.cpp">
+      <Filter>Source Files\Dialogs</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1188,7 +1188,7 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CreateReferencesDlg.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Dialogs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
