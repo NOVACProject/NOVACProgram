@@ -46,6 +46,7 @@
 #include "Dialogs/DataBrowserDlg.h"
 #include "Dialogs/PakFileInspector.h"
 #include "Dialogs/SummarizeFluxDataDlg.h"
+#include "Dialogs/SpectrometerCalibrationDlg.h"
 #include "CreateReferencesDlg.h"
 
 #include "WindMeasurement/PostWindDlg.h"
@@ -127,6 +128,8 @@ BEGIN_MESSAGE_MAP(CNovacMasterProgramView, CFormView)
 	ON_WM_SIZE()
 	ON_WM_SIZE()
     ON_COMMAND(ID_FILE_CREATEREFERENCES, &CNovacMasterProgramView::OnMenuFileCreatereferences)
+    ON_COMMAND(ID_FILE_CALIBRATESPECTROMETER, &CNovacMasterProgramView::OnFileCalibratespectrometer)
+    ON_UPDATE_COMMAND_UI(ID_FILE_CALIBRATESPECTROMETER, &CNovacMasterProgramView::OnUpdateFileCalibratespectrometer)
 END_MESSAGE_MAP()
 
 // CNovacMasterProgramView construction/destruction
@@ -1436,4 +1439,20 @@ void CNovacMasterProgramView::OnMenuFileCreatereferences()
 {
     Dialogs::CCreateReferencesDlg dlg;
     dlg.DoModal();
+}
+
+
+void CNovacMasterProgramView::OnFileCalibratespectrometer()
+{
+    Dialogs::CSpectrometerCalibrationDlg dlg;
+    dlg.DoModal();
+}
+
+void CNovacMasterProgramView::OnUpdateFileCalibratespectrometer(CCmdUI *pCmdUI)
+{
+#ifdef _DEBUG
+    pCmdUI->Enable(TRUE);
+#else
+    pCmdUI->Enable(FALSE);
+#endif
 }

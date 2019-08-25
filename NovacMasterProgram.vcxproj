@@ -207,6 +207,7 @@
     <ClCompile Include="Dialogs\ReferencePropertiesDlg.cpp" />
     <ClCompile Include="Dialogs\SelectionDialog.cpp" />
     <ClCompile Include="Dialogs\SimplePropertySheet.cpp" />
+    <ClCompile Include="Dialogs\SpectrometerCalibrationDlg.cpp" />
     <ClCompile Include="Dialogs\SplitPakFilesDlg.cpp" />
     <ClCompile Include="Dialogs\SummarizeFluxDataDlg.cpp" />
     <ClCompile Include="DlgControls\GridCtrl\GridCell.cpp" />
@@ -264,6 +265,7 @@
     <ClInclude Include="CreateReferencesDlg.h" />
     <ClInclude Include="CustomSpectrometerModelDlg.h" />
     <ClInclude Include="Dialogs\ColumnHistoryDlg.h" />
+    <ClInclude Include="Dialogs\SpectrometerCalibrationDlg.h" />
     <ClInclude Include="Evaluation\EvaluationResultView.h" />
     <ClCompile Include="SpectralEvaluation\src\DateTime.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
