@@ -124,7 +124,7 @@ void CReferencePlotDlg::ReadReferences()
         if (0 != m_window->ref[i].ReadCrossSectionDataFromFile())
         {
             // ERROR... Tell the user ?
-            std::vector<double> thisReference(0, 8192); // create a reference with all zeros.
+            std::vector<double> thisReference(8192, 0.0); // create a reference with all zeros.
             m_data.push_back(thisReference);
             continue;
         }
