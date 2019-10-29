@@ -136,6 +136,11 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
 
         CEvaluationBase* newEval = FindOptimumShiftAndSqueezeFromFraunhoferReference(copyOfWindow, *darkSettings, m_skySettings, scan);
 
+        if (m_lastErrorMessage.size() > 0)
+        {
+            ShowMessage(m_lastErrorMessage.c_str());
+        }
+
         if (nullptr != newEval)
         {
             copyOfWindow = newEval->FitWindow();
@@ -157,6 +162,12 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
     {
         return 0;
     }
+
+    if (sky.NumSpectra() > 0 && !m_averagedSpectra)
+    {
+        sky.Div(sky.NumSpectra());
+        skySpectrumWithoutDarkCorrection.Div(skySpectrumWithoutDarkCorrection.NumSpectra());
+    }
     CSpectrum skySpectrumWithoutDarkCorrection = sky;
 
     if (m_skySettings.skyOption != Configuration::SKY_OPTION::USER_SUPPLIED)
@@ -165,13 +176,8 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
         {
             return 0;
         }
+        dark.Div(dark.NumSpectra());
         sky.Sub(dark);
-    }
-
-    if (sky.NumSpectra() > 0 && !m_averagedSpectra)
-    {
-        sky.Div(sky.NumSpectra());
-        skySpectrumWithoutDarkCorrection.Div(skySpectrumWithoutDarkCorrection.NumSpectra());
     }
 
     // tell the evaluator which sky-spectrum to use
@@ -290,10 +296,10 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
             // e. Evaluate the spectrum
             if (eval->Evaluate(current))
             {
-               CString str;
+                CString str;
                 str.Format("Failed to evaluate spectrum from spectrometer %s. Failure at spectrum %d in scan containing %d spectra. Message: '%s'",
                     current.m_info.m_device.c_str(), current.ScanIndex(), current.SpectraPerScan(), eval->m_lastError.c_str());
-				ShowMessage(str);
+                ShowMessage(str);
                 success = false;
             }
 
@@ -692,7 +698,7 @@ CFitWindow* CScanEvaluation::FindOptimumShiftAndSqueeze_Fraunhofer(const CEvalua
 
     while (scan->GetNextSpectrum(spectrum)) {
         fitIntensity = spectrum.MaxValue(fitLow, fitHigh);
-        maxInt = CSpectrometerDatabase::GetInstance().GetModel(spectrum.m_info.m_specModelName).maximumIntensity; 
+        maxInt = CSpectrometerDatabase::GetInstance().GetModel(spectrum.m_info.m_specModelName).maximumIntensity;
 
         // Get the saturation-ratio for this spectrum
         if (spectrum.NumSpectra() > 0) {
