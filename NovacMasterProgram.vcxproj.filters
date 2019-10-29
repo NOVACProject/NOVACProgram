@@ -588,6 +588,9 @@
     <ClCompile Include="Dialogs\SpectrometerCalibrationDlg.cpp">
       <Filter>Source Files\Dialogs</Filter>
     </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Spectra\Scattering.cpp">
+      <Filter>Source Files\SpectralEvaluation\Spectra</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Configuration\AdvancedFTPUploadSettings.h">
@@ -1195,6 +1198,9 @@
     </ClInclude>
     <ClInclude Include="Dialogs\SpectrometerCalibrationDlg.h">
       <Filter>Header Files\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Spectra\Scattering.h">
+      <Filter>Header Files\SpectralEvaluation\Spectra</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

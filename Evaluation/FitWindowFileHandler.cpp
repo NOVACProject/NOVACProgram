@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "FitWindowFileHandler.h"
+#include <SpectralEvaluation/Utils.h>
 
 using namespace FileHandler;
 
@@ -98,6 +99,13 @@ RETURN_CODE CFitWindowFileHandler::Parse_FitWindow(Evaluation::CFitWindow &windo
             Parse_IntItem(TEXT("/polyOrder"), window.polyOrder);
             continue;
         }
+        if (Equals(szToken, "includeIntensitySpacePolyominal"))
+        {
+            CString entry;
+            Parse_StringItem(TEXT("/includeIntensitySpacePolyominal"), entry);
+            window.includeIntensitySpacePolyominal = EqualsIgnoringCase(entry, "true");
+            continue;
+        }
         if (Equals(szToken, "fitType")) {
             Parse_IntItem(TEXT("/fitType"), (int&)window.fitType); // TODO: Will this be ok????
             continue;
@@ -137,11 +145,11 @@ RETURN_CODE CFitWindowFileHandler::Parse_FitWindow(Evaluation::CFitWindow &windo
             window.interlaceStep += 1;
             continue;
         }
-		if (Equals(szToken, "solarSpectrum")) {
-			Parse_StringItem(TEXT("/solarSpectrum"), window.fraunhoferRef.m_path);
-			window.fraunhoferRef.m_specieName = "SolarSpec";
-			continue;
-		}
+        if (Equals(szToken, "solarSpectrum")) {
+            Parse_StringItem(TEXT("/solarSpectrum"), window.fraunhoferRef.m_path);
+            window.fraunhoferRef.m_specieName = "SolarSpec";
+            continue;
+        }
         //if(Equals(szToken, "nRef")){
         //	Parse_IntItem(TEXT("/nRef"), window.nRef);
     //		continue;
@@ -269,6 +277,16 @@ RETURN_CODE CFitWindowFileHandler::WriteFitWindow(const Evaluation::CFitWindow &
     fprintf(f, "%s<fitLow>%d</fitLow>\n", (LPCSTR)indent, window.fitLow);
     fprintf(f, "%s<fitHigh>%d</fitHigh>\n", (LPCSTR)indent, window.fitHigh);
     fprintf(f, "%s<polyOrder>%d</polyOrder>\n", (LPCSTR)indent, window.polyOrder);
+
+    if (window.includeIntensitySpacePolyominal)
+    {
+        fprintf(f, "%s<includeIntensitySpacePolyominal>true</includeIntensitySpacePolyominal>\n", (LPCSTR)indent);
+    }
+    else
+    {
+        fprintf(f, "%s<includeIntensitySpacePolyominal>false</includeIntensitySpacePolyominal>\n", (LPCSTR)indent);
+    }
+
     fprintf(f, "%s<fitType>%d</fitType>\n", (LPCSTR)indent, window.fitType);
 
     fprintf(f, "%s<channel>%d</channel>\n", (LPCSTR)indent, window.channel);
