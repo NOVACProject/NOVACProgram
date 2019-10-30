@@ -4,6 +4,22 @@
 
 using namespace FileHandler;
 
+// TODO: Move
+std::string FormatBoolean(bool value)
+{
+    return value ? "true" : "false";
+}
+
+std::string FormatEnum(Evaluation::RING_CALCULATION_OPTION value)
+{
+    switch (value)
+    {
+        case Evaluation::RING_CALCULATION_OPTION::CALCULATE_RING: return "calculate";
+        case Evaluation::RING_CALCULATION_OPTION::CALCULATE_RING_X2: return "calculatex2";
+        default: return "none";
+    }
+}
+
 CFitWindowFileHandler::CFitWindowFileHandler()
 {
 }
@@ -106,7 +122,26 @@ RETURN_CODE CFitWindowFileHandler::Parse_FitWindow(Evaluation::CFitWindow &windo
             window.includeIntensitySpacePolyominal = EqualsIgnoringCase(entry, "true");
             continue;
         }
-        if (Equals(szToken, "fitType")) {
+        if (Equals(szToken, "ringCalculation"))
+        {
+            CString entry;
+            Parse_StringItem(TEXT("/ringCalculation"), entry);
+            if (EqualsIgnoringCase(entry, "calculate"))
+            {
+                window.ringCalculation = Evaluation::RING_CALCULATION_OPTION::CALCULATE_RING;
+            }
+            else if (EqualsIgnoringCase(entry, "calculatex2"))
+            {
+                window.ringCalculation = Evaluation::RING_CALCULATION_OPTION::CALCULATE_RING_X2;
+            }
+            else
+            {
+                window.ringCalculation = Evaluation::RING_CALCULATION_OPTION::DO_NOT_CALCULATE_RING;
+            }
+            continue;
+        }
+        if (Equals(szToken, "fitType"))
+        {
             Parse_IntItem(TEXT("/fitType"), (int&)window.fitType); // TODO: Will this be ok????
             continue;
         }
@@ -278,14 +313,11 @@ RETURN_CODE CFitWindowFileHandler::WriteFitWindow(const Evaluation::CFitWindow &
     fprintf(f, "%s<fitHigh>%d</fitHigh>\n", (LPCSTR)indent, window.fitHigh);
     fprintf(f, "%s<polyOrder>%d</polyOrder>\n", (LPCSTR)indent, window.polyOrder);
 
-    if (window.includeIntensitySpacePolyominal)
-    {
-        fprintf(f, "%s<includeIntensitySpacePolyominal>true</includeIntensitySpacePolyominal>\n", (LPCSTR)indent);
-    }
-    else
-    {
-        fprintf(f, "%s<includeIntensitySpacePolyominal>false</includeIntensitySpacePolyominal>\n", (LPCSTR)indent);
-    }
+    std::string entryValue = FormatBoolean(window.includeIntensitySpacePolyominal);
+    fprintf(f, "%s<includeIntensitySpacePolyominal>%s</includeIntensitySpacePolyominal>\n", (LPCSTR)indent, entryValue.c_str());
+
+    entryValue = FormatEnum(window.ringCalculation);
+    fprintf(f, "%s<ringCalculation>%s</ringCalculation>\n", (LPCSTR)indent, entryValue.c_str());
 
     fprintf(f, "%s<fitType>%d</fitType>\n", (LPCSTR)indent, window.fitType);
 
