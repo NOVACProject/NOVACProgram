@@ -16,5 +16,4 @@ namespace Evaluation
         CSpectrum residual;
         CSpectrum polynomial;
     };
-
 }

@@ -57,7 +57,6 @@ namespace ReEvaluation
 		Graph::COScopeCtrl m_GraphTotal;
 
 		/** The reference fit graph */
-//		Graph::COScopeCtrl m_GraphRef;
 		Graph::CDOASFitGraph m_GraphRef;
 
 
@@ -131,7 +130,7 @@ namespace ReEvaluation
 	private:
 
 		/** The reevaluation is run as a separate thread */
-		CWinThread *pReEvalThread;  
+		CWinThread *pReEvalThread;
 
 		/** A local copy of the residual of the last fit */
 		double residual[MAX_SPECTRUM_LENGTH];
