@@ -121,6 +121,12 @@
     <Filter Include="Source Files\Common\Flux">
       <UniqueIdentifier>{6a57bac3-4a11-4286-8f8b-e2c7f52ab4bc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\File">
+      <UniqueIdentifier>{4bc69b9e-f4f8-4239-841a-6d2d325d7f02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\File">
+      <UniqueIdentifier>{c22f9d83-a714-4b02-8a87-3a833b589d91}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Configuration\AdvancedFTPUploadSettings.cpp">
@@ -590,6 +596,9 @@
     </ClCompile>
     <ClCompile Include="SpectralEvaluation\src\StringUtils.cpp">
       <Filter>Source Files\SpectralEvaluation</Filter>
+    </ClCompile>
+    <ClCompile Include="File\NetCdfFileReader.cpp">
+      <Filter>Source Files\File</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1201,6 +1210,12 @@
     </ClInclude>
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Spectra\WavelengthCalibration.h">
       <Filter>Header Files\SpectralEvaluation\Spectra</Filter>
+    </ClInclude>
+    <ClInclude Include="File\NetCdfException.h">
+      <Filter>Header Files\File</Filter>
+    </ClInclude>
+    <ClInclude Include="File\NetCdfFileReader.h">
+      <Filter>Header Files\File</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -82,7 +82,7 @@
       <EnableCOMDATFolding>false</EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
       <TypeLibraryResourceID>1</TypeLibraryResourceID>
-      <AdditionalDependencies>$(SolutionDir)curl\win32\lib\libcurl-d_imp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)curl\win32\lib\libcurl-d_imp.lib;$(SolutionDir)External\NetCdf_4_7_2\x86\lib\netcdf.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -95,6 +95,12 @@
     </ResourceCompile>
     <PostBuildEvent>
       <Command>copy "$(SolutionDir)curl\win32\bin\libcurl-d.dll" "$(SolutionDir)Debug\"
+copy "$(SolutionDir)External\NetCdf_4_7_2\x86\bin\netcdf.dll" "$(SolutionDir)Debug\"
+copy "$(SolutionDir)External\NetCdf_4_7_2\x86\bin\hdf5_hl.dll" "$(SolutionDir)Debug\"
+copy "$(SolutionDir)External\NetCdf_4_7_2\x86\bin\hdf5.dll" "$(SolutionDir)Debug\"
+copy "$(SolutionDir)External\NetCdf_4_7_2\x86\bin\zlib1.dll" "$(SolutionDir)Debug\"
+
+
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -126,7 +132,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
       <TypeLibraryResourceID>1</TypeLibraryResourceID>
-      <AdditionalDependencies>$(SolutionDir)curl\win32\lib\libcurl_imp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)curl\win32\lib\libcurl_imp.lib;$(SolutionDir)External\NetCdf_4_7_2\x86\lib\netcdf.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -139,7 +145,12 @@
       <ShowProgress>false</ShowProgress>
     </ResourceCompile>
     <PostBuildEvent>
-      <Command>copy "$(SolutionDir)curl\win32\bin\libcurl.dll" "$(SolutionDir)Release\"</Command>
+      <Command>copy "$(SolutionDir)curl\win32\bin\libcurl.dll" "$(SolutionDir)Release\"
+copy "$(SolutionDir)External\NetCdf_4_7_2\x86\bin\netcdf.dll" "$(SolutionDir)Release\"
+copy "$(SolutionDir)External\NetCdf_4_7_2\x86\bin\hdf5_hl.dll" "$(SolutionDir)Release\"
+copy "$(SolutionDir)External\NetCdf_4_7_2\x86\bin\hdf5.dll" "$(SolutionDir)Release\"
+copy "$(SolutionDir)External\NetCdf_4_7_2\x86\bin\zlib1.dll" "$(SolutionDir)Release\"
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -227,6 +238,10 @@
     <ClCompile Include="Evaluation\Spectrometer.cpp" />
     <ClCompile Include="Evaluation\SpectrometerHistory.cpp" />
     <ClCompile Include="FileTreeCtrl.cpp" />
+    <ClCompile Include="File\NetCdfFileReader.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="Geometry\GeometryCalculator.cpp" />
     <ClCompile Include="Geometry\GeometryEvaluator.cpp" />
     <ClCompile Include="Geometry\GeometryResult.cpp" />
@@ -477,6 +492,8 @@
     <ClInclude Include="Evaluation\Spectrometer.h" />
     <ClInclude Include="Evaluation\SpectrometerHistory.h" />
     <ClInclude Include="FileTreeCtrl.h" />
+    <ClInclude Include="File\NetCdfException.h" />
+    <ClInclude Include="File\NetCdfFileReader.h" />
     <ClInclude Include="Geometry\GeometryCalculator.h" />
     <ClInclude Include="Geometry\GeometryEvaluator.h" />
     <ClInclude Include="Geometry\GeometryResult.h" />
