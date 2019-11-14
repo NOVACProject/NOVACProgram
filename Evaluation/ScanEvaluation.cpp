@@ -4,7 +4,7 @@
 #include <SpectralEvaluation/Evaluation/EvaluationBase.h>
 #include <SpectralEvaluation/File/ScanFileHandler.h>
 #include <SpectralEvaluation/File/STDFile.h>
-#include <SpectralEvaluation/Utils.h>
+#include <SpectralEvaluation/StringUtils.h>
 
 using namespace Evaluation;
 

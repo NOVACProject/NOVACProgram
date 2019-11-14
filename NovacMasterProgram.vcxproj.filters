@@ -537,9 +537,6 @@
     <ClCompile Include="SpectralEvaluation\src\Spectra\SpectrumInfo.cpp">
       <Filter>Source Files\SpectralEvaluation\Spectra</Filter>
     </ClCompile>
-    <ClCompile Include="SpectralEvaluation\src\Utils.cpp">
-      <Filter>Source Files\SpectralEvaluation</Filter>
-    </ClCompile>
     <ClCompile Include="SpectralEvaluation\src\VectorUtils.cpp">
       <Filter>Source Files\SpectralEvaluation</Filter>
     </ClCompile>
@@ -590,6 +587,9 @@
     </ClCompile>
     <ClCompile Include="SpectralEvaluation\src\Spectra\WavelengthCalibration.cpp">
       <Filter>Source Files\SpectralEvaluation\Spectra</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\StringUtils.cpp">
+      <Filter>Source Files\SpectralEvaluation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

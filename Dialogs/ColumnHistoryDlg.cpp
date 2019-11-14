@@ -12,7 +12,7 @@
 #include "../Configuration/ConfigurationFileHandler.h"
 #include "../UserSettings.h"
 #include "../Common/EvaluationLogFileHandler.h"
-#include <SpectralEvaluation/Utils.h>
+#include <SpectralEvaluation/StringUtils.h>
 
 extern CConfigurationSetting	g_settings;
 extern CUserSettings			g_userSettings;

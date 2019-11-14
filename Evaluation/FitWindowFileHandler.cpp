@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "FitWindowFileHandler.h"
-#include <SpectralEvaluation/Utils.h>
+#include <SpectralEvaluation/StringUtils.h>
 
 using namespace FileHandler;
 

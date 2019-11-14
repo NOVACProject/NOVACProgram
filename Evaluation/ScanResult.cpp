@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "ScanResult.h"
 #include "../VolcanoInfo.h"
-#include <SpectralEvaluation/Utils.h>
+#include <SpectralEvaluation/StringUtils.h>
 #include <SpectralEvaluation/Flux/PlumeInScanProperty.h>
 
 // we also need the meterological data

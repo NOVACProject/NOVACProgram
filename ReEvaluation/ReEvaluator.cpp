@@ -5,7 +5,7 @@
 #include "../Common/Version.h"
 #include "../Evaluation/ScanEvaluation.h"
 #include "../Dialogs/QueryStringDialog.h"
-#include <SpectralEvaluation/Utils.h>
+#include <SpectralEvaluation/StringUtils.h>
 
 using namespace ReEvaluation;
 using namespace Evaluation;

@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "pakfilehandler.h"
-#include <SpectralEvaluation/Utils.h>
+#include <SpectralEvaluation/StringUtils.h>
 #include <SpectralEvaluation/File/ScanFileHandler.h>
 
 #ifdef _MSC_VER
