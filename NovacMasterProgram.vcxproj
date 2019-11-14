@@ -207,7 +207,6 @@
     <ClCompile Include="Dialogs\ReferencePropertiesDlg.cpp" />
     <ClCompile Include="Dialogs\SelectionDialog.cpp" />
     <ClCompile Include="Dialogs\SimplePropertySheet.cpp" />
-    <ClCompile Include="Dialogs\SpectrometerCalibrationDlg.cpp" />
     <ClCompile Include="Dialogs\SplitPakFilesDlg.cpp" />
     <ClCompile Include="Dialogs\SummarizeFluxDataDlg.cpp" />
     <ClCompile Include="DlgControls\GridCtrl\GridCell.cpp" />
@@ -265,7 +264,6 @@
     <ClInclude Include="CreateReferencesDlg.h" />
     <ClInclude Include="CustomSpectrometerModelDlg.h" />
     <ClInclude Include="Dialogs\ColumnHistoryDlg.h" />
-    <ClInclude Include="Dialogs\SpectrometerCalibrationDlg.h" />
     <ClInclude Include="Evaluation\EvaluationResultView.h" />
     <ClCompile Include="SpectralEvaluation\src\DateTime.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
@@ -364,6 +362,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="SpectralEvaluation\src\Spectra\SpectrumInfo.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Spectra\WavelengthCalibration.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -571,6 +573,7 @@
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Spectra\SpectrometerModel.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Spectra\Spectrum.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Spectra\SpectrumInfo.h" />
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Spectra\WavelengthCalibration.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Utils.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\VectorUtils.h" />
     <ClInclude Include="StatusFileReader.h" />

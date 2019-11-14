@@ -585,10 +585,10 @@
     <ClCompile Include="CreateReferencesDlg.cpp">
       <Filter>Source Files\Dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="Dialogs\SpectrometerCalibrationDlg.cpp">
-      <Filter>Source Files\Dialogs</Filter>
-    </ClCompile>
     <ClCompile Include="SpectralEvaluation\src\Spectra\Scattering.cpp">
+      <Filter>Source Files\SpectralEvaluation\Spectra</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Spectra\WavelengthCalibration.cpp">
       <Filter>Source Files\SpectralEvaluation\Spectra</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1196,10 +1196,10 @@
     <ClInclude Include="CreateReferencesDlg.h">
       <Filter>Header Files\Dialogs</Filter>
     </ClInclude>
-    <ClInclude Include="Dialogs\SpectrometerCalibrationDlg.h">
-      <Filter>Header Files\Dialogs</Filter>
-    </ClInclude>
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Spectra\Scattering.h">
+      <Filter>Header Files\SpectralEvaluation\Spectra</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Spectra\WavelengthCalibration.h">
       <Filter>Header Files\SpectralEvaluation\Spectra</Filter>
     </ClInclude>
   </ItemGroup>
