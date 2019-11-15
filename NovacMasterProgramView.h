@@ -10,7 +10,7 @@
 #include "Dialogs/ColumnHistoryDlg.h"
 #include "EvaluatedDataStorage.h"
 #include "CommunicationDataStorage.h"
-#include "MeteorologicalData.h"
+#include "Meteorology/MeteorologicalData.h"
 #include "View_OverView.h"
 #include "View_WindMeasOverView.h"
 #include "View_Instrument.h"

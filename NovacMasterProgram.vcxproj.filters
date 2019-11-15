@@ -204,9 +204,6 @@
     <ClCompile Include="Dialogs\MergePakFilesDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MeteorologicalData.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="NovacMasterProgram.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -606,6 +603,9 @@
     <ClCompile Include="Meteorology\WindField.cpp">
       <Filter>Source Files\Meteorology</Filter>
     </ClCompile>
+    <ClCompile Include="Meteorology\MeteorologicalData.cpp">
+      <Filter>Source Files\Meteorology</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Configuration\AdvancedFTPUploadSettings.h">
@@ -678,9 +678,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Dialogs\MergePakFilesDlg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MeteorologicalData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="NovacMasterProgram.h">
@@ -1224,6 +1221,9 @@
       <Filter>Header Files\Meteorology</Filter>
     </ClInclude>
     <ClInclude Include="Meteorology\MeteorologySource.h">
+      <Filter>Header Files\Meteorology</Filter>
+    </ClInclude>
+    <ClInclude Include="Meteorology\MeteorologicalData.h">
       <Filter>Header Files\Meteorology</Filter>
     </ClInclude>
   </ItemGroup>

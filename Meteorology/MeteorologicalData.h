@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Common/WindFileReader.h"
-#include "Meteorology/WindField.h"
-#include "Common/Common.h"
+#include "WindField.h"
+#include "../Common/WindFileReader.h"
+#include "../Common/Common.h"
 
 #ifndef METEROLOGY_H
 #define METEROLOGY_H

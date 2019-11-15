@@ -5,7 +5,7 @@
 #include <SpectralEvaluation/Flux/PlumeInScanProperty.h>
 
 // we also need the meterological data
-#include "../MeteorologicalData.h"
+#include "../Meteorology/MeteorologicalData.h"
 
 #include "../Geometry/GeometryCalculator.h"
 

@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include "meteorologicaldata.h"
+#include "MeteorologicalData.h"
 
 /** The global instance of meterological data */
 CMeteorologicalData g_metData;

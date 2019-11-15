@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "NovacMasterProgram.h"
 #include "View_Scanner.h"
-#include "MeteorologicalData.h"
+#include "Meteorology/MeteorologicalData.h"
 #include "Configuration/Configuration.h"
 #include "UserSettings.h"
 

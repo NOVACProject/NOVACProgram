@@ -11,7 +11,7 @@
 #include "../Configuration/Configuration.h"
 
 // we also need the meterological data
-#include "../MeteorologicalData.h"
+#include "../Meteorology/MeteorologicalData.h"
 
 extern CConfigurationSetting g_settings;	// <-- The settings
 extern CFormView *pView;									// <-- The screen
