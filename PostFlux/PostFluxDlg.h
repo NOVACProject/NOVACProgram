@@ -4,7 +4,7 @@
 #include "../Graphs/ScanGraph.h"
 #include "../DlgControls/Label.h"
 #include "../Meteorology/WindField.h"
-#include "../Common/WindFileReader.h"
+#include "../File/WindFileReader.h"
 #include "../Dialogs/FluxErrorDlg.h"
 #include "afxcmn.h"
 

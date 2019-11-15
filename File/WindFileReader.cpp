@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include "windfilereader.h"
+#include "WindFileReader.h"
 
 using namespace FileHandler;
 

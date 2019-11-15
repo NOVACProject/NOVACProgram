@@ -276,9 +276,6 @@
     <ClCompile Include="WindFileController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Common\WindFileReader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="WindMeasurement\WindSpeedResult.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -606,6 +603,9 @@
     <ClCompile Include="Meteorology\MeteorologicalData.cpp">
       <Filter>Source Files\Meteorology</Filter>
     </ClCompile>
+    <ClCompile Include="File\WindFileReader.cpp">
+      <Filter>Source Files\File</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Configuration\AdvancedFTPUploadSettings.h">
@@ -753,9 +753,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="WindFileController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\WindFileReader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="WindMeasurement\WindSpeedResult.h">
@@ -1225,6 +1222,9 @@
     </ClInclude>
     <ClInclude Include="Meteorology\MeteorologicalData.h">
       <Filter>Header Files\Meteorology</Filter>
+    </ClInclude>
+    <ClInclude Include="File\WindFileReader.h">
+      <Filter>Header Files\File</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

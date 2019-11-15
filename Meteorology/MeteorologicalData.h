@@ -1,7 +1,7 @@
 #pragma once
 
 #include "WindField.h"
-#include "../Common/WindFileReader.h"
+#include "../File/WindFileReader.h"
 #include "../Common/Common.h"
 
 #ifndef METEROLOGY_H
