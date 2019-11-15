@@ -1,17 +1,11 @@
 #pragma once
 #include <SpectralEvaluation/DateTime.h>
+#include "MeteorologySource.h"
 
 #ifndef WINDFIELD_H
 #define WINDFIELD_H
 
-const enum MET_SOURCE {
-    MET_DEFAULT,
-    MET_USER,
-    MET_ECMWF_FORECAST,
-    MET_ECMWF_ANALYSIS,
-    MET_GEOMETRY_CALCULATION,
-    MET_DUAL_BEAM_MEASUREMENT
-};
+
 
 /** <b>CWindField</b> is a generic data structure to contain information about
     winds, windfields and metrology. */

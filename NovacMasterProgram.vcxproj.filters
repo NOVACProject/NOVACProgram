@@ -1223,6 +1223,9 @@
     <ClInclude Include="Meteorology\WindField.h">
       <Filter>Header Files\Meteorology</Filter>
     </ClInclude>
+    <ClInclude Include="Meteorology\MeteorologySource.h">
+      <Filter>Header Files\Meteorology</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\NOVAClogo2.ico">
