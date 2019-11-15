@@ -17,7 +17,7 @@ public:
     // ------------------- PUBLIC METHODS -------------------------
 
     /** Inserts a given wind-field into the record */
-    void InsertWindField(CWindField wind);
+    void InsertWindField(const CWindField& wind);
 
     /** Searches through the read-in data and looks for the wind-field at the
             given time.
@@ -34,10 +34,10 @@ public:
             @return SUCCESS - if the wind could be interpolated
             @return FAIL - if the wind lies outside of the time-range of the 'database',
                     or the distance between the two data-points to interpolate is larger than 24 hours. */
-    RETURN_CODE InterpolateWindField(const CDateTime desiredTime, CWindField &desiredWindField);
+    RETURN_CODE InterpolateWindField(const CDateTime desiredTime, CWindField &desiredWindField) const;
 
     /** Returns the number of points in the database */
-    long GetRecordNum();
+    long GetRecordNum() const;
 
 private:
 

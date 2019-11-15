@@ -5,76 +5,75 @@
 // Include synchronization classes
 #include <afxmt.h>
 
-namespace FileHandler{
-	class CWindFileReader
-	{
-	public:
-		/** Default constructor */
-		CWindFileReader(void);
+namespace FileHandler
+{
 
-		/** Default destructor */
-		~CWindFileReader(void);
+class CWindFileReader
+{
+public:
+    /** Default constructor */
+    CWindFileReader();
 
-		/** The name and path of the wind-information file */
-		CString m_windFile;
+    /** The name and path of the wind-information file */
+    CString m_windFile;
 
-		// ------------------- PUBLIC METHODS -------------------------
+    // ------------------- PUBLIC METHODS -------------------------
 
-		/** Reads the wind file */
-		RETURN_CODE ReadWindFile();
+    /** Reads the wind file */
+    RETURN_CODE ReadWindFile();
 
-		/** Writes the contents of this object to a new wind file */
-		RETURN_CODE WriteWindFile(const CString fileName);
+    /** Returns an interpolation from the most recently read in
+            wind-field */
+    RETURN_CODE InterpolateWindField(const CDateTime desiredTime, CWindField &desiredWindField);
 
-		/** Returns an interpolation from the most recently read in
-				wind-field */
-		RETURN_CODE InterpolateWindField(const CDateTime desiredTime, CWindField &desiredWindField);
+    /** Returns the number of points in the database */
+    long GetRecordNum() const;
 
-		/** Returns the number of points in the database */
-		long GetRecordNum();
+    // ------------------- PUBLIC DATA -------------------------
+    bool m_containsWindDirection; // True if the last wind-field file read contains a wind-direction
+    bool m_containsWindSpeed;     // True if the last wind-field file read contains a wind-speed
+    bool m_containsPlumeHeight;   // True if the last wind-field file read contains a plume-height
 
-		// ------------------- PUBLIC DATA -------------------------
-		bool m_containsWindDirection; // True if the last wind-field file read contains a wind-direction
-		bool m_containsWindSpeed;     // True if the last wind-field file read contains a wind-speed
-		bool m_containsPlumeHeight;   // True if the last wind-field file read contains a plume-height
+private:
 
-	protected:
+    // this is to keep track of which column in the file corresponds to which value.
+    typedef struct LogColumns
+    {
+        int altitude;
+        int windSpeed;
+        int windSpeedError;
+        int windDirection;
+        int windDirectionError;
+        int plumeHeight;
+        int plumeHeightError;
+        int date;
+        int time;
+    }LogColumns;
 
-		typedef struct LogColumns{
-			int altitude;
-			int windSpeed;
-			int windSpeedError;
-			int windDirection;
-			int windDirectionError;
-			int plumeHeight;
-			int plumeHeightError;
-			int date;
-			int time;
-		}LogColumns;
+    // ------------------- PRIVATE METHODS -------------------------
 
-		// ------------------- PROTECTED METHODS -------------------------
+    /** Reads the header line for the file and retrieves which
+      column represents which value. */
+    void ParseFileHeader(const char szLine[8192]);
 
-		/** Reads the header line for the file and retrieves which 
-		  column represents which value. */
-		void ParseFileHeader(const char szLine[8192]);
+    /** Resets the information about which column data is stored in */
+    void ResetColumns();
 
-		/** Resets the information about which column data is stored in */
-		void ResetColumns();
+    /** Parses the section containing the source of the wind-field
+        The string should be converted to lower-case characters before
+        calling this function */
+    void ParseSourceString(const char szLine[8192], MET_SOURCE &source);
 
-		/** Parses the section containing the source of the wind-field
-			The string should be converted to lower-case characters before
-			calling this function */
-		void ParseSourceString(const char szLine[8192], MET_SOURCE &source);
+    // ------------------- PRIVATE DATA -------------------------
 
-		// ------------------- PROTECTED DATA -------------------------
+    /** Keeping track of which column contains what */
+    LogColumns m_col;
 
-		/** Keeping track of which column contains what */
-		LogColumns m_col;
+    /** This class contains critical sections of code */
+    CCriticalSection m_critSect;
 
-		/** This class contains critical sections of code */
-		CCriticalSection m_critSect;
+    /** Information about the wind */
+    CWindFieldRecord m_windRecord;
+};
 
-		/** Information about the wind */
-		CWindFieldRecord m_windRecord;
-	};
 }
