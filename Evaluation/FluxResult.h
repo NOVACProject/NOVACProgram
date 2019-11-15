@@ -1,7 +1,7 @@
 #pragma once
 
 #include <SpectralEvaluation/DateTime.h>
-#include "../Meteorology/WindField.h"
+#include "../Meteorology/MeteorologySource.h"
 
 /** The class <b>CFluxResult</b> is a generic class for storing the results
 		from a flux-calculation of a scan. The class holds the values of all the

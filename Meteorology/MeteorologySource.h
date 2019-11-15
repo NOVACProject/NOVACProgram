@@ -1,6 +1,7 @@
 #pragma once
 
-const enum MET_SOURCE {
+const enum MET_SOURCE
+{
     MET_DEFAULT,
     MET_USER,
     MET_ECMWF_FORECAST,

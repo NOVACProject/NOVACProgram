@@ -5,8 +5,6 @@
 #ifndef WINDFIELD_H
 #define WINDFIELD_H
 
-
-
 /** <b>CWindField</b> is a generic data structure to contain information about
     winds, windfields and metrology. */
 class CWindField

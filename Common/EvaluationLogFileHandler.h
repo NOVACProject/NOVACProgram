@@ -2,6 +2,7 @@
 
 #include "Common.h"
 #include "../Evaluation/ScanResult.h"
+#include "../Meteorology/WindField.h"
 #include <SpectralEvaluation/Evaluation/EvaluationResult.h>
 
 namespace FileHandler
