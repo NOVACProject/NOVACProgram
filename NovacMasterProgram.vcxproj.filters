@@ -127,6 +127,9 @@
     <Filter Include="Source Files\File">
       <UniqueIdentifier>{c22f9d83-a714-4b02-8a87-3a833b589d91}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Meteorology">
+      <UniqueIdentifier>{a6a94407-328f-458d-98c6-49261ff1dda6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Configuration\AdvancedFTPUploadSettings.cpp">
@@ -268,9 +271,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="VolcanoInfo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\WindFieldRecord.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="WindFileController.cpp">
@@ -600,6 +600,9 @@
     <ClCompile Include="File\NetCdfFileReader.cpp">
       <Filter>Source Files\File</Filter>
     </ClCompile>
+    <ClCompile Include="Meteorology\WindFieldRecord.cpp">
+      <Filter>Header Files\Meteorology</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Configuration\AdvancedFTPUploadSettings.h">
@@ -747,9 +750,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="VolcanoInfo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\WindFieldRecord.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="WindFileController.h">
@@ -1216,6 +1216,9 @@
     </ClInclude>
     <ClInclude Include="File\NetCdfFileReader.h">
       <Filter>Header Files\File</Filter>
+    </ClInclude>
+    <ClInclude Include="Meteorology\WindFieldRecord.h">
+      <Filter>Header Files\Meteorology</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
