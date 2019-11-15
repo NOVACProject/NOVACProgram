@@ -11,10 +11,11 @@
 
 #include <afxtempl.h>
 
-#include "WindField.h"
 #include <SpectralEvaluation/GPSData.h>
 #include <SpectralEvaluation/DateTime.h>
 
+// forward declarations
+class CWindField;
 
 // definition used for storing the spectral data
 typedef double SpecData;
@@ -25,6 +26,7 @@ struct timeStruct
 	int minute;
 	int second;
 };
+
 // ---------------------------------------------------------------
 // ---------------- GLOBAL FUNCTIONS -----------------------------
 // ---------------------------------------------------------------

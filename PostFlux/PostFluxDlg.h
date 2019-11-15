@@ -3,7 +3,7 @@
 #include "PostFluxCalculator.h"
 #include "../Graphs/ScanGraph.h"
 #include "../DlgControls/Label.h"
-#include "../Common/WindField.h"
+#include "../Meteorology/WindField.h"
 #include "../Common/WindFileReader.h"
 #include "../Dialogs/FluxErrorDlg.h"
 #include "afxcmn.h"

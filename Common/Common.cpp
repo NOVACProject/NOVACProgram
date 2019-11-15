@@ -5,6 +5,7 @@
 #include "../Configuration/Configuration.h"
 #include "../VolcanoInfo.h"
 #include "../Communication/FTPServerContacter.h"
+#include "../Meteorology/WindField.h"
 
 #include <SpectralEvaluation/Flux/Flux.h>
 

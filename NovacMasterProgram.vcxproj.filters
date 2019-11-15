@@ -130,6 +130,9 @@
     <Filter Include="Header Files\Meteorology">
       <UniqueIdentifier>{a6a94407-328f-458d-98c6-49261ff1dda6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Meteorology">
+      <UniqueIdentifier>{f84a7f7f-56bf-4eef-80ee-166f4b08f303}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Configuration\AdvancedFTPUploadSettings.cpp">
@@ -289,9 +292,6 @@
       <Filter>Source Files\Common</Filter>
     </ClCompile>
     <ClCompile Include="Common\LogFileWriter.cpp">
-      <Filter>Source Files\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\WindField.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
     <ClCompile Include="Common\XMLFileReader.cpp">
@@ -601,7 +601,10 @@
       <Filter>Source Files\File</Filter>
     </ClCompile>
     <ClCompile Include="Meteorology\WindFieldRecord.cpp">
-      <Filter>Header Files\Meteorology</Filter>
+      <Filter>Source Files\Meteorology</Filter>
+    </ClCompile>
+    <ClCompile Include="Meteorology\WindField.cpp">
+      <Filter>Source Files\Meteorology</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -768,9 +771,6 @@
       <Filter>Header Files\Common</Filter>
     </ClInclude>
     <ClInclude Include="Common\LogFileWriter.h">
-      <Filter>Header Files\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\WindField.h">
       <Filter>Header Files\Common</Filter>
     </ClInclude>
     <ClInclude Include="Common\XMLFileReader.h">
@@ -1218,6 +1218,9 @@
       <Filter>Header Files\File</Filter>
     </ClInclude>
     <ClInclude Include="Meteorology\WindFieldRecord.h">
+      <Filter>Header Files\Meteorology</Filter>
+    </ClInclude>
+    <ClInclude Include="Meteorology\WindField.h">
       <Filter>Header Files\Meteorology</Filter>
     </ClInclude>
   </ItemGroup>

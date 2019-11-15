@@ -164,7 +164,6 @@ copy "$(SolutionDir)External\NetCdf_4_7_2\x86\bin\zlib1.dll" "$(SolutionDir)Rele
     <ClCompile Include="Common\ReportWriter.cpp" />
     <ClCompile Include="Common\Spectra\PakFileHandler.cpp" />
     <ClCompile Include="Common\Version.cpp" />
-    <ClCompile Include="Common\WindField.cpp" />
     <ClCompile Include="Common\WindFileReader.cpp" />
     <ClCompile Include="Common\XMLFileReader.cpp" />
     <ClCompile Include="CommunicationDataStorage.cpp" />
@@ -252,6 +251,7 @@ copy "$(SolutionDir)External\NetCdf_4_7_2\x86\bin\zlib1.dll" "$(SolutionDir)Rele
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="MasterController.cpp" />
     <ClCompile Include="MeteorologicalData.cpp" />
+    <ClCompile Include="Meteorology\WindField.cpp" />
     <ClCompile Include="Meteorology\WindFieldRecord.cpp" />
     <ClCompile Include="NovacMasterProgram.cpp" />
     <ClCompile Include="NovacMasterProgramDoc.cpp" />
@@ -423,7 +423,6 @@ copy "$(SolutionDir)External\NetCdf_4_7_2\x86\bin\zlib1.dll" "$(SolutionDir)Rele
     <ClInclude Include="Common\ReportWriter.h" />
     <ClInclude Include="Common\Spectra\PakFileHandler.h" />
     <ClInclude Include="Common\Version.h" />
-    <ClInclude Include="Common\WindField.h" />
     <ClInclude Include="Common\WindFileReader.h" />
     <ClInclude Include="Common\XMLFileReader.h" />
     <ClInclude Include="CommunicationDataStorage.h" />
@@ -504,6 +503,7 @@ copy "$(SolutionDir)External\NetCdf_4_7_2\x86\bin\zlib1.dll" "$(SolutionDir)Rele
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="MasterController.h" />
     <ClInclude Include="MeteorologicalData.h" />
+    <ClInclude Include="Meteorology\WindField.h" />
     <ClInclude Include="Meteorology\WindFieldRecord.h" />
     <ClInclude Include="NovacMasterProgram.h" />
     <ClInclude Include="NovacMasterProgramDoc.h" />

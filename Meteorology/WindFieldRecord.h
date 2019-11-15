@@ -6,12 +6,11 @@
 #include <vector>
 
 #include "../Common/Common.h"
-#include "../Common/WindField.h"
+#include "WindField.h"
 
 class CWindFieldRecord
 {
 public:
-
     /** Default constructor */
     CWindFieldRecord();
 
