@@ -594,9 +594,6 @@
     <ClCompile Include="File\NetCdfFileReader.cpp">
       <Filter>Source Files\File</Filter>
     </ClCompile>
-    <ClCompile Include="Meteorology\WindFieldRecord.cpp">
-      <Filter>Source Files\Meteorology</Filter>
-    </ClCompile>
     <ClCompile Include="Meteorology\WindField.cpp">
       <Filter>Source Files\Meteorology</Filter>
     </ClCompile>
@@ -605,6 +602,9 @@
     </ClCompile>
     <ClCompile Include="File\WindFileReader.cpp">
       <Filter>Source Files\File</Filter>
+    </ClCompile>
+    <ClCompile Include="Meteorology\WindFieldDatabase.cpp">
+      <Filter>Source Files\Meteorology</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1211,9 +1211,6 @@
     <ClInclude Include="File\NetCdfFileReader.h">
       <Filter>Header Files\File</Filter>
     </ClInclude>
-    <ClInclude Include="Meteorology\WindFieldRecord.h">
-      <Filter>Header Files\Meteorology</Filter>
-    </ClInclude>
     <ClInclude Include="Meteorology\WindField.h">
       <Filter>Header Files\Meteorology</Filter>
     </ClInclude>
@@ -1225,6 +1222,9 @@
     </ClInclude>
     <ClInclude Include="File\WindFileReader.h">
       <Filter>Header Files\File</Filter>
+    </ClInclude>
+    <ClInclude Include="Meteorology\WindFieldDatabase.h">
+      <Filter>Header Files\Meteorology</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

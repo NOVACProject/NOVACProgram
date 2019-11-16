@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Meteorology/WindFieldRecord.h"
+#include "../Meteorology/WindFieldDatabase.h"
 
 // Include synchronization classes
 #include <afxmt.h>

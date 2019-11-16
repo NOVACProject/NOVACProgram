@@ -8,6 +8,9 @@
 #include "../Common/Common.h"
 #include "WindField.h"
 
+/** The CWindFieldDatabase class contains a series of known CWindField records
+    for a specific location (typically the latitude and longitude of the volcano). 
+    Each record is valid for a given period of time. */
 class CWindFieldDatabase
 {
 public:

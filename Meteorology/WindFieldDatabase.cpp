@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include "WindFieldRecord.h"
+#include "WindFieldDatabase.h"
 
 CWindFieldDatabase::CWindFieldDatabase()
 {

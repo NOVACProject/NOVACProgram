@@ -252,7 +252,7 @@ copy "$(SolutionDir)External\NetCdf_4_7_2\x86\bin\zlib1.dll" "$(SolutionDir)Rele
     <ClCompile Include="MasterController.cpp" />
     <ClCompile Include="Meteorology\MeteorologicalData.cpp" />
     <ClCompile Include="Meteorology\WindField.cpp" />
-    <ClCompile Include="Meteorology\WindFieldRecord.cpp" />
+    <ClCompile Include="Meteorology\WindFieldDatabase.cpp" />
     <ClCompile Include="NovacMasterProgram.cpp" />
     <ClCompile Include="NovacMasterProgramDoc.cpp" />
     <ClCompile Include="NovacMasterProgramView.cpp" />
@@ -505,7 +505,7 @@ copy "$(SolutionDir)External\NetCdf_4_7_2\x86\bin\zlib1.dll" "$(SolutionDir)Rele
     <ClInclude Include="Meteorology\MeteorologicalData.h" />
     <ClInclude Include="Meteorology\MeteorologySource.h" />
     <ClInclude Include="Meteorology\WindField.h" />
-    <ClInclude Include="Meteorology\WindFieldRecord.h" />
+    <ClInclude Include="Meteorology\WindFieldDatabase.h" />
     <ClInclude Include="NovacMasterProgram.h" />
     <ClInclude Include="NovacMasterProgramDoc.h" />
     <ClInclude Include="NovacMasterProgramView.h" />
