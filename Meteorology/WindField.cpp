@@ -41,23 +41,11 @@ CWindField &CWindField::operator=(const CWindField &wf2)
     return *this;
 }
 
-void CWindField::SetWindSpeed(double ws, MET_SOURCE source)
-{
-    this->m_windSpeed = ws;
-    this->m_windSpeedSource = source;
-}
-
 void CWindField::SetWindSpeed(double ws, MET_SOURCE source, double wsError)
 {
     this->m_windSpeed = ws;
     this->m_windSpeedSource = source;
     this->m_windSpeedError = wsError;
-}
-
-void CWindField::SetWindDirection(double wd, MET_SOURCE source)
-{
-    this->m_windDirection = wd;
-    this->m_windDirectionSource = source;
 }
 
 void CWindField::SetWindDirection(double wd, MET_SOURCE source, double wdError)
@@ -67,22 +55,11 @@ void CWindField::SetWindDirection(double wd, MET_SOURCE source, double wdError)
     this->m_windDirectionError = wdError;
 }
 
-void CWindField::SetPlumeHeight(double ph, MET_SOURCE source)
-{
-    this->m_plumeHeight = ph;
-    this->m_plumeHeightSource = source;
-}
-
 void CWindField::SetPlumeHeight(double ph, MET_SOURCE source, double phError)
 {
     this->m_plumeHeight = ph;
     this->m_plumeHeightSource = source;
     this->m_plumeHeightError = phError;
-}
-
-void CWindField::SetAltitude(double altitude)
-{
-    this->m_altitude = altitude;
 }
 
 void CWindField::SetTimeAndDate(const CDateTime &dt)
@@ -168,20 +145,20 @@ MET_SOURCE CWindField::GetPlumeHeightSource() const
     return this->m_plumeHeightSource;
 }
 
-void CWindField::GetPlumeHeightSource(CString &str) const
+void CWindField::GetPlumeHeightSource(CString& sourceStr) const
 {
     if (MET_DEFAULT == m_plumeHeightSource)
-        str.Format("default");
+        sourceStr.Format("default");
     else if (MET_USER == m_plumeHeightSource)
-        str.Format("user");
+        sourceStr.Format("user");
     else if (MET_ECMWF_FORECAST == m_plumeHeightSource)
-        str.Format("ecmwf_forecast");
+        sourceStr.Format("ecmwf_forecast");
     else if (MET_ECMWF_ANALYSIS == m_plumeHeightSource)
-        str.Format("ecmwf_analysis");
+        sourceStr.Format("ecmwf_analysis");
     else if (MET_GEOMETRY_CALCULATION == m_plumeHeightSource)
-        str.Format("triangulation");
+        sourceStr.Format("triangulation");
     else
-        str.Format("unknown");
+        sourceStr.Format("unknown");
 
     return;
 }

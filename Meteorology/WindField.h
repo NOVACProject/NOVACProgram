@@ -16,34 +16,22 @@ public:
     CWindField &operator=(const CWindField &wf2);
 
     /** Sets the wind-speed */
-    void SetWindSpeed(double ws, MET_SOURCE source);
-
-    /** Sets the wind-speed */
-    void SetWindSpeed(double ws, MET_SOURCE source, double wsError);
+    void SetWindSpeed(double ws, MET_SOURCE source, double wsError = 0.0);
 
     /** Sets the wind-direction */
-    void SetWindDirection(double wd, MET_SOURCE source);
-
-    /** Sets the wind-direction */
-    void SetWindDirection(double wd, MET_SOURCE source, double wdError);
+    void SetWindDirection(double wd, MET_SOURCE source, double wdError = 0.0);
 
     /** Sets the plume height */
-    void SetPlumeHeight(double ph, MET_SOURCE source);
-
-    /** Sets the plume height */
-    void SetPlumeHeight(double ph, MET_SOURCE source, double phError);
+    void SetPlumeHeight(double ph, MET_SOURCE source, double phError = 0.0);
 
     /** Sets the time and/or date the wind-field is valid for */
-    void SetTimeAndDate(const CDateTime &dt);
+    void SetTimeAndDate(const CDateTime& dt);
 
-    /** Sets the time the wind-field is valid for */
+    /** Sets the time the wind-field is valid for, the date is not touched */
     void SetTime(int hour, int minute, int second);
 
-    /** Sets the date the wind-field is valid for */
+    /** Sets the date the wind-field is valid for, the time of day is not touched */
     void SetDate(int year, int month, int day);
-
-    /** Sets the altitude for which this wind-field is valid */
-    void SetAltitude(double altitude);
 
     /** Gets the wind-speed */
     double GetWindSpeed() const;
@@ -76,10 +64,10 @@ public:
     MET_SOURCE GetPlumeHeightSource() const;
 
     /** Gets the source of the plume-height */
-    void GetPlumeHeightSource(CString &str) const;
+    void GetPlumeHeightSource(CString& sourceStr) const;
 
     /** Gets the time and date for which this wind-field is valid */
-    const CDateTime &GetTimeAndDate() const;
+    const CDateTime& GetTimeAndDate() const;
 
 private:
 
