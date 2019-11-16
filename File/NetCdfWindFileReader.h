@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Meteorology/WindFieldDatabase.h"
+#include <SpectralEvaluation/GPSData.h>
 
 namespace FileHandler
 {
@@ -16,8 +17,10 @@ public:
     // ------------------- PUBLIC METHODS -------------------------
 
     /** Reads the wind file and will on successful return fill in the contents
-    of the provided database. */
-    RETURN_CODE ReadWindFile(CWindFieldDatabase& result);
+        of the provided database. 
+        As a net-cdf file often contains multiple locations, the wind field will be
+        retrieved a the provided position (through linear interpolation). */
+    RETURN_CODE ReadWindFile(const CGPSData& position, CWindFieldDatabase& result);
 
 };
 

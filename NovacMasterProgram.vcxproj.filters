@@ -606,8 +606,14 @@
     <ClCompile Include="Meteorology\WindFieldDatabase.cpp">
       <Filter>Source Files\Meteorology</Filter>
     </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Interpolation.cpp">
+      <Filter>Source Files\SpectralEvaluation</Filter>
+    </ClCompile>
+    <ClCompile Include="Meteorology\WindFieldInterpolation.cpp">
+      <Filter>Source Files\Meteorology</Filter>
+    </ClCompile>
     <ClCompile Include="File\NetCdfWindFileReader.cpp">
-      <Filter>Header Files\File</Filter>
+      <Filter>Source Files\File</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1154,9 +1160,6 @@
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\GPSData.h">
       <Filter>Header Files\SpectralEvaluation\Spectra</Filter>
     </ClInclude>
-    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Utils.h">
-      <Filter>Header Files\SpectralEvaluation</Filter>
-    </ClInclude>
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\VectorUtils.h">
       <Filter>Header Files\SpectralEvaluation</Filter>
     </ClInclude>
@@ -1231,6 +1234,15 @@
     </ClInclude>
     <ClInclude Include="File\NetCdfWindFileReader.h">
       <Filter>Header Files\File</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\StringUtils.h">
+      <Filter>Header Files\SpectralEvaluation</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Interpolation.h">
+      <Filter>Header Files\SpectralEvaluation</Filter>
+    </ClInclude>
+    <ClInclude Include="Meteorology\WindFieldInterpolation.h">
+      <Filter>Header Files\Meteorology</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

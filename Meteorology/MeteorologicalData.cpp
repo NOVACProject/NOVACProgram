@@ -121,7 +121,8 @@ int CMeteorologicalData::ReadWindFieldFromFile(const CString& fileName)
         fileReader.m_windFile = fileName;
 
         // Read the wind-file
-        auto returnCode = fileReader.ReadWindFile(*m_wfDatabaseFromFile);
+        CGPSData volcanoPosition; // TODO: Fill in this!
+        auto returnCode = fileReader.ReadWindFile(volcanoPosition, *m_wfDatabaseFromFile);
         fileReadSuccessfully = (returnCode == SUCCESS);
     }
 

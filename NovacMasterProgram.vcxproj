@@ -254,6 +254,7 @@ copy "$(SolutionDir)External\NetCdf_4_7_2\x86\bin\zlib1.dll" "$(SolutionDir)Rele
     <ClCompile Include="Meteorology\MeteorologicalData.cpp" />
     <ClCompile Include="Meteorology\WindField.cpp" />
     <ClCompile Include="Meteorology\WindFieldDatabase.cpp" />
+    <ClCompile Include="Meteorology\WindFieldInterpolation.cpp" />
     <ClCompile Include="NovacMasterProgram.cpp" />
     <ClCompile Include="NovacMasterProgramDoc.cpp" />
     <ClCompile Include="NovacMasterProgramView.cpp" />
@@ -360,6 +361,10 @@ copy "$(SolutionDir)External\NetCdf_4_7_2\x86\bin\zlib1.dll" "$(SolutionDir)Rele
     <ClCompile Include="SpectralEvaluation\src\GPSData.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Interpolation.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="SpectralEvaluation\src\Spectra\ReferenceSpectrumConvolution.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
@@ -508,6 +513,7 @@ copy "$(SolutionDir)External\NetCdf_4_7_2\x86\bin\zlib1.dll" "$(SolutionDir)Rele
     <ClInclude Include="Meteorology\MeteorologySource.h" />
     <ClInclude Include="Meteorology\WindField.h" />
     <ClInclude Include="Meteorology\WindFieldDatabase.h" />
+    <ClInclude Include="Meteorology\WindFieldInterpolation.h" />
     <ClInclude Include="NovacMasterProgram.h" />
     <ClInclude Include="NovacMasterProgramDoc.h" />
     <ClInclude Include="NovacMasterProgramView.h" />
@@ -588,13 +594,14 @@ copy "$(SolutionDir)External\NetCdf_4_7_2\x86\bin\zlib1.dll" "$(SolutionDir)Rele
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Flux\Flux.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Flux\PlumeInScanProperty.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\GPSData.h" />
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Interpolation.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Spectra\ReferenceSpectrumConvolution.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Spectra\Scattering.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Spectra\SpectrometerModel.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Spectra\Spectrum.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Spectra\SpectrumInfo.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Spectra\WavelengthCalibration.h" />
-    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Utils.h" />
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\StringUtils.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\VectorUtils.h" />
     <ClInclude Include="StatusFileReader.h" />
     <ClInclude Include="stdafx.h" />
