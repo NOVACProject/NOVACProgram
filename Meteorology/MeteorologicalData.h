@@ -16,19 +16,19 @@ public:
     ~CMeteorologicalData();
 
     /** Set the wind field for a scanner */
-    int SetWindField(const CString &serialNumber, const CWindField &windField);
+    int SetWindField(const CString& serialNumber, const CWindField& windField);
 
-    /** Tries to read in a wind-field from a file. If this is successfull
-                then all wind-data returned will be first searched for in the wind-field
-                file and secondly from the user given or default values.
-                @return 0 on success */
-    int ReadWindFieldFromFile(const CString &fileName);
+    /** Tries to read in a wind-field from a file. If this is successful
+        then all wind-data returned will be first searched for in the wind-field
+        file and secondly from the user given or default values.
+        @return 0 on success */
+    int ReadWindFieldFromFile(const CString& fileName);
 
     /** Get the wind field for a scanner.
-            The wind-field will first of all be taken from a read-in wind-field file
-                if no valid data can be found in the wind-field file then the
-                user provided or default wind-field will be returned. */
-    int GetWindField(const CString &serialNumber, const CDateTime &dt, CWindField &windField);
+        The wind-field will first of all be taken from a read-in wind-field file
+            if no valid data can be found in the wind-field file then the
+            user provided or default wind-field will be returned. */
+    int GetWindField(const CString& serialNumber, const CDateTime& dt, CWindField& windField);
 
     /** The default wind field for the calculations */
     CWindField defaultWindField;

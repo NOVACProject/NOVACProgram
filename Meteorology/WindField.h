@@ -5,8 +5,9 @@
 #ifndef WINDFIELD_H
 #define WINDFIELD_H
 
-/** <b>CWindField</b> is a generic data structure to contain information about
-    winds, windfields and metrology. */
+/** <b>CWindField</b> is a simle data structure which contains
+    the wind speed, wind direction and the plume height at a
+    specified point in time and a specific location */
 class CWindField
 {
 public:

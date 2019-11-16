@@ -22,9 +22,8 @@ public:
     /** Reads the wind file */
     RETURN_CODE ReadWindFile();
 
-    /** Returns an interpolation from the most recently read in
-            wind-field */
-    RETURN_CODE InterpolateWindField(const CDateTime desiredTime, CWindField &desiredWindField);
+    /** Returns an interpolation from the most recently read in wind-field */
+    RETURN_CODE InterpolateWindField(const CDateTime& desiredTime, CWindField& result);
 
     /** Returns the number of points in the database */
     long GetRecordNum() const;

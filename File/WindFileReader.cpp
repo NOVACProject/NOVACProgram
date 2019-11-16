@@ -179,7 +179,7 @@ RETURN_CODE CWindFileReader::ReadWindFile()
     return SUCCESS;
 }
 
-RETURN_CODE CWindFileReader::InterpolateWindField(const CDateTime desiredTime, CWindField &desiredWindField)
+RETURN_CODE CWindFileReader::InterpolateWindField(const CDateTime& desiredTime, CWindField& result)
 {
     RETURN_CODE ret = FAIL;
 
@@ -191,7 +191,7 @@ RETURN_CODE CWindFileReader::InterpolateWindField(const CDateTime desiredTime, C
     if (singleLock.IsLocked())
     {
         // Get the interpolated wind-field
-        ret = m_windRecord.InterpolateWindField(desiredTime, desiredWindField);
+        ret = m_windRecord.InterpolateWindField(desiredTime, result);
 
         // Remember to open up this object again
         singleLock.Unlock();

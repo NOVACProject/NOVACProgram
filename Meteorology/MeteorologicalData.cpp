@@ -19,7 +19,7 @@ CMeteorologicalData::~CMeteorologicalData()
     }
 }
 
-int CMeteorologicalData::SetWindField(const CString &serialNumber, const CWindField &windField)
+int CMeteorologicalData::SetWindField(const CString& serialNumber, const CWindField& windField)
 {
     for (int i = 0; i < m_scannerNum; ++i)
     {
@@ -45,7 +45,7 @@ int CMeteorologicalData::SetWindField(const CString &serialNumber, const CWindFi
     return 0;
 }
 
-int CMeteorologicalData::GetWindField(const CString &serialNumber, const CDateTime &dt, CWindField &windField)
+int CMeteorologicalData::GetWindField(const CString& serialNumber, const CDateTime& dt, CWindField& windField)
 {
     int scannerIndex = -1;
 
@@ -93,7 +93,7 @@ int CMeteorologicalData::GetWindField(const CString &serialNumber, const CDateTi
     return 1;
 }
 
-int CMeteorologicalData::ReadWindFieldFromFile(const CString &fileName)
+int CMeteorologicalData::ReadWindFieldFromFile(const CString& fileName)
 {
     // Completely reset the data in the existing file-reader
     if (m_wfReader != nullptr)
