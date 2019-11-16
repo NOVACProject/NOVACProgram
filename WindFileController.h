@@ -36,11 +36,16 @@ public:
     /** Timer */
     UINT_PTR m_nTimerID;
 
-protected:
+private:
+
     // ----------------------------------------------------------------------
     // --------------------- PROTECTED METHODS ------------------------------
     // ----------------------------------------------------------------------
 
     /** Tries to download the file by connecting to an FTP-server */
     void DownloadFileByFTP();
+
+    /** (Re)reads the wind field file */
+    void ReadWindFieldFile();
+
 };

@@ -5,8 +5,6 @@
 
 namespace FileHandler
 {
-// TODO: Move
-size_t ProductOfElements(std::vector<size_t> sizes);
 
 class NetCdfFileReader
 {

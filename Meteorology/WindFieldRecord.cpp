@@ -25,8 +25,8 @@ RETURN_CODE CWindFieldRecord::InterpolateWindField(const CDateTime desiredTime, 
     }
 
     // Loop through all wind-fields in the database and see if we can find an exact match
-    //	otherwise extract the wind-fields which are the closest records before and after
-    //	the desired one.
+    //  otherwise extract the wind-fields which are the closest records before and after
+    //  the desired one.
     CWindField closestBefore, closestAfter;
     bool foundClosestBefore = false; // <-- if no wind-field was found before the desired one then return false
     bool foundClosestAfter = false; // <-- if no wind-field was found after the desired one then return false
@@ -35,7 +35,7 @@ RETURN_CODE CWindFieldRecord::InterpolateWindField(const CDateTime desiredTime, 
         const CWindField &currentRecord = m_windField[i];
 
         // First check if we've found an exact match, if so
-        //	then return the current wind-field
+        //  then return the current wind-field
         if (currentRecord.GetTimeAndDate() == desiredTime)
         {
             desiredWindField = currentRecord;
@@ -49,8 +49,8 @@ RETURN_CODE CWindFieldRecord::InterpolateWindField(const CDateTime desiredTime, 
             if (foundClosestBefore)
             {
                 // We have already found another record which is valid before the desired time
-                //	compare if the currentRecord is collected after the previously found
-                //	record, if it is then use the currentRecord as the closest one before
+                //  compare if the currentRecord is collected after the previously found
+                //  record, if it is then use the currentRecord as the closest one before
                 if (closestBefore.GetTimeAndDate() < currentRecord.GetTimeAndDate())
                 {
                     closestBefore = currentRecord;
@@ -72,8 +72,8 @@ RETURN_CODE CWindFieldRecord::InterpolateWindField(const CDateTime desiredTime, 
             if (foundClosestAfter)
             {
                 // We have already found another record which is valid after the desired time
-                //	compare if the currentRecord is collected before the previously found
-                //	record, if it is then use the currentRecord as the closest one after
+                //  compare if the currentRecord is collected before the previously found
+                //  record, if it is then use the currentRecord as the closest one after
                 if (currentRecord.GetTimeAndDate() < closestAfter.GetTimeAndDate())
                 {
                     closestAfter = currentRecord;
@@ -83,7 +83,7 @@ RETURN_CODE CWindFieldRecord::InterpolateWindField(const CDateTime desiredTime, 
             else
             {
                 // We have found the first record in the database which is collected
-                //	before the desired time, remember this and then continue the search
+                //  before the desired time, remember this and then continue the search
                 foundClosestAfter = true;
                 closestAfter = currentRecord;
                 continue;
@@ -92,9 +92,9 @@ RETURN_CODE CWindFieldRecord::InterpolateWindField(const CDateTime desiredTime, 
     } // end for...
 
     // If the desired time is not in between any two wind-fields in the database,
-    //	then we can not interpolate. If the time difference between the desried time
-    //	and the closest record in the database is less than 3 hours then return the
-    //	closest record, otherwise return FAIL.
+    //  then we can not interpolate. If the time difference between the desried time
+    //  and the closest record in the database is less than 3 hours then return the
+    //  closest record, otherwise return FAIL.
     if (foundClosestAfter == false)
     {
         if (foundClosestBefore == false)
@@ -134,8 +134,8 @@ RETURN_CODE CWindFieldRecord::InterpolateWindField(const CDateTime desiredTime, 
     }
 
     // If we are to interpolate the wind-field between two data points which are 
-    //	separated by more than 24 hours, the interpolation will not be meaningful
-    //	return FALSE
+    //  separated by more than 24 hours, the interpolation will not be meaningful
+    //  return FALSE
     double totalTimeDifference = CDateTime::Difference(closestAfter.GetTimeAndDate(), closestBefore.GetTimeAndDate());
     if (totalTimeDifference > 24.0*3600.0)
     {
@@ -143,7 +143,7 @@ RETURN_CODE CWindFieldRecord::InterpolateWindField(const CDateTime desiredTime, 
     }
 
     // Interpolate the wind-field between the data-point closest before and
-    //	the data-point closest after the desired time and return success!
+    //  the data-point closest after the desired time and return success!
     double timeDifference1 = CDateTime::Difference(desiredTime, closestBefore.GetTimeAndDate());
     double alpha = timeDifference1 / totalTimeDifference;
 
@@ -157,7 +157,7 @@ RETURN_CODE CWindFieldRecord::InterpolateWindField(const CDateTime desiredTime, 
     double ph = (1.0 - alpha) * closestBefore.GetPlumeHeight() + alpha * closestAfter.GetPlumeHeight();
 
     // Clamp the wind-direction to the interval 0->360 degrees
-    //	instead of -180 -> +180 as the atan2 returns
+    //  instead of -180 -> +180 as the atan2 returns
     while (wd < 0)
     {
         wd += 360.0;

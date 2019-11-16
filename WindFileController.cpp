@@ -26,8 +26,8 @@ BEGIN_MESSAGE_MAP(CWindFileController, CWinThread)
 END_MESSAGE_MAP()
 
 CWindFileController::CWindFileController(void)
+ : m_nTimerID(0)
 {
-    m_nTimerID = 0;
 }
 
 /** Quits the thread */
@@ -37,12 +37,20 @@ void CWindFileController::OnQuit(WPARAM /*wp*/, LPARAM /*lp*/)
 
 void CWindFileController::OnTimer(UINT /*nIDEvent*/, LPARAM /*lp*/)
 {
-    // Try to find and read in a wind-field file, if any can be found...
-    if (g_settings.windSourceSettings.enabled == 1 && g_settings.windSourceSettings.windFieldFile.GetLength() > 0) {
+    ReadWindFieldFile();
+}
 
+void CWindFileController::ReadWindFieldFile()
+{
+    // Try to find and read in a wind-field file, if any can be found...
+    if (g_settings.windSourceSettings.enabled == 1 && 
+        g_settings.windSourceSettings.windFieldFile.GetLength() > 0)
+    {
         // If the file is a local file...
-        if (IsExistingFile(g_settings.windSourceSettings.windFieldFile)) {
-            if (0 == g_metData.ReadWindFieldFromFile(g_settings.windSourceSettings.windFieldFile)) {
+        if (IsExistingFile(g_settings.windSourceSettings.windFieldFile))
+        {
+            if (0 == g_metData.ReadWindFieldFromFile(g_settings.windSourceSettings.windFieldFile))
+            {
                 ShowMessage("Successfully re-read wind-field from file");
                 pView->PostMessage(WM_NEW_WINDFIELD, NULL, NULL);
             }
@@ -58,26 +66,30 @@ void CWindFileController::OnTimer(UINT /*nIDEvent*/, LPARAM /*lp*/)
     }
 }
 
-BOOL CWindFileController::OnIdle(LONG /*lCount*/) {
-
+BOOL CWindFileController::OnIdle(LONG /*lCount*/)
+{
     return FALSE; // no more idle-time is needed
 }
 
-BOOL CWindFileController::InitInstance() {
+BOOL CWindFileController::InitInstance()
+{
     CWinThread::InitInstance();
 
     // Check the global settings if we are to be re-loading the wind-field file
     //	every now and then then set the timer
-    if (g_settings.windSourceSettings.enabled == 1 && g_settings.windSourceSettings.windFileReloadInterval > 0 && g_settings.windSourceSettings.windFieldFile.GetLength() > 3) {
+    if (g_settings.windSourceSettings.enabled == 1 && 
+        g_settings.windSourceSettings.windFileReloadInterval > 0 && 
+        g_settings.windSourceSettings.windFieldFile.GetLength() > 3) {
 
         // Read the log-file now
-        OnTimer(NULL, NULL);
+        ReadWindFieldFile();
 
         // Set a timer to wake up with the given interval
         int nmSeconds = g_settings.windSourceSettings.windFileReloadInterval * 60 * 1000;
         m_nTimerID = ::SetTimer(NULL, 0, nmSeconds, NULL);
     }
-    else {
+    else
+    {
         // If we should not re-read the wind-field file then this thread has
         //	nothing to do. We can just as well quit it
         AfxEndThread(0);
@@ -96,22 +108,24 @@ int CWindFileController::ExitInstance()
     return CWinThread::ExitInstance();
 }
 
-void CWindFileController::DownloadFileByFTP()
+CString RemoveProtocol(const CString& fileName)
 {
-    CString ipNumber, userName, passWord, fileName, directoryName, localFileName, msg;
-
-    fileName.Format(g_settings.windSourceSettings.windFieldFile);
     const int initialLength = fileName.GetLength();
 
-    // remove the protocol-prefix ('ftp://' or 'sftp://')
     if (Equals(fileName.Left(7), "sftp://"))
     {
-        fileName = fileName.Right(initialLength - 7);
+        return fileName.Right(initialLength - 7);
     }
     else
     {
-        fileName = fileName.Right(initialLength - 6);
+        return fileName.Right(initialLength - 6);
     }
+}
+
+void CWindFileController::DownloadFileByFTP()
+{
+    // remove the protocol-prefix ('ftp://' or 'sftp://')
+    CString fileName = RemoveProtocol(g_settings.windSourceSettings.windFieldFile);
     
     int firstSlash = fileName.FindOneOf("/\\");
     int remainingFileNameLength = fileName.GetLength();
@@ -123,24 +137,21 @@ void CWindFileController::DownloadFileByFTP()
     }
 
     // 1. Parse the IP-number
-    ipNumber.Format(fileName.Left(firstSlash));
+    const CString ipNumber = fileName.Left(firstSlash);
 
     // 2. If the IP-number is the same as to the FTP-server then we already know the login and password
     if (!Equals(ipNumber, g_settings.ftpSetting.ftpAddress))
     {
         return; // unknown login + pwd...
     }
-    else
-    {
-        userName.Format(g_settings.ftpSetting.userName);
-        passWord.Format(g_settings.ftpSetting.password);
-    }
+    const CString userName = g_settings.ftpSetting.userName;
+    const CString password = g_settings.ftpSetting.password;
 
     // 3. Setup the FTP-communication handler
     std::unique_ptr<Communication::IFTPDataUpload> ftp = Communication::IFTPDataUpload::Create(g_settings.ftpSetting.protocol);
 
     // 4. Connect!
-    if (ftp->Connect(ipNumber, userName, passWord, TRUE) != 1)
+    if (ftp->Connect(ipNumber, userName, password, TRUE) != 1)
     {
         return; // fail
     }
@@ -151,7 +162,7 @@ void CWindFileController::DownloadFileByFTP()
     firstSlash = fileName.FindOneOf("/\\");
     while (-1 != firstSlash)
     {
-        directoryName.Format(fileName.Left(firstSlash));
+        const CString directoryName = fileName.Left(firstSlash);
 
         // Enter the directory
         if (0 == ftp->SetCurDirectory(directoryName))
@@ -169,6 +180,7 @@ void CWindFileController::DownloadFileByFTP()
     }
 
     // 6. Download the file!
+    CString localFileName;
     localFileName.Format("%sTemp\\WindField.txt", (LPCTSTR)g_settings.outputDirectory);
     if (IsExistingFile(localFileName))
     {
@@ -185,6 +197,7 @@ void CWindFileController::DownloadFileByFTP()
         return;
     }
 
+    CString msg;
     msg.Format("Downloaded %s", (LPCTSTR)g_settings.windSourceSettings.windFieldFile);
     ShowMessage(msg);
 

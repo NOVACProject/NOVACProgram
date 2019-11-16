@@ -111,6 +111,7 @@ std::vector<size_t> NetCdfFileReader::GetSizeOfVariable(const std::string& varia
     return GetSizeOfVariable(index);
 }
 
+// helper function to multiply all the values in a vector
 size_t ProductOfElements(std::vector<size_t> sizes)
 {
     size_t product = 1;
