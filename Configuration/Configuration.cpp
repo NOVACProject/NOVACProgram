@@ -1,5 +1,6 @@
 #include "StdAfx.h"
-#include "configuration.h"
+#include "Configuration.h"
+#include <set>
 
 /** The global instance of configuration settings */
 CConfigurationSetting g_settings;
@@ -282,11 +283,30 @@ void CConfigurationSetting::SetupChangeSetting::Clear()
 }
 /** Assignment operator */
 
-CConfigurationSetting::SetupChangeSetting& CConfigurationSetting::SetupChangeSetting::operator=(const SetupChangeSetting &scs2) {
+CConfigurationSetting::SetupChangeSetting& CConfigurationSetting::SetupChangeSetting::operator=(const SetupChangeSetting &scs2)
+{
     this->automaticSetupChange = scs2.automaticSetupChange;
     this->useCalculatedPlumeParameters = scs2.useCalculatedPlumeParameters;
     this->windDirectionTolerance = scs2.windDirectionTolerance;
     this->mode = scs2.mode;
 
     return *this;
+}
+
+std::vector<std::string> ListMonitoredVolcanoes(const CConfigurationSetting& settings)
+{
+    std::set<std::string> allVolcanoes;
+
+    for (unsigned int k = 0; k < settings.scannerNum; ++k)
+    {
+        for (unsigned int j = 0; j < settings.scanner[k].specNum; ++j)
+        {
+            std::string name = settings.scanner[k].volcano;
+            allVolcanoes.insert(name);
+        }
+    }
+
+    std::vector<std::string> volcanoNames{begin(allVolcanoes), end(allVolcanoes)};
+
+    return volcanoNames;
 }

@@ -351,4 +351,16 @@ public:
     CWindFieldDataSettings windSourceSettings;
 };
 
+// --------------------------------------------------------------------------------------------------------- 
+// --------------------------- Free functions working on the settings --------------------------------------
+// --------------------------------------------------------------------------------------------------------- 
+
+/** Lists the name of all volcanoes monitored by instruments connected to this computer. */
+std::vector<std::string> ListMonitoredVolcanoes(const CConfigurationSetting& settings);
+
+
+
+
+
+
 #endif
