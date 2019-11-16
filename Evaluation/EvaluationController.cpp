@@ -98,7 +98,6 @@ void CEvaluationController::OnTestEvaluation(WPARAM wp, LPARAM lp){
     const std::string fileNameStr((LPCSTR)*fileName);
 	reader.ReadSpectrum(fileNameStr, 0, curSpec);
 	serialNumber.Format("%s", curSpec.m_info.m_device.c_str());
-	ASSERT(IsSerialNumber(serialNumber));
 
 	EvaluateScan(*fileName, -1);
 }

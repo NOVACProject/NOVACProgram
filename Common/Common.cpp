@@ -287,10 +287,6 @@ void Common::CalculateDestination(double lat1, double lon1, double dist, double 
 	lon2	= lon2 * RADTODEGREE;
 }
 
-int IsSerialNumber(const CString &serialNumber){
-	return (strlen(serialNumber) > 0);
-}
-
 // open a browser window and let the user search for a file
 bool Common::BrowseForFile(TCHAR *filter, CString &fileName){
 	TCHAR szFile[4096];

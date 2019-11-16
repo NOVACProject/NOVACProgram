@@ -51,12 +51,6 @@ int IsExistingFile(const CString &fileName);
 		@return 0 on success. */
 int CreateDirectoryStructure(const CString &path);
 
-/** Checks if the supplied string is a valid serial-number of a spectrometer. 
-    @param serialNumber - the string that should be checked.
-    @return 1 if the string is a valid serial number.
-    @return 0 if the string is <b>not</b> a valid serial number. */
-int IsSerialNumber(const CString &serialNumber);
-
 /** Compares two strings without regard to case.
     @return 1 if the strings are equal. @return 0 if the strings are not equal. */
 int Equals(const CString &str1, const CString &str2);
@@ -174,12 +168,6 @@ const enum MEASUREMENT_MODE {MODE_UNKNOWN, MODE_FLUX, MODE_FIXED, MODE_WINDSPEED
 #ifndef M_PI
 	#define M_PI 3.141592
 #endif
-
-// ----------------------------------------------------------------
-// ------------ SIMPLE MATHEMATICAL FUNCTIONS  --------------------
-// ----------------------------------------------------------------
-//#define round(x) (x < 0 ? ceil((x)-0.5) : floor((x)+0.5))
-
 
 // -----------------------------------------------------------------
 // -------------------------- MESSAGES -----------------------------
