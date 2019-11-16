@@ -2,9 +2,6 @@
 
 #include "../Meteorology/WindFieldDatabase.h"
 
-// Include synchronization classes
-#include <afxmt.h>
-
 namespace FileHandler
 {
 
@@ -58,10 +55,6 @@ private:
 
     /** Keeping track of which column contains what */
     LogColumns m_col;
-
-    /** This class contains critical sections of code */
-    CCriticalSection m_critSect;
-
 };
 
 }

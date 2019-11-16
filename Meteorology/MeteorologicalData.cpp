@@ -5,12 +5,6 @@
 /** The global instance of meterological data */
 CMeteorologicalData g_metData;
 
-CMeteorologicalData::CMeteorologicalData()
- : m_scannerNum(0),
-   m_wfDatabaseFromFile(nullptr)
-{
-}
-
 CMeteorologicalData::~CMeteorologicalData()
 {
     if (m_wfDatabaseFromFile != nullptr)
@@ -62,6 +56,7 @@ int CMeteorologicalData::GetWindField(const CString& serialNumber, const CDateTi
     // 1. Try to read the wind from the wind-field file reader
     if (m_wfDatabaseFromFile != nullptr)
     {
+        std::lock_guard<std::mutex> lock(m_wfDatabaseMutex);
         if (SUCCESS == m_wfDatabaseFromFile->InterpolateWindField(dt, windField))
         {
             // Check if the file contains the wind-speed, the wind-direction and/or the plume height
@@ -84,7 +79,7 @@ int CMeteorologicalData::GetWindField(const CString& serialNumber, const CDateTi
     }
 
     // 2. No wind field found in the reader, use the user-supplied or default...
-    if (scannerIndex >= 0) 
+    if (scannerIndex >= 0)
     {
         windField = m_windFieldAtScanner[scannerIndex];
         return 0;
@@ -96,6 +91,8 @@ int CMeteorologicalData::GetWindField(const CString& serialNumber, const CDateTi
 
 int CMeteorologicalData::ReadWindFieldFromFile(const CString& fileName)
 {
+    std::lock_guard<std::mutex> lock(m_wfDatabaseMutex);
+
     // Completely reset the data in the existing file-reader
     if (m_wfDatabaseFromFile != nullptr)
     {
@@ -104,20 +101,32 @@ int CMeteorologicalData::ReadWindFieldFromFile(const CString& fileName)
     m_wfDatabaseFromFile = new CWindFieldDatabase();
 
     // Start reading the file
-    FileHandler::CWindFileReader fileReader;
+    bool fileReadSuccessfully = false;
+    if (Equals(fileName.Right(4), ".txt"))
+    {
+        FileHandler::CWindFileReader fileReader;
 
-    // Set the path to the file
-    fileReader.m_windFile = fileName;
+        // Set the path to the file
+        fileReader.m_windFile = fileName;
 
-    // Read the wind-file
-    if (SUCCESS != fileReader.ReadWindFile(*m_wfDatabaseFromFile))
+        // Read the wind-file
+        auto returnCode = fileReader.ReadWindFile(*m_wfDatabaseFromFile);
+        fileReadSuccessfully = (returnCode == SUCCESS);
+    }
+    else if (Equals(fileName.Right(3), ".nc"))
+    {
+        // NetCdf file
+
+    }
+
+    if (fileReadSuccessfully)
+    {
+        return 0;
+    }
+    else
     {
         delete m_wfDatabaseFromFile;
         m_wfDatabaseFromFile = nullptr;
         return 1;
-    }
-    else
-    {
-        return 0;
     }
 }

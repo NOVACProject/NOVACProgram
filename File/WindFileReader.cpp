@@ -13,161 +13,148 @@ RETURN_CODE CWindFileReader::ReadWindFile(CWindFieldDatabase& result)
 
     result.Clear();
 
-    // Lock this object to make sure that now one else tries to read
-    //  data from this object while we are reading
-    CSingleLock singleLock(&m_critSect);
-    singleLock.Lock();
-
-    if (singleLock.IsLocked())
+    // If no evaluation log selected, quit
+    if (strlen(m_windFile) <= 1)
     {
-        // If no evaluation log selected, quit
-        if (strlen(m_windFile) <= 1)
-        {
-            singleLock.Unlock(); // open up this object again
-            return FAIL;
-        }
-
-        // Open the wind log
-        FILE *f = fopen(m_windFile, "r");
-        if (nullptr == f)
-        {
-            singleLock.Unlock(); // open up this object again
-            return FAIL;
-        }
-
-        // Reset prior knowledge of the contents of each column
-        ResetColumns();
-
-        // Read the file, one line at a time
-        while (fgets(szLine, 8192, f))
-        {
-            // ignore empty lines
-            if (strlen(szLine) < 2)
-            {
-                continue;
-            }
-
-            // ignore comment lines
-            if (szLine[0] == '#' || szLine[0] == '%')
-                continue;
-
-            // convert the string to all lower-case letters
-            for (unsigned int it = 0; it < strlen(szLine); ++it)
-            {
-                szLine[it] = tolower(szLine[it]);
-            }
-
-            // If this is the line saying the source of the information...
-            if (strstr(szLine, sourceStr))
-            {
-                ParseSourceString(szLine, windFieldSource);
-            }
-
-            // if this is a header-line then parse it
-            if (nullptr != strstr(szLine, dateStr))
-            {
-                ParseFileHeader(szLine, result);
-                continue;
-            }
-
-            // Split the scan information up into tokens and parse them. 
-            char* szToken = (char*)(LPCSTR)szLine;
-            int curCol = -1;
-            while (szToken = strtok(szToken, " \t"))
-            {
-                ++curCol;
-
-                // First check the time
-                if (curCol == m_col.time)
-                {
-                    int fValue1, fValue2, fValue3;
-                    int nValues;
-
-                    if (strstr(szToken, ":"))
-                        nValues = sscanf(szToken, "%d:%d:%d", &fValue1, &fValue2, &fValue3);
-                    else
-                        nValues = sscanf(szToken, "%d.%d.%d", &fValue1, &fValue2, &fValue3);
-
-                    if (nValues == 2)
-                    {
-                        windfield.SetTime(fValue1, fValue2, 0);
-                    }
-                    else
-                    {
-                        windfield.SetTime(fValue1, fValue2, fValue3);
-                    }
-
-                    szToken = nullptr;
-                    continue;
-                }
-
-                // Then check the date
-                if (curCol == m_col.date)
-                {
-                    int fValue1, fValue2, fValue3;
-                    int nValues;
-
-                    if (strstr(szToken, "_"))
-                        nValues = sscanf(szToken, "%d_%d_%d", &fValue1, &fValue2, &fValue3);
-                    else
-                        nValues = sscanf(szToken, "%d.%d.%d", &fValue1, &fValue2, &fValue3);
-
-                    if (nValues == 2)
-                    {
-                        windfield.SetDate(fValue1, fValue2, 0);
-                    }
-                    else
-                    {
-                        windfield.SetDate(fValue1, fValue2, fValue3);
-                    }
-                    szToken = nullptr;
-                    continue;
-                }
-
-                // The wind-direction
-                if (curCol == m_col.windDirection)
-                {
-                    double fValue;
-                    int nValues = sscanf(szToken, "%lf", &fValue);
-                    windfield.SetWindDirection(fValue, windFieldSource);
-                    szToken = nullptr;
-                    continue;
-                }
-
-                // The wind-speed
-                if (curCol == m_col.windSpeed)
-                {
-                    double fValue;
-                    int nValues = sscanf(szToken, "%lf", &fValue);
-                    windfield.SetWindSpeed(fValue, windFieldSource);
-                    szToken = nullptr;
-                    continue;
-                }
-
-                // The plume height
-                if (curCol == m_col.plumeHeight)
-                {
-                    double fValue;
-                    int nValues = sscanf(szToken, "%lf", &fValue);
-                    windfield.SetPlumeHeight(fValue, windFieldSource);
-                    szToken = nullptr;
-                    continue;
-                }
-
-                // parse the next token...
-                szToken = nullptr;
-            }//end while(szToken = strtok(szToken, " \t"))
-
-            // insert the recently read wind-field into the list
-            result.InsertWindField(windfield);
-        }
-
-        // close the file
-        fclose(f);
-
-        // Remember to open up this object again
-        singleLock.Unlock();
+        return FAIL;
     }
+
+    // Open the wind log
+    FILE *f = fopen(m_windFile, "r");
+    if (nullptr == f)
+    {
+        return FAIL;
+    }
+
+    // Reset prior knowledge of the contents of each column
+    ResetColumns();
+
+    // Read the file, one line at a time
+    while (fgets(szLine, 8192, f))
+    {
+        // ignore empty lines
+        if (strlen(szLine) < 2)
+        {
+            continue;
+        }
+
+        // ignore comment lines
+        if (szLine[0] == '#' || szLine[0] == '%')
+            continue;
+
+        // convert the string to all lower-case letters
+        for (unsigned int it = 0; it < strlen(szLine); ++it)
+        {
+            szLine[it] = tolower(szLine[it]);
+        }
+
+        // If this is the line saying the source of the information...
+        if (strstr(szLine, sourceStr))
+        {
+            ParseSourceString(szLine, windFieldSource);
+        }
+
+        // if this is a header-line then parse it
+        if (nullptr != strstr(szLine, dateStr))
+        {
+            ParseFileHeader(szLine, result);
+            continue;
+        }
+
+        // Split the scan information up into tokens and parse them. 
+        char* szToken = (char*)(LPCSTR)szLine;
+        int curCol = -1;
+        while (szToken = strtok(szToken, " \t"))
+        {
+            ++curCol;
+
+            // First check the time
+            if (curCol == m_col.time)
+            {
+                int fValue1, fValue2, fValue3;
+                int nValues;
+
+                if (strstr(szToken, ":"))
+                    nValues = sscanf(szToken, "%d:%d:%d", &fValue1, &fValue2, &fValue3);
+                else
+                    nValues = sscanf(szToken, "%d.%d.%d", &fValue1, &fValue2, &fValue3);
+
+                if (nValues == 2)
+                {
+                    windfield.SetTime(fValue1, fValue2, 0);
+                }
+                else
+                {
+                    windfield.SetTime(fValue1, fValue2, fValue3);
+                }
+
+                szToken = nullptr;
+                continue;
+            }
+
+            // Then check the date
+            if (curCol == m_col.date)
+            {
+                int fValue1, fValue2, fValue3;
+                int nValues;
+
+                if (strstr(szToken, "_"))
+                    nValues = sscanf(szToken, "%d_%d_%d", &fValue1, &fValue2, &fValue3);
+                else
+                    nValues = sscanf(szToken, "%d.%d.%d", &fValue1, &fValue2, &fValue3);
+
+                if (nValues == 2)
+                {
+                    windfield.SetDate(fValue1, fValue2, 0);
+                }
+                else
+                {
+                    windfield.SetDate(fValue1, fValue2, fValue3);
+                }
+                szToken = nullptr;
+                continue;
+            }
+
+            // The wind-direction
+            if (curCol == m_col.windDirection)
+            {
+                double fValue;
+                int nValues = sscanf(szToken, "%lf", &fValue);
+                windfield.SetWindDirection(fValue, windFieldSource);
+                szToken = nullptr;
+                continue;
+            }
+
+            // The wind-speed
+            if (curCol == m_col.windSpeed)
+            {
+                double fValue;
+                int nValues = sscanf(szToken, "%lf", &fValue);
+                windfield.SetWindSpeed(fValue, windFieldSource);
+                szToken = nullptr;
+                continue;
+            }
+
+            // The plume height
+            if (curCol == m_col.plumeHeight)
+            {
+                double fValue;
+                int nValues = sscanf(szToken, "%lf", &fValue);
+                windfield.SetPlumeHeight(fValue, windFieldSource);
+                szToken = nullptr;
+                continue;
+            }
+
+            // parse the next token...
+            szToken = nullptr;
+        }//end while(szToken = strtok(szToken, " \t"))
+
+        // insert the recently read wind-field into the list
+        result.InsertWindField(windfield);
+    }
+
+    // close the file
+    fclose(f);
 
     // all is ok..
     return SUCCESS;

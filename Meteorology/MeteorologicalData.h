@@ -3,6 +3,7 @@
 #include "WindField.h"
 #include "WindFieldDatabase.h"
 #include "../Common/Common.h"
+#include <mutex>
 
 #ifndef METEROLOGY_H
 #define METEROLOGY_H
@@ -12,7 +13,7 @@
 class CMeteorologicalData
 {
 public:
-    CMeteorologicalData();
+    CMeteorologicalData() = default;
     ~CMeteorologicalData();
 
     /** Set the wind field for a scanner */
@@ -43,7 +44,11 @@ private:
     /** The wind-field database read from file.
         If any wind-field has been read in from a file, 
         then the data can be found here. */
-    CWindFieldDatabase* m_wfDatabaseFromFile;
+    CWindFieldDatabase* m_wfDatabaseFromFile = nullptr;
+
+    /** This is to protect the m_wfDatabaseFromFile from being accessed from two
+        threads simultaneously */
+    std::mutex m_wfDatabaseMutex;
 
     /** The windfield at each of the scanningInstruments
         the windfield at scanning Instrument 'm_scanner[i]' is given
@@ -56,7 +61,7 @@ private:
     CString m_scanner[MAX_NUMBER_OF_SCANNING_INSTRUMENTS];
 
     /** How many scanners that we have defined the wind field for */
-    long m_scannerNum;
+    long m_scannerNum = 0;
 };
 
 #endif
