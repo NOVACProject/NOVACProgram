@@ -16,6 +16,14 @@ long CWindFieldDatabase::GetRecordNum() const
     return (long)m_windField.size();
 }
 
+void CWindFieldDatabase::Clear()
+{
+    m_windField.clear();
+    m_containsWindDirection = false;
+    m_containsWindSpeed = false;
+    m_containsPlumeHeight = false;
+}
+
 RETURN_CODE CWindFieldDatabase::InterpolateWindField(const CDateTime desiredTime, CWindField &desiredWindField) const
 {
     // First check if there's any records at all in the database

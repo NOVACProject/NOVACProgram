@@ -104,7 +104,7 @@ public:
 	CWindField		m_windField;
 
 	/** The wind-field reader, if any */
-	FileHandler::CWindFileReader	*m_wfReader;
+	CWindFieldDatabase* m_windFieldFromFile = nullptr;
 
 	/** The currently selected scan */
 	int					 m_curScan;

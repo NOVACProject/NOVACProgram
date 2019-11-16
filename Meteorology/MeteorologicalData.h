@@ -1,7 +1,7 @@
 #pragma once
 
 #include "WindField.h"
-#include "../File/WindFileReader.h"
+#include "WindFieldDatabase.h"
 #include "../Common/Common.h"
 
 #ifndef METEROLOGY_H
@@ -40,9 +40,10 @@ private:
     CMeteorologicalData(const CMeteorologicalData& ) = delete;
     CMeteorologicalData& operator=(const CMeteorologicalData& ) = delete;
 
-    /** The wind-field file reader. If any wind-field has been read in from a
-            file, then the data can be found here. */
-    FileHandler::CWindFileReader* m_wfReader;
+    /** The wind-field database read from file.
+        If any wind-field has been read in from a file, 
+        then the data can be found here. */
+    CWindFieldDatabase* m_wfDatabaseFromFile;
 
     /** The windfield at each of the scanningInstruments
         the windfield at scanning Instrument 'm_scanner[i]' is given

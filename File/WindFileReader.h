@@ -8,30 +8,21 @@
 namespace FileHandler
 {
 
+/** This class reads a wind field from a text file with 
+    white space separated columns. */
 class CWindFileReader
 {
 public:
-    /** Default constructor */
-    CWindFileReader();
+    CWindFileReader() = default;
 
     /** The name and path of the wind-information file */
     CString m_windFile;
 
     // ------------------- PUBLIC METHODS -------------------------
 
-    /** Reads the wind file */
-    RETURN_CODE ReadWindFile();
-
-    /** Returns an interpolation from the most recently read in wind-field */
-    RETURN_CODE InterpolateWindField(const CDateTime& desiredTime, CWindField& result);
-
-    /** Returns the number of points in the database */
-    long GetRecordNum() const;
-
-    // ------------------- PUBLIC DATA -------------------------
-    bool m_containsWindDirection; // True if the last wind-field file read contains a wind-direction
-    bool m_containsWindSpeed;     // True if the last wind-field file read contains a wind-speed
-    bool m_containsPlumeHeight;   // True if the last wind-field file read contains a plume-height
+    /** Reads the wind file and will on successful return fill in the contents
+        of the provided database. */
+    RETURN_CODE ReadWindFile(CWindFieldDatabase& result);
 
 private:
 
@@ -53,7 +44,7 @@ private:
 
     /** Reads the header line for the file and retrieves which
       column represents which value. */
-    void ParseFileHeader(const char szLine[8192]);
+    void ParseFileHeader(const char szLine[8192], CWindFieldDatabase& database);
 
     /** Resets the information about which column data is stored in */
     void ResetColumns();
@@ -71,8 +62,6 @@ private:
     /** This class contains critical sections of code */
     CCriticalSection m_critSect;
 
-    /** Information about the wind */
-    CWindFieldDatabase m_windRecord;
 };
 
 }

@@ -17,6 +17,14 @@ public:
     /** Default constructor */
     CWindFieldDatabase();
 
+    // ------------------- PUBLIC DATA -------------------------
+
+    // The m_contains... flags are used to indicate the type of data contained in this database
+    //  These are to be filled in whenever this database is populated.
+    bool m_containsWindDirection = false; // True if the last wind-field file read contains a wind-direction
+    bool m_containsWindSpeed = false;     // True if the last wind-field file read contains a wind-speed
+    bool m_containsPlumeHeight = false;   // True if the last wind-field file read contains a plume-height
+
     // ------------------- PUBLIC METHODS -------------------------
 
     /** Inserts a given wind-field into the record */
@@ -41,6 +49,9 @@ public:
 
     /** Returns the number of points in the database */
     long GetRecordNum() const;
+
+    /** Clears all the records of this database */
+    void Clear();
 
 private:
 

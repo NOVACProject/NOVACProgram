@@ -3,14 +3,7 @@
 
 using namespace FileHandler;
 
-CWindFileReader::CWindFileReader()
-{
-    m_containsWindDirection = false;
-    m_containsWindSpeed = false;
-    m_containsPlumeHeight = false;
-}
-
-RETURN_CODE CWindFileReader::ReadWindFile()
+RETURN_CODE CWindFileReader::ReadWindFile(CWindFieldDatabase& result)
 {
     CWindField windfield; // <-- the next wind-field to insert
     char dateStr[] = _T("date"); // this string only exists in the header line.
@@ -18,14 +11,15 @@ RETURN_CODE CWindFileReader::ReadWindFile()
     char szLine[8192];
     MET_SOURCE windFieldSource = MET_USER; // the source for the wind-information
 
+    result.Clear();
+
     // Lock this object to make sure that now one else tries to read
-    //	data from this object while we are reading
+    //  data from this object while we are reading
     CSingleLock singleLock(&m_critSect);
     singleLock.Lock();
 
     if (singleLock.IsLocked())
     {
-
         // If no evaluation log selected, quit
         if (strlen(m_windFile) <= 1)
         {
@@ -72,7 +66,7 @@ RETURN_CODE CWindFileReader::ReadWindFile()
             // if this is a header-line then parse it
             if (nullptr != strstr(szLine, dateStr))
             {
-                ParseFileHeader(szLine);
+                ParseFileHeader(szLine, result);
                 continue;
             }
 
@@ -165,7 +159,7 @@ RETURN_CODE CWindFileReader::ReadWindFile()
             }//end while(szToken = strtok(szToken, " \t"))
 
             // insert the recently read wind-field into the list
-            m_windRecord.InsertWindField(windfield);
+            result.InsertWindField(windfield);
         }
 
         // close the file
@@ -179,28 +173,7 @@ RETURN_CODE CWindFileReader::ReadWindFile()
     return SUCCESS;
 }
 
-RETURN_CODE CWindFileReader::InterpolateWindField(const CDateTime& desiredTime, CWindField& result)
-{
-    RETURN_CODE ret = FAIL;
-
-    // Lock this object to make sure that we are not reading in data
-    //	and returning a handle to the wind-field record at the same time
-    CSingleLock singleLock(&m_critSect);
-    singleLock.Lock();
-
-    if (singleLock.IsLocked())
-    {
-        // Get the interpolated wind-field
-        ret = m_windRecord.InterpolateWindField(desiredTime, result);
-
-        // Remember to open up this object again
-        singleLock.Unlock();
-    }
-
-    return ret;
-}
-
-void CWindFileReader::ParseFileHeader(const char szLine[8192])
+void CWindFileReader::ParseFileHeader(const char szLine[8192], CWindFieldDatabase& database)
 {
     char date[] = _T("date");
     char time[] = _T("time");
@@ -252,7 +225,7 @@ void CWindFileReader::ParseFileHeader(const char szLine[8192])
         if (0 == _strnicmp(szToken, speed, strlen(speed)) || 0 == _strnicmp(szToken, speed2, strlen(speed2)))
         {
             m_col.windSpeed = curCol;
-            m_containsWindSpeed = true;
+            database.m_containsWindSpeed = true;
             szToken = nullptr;
             continue;
         }
@@ -272,7 +245,7 @@ void CWindFileReader::ParseFileHeader(const char szLine[8192])
         {
 
             m_col.windDirection = curCol;
-            m_containsWindDirection = true;
+            database.m_containsWindDirection = true;
             szToken = nullptr;
             continue;
         }
@@ -292,7 +265,7 @@ void CWindFileReader::ParseFileHeader(const char szLine[8192])
         {
 
             m_col.plumeHeight = curCol;
-            m_containsPlumeHeight = true;
+            database.m_containsPlumeHeight = true;
             szToken = nullptr;
             continue;
         }
@@ -304,14 +277,13 @@ void CWindFileReader::ParseFileHeader(const char szLine[8192])
             szToken = nullptr;
             continue;
         }
-
     }
 
     // Make sure that columns which are not found are not in the 
-    //	log-columns structure.
-    if (!m_containsWindDirection)
+    //  log-columns structure.
+    if (!database.m_containsWindDirection)
         m_col.windDirection = -1;
-    if (!m_containsWindSpeed)
+    if (!database.m_containsWindSpeed)
         m_col.windSpeed = -1;
 
 
@@ -326,19 +298,9 @@ void CWindFileReader::ResetColumns()
     m_col.windDirection = 2;
     m_col.windSpeed = 3;
     m_col.plumeHeight = -1; // not in the first generation of wind-field files...
-
-    // Assume that the file does not contain either the wind-direction, wind-speed or the plume height
-    m_containsWindDirection = false;
-    m_containsWindSpeed = false;
-    m_containsPlumeHeight = false;
 }
 
-long CWindFileReader::GetRecordNum() const
-{
-    return this->m_windRecord.GetRecordNum();
-}
-
-void CWindFileReader::ParseSourceString(const char szLine[8192], MET_SOURCE &source)
+void CWindFileReader::ParseSourceString(const char szLine[8192], MET_SOURCE& source)
 {
     source = MET_USER; // general assumption...
 

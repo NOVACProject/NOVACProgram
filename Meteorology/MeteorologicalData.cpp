@@ -1,21 +1,22 @@
 #include "StdAfx.h"
 #include "MeteorologicalData.h"
+#include "../File/WindFileReader.h"
 
 /** The global instance of meterological data */
 CMeteorologicalData g_metData;
 
 CMeteorologicalData::CMeteorologicalData()
  : m_scannerNum(0),
-   m_wfReader(nullptr)
+   m_wfDatabaseFromFile(nullptr)
 {
 }
 
 CMeteorologicalData::~CMeteorologicalData()
 {
-    if (m_wfReader != nullptr)
+    if (m_wfDatabaseFromFile != nullptr)
     {
-        delete m_wfReader;
-        m_wfReader = nullptr;
+        delete m_wfDatabaseFromFile;
+        m_wfDatabaseFromFile = nullptr;
     }
 }
 
@@ -59,22 +60,22 @@ int CMeteorologicalData::GetWindField(const CString& serialNumber, const CDateTi
     }
 
     // 1. Try to read the wind from the wind-field file reader
-    if (m_wfReader != nullptr)
+    if (m_wfDatabaseFromFile != nullptr)
     {
-        if (SUCCESS == m_wfReader->InterpolateWindField(dt, windField))
+        if (SUCCESS == m_wfDatabaseFromFile->InterpolateWindField(dt, windField))
         {
             // Check if the file contains the wind-speed, the wind-direction and/or the plume height
-            if (!m_wfReader->m_containsWindDirection && scannerIndex >= 0)
+            if (!m_wfDatabaseFromFile->m_containsWindDirection && scannerIndex >= 0)
             {
                 windField.SetWindDirection(m_windFieldAtScanner[scannerIndex].GetWindDirection(), MET_USER);
             }
 
-            if (!m_wfReader->m_containsWindSpeed)
+            if (!m_wfDatabaseFromFile->m_containsWindSpeed)
             {
                 windField.SetWindSpeed(m_windFieldAtScanner[scannerIndex].GetWindSpeed(), MET_USER);
             }
 
-            if (!m_wfReader->m_containsPlumeHeight)
+            if (!m_wfDatabaseFromFile->m_containsPlumeHeight)
             {
                 windField.SetPlumeHeight(m_windFieldAtScanner[scannerIndex].GetPlumeHeight(), MET_USER);
             }
@@ -96,20 +97,23 @@ int CMeteorologicalData::GetWindField(const CString& serialNumber, const CDateTi
 int CMeteorologicalData::ReadWindFieldFromFile(const CString& fileName)
 {
     // Completely reset the data in the existing file-reader
-    if (m_wfReader != nullptr)
+    if (m_wfDatabaseFromFile != nullptr)
     {
-        delete m_wfReader;
+        delete m_wfDatabaseFromFile;
     }
-    m_wfReader = new FileHandler::CWindFileReader();
+    m_wfDatabaseFromFile = new CWindFieldDatabase();
+
+    // Start reading the file
+    FileHandler::CWindFileReader fileReader;
 
     // Set the path to the file
-    m_wfReader->m_windFile.Format(fileName);
+    fileReader.m_windFile = fileName;
 
     // Read the wind-file
-    if (SUCCESS != m_wfReader->ReadWindFile())
+    if (SUCCESS != fileReader.ReadWindFile(*m_wfDatabaseFromFile))
     {
-        delete m_wfReader;
-        m_wfReader = nullptr;
+        delete m_wfDatabaseFromFile;
+        m_wfDatabaseFromFile = nullptr;
         return 1;
     }
     else
