@@ -239,6 +239,7 @@ copy "$(SolutionDir)External\NetCdf_4_7_2\x86\bin\zlib1.dll" "$(SolutionDir)Rele
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="File\NetCdfWindFileReader.cpp" />
     <ClCompile Include="File\WindFileReader.cpp" />
     <ClCompile Include="Geometry\GeometryCalculator.cpp" />
     <ClCompile Include="Geometry\GeometryEvaluator.cpp" />
@@ -491,6 +492,7 @@ copy "$(SolutionDir)External\NetCdf_4_7_2\x86\bin\zlib1.dll" "$(SolutionDir)Rele
     <ClInclude Include="FileTreeCtrl.h" />
     <ClInclude Include="File\NetCdfException.h" />
     <ClInclude Include="File\NetCdfFileReader.h" />
+    <ClInclude Include="File\NetCdfWindFileReader.h" />
     <ClInclude Include="File\WindFileReader.h" />
     <ClInclude Include="Geometry\GeometryCalculator.h" />
     <ClInclude Include="Geometry\GeometryEvaluator.h" />

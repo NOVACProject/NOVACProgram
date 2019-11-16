@@ -606,6 +606,9 @@
     <ClCompile Include="Meteorology\WindFieldDatabase.cpp">
       <Filter>Source Files\Meteorology</Filter>
     </ClCompile>
+    <ClCompile Include="File\NetCdfWindFileReader.cpp">
+      <Filter>Header Files\File</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Configuration\AdvancedFTPUploadSettings.h">
@@ -1225,6 +1228,9 @@
     </ClInclude>
     <ClInclude Include="Meteorology\WindFieldDatabase.h">
       <Filter>Header Files\Meteorology</Filter>
+    </ClInclude>
+    <ClInclude Include="File\NetCdfWindFileReader.h">
+      <Filter>Header Files\File</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "MeteorologicalData.h"
 #include "../File/WindFileReader.h"
+#include "../File/NetCdfWindFileReader.h"
 
 /** The global instance of meterological data */
 CMeteorologicalData g_metData;
@@ -106,7 +107,6 @@ int CMeteorologicalData::ReadWindFieldFromFile(const CString& fileName)
     {
         FileHandler::CWindFileReader fileReader;
 
-        // Set the path to the file
         fileReader.m_windFile = fileName;
 
         // Read the wind-file
@@ -116,7 +116,13 @@ int CMeteorologicalData::ReadWindFieldFromFile(const CString& fileName)
     else if (Equals(fileName.Right(3), ".nc"))
     {
         // NetCdf file
+        FileHandler::CNetCdfWindFileReader fileReader;
 
+        fileReader.m_windFile = fileName;
+
+        // Read the wind-file
+        auto returnCode = fileReader.ReadWindFile(*m_wfDatabaseFromFile);
+        fileReadSuccessfully = (returnCode == SUCCESS);
     }
 
     if (fileReadSuccessfully)
