@@ -8,11 +8,11 @@
 #include "../Common/Common.h"
 #include "WindField.h"
 
-class CWindFieldRecord
+class CWindFieldDatabase
 {
 public:
     /** Default constructor */
-    CWindFieldRecord();
+    CWindFieldDatabase();
 
     // ------------------- PUBLIC METHODS -------------------------
 

@@ -1,22 +1,22 @@
 #include "StdAfx.h"
 #include "WindFieldRecord.h"
 
-CWindFieldRecord::CWindFieldRecord()
+CWindFieldDatabase::CWindFieldDatabase()
 {
     m_windField.reserve(10);
 }
 
-void CWindFieldRecord::InsertWindField(const CWindField& wind)
+void CWindFieldDatabase::InsertWindField(const CWindField& wind)
 {
     m_windField.push_back(wind);
 }
 
-long CWindFieldRecord::GetRecordNum() const
+long CWindFieldDatabase::GetRecordNum() const
 {
     return (long)m_windField.size();
 }
 
-RETURN_CODE CWindFieldRecord::InterpolateWindField(const CDateTime desiredTime, CWindField &desiredWindField) const
+RETURN_CODE CWindFieldDatabase::InterpolateWindField(const CDateTime desiredTime, CWindField &desiredWindField) const
 {
     // First check if there's any records at all in the database
     if (m_windField.size() == 0)

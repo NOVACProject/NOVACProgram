@@ -98,7 +98,8 @@ RETURN_CODE CWindFileReader::ReadWindFile()
                     {
                         windfield.SetTime(fValue1, fValue2, 0);
                     }
-                    else {
+                    else
+                    {
                         windfield.SetTime(fValue1, fValue2, fValue3);
                     }
 

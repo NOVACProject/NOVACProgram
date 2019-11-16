@@ -73,7 +73,7 @@ private:
     CCriticalSection m_critSect;
 
     /** Information about the wind */
-    CWindFieldRecord m_windRecord;
+    CWindFieldDatabase m_windRecord;
 };
 
 }
