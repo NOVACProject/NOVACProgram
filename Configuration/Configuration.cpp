@@ -4,30 +4,20 @@
 /** The global instance of configuration settings */
 CConfigurationSetting g_settings;
 
-CConfigurationSetting::CConfigurationSetting(void)
-{
-    this->outputDirectory.Format("");
 
-    this->scannerNum = 0;
-    this->startup = STARTUP_MANUAL;
-}
-
-void CConfigurationSetting::Clear(void)
+void CConfigurationSetting::Clear()
 {
-    int i;
-    for (i = 0; i < MAX_NUMBER_OF_SCANNING_INSTRUMENTS; ++i) {
+    for (int i = 0; i < MAX_NUMBER_OF_SCANNING_INSTRUMENTS; ++i)
+    {
         scanner[i].Clear();
     }
 
     scannerNum = 0;
 }
 
-
 /** ------------- Constructor for the communication-settings ----------------- */
 CConfigurationSetting::CommunicationSetting::CommunicationSetting()
 {
-    // initialize the communication
-
     // Serial settings
     this->baudrate = 115200;
     this->connectionType = FTP_CONNECTION;
@@ -36,14 +26,14 @@ CConfigurationSetting::CommunicationSetting::CommunicationSetting()
     medium = MEDIUM_CABLE;
 
     // Freewave radio modems
-    radioID.Format("0");
+    radioID = "0";
 
     // FTP - Settings
     ftpHostName = "192.168.0.1";
-    ftpUserName.Format("novac");
-    ftpPassword.Format("1225");
-    ftpAdminUserName.Format("administrator");
-    ftpAdminPassword.Format("1225");
+    ftpUserName = "novac";
+    ftpPassword = "1225";
+    ftpAdminUserName = "administrator";
+    ftpAdminPassword = "1225";
 
     // General Settings
     this->queryPeriod = 10 * 60; // <-- query every 10 minutes
@@ -56,10 +46,8 @@ CConfigurationSetting::CommunicationSetting::CommunicationSetting()
     this->wakeupTime.second = 0;
 }
 
-CConfigurationSetting::CommunicationSetting::~CommunicationSetting() {
-}
-
-void CConfigurationSetting::CommunicationSetting::Clear() {
+void CConfigurationSetting::CommunicationSetting::Clear()
+{
     // initialize the communication
     // Serial settings
     this->baudrate = 57600;
@@ -69,14 +57,14 @@ void CConfigurationSetting::CommunicationSetting::Clear() {
     medium = MEDIUM_CABLE;
 
     // Freewave radio modems
-    radioID.Format("0");
+    radioID = "0";
 
     // FTP - Settings
     ftpHostName = "192.168.0.1";
-    ftpUserName.Format("novac");
-    ftpPassword.Format("1225");
-    ftpAdminUserName.Format("administrator");
-    ftpAdminPassword.Format("1225");
+    ftpUserName = "novac";
+    ftpPassword = "1225";
+    ftpAdminUserName = "administrator";
+    ftpAdminPassword = "1225";
 
 
     // General Settings
@@ -91,40 +79,38 @@ void CConfigurationSetting::CommunicationSetting::Clear() {
 }
 
 /** ------------- Constructor for the motor-settings ----------------- */
-CConfigurationSetting::MotorSetting::MotorSetting() {
-    this->Clear();
-}
-CConfigurationSetting::MotorSetting::~MotorSetting() {
-}
-void CConfigurationSetting::MotorSetting::Clear() {
+void CConfigurationSetting::MotorSetting::Clear()
+{
     this->motorStepsComp = 85;
     this->stepsPerRound = 200;
 }
-CConfigurationSetting::MotorSetting& CConfigurationSetting::MotorSetting::operator =(const CConfigurationSetting::MotorSetting &motor2) {
+
+CConfigurationSetting::MotorSetting& CConfigurationSetting::MotorSetting::operator =(const CConfigurationSetting::MotorSetting &motor2)
+{
     this->motorStepsComp = motor2.motorStepsComp;
     this->stepsPerRound = motor2.stepsPerRound;
     return *this;
 }
 
 /** ------------- Constructor for the scanner-settings ----------------- */
-CConfigurationSetting::ScanningInstrumentSetting::ScanningInstrumentSetting() {
+CConfigurationSetting::ScanningInstrumentSetting::ScanningInstrumentSetting()
+{
     this->Clear();
-}
-
-CConfigurationSetting::ScanningInstrumentSetting::~ScanningInstrumentSetting() {
 }
 
 void CConfigurationSetting::ScanningInstrumentSetting::Clear() {
     tilt = 0.0;
     coneAngle = 90.0;
     compass = 0;
-    observatory.Format("");
-    site.Format("");
+    observatory = "";
+    site = "";
     specNum = 0;
-    volcano.Format("");
+    volcano = "";
     electronicsBox = BOX_VERSION_2;
     for (int i = 0; i < MAX_SPECTROMETERS_PER_SCANNER; ++i)
+    {
         spec[i].Clear();
+    }
     plotColumn = 0;
     plotColumnHistory = 0;
     minColumn = 0;
@@ -136,9 +122,6 @@ void CConfigurationSetting::ScanningInstrumentSetting::Clear() {
 }
 
 /** --------- Constructor for the spectrometer channel settings ------------- */
-CConfigurationSetting::SpectrometerChannelSetting::SpectrometerChannelSetting()
-{
-}
 
 void CConfigurationSetting::SpectrometerChannelSetting::Clear()
 {
@@ -160,31 +143,29 @@ CConfigurationSetting::SpectrometerChannelSetting &CConfigurationSetting::Spectr
 }
 
 /** ------------- Constructor for the spectrometer-settings ----------------- */
-CConfigurationSetting::SpectrometerSetting::SpectrometerSetting() {
-    channelNum = 0;
-    serialNumber.Format("");
-    modelName = "S2000";
-}
 
-CConfigurationSetting::SpectrometerSetting::~SpectrometerSetting() {
-}
-
-void CConfigurationSetting::SpectrometerSetting::Clear() {
-    channelNum = 0;
-    serialNumber.Format("");
-    modelName = "S2000";
+void CConfigurationSetting::SpectrometerSetting::Clear()
+{
+    this->channelNum = 0;
+    this->serialNumber = "";
+    this->modelName = "S2000";
     for (int i = 0; i < MAX_CHANNEL_NUM; ++i)
-        channel[i].Clear();
+    {
+        this->channel[i].Clear();
+    }
 }
 
-CConfigurationSetting::SpectrometerSetting &CConfigurationSetting::SpectrometerSetting::operator=(const CConfigurationSetting::SpectrometerSetting &spec2) {
-    channelNum = spec2.channelNum;
+CConfigurationSetting::SpectrometerSetting &CConfigurationSetting::SpectrometerSetting::operator=(const CConfigurationSetting::SpectrometerSetting& other)
+{
+    this->channelNum = other.channelNum;
 
     for (int i = 0; i < MAX_CHANNEL_NUM; ++i)
-        channel[i] = spec2.channel[i];
+    {
+        this->channel[i] = other.channel[i];
+    }
 
-    serialNumber.Format("%s", (LPCSTR)spec2.serialNumber);
-    modelName = spec2.modelName;
+    this->serialNumber = other.serialNumber;
+    this->modelName = other.modelName;
 
     return *this;
 }
@@ -248,48 +229,21 @@ void CConfigurationSetting::CFTPSetting::SetFTPStatus(int status)
     ftpStatus = status;
 }
 
-CConfigurationSetting::WebSettings::WebSettings() {
-    this->publish = 0;		// default is to not publish the results
-    imageFormat.Format(".png");
-    this->localDirectory.Format("");
-}
 
-CConfigurationSetting::WebSettings::~WebSettings() {
-}
-
-CConfigurationSetting::CExternalCallSettings::CExternalCallSettings() {
-    // by default, nothing is called
-    fullScanScript.Format("");
-    imageScript.Format("");
-}
-
-CConfigurationSetting::CExternalCallSettings::~CExternalCallSettings() {
-    // clean the file-names
-    fullScanScript.Format("");
-    imageScript.Format("");
-}
-
-CConfigurationSetting::CWindFieldDataSettings::CWindFieldDataSettings() {
-    Common common;
-    common.GetExePath();
-
+CConfigurationSetting::CWindFieldDataSettings::CWindFieldDataSettings()
+{
     // By default the wind-field file is on the FTP-server in the 'wind' directory
-    windFieldFile.Format("ftp://129.16.35.206/wind/");
+    windFieldFile = "ftp://129.16.35.206/wind/";
     windFileReloadInterval = 360; // re-read the file every 6 hours
 }
 
-CConfigurationSetting::CWindFieldDataSettings::~CWindFieldDataSettings() {
-    windFieldFile.Format("");
-    windFileReloadInterval = 0;
-}
-
-CConfigurationSetting::WindSpeedMeasurementSetting::WindSpeedMeasurementSetting() {
+CConfigurationSetting::WindSpeedMeasurementSetting::WindSpeedMeasurementSetting()
+{
     this->Clear();
 }
-CConfigurationSetting::WindSpeedMeasurementSetting::~WindSpeedMeasurementSetting() {
 
-}
-void CConfigurationSetting::WindSpeedMeasurementSetting::Clear() {
+void CConfigurationSetting::WindSpeedMeasurementSetting::Clear()
+{
     automaticWindMeasurements = false;
     duration = 20 * 60;		// 20 minutes duration
     interval = 60 * 60;		// measurement once every hour
@@ -318,10 +272,9 @@ CConfigurationSetting::WindSpeedMeasurementSetting& CConfigurationSetting::WindS
 CConfigurationSetting::SetupChangeSetting::SetupChangeSetting() {
     this->Clear();
 }
-CConfigurationSetting::SetupChangeSetting::~SetupChangeSetting() {
 
-}
-void CConfigurationSetting::SetupChangeSetting::Clear() {
+void CConfigurationSetting::SetupChangeSetting::Clear()
+{
     automaticSetupChange = 0;
     useCalculatedPlumeParameters = 0;
     windDirectionTolerance = 20.0;
