@@ -6,15 +6,6 @@
 /** The global instance of meterological data */
 CMeteorologicalData g_metData;
 
-CMeteorologicalData::~CMeteorologicalData()
-{
-    if (m_wfDatabaseFromFile != nullptr)
-    {
-        delete m_wfDatabaseFromFile;
-        m_wfDatabaseFromFile = nullptr;
-    }
-}
-
 int CMeteorologicalData::SetWindField(const CString& serialNumber, const CWindField& windField)
 {
     for (int i = 0; i < m_scannerNum; ++i)
@@ -34,7 +25,7 @@ int CMeteorologicalData::SetWindField(const CString& serialNumber, const CWindFi
     }
 
     // insert a scanner
-    m_scanner[m_scannerNum].Format("%s", (LPCTSTR)serialNumber);
+    m_scanner[m_scannerNum] = serialNumber;
     m_windFieldAtScanner[m_scannerNum] = windField;
     ++m_scannerNum;
 
@@ -95,11 +86,7 @@ int CMeteorologicalData::ReadWindFieldFromFile(const CString& fileName)
     std::lock_guard<std::mutex> lock(m_wfDatabaseMutex);
 
     // Completely reset the data in the existing file-reader
-    if (m_wfDatabaseFromFile != nullptr)
-    {
-        delete m_wfDatabaseFromFile;
-    }
-    m_wfDatabaseFromFile = new CWindFieldDatabase();
+    m_wfDatabaseFromFile.reset(new CWindFieldDatabase());
 
     // Start reading the file
     bool fileReadSuccessfully = false;
@@ -132,8 +119,7 @@ int CMeteorologicalData::ReadWindFieldFromFile(const CString& fileName)
     }
     else
     {
-        delete m_wfDatabaseFromFile;
-        m_wfDatabaseFromFile = nullptr;
+        m_wfDatabaseFromFile.release();
         return 1;
     }
 }
