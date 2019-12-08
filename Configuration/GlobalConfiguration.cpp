@@ -109,12 +109,12 @@ void CGlobalConfiguration::OnBrowseWindFieldFile() {
     Common common;
 
     // Make a filter for files to look for
-    int n = _stprintf(filter, "Text Files\0");
-    n += _stprintf(filter + n + 1, "*.txt;\0");
+    int n = _stprintf(filter, "Wind Field Files\0");
+    n += _stprintf(filter + n + 1, "*.txt;*.nc;\0");
     filter[n + 2] = 0;
 
     // let the user browse for an wind-field file
-    if (!common.BrowseForFile_SaveAs(filter, fileName)) {
+    if (!common.BrowseForFile(filter, fileName)) {
         return; // cancelled
     }
 

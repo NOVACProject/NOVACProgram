@@ -132,11 +132,28 @@ bool CMeteorologicalData::ReadWindFieldFromNetCdfFile(const CString& fileName)
 
     fileReader.m_windFile = fileName;
 
-    // Read the wind-file
-    CGPSData volcanoPosition; // TODO: Fill in this!
+    // Read the wind-file. If we have multiple volcanoes listed, then this wind-field
+    //  file may be for one volcano only. Test with each volcano until we found the correct one.
+    //  NOTICE: This will not work for a wind-field file with multiple locations...
+    if (this->m_volcanoes.size() > 0)
+    {
+        for (const CNamedLocation& volcano : this->m_volcanoes)
+        {
+            auto returnCode = fileReader.ReadWindFile(volcano, *m_wfDatabaseFromFile);
+            if (returnCode == SUCCESS) // we found the correct volcano.
+            {
+                return true;
+            }
+        }
 
-    auto returnCode = fileReader.ReadWindFile(volcanoPosition, *m_wfDatabaseFromFile);
+        return false; // failed to read the file.
+    }
+    else
+    {
+        CGPSData volcanoPosition; // TODO: Fill in this!
+        auto returnCode = fileReader.ReadWindFile(volcanoPosition, *m_wfDatabaseFromFile);
 
-    return returnCode == SUCCESS;
+        return returnCode == SUCCESS;
+    }
 }
 
