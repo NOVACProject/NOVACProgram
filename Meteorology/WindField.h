@@ -11,10 +11,11 @@
 class CWindField
 {
 public:
-    CWindField();
+    CWindField() = default;
 
-    /** assignment operator */
-    CWindField &operator=(const CWindField &wf2);
+    /** Copying */
+    CWindField& operator=(const CWindField& other);
+    CWindField(const CWindField& other);
 
     /** Sets the wind-speed */
     void SetWindSpeed(double ws, MET_SOURCE source, double wsError = 0.0);
@@ -73,41 +74,41 @@ public:
 private:
 
     /** The speed of the wind */
-    double m_windSpeed;
+    double m_windSpeed = 10.0;
 
     /** The uncertainty in the wind-speed */
-    double m_windSpeedError;
+    double m_windSpeedError = 3.0;
 
     /** The source of the wind-speed data */
-    MET_SOURCE m_windSpeedSource;
+    MET_SOURCE m_windSpeedSource = MET_DEFAULT;
 
     /** The direction of the wind, in degrees */
-    double m_windDirection;
+    double m_windDirection = 0.0;
 
     /** The uncertainty in the wind-direction */
-    double m_windDirectionError;
+    double m_windDirectionError = 10.0;
 
     /** The source of the wind-direction data */
-    MET_SOURCE m_windDirectionSource;
+    MET_SOURCE m_windDirectionSource = MET_DEFAULT;
 
     /** The altitude (in meters above sea level)
         for which this wind-field is valid
         If this wind-field is valid for all altitudes then this
             value is equal to -1.0 */
-    double m_altitude;
+    double m_altitude = -1.0;
 
     /** The height of the plume. It is a bit unlogical to store
         the plume height here but quite practial... */
-    double m_plumeHeight;
+    double m_plumeHeight = 1000.0;
 
     /** The uncertainty in the plume height */
-    double m_plumeHeightError;
+    double m_plumeHeightError = 500.0;
 
     /** The source of the plume-height data */
-    MET_SOURCE m_plumeHeightSource;
+    MET_SOURCE m_plumeHeightSource = MET_DEFAULT;
 
     /** The estimated error for the wind */
-    double m_windError;
+    double m_windError = 30.0;
 
     /** The date and time for which this wind-information is/was valid */
     CDateTime m_time;

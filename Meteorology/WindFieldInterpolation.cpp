@@ -88,13 +88,13 @@ void InterpolateWind(
         indices[1] = spatialIndices[1] - latFloor;
         indices[2] = spatialIndices[2] - lonFloor;
 
-        if (TriLinearInterpolation(windSpeedTemp, indices, interpolatedVariation))
+        if (TriLinearInterpolation(windSpeedTemp, indices, interpolatedValue, interpolatedVariation))
         {
             finalWindSpeeds[timeIdx] = interpolatedValue;
             finalWindSpeedErrors[timeIdx] = interpolatedVariation;
         }
 
-        if (TriLinearInterpolation(windDirTemp, indices, interpolatedVariation))
+        if (TriLinearInterpolation(windDirTemp, indices, interpolatedValue, interpolatedVariation))
         {
             finalWindDirections[timeIdx] = interpolatedValue;
             finalWindDirectionErrors[timeIdx] = interpolatedVariation;

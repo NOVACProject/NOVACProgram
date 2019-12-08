@@ -1,42 +1,39 @@
 #include "StdAfx.h"
 #include "WindField.h"
 
-CWindField::CWindField()
+CWindField::CWindField(const CWindField& other) :
+    m_windSpeed(other.m_windSpeed),
+    m_windSpeedError(other.m_windSpeedError),
+    m_windSpeedSource(other.m_windSpeedSource),
+    m_windDirection(other.m_windDirection),
+    m_windDirectionError(other.m_windDirectionError),
+    m_windDirectionSource(other.m_windDirectionSource),
+    m_altitude(other.m_altitude),
+    m_plumeHeight(other.m_plumeHeight),
+    m_plumeHeightError(other.m_plumeHeightError),
+    m_plumeHeightSource(other.m_plumeHeightSource),
+    m_windError(other.m_windError),
+    m_time(other.m_time)
 {
-    this->m_plumeHeight = 1000.0;
-    this->m_plumeHeightError = 500.0;
-    this->m_plumeHeightSource = MET_DEFAULT;
-
-    this->m_windDirection = 0.0;
-    this->m_windDirectionError = 10.0;
-    this->m_windDirectionSource = MET_DEFAULT;
-
-    this->m_windSpeed = 10.0;
-    this->m_windSpeedError = 3.0;
-    this->m_windSpeedSource = MET_DEFAULT;
-
-    this->m_altitude = -1.0; // all altitudes
-
-    this->m_windError = 30.0;
 }
 
-CWindField &CWindField::operator=(const CWindField &wf2)
+CWindField& CWindField::operator=(const CWindField& other)
 {
-    this->m_plumeHeight = wf2.m_plumeHeight;
-    this->m_plumeHeightError = wf2.m_plumeHeightError;
-    this->m_plumeHeightSource = wf2.m_plumeHeightSource;
+    this->m_plumeHeight = other.m_plumeHeight;
+    this->m_plumeHeightError = other.m_plumeHeightError;
+    this->m_plumeHeightSource = other.m_plumeHeightSource;
 
-    this->m_windDirection = wf2.m_windDirection;
-    this->m_windDirectionError = wf2.m_windDirectionError;
-    this->m_windDirectionSource = wf2.m_windDirectionSource;
+    this->m_windDirection = other.m_windDirection;
+    this->m_windDirectionError = other.m_windDirectionError;
+    this->m_windDirectionSource = other.m_windDirectionSource;
 
-    this->m_windSpeed = wf2.m_windSpeed;
-    this->m_windSpeedError = wf2.m_windSpeedError;
-    this->m_windSpeedSource = wf2.m_windSpeedSource;
+    this->m_windSpeed = other.m_windSpeed;
+    this->m_windSpeedError = other.m_windSpeedError;
+    this->m_windSpeedSource = other.m_windSpeedSource;
 
-    this->m_altitude = wf2.m_altitude;
+    this->m_altitude = other.m_altitude;
 
-    this->m_time = wf2.m_time;
+    this->m_time = other.m_time;
 
     return *this;
 }
@@ -94,17 +91,17 @@ MET_SOURCE CWindField::GetWindSpeedSource() const
 void CWindField::GetWindSpeedSource(CString &str) const
 {
     if (MET_DEFAULT == m_windSpeedSource)
-        str.Format("default");
+        str = "default";
     else if (MET_USER == m_windSpeedSource)
-        str.Format("user");
+        str = "user";
     else if (MET_ECMWF_FORECAST == m_windSpeedSource)
-        str.Format("ecmwf_forecast");
+        str = "ecmwf_forecast";
     else if (MET_ECMWF_ANALYSIS == m_windSpeedSource)
-        str.Format("ecmwf_analysis");
+        str = "ecmwf_analysis";
     else if (MET_DUAL_BEAM_MEASUREMENT == m_windSpeedSource)
-        str.Format("dual_beam_measurement");
+        str = "dual_beam_measurement";
     else
-        str.Format("unknown");
+        str = "unknown";
 
     return;
 }
@@ -122,17 +119,17 @@ MET_SOURCE CWindField::GetWindDirectionSource() const
 void CWindField::GetWindDirectionSource(CString &str) const
 {
     if (MET_DEFAULT == m_windDirectionSource)
-        str.Format("default");
+        str = "default";
     else if (MET_USER == m_windDirectionSource)
-        str.Format("user");
+        str = "user";
     else if (MET_ECMWF_FORECAST == m_windDirectionSource)
-        str.Format("ecmwf_forecast");
+        str = "ecmwf_forecast";
     else if (MET_ECMWF_ANALYSIS == m_windDirectionSource)
-        str.Format("ecmwf_analysis");
+        str = "ecmwf_analysis";
     else if (MET_GEOMETRY_CALCULATION == m_windDirectionSource)
-        str.Format("triangulation");
+        str = "triangulation";
     else
-        str.Format("unknown");
+        str = "unknown";
 }
 
 double CWindField::GetPlumeHeight() const
@@ -148,17 +145,17 @@ MET_SOURCE CWindField::GetPlumeHeightSource() const
 void CWindField::GetPlumeHeightSource(CString& sourceStr) const
 {
     if (MET_DEFAULT == m_plumeHeightSource)
-        sourceStr.Format("default");
+        sourceStr = "default";
     else if (MET_USER == m_plumeHeightSource)
-        sourceStr.Format("user");
+        sourceStr = "user";
     else if (MET_ECMWF_FORECAST == m_plumeHeightSource)
-        sourceStr.Format("ecmwf_forecast");
+        sourceStr = "ecmwf_forecast";
     else if (MET_ECMWF_ANALYSIS == m_plumeHeightSource)
-        sourceStr.Format("ecmwf_analysis");
+        sourceStr = "ecmwf_analysis";
     else if (MET_GEOMETRY_CALCULATION == m_plumeHeightSource)
-        sourceStr.Format("triangulation");
+        sourceStr = "triangulation";
     else
-        sourceStr.Format("unknown");
+        sourceStr = "unknown";
 
     return;
 }

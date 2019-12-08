@@ -9,6 +9,12 @@ namespace FileHandler
 
 RETURN_CODE CNetCdfWindFileReader::ReadWindFile(const CGPSData& position, CWindFieldDatabase& result)
 {
+    {
+        CString message;
+        message.Format("Reading wind field from NetCdf data file %s", (LPCSTR)m_windFile);
+        ShowMessage(message);
+    }
+
     NetCdfFileReader fileReader;
     fileReader.Open((LPCSTR)m_windFile);
 
@@ -38,7 +44,7 @@ RETURN_CODE CNetCdfWindFileReader::ReadWindFile(const CGPSData& position, CWindF
 
     const double latitudeIdx = GetFractionalIndex(latitude.values, position.m_latitude);
     double longitudeIdx = GetFractionalIndex(longitude.values, position.m_longitude);
-    if(std::isnan(longitudeIdx))
+    if (std::isnan(longitudeIdx))
     {
         longitudeIdx = GetFractionalIndex(longitude.values, 360.0 + position.m_longitude);
     }
@@ -52,9 +58,46 @@ RETURN_CODE CNetCdfWindFileReader::ReadWindFile(const CGPSData& position, CWindF
         { levelIdx, latitudeIdx, longitudeIdx },
         interpolationResult);
 
-    // TODO: convert the result to CWindFieldDatabase
+    if (interpolationResult.speed.size() == 0)
+    {
+        ShowMessage("Failed to read NetCdf data file, no wind speeds could be found.");
+        return FAIL;
+    }
+    else if (interpolationResult.speed.size() != interpolationResult.direction.size())
+    {
+        ShowMessage("Failed to read NetCdf data file, number of estimated wind speeds and wind directions does not agree.");
+        return FAIL;
+    }
+    else if (interpolationResult.speed.size() != time.values.size())
+    {
+        ShowMessage("Failed to read NetCdf data file, number of estimated wind speeds and number of time stamps does not agree.");
+        return FAIL;
+    }
 
-    return FAIL;
+    // TODO: Get the source...
+    MET_SOURCE source = MET_ECMWF_FORECAST;
+
+    // Convert to a CWindFiledDatabase
+    result.Clear();
+    for (size_t ii = 0; ii < interpolationResult.speed.size(); ++ii)
+    {
+        CWindField field;
+
+        // time is hours since 1900-01-01 00:00:0.0
+        time_t rawtimeSinceEpoch = (time_t)(time.values[ii] * 3600.0) - 2208988800L;
+        struct tm ts;
+        gmtime_s(&ts, &rawtimeSinceEpoch); // get the individual fields.
+        field.SetDate(ts.tm_year + 1900, ts.tm_mon + 1, ts.tm_mday);
+        field.SetTime(ts.tm_hour, ts.tm_min, ts.tm_sec);
+
+        // Set the interpolated wind speed and direction
+        field.SetWindSpeed(interpolationResult.speed[ii], source, interpolationResult.speedError[ii]);
+        field.SetWindDirection(interpolationResult.direction[ii], source, interpolationResult.directionError[ii]);
+
+        result.InsertWindField(field);
+    }
+
+    return SUCCESS;
 }
 
 }

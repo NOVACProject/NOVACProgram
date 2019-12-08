@@ -5,3 +5,5 @@
 /*.aps
 /NovacMasterProgram.vcxproj.user
 /.vs
+/CppCheck-cppcheck-build-dir
+/*.cppcheck
