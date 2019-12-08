@@ -14,8 +14,7 @@
 class CWindFieldDatabase
 {
 public:
-    /** Default constructor */
-    CWindFieldDatabase();
+    CWindFieldDatabase() = default;
 
     // ------------------- PUBLIC DATA -------------------------
 

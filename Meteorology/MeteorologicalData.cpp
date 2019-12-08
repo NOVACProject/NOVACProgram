@@ -32,6 +32,11 @@ int CMeteorologicalData::SetWindField(const CString& serialNumber, const CWindFi
     return 0;
 }
 
+void CMeteorologicalData::SetVolcanoes(const std::vector<CNamedLocation>& volcanoes)
+{
+    this->m_volcanoes = volcanoes;
+}
+
 int CMeteorologicalData::GetWindField(const CString& serialNumber, const CDateTime& dt, CWindField& windField)
 {
     int scannerIndex = -1;
@@ -92,25 +97,11 @@ int CMeteorologicalData::ReadWindFieldFromFile(const CString& fileName)
     bool fileReadSuccessfully = false;
     if (Equals(fileName.Right(4), ".txt"))
     {
-        FileHandler::CWindFileReader fileReader;
-
-        fileReader.m_windFile = fileName;
-
-        // Read the wind-file
-        auto returnCode = fileReader.ReadWindFile(*m_wfDatabaseFromFile);
-        fileReadSuccessfully = (returnCode == SUCCESS);
+        fileReadSuccessfully = ReadWindFieldFromTextFile(fileName);
     }
     else if (Equals(fileName.Right(3), ".nc"))
     {
-        // NetCdf file
-        FileHandler::CNetCdfWindFileReader fileReader;
-
-        fileReader.m_windFile = fileName;
-
-        // Read the wind-file
-        CGPSData volcanoPosition; // TODO: Fill in this!
-        auto returnCode = fileReader.ReadWindFile(volcanoPosition, *m_wfDatabaseFromFile);
-        fileReadSuccessfully = (returnCode == SUCCESS);
+        fileReadSuccessfully = ReadWindFieldFromNetCdfFile(fileName);
     }
 
     if (fileReadSuccessfully)
@@ -123,3 +114,29 @@ int CMeteorologicalData::ReadWindFieldFromFile(const CString& fileName)
         return 1;
     }
 }
+
+bool CMeteorologicalData::ReadWindFieldFromTextFile(const CString& fileName)
+{
+    FileHandler::CWindFileReader fileReader;
+
+    fileReader.m_windFile = fileName;
+
+    auto returnCode = fileReader.ReadWindFile(*m_wfDatabaseFromFile);
+
+    return returnCode == SUCCESS;
+}
+
+bool CMeteorologicalData::ReadWindFieldFromNetCdfFile(const CString& fileName)
+{
+    FileHandler::CNetCdfWindFileReader fileReader;
+
+    fileReader.m_windFile = fileName;
+
+    // Read the wind-file
+    CGPSData volcanoPosition; // TODO: Fill in this!
+
+    auto returnCode = fileReader.ReadWindFile(volcanoPosition, *m_wfDatabaseFromFile);
+
+    return returnCode == SUCCESS;
+}
+

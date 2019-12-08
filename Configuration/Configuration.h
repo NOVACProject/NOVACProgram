@@ -307,7 +307,6 @@ public:
         int enabled; // 1 if enabled; 0 if not
     };
 
-public:
     CConfigurationSetting() = default;
 
     /** Resets all values to default */
@@ -358,9 +357,8 @@ public:
 /** Lists the name of all volcanoes monitored by instruments connected to this computer. */
 std::vector<std::string> ListMonitoredVolcanoes(const CConfigurationSetting& settings);
 
-
-
-
-
+/** Extracts the name of the volcano which the provided instrument monitors.
+    Returns empty string if the scanner could not be found. */
+std::string GetVolcanoMonitoredByScanner(const CConfigurationSetting& settings, const std::string& serialNumber);
 
 #endif

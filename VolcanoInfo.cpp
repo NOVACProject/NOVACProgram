@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "VolcanoInfo.h"
+#include <SpectralEvaluation/StringUtils.h>
 
 // The global database of volcanoes
 CVolcanoInfo g_volcanoes;
@@ -266,3 +267,31 @@ CVolcanoInfo::CVolcanoInfo()
 
     m_preConfiguredVolcanoNum = m_volcanoNum;
 }
+
+int IndexOfVolcano(const std::string& volcanoName)
+{
+    for (int ii = 0; ii < (int)g_volcanoes.m_volcanoNum; ++ii)
+    {
+        if (EqualsIgnoringCase(volcanoName.c_str(), g_volcanoes.m_name[ii]))
+        {
+            return ii;
+        }
+    }
+
+    return -1;
+}
+
+CNamedLocation GetVolcano(unsigned int volcanoIndex)
+{
+    if (volcanoIndex >= g_volcanoes.m_volcanoNum)
+    {
+        return CNamedLocation(0.0, 0.0, 0.0, "Unknown");
+    }
+
+    return CNamedLocation(
+        g_volcanoes.m_peakLatitude[volcanoIndex],
+        g_volcanoes.m_peakLongitude[volcanoIndex],
+        g_volcanoes.m_peakHeight[volcanoIndex],
+        std::string((LPCSTR)g_volcanoes.m_name[volcanoIndex]));
+}
+

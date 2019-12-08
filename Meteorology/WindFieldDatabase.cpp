@@ -1,11 +1,6 @@
 #include "StdAfx.h"
 #include "WindFieldDatabase.h"
 
-CWindFieldDatabase::CWindFieldDatabase()
-{
-    m_windField.reserve(10);
-}
-
 void CWindFieldDatabase::InsertWindField(const CWindField& wind)
 {
     m_windField.push_back(wind);

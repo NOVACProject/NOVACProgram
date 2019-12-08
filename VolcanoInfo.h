@@ -1,5 +1,8 @@
 #pragma once
 
+#include <string>
+#include <SpectralEvaluation/GPSData.h>
+
 /** The <b>CVolcanoInfo</b>-class the programs database of known volcanoes with 
     name, position and associated observatory.
     This information is used throughout the program in order to retrieve information
@@ -39,5 +42,12 @@ public:
     /** The number of volcanoes that are configured by the program
         (if m_preConfiguredVolcanoNum > m_volcanoNum then the user has added a volcano) */
     unsigned int m_preConfiguredVolcanoNum;
-
 };
+
+/** Retrieves the index (in the CVolcanoInfo structure) of the volcano with the given name.
+    Returns -1 if no volcano could be found. */
+int IndexOfVolcano(const std::string& volcanoName);
+
+/** Retrieves the information regarding the volcanoe with the given index */
+CNamedLocation GetVolcano(unsigned int volcanoIndex);
+

@@ -299,14 +299,31 @@ std::vector<std::string> ListMonitoredVolcanoes(const CConfigurationSetting& set
 
     for (unsigned int k = 0; k < settings.scannerNum; ++k)
     {
-        for (unsigned int j = 0; j < settings.scanner[k].specNum; ++j)
-        {
-            std::string name = settings.scanner[k].volcano;
-            allVolcanoes.insert(name);
-        }
+        std::string name = settings.scanner[k].volcano;
+        allVolcanoes.insert(name);
     }
 
-    std::vector<std::string> volcanoNames{begin(allVolcanoes), end(allVolcanoes)};
+    std::vector<std::string> volcanoNames{ begin(allVolcanoes), end(allVolcanoes) };
 
     return volcanoNames;
 }
+
+std::string GetVolcanoMonitoredByScanner(const CConfigurationSetting& settings, const std::string& serialNumber)
+{
+    const CString serial = serialNumber.c_str();
+
+    // find the name of the volcano that is monitored
+    for (unsigned int k = 0; k < settings.scannerNum; ++k)
+    {
+        for (unsigned int j = 0; j < settings.scanner[k].specNum; ++j)
+        {
+            if (Equals(serial, settings.scanner[k].spec[j].serialNumber))
+            {
+                return std::string((LPCSTR)g_settings.scanner[k].volcano);
+            }
+        }
+    }
+
+    return "";
+}
+
