@@ -245,7 +245,7 @@ CConfigurationSetting::WindSpeedMeasurementSetting::WindSpeedMeasurementSetting(
 
 void CConfigurationSetting::WindSpeedMeasurementSetting::Clear()
 {
-    automaticWindMeasurements = false;
+    automaticWindMeasurements = true;
     duration = 20 * 60;		// 20 minutes duration
     interval = 60 * 60;		// measurement once every hour
     maxAngle = 30;				// only make wind measurements if the plume centre is within 30 degrees from zenith

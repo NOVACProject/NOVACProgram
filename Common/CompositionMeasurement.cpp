@@ -1,60 +1,43 @@
 #include "StdAfx.h"
 #include "CompositionMeasurement.h"
-
-// This is for debugging only!
 #include "../VolcanoInfo.h"
+#include "../Evaluation/Spectrometer.h"
 
 extern CConfigurationSetting g_settings;	// <-- The settings
 extern CWinThread *g_comm;					// <-- the communication controller
-extern CVolcanoInfo g_volcanoes;			// <-- A list of all known volcanoes
 
-using namespace Composition;
-
-CCompositionMeasurement::CCompositionMeasurement(void)
+namespace Composition
 {
-}
 
-CCompositionMeasurement::~CCompositionMeasurement(void)
+bool CCompositionMeasurement::IsTimeForCompositionMeasurement(const Evaluation::CSpectrometer *spectrometer)
 {
-}
-
-/** Runs through the history of the CSpectrometer and judges
-        if we should perform a composition measurement now.
-        @return true if a composition measurement should be started else return false */
-bool CCompositionMeasurement::IsTimeForCompositionMeasurement(const Evaluation::CSpectrometer *spectrometer) {
-    CString dateStr, timeStr, debugFile, serial;
+    CString dateStr, timeStr, debugFile;
     Common common;
     common.GetDateText(dateStr);
     common.GetTimeText(timeStr);
 
     // For debugging...
     debugFile.Format("%sOutput\\%s\\Debug_CompositionMeas.txt", (LPCSTR)g_settings.outputDirectory, (LPCSTR)dateStr);
-    serial.Format("%s", (LPCSTR)spectrometer->m_scanner.spec[0].serialNumber);
+    
+    const CString serial = spectrometer->m_scanner.spec[0].serialNumber;
 
-    int thisVolcano = -1;
-    for (unsigned int k = 0; k < g_volcanoes.m_volcanoNum; ++k) {
-        if (Equals(spectrometer->m_scanner.volcano, g_volcanoes.m_name[k])) {
-            thisVolcano = k;
-            break;
-        }
-    }
-
-    //// -1. This checking should only be performed on master-channel spectrometers...
-    //if(spectrometer->m_channel != 0)
-    //	return false;
+    const std::string volcanoName = spectrometer->m_scanner.volcano;
+    const int thisVolcano = IndexOfVolcano(volcanoName);
 
     // 0. Local handles, to get less dereferencing...
-    int	stablePeriod = 5;		// <-- the plume should be stable for at least 5 scans before we do any measurements
-    int	interval = 3 * 3600;	// <-- don't make these measurements more often than every 3 hours
-    int	minColumn = 150;		// <-- don't make composition measurements for too weak plumes
+    const int stablePeriod = 5;		// <-- the plume should be stable for at least 5 scans before we do any measurements
+    const int interval = 3 * 3600;	// <-- don't make these measurements more often than every 3 hours
+    const int minColumn = 150;		// <-- don't make composition measurements for too weak plumes
 
     // 1. Check the history of the spectrometer
 
     // 1a. Have we recieved any scans today?
     const int nScans = spectrometer->m_history->GetNumScans();
-    if (nScans < stablePeriod) { // <-- there must be enough scans received from the instrument today for us to make any wind-measurement
+    if (nScans < stablePeriod)  // <-- there must be enough scans received from the instrument today for us to make any wind-measurement
+    {
         FILE *f = fopen(debugFile, "a+");
-        if (f != NULL) {
+        if (f != nullptr)
+        {
             fprintf(f, "%s\t%s\tNo measurement: Too few scans received today (%d).\n", (LPCSTR)timeStr, (LPCSTR)serial, nScans);
             fclose(f);
             UploadToNOVACServer(debugFile, thisVolcano, false);
@@ -64,10 +47,12 @@ bool CCompositionMeasurement::IsTimeForCompositionMeasurement(const Evaluation::
 
     // 2b. How long time has passed since the last composition measurement?
     const int sPassed = spectrometer->m_history->SecondsSinceLastCompMeas();
-    if (sPassed > 0 && sPassed < interval) {
+    if (sPassed > 0 && sPassed < interval)
+    {
         FILE *f = fopen(debugFile, "a+");
-        if (f != NULL) {
-            fprintf(f, "%s\t%s\tNo measurement: Little time since last measurement\n", (LPCSTR)timeStr, (LPCSTR)serial);
+        if (f != nullptr)
+        {
+            fprintf(f, "%s\t%s\tNo measurement: Little time since last measurement (%d s)\n", (LPCSTR)timeStr, (LPCSTR)serial, sPassed);
             fclose(f);
             UploadToNOVACServer(debugFile, thisVolcano, false);
         }
@@ -75,16 +60,20 @@ bool CCompositionMeasurement::IsTimeForCompositionMeasurement(const Evaluation::
     }
 
     // 2c. What's the average time between the start of two scans today?
-    double	timePerScan = spectrometer->m_history->GetScanInterval();
+    const double timePerScan = spectrometer->m_history->GetScanInterval();
     if (timePerScan < 0)
+    {
         return false; // <-- no scans have arrived today
+    }
 
     // 2d. Get the plume centre variation over the last few scans
-    //			If any scan missed the plume, return false
+    //      If any scan missed the plume, return false
     double centreMin, centreMax;
-    if (false == spectrometer->m_history->GetPlumeCentreVariation(stablePeriod, 0, centreMin, centreMax)) {
+    if (false == spectrometer->m_history->GetPlumeCentreVariation(stablePeriod, 0, centreMin, centreMax))
+    {
         FILE *f = fopen(debugFile, "a+");
-        if (f != NULL) {
+        if (f != nullptr)
+        {
             fprintf(f, "%s\t%s\tNo measurement: At least one of the last %d scans has missed the plume\n", (LPCSTR)timeStr, (LPCSTR)serial, stablePeriod);
             fclose(f);
             UploadToNOVACServer(debugFile, thisVolcano, false);
@@ -93,11 +82,13 @@ bool CCompositionMeasurement::IsTimeForCompositionMeasurement(const Evaluation::
     }
 
     // 2e. If there's a substantial variation in plume centre over the last
-    //			few scans then don't make any measurement
-    if (fabs(centreMax - centreMin) > 50) {
+    //      few scans then don't make any measurement
+    if (std::abs(centreMax - centreMin) > 50)
+    {
         FILE *f = fopen(debugFile, "a+");
-        if (f != NULL) {
-            fprintf(f, "%s\t%s\tNo measurement: Too large variation in plume centre\n", (LPCSTR)timeStr, (LPCSTR)serial);
+        if (f != nullptr)
+        {
+            fprintf(f, "%s\t%s\tNo measurement: Too large variation in plume centre (%lf degrees)\n", (LPCSTR)timeStr, (LPCSTR)serial, centreMax - centreMin);
             fclose(f);
             UploadToNOVACServer(debugFile, thisVolcano, false);
         }
@@ -106,10 +97,12 @@ bool CCompositionMeasurement::IsTimeForCompositionMeasurement(const Evaluation::
 
     // 2f. If the plumeCentre is at lower angles than 20 degrees from the horizon
     double plumeCentre = spectrometer->m_history->GetPlumeCentre(stablePeriod);
-    if (fabs(plumeCentre) > 70) {
+    if (std::abs(plumeCentre) > 70)
+    {
         FILE *f = fopen(debugFile, "a+");
-        if (f != NULL) {
-            fprintf(f, "%s\t%s\tNo measurement: Too low plume\n", (LPCSTR)timeStr, (LPCSTR)serial);
+        if (f != nullptr)
+        {
+            fprintf(f, "%s\t%s\tNo measurement: Too low plume (plumeCentre: %lf, maxAngle: %lf)\n", (LPCSTR)timeStr, (LPCSTR)serial, plumeCentre, 70.0);
             fclose(f);
             UploadToNOVACServer(debugFile, thisVolcano, false);
         }
@@ -119,10 +112,11 @@ bool CCompositionMeasurement::IsTimeForCompositionMeasurement(const Evaluation::
     // 2g. If any of the plume-edges is at lower angles than 10 degrees from the horizon
     double plumeEdge[2];
     spectrometer->m_history->GetPlumeEdges(stablePeriod, plumeEdge[0], plumeEdge[1]);
-    if (fabs(plumeEdge[0]) > 80 || fabs(plumeEdge[1]) > 80) {
+    if (std::abs(plumeEdge[0]) > 80 || std::abs(plumeEdge[1]) > 80)
+    {
         FILE *f = fopen(debugFile, "a+");
-        if (f != NULL) {
-            fprintf(f, "%s\t%s\tNo measurement: Too low plume edges\n", (LPCSTR)timeStr, (LPCSTR)serial);
+        if (f != nullptr) {
+            fprintf(f, "%s\t%s\tNo measurement: Too low plume edges (low: %lf, high: %lf)\n", (LPCSTR)timeStr, (LPCSTR)serial, plumeEdge[0], plumeEdge[1]);
             fclose(f);
             UploadToNOVACServer(debugFile, thisVolcano, false);
         }
@@ -131,10 +125,12 @@ bool CCompositionMeasurement::IsTimeForCompositionMeasurement(const Evaluation::
 
     // 2h. If the plume completeness is less than 70%
     double plumeCompleteness = spectrometer->m_history->GetPlumeCompleteness(stablePeriod);
-    if (plumeCompleteness < 0.7) {
+    if (plumeCompleteness < 0.7)
+    {
         FILE *f = fopen(debugFile, "a+");
-        if (f != NULL) {
-            fprintf(f, "%s\t%s\tNo measurement: Plume not complete\n", (LPCSTR)timeStr, (LPCSTR)serial);
+        if (f != nullptr)
+        {
+            fprintf(f, "%s\t%s\tNo measurement: Plume not complete (%lf)\n", (LPCSTR)timeStr, (LPCSTR)serial, plumeCompleteness);
             fclose(f);
             UploadToNOVACServer(debugFile, thisVolcano, false);
         }
@@ -142,12 +138,14 @@ bool CCompositionMeasurement::IsTimeForCompositionMeasurement(const Evaluation::
     }
 
     // 2i. Check so that the maximum column averaged over the last few scans is at least
-    //			'minColumn' ppmm
-    double maxColumn = spectrometer->m_history->GetColumnMax(stablePeriod);
-    if (maxColumn < minColumn) {
+    //      'minColumn' ppmm
+    const double maxColumn = spectrometer->m_history->GetColumnMax(stablePeriod);
+    if (maxColumn < minColumn)
+    {
         FILE *f = fopen(debugFile, "a+");
-        if (f != NULL) {
-            fprintf(f, "%s\t%s\tNo measurement: Too weak plume\n", (LPCSTR)timeStr, (LPCSTR)serial);
+        if (f != nullptr)
+        {
+            fprintf(f, "%s\t%s\tNo measurement: Too weak plume (%lf ppmm)\n", (LPCSTR)timeStr, (LPCSTR)serial, maxColumn);
             fclose(f);
             UploadToNOVACServer(debugFile, thisVolcano, false);
         }
@@ -155,12 +153,14 @@ bool CCompositionMeasurement::IsTimeForCompositionMeasurement(const Evaluation::
     }
 
     // 2j. Check so that the average exposure-time over the last few scans is not
-    //			too large. This to ensure that we can measure fast enough
+    //      too large. This to ensure that we can measure fast enough
     double expTime = spectrometer->m_history->GetExposureTime(stablePeriod);
-    if (expTime < 0 || expTime > 300) {
+    if (expTime < 0 || expTime > 300)
+    {
         FILE *f = fopen(debugFile, "a+");
-        if (f != NULL) {
-            fprintf(f, "%s\t%s\tNo measurement: Too long exptimes\n", (LPCSTR)timeStr, (LPCSTR)serial);
+        if (f != nullptr)
+        {
+            fprintf(f, "%s\t%s\tNo measurement: Too long exptimes (%lf ms)\n", (LPCSTR)timeStr, (LPCSTR)serial, expTime);
             fclose(f);
             UploadToNOVACServer(debugFile, thisVolcano, false);
         }
@@ -168,7 +168,8 @@ bool CCompositionMeasurement::IsTimeForCompositionMeasurement(const Evaluation::
     }
 
     FILE *f = fopen(debugFile, "a+");
-    if (f != NULL) {
+    if (f != nullptr)
+    {
         fprintf(f, "%s\t%s\tOk to do composition measurement!!\n", (LPCSTR)timeStr, (LPCSTR)serial);
         fclose(f);
         UploadToNOVACServer(debugFile, thisVolcano, false);
@@ -178,10 +179,9 @@ bool CCompositionMeasurement::IsTimeForCompositionMeasurement(const Evaluation::
     return true;
 }
 
-/** Starts an automatic composition measurement for the supplied spectrometer */
-void	CCompositionMeasurement::StartCompositionMeasurement(const Evaluation::CSpectrometer *spec) {
+void CCompositionMeasurement::StartCompositionMeasurement(const Evaluation::CSpectrometer *spec)
+{
     static CString message;
-    std::string spectrometerType;
     CString dateTime, directory;
     Common common;
     double plumeCentre, plumeEdge[2];
@@ -242,7 +242,7 @@ void	CCompositionMeasurement::StartCompositionMeasurement(const Evaluation::CSpe
     }
 
     FILE *f = fopen(*fileName, "w");
-    if (f == NULL) {
+    if (f == nullptr) {
         ShowMessage("Could not open cfgonce.txt for writing. Composition measurement failed!!");
         return;
     }
@@ -317,7 +317,7 @@ void	CCompositionMeasurement::StartCompositionMeasurement(const Evaluation::CSpe
     fclose(f);
 
     // 4. Tell the communication controller that we want to upload a file
-    if (g_comm != NULL)
+    if (g_comm != nullptr)
     {
         g_comm->PostThreadMessage(WM_UPLOAD_CFGONCE, (WPARAM)serialNumber, (LPARAM)fileName);
 
@@ -327,3 +327,4 @@ void	CCompositionMeasurement::StartCompositionMeasurement(const Evaluation::CSpe
     }
 }
 
+}
