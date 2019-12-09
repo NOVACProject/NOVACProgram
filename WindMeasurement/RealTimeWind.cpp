@@ -190,8 +190,7 @@ bool CRealTimeWind::IsTimeForWindMeasurement(const Evaluation::CSpectrometer* sp
     return true;
 }
 
-/** Starts an automatic wind-speed measurement for the supplied spectrometer */
-void CRealTimeWind::StartWindSpeedMeasurement(const Evaluation::CSpectrometer *spec, CWindField &windField)
+void CRealTimeWind::StartWindSpeedMeasurement(const Evaluation::CSpectrometer* spec)
 {
     static CString message;
     CString dateTime, directory;

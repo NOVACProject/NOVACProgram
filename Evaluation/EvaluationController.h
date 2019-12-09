@@ -89,7 +89,7 @@ namespace Evaluation
 			Special mode measurements are;
 				1 wind-speed measurements
 				2 composition measurements */
-		void InitiateSpecialModeMeasurement(CSpectrometer *spectrometer, CWindField &windField);
+		void InitiateSpecialModeMeasurement(const CSpectrometer* spectrometer);
 	private:
 		// ----------------------------------------------------------------------
 		// ---------------------- PRIVATE DATA ----------------------------------

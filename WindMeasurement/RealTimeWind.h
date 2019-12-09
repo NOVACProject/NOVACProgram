@@ -19,7 +19,7 @@ public:
     static bool	IsTimeForWindMeasurement(const Evaluation::CSpectrometer* spectrometer);
 
     /** Starts an automatic wind-speed measurement for the supplied spectrometer */
-    static void	StartWindSpeedMeasurement(const Evaluation::CSpectrometer* spec, CWindField& windField);
+    static void	StartWindSpeedMeasurement(const Evaluation::CSpectrometer* spec);
 
 };
 }
