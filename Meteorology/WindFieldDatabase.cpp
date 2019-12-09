@@ -19,7 +19,7 @@ void CWindFieldDatabase::Clear()
     m_containsPlumeHeight = false;
 }
 
-RETURN_CODE CWindFieldDatabase::InterpolateWindField(const CDateTime desiredTime, CWindField &desiredWindField) const
+RETURN_CODE CWindFieldDatabase::InterpolateWindField(const CDateTime& desiredTime, CWindField &desiredWindField) const
 {
     // First check if there's any records at all in the database
     if (m_windField.size() == 0)
