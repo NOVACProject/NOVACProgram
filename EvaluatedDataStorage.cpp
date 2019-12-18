@@ -3,7 +3,7 @@
 #include "Configuration/Configuration.h"
 #include "VolcanoInfo.h"
 #include "UserSettings.h"
-#include <SpectralEvaluation/Utils.h>
+#include <SpectralEvaluation/StringUtils.h>
 #include <SpectralEvaluation/Spectra/SpectrometerModel.h>
 
 extern CConfigurationSetting g_settings;   // <-- The settings

@@ -167,8 +167,8 @@ void CManualCompositionDlg::OnSend() {
 
     // 4e. Write the motor information
     fprintf(f, "%% StepsPerRound defines the number of steps the steppermotor divides one round into\n");
-    fprintf(f, "STEPSPERROUND=%d\n", m_stepsPerRound[0]);
-    fprintf(f, "MOTORSTEPCOMP=%d\n", m_motorStepsComp[0]);
+    fprintf(f, "STEPSPERROUND=%ld\n", m_stepsPerRound[0]);
+    fprintf(f, "MOTORSTEPCOMP=%ld\n", m_motorStepsComp[0]);
     fprintf(f, "%% If Skipmotor=1 then the scanner will not be used. ONLY FOR TESTING PURPOSES\n");
     fprintf(f, "SKIPMOTOR=0\n");
     fprintf(f, "DELAY=%d\n\n", 200);

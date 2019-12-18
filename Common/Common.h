@@ -11,10 +11,11 @@
 
 #include <afxtempl.h>
 
-#include "WindField.h"
 #include <SpectralEvaluation/GPSData.h>
 #include <SpectralEvaluation/DateTime.h>
 
+// forward declarations
+class CWindField;
 
 // definition used for storing the spectral data
 typedef double SpecData;
@@ -25,6 +26,7 @@ struct timeStruct
 	int minute;
 	int second;
 };
+
 // ---------------------------------------------------------------
 // ---------------- GLOBAL FUNCTIONS -----------------------------
 // ---------------------------------------------------------------
@@ -48,12 +50,6 @@ int IsExistingFile(const CString &fileName);
 /** Creates a directory structure according to the given path.
 		@return 0 on success. */
 int CreateDirectoryStructure(const CString &path);
-
-/** Checks if the supplied string is a valid serial-number of a spectrometer. 
-    @param serialNumber - the string that should be checked.
-    @return 1 if the string is a valid serial number.
-    @return 0 if the string is <b>not</b> a valid serial number. */
-int IsSerialNumber(const CString &serialNumber);
 
 /** Compares two strings without regard to case.
     @return 1 if the strings are equal. @return 0 if the strings are not equal. */
@@ -172,12 +168,6 @@ const enum MEASUREMENT_MODE {MODE_UNKNOWN, MODE_FLUX, MODE_FIXED, MODE_WINDSPEED
 #ifndef M_PI
 	#define M_PI 3.141592
 #endif
-
-// ----------------------------------------------------------------
-// ------------ SIMPLE MATHEMATICAL FUNCTIONS  --------------------
-// ----------------------------------------------------------------
-//#define round(x) (x < 0 ? ceil((x)-0.5) : floor((x)+0.5))
-
 
 // -----------------------------------------------------------------
 // -------------------------- MESSAGES -----------------------------
@@ -430,10 +420,10 @@ public:
 
 
 	/** Returns the current seconds since 1/1/1970 . */
-	static double Epoch();
+	static __int64 Epoch();
 
 	/** Returns the seconds since 1/1/1970 for given date time. */
-	static double Epoch(const CDateTime &utcTime);
+	static __int64 Epoch(const CDateTime &utcTime);
 
 	// --------------------------------------------------------------------
 	// -------------------- SUN - FUNCTIONS -------------------------------

@@ -1,11 +1,11 @@
 #include "StdAfx.h"
 #include "ScanResult.h"
 #include "../VolcanoInfo.h"
-#include <SpectralEvaluation/Utils.h>
+#include <SpectralEvaluation/StringUtils.h>
 #include <SpectralEvaluation/Flux/PlumeInScanProperty.h>
 
 // we also need the meterological data
-#include "../MeteorologicalData.h"
+#include "../Meteorology/MeteorologicalData.h"
 
 #include "../Geometry/GeometryCalculator.h"
 
@@ -56,10 +56,10 @@ CScanResult::CScanResult(const CScanResult& other)
     this->m_plumeEdge[1] = other.m_plumeEdge[1];
     this->m_plumeCompleteness = other.m_plumeCompleteness;
 
-    this->m_spec                = std::vector<CEvaluationResult>(begin(other.m_spec), end(other.m_spec));
-    this->m_specInfo            = std::vector<CSpectrumInfo>(begin(other.m_specInfo), end(other.m_specInfo));
-    this->m_corruptedSpectra    = std::vector<unsigned int>(begin(other.m_corruptedSpectra), end(other.m_corruptedSpectra));
-    this->m_specNum             = other.m_specNum;
+    this->m_spec = std::vector<CEvaluationResult>(begin(other.m_spec), end(other.m_spec));
+    this->m_specInfo = std::vector<CSpectrumInfo>(begin(other.m_specInfo), end(other.m_specInfo));
+    this->m_corruptedSpectra = std::vector<unsigned int>(begin(other.m_corruptedSpectra), end(other.m_corruptedSpectra));
+    this->m_specNum = other.m_specNum;
 
     this->m_skySpecInfo = other.m_skySpecInfo;
     this->m_darkSpecInfo = other.m_darkSpecInfo;
@@ -104,7 +104,9 @@ int CScanResult::AppendResult(const CEvaluationResult &evalRes, const CSpectrumI
 bool CScanResult::GetResult(unsigned int specIndex, CEvaluationResult& result) const
 {
     if (specIndex >= m_specNum)
+    {
         return false; // not a valid index
+    }
 
     result = m_spec[specIndex];
     return true;
@@ -275,9 +277,9 @@ int CScanResult::CalculateFlux(const std::string &specie, const CWindField &wind
             continue; // this is not intended to be used for calculating the flux
         }
 
-        scanAngle[nDataPoints]  = m_specInfo[i].m_scanAngle;
+        scanAngle[nDataPoints] = m_specInfo[i].m_scanAngle;
         scanAngle2[nDataPoints] = m_specInfo[i].m_scanAngle2;
-        column[nDataPoints]     = m_spec[i].m_referenceResult[specieIndex].m_column;
+        column[nDataPoints] = m_spec[i].m_referenceResult[specieIndex].m_column;
         ++nDataPoints;
     }
 
@@ -372,7 +374,7 @@ bool CScanResult::CalculatePlumeCentre(const std::string &specie, double &plumeC
         m_plumeCentre[0] = plumeProperties.plumeCenter;
         m_plumeCentre[1] = plumeProperties.plumeCenter2;
         plumeCentre_alpha = plumeProperties.plumeCenter;
-        plumeCentre_phi   = plumeProperties.plumeCenter2;
+        plumeCentre_phi = plumeProperties.plumeCenter2;
 
         m_plumeEdge[0] = plumeProperties.plumeEdgeLow;
         m_plumeEdge[1] = plumeProperties.plumeEdgeHigh;
@@ -528,14 +530,14 @@ double CScanResult::GetFitParameter(unsigned long specIndex, unsigned long speci
         return 0.0;
 
     switch (parameter) {
-        case COLUMN:        return this->m_spec[specIndex].m_referenceResult[specieIndex].m_column;
-        case COLUMN_ERROR:  return this->m_spec[specIndex].m_referenceResult[specieIndex].m_columnError;
-        case SHIFT:         return this->m_spec[specIndex].m_referenceResult[specieIndex].m_shift;
-        case SHIFT_ERROR:   return this->m_spec[specIndex].m_referenceResult[specieIndex].m_shiftError;
-        case SQUEEZE:       return this->m_spec[specIndex].m_referenceResult[specieIndex].m_squeeze;
-        case SQUEEZE_ERROR: return this->m_spec[specIndex].m_referenceResult[specieIndex].m_squeezeError;
-        case DELTA:         return this->m_spec[specIndex].m_delta;
-        default:            return 0.0;
+    case COLUMN:        return this->m_spec[specIndex].m_referenceResult[specieIndex].m_column;
+    case COLUMN_ERROR:  return this->m_spec[specIndex].m_referenceResult[specieIndex].m_columnError;
+    case SHIFT:         return this->m_spec[specIndex].m_referenceResult[specieIndex].m_shift;
+    case SHIFT_ERROR:   return this->m_spec[specIndex].m_referenceResult[specieIndex].m_shiftError;
+    case SQUEEZE:       return this->m_spec[specIndex].m_referenceResult[specieIndex].m_squeeze;
+    case SQUEEZE_ERROR: return this->m_spec[specIndex].m_referenceResult[specieIndex].m_squeezeError;
+    case DELTA:         return this->m_spec[specIndex].m_delta;
+    default:            return 0.0;
     }
 }
 
@@ -573,10 +575,10 @@ CScanResult &CScanResult::operator=(const CScanResult &s2) {
     this->m_plumeEdge[1] = s2.m_plumeEdge[1];
     this->m_plumeCompleteness = s2.m_plumeCompleteness;
 
-    this->m_spec                = std::vector<CEvaluationResult>(begin(s2.m_spec), end(s2.m_spec));
-    this->m_specInfo            = std::vector<CSpectrumInfo>(begin(s2.m_specInfo), end(s2.m_specInfo));
-    this->m_corruptedSpectra    = std::vector<unsigned int>(begin(s2.m_corruptedSpectra), end(s2.m_corruptedSpectra));
-    this->m_specNum             = s2.m_specNum;
+    this->m_spec = std::vector<CEvaluationResult>(begin(s2.m_spec), end(s2.m_spec));
+    this->m_specInfo = std::vector<CSpectrumInfo>(begin(s2.m_specInfo), end(s2.m_specInfo));
+    this->m_corruptedSpectra = std::vector<unsigned int>(begin(s2.m_corruptedSpectra), end(s2.m_corruptedSpectra));
+    this->m_specNum = s2.m_specNum;
 
     this->m_skySpecInfo = s2.m_skySpecInfo;
     this->m_darkSpecInfo = s2.m_darkSpecInfo;
@@ -717,9 +719,9 @@ MEASUREMENT_MODE CScanResult::CheckMeasurementMode() {
     else if (IsWindMeasurement()) {
         m_measurementMode = MODE_WINDSPEED;
     }
-	else if (IsFixedAngleMeasurement()) {
-		m_measurementMode = MODE_FIXED;
-	}
+    else if (IsFixedAngleMeasurement()) {
+        m_measurementMode = MODE_FIXED;
+    }
     else if (this->IsDirectSunMeasurement()) {
         m_measurementMode = MODE_DIRECT_SUN;
     }
@@ -793,48 +795,48 @@ bool CScanResult::IsFluxMeasurement() {
     }
 }
 bool CScanResult::IsFixedAngleMeasurement() const {
-	double SZA, SAZ;
-	CDateTime startTime;
+    double SZA, SAZ;
+    CDateTime startTime;
 
-	// Check so that the measurement is not too long
-	if (m_specNum > 52)
-		return false;
+    // Check so that the measurement is not too long
+    if (m_specNum > 52)
+        return false;
 
-	// Check if we've already checked the mode
-	if (m_measurementMode == MODE_FIXED)
-		return true;
+    // Check if we've already checked the mode
+    if (m_measurementMode == MODE_FIXED)
+        return true;
 
-	// If the measurement started at a time when the Solar Zenith Angle 
-	//	was larger than 85 degrees then it is not a wind-speed measurement
-	this->GetStartTime(0, startTime);
-	if (SUCCESS != Common::GetSunPosition(startTime, GetLatitude(), GetLongitude(), SZA, SAZ))
-		return false; // error
-	if (fabs(SZA) >= 85.0)
-		return false;
+    // If the measurement started at a time when the Solar Zenith Angle 
+    //	was larger than 85 degrees then it is not a wind-speed measurement
+    this->GetStartTime(0, startTime);
+    if (SUCCESS != Common::GetSunPosition(startTime, GetLatitude(), GetLongitude(), SZA, SAZ))
+        return false; // error
+    if (fabs(SZA) >= 85.0)
+        return false;
 
-	// Check if this is a wind-measurement in the Gothenburg method...
-	int nRepetitions = 0; // <-- the number of repetitions in one position
-	float lastPos = GetScanAngle(3);
-	float lastPos2 = GetScanAngle2(3);
+    // Check if this is a wind-measurement in the Gothenburg method...
+    int nRepetitions = 0; // <-- the number of repetitions in one position
+    float lastPos = GetScanAngle(3);
+    float lastPos2 = GetScanAngle2(3);
 
-	// It is here assumed that the measurement is a wind speed measurment
-	//	if there are more then 50 repetitions in one measurement positon
-	for (unsigned long k = 4; k < m_specNum; ++k) {
-		float pos = GetScanAngle(k);
-		float pos2 = GetScanAngle2(k);
-		if ((fabs(pos - lastPos) < 1e-2) && (fabs(pos2 - lastPos2) < 1e-2))
-			++nRepetitions;
-		else {
-			nRepetitions = 0;
-			lastPos = pos;
-			lastPos2 = pos2;
-		}
-	}
+    // It is here assumed that the measurement is a wind speed measurment
+    //	if there are more then 50 repetitions in one measurement positon
+    for (unsigned long k = 4; k < m_specNum; ++k) {
+        float pos = GetScanAngle(k);
+        float pos2 = GetScanAngle2(k);
+        if ((fabs(pos - lastPos) < 1e-2) && (fabs(pos2 - lastPos2) < 1e-2))
+            ++nRepetitions;
+        else {
+            nRepetitions = 0;
+            lastPos = pos;
+            lastPos2 = pos2;
+        }
+    }
 
-	if (nRepetitions >=25 && nRepetitions < 50) {
-		return true;
-	}
-	return false;
+    if (nRepetitions >= 25 && nRepetitions < 50) {
+        return true;
+    }
+    return false;
 }
 
 bool CScanResult::IsWindMeasurement() const {
@@ -976,22 +978,22 @@ bool CScanResult::GetStopTime(unsigned long index, CDateTime &t) const {
     t.second = (unsigned char)m_specInfo[index].m_stopTime.second;
 
     // The date
-	if (m_specInfo[index].m_stopTime.year == 0) {
-		t.year = m_specInfo[index].m_startTime.year;
-		t.month = (unsigned char)m_specInfo[index].m_startTime.month;
-		t.day = (unsigned char)m_specInfo[index].m_startTime.day;
-		CDateTime startTime;
-		GetStartTime(index, startTime);
-		CDateTime dt;
-		if (dt.Difference(t, startTime) < 0) {
-			t.DecrementOneDay();
-		}
-	}
-	else {
-		t.year = m_specInfo[index].m_stopTime.year;
-		t.month = (unsigned char)m_specInfo[index].m_stopTime.month;
-		t.day = (unsigned char)m_specInfo[index].m_stopTime.day;
-	}
+    if (m_specInfo[index].m_stopTime.year == 0) {
+        t.year = m_specInfo[index].m_startTime.year;
+        t.month = (unsigned char)m_specInfo[index].m_startTime.month;
+        t.day = (unsigned char)m_specInfo[index].m_startTime.day;
+        CDateTime startTime;
+        GetStartTime(index, startTime);
+        CDateTime dt;
+        if (dt.Difference(t, startTime) < 0) {
+            t.DecrementOneDay();
+        }
+    }
+    else {
+        t.year = m_specInfo[index].m_stopTime.year;
+        t.month = (unsigned char)m_specInfo[index].m_stopTime.month;
+        t.day = (unsigned char)m_specInfo[index].m_stopTime.day;
+    }
 
     return true;
 }

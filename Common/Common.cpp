@@ -5,6 +5,7 @@
 #include "../Configuration/Configuration.h"
 #include "../VolcanoInfo.h"
 #include "../Communication/FTPServerContacter.h"
+#include "../Meteorology/WindField.h"
 
 #include <SpectralEvaluation/Flux/Flux.h>
 
@@ -284,10 +285,6 @@ void Common::CalculateDestination(double lat1, double lon1, double dist, double 
 	// convert back to degrees
 	lat2	= lat2 * RADTODEGREE;
 	lon2	= lon2 * RADTODEGREE;
-}
-
-int IsSerialNumber(const CString &serialNumber){
-	return (strlen(serialNumber) > 0);
 }
 
 // open a browser window and let the user search for a file
@@ -697,7 +694,7 @@ double Common::JulianDay(const CDateTime &utcTime){
 	return JD;
 }
 
-double Common::Epoch() {
+__int64 Common::Epoch() {
 	time_t rawtime;
 	struct tm * utc;
 	time(&rawtime);
@@ -705,7 +702,7 @@ double Common::Epoch() {
 	return rawtime;
 }
 
-double Common::Epoch(const CDateTime &utcTime) {
+__int64 Common::Epoch(const CDateTime &utcTime) {
 	time_t rawtime;
 	struct tm * utc;
 	time(&rawtime);
@@ -720,7 +717,7 @@ double Common::Epoch(const CDateTime &utcTime) {
 	utc->tm_hour = utcTime.hour;
 	utc->tm_min = utcTime.minute;
 	utc->tm_sec = utcTime.second;
-	double epoch = mktime(utc)-offset;
+    __int64 epoch = mktime(utc)-offset;
 	return epoch;
 }
 

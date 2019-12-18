@@ -2,7 +2,7 @@
 #include "../NovacMasterProgram.h"
 #include "WindEvaluator.h"
 #include "WindSpeedResult.h"
-#include <SpectralEvaluation/Utils.h>
+#include <SpectralEvaluation/StringUtils.h>
 
 // We must be able to read the evaluation-log files
 #include "../Common/EvaluationLogFileHandler.h"
@@ -11,7 +11,7 @@
 #include "../Configuration/Configuration.h"
 
 // we also need the meterological data
-#include "../MeteorologicalData.h"
+#include "../Meteorology/MeteorologicalData.h"
 
 extern CConfigurationSetting g_settings;	// <-- The settings
 extern CFormView *pView;									// <-- The screen

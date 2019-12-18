@@ -121,6 +121,18 @@
     <Filter Include="Source Files\Common\Flux">
       <UniqueIdentifier>{6a57bac3-4a11-4286-8f8b-e2c7f52ab4bc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\File">
+      <UniqueIdentifier>{4bc69b9e-f4f8-4239-841a-6d2d325d7f02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\File">
+      <UniqueIdentifier>{c22f9d83-a714-4b02-8a87-3a833b589d91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Meteorology">
+      <UniqueIdentifier>{a6a94407-328f-458d-98c6-49261ff1dda6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Meteorology">
+      <UniqueIdentifier>{f84a7f7f-56bf-4eef-80ee-166f4b08f303}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Configuration\AdvancedFTPUploadSettings.cpp">
@@ -192,9 +204,6 @@
     <ClCompile Include="Dialogs\MergePakFilesDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MeteorologicalData.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="NovacMasterProgram.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -264,13 +273,7 @@
     <ClCompile Include="VolcanoInfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Common\WindFieldRecord.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="WindFileController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\WindFileReader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="WindMeasurement\WindSpeedResult.cpp">
@@ -283,9 +286,6 @@
       <Filter>Source Files\Common</Filter>
     </ClCompile>
     <ClCompile Include="Common\LogFileWriter.cpp">
-      <Filter>Source Files\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\WindField.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
     <ClCompile Include="Common\XMLFileReader.cpp">
@@ -537,9 +537,6 @@
     <ClCompile Include="SpectralEvaluation\src\Spectra\SpectrumInfo.cpp">
       <Filter>Source Files\SpectralEvaluation\Spectra</Filter>
     </ClCompile>
-    <ClCompile Include="SpectralEvaluation\src\Utils.cpp">
-      <Filter>Source Files\SpectralEvaluation</Filter>
-    </ClCompile>
     <ClCompile Include="SpectralEvaluation\src\VectorUtils.cpp">
       <Filter>Source Files\SpectralEvaluation</Filter>
     </ClCompile>
@@ -579,11 +576,44 @@
     <ClCompile Include="CustomSpectrometerModelDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CreateReferencesDlg.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SpectralEvaluation\src\Evaluation\DarkSpectrum.cpp">
       <Filter>Source Files\Evaluation</Filter>
+    </ClCompile>
+    <ClCompile Include="CreateReferencesDlg.cpp">
+      <Filter>Source Files\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Spectra\Scattering.cpp">
+      <Filter>Source Files\SpectralEvaluation\Spectra</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Spectra\WavelengthCalibration.cpp">
+      <Filter>Source Files\SpectralEvaluation\Spectra</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\StringUtils.cpp">
+      <Filter>Source Files\SpectralEvaluation</Filter>
+    </ClCompile>
+    <ClCompile Include="File\NetCdfFileReader.cpp">
+      <Filter>Source Files\File</Filter>
+    </ClCompile>
+    <ClCompile Include="Meteorology\WindField.cpp">
+      <Filter>Source Files\Meteorology</Filter>
+    </ClCompile>
+    <ClCompile Include="Meteorology\MeteorologicalData.cpp">
+      <Filter>Source Files\Meteorology</Filter>
+    </ClCompile>
+    <ClCompile Include="File\WindFileReader.cpp">
+      <Filter>Source Files\File</Filter>
+    </ClCompile>
+    <ClCompile Include="Meteorology\WindFieldDatabase.cpp">
+      <Filter>Source Files\Meteorology</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Interpolation.cpp">
+      <Filter>Source Files\SpectralEvaluation</Filter>
+    </ClCompile>
+    <ClCompile Include="Meteorology\WindFieldInterpolation.cpp">
+      <Filter>Source Files\Meteorology</Filter>
+    </ClCompile>
+    <ClCompile Include="File\NetCdfWindFileReader.cpp">
+      <Filter>Source Files\File</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -659,9 +689,6 @@
     <ClInclude Include="Dialogs\MergePakFilesDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MeteorologicalData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="NovacMasterProgram.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -734,13 +761,7 @@
     <ClInclude Include="VolcanoInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Common\WindFieldRecord.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="WindFileController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\WindFileReader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="WindMeasurement\WindSpeedResult.h">
@@ -753,9 +774,6 @@
       <Filter>Header Files\Common</Filter>
     </ClInclude>
     <ClInclude Include="Common\LogFileWriter.h">
-      <Filter>Header Files\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\WindField.h">
       <Filter>Header Files\Common</Filter>
     </ClInclude>
     <ClInclude Include="Common\XMLFileReader.h">
@@ -1142,9 +1160,6 @@
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\GPSData.h">
       <Filter>Header Files\SpectralEvaluation\Spectra</Filter>
     </ClInclude>
-    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Utils.h">
-      <Filter>Header Files\SpectralEvaluation</Filter>
-    </ClInclude>
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\VectorUtils.h">
       <Filter>Header Files\SpectralEvaluation</Filter>
     </ClInclude>
@@ -1188,7 +1203,46 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CreateReferencesDlg.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Spectra\Scattering.h">
+      <Filter>Header Files\SpectralEvaluation\Spectra</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Spectra\WavelengthCalibration.h">
+      <Filter>Header Files\SpectralEvaluation\Spectra</Filter>
+    </ClInclude>
+    <ClInclude Include="File\NetCdfException.h">
+      <Filter>Header Files\File</Filter>
+    </ClInclude>
+    <ClInclude Include="File\NetCdfFileReader.h">
+      <Filter>Header Files\File</Filter>
+    </ClInclude>
+    <ClInclude Include="Meteorology\WindField.h">
+      <Filter>Header Files\Meteorology</Filter>
+    </ClInclude>
+    <ClInclude Include="Meteorology\MeteorologySource.h">
+      <Filter>Header Files\Meteorology</Filter>
+    </ClInclude>
+    <ClInclude Include="Meteorology\MeteorologicalData.h">
+      <Filter>Header Files\Meteorology</Filter>
+    </ClInclude>
+    <ClInclude Include="File\WindFileReader.h">
+      <Filter>Header Files\File</Filter>
+    </ClInclude>
+    <ClInclude Include="Meteorology\WindFieldDatabase.h">
+      <Filter>Header Files\Meteorology</Filter>
+    </ClInclude>
+    <ClInclude Include="File\NetCdfWindFileReader.h">
+      <Filter>Header Files\File</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\StringUtils.h">
+      <Filter>Header Files\SpectralEvaluation</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Interpolation.h">
+      <Filter>Header Files\SpectralEvaluation</Filter>
+    </ClInclude>
+    <ClInclude Include="Meteorology\WindFieldInterpolation.h">
+      <Filter>Header Files\Meteorology</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

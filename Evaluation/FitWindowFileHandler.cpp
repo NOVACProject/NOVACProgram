@@ -1,7 +1,24 @@
 #include "StdAfx.h"
 #include "FitWindowFileHandler.h"
+#include <SpectralEvaluation/StringUtils.h>
 
 using namespace FileHandler;
+
+// TODO: Move
+std::string FormatBoolean(bool value)
+{
+    return value ? "true" : "false";
+}
+
+std::string FormatEnum(Evaluation::RING_CALCULATION_OPTION value)
+{
+    switch (value)
+    {
+        case Evaluation::RING_CALCULATION_OPTION::CALCULATE_RING: return "calculate";
+        case Evaluation::RING_CALCULATION_OPTION::CALCULATE_RING_X2: return "calculatex2";
+        default: return "none";
+    }
+}
 
 CFitWindowFileHandler::CFitWindowFileHandler()
 {
@@ -98,7 +115,33 @@ RETURN_CODE CFitWindowFileHandler::Parse_FitWindow(Evaluation::CFitWindow &windo
             Parse_IntItem(TEXT("/polyOrder"), window.polyOrder);
             continue;
         }
-        if (Equals(szToken, "fitType")) {
+        if (Equals(szToken, "includeIntensitySpacePolyominal"))
+        {
+            CString entry;
+            Parse_StringItem(TEXT("/includeIntensitySpacePolyominal"), entry);
+            window.includeIntensitySpacePolyominal = EqualsIgnoringCase(entry, "true");
+            continue;
+        }
+        if (Equals(szToken, "ringCalculation"))
+        {
+            CString entry;
+            Parse_StringItem(TEXT("/ringCalculation"), entry);
+            if (EqualsIgnoringCase(entry, "calculate"))
+            {
+                window.ringCalculation = Evaluation::RING_CALCULATION_OPTION::CALCULATE_RING;
+            }
+            else if (EqualsIgnoringCase(entry, "calculatex2"))
+            {
+                window.ringCalculation = Evaluation::RING_CALCULATION_OPTION::CALCULATE_RING_X2;
+            }
+            else
+            {
+                window.ringCalculation = Evaluation::RING_CALCULATION_OPTION::DO_NOT_CALCULATE_RING;
+            }
+            continue;
+        }
+        if (Equals(szToken, "fitType"))
+        {
             Parse_IntItem(TEXT("/fitType"), (int&)window.fitType); // TODO: Will this be ok????
             continue;
         }
@@ -137,11 +180,11 @@ RETURN_CODE CFitWindowFileHandler::Parse_FitWindow(Evaluation::CFitWindow &windo
             window.interlaceStep += 1;
             continue;
         }
-		if (Equals(szToken, "solarSpectrum")) {
-			Parse_StringItem(TEXT("/solarSpectrum"), window.fraunhoferRef.m_path);
-			window.fraunhoferRef.m_specieName = "SolarSpec";
-			continue;
-		}
+        if (Equals(szToken, "solarSpectrum")) {
+            Parse_StringItem(TEXT("/solarSpectrum"), window.fraunhoferRef.m_path);
+            window.fraunhoferRef.m_specieName = "SolarSpec";
+            continue;
+        }
         //if(Equals(szToken, "nRef")){
         //	Parse_IntItem(TEXT("/nRef"), window.nRef);
     //		continue;
@@ -269,6 +312,13 @@ RETURN_CODE CFitWindowFileHandler::WriteFitWindow(const Evaluation::CFitWindow &
     fprintf(f, "%s<fitLow>%d</fitLow>\n", (LPCSTR)indent, window.fitLow);
     fprintf(f, "%s<fitHigh>%d</fitHigh>\n", (LPCSTR)indent, window.fitHigh);
     fprintf(f, "%s<polyOrder>%d</polyOrder>\n", (LPCSTR)indent, window.polyOrder);
+
+    std::string entryValue = FormatBoolean(window.includeIntensitySpacePolyominal);
+    fprintf(f, "%s<includeIntensitySpacePolyominal>%s</includeIntensitySpacePolyominal>\n", (LPCSTR)indent, entryValue.c_str());
+
+    entryValue = FormatEnum(window.ringCalculation);
+    fprintf(f, "%s<ringCalculation>%s</ringCalculation>\n", (LPCSTR)indent, entryValue.c_str());
+
     fprintf(f, "%s<fitType>%d</fitType>\n", (LPCSTR)indent, window.fitType);
 
     fprintf(f, "%s<channel>%d</channel>\n", (LPCSTR)indent, window.channel);

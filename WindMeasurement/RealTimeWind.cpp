@@ -1,30 +1,16 @@
 #include "StdAfx.h"
 #include "realtimewind.h"
-
-// This is for debugging only!
 #include "../VolcanoInfo.h"
+#include "../Evaluation/Spectrometer.h"
 
 extern CConfigurationSetting g_settings;	// <-- The settings
 extern CWinThread *g_comm;					// <-- the communication controller
-extern CVolcanoInfo g_volcanoes;			// <-- A list of all known volcanoes
 
-int wind_measurement_calculation(double PlumeHeight, double wd, double &alpha_center_of_mass, double &phi_center_of_mass, double angle_between_meas, double &alpha_2, double &phi_2, int AzimuthMotorstepsComp, int AzimuthStepsPerRound, const CConfigurationSetting::WindSpeedMeasurementSetting &windSettings);
-
-using namespace WindSpeedMeasurement;
-CRealTimeWind::CRealTimeWind(void)
+namespace WindSpeedMeasurement
 {
-}
 
-CRealTimeWind::~CRealTimeWind(void)
+bool CRealTimeWind::IsTimeForWindMeasurement(const Evaluation::CSpectrometer* spectrometer)
 {
-}
-
-/** Runs through the history of the CSpectrometer and checks the settings
-        for automatic wind-speed measurements and judges if we should perform
-        an automatic wind-speed measurement now.
-        @return true if a wind-speed measurement should be started else return false */
-bool CRealTimeWind::IsTimeForWindMeasurement(const Evaluation::CSpectrometer *spectrometer) {
-
     CString dateStr;
     CString timeStr;
     Common common;
@@ -34,45 +20,48 @@ bool CRealTimeWind::IsTimeForWindMeasurement(const Evaluation::CSpectrometer *sp
     CString debugFile;
     debugFile.Format("%sOutput\\%s\\Debug_WindSpeedMeas.txt", (LPCTSTR)g_settings.outputDirectory, (LPCTSTR)dateStr);
 
-    int thisVolcano = -1;
-    for (unsigned int k = 0; k < g_volcanoes.m_volcanoNum; ++k) {
-        if (Equals(spectrometer->m_scanner.volcano, g_volcanoes.m_name[k])) {
-            thisVolcano = k;
-            break;
-        }
-    }
+    const CString serial = spectrometer->m_scanner.spec[0].serialNumber;
 
-    //// -1. This checking should only be performed on master-channel spectrometers...
-    //if(spectrometer->m_channel != 0)
-    //	return false;
+    const std::string volcanoName = spectrometer->m_scanner.volcano;
+    const int thisVolcano = IndexOfVolcano(volcanoName);
 
     // 0. Local handles, to get less dereferencing...
-    const CConfigurationSetting::WindSpeedMeasurementSetting *windSettings = &spectrometer->m_scanner.windSettings;
+    const CConfigurationSetting::WindSpeedMeasurementSetting* windSettings = &spectrometer->m_scanner.windSettings;
 
     // 1. Check the settings for the spectrometer, if there's only one channel or
-    //		if the settings says that we should not perform any wind-measurements, then don't
-    if (false == windSettings->automaticWindMeasurements) {
+    //     if the settings says that we should not perform any wind-measurements, then don't
+    if (false == windSettings->automaticWindMeasurements)
+    {
         FILE *f = fopen(debugFile, "a+");
-        if (f != NULL) {
-            fprintf(f, "%s\t No measurement: Automatic wind measurements are not setup for this volcano. \n", (LPCTSTR)timeStr);
+        if (f != nullptr)
+        {
+            fprintf(f, "%s\t%s\t No measurement: Automatic wind measurements are not setup for this volcano. \n", (LPCTSTR)timeStr, (LPCSTR)serial);
             fclose(f);
+            UploadToNOVACServer(debugFile, thisVolcano, false);
         }
         return false;
     }
-    bool isMultiChannelSpec = false;
-    for (unsigned int k = 0; k < spectrometer->m_scanner.specNum; ++k) {
-        if (spectrometer->m_scanner.spec[k].channelNum > 1) {
-            isMultiChannelSpec = true;
+
+    if (spectrometer->m_scanner.spec[0].channelNum == 1)
+    {
+        FILE *f = fopen(debugFile, "a+");
+        if (f != nullptr)
+        {
+            fprintf(f, "%s\t%s\t No measurement: Automatic wind measurements can only be done using multi-channel spectrometers. \n", (LPCTSTR)timeStr, (LPCSTR)serial);
+            fclose(f);
+            UploadToNOVACServer(debugFile, thisVolcano, false);
         }
-    }
-    if (!isMultiChannelSpec) {
         return false;
     }
-    if (spectrometer->m_history == NULL) {
+
+    if (spectrometer->m_history == nullptr)
+    {
         FILE *f = fopen(debugFile, "a+");
-        if (f != NULL) {
-            fprintf(f, "%s\t No measurement: No instrument history saved for this instrument. \n", (LPCTSTR)timeStr);
+        if (f != nullptr)
+        {
+            fprintf(f, "%s\t%s\t No measurement: No instrument history saved for this instrument. \n", (LPCTSTR)timeStr, (LPCSTR)serial);
             fclose(f);
+            UploadToNOVACServer(debugFile, thisVolcano, false);
         }
         return false;
     }
@@ -81,21 +70,27 @@ bool CRealTimeWind::IsTimeForWindMeasurement(const Evaluation::CSpectrometer *sp
 
     // 2a. Have we recieved any scans today?
     const int nScansToday = spectrometer->m_history->GetNumScans();
-    if (nScansToday < windSettings->stablePeriod) { // <-- there must be enough scans received from the instrument today for us to make any wind-measurement
+    if (nScansToday < windSettings->stablePeriod)
+    {
+        // there must be enough scans received from the instrument today for us to make any wind-measurement
         FILE *f = fopen(debugFile, "a+");
-        if (f != NULL) {
-            fprintf(f, "%s\t No measurement: Too few scans today (%d)\n", (LPCTSTR)timeStr, nScansToday);
+        if (f != nullptr)
+        {
+            fprintf(f, "%s\t%s\t No measurement: Too few scans today (%d)\n", (LPCTSTR)timeStr, (LPCSTR)serial, nScansToday);
             fclose(f);
+            UploadToNOVACServer(debugFile, thisVolcano, false);
         }
         return false; // <-- too few scans recieved today
     }
 
     // 2b. How long time has passed since the last ws-measurement?
     const int sPassed = spectrometer->m_history->SecondsSinceLastWindMeas();
-    if (sPassed > 0 && sPassed < windSettings->interval) {
+    if (sPassed > 0 && sPassed < windSettings->interval)
+    {
         FILE *f = fopen(debugFile, "a+");
-        if (f != NULL) {
-            fprintf(f, "%s\t No measurement: Little time since last measurement (%d seconds).\n", (LPCTSTR)timeStr, sPassed);
+        if (f != nullptr)
+        {
+            fprintf(f, "%s\t%s\t No measurement: Little time since last measurement (%d seconds).\n", (LPCTSTR)timeStr, (LPCSTR)serial, sPassed);
             fclose(f);
             UploadToNOVACServer(debugFile, thisVolcano, false);
         }
@@ -104,17 +99,20 @@ bool CRealTimeWind::IsTimeForWindMeasurement(const Evaluation::CSpectrometer *sp
 
     // 2c. What's the average time between the start of two scans today?
     const double timePerScan = spectrometer->m_history->GetScanInterval();
-    if (timePerScan < 0) {
+    if (timePerScan < 0)
+    {
         return false; // <-- no scans have arrived today
     }
 
     // 2d. Get the plume centre variation over the last few scans
     //			If any scan missed the plume, return false
     double centreMin, centreMax;
-    if (false == spectrometer->m_history->GetPlumeCentreVariation(windSettings->stablePeriod, 0, centreMin, centreMax)) {
+    if (false == spectrometer->m_history->GetPlumeCentreVariation(windSettings->stablePeriod, 0, centreMin, centreMax))
+    {
         FILE *f = fopen(debugFile, "a+");
-        if (f != NULL) {
-            fprintf(f, "%s\t No measurement: At least one of the last %d scans has missed the plume\n", (LPCTSTR)timeStr, windSettings->stablePeriod);
+        if (f != nullptr)
+        {
+            fprintf(f, "%s\t%s\t No measurement: At least one of the last %d scans has missed the plume\n", (LPCTSTR)timeStr, (LPCSTR)serial, windSettings->stablePeriod);
             fclose(f);
             UploadToNOVACServer(debugFile, thisVolcano, false);
         }
@@ -122,11 +120,13 @@ bool CRealTimeWind::IsTimeForWindMeasurement(const Evaluation::CSpectrometer *sp
     }
 
     // 2e. If there's a substantial variation in plume centre over the last
-    //			few scans then don't make any measurement
-    if (fabs(centreMax - centreMin) > 30) {
+    //      few scans then don't make any measurement
+    if (std::abs(centreMax - centreMin) > 3.00)
+    {
         FILE *f = fopen(debugFile, "a+");
-        if (f != NULL) {
-            fprintf(f, "%s\t No measurement: Too large variation in plume centre\n", (LPCTSTR)timeStr);
+        if (f != nullptr)
+        {
+            fprintf(f, "%s\t%s\t No measurement: Too large variation in plume centre (%lf degrees) \n", (LPCTSTR)timeStr, (LPCSTR)serial, centreMax - centreMin);
             fclose(f);
             UploadToNOVACServer(debugFile, thisVolcano, false);
         }
@@ -134,12 +134,14 @@ bool CRealTimeWind::IsTimeForWindMeasurement(const Evaluation::CSpectrometer *sp
     }
 
     // 2g. If the plumeCentre is at lower angles than the options for the
-    //			windmeasurements allow, then don't measure
-    double plumeCentre = spectrometer->m_history->GetPlumeCentre(windSettings->stablePeriod);
-    if (fabs(plumeCentre) > fabs(windSettings->maxAngle)) {
+    //      windmeasurements allow, then don't measure
+    const double plumeCentre = spectrometer->m_history->GetPlumeCentre(windSettings->stablePeriod);
+    if (std::abs(plumeCentre) > std::abs(windSettings->maxAngle))
+    {
         FILE *f = fopen(debugFile, "a+");
-        if (f != NULL) {
-            fprintf(f, "%s\t No measurement: Plume centre too low\n", (LPCTSTR)timeStr);
+        if (f != nullptr)
+        {
+            fprintf(f, "%s\t%s\t No measurement: Plume centre too low (plumeCentre: %lf, maxAngle: %lf)\n", (LPCTSTR)timeStr, (LPCSTR)serial, plumeCentre, windSettings->maxAngle);
             fclose(f);
             UploadToNOVACServer(debugFile, thisVolcano, false);
         }
@@ -147,12 +149,14 @@ bool CRealTimeWind::IsTimeForWindMeasurement(const Evaluation::CSpectrometer *sp
     }
 
     // 2h. Check so that the maximum column averaged over the last few scans is at least
-    //			50 ppmm
-    double maxColumn = spectrometer->m_history->GetColumnMax(windSettings->stablePeriod);
-    if (maxColumn < windSettings->minPeakColumn) {
+    //      50 ppmm
+    const double maxColumn = spectrometer->m_history->GetColumnMax(windSettings->stablePeriod);
+    if (maxColumn < windSettings->minPeakColumn)
+    {
         FILE *f = fopen(debugFile, "a+");
-        if (f != NULL) {
-            fprintf(f, "%s\t No measurement: Plume too weak\n", (LPCTSTR)timeStr);
+        if (f != nullptr)
+        {
+            fprintf(f, "%s\t%s\t No measurement: Plume too weak (maxColumn: %lf) \n", (LPCTSTR)timeStr, (LPCSTR)serial, maxColumn);
             fclose(f);
             UploadToNOVACServer(debugFile, thisVolcano, false);
         }
@@ -160,12 +164,14 @@ bool CRealTimeWind::IsTimeForWindMeasurement(const Evaluation::CSpectrometer *sp
     }
 
     // 2i. Check so that the average exposure-time over the last few scans is not
-    //			too large. This to ensure that we can measure fast enough
-    double expTime = spectrometer->m_history->GetExposureTime(windSettings->stablePeriod);
-    if (expTime < 0 || expTime > 600) {
+    //      too large. This to ensure that we can measure fast enough
+    const double expTime = spectrometer->m_history->GetExposureTime(windSettings->stablePeriod);
+    if (expTime < 0 || expTime > 600)
+    {
         FILE *f = fopen(debugFile, "a+");
-        if (f != NULL) {
-            fprintf(f, "%s\t No measurement: Too long exposure times\n", (LPCTSTR)timeStr);
+        if (f != nullptr)
+        {
+            fprintf(f, "%s\t%s\t No measurement: Too long exposure times (%lf ms) \n", (LPCTSTR)timeStr, (LPCSTR)serial, expTime);
             fclose(f);
             UploadToNOVACServer(debugFile, thisVolcano, false);
         }
@@ -173,8 +179,9 @@ bool CRealTimeWind::IsTimeForWindMeasurement(const Evaluation::CSpectrometer *sp
     }
 
     FILE *f = fopen(debugFile, "a+");
-    if (f != NULL) {
-        fprintf(f, "%s\t Ok to do wind-speed measurement!!\n", (LPCTSTR)timeStr);
+    if (f != nullptr)
+    {
+        fprintf(f, "%s\t%s\t Ok to do wind-speed measurement!!\n", (LPCTSTR)timeStr, (LPCSTR)serial);
         fclose(f);
         UploadToNOVACServer(debugFile, thisVolcano, false);
     }
@@ -183,8 +190,8 @@ bool CRealTimeWind::IsTimeForWindMeasurement(const Evaluation::CSpectrometer *sp
     return true;
 }
 
-/** Starts an automatic wind-speed measurement for the supplied spectrometer */
-void CRealTimeWind::StartWindSpeedMeasurement(const Evaluation::CSpectrometer *spec, CWindField &windField) {
+void CRealTimeWind::StartWindSpeedMeasurement(const Evaluation::CSpectrometer* spec)
+{
     static CString message;
     CString dateTime, directory;
     Common common;
@@ -230,7 +237,7 @@ void CRealTimeWind::StartWindSpeedMeasurement(const Evaluation::CSpectrometer *s
     }
 
     FILE *f = fopen(*fileName, "w");
-    if (f == NULL) {
+    if (f == nullptr) {
         ShowMessage("Could not open cfgonce.txt for writing. Wind speed measurement failed!!");
         return;
     }
@@ -295,7 +302,7 @@ void CRealTimeWind::StartWindSpeedMeasurement(const Evaluation::CSpectrometer *s
     fclose(f);
 
     // 4. Tell the communication controller that we want to upload a file
-    if (g_comm != NULL)
+    if (g_comm != nullptr)
     {
         g_comm->PostThreadMessage(WM_UPLOAD_CFGONCE, (WPARAM)serialNumber, (LPARAM)fileName);
 
@@ -305,108 +312,4 @@ void CRealTimeWind::StartWindSpeedMeasurement(const Evaluation::CSpectrometer *s
     }
 }
 
-
-
-//This function calculates the second scanning direction for the wind measurement (alpha_2, phi_2):
-int wind_measurement_calculation(double PlumeHeight, double wd, double &alpha_center_of_mass, double &phi_center_of_mass, double angle_between_meas, double &alpha_2, double &phi_2, int AzimuthMotorstepsComp, int AzimuthStepsPerRound, const CConfigurationSetting::WindSpeedMeasurementSetting &windSettings)
-{
-    double distance = 0;
-    double SwitchPosition = AzimuthMotorstepsComp / (AzimuthStepsPerRound / 360.0);
-    double SwitchLow = SwitchPosition - windSettings.SwitchRange;
-
-    //If distance along plume is given use that; else calculate it from the angle between the two wind measurements:
-    if (angle_between_meas < 0) distance = -angle_between_meas;	//distance is given directly (negative values are used for distance; positive for angle)
-    if (angle_between_meas > 0) distance = angle_between_meas*DEGREETORAD*PlumeHeight / cos(alpha_center_of_mass);  //good approximation for smaller angles
-
-    //position of the measured center of mass:
-    double x1 = PlumeHeight*tan(alpha_center_of_mass*DEGREETORAD)*sin(phi_center_of_mass*DEGREETORAD);
-    double y1 = PlumeHeight*tan(alpha_center_of_mass*DEGREETORAD)*cos(phi_center_of_mass*DEGREETORAD);
-
-    double wd_rad = wd*DEGREETORAD;
-    double x_wind = 0;
-    double y_wind = 0;
-
-    //calculate the wind vector with the length 'distance'
-    //different angle ranges are treated seperately to get the right signs
-    if (wd >= 0 && wd < 90) {
-        x_wind = distance*tan(wd_rad) / sqrt(tan(wd_rad)*tan(wd_rad) + 1);
-        y_wind = distance / sqrt(tan(wd_rad)*tan(wd_rad) + 1);
-    }
-    else if (wd == 90) {
-        x_wind = distance;
-        y_wind = 0;
-    }
-    else if (wd > 90 && wd <= 180) {
-        x_wind = distance*fabs(tan(wd_rad)) / sqrt(tan(wd_rad)*tan(wd_rad) + 1);
-        y_wind = -distance / sqrt(tan(wd_rad)*tan(wd_rad) + 1);
-    }
-    else if (wd > 180 && wd < 270) {
-        x_wind = -distance*fabs(tan(wd_rad)) / sqrt(tan(wd_rad)*tan(wd_rad) + 1);
-        y_wind = -distance / sqrt(tan(wd_rad)*tan(wd_rad) + 1);
-    }
-    else if (wd == 270) {
-        x_wind = -distance;
-        y_wind = 0;
-    }
-    else if (wd > 270 && wd <= 360) {
-        x_wind = -distance*fabs(tan(wd_rad)) / sqrt(tan(wd_rad)*tan(wd_rad) + 1);
-        y_wind = distance / sqrt(tan(wd_rad)*tan(wd_rad) + 1);
-    }
-
-    /*second measurement position is the original position plus the wind vector.
-    Thus the second position is always upwind the plume.*/
-    double x2 = x1 + x_wind;
-    double y2 = y1 + y_wind;
-
-    //from the position calculate the measurement angles:
-    alpha_2 = atan(sqrt(x2*x2 + y2*y2) / PlumeHeight) / DEGREETORAD;
-    phi_2 = atan2(x2, y2) / DEGREETORAD;
-    if (phi_2 < 0) phi_2 += 360;         //because atan2 returns the range -180..+180; we want 0..360
-
-    phi_center_of_mass = fmod(phi_center_of_mass, 360);  //make sure phi_center_of_mass is between 0° and 360°
-    if (phi_center_of_mass < 0) phi_center_of_mass += 360;
-
-    double phi[2] = { phi_center_of_mass, phi_2 };
-    double alpha[2] = { alpha_center_of_mass, alpha_2 };
-
-    for (int i = 0; i < 2; i++) {
-        if (phi[i] < SwitchPosition) phi[i] += 360;
-        if (phi[i] >= SwitchPosition + 360) phi[i] -= 360;
-    }
-
-    for (int i = 0; i < 2; i++) {
-        int j = (i == 0) ? 1 : 0;
-
-        if (phi[j] < SwitchLow + 180) {
-            if (std::max(std::max(alpha[i], alpha[j]) - std::min(alpha[i], alpha[j]),
-                std::max(phi[i], phi[j]) - std::min(phi[i], phi[j]))
-        > std::max(std::max(alpha[i], -alpha[j]) - std::min(alpha[i], -alpha[j]),
-            std::max(phi[i], phi[j] + 180) - std::min(phi[i], phi[j] + 180)))
-            {
-                alpha[j] = -alpha[j];
-                phi[j] = phi[j] + 180;
-            }
-        }
-        else if (phi[j] >= SwitchPosition + 180 && phi[j] < SwitchLow + 360) {
-            if (std::max(std::max(alpha[i], alpha[j]) - std::min(alpha[i], alpha[j]),
-                std::max(phi[i], phi[j]) - std::min(phi[i], phi[j]))
-        > std::max(std::max(alpha[i], -alpha[j]) - std::min(alpha[i], -alpha[j]),
-            std::max(phi[i], phi[j] - 180) - std::min(phi[i], phi[j] - 180)))
-            {
-                alpha[j] = -alpha[j];
-                phi[j] = phi[j] - 180;
-            }
-        }
-        else if (phi[j] >= SwitchLow + 360)
-        {
-            alpha[j] = -alpha[j];
-            phi[j] = phi[j] - 180;
-        }
-    }
-    phi_center_of_mass = phi[0];
-    phi_2 = phi[1];
-    alpha_center_of_mass = alpha[0];
-    alpha_2 = alpha[1];
-
-    return 0;
 }

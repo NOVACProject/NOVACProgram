@@ -82,7 +82,7 @@
       <EnableCOMDATFolding>false</EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
       <TypeLibraryResourceID>1</TypeLibraryResourceID>
-      <AdditionalDependencies>$(SolutionDir)curl\win32\lib\libcurl-d_imp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)curl\win32\lib\libcurl-d_imp.lib;$(SolutionDir)External\NetCdf_4_7_2\x86\lib\netcdf.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -95,6 +95,12 @@
     </ResourceCompile>
     <PostBuildEvent>
       <Command>copy "$(SolutionDir)curl\win32\bin\libcurl-d.dll" "$(SolutionDir)Debug\"
+copy "$(SolutionDir)External\NetCdf_4_7_2\x86\bin\netcdf.dll" "$(SolutionDir)Debug\"
+copy "$(SolutionDir)External\NetCdf_4_7_2\x86\bin\hdf5_hl.dll" "$(SolutionDir)Debug\"
+copy "$(SolutionDir)External\NetCdf_4_7_2\x86\bin\hdf5.dll" "$(SolutionDir)Debug\"
+copy "$(SolutionDir)External\NetCdf_4_7_2\x86\bin\zlib1.dll" "$(SolutionDir)Debug\"
+
+
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -126,7 +132,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
       <TypeLibraryResourceID>1</TypeLibraryResourceID>
-      <AdditionalDependencies>$(SolutionDir)curl\win32\lib\libcurl_imp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)curl\win32\lib\libcurl_imp.lib;$(SolutionDir)External\NetCdf_4_7_2\x86\lib\netcdf.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -139,7 +145,12 @@
       <ShowProgress>false</ShowProgress>
     </ResourceCompile>
     <PostBuildEvent>
-      <Command>copy "$(SolutionDir)curl\win32\bin\libcurl.dll" "$(SolutionDir)Release\"</Command>
+      <Command>copy "$(SolutionDir)curl\win32\bin\libcurl.dll" "$(SolutionDir)Release\"
+copy "$(SolutionDir)External\NetCdf_4_7_2\x86\bin\netcdf.dll" "$(SolutionDir)Release\"
+copy "$(SolutionDir)External\NetCdf_4_7_2\x86\bin\hdf5_hl.dll" "$(SolutionDir)Release\"
+copy "$(SolutionDir)External\NetCdf_4_7_2\x86\bin\hdf5.dll" "$(SolutionDir)Release\"
+copy "$(SolutionDir)External\NetCdf_4_7_2\x86\bin\zlib1.dll" "$(SolutionDir)Release\"
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -153,9 +164,6 @@
     <ClCompile Include="Common\ReportWriter.cpp" />
     <ClCompile Include="Common\Spectra\PakFileHandler.cpp" />
     <ClCompile Include="Common\Version.cpp" />
-    <ClCompile Include="Common\WindField.cpp" />
-    <ClCompile Include="Common\WindFieldRecord.cpp" />
-    <ClCompile Include="Common\WindFileReader.cpp" />
     <ClCompile Include="Common\XMLFileReader.cpp" />
     <ClCompile Include="CommunicationDataStorage.cpp" />
     <ClCompile Include="communication\CommunicationController.cpp" />
@@ -227,6 +235,12 @@
     <ClCompile Include="Evaluation\Spectrometer.cpp" />
     <ClCompile Include="Evaluation\SpectrometerHistory.cpp" />
     <ClCompile Include="FileTreeCtrl.cpp" />
+    <ClCompile Include="File\NetCdfFileReader.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="File\NetCdfWindFileReader.cpp" />
+    <ClCompile Include="File\WindFileReader.cpp" />
     <ClCompile Include="Geometry\GeometryCalculator.cpp" />
     <ClCompile Include="Geometry\GeometryEvaluator.cpp" />
     <ClCompile Include="Geometry\GeometryResult.cpp" />
@@ -237,7 +251,10 @@
     <ClCompile Include="Graphs\SpectrumGraph.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="MasterController.cpp" />
-    <ClCompile Include="MeteorologicalData.cpp" />
+    <ClCompile Include="Meteorology\MeteorologicalData.cpp" />
+    <ClCompile Include="Meteorology\WindField.cpp" />
+    <ClCompile Include="Meteorology\WindFieldDatabase.cpp" />
+    <ClCompile Include="Meteorology\WindFieldInterpolation.cpp" />
     <ClCompile Include="NovacMasterProgram.cpp" />
     <ClCompile Include="NovacMasterProgramDoc.cpp" />
     <ClCompile Include="NovacMasterProgramView.cpp" />
@@ -345,7 +362,15 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Interpolation.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="SpectralEvaluation\src\Spectra\ReferenceSpectrumConvolution.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Spectra\Scattering.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -361,7 +386,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="SpectralEvaluation\src\Utils.cpp">
+    <ClCompile Include="SpectralEvaluation\src\Spectra\WavelengthCalibration.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\StringUtils.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -400,9 +429,6 @@
     <ClInclude Include="Common\ReportWriter.h" />
     <ClInclude Include="Common\Spectra\PakFileHandler.h" />
     <ClInclude Include="Common\Version.h" />
-    <ClInclude Include="Common\WindField.h" />
-    <ClInclude Include="Common\WindFieldRecord.h" />
-    <ClInclude Include="Common\WindFileReader.h" />
     <ClInclude Include="Common\XMLFileReader.h" />
     <ClInclude Include="CommunicationDataStorage.h" />
     <ClInclude Include="communication\CommunicationController.h" />
@@ -469,6 +495,10 @@
     <ClInclude Include="Evaluation\Spectrometer.h" />
     <ClInclude Include="Evaluation\SpectrometerHistory.h" />
     <ClInclude Include="FileTreeCtrl.h" />
+    <ClInclude Include="File\NetCdfException.h" />
+    <ClInclude Include="File\NetCdfFileReader.h" />
+    <ClInclude Include="File\NetCdfWindFileReader.h" />
+    <ClInclude Include="File\WindFileReader.h" />
     <ClInclude Include="Geometry\GeometryCalculator.h" />
     <ClInclude Include="Geometry\GeometryEvaluator.h" />
     <ClInclude Include="Geometry\GeometryResult.h" />
@@ -479,7 +509,11 @@
     <ClInclude Include="Graphs\SpectrumGraph.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="MasterController.h" />
-    <ClInclude Include="MeteorologicalData.h" />
+    <ClInclude Include="Meteorology\MeteorologicalData.h" />
+    <ClInclude Include="Meteorology\MeteorologySource.h" />
+    <ClInclude Include="Meteorology\WindField.h" />
+    <ClInclude Include="Meteorology\WindFieldDatabase.h" />
+    <ClInclude Include="Meteorology\WindFieldInterpolation.h" />
     <ClInclude Include="NovacMasterProgram.h" />
     <ClInclude Include="NovacMasterProgramDoc.h" />
     <ClInclude Include="NovacMasterProgramView.h" />
@@ -560,11 +594,14 @@
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Flux\Flux.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Flux\PlumeInScanProperty.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\GPSData.h" />
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Interpolation.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Spectra\ReferenceSpectrumConvolution.h" />
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Spectra\Scattering.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Spectra\SpectrometerModel.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Spectra\Spectrum.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Spectra\SpectrumInfo.h" />
-    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Utils.h" />
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Spectra\WavelengthCalibration.h" />
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\StringUtils.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\VectorUtils.h" />
     <ClInclude Include="StatusFileReader.h" />
     <ClInclude Include="stdafx.h" />

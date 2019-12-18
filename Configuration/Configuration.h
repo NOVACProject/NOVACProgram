@@ -11,15 +11,13 @@
 
 /** The <b>CCConfigurationSetting</b> holds the configuration of the scanning Instruments
     that is found in the configuration.xml-file. */
-
 class CConfigurationSetting
 {
 public:
-
-    class CommunicationSetting {
+    class CommunicationSetting
+    {
     public:
         CommunicationSetting();
-        ~CommunicationSetting();
 
         /** Resets all values to default */
         void Clear();
@@ -82,8 +80,6 @@ public:
 
     class SpectrometerChannelSetting {
     public:
-        SpectrometerChannelSetting();
-
         /** Resets all values to default */
         void Clear();
         
@@ -97,22 +93,20 @@ public:
         SpectrometerChannelSetting& operator=(const SpectrometerChannelSetting &spec2);
     };
 
-    class SpectrometerSetting {
+    class SpectrometerSetting
+    {
     public:
-        SpectrometerSetting();
-        ~SpectrometerSetting();
-
         /** Resets all values to default */
         void Clear();
 
         /** The serial number of this spectrometer */
-        CString serialNumber;
+        CString serialNumber = "";
 
         /** The model-number of this spectrometer */
-        std::string modelName;
+        std::string modelName = "S2000";
 
         /** The number of channels defined in this spectrometer */
-        unsigned char channelNum;
+        unsigned char channelNum = 0;
 
         SpectrometerChannelSetting channel[MAX_CHANNEL_NUM];
 
@@ -123,7 +117,6 @@ public:
     class WindSpeedMeasurementSetting {
     public:
         WindSpeedMeasurementSetting();
-        ~WindSpeedMeasurementSetting();
 
         /** Resets all values to default */
         void Clear();
@@ -132,10 +125,10 @@ public:
         bool automaticWindMeasurements;
 
         /** The preferred interval between each measurement [in seconds] */
-        int	interval;
+        int interval;
 
         /** The preferred duration of each measurement [in seconds] */
-        int	duration;
+        int duration;
 
         /** Measurements will only be performed if the centre of the
                 plume is within +-maxAngle from zenith */
@@ -143,7 +136,7 @@ public:
 
         /** Measurements will only be performed if the centre of the plume
                 is relatively stable over the last 'stablePeriod' number of scans */
-        int	stablePeriod;
+        int stablePeriod;
 
         /** Measurements will only be performed if the peak-column (minus the offset)
                 is larger than 'minPeakColumn' ppmm */
@@ -153,11 +146,11 @@ public:
                 OR the desired distance [meters] between the two measurements at plume-height.
                 The value is an angle if > 0 and a distance if < 0
                 */
-        double	desiredAngle;
+        double desiredAngle;
 
         /** This is true if we should trust and use the values for
                 wind-direction and plume-height calculated by the program */
-        int		useCalculatedPlumeParameters;
+        int useCalculatedPlumeParameters;
 
         /** */
         double SwitchRange;
@@ -169,54 +162,51 @@ public:
     class SetupChangeSetting {
     public:
         SetupChangeSetting();
-        ~SetupChangeSetting();
 
         /** Resets all values to default */
         void Clear();
 
         /** This is true if we should let the program change the setup of the
                 instrument automatically. This only works for Heidelberg (V-II) instruments */
-        int		automaticSetupChange;
+        int automaticSetupChange;
 
         /** This is true if we should trust and use the values for
                 wind-direction and plume-height calculated by the program */
-        int		useCalculatedPlumeParameters;
+        int useCalculatedPlumeParameters;
 
         /** The tolerance for varying wind-directions. No changes will be done as long
                 as the changes of the wind-direction is less than this value */
-        double	windDirectionTolerance;
+        double windDirectionTolerance;
 
         /** How brave we are on using the scanner, can be either of;
                 CHANGEMODE_FAST or
-                CHANGEMODE_SAFE 	*/
-        int			mode;
+                CHANGEMODE_SAFE  */
+        int mode;
 
         /** Assignment operator */
         SetupChangeSetting& operator=(const SetupChangeSetting &ws2);
     };
 
-    class MotorSetting {
+    class MotorSetting
+    {
     public:
-        MotorSetting();
-        ~MotorSetting();
-
         /** Resets all values to default */
         void Clear();
 
         /** The number of steps in one round */
-        int		stepsPerRound;
+        int stepsPerRound = 200;
 
         /** The motor-steps-compensation */
-        int		motorStepsComp;
+        int motorStepsComp = 85;
 
         /** Assignment operator */
-        MotorSetting&  operator=(const MotorSetting &scanner2);
+        MotorSetting& operator=(const MotorSetting& other);
     };
 
-    class ScanningInstrumentSetting {
+    class ScanningInstrumentSetting
+    {
     public:
         ScanningInstrumentSetting();
-        ~ScanningInstrumentSetting();
 
         /** Resets all values to default */
         void Clear();
@@ -292,36 +282,32 @@ public:
     };
 
     /** Settings for publishing the results on a web - page */
-    class WebSettings {
+    class WebSettings
+    {
     public:
-        WebSettings();
-        ~WebSettings();
-        int     publish;        // 0 if don't publish, otherwise publish
-        CString localDirectory; // set to a local directory if the output is to be stored on the same computer
-        CString imageFormat;    // the format of the images to save, can be .bmp, .gif, .jpg or .png
+        int     publish = 0;           // 0 if don't publish, otherwise publish
+        CString localDirectory = "";   // set to a local directory if the output is to be stored on the same computer
+        CString imageFormat = ".png";  // the format of the images to save, can be .bmp, .gif, .jpg or .png
     };
 
     /** Settings for calling of external programs when receiving scans */
-    class CExternalCallSettings {
+    class CExternalCallSettings
+    {
     public:
-        CExternalCallSettings();
-        ~CExternalCallSettings();
-        CString			fullScanScript; // the path of one shell-command/excetuable file to exceute when receiving a complete scan
-        CString			imageScript;    // the path of one shell-command/executable file to execute when one image has been generated
+        CString fullScanScript = ""; // the path of one shell-command/excetuable file to exceute when receiving a complete scan
+        CString imageScript = "";    // the path of one shell-command/executable file to execute when one image has been generated
     };
 
     /** Settings for retrieval of the wind-field from external sources */
     class CWindFieldDataSettings {
     public:
         CWindFieldDataSettings();
-        ~CWindFieldDataSettings();
-        CString		windFieldFile;			// the path and file-name of the file which is the source of the wind-field data
-        long		windFileReloadInterval;	// the reload inteval of the wind-field fiel (in minutes) - zero corresponds to never reload the file
-        int		enabled;					// 1 if enabled; 0 if not
+        CString windFieldFile; // the path and file-name of the file which is the source of the wind-field data
+        long windFileReloadInterval; // the reload inteval of the wind-field fiel (in minutes) - zero corresponds to never reload the file
+        int enabled; // 1 if enabled; 0 if not
     };
 
-public:
-    CConfigurationSetting();
+    CConfigurationSetting() = default;
 
     /** Resets all values to default */
     void Clear();
@@ -343,25 +329,36 @@ public:
     ScanningInstrumentSetting scanner[MAX_NUMBER_OF_SCANNING_INSTRUMENTS];
 
     /** How many scanning instruments that are defined */
-    unsigned long scannerNum;
+    unsigned long scannerNum = 0;
 
     /** The output directory */
-    CString outputDirectory;
+    CString outputDirectory = "";
 
     /** Settings for web - publishing the results */
     WebSettings webSettings;
 
     /** Startup method */
-    int startup;
+    int startup = STARTUP_MANUAL;
 
     /**The ftp server setting*/
     CFTPSetting ftpSetting;
 
     /** The settings for calling of external programs */
-    CExternalCallSettings	externalSetting;
+    CExternalCallSettings externalSetting;
 
     /** The settings for retrieving the wind-field from external sources */
     CWindFieldDataSettings windSourceSettings;
 };
+
+// --------------------------------------------------------------------------------------------------------- 
+// --------------------------- Free functions working on the settings --------------------------------------
+// --------------------------------------------------------------------------------------------------------- 
+
+/** Lists the name of all volcanoes monitored by instruments connected to this computer. */
+std::vector<std::string> ListMonitoredVolcanoes(const CConfigurationSetting& settings);
+
+/** Extracts the name of the volcano which the provided instrument monitors.
+    Returns empty string if the scanner could not be found. */
+std::string GetVolcanoMonitoredByScanner(const CConfigurationSetting& settings, const std::string& serialNumber);
 
 #endif

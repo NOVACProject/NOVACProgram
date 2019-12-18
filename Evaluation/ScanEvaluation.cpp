@@ -3,11 +3,8 @@
 #include "EvaluationResultView.h"
 #include <SpectralEvaluation/Evaluation/EvaluationBase.h>
 #include <SpectralEvaluation/File/ScanFileHandler.h>
-#include <SpectralEvaluation/File/SpectrumIO.h>
 #include <SpectralEvaluation/File/STDFile.h>
-#include <SpectralEvaluation/File/TXTFile.h>
-#include <SpectralEvaluation/Spectra/SpectrometerModel.h>
-#include <SpectralEvaluation/Utils.h>
+#include <SpectralEvaluation/StringUtils.h>
 
 using namespace Evaluation;
 
@@ -92,7 +89,8 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
     // Check the scan file, make sure it's correct and that the file
     //	actually contains spectra
     const std::string scanFileName((LPCSTR)scanfile);
-    if (!scan.CheckScanFile(scanFileName)) {
+    if (!scan.CheckScanFile(scanFileName))
+    {
         return 0;
     }
 
@@ -136,6 +134,11 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
 
         CEvaluationBase* newEval = FindOptimumShiftAndSqueezeFromFraunhoferReference(copyOfWindow, *darkSettings, m_skySettings, scan);
 
+        if (m_lastErrorMessage.size() > 0)
+        {
+            ShowMessage(m_lastErrorMessage.c_str());
+        }
+
         if (nullptr != newEval)
         {
             copyOfWindow = newEval->FitWindow();
@@ -157,6 +160,11 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
     {
         return 0;
     }
+
+    if (sky.NumSpectra() > 0 && !m_averagedSpectra)
+    {
+        sky.Div(sky.NumSpectra());
+    }
     CSpectrum skySpectrumWithoutDarkCorrection = sky;
 
     if (m_skySettings.skyOption != Configuration::SKY_OPTION::USER_SUPPLIED)
@@ -165,13 +173,8 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
         {
             return 0;
         }
+        dark.Div(dark.NumSpectra());
         sky.Sub(dark);
-    }
-
-    if (sky.NumSpectra() > 0 && !m_averagedSpectra)
-    {
-        sky.Div(sky.NumSpectra());
-        skySpectrumWithoutDarkCorrection.Div(skySpectrumWithoutDarkCorrection.NumSpectra());
     }
 
     // tell the evaluator which sky-spectrum to use
@@ -213,13 +216,16 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
             // a. Read the next spectrum from the file
             int ret = scan.GetNextSpectrum(current);
 
-            if (ret == 0) {
+            if (ret == 0)
+            {
                 // if something went wrong when reading the spectrum
-                if (scan.m_lastError == SpectrumIO::CSpectrumIO::ERROR_SPECTRUM_NOT_FOUND || scan.m_lastError == SpectrumIO::CSpectrumIO::ERROR_EOF) {
+                if (scan.m_lastError == SpectrumIO::CSpectrumIO::ERROR_SPECTRUM_NOT_FOUND || scan.m_lastError == SpectrumIO::CSpectrumIO::ERROR_EOF)
+                {
                     // at the end of the file, quit the 'while' loop
                     break;
                 }
-                else {
+                else
+                {
                     CString errMsg;
                     errMsg.Format("Faulty spectrum found in %s", (LPCSTR)scanfile);
                     switch (scan.m_lastError) {
@@ -237,10 +243,10 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
                 }
             }
 
-            ++index;	// we'have just read the next spectrum in the .pak-file
+            ++index; // we'have just read the next spectrum in the .pak-file
 
             // If the read spectrum is the sky or the dark spectrum, 
-            //	then don't evaluate it...
+            //   then don't evaluate it...
             if (current.ScanIndex() == sky.ScanIndex() || current.ScanIndex() == dark.ScanIndex())
             {
                 continue;
@@ -259,7 +265,7 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
             }
 
             // b. Calculate the intensities, before we divide by the number of spectra
-            //		and before we subtract the dark
+            //      and before we subtract the dark
             current.m_info.m_peakIntensity = (float)current.MaxValue(0, current.m_length - 2);
             current.m_info.m_fitIntensity = (float)current.MaxValue(m_fitLow, m_fitHigh);
 
@@ -279,7 +285,7 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
             }
 
             // d2. Now subtract the dark (if we did this earlier, then the 'Ignore' - function would
-            //		not function properly)
+            //      not function properly)
             if (dark.NumSpectra() > 0 && !m_averagedSpectra)
             {
                 dark.Div(dark.NumSpectra());
@@ -290,10 +296,10 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
             // e. Evaluate the spectrum
             if (eval->Evaluate(current))
             {
-               CString str;
+                CString str;
                 str.Format("Failed to evaluate spectrum from spectrometer %s. Failure at spectrum %d in scan containing %d spectra. Message: '%s'",
                     current.m_info.m_device.c_str(), current.ScanIndex(), current.SpectraPerScan(), eval->m_lastError.c_str());
-				ShowMessage(str);
+                ShowMessage(str);
                 success = false;
             }
 
@@ -304,7 +310,8 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
             newResult->CheckGoodnessOfFit(current.m_info);
 
             // g. If it is ok, then check if the value is higher than any of the previous ones
-            if (newResult->IsOk(newResult->GetEvaluatedNum() - 1) && fabs(newResult->GetColumn(newResult->GetEvaluatedNum() - 1, 0)) > highestColumn) {
+            if (newResult->IsOk(newResult->GetEvaluatedNum() - 1) && fabs(newResult->GetColumn(newResult->GetEvaluatedNum() - 1, 0)) > highestColumn)
+            {
                 highestColumn = fabs(newResult->GetColumn(newResult->GetEvaluatedNum() - 1, 0));
                 m_indexOfMostAbsorbingSpectrum = index;
             }
@@ -321,16 +328,19 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
             }
 
             // i. If the user wants us to sleep between each evaluation. Do so...
-            if (m_pause != nullptr && *m_pause == 1 && m_sleeping != nullptr) {
+            if (m_pause != nullptr && *m_pause == 1 && m_sleeping != nullptr)
+            {
                 CWinThread *thread = AfxGetThread();
                 *m_sleeping = true;
-                if (pView != 0) {
+                if (pView != 0)
+                {
                     pView->PostMessage(WM_GOTO_SLEEP);
                 }
                 thread->SuspendThread();
                 *m_sleeping = false;
             }
-            else {
+            else
+            {
                 Sleep(20);
             }
         } // end while(1)
@@ -350,7 +360,7 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
                 // Get a new fit-window to use for the second iteration...
                 CFitWindow newWindow = copyOfWindow; // create a new copy
 
-                                                     // 5. Set the shift for all references to this value
+                // 5. Set the shift for all references to this value
                 for (int k = 0; k < newWindow.nRef; ++k)
                 {
                     if (newWindow.ref[k].m_specieName.compare("FraunhoferRef") == 0)
@@ -384,8 +394,10 @@ void CScanEvaluation::UpdateResult(std::shared_ptr<CScanResult> newResult)
     m_result = newResult;
 }
 
-void CScanEvaluation::ShowResult(const CSpectrum &spec, const CEvaluationBase *eval, long curSpecIndex, long specNum) {
-    if (pView == nullptr) {
+void CScanEvaluation::ShowResult(const CSpectrum &spec, const CEvaluationBase *eval, long curSpecIndex, long specNum)
+{
+    if (pView == nullptr)
+    {
         return;
     }
 
@@ -692,7 +704,7 @@ CFitWindow* CScanEvaluation::FindOptimumShiftAndSqueeze_Fraunhofer(const CEvalua
 
     while (scan->GetNextSpectrum(spectrum)) {
         fitIntensity = spectrum.MaxValue(fitLow, fitHigh);
-        maxInt = CSpectrometerDatabase::GetInstance().GetModel(spectrum.m_info.m_specModelName).maximumIntensity; 
+        maxInt = CSpectrometerDatabase::GetInstance().GetModel(spectrum.m_info.m_specModelName).maximumIntensity;
 
         // Get the saturation-ratio for this spectrum
         if (spectrum.NumSpectra() > 0) {

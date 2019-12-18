@@ -3,8 +3,8 @@
 #include "PostFluxCalculator.h"
 #include "../Graphs/ScanGraph.h"
 #include "../DlgControls/Label.h"
-#include "../Common/WindField.h"
-#include "../Common/WindFileReader.h"
+#include "../Meteorology/WindField.h"
+#include "../File/WindFileReader.h"
 #include "../Dialogs/FluxErrorDlg.h"
 #include "afxcmn.h"
 
@@ -104,7 +104,7 @@ public:
 	CWindField		m_windField;
 
 	/** The wind-field reader, if any */
-	FileHandler::CWindFileReader	*m_wfReader;
+	CWindFieldDatabase* m_windFieldFromFile = nullptr;
 
 	/** The currently selected scan */
 	int					 m_curScan;

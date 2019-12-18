@@ -10,7 +10,7 @@
 #include "Dialogs/ColumnHistoryDlg.h"
 #include "EvaluatedDataStorage.h"
 #include "CommunicationDataStorage.h"
-#include "MeteorologicalData.h"
+#include "Meteorology/MeteorologicalData.h"
 #include "View_OverView.h"
 #include "View_WindMeasOverView.h"
 #include "View_Instrument.h"
@@ -186,6 +186,8 @@ public:
 	afx_msg void OnUpdateMenuViewInstrumenttab(CCmdUI *pCmdUI);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
     afx_msg void OnMenuFileCreatereferences();
+    afx_msg void OnFileCalibratespectrometer();
+    afx_msg void OnUpdateFileCalibratespectrometer(CCmdUI *pCmdUI);
 };
 
 #ifndef _DEBUG  // debug version in NovacMasterProgramView.cpp

@@ -3,6 +3,8 @@
 
 
 // CCreateReferencesDlg dialog
+namespace Dialogs
+{
 
 class CCreateReferencesDlg : public CDialog
 {
@@ -40,3 +42,5 @@ private:
     void UpdateRunConvolutionButton();
     int m_highPassFilter;
 };
+
+}
