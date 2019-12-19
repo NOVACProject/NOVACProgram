@@ -4,8 +4,6 @@
 
 void SelectCubeValues(const std::vector<float>& tensor, const std::vector<size_t>& tensorDimensions, const std::vector<size_t>& floorIdx, std::vector<double>& corners)
 {
-    assert(corners.size() == 8);
-
     const size_t timeDim = 0;
     const size_t lvlDim = 1;
     const size_t latDim = 2;
