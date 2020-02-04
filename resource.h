@@ -243,6 +243,7 @@
 #define IDD_CONFIGURE_SPECTROMETERMODEL 314
 #define IDD_CREATE_REFERENCES_DIALOG    316
 #define IDD_CALIBRATION_DIALOG          319
+#define IDD_FLUX_HISTORY_DLG            320
 #define IDC_STATIC_VERSIONNUMBER        1000
 #define IDC_STATIC_COPYRIGHT            1001
 #define IDC_BUTTON_TEST                 1002
@@ -257,7 +258,10 @@
 #define IDC_EDIT_SYSTEMTILT             1009
 #define IDC_EDIT_MAXCOL                 1009
 #define IDC_EDIT_FITLOW                 1010
+#define IDC_EDIT_MINFLUX                1010
 #define IDC_EDIT_FITHIGH                1011
+#define IDC_EDIT_MAXCOL2                1011
+#define IDC_EDIT_MAXFLUX                1011
 #define IDC_EDIT_OUTPUTDIR              1012
 #define IDC_STATIC_REFERENCEFILES       1015
 #define IDC_SYSTEM_TAB_CONTROL          1016
@@ -529,6 +533,7 @@
 #define IDC_EDIT_SCATTERINGERROR        1120
 #define IDC_EDIT_EVALLOG3               1120
 #define IDC_EDIT_PLUMEDGE_HIGH          1120
+#define IDC_CHECK_PLOT_FLUX_HISTORY     1120
 #define IDC_FTP_PASSWORD                1121
 #define IDC_EDIT_STEPSPERROUND          1121
 #define IDC_REEVAL_STATUSBAR2           1121
@@ -596,8 +601,10 @@
 #define IDC_LABEL_FITHIGH               1159
 #define IDC_LABEL_MAXCOLUMN             1159
 #define IDC_LABEL_COMPASSDIRECTION      1160
+#define IDC_LABEL_MINFLUX               1160
 #define IDC_LABEL_OUTPUT_DIRECTORY      1161
 #define IDC_LABEL_SYSTEMTILT            1161
+#define IDC_LABEL_MAXFLUX               1161
 #define IDC_LABEL_STARTUP               1162
 #define IDC_LABEL_FTP_SERVER_URL        1163
 #define IDC_LABEL_FTP_USERNAME          1164
@@ -805,7 +812,10 @@
 #define IDC_STATIC_HG_SPECTRUM_FILENAME 1358
 #define IDC_STATIC_INITIAL_WAVEL_CALIBRATION 1359
 #define IDC_STATIC_KURUCZ_SOLAR_ATLAS   1360
+#define IDC_FLUX_30DAY_FRAME            1360
 #define IDC_STATIC_INITIAL_WAVEL_CALIBRATION2 1361
+#define IDC_FLUX_10DAY_FRAME            1361
+#define IDC_FLUX_FRAME                  1362
 #define ID_CONTROL_START                32771
 #define ID_VIEW_PEAKINTENSITY_BD        32779
 #define ID_VIEW_FITINTENSITY_BD         32780
@@ -824,7 +834,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        321
 #define _APS_NEXT_COMMAND_VALUE         32790
-#define _APS_NEXT_CONTROL_VALUE         1360
+#define _APS_NEXT_CONTROL_VALUE         1363
 #define _APS_NEXT_SYMED_VALUE           109
 #endif
 #endif

@@ -79,6 +79,9 @@ namespace ConfigurationDialog
 		int m_plotColumnHistory; // 0 or 1
 		CEdit m_minColumn;
 		CEdit m_maxColumn;
+		int m_plotFluxHistory; // 0 or 1
+		CEdit m_minFlux;
+		CEdit m_maxFlux;
 
 		/** (Re-)initializes the list of volcanoes */
 		void UpdateVolcanoList();

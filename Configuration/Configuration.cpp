@@ -116,6 +116,9 @@ void CConfigurationSetting::ScanningInstrumentSetting::Clear() {
     plotColumnHistory = 0;
     minColumn = 0;
     maxColumn = 500;
+	plotFluxHistory = 0;
+	minFlux = 0;
+	maxFlux = 500;
     windSettings.Clear();
     scSettings.Clear();
     motor[0].Clear();

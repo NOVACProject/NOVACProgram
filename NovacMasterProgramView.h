@@ -8,6 +8,7 @@
 #include "Configuration/EvaluationConfigurationDlg.h"
 #include "Dialogs/ConfigurationDlg.h"
 #include "Dialogs/ColumnHistoryDlg.h"
+#include "Dialogs/FluxHistoryDlg.h"
 #include "EvaluatedDataStorage.h"
 #include "CommunicationDataStorage.h"
 #include "Meteorology/MeteorologicalData.h"
@@ -135,6 +136,9 @@ public:
 
 	// The column history pages
 	CArray<ColumnHistoryDlg *, ColumnHistoryDlg *> m_colHistoryPages;
+
+	// The flux history pages
+	CArray<FluxHistoryDlg *, FluxHistoryDlg *> m_fluxHistoryPages;
 
 	// The overview page
 	CView_OverView					*m_overView;

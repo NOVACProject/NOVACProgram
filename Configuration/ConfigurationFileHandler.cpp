@@ -294,6 +294,9 @@ int CConfigurationFileHandler::WriteConfigurationFile(CConfigurationSetting &con
         str.AppendFormat("\t\t\t<plotColumnHistory>%d</plotColumnHistory>\n", conf->scanner[i].plotColumnHistory);
         str.AppendFormat("\t\t\t<minColumn>%d</minColumn>\n", conf->scanner[i].minColumn);
         str.AppendFormat("\t\t\t<maxColumn>%d</maxColumn>\n", conf->scanner[i].maxColumn);
+		str.AppendFormat("\t\t\t<plotFluxHistory>%d</plotFluxHistory>\n", conf->scanner[i].plotFluxHistory);
+		str.AppendFormat("\t\t\t<minFlux>%d</minFlux>\n", conf->scanner[i].minFlux);
+		str.AppendFormat("\t\t\t<maxFlux>%d</maxFlux>\n", conf->scanner[i].maxFlux);
         fprintf(f, str);
 
         // --- First write the spectrometer information
@@ -752,6 +755,18 @@ int CConfigurationFileHandler::Parse_ScanningInstrument() {
             Parse_IntItem(TEXT("/maxColumn"), curScanner->maxColumn);
             continue;
         }
+		if (Equals(szToken, "plotFluxHistory")) {
+			Parse_IntItem(TEXT("/plotFluxHistory"), curScanner->plotFluxHistory);
+			continue;
+		}
+		if (Equals(szToken, "minFlux")) {
+			Parse_IntItem(TEXT("/minFlux"), curScanner->minFlux);
+			continue;
+		}
+		if (Equals(szToken, "maxFlux")) {
+			Parse_IntItem(TEXT("/maxFlux"), curScanner->maxFlux);
+			continue;
+		}
     }
     return 0;
 }

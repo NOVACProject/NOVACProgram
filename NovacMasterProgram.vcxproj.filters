@@ -555,6 +555,9 @@
     <ClCompile Include="Dialogs\ColumnHistoryDlg.cpp">
       <Filter>Source Files\Dialogs</Filter>
     </ClCompile>
+    <ClCompile Include="Dialogs\FluxHistoryDlg.cpp">
+      <Filter>Source Files\Dialogs</Filter>
+    </ClCompile>
     <ClCompile Include="communication\IFTPDataUpload.cpp">
       <Filter>Source Files\Communication</Filter>
     </ClCompile>
@@ -1176,6 +1179,9 @@
       <Filter>Header Files\SpectralEvaluation\Spectra</Filter>
     </ClInclude>
     <ClInclude Include="Dialogs\ColumnHistoryDlg.h">
+      <Filter>Header Files\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialogs\FluxHistoryDlg.h">
       <Filter>Header Files\Dialogs</Filter>
     </ClInclude>
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Configuration\SkySettings.h">
