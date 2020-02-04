@@ -34,6 +34,7 @@
 #include "ReEvaluation/ReEval_DoEvaluationDlg.h"
 
 #include "Dialogs/ColumnHistoryDlg.h"
+#include "Dialogs/FluxHistoryDlg.h"
 #include "Dialogs/ExportDlg.h"
 #include "Dialogs/ExportSpectraDlg.h"
 #include "Dialogs/ExportEvallogDlg.h"
@@ -875,7 +876,8 @@ int CNovacMasterProgramView::InitializeControls() {
     // Initialize the master frame
     CRect rect, rect2;
     CView_Scanner *page;
-    ColumnHistoryDlg *histPage;
+    ColumnHistoryDlg *columnHistoryPage;
+	FluxHistoryDlg *fluxHistoryPage;
     CString site;
     TCITEM tcItem;
     m_showWindOverView = false;
@@ -932,17 +934,29 @@ int CNovacMasterProgramView::InitializeControls() {
     // Add the column history pages, one for every spectrometer if configured to show
     for (int i = 0; i < (int)g_settings.scannerNum; ++i) {
         if (g_settings.scanner[i].plotColumnHistory) {
-            histPage = new ColumnHistoryDlg();
-            histPage->Construct(IDD_COLUMN_HISTORY_DLG);
+            columnHistoryPage = new ColumnHistoryDlg();
+            columnHistoryPage->Construct(IDD_COLUMN_HISTORY_DLG);
 
-            histPage->m_evalDataStorage = this->m_evalDataStorage;
-            histPage->m_scannerIndex = i;
-            histPage->m_serialNumber.Format("%s", (LPCTSTR)g_settings.scanner[i].spec[0].serialNumber);
-            histPage->m_siteName.Format("%s", (LPCTSTR)g_settings.scanner[i].site);
+            columnHistoryPage->m_evalDataStorage = this->m_evalDataStorage;
+            columnHistoryPage->m_scannerIndex = i;
+            columnHistoryPage->m_serialNumber.Format("%s", (LPCTSTR)g_settings.scanner[i].spec[0].serialNumber);
+            columnHistoryPage->m_siteName.Format("%s", (LPCTSTR)g_settings.scanner[i].site);
 
-            m_sheet.AddPage(histPage);
-            m_colHistoryPages.Add(histPage);
+            m_sheet.AddPage(columnHistoryPage);
+            m_colHistoryPages.Add(columnHistoryPage);
         }
+		if (g_settings.scanner[i].plotFluxHistory) {
+			fluxHistoryPage = new FluxHistoryDlg();
+			fluxHistoryPage->Construct(IDD_FLUX_HISTORY_DLG);
+
+			fluxHistoryPage->m_evalDataStorage = this->m_evalDataStorage;
+			fluxHistoryPage->m_scannerIndex = i;
+			fluxHistoryPage->m_serialNumber.Format("%s", (LPCTSTR)g_settings.scanner[i].spec[0].serialNumber);
+			fluxHistoryPage->m_siteName.Format("%s", (LPCTSTR)g_settings.scanner[i].site);
+
+			m_sheet.AddPage(fluxHistoryPage);
+			m_fluxHistoryPages.Add(fluxHistoryPage);
+		}
     }
 
     // At last, add the wind-measurements overview page, 
@@ -997,7 +1011,7 @@ int CNovacMasterProgramView::InitializeControls() {
 
                 // Set the text in the 'item'. !!!! The serial-string is necessary
                 //	otherwise this function changes the global object !!!!!!!!!!!
-                site.Format("%s History", (LPCTSTR)g_settings.scanner[i].site);
+                site.Format("%s Column History", (LPCTSTR)g_settings.scanner[i].site);
                 tcItem.pszText = site.GetBuffer(256);
 
                 // Update the tab with the updated 'item'
@@ -1005,6 +1019,20 @@ int CNovacMasterProgramView::InitializeControls() {
                 tabPtr->SetItem(tabIndex, &tcItem);
                 histCount++;
             }
+
+			if (g_settings.scanner[i].plotFluxHistory) {
+				tcItem.mask = TCIF_TEXT;
+
+				// Set the text in the 'item'. !!!! The serial-string is necessary
+				//	otherwise this function changes the global object !!!!!!!!!!!
+				site.Format("%s Flux History", (LPCTSTR)g_settings.scanner[i].site);
+				tcItem.pszText = site.GetBuffer(256);
+
+				// Update the tab with the updated 'item'
+				int tabIndex = g_settings.scannerNum + 2 + histCount;
+				tabPtr->SetItem(tabIndex, &tcItem);
+				histCount++;
+			}
         }
     }
     return 0;
@@ -1280,12 +1308,12 @@ void CNovacMasterProgramView::OnChangeUnitOfColumnToPPMM() {
             page->DrawColumn();
         }
     }
-    for (int i = 0; i < m_colHistoryPages.GetCount(); ++i) {
-        ColumnHistoryDlg *page = (ColumnHistoryDlg *)m_colHistoryPages[i];
-        if (page->m_hWnd != NULL) {
-            page->RedrawAll();
-        }
-    }
+    //for (int i = 0; i < m_colHistoryPages.GetCount(); ++i) {
+    //    ColumnHistoryDlg *page = (ColumnHistoryDlg *)m_colHistoryPages[i];
+    //    if (page->m_hWnd != NULL) {
+    //        page->RedrawAll();
+    //    }
+    //}
 }
 
 void CNovacMasterProgramView::OnChangeUnitOfColumnToMolecCm2() {
@@ -1299,28 +1327,46 @@ void CNovacMasterProgramView::OnChangeUnitOfColumnToMolecCm2() {
         }
     }
 
-    for (int i = 0; i < m_colHistoryPages.GetCount(); ++i) {
-        ColumnHistoryDlg *page = (ColumnHistoryDlg *)m_colHistoryPages[i];
-        if (page->m_hWnd != NULL) {
-            page->RedrawAll();
-        }
-    }
+    //for (int i = 0; i < m_colHistoryPages.GetCount(); ++i) {
+    //    ColumnHistoryDlg *page = (ColumnHistoryDlg *)m_colHistoryPages[i];
+    //    if (page->m_hWnd != NULL) {
+    //        page->RedrawAll();
+    //    }
+    //}
 }
 
 void CNovacMasterProgramView::OnUpdateChangeUnitOfColumnToPPMM(CCmdUI *pCmdUI)
 {
-    if (g_userSettings.m_columnUnit == UNIT_PPMM)
-        pCmdUI->SetCheck(1);
-    else
-        pCmdUI->SetCheck(0);
+	if (g_userSettings.m_columnUnit == UNIT_PPMM) {
+		pCmdUI->SetCheck(1);
+	}
+	else {
+		pCmdUI->SetCheck(0);
+	}
+
+	//for (int i = 0; i < m_fluxHistoryPages.GetCount(); ++i) {
+	//	FluxHistoryDlg *page = (FluxHistoryDlg *)m_fluxHistoryPages[i];
+	//	if (page->m_hWnd != NULL) {
+	//		page->RedrawAll();
+	//	}
+	//}
 }
 
 void CNovacMasterProgramView::OnUpdateChangeUnitOfColumnToMolecCm2(CCmdUI *pCmdUI)
 {
-    if (g_userSettings.m_columnUnit == UNIT_MOLEC_CM2)
+    if (g_userSettings.m_columnUnit == UNIT_MOLEC_CM2){
         pCmdUI->SetCheck(1);
-    else
-        pCmdUI->SetCheck(0);
+	}
+	else {
+		pCmdUI->SetCheck(0);
+	}
+
+	//for (int i = 0; i < m_fluxHistoryPages.GetCount(); ++i) {
+	//	FluxHistoryDlg *page = (FluxHistoryDlg *)m_fluxHistoryPages[i];
+	//	if (page->m_hWnd != NULL) {
+	//		page->RedrawAll();
+	//	}
+	//}
 }
 
 void CNovacMasterProgramView::ScanStatusLogFile() {

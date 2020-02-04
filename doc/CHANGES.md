@@ -5,12 +5,13 @@ Version 3.2 (TBD)
 Bug fixes
 * Fix issue with columns from same scan initially plotting at same time in history (#99)
 * Fix issue with software crashing on re-evaluation when solar spectrum file is used (#103)
+* Fix peak intensity/specsaturation (#108)
 
 New features
 * Support for user-configurable spectrometer (#6)
-* Dialog to create reference files from spectrometer calibration (#51)
 * SFTP support for uploading pak files to offsite server (#58)
 * Hostname support for FTP to instrument computer (#81)
+* Addition of flux history tab (#107)
 
 -----------------------------------------------------
 

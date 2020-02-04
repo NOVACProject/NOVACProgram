@@ -262,6 +262,11 @@ public:
         int minColumn;
         int maxColumn;
 
+		/** Plot flux history. */
+		int plotFluxHistory;
+		int minFlux;
+		int maxFlux;
+
         /** Assignment operator */
         ScanningInstrumentSetting&  operator=(const ScanningInstrumentSetting &scanner2);
     };

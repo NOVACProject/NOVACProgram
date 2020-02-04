@@ -61,6 +61,9 @@ void CLocationConfigurationDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Check(pDX, IDC_CHECK_PLOT_COLUMN_HISTORY, m_plotColumnHistory);
     DDX_Control(pDX, IDC_EDIT_MINCOL, m_minColumn);
     DDX_Control(pDX, IDC_EDIT_MAXCOL, m_maxColumn);
+	DDX_Check(pDX, IDC_CHECK_PLOT_FLUX_HISTORY, m_plotFluxHistory);
+	DDX_Control(pDX, IDC_EDIT_MINFLUX, m_minFlux);
+	DDX_Control(pDX, IDC_EDIT_MAXFLUX, m_maxFlux);
 
     if (m_curScanner != NULL) {
         DDX_Text(pDX, IDC_EDIT_SITE, m_curScanner->site);
@@ -71,6 +74,9 @@ void CLocationConfigurationDlg::DoDataExchange(CDataExchange* pDX)
         DDX_Check(pDX, IDC_CHECK_PLOT_COLUMN_HISTORY, m_curScanner->plotColumnHistory);
         DDX_Text(pDX, IDC_EDIT_MINCOL, m_curScanner->minColumn);
         DDX_Text(pDX, IDC_EDIT_MAXCOL, m_curScanner->maxColumn);
+		DDX_Check(pDX, IDC_CHECK_PLOT_FLUX_HISTORY, m_curScanner->plotFluxHistory);
+		DDX_Text(pDX, IDC_EDIT_MINFLUX, m_curScanner->minFlux);
+		DDX_Text(pDX, IDC_EDIT_MAXFLUX, m_curScanner->maxFlux);
 
     }
     else {
@@ -97,6 +103,9 @@ BEGIN_MESSAGE_MAP(CLocationConfigurationDlg, CPropertyPage)
     ON_BN_CLICKED(IDC_CHECK_PLOT_COLUMN_HISTORY, SaveData)
     ON_EN_CHANGE(IDC_EDIT_MINCOL, SaveData)
     ON_EN_CHANGE(IDC_EDIT_MAXCOL, SaveData)
+	ON_BN_CLICKED(IDC_CHECK_PLOT_FLUX_HISTORY, SaveData)
+	ON_EN_CHANGE(IDC_EDIT_MINFLUX, SaveData)
+	ON_EN_CHANGE(IDC_EDIT_MAXFLUX, SaveData)
 END_MESSAGE_MAP()
 
 BOOL CLocationConfigurationDlg::OnInitDialog()
@@ -208,14 +217,6 @@ void CLocationConfigurationDlg::OnChangeScanner() {
 
         // Update the electronics
         m_comboElectronics.SetCurSel((int)m_curScanner->electronicsBox);
-
-        // Update the plot options
-        /**
-        m_plotColumn = m_curScanner->plotColumn;
-        m_plotColumnHistory = m_curScanner->plotColumnHistory;
-        m_minColumn = m_curScanner->minColumn;
-        m_maxColumn = m_curScanner->maxColumn;
-        */
 
         m_comboSpectrometerChannels.EnableWindow(TRUE);
 
