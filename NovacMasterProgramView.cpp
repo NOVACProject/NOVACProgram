@@ -662,6 +662,12 @@ LRESULT CNovacMasterProgramView::OnEvalSucess(WPARAM wParam, LPARAM lParam) {
                 page->PostMessage(WM_EVAL_SUCCESS, wParam, lParam);
             }
         }
+		for (int i = 0; i < m_fluxHistoryPages.GetCount(); ++i) {
+			FluxHistoryDlg *page = (FluxHistoryDlg *)m_fluxHistoryPages[i];
+			if (page->m_hWnd != NULL) {
+				page->PostMessage(WM_EVAL_SUCCESS, wParam, lParam);
+			}
+		}
     }
 
     // See if we need to upload any auxilliary data to the FTP-server
