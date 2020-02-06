@@ -129,6 +129,7 @@ BOOL CLocationConfigurationDlg::OnInitDialog()
 	m_comboElectronics.ResetContent();
 	m_comboElectronics.AddString("Version 1");
 	m_comboElectronics.AddString("Version 3");
+    m_comboElectronics.AddString("Version 4");
 
 	//m_plotColumn = 0;
 

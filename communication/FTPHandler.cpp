@@ -103,8 +103,7 @@ bool CFTPHandler::PollScanner()
     msg.Format("<node %d> Checking for files to download", m_mainIndex);
     ShowMessage(msg);
 
-    bool result = DownloadAllOldPak();
-    return result;
+    return DownloadAllOldPak();
 }
 
 //download pak files listed in m_fileInfoList
