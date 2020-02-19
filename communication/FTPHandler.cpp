@@ -3,10 +3,7 @@
 #include "../Common/CfgTxtFileHandler.h"
 
 // Use warning level 4 here
-#ifdef _MSC_VER
-// Make sure to use warning level 4
-#pragma warning (push, 4)
-#endif
+#pragma warning(push, 4)
 
 using namespace Communication;
 
@@ -17,13 +14,13 @@ extern CWinThread *g_comm;                 // <-- The communication controller
 CFTPHandler::CFTPHandler()
 {
     m_dataSpeed = 4.0;
-    SetupElectronicsBoxProperties(BOX_VERSION_1, m_electronicsBoxProperties);
+    m_electronicsBox = BOX_VERSION_1;
 }
 
 CFTPHandler::CFTPHandler(ELECTRONICS_BOX box)
 {
     m_dataSpeed = 4.0;
-    SetupElectronicsBoxProperties(box, m_electronicsBoxProperties);
+    this->m_electronicsBox = box;
 }
 
 CFTPHandler::~CFTPHandler(void)
@@ -105,9 +102,12 @@ bool CFTPHandler::DownloadPakFiles(const CString& folder)
     while (m_fileInfoList.GetCount() > 0)
     {
         CScannerFileInfo& fileInfo = m_fileInfoList.GetTail();
-
-        fileName.Format("%s.%s", (LPCSTR)fileInfo.fileName, m_electronicsBoxProperties.pakFileEnding.c_str());
-
+        if (m_electronicsBox == BOX_VERSION_2) {
+            fileName.Format("%s.pak", (LPCSTR)fileInfo.fileName);
+        }
+        else {
+            fileName.Format("%s.PAK", (LPCSTR)fileInfo.fileName);
+        }
         m_remoteFileSize = fileInfo.fileSize;
 
         if ((Equals(fileName, workPak) || Equals(fileName, uploadPak)) && folder.GetLength() == 0)
@@ -129,8 +129,7 @@ bool CFTPHandler::DownloadPakFiles(const CString& folder)
         time(&current);
         double seconds = current - start;
         long queryPeriod = g_settings.scanner[m_mainIndex].comm.queryPeriod;
-        if (seconds > queryPeriod)
-        {
+        if (seconds > queryPeriod) {
             break; // spent long enough on one scanner; move to next
         }
     }
@@ -234,9 +233,12 @@ bool CFTPHandler::DownloadOldPak(long interval)
     m_remoteFileSize = pakFileInfo->fileSize;
     estimatedTime = (int)((m_remoteFileSize * 1024.0) / m_dataSpeed);
     time(&startTime);
-
-    fileFullName.Format("%s.%s", (LPCSTR)pakFileInfo->fileName, m_electronicsBoxProperties.pakFileEnding.c_str());
-
+    if (this->m_electronicsBox == BOX_VERSION_2) {
+        fileFullName.Format("%s.pak", (LPCSTR)pakFileInfo->fileName);
+    }
+    else {
+        fileFullName.Format("%s.PAK", (LPCSTR)pakFileInfo->fileName);
+    }
     downloadResult = DownloadSpectra(fileFullName, m_storageDirectory);
     time(&stopTime);
 
@@ -252,8 +254,8 @@ long CFTPHandler::GetPakFileList(CString& folder)
     long pakFileSum = 0;
     CString fileList, listFilePath, msg;
     CFTPSocket ftpSocket(m_ftpInfo.timeout);
-    char ftpHostName[512];
-    sprintf(ftpHostName, "%s", (LPCSTR)m_ftpInfo.hostName);
+    char ipAddr[16];
+    sprintf(ipAddr, "%s", (LPCSTR)m_ftpInfo.hostName);
 
     // Start with clearing out the list of files...
     m_fileInfoList.RemoveAll();
@@ -263,16 +265,13 @@ long CFTPHandler::GetPakFileList(CString& folder)
     ftpSocket.SetLogFileName(listFilePath);
 
     // Log in to the instrument's FTP-server
-    if (!ftpSocket.Login(ftpHostName, m_ftpInfo.userName, m_ftpInfo.password))
-    {
+    if (!ftpSocket.Login(ipAddr, m_ftpInfo.userName, m_ftpInfo.password))
         return -1;
-    }
 
     // While we're at it, check the brand of the electronics box in the 
-    //   login-response from the FTP-server
-    if (ftpSocket.m_serverMsg.Find("AXIS") >= 0)
-    {
-        SetupElectronicsBoxProperties(BOX_VERSION_2, this->m_electronicsBoxProperties);
+    //	login-response from the FTP-server
+    if (ftpSocket.m_serverMsg.Find("AXIS") >= 0) {
+        m_electronicsBox = BOX_VERSION_2;
         g_settings.scanner[m_mainIndex].electronicsBox = BOX_VERSION_2;
     }
 
@@ -464,12 +463,12 @@ void CFTPHandler::ParseFileInfo(CString line, char disk)
 
     CScannerFileInfo scannerFileInfo(disk, fileName, fileSubfix, fileSize, mmdd, time);
 
-    if (0 == m_electronicsBoxProperties.pakFileEnding.compare((LPCSTR)fileSubfix))
-    {
+    if (m_electronicsBox == BOX_VERSION_1 && fileSubfix == _T("PAK"))
         m_fileInfoList.AddTail(scannerFileInfo);
-    }
-}
+    if (m_electronicsBox == BOX_VERSION_2 && fileSubfix == _T("pak"))
+        m_fileInfoList.AddTail(scannerFileInfo);
 
+}
 void CFTPHandler::GetSuffix(CString& fileName, CString& fileSubfix)
 {
     int position = fileName.ReverseFind('.');
@@ -539,7 +538,7 @@ BOOL CFTPHandler::DeleteRemoteFile(const CString& remoteFile)
     BOOL result = FALSE;
     CString localCopyOfRemoteFileName;
 
-    if (m_FtpConnection == nullptr)
+    if (m_FtpConnection == NULL)
     {
         if (Connect(m_ftpInfo.hostName, m_ftpInfo.userName, m_ftpInfo.password, m_ftpInfo.timeout) != 1)
         {
@@ -547,16 +546,13 @@ BOOL CFTPHandler::DeleteRemoteFile(const CString& remoteFile)
             return FALSE;
         }
     }
-
-    if (m_electronicsBoxProperties.version != BOX_VERSION_2)
-    {
+    if (m_electronicsBox != BOX_VERSION_2) {
         localCopyOfRemoteFileName.Format(remoteFile);
         if (!FindFile(localCopyOfRemoteFileName)) // This does not work with the axis-system, for some reason...
         {
             return FALSE;
         }
     }
-
     result = m_FtpConnection->Remove((LPCTSTR)remoteFile);
 
     return result;
@@ -758,7 +754,3 @@ int CFTPHandler::DownloadCfgTxt() {
 
     return 1;
 }
-
-#ifdef _MSC_VER
-#pragma warning (pop)
-#endif

@@ -6,7 +6,6 @@
 #include "../Common/Common.h"
 #include "../Configuration/configuration.h"
 #include "../scannerfileinfo.h"
-#include "ElectronicsBoxProperties.h"
 
 namespace Communication
 {
@@ -153,8 +152,8 @@ namespace Communication
         /** The list of RXX folders in the current directory */
         CList<CString, CString &> m_rFolderList;
 
-        /** The listing of the properties of the currently used electronics box. */
-        ElectronicsBoxProperties m_electronicsBoxProperties;
+        /** The kind of electronics box that we're communicating with, good to know... */
+        ELECTRONICS_BOX m_electronicsBox;
 
         /** speed to download file, in kilo-bytes/second*/
         double m_dataSpeed;
