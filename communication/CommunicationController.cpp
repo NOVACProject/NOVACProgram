@@ -318,8 +318,11 @@ void UploadFile_FTP(int mainIndex, CFTPHandler& ftpHandler)
         Common::GetFileName(remoteFile);
 
         // Connect to the server
-        // TODO: Why is there a hard-coded username and password here??
-        if (ftpHandler.Connect(g_settings.scanner[mainIndex].comm.ftpHostName, "administrator", "1225", g_settings.scanner[mainIndex].comm.timeout))
+        if (ftpHandler.Connect(
+            g_settings.scanner[mainIndex].comm.ftpHostName,
+            g_settings.scanner[mainIndex].comm.ftpAdminUserName,
+            g_settings.scanner[mainIndex].comm.ftpAdminPassword,
+            g_settings.scanner[mainIndex].comm.timeout))
         {
             // Upload the file
             if (ftpHandler.UploadFile(fullLocalFileName, remoteFile))
