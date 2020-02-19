@@ -11,20 +11,14 @@ extern CWinThread *g_comm;                 // <-- The communication controller
 // ------------------- Handling the different versions of electronics -------------------
 bool IsPakFileExtension(ELECTRONICS_BOX version, const CString& fileSuffix)
 {
-    if (version == BOX_VERSION_1 && fileSuffix == _T("PAK"))
+    if (version == BOX_VERSION_1)
     {
-        return true;
+        return fileSuffix == _T("PAK");
     }
-    else if (version == BOX_VERSION_2 && fileSuffix == _T("pak"))
+    else
     {
-        return true;
+        return fileSuffix == _T("pak");
     }
-    else if (version == BOX_VERSION_4 && fileSuffix == _T("pak"))
-    {
-        return true;
-    }
-
-    return false;
 }
 
 // Appends the typical file extension for a .pak file on an electronics box of the given generation to the filename.

@@ -204,17 +204,29 @@ UINT ConnectByFTP(LPVOID pParam)
     CString remoteFile, message, ip, spectrometerSerialID;
 
     // Setup the ftp-handler for this connection
-    CFTPHandler* ftpHandler;
-    ftpHandler = new CFTPHandler(g_settings.scanner[mainIndex].electronicsBox);
+    CFTPHandler ftpHandler(g_settings.scanner[mainIndex].electronicsBox);
+
     ip.Format("%d.%d.%d.%d", g_settings.scanner[mainIndex].comm.ftpIP[0],
         g_settings.scanner[mainIndex].comm.ftpIP[1],
         g_settings.scanner[mainIndex].comm.ftpIP[2],
         g_settings.scanner[mainIndex].comm.ftpIP[3]);
-    ftpHandler->SetFTPInfo(mainIndex, ip, g_settings.scanner[mainIndex].comm.ftpUserName,
-        g_settings.scanner[mainIndex].comm.ftpPassword,
-        g_settings.scanner[mainIndex].comm.ftpAdminUserName,
-        g_settings.scanner[mainIndex].comm.ftpAdminPassword,
-        g_settings.scanner[mainIndex].comm.timeout / 1000);
+
+    if(g_settings.scanner[mainIndex].electronicsBox != BOX_VERSION_4)
+    {
+        ftpHandler.SetFTPInfo(mainIndex, ip, g_settings.scanner[mainIndex].comm.ftpUserName,
+            g_settings.scanner[mainIndex].comm.ftpPassword,
+            g_settings.scanner[mainIndex].comm.ftpAdminUserName,
+            g_settings.scanner[mainIndex].comm.ftpAdminPassword,
+            g_settings.scanner[mainIndex].comm.timeout / 1000);
+    }
+    else
+    {
+        ftpHandler.SetFTPInfo(mainIndex, ip, g_settings.scanner[mainIndex].comm.ftpUserName,
+            g_settings.scanner[mainIndex].comm.ftpPassword,
+            g_settings.scanner[mainIndex].comm.ftpUserName,
+            g_settings.scanner[mainIndex].comm.ftpPassword,
+            g_settings.scanner[mainIndex].comm.timeout / 1000);
+    }
 
     spectrometerSerialID.Format("%s", (LPCSTR)g_settings.scanner[mainIndex].spec[0].serialNumber);
 
@@ -227,7 +239,7 @@ UINT ConnectByFTP(LPVOID pParam)
         if (sleepPeriod > 0)
         {
             sleepFlag = true;
-            ftpHandler->GotoSleep();
+            ftpHandler.GotoSleep();
             Sleep(sleepPeriod);
             nRoundsAfterWakeUp = 0;
             continue;
@@ -236,19 +248,19 @@ UINT ConnectByFTP(LPVOID pParam)
         {
             if (sleepFlag || nRoundsAfterWakeUp == 0)
             {
-                ftpHandler->WakeUp();
+                ftpHandler.WakeUp();
                 sleepFlag = false;
             }
         }
 
         // ---------- Check if we should upload something to the instrument ------
         if (mainIndex < g_fileToUpload.GetCount()) {
-            UploadFile_FTP(mainIndex, ftpHandler);
+            UploadFile_FTP(mainIndex, &ftpHandler);
         }
 
         // ----------- DOWNLOAD DATA ------------------
         startTime = clock();
-        ftpHandler->PollScanner();
+        ftpHandler.PollScanner();
         stopTime = clock();
 
         // if there's no file to upload then we can take a pause...
@@ -259,7 +271,7 @@ UINT ConnectByFTP(LPVOID pParam)
     }
 
     // Quit!
-    ftpHandler->Disconnect();
+    ftpHandler.Disconnect();
     return 0;
 }
 

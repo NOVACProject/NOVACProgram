@@ -97,10 +97,12 @@ bool CFTPSocket::EnterPassiveMode()
 			continue; // No response...
 		if(!IsFTPCommandDone())
 			return false; // Server responded with an error
-		if(-1 == m_serverMsg.Find("Passive")){
-			// If we didn't get the correct answer from the server, then try again!
-			continue;
-		}
+		
+        if(-1 == m_serverMsg.Find("Passive") && -1 == m_serverMsg.Find("PASV"))
+        {
+            // If we didn't get the correct answer from the server, then try again!
+            continue;
+        }
 
 		// Get the port-number we should connect to
 		m_serverParam.m_serverDataPort = GetPortNumber();
