@@ -464,10 +464,13 @@ void CFTPHandler::ParseFileInfo(CString line, char disk)
     CScannerFileInfo scannerFileInfo(disk, fileName, fileSubfix, fileSize, mmdd, time);
 
     if (m_electronicsBox == BOX_VERSION_1 && fileSubfix == _T("PAK"))
+    {
         m_fileInfoList.AddTail(scannerFileInfo);
-    if (m_electronicsBox == BOX_VERSION_2 && fileSubfix == _T("pak"))
+    }
+    else if (fileSubfix == _T("pak"))
+    {
         m_fileInfoList.AddTail(scannerFileInfo);
-
+    }
 }
 void CFTPHandler::GetSuffix(CString& fileName, CString& fileSubfix)
 {
