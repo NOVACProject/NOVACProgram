@@ -6,156 +6,162 @@
 #include "../Common/Common.h"
 #include "../Configuration/configuration.h"
 #include "../FileInfo.h"
-#include "../scannerfileinfo.h"
+#include "../ScannerFileInfo.h"
+
 namespace Communication
 {
-	struct FTPInformation
-		{
-			CString IPAddress;
-			CString userName;
-			CString password;
-			CString adminUserName;
-			CString adminPassword;
-			long    port;
-			int		timeout;
-		};
+struct FTPInformation
+{
+    CString IPAddress;
+    CString userName;
+    CString password;
+    CString adminUserName;
+    CString adminPassword;
+    long    port;
+    int		timeout;
+};
 
-	/** <b>CFTPHandler</b> class handles one link of downloading and uploading file 
-	*to the remote PC */
-	class CFTPHandler :
-		public CFTPCom
-	{
-	public:
-		CFTPHandler(void);
-		CFTPHandler(ELECTRONICS_BOX box);
-		~CFTPHandler(void);
+/** <b>CFTPHandler</b> class handles one link of downloading and uploading file
+*to the remote PC */
+class CFTPHandler :
+    public CFTPCom
+{
+public:
+    CFTPHandler(void);
+    CFTPHandler(ELECTRONICS_BOX box);
+    ~CFTPHandler(void);
 
-		//-------------------------------------------//
-		//--------------public functions ------------//
-		//-------------------------------------------//
+    // This class is not copyable due to the member m_pakFileHandler
+    CFTPHandler(const CFTPHandler&) = delete;
+    CFTPHandler& operator=(const CFTPHandler&) = delete;
 
-		/**set ftp information*/
-		void SetFTPInfo(int mainIndex, CString& IP, CString& userName, CString &pwd, int timeOut, long portNumber= 5551);
-		void SetFTPInfo(int mainIndex, CString& IP, CString& userName, CString &pwd, CString &admUserName, CString &admPwd, int timeOut, long portNumber= 5551);
+    //-------------------------------------------//
+    //--------------public functions ------------//
+    //-------------------------------------------//
 
-		/**poll one instrument*/
-		bool PollScanner();
+    /**set ftp information*/
+    void SetFTPInfo(int mainIndex, const CString& IP, const CString& userName, const CString &pwd, int timeOut, long portNumber = 5551);
+    void SetFTPInfo(int mainIndex, const CString& IP, const CString& userName, const CString &pwd, const CString &admUserName, const CString &admPwd, int timeOut, long portNumber = 5551);
 
-		// ---------------- MANAGING THE INSTRUMENT ------------------
+    /** Polls the scanner for generated .pak files */
+    bool PollScanner();
 
-		/** Send a command to kongo.exe in the instrument
-		     by creating a command.txt file and upload it... */
-		bool SendCommand(char* cmd);
+    // ---------------- MANAGING THE INSTRUMENT ------------------
 
-		/** Create a command.txt file to upload to the instrument */
-		bool MakeCommandFile(char* cmdString);
+    /** Send a command to kongo.exe in the instrument
+         by creating a command.txt file and upload it... */
+    bool SendCommand(char* cmd);
 
-		/** Tells the instrument to go to sleep by uploading
-		     a command.txt file to it */
-		void GotoSleep();
+    /** Create a command.txt file to upload to the instrument */
+    bool MakeCommandFile(char* cmdString);
 
-		/** Tells the instrument to wake up by uploading
-		     a command.txt file to it */
-		void WakeUp();
+    /** Tells the instrument to go to sleep by uploading
+         a command.txt file to it */
+    void GotoSleep();
 
-		/** reboot the remote scanner */
-		void Reboot();
-		
-		/** Download cfg.txt. 
-			@return 1 if successful, otherwise 0*/
-		int DownloadCfgTxt();
+    /** Tells the instrument to wake up by uploading
+         a command.txt file to it */
+    void WakeUp();
 
-		// --------------- DOWNLOADING OF THE SPECTRA ---------------------
+    /** reboot the remote scanner */
+    void Reboot();
 
-		/** Download a file in the remote computer */
-		bool DownloadFile(const CString &remoteFileName, const CString &savetoPath);
+    /** Download cfg.txt.
+        @return 1 if successful, otherwise 0*/
+    int DownloadCfgTxt();
 
-		/**download upload.pak, Uxxx.pak files and evaluate*/
-		bool DownloadSpectra(const CString &remoteFile, const CString &savetoPath);
+    // --------------- DOWNLOADING OF THE SPECTRA ---------------------
 
-		/*download Uxxx.pak files on m_fileInfoList*/
-		bool DownloadPakFiles(const CString& folder);
+    /** Download a file in the remote computer */
+    bool DownloadFile(const CString &remoteFileName, const CString &savetoPath);
 
-		/*download all old pak files*/
-		bool DownloadAllOldPak();
+    /**download upload.pak, Uxxx.pak files and evaluate*/
+    bool DownloadSpectra(const CString &remoteFile, const CString &savetoPath);
 
-		/**download old pak files and evaluate*/
-		bool DownloadOldPak(long interval);
+    /*download Uxxx.pak files on m_fileInfoList*/
+    bool DownloadPakFiles(const CString& folder);
 
-		/**delete remote file
-			@param remote file name ( without path)
-			@return TRUE if deleted successfully */
-		BOOL DeleteRemoteFile(const CString& remoteFile);
+    /*download all old pak files*/
+    bool DownloadAllOldPak();
 
-		// ----------------- HANDLING THE FILE-LISTS -------------------
+    /**download old pak files and evaluate*/
+    bool DownloadOldPak(long interval);
 
-		/** Retrieves the list of files from the given directory, 
-				calls 'FillFileList' which rebuilds the lists
-				'm_fileInfoList' and 'm_rFolderList'.
-				@param disk - the disk to retrieve the file-list from, 
-					'0' corresponds to program/configuration-disk
-					'1' corresponds to data-disk
-				--------- This function is only called from the CFileTransferDlg ---------
-				*/
-		bool GetDiskFileList(int disk = 1);
+    /**delete remote file
+        @param remote file name ( without path)
+        @return TRUE if deleted successfully */
+    BOOL DeleteRemoteFile(const CString& remoteFile);
 
-		/** Retrieves the list of files from the given directory, 
-				calls 'FillFileList' which rebuilds the lists
-				'm_fileInfoList' and 'm_rFolderList' */
-		long GetPakFileList(CString& folder);
+    // ----------------- HANDLING THE FILE-LISTS -------------------
 
-		/** Use the result fo the file-listing command to
-					build the lists of files. 
-				This rebuilds the lists 'm_fileInfoList' and 'm_rFolderList' */
-		int  FillFileList(CString& fileName, char disk = 'B');
+    /** Retrieves the list of files from the given directory,
+            calls 'FillFileList' which rebuilds the lists
+            'm_fileInfoList' and 'm_rFolderList'.
+            @param disk - the disk to retrieve the file-list from,
+                '0' corresponds to program/configuration-disk
+                '1' corresponds to data-disk
+            --------- This function is only called from the CFileTransferDlg ---------
+            */
+    bool GetDiskFileList(int disk = 1);
 
-		/** Parse a line in the file-list and insert it into
-					the appropriate list. */
-		void ParseFileInfo(CString line, char disk = 'B');
+    /** Retrieves the list of files from the given directory,
+            calls 'FillFileList' which rebuilds the lists
+            'm_fileInfoList' and 'm_rFolderList' */
+    long GetPakFileList(CString& folder);
 
-		/** Extracts the suffix of a file-name */
-		void GetSuffix(CString& fileName, CString& fileSubfix);
+    /** Use the result of the file-listing command to build the lists of files.
+        This rebuilds the lists 'm_fileInfoList' and 'm_rFolderList' */
+    int FillFileList(const CString& fileName, char disk = 'B');
 
-		/** Removes all stored file-information from
-					m_fileInfoList and m_rFolderList */
-		void EmptyFileInfo();
+    /** Parse a line in the file-list and insert it into
+                the appropriate list. */
+    void ParseFileInfo(CString line, char disk = 'B');
 
-		/* Add a folder name into m_rfolderList. 
-				Only folders of the format RXXX will be inserted */
-		void AddFolderInfo(CString& line);
+    /** Extracts the suffix of a file-name */
+    void GetSuffix(CString& fileName, CString& fileSubfix);
 
-		//-------------------------------------------//
-		//--------------public variables ------------//
-		//-------------------------------------------//
-		
-		struct FTPInformation m_ftpInfo;
+    /** Removes all stored file-information from
+                m_fileInfoList and m_rFolderList */
+    void EmptyFileInfo();
 
-		long m_remoteFileSize;
+    /* Add a folder name into m_rfolderList.
+            Only folders of the format RXXX will be inserted */
+    void AddFolderInfo(CString& line);
 
-		/**index in the configuration.xml*/
-		int m_mainIndex;
+    //-------------------------------------------//
+    //--------------public variables ------------//
+    //-------------------------------------------//
 
-		/** spectrometer's serial number */
-		CString m_spectrometerSerialID;
+    struct FTPInformation m_ftpInfo;
 
-		/** The .pak-file-handler, used to check the downloaded .pak-files */
-		FileHandler::CPakFileHandler* m_pakFileHandler;
+    long m_remoteFileSize;
 
-		CString m_localFileFullPath;
-		CString m_storageDirectory;
-		Common m_common;
-		CString m_statusMsg;
+    /**index in the configuration.xml*/
+    int m_mainIndex;
 
-		/** The list of files in the current directory */
-		CList<CScannerFileInfo, CScannerFileInfo&> m_fileInfoList;
+    CString m_localFileFullPath;
+    CString m_storageDirectory;
+    CString m_statusMsg;
 
-		/** The list of RXX folders in the current directory */
-		CList<CString, CString &> m_rFolderList;
+    /** The list of files in the current directory */
+    CList<CScannerFileInfo, CScannerFileInfo&> m_fileInfoList;
 
-		/** The kind of electronics box that we're communicating with, good to know... */
-		ELECTRONICS_BOX m_electronicsBox;
+    /** The list of RXX folders in the current directory */
+    CList<CString, CString &> m_rFolderList;
 
-		/** speed to download file, in kilo-bytes/second*/
-		double m_dataSpeed;
-	};
+    /** The kind of electronics box that we're communicating with, good to know... */
+    ELECTRONICS_BOX m_electronicsBox;
+
+    /** speed to download file, in kilo-bytes/second*/
+    double m_dataSpeed;
+
+private:
+
+    /** The .pak-file-handler, used to check the downloaded .pak-files */
+    FileHandler::CPakFileHandler* m_pakFileHandler;
+
+    /** The serial number of the spectrometer in the instrument */
+    CString m_spectrometerSerialID;
+
+};
 }

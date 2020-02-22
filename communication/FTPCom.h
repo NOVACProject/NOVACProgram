@@ -5,13 +5,13 @@ namespace Communication
 	class CFTPCom
 	{
 	public:
-		CFTPCom(void);
-		~CFTPCom(void);
-		CInternetSession* m_InternetSession;
-		CFtpConnection* m_FtpConnection;
-		CString m_FTPSite;
-		CString m_ErrorMsg;
-	public:
+		CFTPCom();
+		~CFTPCom();
+
+        // This class is not copyable due to the managed resources m_InternetSession and m_FtpConnection
+        CFTPCom(CFTPCom&) = delete;
+        CFTPCom& operator=(CFTPCom&) = delete;
+
 		/**Connect to one FTP server
 		*@siteName - address of the FTP server
 		*@userName - user name for login
@@ -23,7 +23,7 @@ namespace Communication
 		*/
 		int Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, int timeout, BOOL mode= FALSE);
 
-		int Disconnect();
+		void Disconnect();
 
 		int UploadFile(LPCTSTR localFile, LPCTSTR remoteFile);
 
@@ -43,15 +43,23 @@ namespace Communication
 		*return TRUE  - success
 		*/
 		BOOL SetCurDirectory(LPCTSTR curDirName);
-		/*Remove a folder*/
+
+		/* Attempts to remove a folder, returns TRUE on success. */
 		BOOL DeleteFolder(const CString& folder);
-		/*Enter a folder*/
+
+		/* Enter a folder, returns TRUE on success. */
 		BOOL EnterFolder(const CString& folder);
+
 		/*Go to top directory "/"*/
 		BOOL GotoTopDirectory();
-		/*read response from the ftp server*/
+
+		/* read response from the ftp server*/
 		void ReadResponse(CInternetFile* file);
-		/*send command to ftp server*/
-		//bool FTPCommand(CString& pCommand, bool getResponse= false);
-	};
+
+    protected:
+        CInternetSession* m_InternetSession;
+        CFtpConnection* m_FtpConnection;
+        CString m_FTPSite; //< the name of the site which we are currently connected to
+        CString m_ErrorMsg; //< Last error message returned
+    };
 }

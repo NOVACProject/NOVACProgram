@@ -3,17 +3,22 @@
 #include "../Common/common.h"
 #include "Winsock2.h"
 
+#ifdef _MSC_VER
+#pragma warning (push, 4)
+#endif
+
 using namespace Communication;
 
-CFTPCom::CFTPCom(void)
+CFTPCom::CFTPCom()
+  : m_FtpConnection(nullptr), m_InternetSession(nullptr)
 {
-	m_FtpConnection = NULL;
-	m_InternetSession = NULL;
 }
 
-CFTPCom::~CFTPCom(void)
+CFTPCom::~CFTPCom()
 {
+    this->Disconnect();
 }
+
 //Connect to FTP server
 //return 0 - fail
 //return 1 - success
@@ -43,7 +48,7 @@ int CFTPCom::Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, int t
 
 		if (!AfxParseURL(urlAddress, dwServiceType, (CString)siteName, strObject, port))
 		{
-			m_ErrorMsg = TEXT("Can not parse  ftp address");
+			m_ErrorMsg = TEXT("Can not parse ftp address");
 			ShowMessage(m_ErrorMsg);
 			return 2;
 		}
@@ -99,17 +104,22 @@ int CFTPCom::Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, int t
 	}
 	return 1;
 }
-int CFTPCom::Disconnect()
+
+void CFTPCom::Disconnect()
 {
-	if (m_FtpConnection != NULL)
-		m_FtpConnection->Close();
-	delete m_FtpConnection;
-	m_FtpConnection = NULL;
-	if(m_InternetSession !=NULL)
-		m_InternetSession->Close();
-	delete m_InternetSession;
-	m_InternetSession = NULL;
-	return 1;
+    if (m_FtpConnection != nullptr)
+    {
+        m_FtpConnection->Close();
+        delete m_FtpConnection;
+    }
+    m_FtpConnection = nullptr;
+
+    if (m_InternetSession != nullptr)
+    {
+        m_InternetSession->Close();
+        delete m_InternetSession;
+    }
+    m_InternetSession = nullptr;
 }
 
 
@@ -131,63 +141,68 @@ int CFTPCom::UpdateFile(LPCTSTR localFile, LPCTSTR remoteFile)
 }
 BOOL CFTPCom::DownloadAFile(LPCTSTR remoteFile, LPCTSTR fileFullName)
 {
-	BOOL result = FALSE;
-	CString msg;
+    BOOL result = FALSE;
 
-	// Check that we're connected...
-	if(m_FtpConnection == NULL){
-		ShowMessage("ERROR: Attempted to upload file using FTP while not connected!");
-		return FALSE;
-	}
+    // Check that we're connected...
+    if (m_FtpConnection == nullptr)
+    {
+        ShowMessage("ERROR: Attempted to upload file using FTP while not connected!");
+        return FALSE;
+    }
 
-	msg.Format("Trying to download %s", fileFullName);
-	ShowMessage(msg);
+    CString msg;
+    msg.Format("Trying to download %s", fileFullName);
+    ShowMessage(msg);
 
-	try
-	{
-		// Try to download the file
-		result = m_FtpConnection->GetFile(remoteFile, fileFullName, FALSE);
+    try
+    {
+        // Try to download the file
+        result = m_FtpConnection->GetFile(remoteFile, fileFullName, FALSE);
 
-		if(0 == result){ // this means something went wrong
-			int ftpError = GetLastError();
-			if(ftpError != 0)
-			{
-				msg.Format("FTP error happened when downloading %s from %s: %d", (LPCSTR)fileFullName, (LPCSTR)m_FTPSite,ftpError);
-				ShowMessage(msg);
-				DWORD code;
-				DWORD size_needed = 0;
-				InternetGetLastResponseInfo(&code,NULL,&size_needed);
-				char *message = (char*)malloc(size_needed + 1);
-				InternetGetLastResponseInfo(&code,message,&size_needed);
-				msg.Format("Error message :%s",message);
-				ShowMessage(msg);
-			}
-		}else{
-			// SUCCESS!!
-			msg.Format("Finish downloading %s", fileFullName);
-			ShowMessage(msg);
-			return result;
-		}
-	}
-	catch (CInternetException* pEx)
-	{
-		// catch errors from WinINet
-		TCHAR szErr[255];
-		if (pEx->GetErrorMessage(szErr, 255))
-		{
-			m_ErrorMsg.Format("FTP error happened when downloading %s from %s: %s", (LPCSTR)fileFullName, (LPCSTR)m_FTPSite, (LPCSTR)szErr);
-			ShowMessage(m_ErrorMsg);
-		}
-		else
-		{
-			m_ErrorMsg.Format("FTP exception");
-			ShowMessage(m_ErrorMsg);
-		}
-		pEx->Delete();
+        if (FALSE == result)
+        {
+            // this means something went wrong
+            int ftpError = GetLastError();
+            if (ftpError != 0)
+            {
+                msg.Format("FTP error happened when downloading %s from %s: %d", (LPCSTR)fileFullName, (LPCSTR)m_FTPSite, ftpError);
+                ShowMessage(msg);
+                DWORD code;
+                DWORD size_needed = 0;
+                InternetGetLastResponseInfo(&code, NULL, &size_needed);
+                char *message = (char*)malloc(size_needed + 1);
+                InternetGetLastResponseInfo(&code, message, &size_needed);
+                msg.Format("Error message :%s", message);
+                ShowMessage(msg);
+            }
+        }
+        else
+        {
+            // SUCCESS!!
+            msg.Format("Finish downloading %s", fileFullName);
+            ShowMessage(msg);
+            return result;
+        }
+    }
+    catch (CInternetException* pEx)
+    {
+        // catch errors from WinINet
+        TCHAR szErr[255];
+        if (pEx->GetErrorMessage(szErr, 255))
+        {
+            m_ErrorMsg.Format("FTP error happened when downloading %s from %s: %s", (LPCSTR)fileFullName, (LPCSTR)m_FTPSite, (LPCSTR)szErr);
+            ShowMessage(m_ErrorMsg);
+        }
+        else
+        {
+            m_ErrorMsg.Format("FTP exception");
+            ShowMessage(m_ErrorMsg);
+        }
+        pEx->Delete();
 
-		m_FtpConnection = NULL;
-	}
-	return result;
+        m_FtpConnection = nullptr;
+    }
+    return result;
 }
 
 int CFTPCom::UploadFile(LPCTSTR localFile, LPCTSTR remoteFile)
@@ -277,63 +292,70 @@ int CFTPCom::FindFile(CString& fileName)
 	return !result;
 }
 
-// @return 0 if fail...
 BOOL CFTPCom::DeleteFolder(const CString& folder)
 {
-	// Check
-	if(m_FtpConnection == NULL){
-		ShowMessage("ERROR: Attempted to delete folder using FTP while not connected");
-		return 0; 
-	}
+    // Check
+    if (m_FtpConnection == nullptr)
+    {
+        ShowMessage("ERROR: Attempted to delete folder using FTP while not connected");
+        return FALSE;
+    }
 
-	// Remove the directory
-	BOOL result = m_FtpConnection->RemoveDirectory(folder);
-	return result;
+    // Remove the directory
+    return m_FtpConnection->RemoveDirectory(folder);
 }
 
 BOOL CFTPCom::EnterFolder(const CString& folder)
 {
-	CString strDir, strFolder, msg;
+    if (m_FtpConnection == nullptr)
+    {
+        ShowMessage("ERROR: Attempted to enter folder using FTP while not connected");
+        return FALSE;
+    }
 
-	// Check...
-	if(m_FtpConnection == NULL){
-		ShowMessage("ERROR: Attempted to enter folder using FTP while not connected");
-		return FALSE;
-	}
+    // Set the current directory, this returns 0 on failure.
+    if (0 == m_FtpConnection->SetCurrentDirectory(folder))
+    {
+        return FALSE;
+    }
 
-	// Set the current directory, return 0 if fail...
-	if(0 == m_FtpConnection->SetCurrentDirectory(folder))
-		return FALSE;
+    // Get the current directory, this returns 0 on failure.
+    CString currentFolder;
+    if (0 == m_FtpConnection->GetCurrentDirectory(currentFolder))
+    {
+        return FALSE;
+    }
 
-	// Get the current directory, return 0 if fail...
-	if(0 == m_FtpConnection->GetCurrentDirectory(strDir))
-		return FALSE;
+    // The response we want to have...
+    CString folderResponseOption1, folderResponseOption2;
+    folderResponseOption1.Format("/%s/", (LPCSTR)folder);
+    folderResponseOption2.Format("/%s", (LPCSTR)folder);
 
-	// The response we want to have...
-	strFolder.Format("/%s/", (LPCSTR)folder);
-
-	// Compare if the returned string is the same as what we want...
-	// If a relative directory is passed into this function
-	// the Equals below will compare it agains a full path and return false.
-	// Misleading 'Can not get into folder' message displays even if the
-	// change directory was successful. Best to handle messages externally.
-	if(Equals(strDir, strFolder))
-	{
-		//msg.Format("Get into folder %s", (LPCSTR)folder);
-		//ShowMessage(msg);
-		return TRUE;
-	}
-	else
-	{
-		//msg.Format("Can not get into folder %s", (LPCSTR)folder);
-		//ShowMessage(msg);
-		return FALSE;
-	}
+    // Compare if the returned string is the same as what we want...
+    // If a relative directory is passed into this function
+    // the Equals below will compare it agains a full path and return false.
+    // Misleading 'Can not get into folder' message displays even if the
+    // change directory was successful. Best to handle messages externally.
+    if (Equals(currentFolder, folderResponseOption1) ||
+        Equals(currentFolder, folderResponseOption2))
+    {
+        CString msg;
+        msg.Format("Entered folder %s", (LPCSTR)folder);
+        ShowMessage(msg);
+        return TRUE;
+    }
+    else
+    {
+        CString msg;
+        msg.Format("Failed to enter folder %s", (LPCSTR)folder);
+        ShowMessage(msg);
+        return FALSE;
+    }
 }
 
 BOOL CFTPCom::GotoTopDirectory()
 {
-	CString folder("//");	
+	CString folder("//");
 	return EnterFolder(folder);
 }
 
@@ -359,3 +381,7 @@ void CFTPCom::ReadResponse(CInternetFile* file)
 		}
 	} while (rd > 0);
 }
+
+#ifdef _MSC_VER
+#pragma warning (pop)
+#endif
