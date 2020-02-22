@@ -2,8 +2,9 @@
 #include "ftphandler.h"
 #include "../Common/CfgTxtFileHandler.h"
 
-// Use warning level 4 here
-#pragma warning(push, 4)
+#ifdef _MSC_VER
+#pragma warning (push, 4)
+#endif
 
 using namespace Communication;
 
@@ -11,16 +12,41 @@ extern CFormView *pView;                   // <-- the main window
 extern CConfigurationSetting g_settings;   // <-- the settings
 extern CWinThread *g_comm;                 // <-- The communication controller
 
-CFTPHandler::CFTPHandler()
+// ------------------- Handling the different versions of electronics -------------------
+bool IsPakFileExtension(ELECTRONICS_BOX version, const CString& fileSuffix)
 {
-    m_dataSpeed = 4.0;
-    m_electronicsBox = BOX_VERSION_1;
+    if (version == BOX_VERSION_1)
+    {
+        return fileSuffix == _T("PAK");
+    }
+    else
+    {
+        return fileSuffix == _T("pak");
+    }
+}
+
+// Appends the typical file extension for a .pak file on an electronics box of the given generation to the filename.
+void AppendPakFileExtension(const CString& fileNameWithoutExtension, ELECTRONICS_BOX version, CString& result)
+{
+    if (version == BOX_VERSION_1)
+    {
+        result.Format("%s.PAK", (LPCSTR)fileNameWithoutExtension);
+    }
+    else
+    {
+        result.Format("%s.pak", (LPCSTR)fileNameWithoutExtension);
+    }
+}
+
+// ------------------- CFTPHandle class implementation -------------------
+CFTPHandler::CFTPHandler()
+    : m_electronicsBox(BOX_VERSION_1), m_dataSpeed(4.0)
+{
 }
 
 CFTPHandler::CFTPHandler(ELECTRONICS_BOX box)
+    : m_electronicsBox(box), m_dataSpeed(4.0)
 {
-    m_dataSpeed = 4.0;
-    this->m_electronicsBox = box;
 }
 
 CFTPHandler::~CFTPHandler(void)
@@ -33,22 +59,25 @@ CFTPHandler::~CFTPHandler(void)
 }
 
 /**set ftp information*/
-void CFTPHandler::SetFTPInfo(int mainIndex, CString& hostName, CString& userName, CString &pwd, int timeOut, long portNumber)
+void CFTPHandler::SetFTPInfo(int mainIndex, const CString& hostname, const CString& userName, const CString &pwd, int timeOut, long portNumber)
 {
-    CString errorMsg;
+    this->m_mainIndex = mainIndex;
+    this->m_ftpInfo.hostName = hostname;
+    this->m_ftpInfo.userName = userName;
+    this->m_ftpInfo.password = pwd;
+    this->m_ftpInfo.port = portNumber;
+    this->m_ftpInfo.timeout = timeOut;
+    this->m_spectrometerSerialID = g_settings.scanner[mainIndex].spec[0].serialNumber;
 
-    m_mainIndex = mainIndex;
-    m_ftpInfo.hostName = hostName;
-    m_ftpInfo.userName = userName;
-    m_ftpInfo.password = pwd;
-    m_ftpInfo.port = portNumber;
-    m_ftpInfo.timeout = timeOut;
-    m_spectrometerSerialID.Format("%s", (LPCSTR)g_settings.scanner[mainIndex].spec[0].serialNumber);
+    this->m_storageDirectory.Format("%sTemp\\%s\\", (LPCSTR)g_settings.outputDirectory, (LPCSTR)m_spectrometerSerialID);
 
-    m_storageDirectory.Format("%sTemp\\%s\\", (LPCSTR)g_settings.outputDirectory, (LPCSTR)m_spectrometerSerialID);
-    if (CreateDirectoryStructure(m_storageDirectory)) { // Make sure that the storage directory exists
+    // Make sure that the storage directory exists
+    if (CreateDirectoryStructure(m_storageDirectory))
+    {
         GetSysTempFolder(m_storageDirectory);
-        if (CreateDirectoryStructure(m_storageDirectory)) {
+        if (CreateDirectoryStructure(m_storageDirectory))
+        {
+            CString errorMsg;
             errorMsg.Format("FTPHandler: Could not create temporary-directory for spectrometer; %s", (LPCSTR)m_spectrometerSerialID);
             ShowMessage(errorMsg);
             MessageBox(NULL, errorMsg, "Serious error", MB_OK);
@@ -56,34 +85,38 @@ void CFTPHandler::SetFTPInfo(int mainIndex, CString& hostName, CString& userName
     }
 }
 
-void CFTPHandler::SetFTPInfo(int mainIndex, CString& hostName, CString& userName, CString &pwd, CString &admUserName, CString &admPwd, int timeOut, long portNumber) {
+void CFTPHandler::SetFTPInfo(int mainIndex, const CString& IP, const CString& userName, const CString &pwd, const CString &admUserName, const CString &admPwd, int timeOut, long portNumber)
+{
+    if (m_electronicsBox == BOX_VERSION_4)
+    {
+        // The AxiomTek electronics box only uses one login for all uses.
+        this->m_ftpInfo.adminUserName = userName;
+        this->m_ftpInfo.adminPassword = pwd;
+    }
+    else
+    {
+        this->m_ftpInfo.adminUserName = admUserName;
+        this->m_ftpInfo.adminPassword = admPwd;
+    }
 
-    this->m_ftpInfo.adminUserName.Format(admUserName);
-    this->m_ftpInfo.adminPassword.Format(admPwd);
-
-    this->SetFTPInfo(mainIndex, hostName, userName, pwd, timeOut, portNumber);
+    this->SetFTPInfo(mainIndex, IP, userName, pwd, timeOut, portNumber);
 }
 
-/**poll the scanner for upload*.pak files */
 bool CFTPHandler::PollScanner()
 {
     CString msg;
     msg.Format("<node %d> Checking for files to download", m_mainIndex);
     ShowMessage(msg);
 
-    bool result = DownloadAllOldPak();
-    return result;
+    return DownloadAllOldPak();
 }
 
 //download pak files listed in m_fileInfoList
 bool CFTPHandler::DownloadPakFiles(const CString& folder)
 {
-    CString fileName, workPak, uploadPak;
-    workPak.Format("WORK.PAK");
-    uploadPak.Format("upload.pak");
-    bool downloadResult = false;
+    const CString workPak = "WORK.PAK";
+    const CString uploadPak = "upload.pak";
 
-    //connect to server
     if (Connect(m_ftpInfo.hostName, m_ftpInfo.userName, m_ftpInfo.password, m_ftpInfo.timeout) != 1)
     {
         pView->PostMessage(WM_SCANNER_NOT_CONNECT, (WPARAM)&(m_spectrometerSerialID), 0);
@@ -98,38 +131,38 @@ bool CFTPHandler::DownloadPakFiles(const CString& folder)
 
     time_t start;
     time(&start);
-    time_t current;
     while (m_fileInfoList.GetCount() > 0)
     {
-        CScannerFileInfo& fileInfo = m_fileInfoList.GetTail();
-        if (m_electronicsBox == BOX_VERSION_2) {
-            fileName.Format("%s.pak", (LPCSTR)fileInfo.fileName);
-        }
-        else {
-            fileName.Format("%s.PAK", (LPCSTR)fileInfo.fileName);
-        }
+        CString fileName;
+        const CScannerFileInfo& fileInfo = m_fileInfoList.GetTail();
+        AppendPakFileExtension(fileInfo.fileName, m_electronicsBox, fileName);
         m_remoteFileSize = fileInfo.fileSize;
 
         if ((Equals(fileName, workPak) || Equals(fileName, uploadPak)) && folder.GetLength() == 0)
         {
-            m_fileInfoList.RemoveTail();
+            m_fileInfoList.RemoveTail(); // do not download work.pak not upload.pak in the root folder
             continue;
         }
 
         m_statusMsg.Format("Begin to download %s/%s", (LPCSTR)folder, (LPCSTR)fileName);
-        downloadResult = DownloadSpectra(fileName, m_storageDirectory);
+        ShowMessage(m_statusMsg);
 
-        if (downloadResult) {
+        bool downloadResult = DownloadSpectra(fileName, m_storageDirectory);
+
+        if (downloadResult)
+        {
             m_fileInfoList.RemoveTail();
         }
-        else {
-            break;	//get out of loop, 2007.4.30
+        else
+        {
+            break; //get out of loop, 2007.4.30
         }
 
+        time_t current;
         time(&current);
-        double seconds = current - start;
-        long queryPeriod = g_settings.scanner[m_mainIndex].comm.queryPeriod;
-        if (seconds > queryPeriod) {
+        const time_t secondsElapsed = current - start;
+        if (secondsElapsed > g_settings.scanner[m_mainIndex].comm.queryPeriod)
+        {
             break; // spent long enough on one scanner; move to next
         }
     }
@@ -141,14 +174,11 @@ bool CFTPHandler::DownloadPakFiles(const CString& folder)
 
 bool CFTPHandler::DownloadAllOldPak()
 {
-    long fileListSum = 0;
-    CString folder, msg;
-    folder.Format("");
-
-    //connect to scanner ftp server
+    CString msg;
+    CString folder = "";
 
     //get file and folder list
-    fileListSum = m_fileInfoList.GetCount() + m_rFolderList.GetCount();
+    long fileListSum = m_fileInfoList.GetCount() + m_rFolderList.GetCount();
     if (fileListSum <= 0)
     {
         fileListSum = GetPakFileList(folder); //download Uxxx.pak list
@@ -204,7 +234,7 @@ bool CFTPHandler::DownloadAllOldPak()
                 Disconnect(); //get out of loop 2007.4.30
             }
             time(&current);
-            double seconds = current - start;
+            const time_t seconds = current - start;
             long queryPeriod = g_settings.scanner[m_mainIndex].comm.queryPeriod;
             if (seconds > queryPeriod) {
                 break; // spent long enough on one scanner; move to next
@@ -233,12 +263,7 @@ bool CFTPHandler::DownloadOldPak(long interval)
     m_remoteFileSize = pakFileInfo->fileSize;
     estimatedTime = (int)((m_remoteFileSize * 1024.0) / m_dataSpeed);
     time(&startTime);
-    if (this->m_electronicsBox == BOX_VERSION_2) {
-        fileFullName.Format("%s.pak", (LPCSTR)pakFileInfo->fileName);
-    }
-    else {
-        fileFullName.Format("%s.PAK", (LPCSTR)pakFileInfo->fileName);
-    }
+    AppendPakFileExtension(pakFileInfo->fileName, m_electronicsBox, fileFullName);
     downloadResult = DownloadSpectra(fileFullName, m_storageDirectory);
     time(&stopTime);
 
@@ -251,9 +276,9 @@ bool CFTPHandler::DownloadOldPak(long interval)
 //download file list from B disk
 long CFTPHandler::GetPakFileList(CString& folder)
 {
-    long pakFileSum = 0;
     CString fileList, listFilePath, msg;
     CFTPSocket ftpSocket(m_ftpInfo.timeout);
+
     char ipAddr[16];
     sprintf(ipAddr, "%s", (LPCSTR)m_ftpInfo.hostName);
 
@@ -266,11 +291,14 @@ long CFTPHandler::GetPakFileList(CString& folder)
 
     // Log in to the instrument's FTP-server
     if (!ftpSocket.Login(ipAddr, m_ftpInfo.userName, m_ftpInfo.password))
+    {
         return -1;
+    }
 
     // While we're at it, check the brand of the electronics box in the 
-    //	login-response from the FTP-server
-    if (ftpSocket.m_serverMsg.Find("AXIS") >= 0) {
+    //  login-response from the FTP-server
+    if (ftpSocket.m_serverMsg.Find("AXIS") >= 0)
+    {
         m_electronicsBox = BOX_VERSION_2;
         g_settings.scanner[m_mainIndex].electronicsBox = BOX_VERSION_2;
     }
@@ -314,10 +342,11 @@ long CFTPHandler::GetPakFileList(CString& folder)
     // Close the connection
     ftpSocket.Disconnect();
 
-    // Count the number of files in the instrument
-    pakFileSum = m_fileInfoList.GetCount();
+    // Count the number of files and folders in the instrument
+    const long pakFileSum = m_fileInfoList.GetCount();
+    const long pakFolderSum = m_rFolderList.GetCount();
 
-    msg.Format("<node %d> %d files found on disk", m_mainIndex, pakFileSum);
+    msg.Format("<node %d> %d files and %d folders found on disk", m_mainIndex, pakFileSum, pakFolderSum);
     ShowMessage(msg);
 
     return pakFileSum;
@@ -370,39 +399,37 @@ void CFTPHandler::EmptyFileInfo()
     m_rFolderList.RemoveAll();
 }
 
-int CFTPHandler::FillFileList(CString& fileName, char disk)
+int CFTPHandler::FillFileList(const CString& fileName, char disk)
 {
-    CString resToken, str, msg;
-    int round = 0;
-    int tokenLength = 0;
     CStdioFile file;
     CFileException fileException;
     if (!file.Open(fileName, CFile::modeRead | CFile::typeText, &fileException))
     {
-        msg.Format("Can not open %s", (LPCSTR)fileName);
+        CString msg;
+        msg.Format("Can not open file %s", (LPCSTR)fileName);
         ShowMessage(msg);
         return false;
     }
+
     EmptyFileInfo(); //empty m_fileInfoList to fill in new info
+
+    CString str;
+    int nofFilesFound = 0;
     while (file.ReadString(str))
     {
-        if (str.GetLength() == 0)
+        if (str.GetLength() <= 0)
             break;
 
-        resToken = str;
-        tokenLength = resToken.GetLength();
-
-        if (resToken.Find("Í") != -1)
+        if (str.Find("Í") != -1)
             break;
 
-        if (tokenLength > 0)
-        {
-            ParseFileInfo(resToken, disk);
-            round++;
-        }
-    }	// token length should be bigger than 56 bytes//!= 0);
+        ParseFileInfo(str, disk);
+        nofFilesFound++;
+    } // token length should be bigger than 56 bytes//!= 0);
+
     file.Close();
-    return round;
+
+    return nofFilesFound;
 }
 
 void CFTPHandler::AddFolderInfo(CString& line)
@@ -463,15 +490,12 @@ void CFTPHandler::ParseFileInfo(CString line, char disk)
 
     CScannerFileInfo scannerFileInfo(disk, fileName, fileSubfix, fileSize, mmdd, time);
 
-    if (m_electronicsBox == BOX_VERSION_1 && fileSubfix == _T("PAK"))
-    {
-        m_fileInfoList.AddTail(scannerFileInfo);
-    }
-    else if (fileSubfix == _T("pak"))
+    if (IsPakFileExtension(m_electronicsBox, fileSubfix))
     {
         m_fileInfoList.AddTail(scannerFileInfo);
     }
 }
+
 void CFTPHandler::GetSuffix(CString& fileName, CString& fileSubfix)
 {
     int position = fileName.ReverseFind('.');
@@ -482,7 +506,8 @@ void CFTPHandler::GetSuffix(CString& fileName, CString& fileSubfix)
     fileSubfix = fileSubfix.Right(length - position - 1);
 }
 
-bool CFTPHandler::DownloadSpectra(const CString &remoteFile, const CString &savetoPath)
+// remoteFile: The filename of the remote file (including file extension)
+bool CFTPHandler::DownloadSpectra(const CString& remoteFile, const CString& savetoPath)
 {
     CString msg;
     m_localFileFullPath.Format("%s%s", (LPCSTR)savetoPath, (LPCSTR)remoteFile);
@@ -549,7 +574,9 @@ BOOL CFTPHandler::DeleteRemoteFile(const CString& remoteFile)
             return FALSE;
         }
     }
-    if (m_electronicsBox != BOX_VERSION_2) {
+
+    if (m_electronicsBox == BOX_VERSION_1)
+    {
         localCopyOfRemoteFileName.Format(remoteFile);
         if (!FindFile(localCopyOfRemoteFileName)) // This does not work with the axis-system, for some reason...
         {
@@ -578,7 +605,8 @@ bool CFTPHandler::DownloadFile(const CString &remoteFileName, const CString &sav
     fileFullName.Format("%s%s", (LPCSTR)savetoPath, (LPCSTR)remoteFileName);
 
     //check local file,if a file with same name exists, delete it
-    if (IsExistingFile(fileFullName)) {
+    if (IsExistingFile(fileFullName))
+    {
         DeleteFile(fileFullName);
     }
 
@@ -713,7 +741,8 @@ int CFTPHandler::DownloadCfgTxt() {
     CString remoteFileName, localFileName, copyFileName;
 
     // Connect to the administrators account
-    if (Connect(m_ftpInfo.hostName, m_ftpInfo.adminUserName, m_ftpInfo.adminPassword, m_ftpInfo.timeout) != 1) {
+    if (Connect(m_ftpInfo.hostName, m_ftpInfo.adminUserName, m_ftpInfo.adminPassword, m_ftpInfo.timeout) != 1)
+    {
         return 0; // failed to connect
     }
 
@@ -757,3 +786,8 @@ int CFTPHandler::DownloadCfgTxt() {
 
     return 1;
 }
+
+
+#ifdef _MSC_VER
+#pragma warning (pop)
+#endif

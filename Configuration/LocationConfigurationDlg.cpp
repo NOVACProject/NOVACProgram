@@ -129,10 +129,11 @@ BOOL CLocationConfigurationDlg::OnInitDialog()
         m_comboSpectrometerChannels.AddString(str);
     }
 
-    // The electronics combo-box
-    m_comboElectronics.ResetContent();
-    m_comboElectronics.AddString("Version 1");
-    m_comboElectronics.AddString("Version 3");
+	// The electronics combo-box
+	m_comboElectronics.ResetContent();
+	m_comboElectronics.AddString("Version 1");
+	m_comboElectronics.AddString("Version 3");
+    m_comboElectronics.AddString("Version 4");
 
     //m_plotColumn = 0;
 

@@ -35,8 +35,8 @@ namespace Communication
         //-------------------------------------------//
 
         /**set ftp information*/
-        void SetFTPInfo(int mainIndex, CString& hostName, CString& userName, CString &pwd, int timeOut, long portNumber = 5551);
-        void SetFTPInfo(int mainIndex, CString& hostName, CString& userName, CString &pwd, CString &admUserName, CString &admPwd, int timeOut, long portNumber = 5551);
+        void SetFTPInfo(int mainIndex, const CString& hostName, const CString& userName, const CString &pwd, int timeOut, long portNumber = 5551);
+        void SetFTPInfo(int mainIndex, const CString& hostName, const CString& userName, const CString &pwd, const CString &admUserName, const CString &admPwd, int timeOut, long portNumber = 5551);
 
         /**poll one instrument*/
         bool PollScanner();
@@ -107,7 +107,7 @@ namespace Communication
         /** Use the result fo the file-listing command to
                     build the lists of files.
                 This rebuilds the lists 'm_fileInfoList' and 'm_rFolderList' */
-        int  FillFileList(CString& fileName, char disk = 'B');
+        int  FillFileList(const CString& fileName, char disk = 'B');
 
         /** Parse a line in the file-list and insert it into
                     the appropriate list. */

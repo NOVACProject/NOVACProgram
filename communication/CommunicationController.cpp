@@ -221,13 +221,28 @@ UINT ConnectByFTP(LPVOID pParam)
     // Setup the ftp-handler for this connection
     CFTPHandler ftpHandler(g_settings.scanner[mainIndex].electronicsBox);
 
-    ftpHandler.SetFTPInfo(mainIndex,
-        g_settings.scanner[mainIndex].comm.ftpHostName,
-        g_settings.scanner[mainIndex].comm.ftpUserName,
-        g_settings.scanner[mainIndex].comm.ftpPassword,
-        g_settings.scanner[mainIndex].comm.ftpAdminUserName,
-        g_settings.scanner[mainIndex].comm.ftpAdminPassword,
-        g_settings.scanner[mainIndex].comm.timeout / 1000);
+    if (g_settings.scanner[mainIndex].electronicsBox != BOX_VERSION_4)
+    {
+        ftpHandler.SetFTPInfo(mainIndex,
+            g_settings.scanner[mainIndex].comm.ftpHostName,
+            g_settings.scanner[mainIndex].comm.ftpUserName,
+            g_settings.scanner[mainIndex].comm.ftpPassword,
+            g_settings.scanner[mainIndex].comm.ftpAdminUserName,
+            g_settings.scanner[mainIndex].comm.ftpAdminPassword,
+            g_settings.scanner[mainIndex].comm.timeout / 1000);
+    }
+    else
+    {
+        // The Axiomtek box has only one login.
+        ftpHandler.SetFTPInfo(mainIndex,
+            g_settings.scanner[mainIndex].comm.ftpHostName,
+            g_settings.scanner[mainIndex].comm.ftpUserName,
+            g_settings.scanner[mainIndex].comm.ftpPassword,
+            g_settings.scanner[mainIndex].comm.ftpUserName,
+            g_settings.scanner[mainIndex].comm.ftpPassword,
+            g_settings.scanner[mainIndex].comm.timeout / 1000);
+    }
+
 
     spectrometerSerialID.Format("%s", (LPCSTR)g_settings.scanner[mainIndex].spec[0].serialNumber);
 
