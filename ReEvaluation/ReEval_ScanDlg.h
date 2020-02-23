@@ -97,7 +97,7 @@ namespace ReEvaluation
 		// --------------------------- PROTECTED METHODS --------------------------
 
 		/** Gets the range of the plot */
-		void GetPlotRange(Graph::CSpectrumGraph::plotRange &range);
+		void GetPlotRange(Graph::CSpectrumGraph::plotRange& range);
 
 		/** Zooming in the graph */
 		LRESULT OnZoomGraph(WPARAM wParam, LPARAM lParam);
