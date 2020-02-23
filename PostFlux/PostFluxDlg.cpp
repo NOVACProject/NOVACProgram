@@ -11,6 +11,8 @@
 #include "../Dialogs/SelectionDialog.h"
 #include "../Dialogs/GeometryDlg.h"
 
+#include <SpectralEvaluation/Spectra/SpectrometerModel.h>
+
 
 extern CVolcanoInfo g_volcanoes;           // The global list of volcanoes in the NOVAC network
 extern CUserSettings g_userSettings;       // <-- The users preferences

@@ -6,6 +6,7 @@
 #include "PakFileInspector.h"
 #include "../Common/Common.h"
 #include <SpectralEvaluation/File/SpectrumIO.h>
+#include <SpectralEvaluation/Spectra/SpectrometerModel.h>
 
 // CPakFileInspector dialog
 using namespace Dialogs;

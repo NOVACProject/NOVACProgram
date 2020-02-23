@@ -5,6 +5,7 @@
 #include <SpectralEvaluation/File/ScanFileHandler.h>
 #include <SpectralEvaluation/File/STDFile.h>
 #include <SpectralEvaluation/StringUtils.h>
+#include <SpectralEvaluation/Spectra/SpectrometerModel.h>
 
 using namespace Evaluation;
 
