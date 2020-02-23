@@ -435,28 +435,19 @@ int CPakFileInspector::TryReadSpectrum(){
 
 
 /** Gets the range of the plot */
-void CPakFileInspector::GetPlotRange(Graph::CSpectrumGraph::plotRange &range){
-	Graph::CSpectrumGraph::plotRange rect;
+void CPakFileInspector::GetPlotRange(Graph::CSpectrumGraph::plotRange &range)
+{
+    Graph::CSpectrumGraph::plotRange rect;
 
-	// See if the user has determined any range...
-	m_graph.GetZoomRect(rect);
-	if(fabs(rect.maxLambda) > 0.1){
-		range = rect;
-		return;
-	}else{
-		long maxV;
-		if(m_spectrum.m_info.m_numSpec > 0)
-			maxV = 4095 * m_spectrum.m_info.m_numSpec;
-		else
-			maxV = (long)(4095.0f * (m_spectrum.m_info.m_peakIntensity / 4095.0f));
+    // See if the user has determined any range...
+    m_graph.GetZoomRect(rect);
 
-		range.minIntens = 0.0;
-		range.maxIntens	= maxV;
-		range.minLambda = 0.0;
-		range.maxLambda = m_spectrum.m_length;
+    range.minIntens = 0.0;
+    range.maxIntens = FullDynamicRangeForSpectrum(m_spectrum.m_info);
+    range.minLambda = 0.0;
+    range.maxLambda = m_spectrum.m_length;
 
-		return;
-	}
+    return;
 }
 
 /** Zooming in the graph */

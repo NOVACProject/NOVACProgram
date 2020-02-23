@@ -837,31 +837,9 @@ void CEvaluationLogFileHandler::ParseScanInformation(CSpectrumInfo &scanInfo, do
             MakeUpper(scanInfo.m_device);	// Convert the serial-number to all upper case letters
 
             // Extract the spectrometer-model from the serial-number of the spectrometer
-            if (Contains(scanInfo.m_device, "D2J")) {
-                scanInfo.m_specModel = S2000;
-            }
-            else if (Contains(scanInfo.m_device, "I2J")) {
-                scanInfo.m_specModel = S2000;
-            }
-            else if (Contains(scanInfo.m_device, "USB2")) {
-                scanInfo.m_specModel = USB2000;
-            }
-            else if (Contains(scanInfo.m_device, "USB4C")) {
-                scanInfo.m_specModel = USB4000;
-            }
-            else if (Contains(scanInfo.m_device, "HR2")) {
-                scanInfo.m_specModel = HR2000;
-            }
-            else if (Contains(scanInfo.m_device, "HR4")) {
-                scanInfo.m_specModel = HR4000;
-            }
-            else if (Contains(scanInfo.m_device, "QE")) {
-                scanInfo.m_specModel = QE65000;
-            }
-            else if (Contains(scanInfo.m_device, "MAYAPRO")) {
-                scanInfo.m_specModel = MAYAPRO;
-            }
-
+            SpectrometerModel spectrometer = CSpectrometerDatabase::GetInstance().GuessModelFromSerial(scanInfo.m_device);
+            scanInfo.m_specModel = spectrometer.model;
+            scanInfo.m_average = spectrometer.averagesSpectra;
             continue;
         }
         if (pt = strstr(szLine, "spectrometer=")) {
