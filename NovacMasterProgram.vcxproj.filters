@@ -564,9 +564,6 @@
     <ClCompile Include="communication\NodeControlInfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="communication\ElectronicsBoxProperties.cpp">
-      <Filter>Source Files\Communication</Filter>
-    </ClCompile>
     <ClCompile Include="communication\FileInfo.cpp">
       <Filter>Source Files\Communication</Filter>
     </ClCompile>
@@ -1191,9 +1188,6 @@
       <Filter>Header Files\Communication</Filter>
     </ClInclude>
     <ClInclude Include="communication\IFTPDataUpload.h">
-      <Filter>Header Files\Communication</Filter>
-    </ClInclude>
-    <ClInclude Include="communication\ElectronicsBoxProperties.h">
       <Filter>Header Files\Communication</Filter>
     </ClInclude>
     <ClInclude Include="communication\SFTPCom.h">

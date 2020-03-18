@@ -935,7 +935,10 @@ LRESULT CFileTransferDlg::OnUpdateFileTree(WPARAM wParam, LPARAM lParam)
     CString folderFlag;
     folderFlag.Format("DIR");
 
-    if (!(m_SerialController != NULL && m_SerialController->GetElectronicsBoxVersion() == BOX_VERSION_2))
+    //ClearOut();
+    //ParseDir(m_textA,'A');
+    //ParseDir(m_textB,'B');
+    if (!(m_SerialController != NULL && m_SerialController->m_electronicsBox == BOX_VERSION_2))
     {
         hTRootA = AddOneItem((HTREEITEM)NULL, "Disk A", (HTREEITEM)
             TVI_ROOT, 0);
@@ -1455,9 +1458,10 @@ void CFileTransferDlg::OnLbnSelchangeScannerList()
     {
     case SERIAL_CONNECTION:
 
-        m_SerialController = new Communication::CSerialControllerWithTx(g_settings.scanner[curScanner].electronicsBox);
+        m_SerialController = new Communication::CSerialControllerWithTx();
         m_SerialController->SetSerialPort(curScanner, comm.port, comm.baudrate,
             NOPARITY, 8, ONESTOPBIT, comm.flowControl);
+        m_SerialController->m_electronicsBox = g_settings.scanner[curScanner].electronicsBox;
 
         if (comm.medium == MEDIUM_FREEWAVE_SERIAL_MODEM)
         {

@@ -7,6 +7,8 @@
 #include "ReEval_ScanDlg.h"
 
 #include <SpectralEvaluation/File/SpectrumIO.h>
+#include <SpectralEvaluation/Spectra/SpectrometerModel.h>
+
 
 // Include the special multi-choice file-dialog
 #include "../Dialogs/FECFileDialog.h"
@@ -333,34 +335,30 @@ void CReEval_ScanDlg::OnRemoveSelected(){
 
 }
 
-/** Gets the range of the plot */
-void CReEval_ScanDlg::GetPlotRange(Graph::CSpectrumGraph::plotRange &range){
-	Graph::CSpectrumGraph::plotRange rect;
+void CReEval_ScanDlg::GetPlotRange(Graph::CSpectrumGraph::plotRange& range)
+{
+    // See if the user has determined any range...
+    Graph::CSpectrumGraph::plotRange userDeterminedRange;
+    m_specGraph.GetZoomRect(userDeterminedRange);
 
-	// See if the user has determined any range...
-	m_specGraph.GetZoomRect(rect);
-	if(fabs(rect.maxLambda) > 0.1){
-		range = rect;
-		return;
-	}else{
-		long maxV;
-		if(m_spectrum.m_info.m_numSpec > 0)
-			maxV = 4095 * m_spectrum.m_info.m_numSpec;
-		else
-			maxV = (long)(4095.0f * (m_spectrum.m_info.m_peakIntensity / 4095.0f));
+    if (fabs(userDeterminedRange.maxLambda) > 0.1)
+    {
+        range = userDeterminedRange;
+        return;
+    }
+    else
+    {
+        range.minIntens = 0.0;
+        range.maxIntens = FullDynamicRangeForSpectrum(m_spectrum.m_info);
+        range.minLambda = 0.0;
+        range.maxLambda = m_spectrum.m_length;
 
-		range.minIntens = 0.0;
-		range.maxIntens	= maxV;
-		range.minLambda = 0.0;
-		range.maxLambda = m_spectrum.m_length;
-
-		return;
-	}
+        return;
+    }
 }
 
-/** Zooming in the graph */
-LRESULT CReEval_ScanDlg::OnZoomGraph(WPARAM wParam, LPARAM lParam){
-	this->DrawSpectrum();
-
-	return 0;
+LRESULT CReEval_ScanDlg::OnZoomGraph(WPARAM wParam, LPARAM lParam)
+{
+    this->DrawSpectrum();
+    return 0;
 }

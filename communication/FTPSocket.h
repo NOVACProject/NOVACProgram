@@ -5,14 +5,14 @@
 #include <afxtempl.h>
 #define RESPONSE_LEN 12288
 
-#include "../Configuration/configuration.h"
+#include "../Configuration/Configuration.h"
 
 namespace Communication
 {
-
 	class CFTPSocket
 	{
 		typedef std::vector<char> TByteVector;
+
 	public:
 		CFTPSocket(int timeout=30);
 		
@@ -28,7 +28,7 @@ namespace Communication
 		  @return the error code if this thread's last Windows Sockets operation failed.
 		  @return 0 if successful.
 		*/
-		int SendCommand(CString command,CString commandText);
+		int SendCommand(CString command, CString commandText);
 
 		/**Connect FTP server
 		   @usedSocket - the socket to be used to make connection
@@ -36,7 +36,7 @@ namespace Communication
 		   @serverPort - the port on the server for connection
 		   @return true if connected
 		*/
-		bool Connect(SOCKET& usedSocket,char* serverIP, int serverPort);
+		bool Connect(SOCKET& usedSocket, char* serverIP, int serverPort);
 
 		/**Read the control response from the server, write message to m_serverMsg
 		    @return true if there is response

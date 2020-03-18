@@ -11,6 +11,8 @@
 #include "../Dialogs/SelectionDialog.h"
 #include "../Dialogs/GeometryDlg.h"
 
+#include <SpectralEvaluation/Spectra/SpectrometerModel.h>
+
 
 extern CVolcanoInfo g_volcanoes;           // The global list of volcanoes in the NOVAC network
 extern CUserSettings g_userSettings;       // <-- The users preferences
@@ -504,12 +506,12 @@ void CPostFluxDlg::DrawScan()
 
     // Get the ranges for the intensites, normalize if necessary
     double maxPeakIntensity = Max(peakIntensity, numSpec);
+    const double spectrometerDynamicRange = FullDynamicRangeForSpectrum(m_calculator->m_specInfo);
+
     double divisor = 1.0;
-    if (maxPeakIntensity > 4096)
-    {
-        if (scan.GetSpecNum(0) == 0)
-        {
-            divisor = ceil(maxPeakIntensity / 4095);
+	if(maxPeakIntensity >= spectrometerDynamicRange){
+		if(scan.GetSpecNum(0) == 0){
+			divisor = ceil(maxPeakIntensity / spectrometerDynamicRange);
         }
         else
         {
@@ -552,13 +554,13 @@ void CPostFluxDlg::DrawScan()
         if (m_useSaturationRatio)
         {
             // Initialize the intensity slider
-            m_intensitySlider.SetRange(0, 4095);
-            m_intensitySlider.SetPos(4095 - 400);/* The intensity slider is upside down */
+			m_intensitySlider.SetRange(0, spectrometerDynamicRange);
+			m_intensitySlider.SetPos(0.9 * spectrometerDynamicRange);/* The intensity slider is upside down */
             m_intensitySlider.SetTicFreq(512);
         }
         m_useSaturationRatio = false;
 
-        m_scanGraph.SetSecondRangeY(0, 4096, 0, false);
+		m_scanGraph.SetSecondRangeY(0, spectrometerDynamicRange, 0, false);
         m_scanGraph.SetSecondYUnit(common.GetString(AXIS_INTENSITY));
         SetDlgItemText(IDC_STATIC_PEAKINTENSITY, "Peak Intensity");
         SetDlgItemText(IDC_STATIC_FITINTENSITY, "Fit Intensity");
@@ -670,7 +672,7 @@ void CPostFluxDlg::DrawScan()
     {
         m_scanGraph.SetCircleColor(m_color.delta);
         double maxDelta = Max(delta, numSpec);
-        float peakValue = (m_useSaturationRatio) ? 100.0f : 4096.0f;
+		float peakValue = (m_useSaturationRatio) ? 100.0f : spectrometerDynamicRange;
         for (int i = 0; i < numSpec; ++i)
             delta[i] *= (peakValue / (float)maxDelta);
         m_scanGraph.DrawCircles(xAxisValues, delta, numSpec, Graph::CGraphCtrl::PLOT_SECOND_AXIS);
@@ -685,7 +687,7 @@ void CPostFluxDlg::DrawScan()
     {
         m_scanGraph.SetCircleColor(m_color.chiSquare);
         double maxChi2 = Max(chiSquare, numSpec);
-        float peakValue = (m_useSaturationRatio) ? 100.0f : 4096.0f;
+		float peakValue = (m_useSaturationRatio) ? 100.0f : spectrometerDynamicRange;
         for (int i = 0; i < numSpec; ++i)
             chiSquare[i] *= (peakValue / (float)maxChi2);
         m_scanGraph.DrawCircles(xAxisValues, chiSquare, numSpec, Graph::CGraphCtrl::PLOT_SECOND_AXIS);
