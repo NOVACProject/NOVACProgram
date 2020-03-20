@@ -837,7 +837,9 @@ void CEvaluationLogFileHandler::ParseScanInformation(CSpectrumInfo &scanInfo, do
             MakeUpper(scanInfo.m_device);	// Convert the serial-number to all upper case letters
 
             // Extract the spectrometer-model from the serial-number of the spectrometer
-            scanInfo.m_specModelName = CSpectrometerDatabase::GetInstance().GuessModelFromSerial(scanInfo.m_device).modelName;
+            SpectrometerModel spectrometer = CSpectrometerDatabase::GetInstance().GuessModelFromSerial(scanInfo.m_device);
+            scanInfo.m_specModelName = spectrometer.modelName;
+            scanInfo.m_average = spectrometer.averagesSpectra;
             continue;
         }
         if (pt = strstr(szLine, "spectrometer=")) {

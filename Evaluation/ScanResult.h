@@ -368,6 +368,9 @@ namespace Evaluation
 		/** returns the specie name */
 		const std::string GetSpecieName(unsigned long spectrumNum, unsigned long specieNum) const;
 
+        /** Returns the full dynamic range for the sky spectrum in this scan. */
+        double FullDynamicRange() const;
+
 		/** Assignment operator */
 		CScanResult &operator=(const CScanResult &s2);
 

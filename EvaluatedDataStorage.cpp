@@ -177,8 +177,8 @@ int CEvaluatedDataStorage::AddData(const CString &serial, Evaluation::CScanResul
 		result->GetStopTime(0, m_scanTime[scannerIndex]);
 	}
 
-	// Find the maximum intensity for this spectrometer
-	double maxIntensity = GetDynamicRange(serial);
+	// Find the maximum intensity for this spectrometer and the number of co-adds performed
+    double maxIntensity = result->FullDynamicRange();
 	if (fabs(maxIntensity) < 1e-5) {
 		maxIntensity = 1;
 	}
@@ -206,8 +206,8 @@ int CEvaluatedDataStorage::AddData(const CString &serial, Evaluation::CScanResul
 		double column = result->GetColumn(i, 0);
 		double columnError = result->GetColumnError(i, 0);
 		double angle = result->GetScanAngle(i);
-		double peakSaturation = result->GetPeakIntensity(i) / maxIntensity / nSpec;
-		double fitSaturation = result->GetFitIntensity(i) / maxIntensity / nSpec;
+		double peakSaturation = result->GetPeakIntensity(i) / maxIntensity;
+		double fitSaturation = result->GetFitIntensity(i) / maxIntensity;
 		bool isBadFit = result->IsBad(i);
 
 		// Add data point for current day

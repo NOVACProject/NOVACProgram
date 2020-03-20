@@ -167,7 +167,6 @@ copy "$(SolutionDir)External\NetCdf_4_7_2\x86\bin\zlib1.dll" "$(SolutionDir)Rele
     <ClCompile Include="Common\XMLFileReader.cpp" />
     <ClCompile Include="CommunicationDataStorage.cpp" />
     <ClCompile Include="communication\CommunicationController.cpp" />
-    <ClCompile Include="communication\ElectronicsBoxProperties.cpp" />
     <ClCompile Include="communication\FileInfo.cpp" />
     <ClCompile Include="communication\IFTPDataUpload.cpp" />
     <ClCompile Include="communication\SFTPCom.cpp" />
@@ -274,7 +273,6 @@ copy "$(SolutionDir)External\NetCdf_4_7_2\x86\bin\zlib1.dll" "$(SolutionDir)Rele
     <ClCompile Include="Dialogs\ReferencePlotDlg.cpp" />
     <ClCompile Include="ScannerFileInfo.cpp" />
     <ClCompile Include="ScannerFolderInfo.cpp" />
-    <ClInclude Include="communication\ElectronicsBoxProperties.h" />
     <ClInclude Include="communication\FileInfo.h" />
     <ClInclude Include="communication\NodeControlInfo.h" />
     <ClInclude Include="communication\IFTPDataUpload.h" />

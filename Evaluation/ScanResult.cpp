@@ -3,6 +3,7 @@
 #include "../VolcanoInfo.h"
 #include <SpectralEvaluation/StringUtils.h>
 #include <SpectralEvaluation/Flux/PlumeInScanProperty.h>
+#include <SpectralEvaluation/Spectra/SpectrometerModel.h>
 
 // we also need the meterological data
 #include "../Meteorology/MeteorologicalData.h"
@@ -231,6 +232,12 @@ int CScanResult::GetSpecieIndex(const std::string &specie) const
 
     return -1;
 }
+
+double CScanResult::FullDynamicRange() const
+{
+    return FullDynamicRangeForSpectrum(this->m_skySpecInfo);
+}
+
 
 int CScanResult::CalculateFlux(const std::string &specie, const CWindField &wind, double compass, double coneAngle, double tilt) {
 

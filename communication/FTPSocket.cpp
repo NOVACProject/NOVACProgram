@@ -1,14 +1,18 @@
 #include "StdAfx.h"
-
 #include "FTPSocket.h"
 #include "..\Common\Common.h"
+
+#ifdef _MSC_VER
+#pragma warning (push, 4)
+#endif
+
 using namespace Communication;
 
 extern CConfigurationSetting g_settings;
 
 CFTPSocket::CFTPSocket(int timeout)
+ : m_timeout(timeout)
 {
-	m_timeout = timeout;
 }
 
 CFTPSocket::~CFTPSocket(void)
@@ -97,7 +101,8 @@ bool CFTPSocket::EnterPassiveMode()
 			continue; // No response...
 		if(!IsFTPCommandDone())
 			return false; // Server responded with an error
-		if(-1 == m_serverMsg.Find("Passive")){
+		if(-1 == m_serverMsg.Find("Passive") && -1 == m_serverMsg.Find("PASV"))
+        {
 			// If we didn't get the correct answer from the server, then try again!
 			continue;
 		}
@@ -305,10 +310,6 @@ bool CFTPSocket::ReadData()
 		}
 	}while((bytesRecv !=0));
 		
-	m_msg.Format("data is %d bytes",byteSum);
-	ShowMessage(m_msg);
-	m_msg.Format("read data cycle: %d in %d seconds", count, static_cast<int>(stopTime-startTime));
-	ShowMessage(m_msg);
 	if(errorNum == 0)
 	{
 		WriteVectorFile(m_listFileName,m_vDataBuffer, m_vDataBuffer.size());
@@ -321,12 +322,12 @@ bool CFTPSocket::ReadData()
 		return false;
 	}
 }
-//set the name for m_listFileName
+
 void CFTPSocket::SetLogFileName(const CString fileName)
 {
-	m_listFileName.Format("%s", (LPCSTR)fileName);
+    m_listFileName = fileName;
 }
-//find a file in ftp server
+
 bool CFTPSocket::FindFile(CString fileName)
 {
 	CString  listFileName, list;
@@ -700,7 +701,6 @@ int CFTPSocket::DownloadFile(CString remoteFileName,CString localFileName)
 }
 bool CFTPSocket::OpenFileHandle(CString& fileName)
 {
-	int errorNum = 0;
 	m_hDownloadedFile = CreateFile(fileName,        // open file in local disk
                 GENERIC_WRITE,              // open for writing 
                 FILE_SHARE_WRITE,           // share for writing 
@@ -816,3 +816,7 @@ bool CFTPSocket::IsDataReady(const SOCKET& socket, long timeout)
 	else
 		return false;
 }
+
+#ifdef _MSC_VER
+#pragma warning (pop)
+#endif

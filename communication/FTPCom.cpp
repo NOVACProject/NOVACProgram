@@ -292,40 +292,49 @@ BOOL CFTPCom::DeleteFolder(const CString& folder)
 
 BOOL CFTPCom::EnterFolder(const CString& folder)
 {
-    CString strDir, strFolder, msg;
-
     // Check...
-    if (m_FtpConnection == nullptr) {
+    if (m_FtpConnection == nullptr)
+    {
         ShowMessage("ERROR: Attempted to enter folder using FTP while not connected");
         return FALSE;
     }
 
-    // Set the current directory, return 0 if fail...
+    // Set the current directory, this returns 0 on failure.
     if (0 == m_FtpConnection->SetCurrentDirectory(folder))
+    {
         return FALSE;
+    }
 
-    // Get the current directory, return 0 if fail...
-    if (0 == m_FtpConnection->GetCurrentDirectory(strDir))
+    // Get the current directory, this returns 0 on failure.
+    CString currentFolder;
+    if (0 == m_FtpConnection->GetCurrentDirectory(currentFolder))
+    {
         return FALSE;
+    }
 
     // The response we want to have...
-    strFolder.Format("/%s/", (LPCSTR)folder);
+    CString folderResponseOption1, folderResponseOption2;
+    folderResponseOption1.Format("/%s/", (LPCSTR)folder);
+    folderResponseOption2.Format("/%s", (LPCSTR)folder);
 
     // Compare if the returned string is the same as what we want...
     // If a relative directory is passed into this function
     // the Equals below will compare it agains a full path and return false.
     // Misleading 'Can not get into folder' message displays even if the
     // change directory was successful. Best to handle messages externally.
-    if (Equals(strDir, strFolder))
+    if (Equals(currentFolder, folderResponseOption1) ||
+        Equals(currentFolder, folderResponseOption2))
     {
-        //msg.Format("Get into folder %s", (LPCSTR)folder);
-        //ShowMessage(msg);
+        CString msg;
+        msg.Format("Get into folder %s", (LPCSTR)folder);
+        ShowMessage(msg);
         return TRUE;
     }
     else
     {
-        //msg.Format("Can not get into folder %s", (LPCSTR)folder);
-        //ShowMessage(msg);
+        CString msg;
+        msg.Format("Can not get into folder %s", (LPCSTR)folder);
+        ShowMessage(msg);
         return FALSE;
     }
 }

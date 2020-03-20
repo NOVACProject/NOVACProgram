@@ -729,11 +729,11 @@ int CConfigurationFileHandler::Parse_ScanningInstrument() {
         // the type of the electronics box
         if (Equals(szToken, "electronics")) {
             Parse_IntItem(TEXT("/electronics"), tmpInt);
-            if (tmpInt == 0) {
-                curScanner->electronicsBox = BOX_VERSION_1;
-            }
-            else {
-                curScanner->electronicsBox = BOX_VERSION_2;
+            switch (tmpInt)
+            {
+                case 0: curScanner->electronicsBox = BOX_VERSION_1; break;
+                case 2: curScanner->electronicsBox = BOX_VERSION_4; break; // yes this is actually correct...
+                default: curScanner->electronicsBox = BOX_VERSION_2; break;
             }
             continue;
         }

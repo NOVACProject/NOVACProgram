@@ -376,14 +376,8 @@ void CView_Scanner::DrawColumn(){
 
 	// If we know the dynamic range for the spectrometer, 
 	//	set the plot to show saturation-levels instead of intensities
-	double maxIntensity = m_evalDataStorage->GetDynamicRange(m_serial);
-	if(maxIntensity > 0){
-		m_lastScanPlot.SetSecondRangeY(0, 100, 0, false);
-		m_lastScanPlot.SetSecondYUnit(common.GetString(AXIS_SATURATION));
-	}else{
-		m_lastScanPlot.SetSecondRangeY(0, 4096, 0, false);
-		m_lastScanPlot.SetSecondYUnit(common.GetString(AXIS_INTENSITY));
-	}
+	m_lastScanPlot.SetSecondRangeY(0, 100, 0, false);
+	m_lastScanPlot.SetSecondYUnit(common.GetString(AXIS_SATURATION));
 
 	// draw the columns
 	if(m_isTimeSeries){
