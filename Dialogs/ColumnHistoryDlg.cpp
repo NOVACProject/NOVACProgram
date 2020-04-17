@@ -163,10 +163,10 @@ void ColumnHistoryDlg::Init30DayPlot() {
 void ColumnHistoryDlg::DrawPlot() {
 	// variables
 	const int BUFFER_SIZE = 10000;
-	double time[BUFFER_SIZE], column[BUFFER_SIZE], columnError[BUFFER_SIZE];
+	double time[BUFFER_SIZE], column[BUFFER_SIZE], badColumn[BUFFER_SIZE];
 
 	// Get the data
-	int dataLength = m_evalDataStorage->GetColumnData(m_serialNumber, column, columnError, BUFFER_SIZE, true);
+	int dataLength = m_evalDataStorage->GetGoodColumnData(m_serialNumber, column, BUFFER_SIZE, true);
 
 	// If there's no data then don't draw anything
 	if (dataLength <= 0)
