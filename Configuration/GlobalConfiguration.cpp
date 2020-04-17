@@ -48,9 +48,9 @@ void CGlobalConfiguration::DoDataExchange(CDataExchange* pDX)
 
     // Publishing the results
     DDX_Check(pDX, IDC_CHECK_PUBLISH, m_configuration->webSettings.publish);
-    DDX_Control(pDX, IDC_RADIO_LOCALDIRECTORY, m_localDirRadio);
-    DDX_Control(pDX, IDC_RADIO_FTPSERVER, m_ftpDirRadio);
-    DDX_Radio(pDX, IDC_RADIO_LOCALDIRECTORY, m_useLocalDirectory);
+    //DDX_Control(pDX, IDC_RADIO_LOCALDIRECTORY, m_localDirRadio);
+    //DDX_Control(pDX, IDC_RADIO_FTPSERVER, m_ftpDirRadio);
+    //DDX_Radio(pDX, IDC_RADIO_LOCALDIRECTORY, m_useLocalDirectory);
     DDX_Control(pDX, IDC_COMBO_IMAGEFORMAT, m_imageFormatCombo);
     DDX_Control(pDX, IDC_EDIT_LOCALDIRECTORY, m_localDir);
     DDX_Text(pDX, IDC_EDIT_LOCALDIRECTORY, m_configuration->webSettings.localDirectory);
@@ -196,14 +196,14 @@ void ConfigurationDialog::CGlobalConfiguration::OnChangePublish() {
     if (m_configuration->webSettings.publish) {
         m_imageFormatCombo.EnableWindow(true);
         m_localDir.EnableWindow(true);
-        m_localDirRadio.EnableWindow(true);
-        m_ftpDirRadio.EnableWindow(false);
+        //m_localDirRadio.EnableWindow(true);
+        //m_ftpDirRadio.EnableWindow(false);
     }
     else {
         m_imageFormatCombo.EnableWindow(false);
         m_localDir.EnableWindow(false);
-        m_localDirRadio.EnableWindow(false);
-        m_ftpDirRadio.EnableWindow(false);
+        //m_localDirRadio.EnableWindow(false);
+        //m_ftpDirRadio.EnableWindow(false);
     }
 }
 

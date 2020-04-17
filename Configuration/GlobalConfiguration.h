@@ -83,8 +83,8 @@ namespace ConfigurationDialog
         CEdit m_localDir;
 
         /** Controlling the behaviour of the local/ftp radio-button */
-        CButton m_localDirRadio;
-        CButton m_ftpDirRadio;
+        //CButton m_localDirRadio;
+        //CButton m_ftpDirRadio;
         int     m_useLocalDirectory;
     };
 }
