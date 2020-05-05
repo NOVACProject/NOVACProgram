@@ -650,6 +650,49 @@ long CEvaluatedDataStorage::GetBadColumnData(const CString &serial, double *data
 	return nCopy;
 }
 
+/** Get the Column data for the measurements which are considered good.
+	@param serial - the serial number of the spectrometer for which the data should be retrieved.
+	@param dataBuffer - the column data of the bad measurements will be copied into this buffer.
+	@param bufferSize - the maximum number of data points that the buffer can handle.
+	@param fullDay - if data for full day (true) or just last scan (false)
+	@return the number of data points copied into the dataBuffer*/
+long CEvaluatedDataStorage::GetGoodColumnData(const CString &serial, double *dataBuffer, long bufferSize, bool fullDay) {
+	// get the scanner index
+	int scannerIndex = GetScannerIndex(serial);
+
+	if ((scannerIndex < 0) || (scannerIndex > MAX_NUMBER_OF_SCANNING_INSTRUMENTS))
+		return 0;
+
+	// The unit conversion
+	double unitConversionFactor = 0.0;
+	if (g_userSettings.m_columnUnit == UNIT_PPMM)
+		unitConversionFactor = 1.0;
+	else if (g_userSettings.m_columnUnit == UNIT_MOLEC_CM2)
+		unitConversionFactor = 2.5e15;
+
+	int nCopy;
+	if (fullDay) {
+		nCopy = min(bufferSize, m_specIndex[scannerIndex]);
+		for (int k = 0; k < nCopy; ++k) {
+			if (!m_specDataDay[scannerIndex][k].m_isBadFit)
+				dataBuffer[k] = m_specDataDay[scannerIndex][k].m_column * unitConversionFactor;
+			else
+				dataBuffer[k] = 0;
+		}
+	}
+	else {
+		nCopy = min(bufferSize, m_positionsNum[scannerIndex]);
+		for (int k = 0; k < nCopy; ++k) {
+			if (!m_specData[scannerIndex][k].m_isBadFit)
+				dataBuffer[k] = m_specData[scannerIndex][k].m_column * unitConversionFactor;
+			else
+				dataBuffer[k] = 0;
+		}
+	}
+
+	return nCopy;
+}
+
 /** Get Intensity data. 
     @param scannerIndex - the scanner for which the data should be retrieved.
     @param peakSat - the peak saturation data will be copied into this buffer.

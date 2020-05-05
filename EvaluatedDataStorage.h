@@ -125,6 +125,14 @@ public:
 	    @return the number of column data points (good and bad) */
 	long GetBadColumnData(const CString &serial, double *dataBuffer, long bufferSize, bool fullDay=false);
 
+	/** Get the Column data for the measurements which are considered good.
+	@param serial - the serial number of the spectrometer for which the data should be retrieved.
+	@param dataBuffer - the column data of the bad measurements will be copied into this buffer.
+	@param bufferSize - the maximum number of data points that the buffer can handle.
+	@param fullDay - whether to get for full day (true) or just last scan (false)
+	@return the number of column data points (good and bad) */
+	long GetGoodColumnData(const CString &serial, double *dataBuffer, long bufferSize, bool fullDay = false);
+
 	/** Get Angle data. 
 	    @param serial - the serial number of the spectrometer for which the data should be retrieved.
 	    @param dataBuffer - the column data will be copied into this buffer.
