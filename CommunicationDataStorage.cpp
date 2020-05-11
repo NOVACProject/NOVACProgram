@@ -121,7 +121,7 @@ void	CCommunicationDataStorage::AddDownloadData(const CString &serial, double li
 		CLinkInfo &thisInfo = m_ftpServerLinkInformation[m_nFTPServerLinkInformation];
 		thisInfo.m_downloadSpeed = linkSpeed;
 		if (timeOfDownload == NULL) {
-			thisInfo.m_time.SetToNow();
+			thisInfo.m_time.SetToNowUTC();
 		}
 		else {
 			thisInfo.m_time = *timeOfDownload;
@@ -150,7 +150,7 @@ void	CCommunicationDataStorage::AddDownloadData(const CString &serial, double li
 		CLinkInfo &thisInfo = m_dataLinkInformation[scannerIndex][m_dataLinkIndex[scannerIndex]];
 		thisInfo.m_downloadSpeed = linkSpeed;
 		if (timeOfDownload == NULL) {
-			thisInfo.m_time.SetToNow();
+			thisInfo.m_time.SetToNowUTC();
 		}
 		else {
 			thisInfo.m_time = *timeOfDownload;
