@@ -12,6 +12,8 @@ New features
 * SFTP support for uploading pak files to offsite server (#58)
 * Hostname support for FTP to instrument computer (#81)
 * Addition of flux history tab (#107)
+* AveSpec spectrometer support
+* Axiomtec instrument computer support
 
 -----------------------------------------------------
 
