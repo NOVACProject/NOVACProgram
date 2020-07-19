@@ -73,7 +73,6 @@ private:
     long m_scannerNum = 0;
 
     bool ReadWindFieldFromTextFile(const CString& fileName);
-    bool ReadWindFieldFromNetCdfFile(const CString& fileName);
 };
 
 #endif
