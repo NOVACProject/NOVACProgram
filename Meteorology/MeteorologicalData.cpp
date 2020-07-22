@@ -1,7 +1,6 @@
 #include "StdAfx.h"
 #include "MeteorologicalData.h"
 #include "../File/WindFileReader.h"
-#include "../File/NetCdfWindFileReader.h"
 
 /** The global instance of meterological data */
 CMeteorologicalData g_metData;
@@ -99,10 +98,6 @@ int CMeteorologicalData::ReadWindFieldFromFile(const CString& fileName)
     {
         fileReadSuccessfully = ReadWindFieldFromTextFile(fileName);
     }
-    else if (Equals(fileName.Right(3), ".nc"))
-    {
-        fileReadSuccessfully = ReadWindFieldFromNetCdfFile(fileName);
-    }
 
     if (fileReadSuccessfully)
     {
@@ -124,36 +119,5 @@ bool CMeteorologicalData::ReadWindFieldFromTextFile(const CString& fileName)
     auto returnCode = fileReader.ReadWindFile(*m_wfDatabaseFromFile);
 
     return returnCode == SUCCESS;
-}
-
-bool CMeteorologicalData::ReadWindFieldFromNetCdfFile(const CString& fileName)
-{
-    FileHandler::CNetCdfWindFileReader fileReader;
-
-    fileReader.m_windFile = fileName;
-
-    // Read the wind-file. If we have multiple volcanoes listed, then this wind-field
-    //  file may be for one volcano only. Test with each volcano until we found the correct one.
-    //  NOTICE: This will not work for a wind-field file with multiple locations...
-    if (this->m_volcanoes.size() > 0)
-    {
-        for (const CNamedLocation& volcano : this->m_volcanoes)
-        {
-            auto returnCode = fileReader.ReadWindFile(volcano, *m_wfDatabaseFromFile);
-            if (returnCode == SUCCESS) // we found the correct volcano.
-            {
-                return true;
-            }
-        }
-
-        return false; // failed to read the file.
-    }
-    else
-    {
-        CGPSData volcanoPosition; // TODO: Fill in this!
-        auto returnCode = fileReader.ReadWindFile(volcanoPosition, *m_wfDatabaseFromFile);
-
-        return returnCode == SUCCESS;
-    }
 }
 
