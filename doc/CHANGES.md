@@ -6,12 +6,16 @@ Bug fixes
 * Fix issue with columns from same scan initially plotting at same time in history (#99)
 * Fix issue with software crashing on re-evaluation when solar spectrum file is used (#103)
 * Fix peak intensity/specsaturation (#108)
+* Fix issue with SO2 blue reference line being flat during re-evaluation
 
 New features
 * Support for user-configurable spectrometer (#6)
 * SFTP support for uploading pak files to offsite server (#58)
 * Hostname support for FTP to instrument computer (#81)
 * Addition of flux history tab (#107)
+* AveSpec spectrometer support
+* Axiomtec instrument computer support
+* Add new "IntegrationMethod" property to STD file (#126)
 
 -----------------------------------------------------
 
