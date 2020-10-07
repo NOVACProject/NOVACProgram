@@ -978,7 +978,7 @@ LRESULT CFileTransferDlg::OnUpdateFileTree(WPARAM wParam, LPARAM lParam)
         }
     }
 
-    HTREEITEM hTRootB = AddOneItem((HTREEITEM)NULL, "Data", (HTREEITEM)TVI_ROOT, 1);
+    HTREEITEM hTRootB = AddOneItem((HTREEITEM)NULL, "Disk B", (HTREEITEM)TVI_ROOT, 1);
 
     m_fileTree.SetItemImage(hTRootB, 0, 0);
     listPos = m_fileListB.GetHeadPosition();

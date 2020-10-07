@@ -328,6 +328,25 @@ BOOL CFTPCom::EnterFolder(const CString& folder)
         return FALSE;
     }
 
+    // The top-level directory is treated separately due to different responses from different instruments
+    if (Equals(folder, "//"))
+    {
+        if (Equals(currentFolder, "/") || Equals(currentFolder, "//"))
+        {
+            CString msg;
+            msg.Format("Get into folder %s", (LPCSTR)folder);
+            ShowMessage(msg);
+            return TRUE;
+        }
+        else
+        {
+            CString msg;
+            msg.Format("Can not get into folder %s", (LPCSTR)folder);
+            ShowMessage(msg);
+            return FALSE;
+        }
+    }
+
     // The response we want to have...
     CString folderResponseOption1, folderResponseOption2;
     folderResponseOption1.Format("/%s/", (LPCSTR)folder);
