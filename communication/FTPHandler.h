@@ -44,11 +44,14 @@ namespace Communication
         // ---------------- MANAGING THE INSTRUMENT ------------------
 
         /** Send a command to kongo.exe in the instrument
-             by creating a command.txt file and upload it... */
-        bool SendCommand(char* cmd);
+             by creating a command.txt file and upload it to the instrument.
+             @return true if the file creation and upload was successful. */
+        bool SendCommand(const char* cmd);
 
-        /** Create a command.txt file to upload to the instrument */
-        bool MakeCommandFile(char* cmdString);
+        /** Creates a command.txt file to upload to the instrument
+            containing the provided command to send.
+            @return true if the file could be created successfully. */
+        static bool MakeCommandFile(const CString& fileName, const char* command);
 
         /** Tells the instrument to go to sleep by uploading
              a command.txt file to it */
@@ -61,7 +64,7 @@ namespace Communication
         /** reboot the remote scanner */
         void Reboot();
 
-        /** Download cfg.txt.
+        /** Download cfg.txt from the instrument.
             @return 1 if successful, otherwise 0*/
         int DownloadCfgTxt();
 
@@ -82,8 +85,8 @@ namespace Communication
         /**download old pak files and evaluate*/
         bool DownloadOldPak(long interval);
 
-        /**delete remote file
-            @param remote file name ( without path)
+        /** Delete one file in the instrument.
+            @param remote file name (without path)
             @return TRUE if deleted successfully */
         BOOL DeleteRemoteFile(const CString& remoteFile);
 
@@ -104,46 +107,59 @@ namespace Communication
                 'm_fileInfoList' and 'm_rFolderList' */
         long GetPakFileList(CString& folder);
 
-        /** Use the result fo the file-listing command to
-                    build the lists of files.
-                This rebuilds the lists 'm_fileInfoList' and 'm_rFolderList' */
-        int  FillFileList(const CString& fileName, char disk = 'B');
+        /** Use the result from the file-listing command to build 
+            the lists of files inside the current directory of the instrument.
+            This rebuilds the lists 'm_fileInfoList' and 'm_rFolderList'.
+            @param fileName The local filename where the result of the file-listing
+                command has been saved. 
+            @param disk The disk on the remote device where the file listing was done.
+            @return The number of found .pak files or directories which may contain .pak files. */
+        int FillFileList(const CString& fileName, char disk = 'B');
 
-        /** Parse a line in the file-list and insert it into
-                    the appropriate list. */
-        void ParseFileInfo(CString line, char disk = 'B');
+        /** Parse one line in the result of the file-listing command 
+            and inserts it into the appropriate list (either m_fileInfoList or m_rFolderList).
+            @return true if the line represents a .pak-file or folder which may contain .pak-files */
+        bool ParseFileInfo(CString line, char disk = 'B');
 
-        /** Extracts the suffix of a file-name */
-        void GetSuffix(CString& fileName, CString& fileSubfix);
+        /** Extracts the suffix (file extension) of a file-name.
+            @param fileName The file to get the suffix from
+            @param fileSuffix Will on successful return be filled with the suffix
+            @return true If the suffix could be parsed. */
+        static bool GetSuffix(const CString& fileName, CString& fileSuffix);
 
         /** Removes all stored file-information from
                     m_fileInfoList and m_rFolderList */
         void EmptyFileInfo();
 
-        /* Add a folder name into m_rfolderList.
-                Only folders of the format RXXX will be inserted */
-        void AddFolderInfo(CString& line);
+        /** Parse one line in the result of the file-listing command and if the 
+            result is a folder which may contain .pak-files then the name
+            of the folder is added to the list m_rfolderList.
+            Only folders of the format RXXX will be inserted.
+            @param line One line from the result of the file-listing command.
+            @return true if the folder name may contain .pak-files. */
+        bool AddFolderInfo(const CString& line);
 
         //-------------------------------------------//
         //--------------public variables ------------//
         //-------------------------------------------//
 
+        /** Information on this connection */
         struct FTPInformation m_ftpInfo;
 
         long m_remoteFileSize;
 
-        /**index in the configuration.xml*/
+        /** The index of this device in the configuration.xml.
+            Used to retrieve settings for the device. */
         int m_mainIndex;
 
-        /** spectrometer's serial number */
+        /** The spectrometer's serial number,
+            used to identify the instrument when communicating with other parts of the program. */
         CString m_spectrometerSerialID;
 
-        /** The .pak-file-handler, used to check the downloaded .pak-files */
-        FileHandler::CPakFileHandler m_pakFileHandler;
-
-        CString m_localFileFullPath;
+        /** The temporary storage directory on the local computer where we 
+            temporarily store downloaded files */
         CString m_storageDirectory;
-        Common m_common;
+
         CString m_statusMsg;
 
         /** The list of files in the current directory */
@@ -152,10 +168,17 @@ namespace Communication
         /** The list of RXX folders in the current directory */
         CList<CString, CString &> m_rFolderList;
 
-        /** The kind of electronics box that we're communicating with, good to know... */
+        /** The kind of electronics box that we're communicating with.
+            This is necessary since different models of boxes behave differently. */
         ELECTRONICS_BOX m_electronicsBox;
 
-        /** speed to download file, in kilo-bytes/second*/
+        /** Statistics on the speed to download file, in kilo-bytes/second*/
         double m_dataSpeed;
+
+    private:
+
+        /** The name of the file used to send commands to kongo in the instrument. */
+        const CString m_commandFileName = "command.txt";
+
     };
 }

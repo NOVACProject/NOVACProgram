@@ -14,16 +14,16 @@ CFTPCom::CFTPCom(void)
 CFTPCom::~CFTPCom(void)
 {
 }
+
 //Connect to FTP server
 //return 0 - fail
 //return 1 - success
 //return 2 - ftp address parsing problem
 //return 3 - can not connect to internet
 //return 4 - ftp exception
-int CFTPCom::Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, int timeout, bool mode)
+int CFTPCom::Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, int timeout, bool passiveMode)
 {
-
-    INTERNET_PORT  port = 21;
+    INTERNET_PORT port = 21;
     DWORD dwServiceType = AFX_INET_SERVICE_FTP;
     CString strServer;
     CString strObject;
@@ -33,13 +33,15 @@ int CFTPCom::Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, int t
 
     // If already connected, then re-connect
     if (m_FtpConnection != nullptr)
+    {
         m_FtpConnection->Close();
-    delete m_FtpConnection;
-    m_FtpConnection = nullptr;
+        delete m_FtpConnection;
+        m_FtpConnection = nullptr;
+    }
 
     if (!AfxParseURL(siteName, dwServiceType, (CString)siteName, strObject, port))
     {
-        // try adding the "ftp://" protocol		
+        // try adding the "ftp://" protocol
 
         if (!AfxParseURL(urlAddress, dwServiceType, (CString)siteName, strObject, port))
         {
@@ -48,9 +50,11 @@ int CFTPCom::Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, int t
             return 2;
         }
     }
+
     if (m_InternetSession == nullptr)
-        m_InternetSession = new CInternetSession(nullptr, 1, INTERNET_OPEN_TYPE_DIRECT, nullptr,
-            nullptr, 0);//INTERNET_FLAG_NO_CACHE_WRITE );
+    {
+        m_InternetSession = new CInternetSession(nullptr, 1, INTERNET_OPEN_TYPE_DIRECT, nullptr, nullptr, 0);
+    }
 
     // Alert the user if the internet session could
     // not be started and close app
@@ -61,9 +65,6 @@ int CFTPCom::Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, int t
         return 3;
     }
 
-    //	int nTimeout = AfxGetApp()->GetProfileInt("Settings", "ConnectionTimeout", 30);
-    //int nTimeout = 30 * 60; // timeout = 30 minutes
-    //int nTimeout = 60; // seconds
     if (dwServiceType == INTERNET_SERVICE_FTP)// && !siteName.IsEmpty())
     {
         try
@@ -72,7 +73,7 @@ int CFTPCom::Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, int t
             m_InternetSession->SetOption(INTERNET_OPTION_RECEIVE_TIMEOUT, timeout * 1000);
             m_InternetSession->SetOption(INTERNET_OPTION_SEND_TIMEOUT, timeout * 1000);
 
-            BOOL bPassiveMode = (mode) ? TRUE : FALSE;
+            BOOL bPassiveMode = (passiveMode) ? TRUE : FALSE;
             m_FtpConnection = m_InternetSession->GetFtpConnection(siteName, userName, password, 21, bPassiveMode);
             m_ErrorMsg.Format("CONNECTED to FTP server: %s", siteName);
             ShowMessage(m_ErrorMsg);
@@ -100,48 +101,55 @@ int CFTPCom::Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, int t
     }
     return 1;
 }
+
 int CFTPCom::Disconnect()
 {
     if (m_FtpConnection != nullptr)
+    {
         m_FtpConnection->Close();
-    delete m_FtpConnection;
-    m_FtpConnection = nullptr;
+        delete m_FtpConnection;
+        m_FtpConnection = nullptr;
+    }
+
     if (m_InternetSession != nullptr)
+    {
         m_InternetSession->Close();
-    delete m_InternetSession;
-    m_InternetSession = nullptr;
+        delete m_InternetSession;
+        m_InternetSession = nullptr;
+    }
+
     return 1;
 }
 
 
 int CFTPCom::UpdateRemoteFile(LPCTSTR localFile, LPCTSTR remoteFile)
 {
-    int result = 0;
-    if (m_FtpConnection == nullptr) {
+    if (m_FtpConnection == nullptr)
+    {
         ShowMessage("ERROR: Attempted to update file using FTP while not connected!");
         return 0;
     }
 
     // If the file exists, remove it first...
-    if (FindFile((CString&)remoteFile) == TRUE)
+    if (FindFile((CString&)remoteFile))
+    {
         m_FtpConnection->Remove(remoteFile);
+    }
 
     // Upload the file
-    result = m_FtpConnection->PutFile(localFile, remoteFile);
-    return result;
+    return m_FtpConnection->PutFile(localFile, remoteFile);
 }
 
 bool CFTPCom::DownloadAFile(LPCTSTR remoteFile, LPCTSTR fileFullName)
 {
-    bool result = false;
-    CString msg;
-
     // Check that we're connected...
-    if (m_FtpConnection == nullptr) {
+    if (m_FtpConnection == nullptr)
+    {
         ShowMessage("ERROR: Attempted to upload file using FTP while not connected!");
         return false;
     }
 
+    CString msg;
     msg.Format("Trying to download %s", fileFullName);
     ShowMessage(msg);
 
@@ -149,9 +157,11 @@ bool CFTPCom::DownloadAFile(LPCTSTR remoteFile, LPCTSTR fileFullName)
     {
         // Try to download the file
         BOOL r = m_FtpConnection->GetFile(remoteFile, fileFullName, FALSE);
-        result = (r == TRUE);
+        bool result = (r == TRUE);
 
-        if (0 == result) { // this means something went wrong
+        if (!result)
+        { 
+            // this means something went wrong
             int ftpError = GetLastError();
             if (ftpError != 0)
             {
@@ -190,8 +200,11 @@ bool CFTPCom::DownloadAFile(LPCTSTR remoteFile, LPCTSTR fileFullName)
         pEx->Delete();
 
         m_FtpConnection = nullptr;
+
+        return false;
     }
-    return result;
+
+    return false;
 }
 
 int CFTPCom::UploadFile(LPCTSTR localFile, LPCTSTR remoteFile)
@@ -207,7 +220,7 @@ int CFTPCom::UploadFile(LPCTSTR localFile, LPCTSTR remoteFile)
 
     // See if we can find the file on the remote computer, if so
     //	then we can't upload it...
-    if (FindFile((CString&)remoteFile) == TRUE)
+    if (FindFile((CString&)remoteFile))
     {
         return 1;
     }
@@ -258,22 +271,25 @@ bool CFTPCom::SetCurDirectory(CString curDirName)
     return (result == TRUE);
 }
 
-int CFTPCom::FindFile(CString& fileName)
+bool CFTPCom::FindFile(const CString& fileName)
 {
-    if (m_FtpConnection == nullptr) {
+    if (m_FtpConnection == nullptr)
+    {
         ShowMessage("ERROR: Attempted to find file using FTP while not connected!");
-        return 0; // cannot connect...
+        return false; // cannot connect...
     }
 
     // use a file find object to enumerate files
     CFtpFileFind finder(m_FtpConnection);
     BOOL result = finder.FindFile(_T(fileName));
-    if (0 == result) {
+    if (0 == result)
+    {
         DWORD retcode = GetLastError();
         //ShowMessage("Could not find remote file");
+        return false;
     }
 
-    return result;
+    return true;
 }
 
 // @return 0 if fail...

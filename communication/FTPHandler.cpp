@@ -177,14 +177,15 @@ bool CFTPHandler::DownloadAllOldPak()
     CString msg;
     CString folder = "";
 
-    //get file and folder list
-    long fileListSum = m_fileInfoList.GetCount() + m_rFolderList.GetCount();
-    if (fileListSum <= 0)
+    // get file and folder list
+    long numberOfFilesAndFolders = m_fileInfoList.GetCount() + m_rFolderList.GetCount();
+    if (numberOfFilesAndFolders <= 0)
     {
-        fileListSum = GetPakFileList(folder); //download Uxxx.pak list
-        fileListSum = max(0, fileListSum); // These must be on separate lines otherwise there's risk that the scanner will be polled twice(!)
+        numberOfFilesAndFolders = GetPakFileList(folder); //download Uxxx.pak list
+        numberOfFilesAndFolders = max(0, numberOfFilesAndFolders); // These must be on separate lines otherwise there's risk that the scanner will be polled twice(!)
     }
-    if (fileListSum + m_rFolderList.GetCount() == 0)
+
+    if (numberOfFilesAndFolders + m_rFolderList.GetCount() == 0)
     {
         msg.Format("<node %d> No more files to download", m_mainIndex);
         ShowMessage(msg);
@@ -194,19 +195,22 @@ bool CFTPHandler::DownloadAllOldPak()
     // download Uxxx.pak files in top directory
     Sleep(5000);
     if (m_fileInfoList.GetCount() > 0)
+    {
         DownloadPakFiles(folder);
+    }
 
+    // Enter each RXXX folder to download the files there
     if (m_rFolderList.GetCount() > 0)
     {
         // Make a backup-copy of the folder-list
         CList <CString, CString &> localFolderList;
         localFolderList.AddTail(&m_rFolderList);
 
-
         time_t start;
         time(&start);
         time_t current;
-        while (localFolderList.GetCount() > 0) {
+        while (localFolderList.GetCount() > 0)
+        {
             m_fileInfoList.RemoveAll();
 
             // Get the folder name
@@ -214,7 +218,9 @@ bool CFTPHandler::DownloadAllOldPak()
             localFolderList.RemoveTail();
 
             if (GetPakFileList(folder) < 0)
+            {
                 return true;
+            }
 
             Sleep(5000);
             if (DownloadPakFiles(folder))
@@ -233,14 +239,17 @@ bool CFTPHandler::DownloadAllOldPak()
                 // we failed to download the files...
                 Disconnect(); //get out of loop 2007.4.30
             }
+
             time(&current);
             const time_t seconds = current - start;
             long queryPeriod = g_settings.scanner[m_mainIndex].comm.queryPeriod;
-            if (seconds > queryPeriod) {
+            if (seconds > queryPeriod)
+            {
                 break; // spent long enough on one scanner; move to next
             }
         }// end while
     }
+
     return true;
 }
 
@@ -374,9 +383,13 @@ bool CFTPHandler::GetDiskFileList(int disk)
     if (ftpSocket.GetFileList())
     {
         if (disk == 1)
+        {
             FillFileList(ftpSocket.m_listFileName, 'B');
+        }
         else
+        {
             FillFileList(ftpSocket.m_listFileName, 'A');
+        }
         ftpSocket.Disconnect();
         ShowMessage("File list was downloaded.");
         if (m_fileInfoList.GetCount() > 0)
@@ -423,8 +436,10 @@ int CFTPHandler::FillFileList(const CString& fileName, char disk)
         if (str.Find("Í") != -1)
             break;
 
-        ParseFileInfo(str, disk);
-        nofFilesFound++;
+        if (ParseFileInfo(str, disk))
+        {
+            nofFilesFound++;
+        }
     } // token length should be bigger than 56 bytes//!= 0);
 
     file.Close();
@@ -432,23 +447,25 @@ int CFTPHandler::FillFileList(const CString& fileName, char disk)
     return nofFilesFound;
 }
 
-void CFTPHandler::AddFolderInfo(CString& line)
+bool CFTPHandler::AddFolderInfo(const CString& line)
 {
-    CString folderName;
+    const int folderNameLength = 4; // <-- all RXXX folders contains 4 characters
 
-    int folderNameLength = 4; // <-- all RXXX folders contains 4 characters!
+    CString folderName = line.Right(folderNameLength);
 
-    folderName.Format("%s", (LPCSTR)line.Right(folderNameLength));
     if (folderName.Left(1) != _T("R") && folderName.Left(1) != _T("r"))
-        return; // The folder is not a RXXX - folder, do not insert it into the list!
+    {
+        return false; // The folder is not a RXXX - folder, do not insert it into the list!
+    }
 
     m_rFolderList.AddTail(folderName);
+
+    return true;
 }
 
-//to fill file names and other information into m_fileList
-void CFTPHandler::ParseFileInfo(CString line, char disk)
+bool CFTPHandler::ParseFileInfo(CString line, char disk)
 {
-    CString resToken, subResToken, resultStr, fileName, fileSubfix, month, date, time, mmdd, dotSubfix;
+    CString fileName, fileSubfix, month, date, time, mmdd;
     long fileSize;
     int curPos = 0;
 
@@ -456,61 +473,79 @@ void CFTPHandler::ParseFileInfo(CString line, char disk)
     line.Remove('\r');
     if (line.Find("drw") != -1) // Changed 2008.06.30
     {
-        AddFolderInfo(line);
-        return;
+        return AddFolderInfo(line);
     }
-    for (int i = 0; i < 9; i++)
+
+    for (int columnIdx = 0; columnIdx < 9; columnIdx++)
     {
-        resToken = line.Tokenize(" ", curPos);
+        CString resToken = line.Tokenize(" ", curPos);
         if (curPos < 0)
-            return;
-        if (i == 4)
+        {
+            return false;
+        }
+
+        if (columnIdx == 4)
         {
             fileSize = atoi(resToken);
         }
-        else if (i == 5)
+        else if (columnIdx == 5)
+        {
             month.Format("%s", (LPCSTR)resToken);
-        else if (i == 6)
+        }
+        else if (columnIdx == 6)
+        {
             date.Format("%s", (LPCSTR)resToken);
-        else if (i == 7)
+        }
+        else if (columnIdx == 7)
+        {
             time.Format("%s", (LPCSTR)resToken);
-        else if (i == 8)
+        }
+        else if (columnIdx == 8)
         {
             fileName.Format("%s", (LPCSTR)resToken);
             fileName.Remove('\n');
             fileName.Remove('\r');
-            fileSubfix.Format("%s", (LPCSTR)fileName);
             GetSuffix(fileName, fileSubfix);
         }
     }
     mmdd.Format("%s %s", (LPCSTR)month, (LPCSTR)date);
 
     if (Equals(fileName, "..") || Equals(fileName, "."))
-        return; // no use with these
+    {
+        return false; // no use with these
+    }
 
-    CScannerFileInfo scannerFileInfo(disk, fileName, fileSubfix, fileSize, mmdd, time);
-
+    // If the file found is indeed a .pak-file then add it to the list of files
     if (IsPakFileExtension(m_electronicsBox, fileSubfix))
     {
+        CScannerFileInfo scannerFileInfo(disk, fileName, fileSubfix, fileSize, mmdd, time);
         m_fileInfoList.AddTail(scannerFileInfo);
+        return true;
     }
+
+    return false;
 }
 
-void CFTPHandler::GetSuffix(CString& fileName, CString& fileSubfix)
+bool CFTPHandler::GetSuffix(const CString& fileName, CString& fileSubfix)
 {
-    int position = fileName.ReverseFind('.');
-    int length = CString::StringLength(fileName);
+    fileSubfix = "";
+    const int position = fileName.ReverseFind('.');
+    const int length = CString::StringLength(fileName);
     if (length < 5 || position < 0)
-        return;
-    fileName = fileName.Left(position);
-    fileSubfix = fileSubfix.Right(length - position - 1);
+    {
+        return false;
+    }
+    fileSubfix = fileName.Right(length - position - 1);
+    return true;
 }
 
 // remoteFile: The filename of the remote file (including file extension)
 bool CFTPHandler::DownloadSpectra(const CString& remoteFile, const CString& savetoPath)
 {
     CString msg;
-    m_localFileFullPath.Format("%s%s", (LPCSTR)savetoPath, (LPCSTR)remoteFile);
+
+    CString localFileFullPath;
+    localFileFullPath.Format("%s%s", (LPCSTR)savetoPath, (LPCSTR)remoteFile);
 
     //connect to the ftp server
     if (!DownloadFile(remoteFile, savetoPath))
@@ -521,20 +556,25 @@ bool CFTPHandler::DownloadSpectra(const CString& remoteFile, const CString& save
     }
 
     // Check that the size on disk is same as the size in the remote computer
-    if (Common::RetrieveFileSize(m_localFileFullPath) != m_remoteFileSize)
+    if (Common::RetrieveFileSize(localFileFullPath) != m_remoteFileSize)
+    {
         return false;
+    }
+
+    /** The .pak-file-handler, used to check the downloaded .pak-files */
+    FileHandler::CPakFileHandler pakFileHandler;
 
     // Check the contents of the file and make sure it's an ok file
-    if (1 == m_pakFileHandler.ReadDownloadedFile(m_localFileFullPath))
+    if (1 == pakFileHandler.ReadDownloadedFile(localFileFullPath))
     {
-        msg.Format("CPakFileHandler found an error with the file %s. Will try to download again", (LPCSTR)m_localFileFullPath);
+        msg.Format("CPakFileHandler found an error with the file %s. Will try to download again", (LPCSTR)localFileFullPath);
         ShowMessage(msg);
 
         // Download the file again
         if (!DownloadFile(remoteFile, savetoPath))
             return false;
 
-        if (1 == m_pakFileHandler.ReadDownloadedFile(m_localFileFullPath))
+        if (1 == pakFileHandler.ReadDownloadedFile(localFileFullPath))
         {
             ShowMessage("The pak file is corrupted");
             //DELETE remote file
@@ -560,13 +600,9 @@ bool CFTPHandler::DownloadSpectra(const CString& remoteFile, const CString& save
     return true;
 }
 
-//delete remote file in ftp server ( scanner)
 BOOL CFTPHandler::DeleteRemoteFile(const CString& remoteFile)
 {
-    BOOL result = FALSE;
-    CString localCopyOfRemoteFileName;
-
-    if (m_FtpConnection == NULL)
+    if (m_FtpConnection == nullptr)
     {
         if (Connect(m_ftpInfo.hostName, m_ftpInfo.userName, m_ftpInfo.password, m_ftpInfo.timeout) != 1)
         {
@@ -577,13 +613,15 @@ BOOL CFTPHandler::DeleteRemoteFile(const CString& remoteFile)
 
     if (m_electronicsBox == BOX_VERSION_1)
     {
+        CString localCopyOfRemoteFileName;
         localCopyOfRemoteFileName.Format(remoteFile);
         if (!FindFile(localCopyOfRemoteFileName)) // This does not work with the axis-system, for some reason...
         {
             return FALSE;
         }
     }
-    result = m_FtpConnection->Remove((LPCTSTR)remoteFile);
+
+    BOOL result = m_FtpConnection->Remove((LPCTSTR)remoteFile);
 
     return result;
 }
@@ -644,33 +682,38 @@ bool CFTPHandler::DownloadFile(const CString &remoteFileName, const CString &sav
     return true;
 }
 
-bool CFTPHandler::MakeCommandFile(char* cmdString)
+bool CFTPHandler::MakeCommandFile(const CString& fileName, const char* command)
 {
-    CString fileName;
-    fileName.Format("%scommand.txt", (LPCSTR)m_storageDirectory);
     FILE *f = fopen(fileName, "w");
-    if (f == NULL)
+    if (f == nullptr)
+    {
         return false; // could not open file for writing
+    }
 
-    fprintf(f, cmdString);
+    fprintf(f, command);
     fclose(f);
     return true;
 }
 
-bool CFTPHandler::SendCommand(char* cmd)
+bool CFTPHandler::SendCommand(const char* cmd)
 {
-    CString localFileFullPath, remoteFile;
-    remoteFile = _T("command.txt");
+    CString localFileFullPath;
     localFileFullPath.Format("%scommand.txt", (LPCSTR)m_storageDirectory);
-    if (false == MakeCommandFile(cmd))
+    if (false == MakeCommandFile(localFileFullPath, cmd))
+    {
+        m_statusMsg.Format("Failed to create the command file for (%s)", (LPCSTR)m_ftpInfo.hostName);
+        ShowMessage(m_statusMsg);
         return false;
+    }
 
-    //connect to the ftp server
+    // Connect to the ftp server
     if (!Connect(m_ftpInfo.hostName, m_ftpInfo.userName, m_ftpInfo.password, m_ftpInfo.timeout) == 1)
+    {
         return false;
+    }
 
-    //upload file to the server
-    if (UploadFile(localFileFullPath, remoteFile) == 0)
+    // Upload file to the server
+    if (UploadFile(localFileFullPath, m_commandFileName) == 0)
     {
         Disconnect();
         m_statusMsg.Format("Can not upload command file to the remote scanner (%s) by FTP", (LPCSTR)m_ftpInfo.hostName);
@@ -684,9 +727,9 @@ bool CFTPHandler::SendCommand(char* cmd)
 
 void CFTPHandler::GotoSleep()
 {
-    CString cmdFile = TEXT("command.txt");
-    if (0 == DeleteRemoteFile(cmdFile)) {
-        //		ShowMessage("Remote File command.txt could not be removed");
+    if (FALSE == DeleteRemoteFile(m_commandFileName))
+    {
+        ShowMessage("Remote File command.txt could not be removed");
     }
     SendCommand("pause\npoweroff");
     pView->PostMessage(WM_SCANNER_SLEEP, (WPARAM)&(m_spectrometerSerialID), 0);
@@ -698,17 +741,16 @@ void CFTPHandler::GotoSleep()
 
 void CFTPHandler::WakeUp()
 {
-    bool success = false;
-    int iterations = 0;
-
-    CString cmdFile = TEXT("command.txt");
-    if (0 == DeleteRemoteFile(cmdFile)) {
+    if (0 == DeleteRemoteFile(m_commandFileName))
+    {
         //	ShowMessage("Remote File command.txt could not be removed");
     }
-    success = SendCommand("poweron\nresume");
+    bool success = SendCommand("poweron\nresume");
 
     // If we failed to upload the command-file then try again, at most 5 times
-    while (success == false && iterations < 5) {
+    int iterations = 0;
+    while (success == false && iterations < 5)
+    {
         Sleep(1000);
         success = SendCommand("poweron\nresume");
         ++iterations;
@@ -716,10 +758,12 @@ void CFTPHandler::WakeUp()
 
     Disconnect();
 
-    if (success == false) {
+    if (success == false)
+    {
         ShowMessage("Failed to wake instrument up");
     }
-    else {
+    else
+    {
         // Try to download the cfg.txt - file from the instrument. This is done 
         //	both to test the connection and to get information from the
         //	file (such as motor-steps-comp)
@@ -729,16 +773,17 @@ void CFTPHandler::WakeUp()
 
 void CFTPHandler::Reboot()
 {
-    CString cmdFile = TEXT("command.txt");
-    if (0 == DeleteRemoteFile(cmdFile)) {
+    if (0 == DeleteRemoteFile(m_commandFileName))
+    {
         //		ShowMessage("Remote File command.txt could not be removed");
     }
     SendCommand("reboot");
 }
 
 /** Download cfg.txt */
-int CFTPHandler::DownloadCfgTxt() {
-    CString remoteFileName, localFileName, copyFileName;
+int CFTPHandler::DownloadCfgTxt()
+{
+    CString localFileName;
 
     // Connect to the administrators account
     if (Connect(m_ftpInfo.hostName, m_ftpInfo.adminUserName, m_ftpInfo.adminPassword, m_ftpInfo.timeout) != 1)
@@ -747,11 +792,12 @@ int CFTPHandler::DownloadCfgTxt() {
     }
 
     // The names of the local and remote files
-    remoteFileName.Format("cfg.txt");
+    CString remoteFileName = "cfg.txt";
     localFileName.Format("%scfg.txt", (LPCSTR)m_storageDirectory);
 
     // Download the file.
-    if (!DownloadAFile(remoteFileName, localFileName)) {
+    if (!DownloadAFile(remoteFileName, localFileName))
+    {
         Disconnect();
         return 0;
     }
@@ -765,20 +811,25 @@ int CFTPHandler::DownloadCfgTxt() {
 
     // Try to parse the cfg.txt - file in order to get the paramters...
     FileHandler::CCfgTxtFileHandler cfgTxtReader;
-    if (0 == cfgTxtReader.ReadCfgTxt(localFileName)) {
+    if (0 == cfgTxtReader.ReadCfgTxt(localFileName))
+    {
         return 0;
     }
 
     // if todays date is dividable by 7 then try to upload the file
     int todaysDate = Common::GetDay();
-    if (todaysDate % 7 == 0) {
+    if (todaysDate % 7 == 0)
+    {
         // Copy the file to a new name.
+        CString copyFileName;
         copyFileName.Format("%scfg_%s.txt", (LPCSTR)m_storageDirectory, (LPCSTR)m_spectrometerSerialID);
-        if (0 != CopyFile(localFileName, copyFileName, FALSE)) {
+        if (0 != CopyFile(localFileName, copyFileName, FALSE))
+        {
             // Get the index of this volcano
             int volcanoIndex = Common::GetMonitoredVolcano(m_spectrometerSerialID);
 
-            if (-1 != volcanoIndex) {
+            if (-1 != volcanoIndex)
+            {
                 UploadToNOVACServer(copyFileName, volcanoIndex, true);
             }
         }

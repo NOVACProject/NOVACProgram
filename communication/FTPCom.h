@@ -34,10 +34,9 @@ namespace Communication
 
         int CreateDirectory(LPCTSTR remoteDirectory);
 
-        /**find file in the current ftp folder
-        *return TRUE if exists
-        */
-        int FindFile(CString& fileName);
+        /** Searches for a file in the current folder in the instrument.
+            @return true if the file does exist. */
+        bool FindFile(const CString& fileName);
 
         /*Remove a folder*/
         BOOL DeleteFolder(const CString& folder);
