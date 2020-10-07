@@ -26,16 +26,18 @@ bool IsPakFileExtension(ELECTRONICS_BOX version, const CString& fileSuffix)
 }
 
 // Appends the typical file extension for a .pak file on an electronics box of the given generation to the filename.
-void AppendPakFileExtension(const CString& fileNameWithoutExtension, ELECTRONICS_BOX version, CString& result)
+CString AppendPakFileExtension(const CString& fileNameWithoutExtension, ELECTRONICS_BOX version)
 {
+    CString fullFileName;
     if (version == BOX_VERSION_1)
     {
-        result.Format("%s.PAK", (LPCSTR)fileNameWithoutExtension);
+        fullFileName.Format("%s.PAK", (LPCSTR)fileNameWithoutExtension);
     }
     else
     {
-        result.Format("%s.pak", (LPCSTR)fileNameWithoutExtension);
+        fullFileName.Format("%s.pak", (LPCSTR)fileNameWithoutExtension);
     }
+    return fullFileName;
 }
 
 // ------------------- CFTPHandle class implementation -------------------
@@ -131,16 +133,15 @@ bool CFTPHandler::DownloadPakFiles(const CString& folder)
 
     time_t start;
     time(&start);
-    while (m_fileInfoList.GetCount() > 0)
+    while (m_fileInfoList.size() > 0)
     {
-        CString fileName;
-        const CScannerFileInfo& fileInfo = m_fileInfoList.GetTail();
-        AppendPakFileExtension(fileInfo.fileName, m_electronicsBox, fileName);
+        const CScannerFileInfo& fileInfo = m_fileInfoList.back();
+        const CString fileName = AppendPakFileExtension(fileInfo.fileName, m_electronicsBox);
         m_remoteFileSize = fileInfo.fileSize;
 
         if ((Equals(fileName, workPak) || Equals(fileName, uploadPak)) && folder.GetLength() == 0)
         {
-            m_fileInfoList.RemoveTail(); // do not download work.pak not upload.pak in the root folder
+            m_fileInfoList.pop_back(); // do not download work.pak not upload.pak in the root folder
             continue;
         }
 
@@ -151,7 +152,7 @@ bool CFTPHandler::DownloadPakFiles(const CString& folder)
 
         if (downloadResult)
         {
-            m_fileInfoList.RemoveTail();
+            m_fileInfoList.pop_back();
         }
         else
         {
@@ -167,7 +168,7 @@ bool CFTPHandler::DownloadPakFiles(const CString& folder)
         }
     }
 
-    m_fileInfoList.RemoveAll();
+    m_fileInfoList.clear();
     Disconnect();
     return true;
 }
@@ -178,7 +179,7 @@ bool CFTPHandler::DownloadAllOldPak()
     CString folder = "";
 
     // get file and folder list
-    long numberOfFilesAndFolders = m_fileInfoList.GetCount() + m_rFolderList.GetCount();
+    long numberOfFilesAndFolders = m_fileInfoList.size() + m_rFolderList.GetCount();
     if (numberOfFilesAndFolders <= 0)
     {
         numberOfFilesAndFolders = GetPakFileList(folder); //download Uxxx.pak list
@@ -194,7 +195,7 @@ bool CFTPHandler::DownloadAllOldPak()
 
     // download Uxxx.pak files in top directory
     Sleep(5000);
-    if (m_fileInfoList.GetCount() > 0)
+    if (m_fileInfoList.size() > 0)
     {
         DownloadPakFiles(folder);
     }
@@ -211,7 +212,7 @@ bool CFTPHandler::DownloadAllOldPak()
         time_t current;
         while (localFolderList.GetCount() > 0)
         {
-            m_fileInfoList.RemoveAll();
+            m_fileInfoList.clear();
 
             // Get the folder name
             folder.Format("%s", (LPCSTR)localFolderList.GetTail());
@@ -255,29 +256,32 @@ bool CFTPHandler::DownloadAllOldPak()
 
 bool CFTPHandler::DownloadOldPak(long interval)
 {
-    int  estimatedTime;
-    bool downloadResult;
     time_t startTime, stopTime;
-    CString fileFullName;
-    CScannerFileInfo *pakFileInfo = NULL;
 
-    if (m_fileInfoList.GetCount() <= 0)	//changed 2006-12-12. Omit get pak file list one more time
+    if (m_fileInfoList.size() <= 0)	//changed 2006-12-12. Omit get pak file list one more time
+    {
         return false;
+    }
 
     // Assume that the data-speed is at least 4kb/s
     if (m_dataSpeed <= 0)
+    {
         m_dataSpeed = 4.0;
+    }
 
-    pakFileInfo = &m_fileInfoList.GetTail();
-    m_remoteFileSize = pakFileInfo->fileSize;
-    estimatedTime = (int)((m_remoteFileSize * 1024.0) / m_dataSpeed);
+    const CScannerFileInfo& pakFileInfo = m_fileInfoList.back();
+    m_remoteFileSize = pakFileInfo.fileSize;
+    int estimatedTime = (int)((m_remoteFileSize * 1024.0) / m_dataSpeed);
+
     time(&startTime);
-    AppendPakFileExtension(pakFileInfo->fileName, m_electronicsBox, fileFullName);
-    downloadResult = DownloadSpectra(fileFullName, m_storageDirectory);
+    CString fileFullName = AppendPakFileExtension(pakFileInfo.fileName, m_electronicsBox);
+    bool downloadSuccessful = DownloadSpectra(fileFullName, m_storageDirectory);
     time(&stopTime);
 
-    if (downloadResult)
-        m_fileInfoList.RemoveTail();
+    if (downloadSuccessful)
+    {
+        m_fileInfoList.pop_back();
+    }
 
     return true;
 }
@@ -288,7 +292,7 @@ long CFTPHandler::GetPakFileList(const CString& folder)
     CFTPSocket ftpSocket(m_ftpInfo.timeout);
 
     // Start with clearing out the list of files...
-    m_fileInfoList.RemoveAll();
+    m_fileInfoList.clear();
 
     // We save the data to a temporary file on disk....
     listFilePath.Format("%sfileList.txt", (LPCSTR)m_storageDirectory);
@@ -348,7 +352,7 @@ long CFTPHandler::GetPakFileList(const CString& folder)
     ftpSocket.Disconnect();
 
     // Count the number of files and folders in the instrument
-    const long pakFileSum = m_fileInfoList.GetCount();
+    const long pakFileSum = m_fileInfoList.size();
     const long pakFolderSum = m_rFolderList.GetCount();
 
     msg.Format("<node %d> %d files and %d folders found on disk", m_mainIndex, pakFileSum, pakFolderSum);
@@ -388,7 +392,7 @@ bool CFTPHandler::GetDiskFileList(int disk)
         }
         ftpSocket.Disconnect();
         ShowMessage("File list was downloaded.");
-        if (m_fileInfoList.GetCount() > 0)
+        if (m_fileInfoList.size() > 0)
             return true;
         else
             return false;
@@ -404,7 +408,7 @@ bool CFTPHandler::GetDiskFileList(int disk)
 
 void CFTPHandler::EmptyFileInfo()
 {
-    m_fileInfoList.RemoveAll();
+    m_fileInfoList.clear();
     m_rFolderList.RemoveAll();
 }
 
@@ -501,7 +505,7 @@ bool CFTPHandler::ParseFileInfo(CString line, char disk)
             fileName.Format("%s", (LPCSTR)resToken);
             fileName.Remove('\n');
             fileName.Remove('\r');
-            GetSuffix(fileName, fileSubfix);
+            ExtractSuffix(fileName, fileSubfix);
         }
     }
     mmdd.Format("%s %s", (LPCSTR)month, (LPCSTR)date);
@@ -515,24 +519,24 @@ bool CFTPHandler::ParseFileInfo(CString line, char disk)
     if (IsPakFileExtension(m_electronicsBox, fileSubfix))
     {
         CScannerFileInfo scannerFileInfo(disk, fileName, fileSubfix, fileSize, mmdd, time);
-        m_fileInfoList.AddTail(scannerFileInfo);
+        m_fileInfoList.push_back(scannerFileInfo);
         return true;
     }
 
     return false;
 }
 
-bool CFTPHandler::GetSuffix(const CString& fileName, CString& fileSubfix)
+void CFTPHandler::ExtractSuffix(CString& fileName, CString& fileSuffix)
 {
-    fileSubfix = "";
     const int position = fileName.ReverseFind('.');
     const int length = CString::StringLength(fileName);
     if (length < 5 || position < 0)
     {
-        return false;
+        fileSuffix = "";
+        return;
     }
-    fileSubfix = fileName.Right(length - position - 1);
-    return true;
+    fileSuffix = fileName.Right(length - position - 1);
+    fileName = fileName.Left(position);
 }
 
 // remoteFile: The filename of the remote file (including file extension)

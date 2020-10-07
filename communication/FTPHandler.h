@@ -1,5 +1,6 @@
 #pragma once
 #include <afxtempl.h>
+#include <vector>
 #include "../communication/ftpcom.h"
 #include "../communication/ftpsocket.h"
 #include "../Common/Spectra/PakFileHandler.h"
@@ -122,11 +123,12 @@ namespace Communication
             @return true if the line represents a .pak-file or folder which may contain .pak-files */
         bool ParseFileInfo(CString line, char disk = 'B');
 
-        /** Extracts the suffix (file extension) of a file-name.
-            @param fileName The file to get the suffix from
-            @param fileSuffix Will on successful return be filled with the suffix
-            @return true If the suffix could be parsed. */
-        static bool GetSuffix(const CString& fileName, CString& fileSuffix);
+        /** Extracts and removes the suffix (file extension) of a file-name and puts it into the provided string.
+            @param fileName The file to get the suffix from.
+                This will be modified to not contain the suffix.
+            @param fileSuffix Will on successful return be filled with the suffix.
+                If no suffix is found, then this will be empty.*/
+        static void ExtractSuffix(CString& fileName, CString& fileSuffix);
 
         /** Removes all stored file-information from
                     m_fileInfoList and m_rFolderList */
@@ -164,7 +166,7 @@ namespace Communication
         CString m_statusMsg;
 
         /** The list of files in the current directory */
-        CList<CScannerFileInfo, CScannerFileInfo&> m_fileInfoList;
+        std::vector<CScannerFileInfo> m_fileInfoList;
 
         /** The list of RXX folders in the current directory */
         CList<CString, CString &> m_rFolderList;
