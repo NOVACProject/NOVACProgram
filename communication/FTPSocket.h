@@ -70,14 +70,14 @@ namespace Communication
 
 		bool SendFileToServer(CString& fileLocalPath);
 
-		/**Login FTP server
-		   @ftpServerIP - ip address of ftp server
-		   @ftpPort - ftp server's port , for control channel, standard is 21.
-		   @userName - login name
-		   @pwd - login password
-		   @return true if successful
-		*/
-		bool Login(const CString ftpServerIP, CString userName, CString pwd, int ftpPort = 21);
+        /**Login to one FTP server
+            @param ftpServerIPOrHostName - ip address or hostname of the ftp server.
+                Maximum length of this string is 255 characters.
+            @param userName - Login name
+            @param pwd - Login password
+            @param ftpPort - ftp server's port, for control channel, standard is 21.
+            @return true if successful */
+        bool Login(const CString& ftpServerIPOrHostName, const CString& userName, const CString& pwd, int ftpPort = 21);
 
 		/**Get system type*/
 		void GetSysType(CString& type);
@@ -199,7 +199,7 @@ namespace Communication
 		/**data structure to store ftp server parameters*/
 		struct ftpParam
 		{
-			char m_serverIP[64];
+			char m_serverIP[256];
 			int m_serverPort;
 			int m_serverDataPort;
 			CString userName;

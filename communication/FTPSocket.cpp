@@ -19,33 +19,39 @@ CFTPSocket::~CFTPSocket(void)
 {
 }
 
-//login to one ftp server
-bool CFTPSocket::Login(const CString ftpServerIP, CString userName, CString pwd,int ftpPort)
+bool CFTPSocket::Login(const CString& ftpServerIP, const CString& userName, const CString& pwd, int ftpPort)
 {
-	sprintf(m_serverParam.m_serverIP, "%s", (LPCSTR)ftpServerIP);
-	m_serverParam.m_serverPort = ftpPort;
-	m_serverParam.userName = userName;
-	m_serverParam.password = pwd;
+    if (ftpServerIP.GetLength() >= sizeof(m_serverParam.m_serverIP))
+    {
+        m_msg.Format("Invalid hostname '%s'. Maximum allowed number of characters is %d", (LPCSTR)ftpServerIP, sizeof(m_serverParam.m_serverIP));
+        ShowMessage(m_msg);
+        return false;
+    }
 
-	m_msg.Format("%s is not accessible, check the connection", (LPCSTR)ftpServerIP);
-	if(!Connect(m_controlSocket,m_serverParam.m_serverIP,ftpPort))
-	{
-		ShowMessage(m_msg);
-		return false;
-	}
-	SendCommand("USER",userName);
-	SendCommand("PASS",pwd);
-	if(ReadResponse() == 1)
-	{
-		m_msg.Format("%s is connected", (LPCSTR)ftpServerIP);
-		ShowMessage(m_msg);
-		return true;
-	}
-	else
-	{
-		ShowMessage(m_msg);
-		return false;
-	}
+    sprintf_s(m_serverParam.m_serverIP, sizeof(m_serverParam.m_serverIP), "%s", (LPCSTR)ftpServerIP);
+    m_serverParam.m_serverPort = ftpPort;
+    m_serverParam.userName = userName;
+    m_serverParam.password = pwd;
+
+    if(!Connect(m_controlSocket,m_serverParam.m_serverIP,ftpPort))
+    {
+        m_msg.Format("%s is not accessible, check the connection", (LPCSTR)ftpServerIP);
+        ShowMessage(m_msg);
+	    return false;
+    }
+    SendCommand("USER",userName);
+    SendCommand("PASS",pwd);
+    if(ReadResponse() == 1)
+    {
+	    m_msg.Format("%s is connected", (LPCSTR)ftpServerIP);
+	    ShowMessage(m_msg);
+	    return true;
+    }
+    else
+    {
+	    ShowMessage(m_msg);
+	    return false;
+    }
 }
 void CFTPSocket::GetFileName(CString& filePath)
 {
@@ -114,9 +120,9 @@ bool CFTPSocket::EnterPassiveMode()
 		}
 
 		// Connect to the server
-		if(!Connect(m_dataSocket,m_serverParam.m_serverIP,m_serverParam.m_serverDataPort))
+		if(!Connect(m_dataSocket,m_serverParam.m_serverIP, m_serverParam.m_serverDataPort))
 		{
-			m_msg.Format("can not connect to server %s:%d,server msg:%s", (LPCSTR)m_serverParam.m_serverIP,m_serverParam.m_serverDataPort, (LPCSTR)m_serverMsg);
+			m_msg.Format("can not connect to server %s:%d,server msg:%s", (LPCSTR)m_serverParam.m_serverIP, m_serverParam.m_serverDataPort, (LPCSTR)m_serverMsg);
 		
 			ShowMessage(m_msg);
 			m_serverParam.m_serverDataPort  = 0;
@@ -133,7 +139,7 @@ bool CFTPSocket::GetFileList()
 	if(!EnterPassiveMode())
 		return false;
 
-	m_msg.Format("connect to server %s:%d", m_serverParam.m_serverIP,m_serverParam.m_serverDataPort);
+	m_msg.Format("connect to server %s:%d", m_serverParam.m_serverIP, m_serverParam.m_serverDataPort);
 	ShowMessage(m_msg);
 
 	return List();
@@ -144,7 +150,7 @@ bool CFTPSocket::GetFileNameList()
 	//enter passive mode because the client thus can work behind firewall
 	if(!EnterPassiveMode())
 		return false;
-	m_msg.Format("connect to server %s:%d", m_serverParam.m_serverIP,m_serverParam.m_serverDataPort);
+	m_msg.Format("connect to server %s:%d", m_serverParam.m_serverIP, m_serverParam.m_serverDataPort);
 	ShowMessage(m_msg);	//for test
 	return NameList();  // test name list.	
 }
@@ -440,41 +446,78 @@ int CFTPSocket::ReadResponse()
 	}
 }
 
-bool CFTPSocket::Connect(SOCKET& usedSocket,char* serverIP, int serverPort)
+inline bool IsValidByte(int value)
 {
-		// Initialize Winsock.
-		WSADATA wsaData;
-		int iResult = WSAStartup( MAKEWORD(2,2), &wsaData );
-		if ( iResult != NO_ERROR )
-			ShowMessage(_T("Error at WSAStartup()"));
+   return value >= 0 && value <= 255;
+}
 
-		// Create a socket.
-		usedSocket = socket( PF_INET, SOCK_STREAM, IPPROTO_TCP );
+bool IsIpNumber(const char* ftpServerIPOrHostName)
+{
+    const size_t len = strlen(ftpServerIPOrHostName);
+    if (len < 7 || len > 15)
+    {
+        return false;
+    }
+    int nr1, nr2, nr3, nr4;
+    if (4 != sscanf(ftpServerIPOrHostName, "%d.%d.%d.%d", &nr1, &nr2, &nr3, &nr4))
+    {
+        return false;
+    }
+    if (!IsValidByte(nr1) || !IsValidByte(nr2) || !IsValidByte(nr2) || !IsValidByte(nr2))
+    {
+        return false;
+    }
 
-		if ( usedSocket == INVALID_SOCKET ) 
-		{
-			m_msg.Format( "Error at socket(): %ld", WSAGetLastError());
-			ShowMessage(m_msg );
-			WSACleanup();
-			return false;
-		}
-	// Bind the socket.
-	sockaddr_in service;
+    return true;
+}
 
-	service.sin_family = AF_INET;
-	service.sin_addr.s_addr = inet_addr(serverIP);
-	service.sin_port = htons( serverPort );
+bool CFTPSocket::Connect(SOCKET& usedSocket, char* ftpServerIPOrHostName, int serverPort)
+{
+    // Initialize Winsock.
+    WSADATA wsaData;
+    int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+    if (iResult != NO_ERROR)
+    {
+        ShowMessage(_T("Error at WSAStartup()"));
+    }
 
-		 // Connect to server.
-	if ( connect( usedSocket,(SOCKADDR*)&service,sizeof(service)) == SOCKET_ERROR) 
-	{
-		ShowMessage( _T("Failed to connect." ));
-		iResult = WSAGetLastError();
-		WSACleanup();
+    // Create a socket.
+    usedSocket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
 
-		return false;
-	}
-	return true;
+    if (usedSocket == INVALID_SOCKET)
+    {
+        m_msg.Format("Error at socket(): %ld", WSAGetLastError());
+        ShowMessage(m_msg);
+        WSACleanup();
+        return false;
+    }
+
+    // Bind the socket.
+    sockaddr_in service;
+
+    service.sin_family = AF_INET;
+
+    if (IsIpNumber(ftpServerIPOrHostName))
+    {
+        service.sin_addr.s_addr = inet_addr(ftpServerIPOrHostName);
+    }
+    else
+    {
+        struct hostent* he = gethostbyname(ftpServerIPOrHostName);
+        memcpy(&service.sin_addr.s_addr, he->h_addr_list[0], he->h_length);
+    }
+    service.sin_port = htons(serverPort);
+
+    // Connect to server.
+    if (connect(usedSocket, (SOCKADDR*)&service, sizeof(service)) == SOCKET_ERROR)
+    {
+        ShowMessage(_T("Failed to connect."));
+        iResult = WSAGetLastError();
+        WSACleanup();
+
+        return false;
+    }
+    return true;
 }
 int CFTPSocket::CloseASocket(SOCKET sock)
 {

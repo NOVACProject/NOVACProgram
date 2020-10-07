@@ -282,14 +282,10 @@ bool CFTPHandler::DownloadOldPak(long interval)
     return true;
 }
 
-//download file list from B disk
 long CFTPHandler::GetPakFileList(CString& folder)
 {
     CString fileList, listFilePath, msg;
     CFTPSocket ftpSocket(m_ftpInfo.timeout);
-
-    char ipAddr[16];
-    sprintf(ipAddr, "%s", (LPCSTR)m_ftpInfo.hostName);
 
     // Start with clearing out the list of files...
     m_fileInfoList.RemoveAll();
@@ -299,7 +295,7 @@ long CFTPHandler::GetPakFileList(CString& folder)
     ftpSocket.SetLogFileName(listFilePath);
 
     // Log in to the instrument's FTP-server
-    if (!ftpSocket.Login(ipAddr, m_ftpInfo.userName, m_ftpInfo.password))
+    if (!ftpSocket.Login(m_ftpInfo.hostName, m_ftpInfo.userName, m_ftpInfo.password))
     {
         return -1;
     }
