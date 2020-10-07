@@ -282,7 +282,7 @@ bool CFTPHandler::DownloadOldPak(long interval)
     return true;
 }
 
-long CFTPHandler::GetPakFileList(CString& folder)
+long CFTPHandler::GetPakFileList(const CString& folder)
 {
     CString fileList, listFilePath, msg;
     CFTPSocket ftpSocket(m_ftpInfo.timeout);

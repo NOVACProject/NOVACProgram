@@ -66,15 +66,11 @@ void CFTPSocket::GetSysType(CString& type)
 		type.Format("%s", (LPCSTR)m_serverMsg);
 	
 }
-bool CFTPSocket::EnterFolder(CString& folder)
+bool CFTPSocket::EnterFolder(const CString& folder)
 {
-	SendCommand("CWD",folder);
-	if(ReadResponse()==1)
-	{
-		return true;
-	}
-	else
-		return false;
+    SendCommand("CWD", folder);
+
+    return (ReadResponse() == 1);
 }
 
 bool CFTPSocket::GoToUpperFolder()
@@ -131,18 +127,23 @@ bool CFTPSocket::EnterPassiveMode()
 	
 	return true;
 }
+
 bool CFTPSocket::GetFileList()
 {
-	m_serverMsg = "";
+    m_serverMsg = "";
 
-	//enter passive mode because the client thus can work behind firewall
-	if(!EnterPassiveMode())
-		return false;
+    // enter passive mode because the client thus can work behind firewall
+    if (!EnterPassiveMode())
+    {
+        m_msg.Format("failed to enter passive mode on server %s:%d", m_serverParam.m_serverIP, m_serverParam.m_serverDataPort);
+        ShowMessage(m_msg);
+        return false;
+    }
 
-	m_msg.Format("connect to server %s:%d", m_serverParam.m_serverIP, m_serverParam.m_serverDataPort);
-	ShowMessage(m_msg);
+    m_msg.Format("connect to server %s:%d", m_serverParam.m_serverIP, m_serverParam.m_serverDataPort);
+    ShowMessage(m_msg);
 
-	return List();
+    return List();
 }
 //get file name list from the FTP server
 bool CFTPSocket::GetFileNameList()
@@ -172,30 +173,32 @@ bool CFTPSocket::NameList()
 	}
 
 }
-//FTP command to get file information- file name, size, date
+
 bool CFTPSocket::List()
 {
-	// Send command for file-list
-	SendCommand("LIST","");
+    // Send command for file-list
+    SendCommand("LIST", "");
 
-	//make sure that the server has replied the command 2006.11.21
-	ReadResponse();
-	if(!IsFTPCommandDone())
-		return false;
+    //make sure that the server has replied the command 2006.11.21
+    ReadResponse();
+    if (!IsFTPCommandDone())
+    {
+        return false;
+    }
 
-	//read file dir list
-	if(ReadData())
-	{
-		m_msg.Format("Successfully read list data");
-		ShowMessage(m_msg);
-		return true;
-	}	
-	else
-	{
-		m_msg.Format("Can not read  list data");  //for test
-		ShowMessage(m_msg);
-		return false;
-	}
+    //read file dir list
+    if (ReadData())
+    {
+        m_msg.Format("Successfully read list data");
+        ShowMessage(m_msg);
+        return true;
+    }
+    else
+    {
+        m_msg.Format("Can not read  list data");  //for test
+        ShowMessage(m_msg);
+        return false;
+    }
 }
 
 bool CFTPSocket::UploadFile(CString fileLocalPath)
@@ -234,23 +237,30 @@ bool CFTPSocket::DeleteFTPFile(CString fileName)
 	else
 		return false;
 }
-int CFTPSocket::SendCommand(CString command,CString commandText)
+
+int CFTPSocket::SendCommand(const CString& command, const CString& commandText)
 {
-	char buf[100];
-	Sleep(100); // Added 2008.06.30 to work with the Axis computer
-	if(commandText.GetLength() == 0)
-		wsprintf(buf,"%s\r\n", (LPCSTR)command);
-	else
-		wsprintf(buf,"%s %s\r\n", (LPCSTR)command, (LPCSTR)commandText);
-	int result = send(m_controlSocket,buf,strlen(buf),0);
-	if(result == SOCKET_ERROR)
-	{
-		result = WSAGetLastError();
-		WSACleanup();
-	}
-	//	ShowMessage(command); //for test
-	result = 0;
-	return result;
+    char buf[100];
+    Sleep(100); // Added 2008.06.30 to work with the Axis computer
+
+    if (commandText.GetLength() == 0)
+    {
+        wsprintf(buf, "%s\r\n", (LPCSTR)command);
+    }
+    else
+    {
+        wsprintf(buf, "%s %s\r\n", (LPCSTR)command, (LPCSTR)commandText);
+    }
+
+    int result = send(m_controlSocket, buf, strlen(buf), 0);
+    if (result == SOCKET_ERROR)
+    {
+        result = WSAGetLastError();
+        WSACleanup();
+    }
+
+    result = 0;
+    return result;
 }
 
 bool CFTPSocket::SendFileToServer(CString& fileLocalPath)
@@ -393,57 +403,64 @@ void CFTPSocket::StoreReceivedBytes(const TByteVector& vBuffer, long receivedByt
 		return;
 	std::copy(vBuffer.begin(), vBuffer.begin()+receivedBytes, std::back_inserter(m_vDataBuffer));
 }
+
 int CFTPSocket::ReadResponse()
 {
-	int bytesRecv = SOCKET_ERROR;
-	long errorNum = 0;
-	int count = 0;
-	time_t startTime, stopTime;
-	memset(m_receiveBuf,0,RESPONSE_LEN);
-	time(&startTime);
-	do
-	{
-		Sleep(100);
-		if(IsDataReady(m_controlSocket, 10))
-			bytesRecv = recv( m_controlSocket, m_receiveBuf, RESPONSE_LEN, 0 );
-		else
-		{
-			ShowMessage("Read data timeout");
-			return -1;
-		}
-		
-		if (bytesRecv < 0)
-		{
-			errorNum = WSAGetLastError();
-			if(errorNum == WSAETIMEDOUT||errorNum == WSAENOTCONN||errorNum==WSAENETRESET||errorNum == WSAESHUTDOWN)
-			{
-				m_msg.Format("error num in ReadResponse %d", errorNum);
-				ShowMessage(m_msg);
-				return errorNum;
-			}
-		}
-		else
-			break;
+    int bytesRecv = SOCKET_ERROR;
+    int count = 0;
+    long errorNum = 0;
+    time_t startTime, stopTime;
+    memset(m_receiveBuf, 0, RESPONSE_LEN);
+    time(&startTime);
+    do
+    {
+        Sleep(100);
+        if (IsDataReady(m_controlSocket, 10))
+        {
+            bytesRecv = recv(m_controlSocket, m_receiveBuf, RESPONSE_LEN, 0);
+        }
+        else
+        {
+            ShowMessage("Read data timeout");
+            return -1;
+        }
 
-		count++;
-		time(&stopTime);
-		if(stopTime - startTime >= m_timeout)
-		{
-			ShowMessage("Read data timeout");
-			return -1;
-		}
-	}while(bytesRecv!= 0);
+        if (bytesRecv < 0)
+        {
+            errorNum = WSAGetLastError();
+            if (errorNum == WSAETIMEDOUT || errorNum == WSAENOTCONN || errorNum == WSAENETRESET || errorNum == WSAESHUTDOWN)
+            {
+                m_msg.Format("error num in ReadResponse %d", errorNum);
+                ShowMessage(m_msg);
+                return -1;
+            }
+        }
+        else
+        {
+            break;
+        }
 
-	m_serverMsg.Format("%s",m_receiveBuf);
-	//msg.Format("%s",m_receiveBuf);
-	if(errorNum == 0)
-		return 1;
-	else
-	{
-		m_msg.Format("Read response Timeout.");
-		ShowMessage(m_msg);
-		return -1;
-	}
+        count++;
+        time(&stopTime);
+        if (stopTime - startTime >= m_timeout)
+        {
+            ShowMessage("Read data timeout");
+            return -1;
+        }
+    } while (bytesRecv != 0);
+
+    m_serverMsg.Format("%s", m_receiveBuf);
+
+    if (errorNum == 0)
+    {
+        return 1;
+    }
+    else
+    {
+        m_msg.Format("Read response Timeout.");
+        ShowMessage(m_msg);
+        return -1;
+    }
 }
 
 inline bool IsValidByte(int value)

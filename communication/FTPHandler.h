@@ -76,7 +76,7 @@ namespace Communication
         /**download upload.pak, Uxxx.pak files and evaluate*/
         bool DownloadSpectra(const CString &remoteFile, const CString &savetoPath);
 
-        /*download Uxxx.pak files on m_fileInfoList*/
+        /* Downloads all Uxxx.pak files found in the m_fileInfoList.*/
         bool DownloadPakFiles(const CString& folder);
 
         /*download all old pak files*/
@@ -102,10 +102,11 @@ namespace Communication
                 */
         bool GetDiskFileList(int disk = 1);
 
-        /** Retrieves the list of files from the given directory,
-                calls 'FillFileList' which rebuilds the lists
-                'm_fileInfoList' and 'm_rFolderList' */
-        long GetPakFileList(CString& folder);
+        /** Retrieves the list of files from the given directory on the instrument.
+            This will call 'FillFileList' which rebuilds the two lists
+                'm_fileInfoList' and 'm_rFolderList'
+            @return the number of pak-files in the given folder. */
+        long GetPakFileList(const CString& folder);
 
         /** Use the result from the file-listing command to build 
             the lists of files inside the current directory of the instrument.
