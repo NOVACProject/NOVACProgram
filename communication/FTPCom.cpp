@@ -156,7 +156,7 @@ bool CFTPCom::DownloadAFile(LPCTSTR remoteFile, LPCTSTR fileFullName)
     try
     {
         // Try to download the file
-        BOOL r = m_FtpConnection->GetFile(remoteFile, fileFullName, FALSE);
+        BOOL r = m_FtpConnection->GetFile(remoteFile, fileFullName, FALSE, FILE_ATTRIBUTE_NORMAL, FTP_TRANSFER_TYPE_BINARY | INTERNET_FLAG_RELOAD);
         bool result = (r == TRUE);
 
         if (!result)
