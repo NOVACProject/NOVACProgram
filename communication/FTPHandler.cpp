@@ -115,8 +115,8 @@ bool CFTPHandler::PollScanner()
 
 bool CFTPHandler::DownloadPakFiles(const CString& folder, std::vector<CScannerFileInfo>& fileInfoList)
 {
-    const CString workPak = "WORK.PAK";
-    const CString uploadPak = "upload.pak";
+    const CString workPak = "WORK.PAK";  // case here doesn't matter since the comparison below is case insensitive
+    const CString uploadPak = "upload.pak";  // case here doesn't matter since the comparison below is case insensitive
 
     if (Connect(m_ftpInfo.hostName, m_ftpInfo.userName, m_ftpInfo.password, m_ftpInfo.timeout) != 1)
     {
@@ -552,6 +552,8 @@ bool CFTPHandler::DownloadSpectrumFile(const CString& remoteFile, const CString&
     // Check that the size on disk is same as the size in the remote computer
     if (Common::RetrieveFileSize(localFileFullPath) != remoteFileSize)
     {
+        m_statusMsg.Format("Error while downloading file (%s) by FTP, local file size does not agree with remote", (LPCSTR)m_ftpInfo.hostName);
+        ShowMessage(m_statusMsg);
         return false;
     }
 
@@ -574,7 +576,8 @@ bool CFTPHandler::DownloadSpectrumFile(const CString& remoteFile, const CString&
         {
             ShowMessage("The pak file is corrupted");
             //DELETE remote file
-            if (0 == DeleteRemoteFile(remoteFile)) {
+            if (0 == DeleteRemoteFile(remoteFile))
+            {
                 m_statusMsg.Format("<node %d> Remote File %s could not be removed", m_mainIndex, (LPCSTR)remoteFile);
                 ShowMessage(m_statusMsg);
             }
@@ -641,9 +644,6 @@ bool CFTPHandler::DownloadFile(const CString& remoteFileName, const CString& loc
     {
         DeleteFile(fileFullName);
     }
-
-    m_statusMsg.Format("Begin to download file from %s", (LPCSTR)m_ftpInfo.hostName);
-    ShowMessage(m_statusMsg);
 
     //show running lamp on interface
     pView->PostMessage(WM_SCANNER_RUN, (WPARAM)&(m_spectrometerSerialID), 0);
