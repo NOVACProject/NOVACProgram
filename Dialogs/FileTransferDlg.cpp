@@ -47,7 +47,6 @@ UINT DownloadFileListWithSerial(LPVOID pParam)
     dlg->m_fileStatusEdit.SetWindowText("Downloading file list ...");
     time(&tStart);
 
-
     if (!dlg->m_SerialController->InitCommunication('B')) {
         dlg->m_busy = false;
         return 0;
@@ -73,10 +72,9 @@ UINT DownloadFileListWithSerial(LPVOID pParam)
     pFileTransferDlg->ClearOut();
     pFileTransferDlg->ParseDir(pFileTransferDlg->m_textA, pFileTransferDlg->m_fileListA);
     pFileTransferDlg->ParseDir(pFileTransferDlg->m_textB, pFileTransferDlg->m_fileListB);
-
     pFileTransferDlg->PostMessage(WM_UPDATE_FILE_TREE);
-
     dlg->m_busy = false;
+
     return 0;
 }
 
@@ -84,6 +82,12 @@ UINT DownloadFileListWithSerial(LPVOID pParam)
 UINT DownloadFileListWithFTP(LPVOID pParam)
 {
     CFileTransferDlg* dlg = (CFileTransferDlg*)pParam;
+
+    dlg->m_busy = true;
+    dlg->m_fileStatusEdit.SetWindowText("Downloading file list ...");
+
+    time_t tStart;
+    time(&tStart);
 
     /** Get the list for 'B'-disk */
     if (dlg->m_ftpController->GetDiskFileList(1))
@@ -103,21 +107,35 @@ UINT DownloadFileListWithFTP(LPVOID pParam)
         }
     }
     else
+    {
         MessageBox(NULL, "Can not get ftp file list", "Notice", MB_OK);
-
-    // Pause a little bit, for the small FTP-server to have time to recover...
-    Sleep(1000);
+    }
 
     /** Get the list for 'A'-disk */
-    if (dlg->m_ftpController->GetDiskFileList(0))
+    if (dlg->m_ftpController->m_electronicsBox == BOX_VERSION_1)
     {
-        for (const CScannerFileInfo& info : dlg->m_ftpController->m_fileInfoList)
-        {
-            pFileTransferDlg->m_fileListA.AddTail(new CScannerFileInfo(info));
-        }
+        // Pause a little bit, for the small FTP-server to have time to recover...
+        Sleep(1000);
 
-        pFileTransferDlg->PostMessage(WM_UPDATE_FILE_TREE);
+        if (dlg->m_ftpController->GetDiskFileList(0))
+        {
+            for (const CScannerFileInfo& info : dlg->m_ftpController->m_fileInfoList)
+            {
+                pFileTransferDlg->m_fileListA.AddTail(new CScannerFileInfo(info));
+            }
+        }
     }
+
+    time_t tStop;
+    time(&tStop);
+    CString msg;
+    msg.Format("Finsh downloading file list\r\nUsed %d seconds", static_cast<int>(tStop - tStart));
+    dlg->m_fileStatusEdit.SetWindowText(msg);
+
+    // Update the user interface
+    pFileTransferDlg->PostMessage(WM_UPDATE_FILE_TREE);
+    dlg->m_busy = false;
+
     return 0;
 }
 //download file by serial connection
@@ -920,62 +938,71 @@ BOOL CFileTransferDlg::OnInitDialog()
     // EXCEPTION: OCX Property Pages should return FALSE
 }
 
+bool ExistsDiskA(Communication::CSerialControllerWithTx* m_SerialController, Communication::CFTPHandler* m_ftpController)
+{
+    if (m_SerialController != nullptr)
+    {
+        return m_SerialController->m_electronicsBox == BOX_VERSION_1;
+    }
+    else
+    {
+        return false;
+    }
+}
+
 LRESULT CFileTransferDlg::OnUpdateFileTree(WPARAM wParam, LPARAM lParam)
 {
     CString fileFullName, folderName, subfix;
-    HTREEITEM hTRootA, hTRootB, hTItem, hTItem2;
+    HTREEITEM hTRootA, hTItem, hTItem2;
     m_fileTree.DeleteAllItems();
 
     POSITION listPos;
     CScannerFileInfo* fileInfo;
     fileInfo = NULL;
-    int i = 0;
     CString folderFlag;
     folderFlag.Format("DIR");
 
-    //ClearOut();
-    //ParseDir(m_textA,'A');
-    //ParseDir(m_textB,'B');
-    if (!(m_SerialController != NULL && m_SerialController->m_electronicsBox == BOX_VERSION_2))
+    if (ExistsDiskA(m_SerialController, m_ftpController))
     {
-        hTRootA = AddOneItem((HTREEITEM)NULL, "Disk A", (HTREEITEM)
-            TVI_ROOT, 0);
+        hTRootA = AddOneItem((HTREEITEM)NULL, "Disk A", (HTREEITEM)TVI_ROOT, 0);
         m_fileTree.SetItemImage(hTRootA, 0, 0);
         listPos = m_fileListA.GetHeadPosition();
-        while (listPos != NULL)
+        int elementIdx = 0;
+        while (listPos != nullptr)
         {
             fileInfo = m_fileListA.GetNext(listPos);
             fileFullName.Format("%s.%s", (LPCSTR)fileInfo->fileName, (LPCSTR)fileInfo->fileSuffix);
-            hTItem = AddOneItem(hTRootA, (LPTSTR)(LPCTSTR)fileFullName, (HTREEITEM)TVI_LAST, 2 * (i + 1));
+            hTItem = AddOneItem(hTRootA, (LPTSTR)(LPCTSTR)fileFullName, (HTREEITEM)TVI_LAST, 2 * (elementIdx + 1));
             SetFileItemImage(hTItem, fileInfo->fileSuffix);
-            i++;
+            elementIdx++;
         }
     }
 
-    hTRootB = AddOneItem((HTREEITEM)NULL, "Disk B", (HTREEITEM)
-        TVI_ROOT, 1);
+    HTREEITEM hTRootB = AddOneItem((HTREEITEM)NULL, "Data", (HTREEITEM)TVI_ROOT, 1);
 
     m_fileTree.SetItemImage(hTRootB, 0, 0);
-    i = 0;
     listPos = m_fileListB.GetHeadPosition();
-    while (listPos != NULL)
+
+    int elementIdx = 0;
+    while (listPos != nullptr)
     {
         fileInfo = m_fileListB.GetNext(listPos);
 
         fileFullName.Format("%s.%s", (LPCSTR)fileInfo->fileName, (LPCSTR)fileInfo->fileSuffix);
 
-        hTItem = AddOneItem(hTRootB, (LPTSTR)(LPCTSTR)fileFullName, (HTREEITEM)TVI_LAST, 2 * (i + 1));
+        hTItem = AddOneItem(hTRootB, (LPTSTR)(LPCTSTR)fileFullName, (HTREEITEM)TVI_LAST, 2 * (elementIdx + 1));
         SetFileItemImage(hTItem, fileInfo->fileSuffix);
-        i++;
+        elementIdx++;
     }
+
     listPos = m_folderListB.GetHeadPosition();
     while (listPos != NULL)
     {
         CScannerFolderInfo *folderInfo = m_folderListB.GetNext(listPos);
         folderName.Format("%s", (LPCSTR)folderInfo->folderName);
-        hTItem = AddOneItem(hTRootB, (LPTSTR)(LPCTSTR)folderName, (HTREEITEM)TVI_LAST, 2 * (i + 1));
+        hTItem = AddOneItem(hTRootB, (LPTSTR)(LPCTSTR)folderName, (HTREEITEM)TVI_LAST, 2 * (elementIdx + 1));
         SetFileItemImage(hTItem, folderFlag);
-        i++;
+        elementIdx++;
 
         // Also fill in the file information in the folder, if any...
         POSITION folderListPos = folderInfo->m_fileList.GetHeadPosition();
@@ -983,15 +1010,19 @@ LRESULT CFileTransferDlg::OnUpdateFileTree(WPARAM wParam, LPARAM lParam)
             CScannerFileInfo *fileInfo = folderInfo->m_fileList.GetNext(folderListPos);
             fileFullName.Format("%s.%s", (LPCSTR)fileInfo->fileName, (LPCSTR)fileInfo->fileSuffix);
 
-            hTItem2 = AddOneItem(hTItem, (LPTSTR)(LPCTSTR)fileFullName, (HTREEITEM)TVI_LAST, 2 * (i + 1));
+            hTItem2 = AddOneItem(hTItem, (LPTSTR)(LPCTSTR)fileFullName, (HTREEITEM)TVI_LAST, 2 * (elementIdx + 1));
             SetFileItemImage(hTItem2, fileInfo->fileSuffix);
-            i++;
+            elementIdx++;
         }
         if (folderInfo->m_fileList.GetSize() > 0)
             m_fileTree.Expand(hTItem, TVE_EXPAND);
     }
 
-    m_fileTree.Expand(hTRootA, TVE_EXPAND);
+
+    if (ExistsDiskA(m_SerialController, m_ftpController))
+    {
+        m_fileTree.Expand(hTRootA, TVE_EXPAND);
+    }
     m_fileTree.Expand(hTRootB, TVE_EXPAND);
 
     m_busy = false;
@@ -1470,15 +1501,30 @@ void CFileTransferDlg::OnLbnSelchangeScannerList()
         break;
         //when it is ftp connection
     case FTP_CONNECTION:
-        m_ftpController = new Communication::CFTPHandler();
+        m_ftpController = new Communication::CFTPHandler(g_settings.scanner[curScanner].electronicsBox);
 
-        m_ftpController->SetFTPInfo(curScanner,
-            g_settings.scanner[curScanner].comm.ftpHostName,
-            g_settings.scanner[curScanner].comm.ftpUserName,
-            g_settings.scanner[curScanner].comm.ftpPassword,
-            admUserName,
-            admPwd,
-            g_settings.scanner[curScanner].comm.timeout / 1000);
+        if (g_settings.scanner[curScanner].electronicsBox != BOX_VERSION_4)
+        {
+            m_ftpController->SetFTPInfo(curScanner,
+                g_settings.scanner[curScanner].comm.ftpHostName,
+                g_settings.scanner[curScanner].comm.ftpUserName,
+                g_settings.scanner[curScanner].comm.ftpPassword,
+                g_settings.scanner[curScanner].comm.ftpAdminUserName,
+                g_settings.scanner[curScanner].comm.ftpAdminPassword,
+                g_settings.scanner[curScanner].comm.timeout / 1000);
+        }
+        else
+        {
+            // The Axiomtek box has only one login.
+            m_ftpController->SetFTPInfo(curScanner,
+                g_settings.scanner[curScanner].comm.ftpHostName,
+                g_settings.scanner[curScanner].comm.ftpUserName,
+                g_settings.scanner[curScanner].comm.ftpPassword,
+                g_settings.scanner[curScanner].comm.ftpUserName,
+                g_settings.scanner[curScanner].comm.ftpPassword,
+                g_settings.scanner[curScanner].comm.timeout / 1000);
+        }
+
         AfxBeginThread(DownloadFileListWithFTP, this, THREAD_PRIORITY_NORMAL, 0, 0, NULL);
         break;
     default:

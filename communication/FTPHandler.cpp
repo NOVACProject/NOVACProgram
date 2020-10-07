@@ -362,19 +362,22 @@ bool CFTPHandler::GetDiskFileList(int disk)
 {
     CString fileList, listFilePath;
     CFTPSocket ftpSocket;
-    char ipAddr[16];
-    sprintf(ipAddr, "%s", (LPCSTR)m_ftpInfo.hostName);
     listFilePath.Format("%sfileList.txt", (LPCSTR)m_storageDirectory);
     ftpSocket.SetLogFileName(listFilePath);
 
-
-    if (disk == 1) {
-        if (!ftpSocket.Login(ipAddr, m_ftpInfo.userName, m_ftpInfo.password))
+    if (disk == 1)
+    {
+        if (!ftpSocket.Login(m_ftpInfo.hostName, m_ftpInfo.userName, m_ftpInfo.password))
+        {
             return false;
+        }
     }
-    else {
-        if (!ftpSocket.Login(ipAddr, m_ftpInfo.adminUserName, m_ftpInfo.adminPassword))
+    else
+    {
+        if (!ftpSocket.Login(m_ftpInfo.hostName, m_ftpInfo.adminUserName, m_ftpInfo.adminPassword))
+        {
             return false;
+        }
     }
 
     if (ftpSocket.GetFileList())
