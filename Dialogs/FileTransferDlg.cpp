@@ -91,12 +91,12 @@ UINT DownloadFileListWithFTP(LPVOID pParam)
         // Update the lists...
         pFileTransferDlg->ClearOut();
 
-        POSITION pos = dlg->m_ftpController->m_fileInfoList.GetHeadPosition();
-        while (pos != NULL) {
-            CScannerFileInfo *fileInfo = new CScannerFileInfo(dlg->m_ftpController->m_fileInfoList.GetNext(pos));
-            pFileTransferDlg->m_fileListB.AddTail(fileInfo);
+        for (const CScannerFileInfo& info : dlg->m_ftpController->m_fileInfoList)
+        {
+            pFileTransferDlg->m_fileListB.AddTail(new CScannerFileInfo(info));
         }
-        pos = dlg->m_ftpController->m_rFolderList.GetHeadPosition();
+
+        auto pos = dlg->m_ftpController->m_rFolderList.GetHeadPosition();
         while (pos != NULL) {
             CScannerFolderInfo *folderInfo = new CScannerFolderInfo('B', dlg->m_ftpController->m_rFolderList.GetNext(pos), "", "");
             pFileTransferDlg->m_folderListB.AddTail(folderInfo);
@@ -111,10 +111,9 @@ UINT DownloadFileListWithFTP(LPVOID pParam)
     /** Get the list for 'A'-disk */
     if (dlg->m_ftpController->GetDiskFileList(0))
     {
-        POSITION pos = dlg->m_ftpController->m_fileInfoList.GetHeadPosition();
-        while (pos != NULL) {
-            CScannerFileInfo *fileInfo = new CScannerFileInfo(dlg->m_ftpController->m_fileInfoList.GetNext(pos));
-            pFileTransferDlg->m_fileListA.AddTail(fileInfo);
+        for (const CScannerFileInfo& info : dlg->m_ftpController->m_fileInfoList)
+        {
+            pFileTransferDlg->m_fileListA.AddTail(new CScannerFileInfo(info));
         }
 
         pFileTransferDlg->PostMessage(WM_UPDATE_FILE_TREE);
@@ -294,7 +293,7 @@ UINT DownloadFolderWithSerial(LPVOID pParam)
         CScannerFileInfo *folderItem = list->GetNext(pos);
 
         // the name and size of the remote file to download
-        fileName.Format("%s.%s", (LPCSTR)folderItem->fileName, (LPCSTR)folderItem->fileSubfix);
+        fileName.Format("%s.%s", (LPCSTR)folderItem->fileName, (LPCSTR)folderItem->fileSuffix);
         fileSize = folderItem->fileSize;
 
         // Download the file
@@ -370,7 +369,7 @@ UINT DownloadFolderWithFTP(LPVOID pParam)
         CScannerFileInfo *folderItem = list->GetNext(pos);
 
         // the name and size of the remote file to download
-        fileName.Format("%s.%s", (LPCSTR)folderItem->fileName, (LPCSTR)folderItem->fileSubfix);
+        fileName.Format("%s.%s", (LPCSTR)folderItem->fileName, (LPCSTR)folderItem->fileSuffix);
         fileFullName.Format("%s%s", (LPCSTR)dlg->m_storagePath, (LPCSTR)fileName);
 
         msg.Format("Begin to download %s from %s", (LPCSTR)fileName, (LPCSTR)dlg->m_ftpController->m_ftpInfo.hostName);
@@ -599,10 +598,9 @@ UINT ExpandFolderByFTP(LPVOID pParam)
     msg.Format("Finsh downloading file list\r\nUsed %d seconds", static_cast<int>(tStop - tStart));
     dlg->m_fileStatusEdit.SetWindowText(msg);
 
-    pos = dlg->m_ftpController->m_fileInfoList.GetHeadPosition();
-    while (pos != NULL) {
-        CScannerFileInfo *fileInfo = new CScannerFileInfo(dlg->m_ftpController->m_fileInfoList.GetNext(pos));
-        list->AddTail(fileInfo);
+    for (const CScannerFileInfo& info : dlg->m_ftpController->m_fileInfoList)
+    {
+        list->AddTail(new CScannerFileInfo(info));
     }
 
     dlg->m_ftpController->Disconnect();
@@ -947,9 +945,9 @@ LRESULT CFileTransferDlg::OnUpdateFileTree(WPARAM wParam, LPARAM lParam)
         while (listPos != NULL)
         {
             fileInfo = m_fileListA.GetNext(listPos);
-            fileFullName.Format("%s.%s", (LPCSTR)fileInfo->fileName, (LPCSTR)fileInfo->fileSubfix);
+            fileFullName.Format("%s.%s", (LPCSTR)fileInfo->fileName, (LPCSTR)fileInfo->fileSuffix);
             hTItem = AddOneItem(hTRootA, (LPTSTR)(LPCTSTR)fileFullName, (HTREEITEM)TVI_LAST, 2 * (i + 1));
-            SetFileItemImage(hTItem, fileInfo->fileSubfix);
+            SetFileItemImage(hTItem, fileInfo->fileSuffix);
             i++;
         }
     }
@@ -964,10 +962,10 @@ LRESULT CFileTransferDlg::OnUpdateFileTree(WPARAM wParam, LPARAM lParam)
     {
         fileInfo = m_fileListB.GetNext(listPos);
 
-        fileFullName.Format("%s.%s", (LPCSTR)fileInfo->fileName, (LPCSTR)fileInfo->fileSubfix);
+        fileFullName.Format("%s.%s", (LPCSTR)fileInfo->fileName, (LPCSTR)fileInfo->fileSuffix);
 
         hTItem = AddOneItem(hTRootB, (LPTSTR)(LPCTSTR)fileFullName, (HTREEITEM)TVI_LAST, 2 * (i + 1));
-        SetFileItemImage(hTItem, fileInfo->fileSubfix);
+        SetFileItemImage(hTItem, fileInfo->fileSuffix);
         i++;
     }
     listPos = m_folderListB.GetHeadPosition();
@@ -983,10 +981,10 @@ LRESULT CFileTransferDlg::OnUpdateFileTree(WPARAM wParam, LPARAM lParam)
         POSITION folderListPos = folderInfo->m_fileList.GetHeadPosition();
         while (folderListPos != NULL) {
             CScannerFileInfo *fileInfo = folderInfo->m_fileList.GetNext(folderListPos);
-            fileFullName.Format("%s.%s", (LPCSTR)fileInfo->fileName, (LPCSTR)fileInfo->fileSubfix);
+            fileFullName.Format("%s.%s", (LPCSTR)fileInfo->fileName, (LPCSTR)fileInfo->fileSuffix);
 
             hTItem2 = AddOneItem(hTItem, (LPTSTR)(LPCTSTR)fileFullName, (HTREEITEM)TVI_LAST, 2 * (i + 1));
-            SetFileItemImage(hTItem2, fileInfo->fileSubfix);
+            SetFileItemImage(hTItem2, fileInfo->fileSuffix);
             i++;
         }
         if (folderInfo->m_fileList.GetSize() > 0)
@@ -1309,7 +1307,7 @@ void CFileTransferDlg::FillList(CString &token, CList <CScannerFileInfo*, CScann
         {
         case 0: fileInfo->fileName = resToken;
             break;
-        case 1: fileInfo->fileSubfix = resToken;
+        case 1: fileInfo->fileSuffix = resToken;
             break;
         case 2: fileInfo->fileSize = atoi(resToken);
             break;

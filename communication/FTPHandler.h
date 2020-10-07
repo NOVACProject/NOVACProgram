@@ -71,14 +71,28 @@ namespace Communication
 
         // --------------- DOWNLOADING OF THE SPECTRA ---------------------
 
-        /** Download a file in the remote computer */
-        bool DownloadFile(const CString &remoteFileName, const CString &savetoPath);
+        /** Download a file from the instrument computer.
+            @param remoteFileName The name of the file to download from the instrument.
+                This shall be a file in the current directory and include the file extension. 
+            @param localDirectory The local directory to which the file should be downloaded.
+                This must exist prior to calling this method.
+            @param remoteFileSize The size of the file on the instrument, in bytes. */
+        bool DownloadFile(const CString& remoteFileName, const CString& localDirectory, long remoteFileSize);
 
-        /**download upload.pak, Uxxx.pak files and evaluate*/
-        bool DownloadSpectra(const CString &remoteFile, const CString &savetoPath);
+        /** Downloads a single .pak file from the instrument and deletes it from the instrument.
+            This will verify that the file size is correct and that the file can be parsed properly.
+            @param remoteFile The name of the file to download in the instrument,
+                including the .pak file extension.
+            @param localDirectory The local directory where the file should be saved.
+                This must exist prior to calling this method.
+            @param remoteFileSize The size of the file in the remote system, in bytes.
+            @return true if the file was successfully downloaded and 
+                the size of the downloaded file equals the remote file size and
+                the file can be parsed properly. */
+        bool DownloadSpectrumFile(const CString& remoteFile, const CString& localDirectory, long remoteFileSize);
 
-        /* Downloads all Uxxx.pak files found in the m_fileInfoList.*/
-        bool DownloadPakFiles(const CString& folder);
+        /* Downloads all Uxxx.pak files found in the provided list of files.*/
+        bool DownloadPakFiles(const CString& folder, std::vector<CScannerFileInfo>& fileInfoList);
 
         /*download all old pak files*/
         bool DownloadAllOldPak();
@@ -148,8 +162,6 @@ namespace Communication
 
         /** Information on this connection */
         struct FTPInformation m_ftpInfo;
-
-        long m_remoteFileSize;
 
         /** The index of this device in the configuration.xml.
             Used to retrieve settings for the device. */

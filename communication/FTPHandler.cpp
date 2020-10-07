@@ -113,8 +113,7 @@ bool CFTPHandler::PollScanner()
     return DownloadAllOldPak();
 }
 
-//download pak files listed in m_fileInfoList
-bool CFTPHandler::DownloadPakFiles(const CString& folder)
+bool CFTPHandler::DownloadPakFiles(const CString& folder, std::vector<CScannerFileInfo>& fileInfoList)
 {
     const CString workPak = "WORK.PAK";
     const CString uploadPak = "upload.pak";
@@ -133,26 +132,25 @@ bool CFTPHandler::DownloadPakFiles(const CString& folder)
 
     time_t start;
     time(&start);
-    while (m_fileInfoList.size() > 0)
+    while (fileInfoList.size() > 0)
     {
-        const CScannerFileInfo& fileInfo = m_fileInfoList.back();
+        const CScannerFileInfo& fileInfo = fileInfoList.back();
         const CString fileName = AppendPakFileExtension(fileInfo.fileName, m_electronicsBox);
-        m_remoteFileSize = fileInfo.fileSize;
 
         if ((Equals(fileName, workPak) || Equals(fileName, uploadPak)) && folder.GetLength() == 0)
         {
-            m_fileInfoList.pop_back(); // do not download work.pak not upload.pak in the root folder
+            fileInfoList.pop_back(); // do not download work.pak not upload.pak in the root folder
             continue;
         }
 
         m_statusMsg.Format("Begin to download %s/%s", (LPCSTR)folder, (LPCSTR)fileName);
         ShowMessage(m_statusMsg);
 
-        bool downloadResult = DownloadSpectra(fileName, m_storageDirectory);
+        bool downloadSuccessful = DownloadSpectrumFile(fileName, m_storageDirectory, fileInfo.fileSize);
 
-        if (downloadResult)
+        if (downloadSuccessful)
         {
-            m_fileInfoList.pop_back();
+            fileInfoList.pop_back();
         }
         else
         {
@@ -168,7 +166,7 @@ bool CFTPHandler::DownloadPakFiles(const CString& folder)
         }
     }
 
-    m_fileInfoList.clear();
+    fileInfoList.clear();
     Disconnect();
     return true;
 }
@@ -197,7 +195,7 @@ bool CFTPHandler::DownloadAllOldPak()
     Sleep(5000);
     if (m_fileInfoList.size() > 0)
     {
-        DownloadPakFiles(folder);
+        DownloadPakFiles(folder, m_fileInfoList);
     }
 
     // Enter each RXXX folder to download the files there
@@ -218,13 +216,14 @@ bool CFTPHandler::DownloadAllOldPak()
             folder.Format("%s", (LPCSTR)localFolderList.GetTail());
             localFolderList.RemoveTail();
 
+            // Rebuild m_fileInfoList
             if (GetPakFileList(folder) < 0)
             {
                 return true;
             }
 
             Sleep(5000);
-            if (DownloadPakFiles(folder))
+            if (DownloadPakFiles(folder, m_fileInfoList))
             {
                 // we managed to download the files, now remove the folder
                 if (Connect(m_ftpInfo.hostName, m_ftpInfo.userName, m_ftpInfo.password, m_ftpInfo.timeout) != 1)
@@ -270,12 +269,10 @@ bool CFTPHandler::DownloadOldPak(long interval)
     }
 
     const CScannerFileInfo& pakFileInfo = m_fileInfoList.back();
-    m_remoteFileSize = pakFileInfo.fileSize;
-    int estimatedTime = (int)((m_remoteFileSize * 1024.0) / m_dataSpeed);
 
     time(&startTime);
     CString fileFullName = AppendPakFileExtension(pakFileInfo.fileName, m_electronicsBox);
-    bool downloadSuccessful = DownloadSpectra(fileFullName, m_storageDirectory);
+    bool downloadSuccessful = DownloadSpectrumFile(fileFullName, m_storageDirectory, pakFileInfo.fileSize);
     time(&stopTime);
 
     if (downloadSuccessful)
@@ -539,16 +536,13 @@ void CFTPHandler::ExtractSuffix(CString& fileName, CString& fileSuffix)
     fileName = fileName.Left(position);
 }
 
-// remoteFile: The filename of the remote file (including file extension)
-bool CFTPHandler::DownloadSpectra(const CString& remoteFile, const CString& savetoPath)
+bool CFTPHandler::DownloadSpectrumFile(const CString& remoteFile, const CString& localDirectory, long remoteFileSize)
 {
-    CString msg;
-
     CString localFileFullPath;
-    localFileFullPath.Format("%s%s", (LPCSTR)savetoPath, (LPCSTR)remoteFile);
+    localFileFullPath.Format("%s%s", (LPCSTR)localDirectory, (LPCSTR)remoteFile);
 
     //connect to the ftp server
-    if (!DownloadFile(remoteFile, savetoPath))
+    if (!DownloadFile(remoteFile, localDirectory, remoteFileSize))
     {
         m_statusMsg.Format("Can not download file from remote scanner (%s) by FTP", (LPCSTR)m_ftpInfo.hostName);
         ShowMessage(m_statusMsg);
@@ -556,7 +550,7 @@ bool CFTPHandler::DownloadSpectra(const CString& remoteFile, const CString& save
     }
 
     // Check that the size on disk is same as the size in the remote computer
-    if (Common::RetrieveFileSize(localFileFullPath) != m_remoteFileSize)
+    if (Common::RetrieveFileSize(localFileFullPath) != remoteFileSize)
     {
         return false;
     }
@@ -567,31 +561,34 @@ bool CFTPHandler::DownloadSpectra(const CString& remoteFile, const CString& save
     // Check the contents of the file and make sure it's an ok file
     if (1 == pakFileHandler.ReadDownloadedFile(localFileFullPath))
     {
-        msg.Format("CPakFileHandler found an error with the file %s. Will try to download again", (LPCSTR)localFileFullPath);
-        ShowMessage(msg);
+        m_statusMsg.Format("CPakFileHandler found an error with the file %s. Will try to download again", (LPCSTR)localFileFullPath);
+        ShowMessage(m_statusMsg);
 
         // Download the file again
-        if (!DownloadFile(remoteFile, savetoPath))
+        if (!DownloadFile(remoteFile, localDirectory, remoteFileSize))
+        {
             return false;
+        }
 
         if (1 == pakFileHandler.ReadDownloadedFile(localFileFullPath))
         {
             ShowMessage("The pak file is corrupted");
             //DELETE remote file
             if (0 == DeleteRemoteFile(remoteFile)) {
-                msg.Format("<node %d> Remote File %s could not be removed", m_mainIndex, (LPCSTR)remoteFile);
-                ShowMessage(msg);
+                m_statusMsg.Format("<node %d> Remote File %s could not be removed", m_mainIndex, (LPCSTR)remoteFile);
+                ShowMessage(m_statusMsg);
             }
             return false;
         }
     }
 
     //DELETE remote file
-    msg.Format("%s has been downloaded", (LPCSTR)remoteFile);
-    ShowMessage(msg);
-    if (0 == DeleteRemoteFile(remoteFile)) {
-        msg.Format("<node %d> Remote File %s could not be removed", m_mainIndex, (LPCSTR)remoteFile);
-        ShowMessage(msg);
+    m_statusMsg.Format("%s has been downloaded", (LPCSTR)remoteFile);
+    ShowMessage(m_statusMsg);
+    if (0 == DeleteRemoteFile(remoteFile))
+    {
+        m_statusMsg.Format("<node %d> Remote File %s could not be removed", m_mainIndex, (LPCSTR)remoteFile);
+        ShowMessage(m_statusMsg);
     }
 
     // Tell the world that we've done with one download
@@ -626,12 +623,8 @@ BOOL CFTPHandler::DeleteRemoteFile(const CString& remoteFile)
     return result;
 }
 
-
-//download file from ftp server
-bool CFTPHandler::DownloadFile(const CString &remoteFileName, const CString &savetoPath)
+bool CFTPHandler::DownloadFile(const CString& remoteFileName, const CString& localDirectory, long remoteFileSize)
 {
-    CString msg, fileFullName;
-
     // High resolution counter
     LARGE_INTEGER lpFrequency, timingStart, timingStop;
     BOOL useHighResolutionCounter = QueryPerformanceFrequency(&lpFrequency);
@@ -640,7 +633,8 @@ bool CFTPHandler::DownloadFile(const CString &remoteFileName, const CString &sav
     clock_t timing_Stop, timing_Start; // <-- timing of the upload speed
 
     // The filename
-    fileFullName.Format("%s%s", (LPCSTR)savetoPath, (LPCSTR)remoteFileName);
+    CString fileFullName;
+    fileFullName.Format("%s%s", (LPCSTR)localDirectory, (LPCSTR)remoteFileName);
 
     //check local file,if a file with same name exists, delete it
     if (IsExistingFile(fileFullName))
@@ -648,8 +642,8 @@ bool CFTPHandler::DownloadFile(const CString &remoteFileName, const CString &sav
         DeleteFile(fileFullName);
     }
 
-    msg.Format("Begin to download file from %s", (LPCSTR)m_ftpInfo.hostName);
-    ShowMessage(msg);
+    m_statusMsg.Format("Begin to download file from %s", (LPCSTR)m_ftpInfo.hostName);
+    ShowMessage(m_statusMsg);
 
     //show running lamp on interface
     pView->PostMessage(WM_SCANNER_RUN, (WPARAM)&(m_spectrometerSerialID), 0);
@@ -667,14 +661,17 @@ bool CFTPHandler::DownloadFile(const CString &remoteFileName, const CString &sav
     timing_Stop = clock();
 
     // Remember the speed of the upload
-    double clocksPerSec = CLOCKS_PER_SEC;
-    double elapsedTime = max(1.0 / clocksPerSec, (double)(timing_Stop - timing_Start) / clocksPerSec);
-    double elapsedTime2 = ((double)timingStop.LowPart - (double)timingStart.LowPart) / (double)lpFrequency.LowPart;
-
     if (useHighResolutionCounter)
-        m_dataSpeed = m_remoteFileSize / (elapsedTime * 1024.0);
+    {
+        double clocksPerSec = CLOCKS_PER_SEC;
+        double elapsedTime = max(1.0 / clocksPerSec, (double)(timing_Stop - timing_Start) / clocksPerSec);
+        m_dataSpeed = remoteFileSize / (elapsedTime * 1024.0);
+    }
     else
-        m_dataSpeed = m_remoteFileSize / (elapsedTime2 * 1024.0);
+    {
+        double elapsedTime2 = ((double)timingStop.LowPart - (double)timingStart.LowPart) / (double)lpFrequency.LowPart;
+        m_dataSpeed = remoteFileSize / (elapsedTime2 * 1024.0);
+    }
 
     m_statusMsg.Format("Finished downloading file %s from %s @ %.1lf kb/s", (LPCSTR)fileFullName, (LPCSTR)m_spectrometerSerialID, m_dataSpeed);
     ShowMessage(m_statusMsg);
