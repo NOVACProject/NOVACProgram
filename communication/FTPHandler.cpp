@@ -60,7 +60,6 @@ CFTPHandler::~CFTPHandler(void)
     ShowMessage(message);
 }
 
-/**set ftp information*/
 void CFTPHandler::SetFTPInfo(int mainIndex, const CString& hostname, const CString& userName, const CString &pwd, int timeOut, long portNumber)
 {
     this->m_mainIndex = mainIndex;
@@ -102,15 +101,6 @@ void CFTPHandler::SetFTPInfo(int mainIndex, const CString& IP, const CString& us
     }
 
     this->SetFTPInfo(mainIndex, IP, userName, pwd, timeOut, portNumber);
-}
-
-bool CFTPHandler::PollScanner()
-{
-    CString msg;
-    msg.Format("<node %d> Checking for files to download", m_mainIndex);
-    ShowMessage(msg);
-
-    return DownloadAllOldPak();
 }
 
 bool CFTPHandler::DownloadPakFiles(const CString& folder, std::vector<CScannerFileInfo>& fileInfoList)
@@ -171,9 +161,12 @@ bool CFTPHandler::DownloadPakFiles(const CString& folder, std::vector<CScannerFi
     return true;
 }
 
-bool CFTPHandler::DownloadAllOldPak()
+bool CFTPHandler::PollScanner()
 {
     CString msg;
+    msg.Format("<node %d> Checking for files to download", m_mainIndex);
+    ShowMessage(msg);
+
     CString folder = "";
 
     // get file and folder list
