@@ -55,9 +55,9 @@ namespace Communication
              a command.txt file to it */
         void WakeUp();
 
-        // --------------- DOWNLOADING OF THE SPECTRA ---------------------
+        // --------------- DOWNLOADING DATA ---------------------
 
-        /** Download a file from the instrument computer.
+        /** Download a file (pak file or other type) from the instrument computer.
             @param remoteFileName The name of the file to download from the instrument.
                 This shall be a file in the current directory and include the file extension. 
             @param localDirectory The local directory to which the file should be downloaded.
@@ -67,20 +67,20 @@ namespace Communication
 
         /** Delete one file in the instrument.
             @param remote file name (without path)
-            @return TRUE if deleted successfully */
-        BOOL DeleteRemoteFile(const CString& remoteFile);
+            @return true if deleted successfully */
+        bool DeleteRemoteFile(const CString& remoteFile);
 
         // ----------------- HANDLING THE FILE-LISTS -------------------
 
         /** Retrieves the list of files from the given directory,
-                calls 'FillFileList' which rebuilds the lists
-                'm_fileInfoList' and 'm_rFolderList'.
-                @param disk - the disk to retrieve the file-list from,
-                    '0' corresponds to program/configuration-disk
-                    '1' corresponds to data-disk
-                --------- This function is only called from the CFileTransferDlg ---------
+            calls 'FillFileList' which rebuilds the lists
+            'm_fileInfoList' and 'm_rFolderList'.
+        @param disk - the disk to retrieve the file-list from,
+            'A' corresponds to program/configuration-disk
+            'B' corresponds to data-disk
+        --------- This function is only called from the CFileTransferDlg ---------
                 */
-        bool GetDiskFileList(int disk = 1);
+        bool GetDiskFileList(char disk = 'B');
 
         /** Retrieves the list of pak files from the given directory on the instrument.
             This will call 'FillFileList' which rebuilds the two lists
@@ -105,7 +105,7 @@ namespace Communication
         std::vector<CScannerFileInfo> m_fileInfoList;
 
         /** The list of RXX folders in the current directory */
-        CList<CString, CString &> m_rFolderList;
+        std::vector<CString> m_rFolderList;
 
         /** The kind of electronics box that we're communicating with.
             This is necessary since different models of boxes behave differently. */

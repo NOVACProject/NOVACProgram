@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include "ftphandler.h"
+#include "FTPHandler.h"
 #include "../Common/CfgTxtFileHandler.h"
 
 #ifdef _MSC_VER
@@ -10,7 +10,6 @@ using namespace Communication;
 
 extern CFormView *pView;                   // <-- the main window
 extern CConfigurationSetting g_settings;   // <-- the settings
-extern CWinThread *g_comm;                 // <-- The communication controller
 
 // ------------------- Handling the different versions of electronics -------------------
 bool IsPakFileExtension(ELECTRONICS_BOX version, const CString& fileSuffix)
@@ -167,17 +166,15 @@ bool CFTPHandler::PollScanner()
     msg.Format("<node %d> Checking for files to download", m_mainIndex);
     ShowMessage(msg);
 
-    CString folder = "";
-
     // get file and folder list
-    long numberOfFilesAndFolders = m_fileInfoList.size() + m_rFolderList.GetCount();
+    long numberOfFilesAndFolders = m_fileInfoList.size() + m_rFolderList.size();
     if (numberOfFilesAndFolders <= 0)
     {
-        numberOfFilesAndFolders = GetPakFileList(folder); //download Uxxx.pak list
+        numberOfFilesAndFolders = GetPakFileList(""); //download Uxxx.pak list
         numberOfFilesAndFolders = max(0, numberOfFilesAndFolders); // These must be on separate lines otherwise there's risk that the scanner will be polled twice(!)
     }
 
-    if (numberOfFilesAndFolders + m_rFolderList.GetCount() == 0)
+    if (numberOfFilesAndFolders + m_rFolderList.size() == 0)
     {
         msg.Format("<node %d> No more files to download", m_mainIndex);
         ShowMessage(msg);
@@ -188,26 +185,25 @@ bool CFTPHandler::PollScanner()
     Sleep(5000);
     if (m_fileInfoList.size() > 0)
     {
-        DownloadPakFiles(folder, m_fileInfoList);
+        DownloadPakFiles("", m_fileInfoList);
     }
 
     // Enter each RXXX folder to download the files there
-    if (m_rFolderList.GetCount() > 0)
+    if (m_rFolderList.size() > 0)
     {
         // Make a backup-copy of the folder-list
-        CList <CString, CString &> localFolderList;
-        localFolderList.AddTail(&m_rFolderList);
+        std::vector<CString> localFolderList(begin(m_rFolderList), end(m_rFolderList));
 
         time_t start;
         time(&start);
         time_t current;
-        while (localFolderList.GetCount() > 0)
+        while (localFolderList.size() > 0)
         {
             m_fileInfoList.clear();
 
             // Get the folder name
-            folder.Format("%s", (LPCSTR)localFolderList.GetTail());
-            localFolderList.RemoveTail();
+            CString folder = localFolderList.back();
+            localFolderList.pop_back();
 
             // Rebuild m_fileInfoList
             if (GetPakFileList(folder) < 0)
@@ -343,7 +339,7 @@ long CFTPHandler::GetPakFileList(const CString& folder)
 
     // Count the number of files and folders in the instrument
     const long pakFileSum = m_fileInfoList.size();
-    const long pakFolderSum = m_rFolderList.GetCount();
+    const long pakFolderSum = m_rFolderList.size();
 
     msg.Format("<node %d> %d files and %d folders found on disk", m_mainIndex, pakFileSum, pakFolderSum);
     ShowMessage(msg);
@@ -351,14 +347,15 @@ long CFTPHandler::GetPakFileList(const CString& folder)
     return pakFileSum;
 }
 
-bool CFTPHandler::GetDiskFileList(int disk)
+bool CFTPHandler::GetDiskFileList(char disk)
 {
-    CString fileList, listFilePath;
-    CFTPSocket ftpSocket;
+    CString listFilePath;
     listFilePath.Format("%sfileList.txt", (LPCSTR)m_storageDirectory);
+
+    CFTPSocket ftpSocket;
     ftpSocket.SetLogFileName(listFilePath);
 
-    if (disk == 1)
+    if (disk == 'B')
     {
         if (!ftpSocket.Login(m_ftpInfo.hostName, m_ftpInfo.userName, m_ftpInfo.password))
         {
@@ -375,20 +372,12 @@ bool CFTPHandler::GetDiskFileList(int disk)
 
     if (ftpSocket.GetFileList())
     {
-        if (disk == 1)
-        {
-            FillFileList(ftpSocket.m_listFileName, 'B');
-        }
-        else
-        {
-            FillFileList(ftpSocket.m_listFileName, 'A');
-        }
+        FillFileList(ftpSocket.m_listFileName, disk);
+
         ftpSocket.Disconnect();
         ShowMessage("File list was downloaded.");
-        if (m_fileInfoList.size() > 0)
-            return true;
-        else
-            return false;
+        
+        return (m_fileInfoList.size() > 0);
     }
     else
     {
@@ -402,7 +391,7 @@ bool CFTPHandler::GetDiskFileList(int disk)
 void CFTPHandler::EmptyFileInfo()
 {
     m_fileInfoList.clear();
-    m_rFolderList.RemoveAll();
+    m_rFolderList.clear();
 }
 
 int CFTPHandler::FillFileList(const CString& fileName, char disk)
@@ -451,7 +440,7 @@ bool CFTPHandler::AddFolderInfo(const CString& line)
         return false; // The folder is not a RXXX - folder, do not insert it into the list!
     }
 
-    m_rFolderList.AddTail(folderName);
+    m_rFolderList.push_back(folderName);
 
     return true;
 }
@@ -572,7 +561,7 @@ bool CFTPHandler::DownloadSpectrumFile(const CString& remoteFile, const CString&
         {
             ShowMessage("The pak file is corrupted");
             //DELETE remote file
-            if (0 == DeleteRemoteFile(remoteFile))
+            if (!DeleteRemoteFile(remoteFile))
             {
                 m_statusMsg.Format("<node %d> Remote File %s could not be removed", m_mainIndex, (LPCSTR)remoteFile);
                 ShowMessage(m_statusMsg);
@@ -584,7 +573,7 @@ bool CFTPHandler::DownloadSpectrumFile(const CString& remoteFile, const CString&
     //DELETE remote file
     m_statusMsg.Format("%s has been downloaded", (LPCSTR)remoteFile);
     ShowMessage(m_statusMsg);
-    if (0 == DeleteRemoteFile(remoteFile))
+    if (!DeleteRemoteFile(remoteFile))
     {
         m_statusMsg.Format("<node %d> Remote File %s could not be removed", m_mainIndex, (LPCSTR)remoteFile);
         ShowMessage(m_statusMsg);
@@ -596,14 +585,14 @@ bool CFTPHandler::DownloadSpectrumFile(const CString& remoteFile, const CString&
     return true;
 }
 
-BOOL CFTPHandler::DeleteRemoteFile(const CString& remoteFile)
+bool CFTPHandler::DeleteRemoteFile(const CString& remoteFile)
 {
     if (m_FtpConnection == nullptr)
     {
         if (Connect(m_ftpInfo.hostName, m_ftpInfo.userName, m_ftpInfo.password, m_ftpInfo.timeout) != 1)
         {
             pView->PostMessage(WM_SCANNER_NOT_CONNECT, (WPARAM)&(m_spectrometerSerialID), 0);
-            return FALSE;
+            return false;
         }
     }
 
@@ -613,13 +602,13 @@ BOOL CFTPHandler::DeleteRemoteFile(const CString& remoteFile)
         localCopyOfRemoteFileName.Format(remoteFile);
         if (!FindFile(localCopyOfRemoteFileName)) // This does not work with the axis-system, for some reason...
         {
-            return FALSE;
+            return false;
         }
     }
 
     BOOL result = m_FtpConnection->Remove((LPCTSTR)remoteFile);
 
-    return result;
+    return (result == TRUE);
 }
 
 bool CFTPHandler::DownloadFile(const CString& remoteFileName, const CString& localDirectory, long remoteFileSize)
@@ -720,7 +709,7 @@ bool CFTPHandler::SendCommand(const char* cmd)
 
 void CFTPHandler::GotoSleep()
 {
-    if (FALSE == DeleteRemoteFile(m_commandFileName))
+    if (!DeleteRemoteFile(m_commandFileName))
     {
         ShowMessage("Remote File command.txt could not be removed");
     }
@@ -734,7 +723,7 @@ void CFTPHandler::GotoSleep()
 
 void CFTPHandler::WakeUp()
 {
-    if (0 == DeleteRemoteFile(m_commandFileName))
+    if (!DeleteRemoteFile(m_commandFileName))
     {
         //	ShowMessage("Remote File command.txt could not be removed");
     }
@@ -766,14 +755,13 @@ void CFTPHandler::WakeUp()
 
 void CFTPHandler::Reboot()
 {
-    if (0 == DeleteRemoteFile(m_commandFileName))
+    if (!DeleteRemoteFile(m_commandFileName))
     {
         //		ShowMessage("Remote File command.txt could not be removed");
     }
     SendCommand("reboot");
 }
 
-/** Download cfg.txt */
 int CFTPHandler::DownloadCfgTxt()
 {
     CString localFileName;

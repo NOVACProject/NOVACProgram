@@ -90,7 +90,7 @@ UINT DownloadFileListWithFTP(LPVOID pParam)
     time(&tStart);
 
     /** Get the list for 'B'-disk */
-    if (dlg->m_ftpController->GetDiskFileList(1))
+    if (dlg->m_ftpController->GetDiskFileList('B'))
     {
         // Update the lists...
         pFileTransferDlg->ClearOut();
@@ -100,10 +100,9 @@ UINT DownloadFileListWithFTP(LPVOID pParam)
             pFileTransferDlg->m_fileListB.AddTail(new CScannerFileInfo(info));
         }
 
-        auto pos = dlg->m_ftpController->m_rFolderList.GetHeadPosition();
-        while (pos != NULL) {
-            CScannerFolderInfo *folderInfo = new CScannerFolderInfo('B', dlg->m_ftpController->m_rFolderList.GetNext(pos), "", "");
-            pFileTransferDlg->m_folderListB.AddTail(folderInfo);
+        for (const CString& folder: dlg->m_ftpController->m_rFolderList)
+        {
+            pFileTransferDlg->m_folderListB.AddTail(new CScannerFolderInfo('B', folder, "", ""));
         }
     }
     else
@@ -117,7 +116,7 @@ UINT DownloadFileListWithFTP(LPVOID pParam)
         // Pause a little bit, for the small FTP-server to have time to recover...
         Sleep(1000);
 
-        if (dlg->m_ftpController->GetDiskFileList(0))
+        if (dlg->m_ftpController->GetDiskFileList('A'))
         {
             for (const CScannerFileInfo& info : dlg->m_ftpController->m_fileInfoList)
             {
