@@ -242,7 +242,6 @@ UINT ConnectByFTP(LPVOID pParam)
             g_settings.scanner[mainIndex].comm.ftpPassword,
             g_settings.scanner[mainIndex].comm.timeout / 1000);
     }
-
     spectrometerSerialID.Format("%s", (LPCSTR)g_settings.scanner[mainIndex].spec[0].serialNumber);
 
     while (g_runFlag)
