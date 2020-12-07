@@ -116,7 +116,7 @@ bool CFTPSocket::EnterPassiveMode()
 		// Connect to the server
 		if(!Connect(m_dataSocket,m_serverParam.m_serverIP,m_serverParam.m_serverDataPort))
 		{
-			m_msg.Format("can not connect to server %s:%d,server msg:%s", (LPCSTR)m_serverParam.m_serverIP,m_serverParam.m_serverDataPort, (LPCSTR)m_serverMsg);
+			m_msg.Format("Cannot connect to server %s:%d,server msg:%s", (LPCSTR)m_serverParam.m_serverIP,m_serverParam.m_serverDataPort, (LPCSTR)m_serverMsg);
 		
 			ShowMessage(m_msg);
 			m_serverParam.m_serverDataPort  = 0;
@@ -133,8 +133,8 @@ bool CFTPSocket::GetFileList()
 	if(!EnterPassiveMode())
 		return false;
 
-	m_msg.Format("connect to server %s:%d", m_serverParam.m_serverIP,m_serverParam.m_serverDataPort);
-	ShowMessage(m_msg);
+	//m_msg.Format("connect to server %s:%d", m_serverParam.m_serverIP,m_serverParam.m_serverDataPort);
+	//ShowMessage(m_msg);
 
 	return List();
 }
@@ -144,8 +144,8 @@ bool CFTPSocket::GetFileNameList()
 	//enter passive mode because the client thus can work behind firewall
 	if(!EnterPassiveMode())
 		return false;
-	m_msg.Format("connect to server %s:%d", m_serverParam.m_serverIP,m_serverParam.m_serverDataPort);
-	ShowMessage(m_msg);	//for test
+	//m_msg.Format("connect to server %s:%d", m_serverParam.m_serverIP,m_serverParam.m_serverDataPort);
+	//ShowMessage(m_msg);	//for test
 	return NameList();  // test name list.	
 }
 bool CFTPSocket::NameList()
@@ -160,7 +160,7 @@ bool CFTPSocket::NameList()
 	}
 	else
 	{
-		m_msg.Format("Can not read  list data");  //for test
+		m_msg.Format("Cannot read  list data");  //for test
 		ShowMessage(m_msg);
 		return false;
 	}
@@ -465,7 +465,7 @@ bool CFTPSocket::Connect(SOCKET& usedSocket,char* serverIP, int serverPort)
 	service.sin_addr.s_addr = inet_addr(serverIP);
 	service.sin_port = htons( serverPort );
 
-		 // Connect to server.
+	// Connect to server.
 	if ( connect( usedSocket,(SOCKADDR*)&service,sizeof(service)) == SOCKET_ERROR) 
 	{
 		ShowMessage( _T("Failed to connect." ));

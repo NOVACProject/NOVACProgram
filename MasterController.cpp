@@ -266,7 +266,9 @@ void CheckForSpectraInDir(const CString &path, CList <CString, CString&> &fileLi
 
         if (!Equals(FindFileData.cFileName, "Upload.pak")) {
             // Tell the user that we've found one scan which hasn't been evaluated
-            ShowMessage(_T("Found spectra which are not evaluated. Will evaluate them now."));
+            CString msg;
+            msg.Format("Spectra in %s not yet evaluated.  Will evalute now.", FindFileData.cFileName);
+            ShowMessage(msg);
 
             // Append the found file to the list of files to split and evaluate...
             fileList.AddTail(fileName);

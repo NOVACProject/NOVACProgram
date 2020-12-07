@@ -59,6 +59,7 @@ namespace Communication
     {
         SftpConnection()
         {
+            curllog = fopen("curl.log", "wb");
             this->curlHandle = curl_easy_init();
         }
 
@@ -66,6 +67,9 @@ namespace Communication
         {
             curl_easy_cleanup(curlHandle);
             curlHandle = nullptr;
+#ifdef DEBUG
+            fclose(curllog); 
+#endif
         }
 
         // This object manages a connection and is thus not trivially copyable
@@ -73,6 +77,11 @@ namespace Communication
         SftpConnection& operator=(const SftpConnection&) = delete;
 
         CURL *curlHandle = nullptr;
+
+        /** curl log file used in debug mode **/
+#ifdef DEBUG
+        FILE* curllog; 
+#endif
     };
 
     CSFTPCom::CSFTPCom()
@@ -116,7 +125,7 @@ namespace Communication
             return 0;
         }
 
-        returnCode = curl_easy_setopt(m_FtpConnection->curlHandle, CURLOPT_PORT, 22);
+        returnCode = curl_easy_setopt(m_FtpConnection->curlHandle, CURLOPT_PORT, 22);  
         if (returnCode != CURLE_OK) {
             m_ErrorMsg.Format("Failed to set port: %s", curl_easy_strerror(returnCode));
             return 0;
@@ -145,16 +154,19 @@ namespace Communication
 
         returnCode = curl_easy_setopt(m_FtpConnection->curlHandle, CURLOPT_VERBOSE, 1L);
         assert(returnCode == CURLE_OK);
+
+        returnCode = curl_easy_setopt(m_FtpConnection->curlHandle, CURLOPT_STDERR, m_FtpConnection->curllog);
+        assert(returnCode == CURLE_OK);
 #endif
 
         {
             std::stringstream site;
-            char *urlEscapedPwd = curl_easy_escape(m_FtpConnection->curlHandle, password, strlen(password));
-            // site << "sftp://" << userName << ":" << urlEscapedPwd << "@" << siteName;
+            //char *urlEscapedPwd = curl_easy_escape(m_FtpConnection->curlHandle, password, strlen(password));
+            //site << "sftp://" << userName << ":" << urlEscapedPwd << "@" << siteName;
             site << "sftp://" << siteName;
             m_site = site.str();
 
-            curl_free(urlEscapedPwd);
+            //curl_free(urlEscapedPwd);
         }
 
         return 1;

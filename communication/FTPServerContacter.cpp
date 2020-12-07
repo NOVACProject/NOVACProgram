@@ -256,7 +256,7 @@ BOOL CFTPServerContacter::OnIdle(LONG /*lCount*/) {
                 m_fileList.RemoveTail();
 
                 // Tell the world!
-                message.Format("Finished uploading file %s to FTP-Server @ %.1lf kB/s", (LPCSTR)remoteFile, linkSpeed);
+                message.Format("Finished uploading file %s to %s @ %.1lf kB/s", (LPCSTR)remoteFile, g_settings.ftpSetting.ftpAddress, linkSpeed);
                 ShowMessage(message);
 
                 pView->PostMessage(WM_FINISH_UPLOAD, (WPARAM)linkSpeed);
