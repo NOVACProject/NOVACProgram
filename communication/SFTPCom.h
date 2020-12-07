@@ -62,6 +62,6 @@ namespace Communication
             @param localFile the full filename and path of the local file.
             @param remoteFile the filename (excluding path) of the remote file.
             @param overwrite if set to true then any existing files will be overwritten. */
-        int UploadFile(LPCTSTR localFile, LPCTSTR remoteFile, bool overwrite);
+        //int UploadFile(LPCTSTR localFile, LPCTSTR remoteFile, bool overwrite);
     };
 }
