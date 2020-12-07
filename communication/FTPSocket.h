@@ -21,14 +21,7 @@ namespace Communication
 		// ---------------------- PUBLIC METHODS --------------------------------
 		// ----------------------------------------------------------------------
 
-		/**Send command to FTP server
-		  @command - the standard commands that are listed in RFC 959
-		  @commandText - the parameters to be set in this command. 
-		   When there is no parameter to be used, this value is "".
-		  @return the error code if this thread's last Windows Sockets operation failed.
-		  @return 0 if successful.
-		*/
-		int SendCommand(CString command, CString commandText);
+
 
 		/**Connect FTP server
 		   @usedSocket - the socket to be used to make connection
@@ -38,10 +31,10 @@ namespace Communication
 		*/
 		bool Connect(SOCKET& usedSocket, char* serverIP, int serverPort);
 
-		/**Read the control response from the server, write message to m_serverMsg
-		    @return true if there is response
-		*/
-		int ReadResponse();
+        /** Read the control response from the server, write message to m_serverMsg
+            @return +1 If there is response.
+            @return -1 If no response is received. */
+        int ReadResponse();
 
 		/**Read data from the FTP server*/
 		bool ReadData();
@@ -70,20 +63,21 @@ namespace Communication
 
 		bool SendFileToServer(CString& fileLocalPath);
 
-		/**Login FTP server
-		   @ftpServerIP - ip address of ftp server
-		   @ftpPort - ftp server's port , for control channel, standard is 21.
-		   @userName - login name
-		   @pwd - login password
-		   @return true if successful
-		*/
-		bool Login(const CString ftpServerIP, CString userName, CString pwd, int ftpPort = 21);
+        /**Login to one FTP server
+            @param ftpServerIPOrHostName - ip address or hostname of the ftp server.
+                Maximum length of this string is 255 characters.
+            @param userName - Login name
+            @param pwd - Login password
+            @param ftpPort - ftp server's port, for control channel, standard is 21.
+            @return true if successful */
+        bool Login(const CString& ftpServerIPOrHostName, const CString& userName, const CString& pwd, int ftpPort = 21);
 
 		/**Get system type*/
 		void GetSysType(CString& type);
 
-		/*Enter one folder*/
-		bool EnterFolder(CString& folder);
+        /** Enter one folder from the current working directory.
+            @return true on success. */
+        bool EnterFolder(const CString& folder);
 
 		/*Go to upper folder*/
 		bool GoToUpperFolder();
@@ -91,8 +85,11 @@ namespace Communication
 		/**Enter passive mode*/
 		bool EnterPassiveMode();
 
-		/**Send list command to the FTP server*/
-		bool List();
+        /** Send the List command to the FTP server.
+            This will list all files in the current directory.
+            The result will be written to the file specified by 'm_listFileName'
+            @return true if the operation succeeded. */
+        bool List();
 
 		/**Send nlst command to the FTP server*/
 		bool NameList();
@@ -187,7 +184,7 @@ namespace Communication
 		// ----------------------------------------------------------------------
 		// ---------------------- PUBLIC DATA -----------------------------------
 		// ----------------------------------------------------------------------
-	public:
+
 		/**special socket for control connection */
 		SOCKET m_controlSocket;
 
@@ -199,7 +196,7 @@ namespace Communication
 		/**data structure to store ftp server parameters*/
 		struct ftpParam
 		{
-			char m_serverIP[64];
+			char m_serverIP[256];
 			int m_serverPort;
 			int m_serverDataPort;
 			CString userName;
@@ -231,5 +228,18 @@ namespace Communication
 
 		/**list to store the ftp codes which indicate the status of last communication */
 		CList<int,int> m_ftpCode;
+
+        // ----------------------------------------------------------------------
+        // ---------------------- PRIVATE METHODS -------------------------------
+        // ----------------------------------------------------------------------
+
+        /**Send command to FTP server
+          @command - the standard commands that are listed in RFC 959
+          @commandText - the parameters to be set in this command.
+           When there is no parameter to be used, this value is "".
+          @return the error code if this thread's last Windows Sockets operation failed.
+          @return 0 if successful.
+        */
+        int SendCommand(const CString &command, const CString& commandText);
 	};
 }
