@@ -80,10 +80,10 @@ void UpdateMessage(const CString &message);
 enum RETURN_CODE { FAIL, SUCCESS };
 
 // The list of electronics boxes available
-// BOX_VERSION_1: The first generation Novac electronics based on Axis
-// BOX_VERSION_2: The third(!) Novac generation Novac electronics based on Moxa
-// BOX_VERSION_4: The forth generation Novac electronics based on Axiomtek
-const enum ELECTRONICS_BOX {BOX_VERSION_1, BOX_VERSION_2, BOX_VERSION_4};
+// BOX_AXIS: The first generation Novac electronics based on Axis
+// BOX_MOXA: The third(!) Novac generation Novac electronics based on Moxa
+// BOX_AXIOMTEK: The forth generation Novac electronics based on Axiomtek
+const enum ELECTRONICS_BOX {BOX_AXIS, BOX_MOXA, BOX_AXIOMTEK};
 
 // The list of possible units for the flux
 const enum FLUX_UNIT {UNIT_KGS, UNIT_TONDAY};

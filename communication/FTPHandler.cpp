@@ -15,7 +15,7 @@ extern CWinThread *g_comm;                 // <-- The communication controller
 // ------------------- Handling the different versions of electronics -------------------
 bool IsPakFileExtension(ELECTRONICS_BOX version, const CString& fileSuffix)
 {
-    if (version == BOX_VERSION_1)
+    if (version == BOX_AXIS)
     {
         return fileSuffix == _T("PAK");
     }
@@ -28,7 +28,7 @@ bool IsPakFileExtension(ELECTRONICS_BOX version, const CString& fileSuffix)
 // Appends the typical file extension for a .pak file on an electronics box of the given generation to the filename.
 void AppendPakFileExtension(const CString& fileNameWithoutExtension, ELECTRONICS_BOX version, CString& result)
 {
-    if (version == BOX_VERSION_1)
+    if (version == BOX_AXIS)
     {
         result.Format("%s.PAK", (LPCSTR)fileNameWithoutExtension);
     }
@@ -40,7 +40,7 @@ void AppendPakFileExtension(const CString& fileNameWithoutExtension, ELECTRONICS
 
 // ------------------- CFTPHandle class implementation -------------------
 CFTPHandler::CFTPHandler()
-    : m_electronicsBox(BOX_VERSION_1), m_dataSpeed(4.0)
+    : m_electronicsBox(BOX_AXIS), m_dataSpeed(4.0)
 {
 }
 
@@ -87,7 +87,7 @@ void CFTPHandler::SetFTPInfo(int mainIndex, const CString& hostname, const CStri
 
 void CFTPHandler::SetFTPInfo(int mainIndex, const CString& IP, const CString& userName, const CString &pwd, const CString &admUserName, const CString &admPwd, int timeOut, long portNumber)
 {
-    if (m_electronicsBox == BOX_VERSION_4)
+    if (m_electronicsBox == BOX_AXIOMTEK)
     {
         // The AxiomTek electronics box only uses one login for all uses.
         this->m_ftpInfo.adminUserName = userName;
@@ -299,8 +299,8 @@ long CFTPHandler::GetPakFileList(CString& folder)
     //  login-response from the FTP-server
     if (ftpSocket.m_serverMsg.Find("AXIS") >= 0)
     {
-        m_electronicsBox = BOX_VERSION_2;
-        g_settings.scanner[m_mainIndex].electronicsBox = BOX_VERSION_2;
+        m_electronicsBox = BOX_MOXA;
+        g_settings.scanner[m_mainIndex].electronicsBox = BOX_MOXA;
     }
 
     Sleep(100);
@@ -575,7 +575,7 @@ BOOL CFTPHandler::DeleteRemoteFile(const CString& remoteFile)
         }
     }
 
-    if (m_electronicsBox == BOX_VERSION_1)
+    if (m_electronicsBox == BOX_AXIS)
     {
         localCopyOfRemoteFileName.Format(remoteFile);
         if (!FindFile(localCopyOfRemoteFileName)) // This does not work with the axis-system, for some reason...

@@ -131,9 +131,9 @@ BOOL CLocationConfigurationDlg::OnInitDialog()
 
 	// The electronics combo-box
 	m_comboElectronics.ResetContent();
-	m_comboElectronics.AddString("Version 1");
-	m_comboElectronics.AddString("Version 3");
-    m_comboElectronics.AddString("Version 4");
+	m_comboElectronics.AddString("Axis"); // Axis
+	m_comboElectronics.AddString("Moxa"); // Moxa
+    m_comboElectronics.AddString("Axiomtek"); // Axiomtek
 
     //m_plotColumn = 0;
 

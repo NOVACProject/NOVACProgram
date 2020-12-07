@@ -731,9 +731,9 @@ int CConfigurationFileHandler::Parse_ScanningInstrument() {
             Parse_IntItem(TEXT("/electronics"), tmpInt);
             switch (tmpInt)
             {
-                case 0: curScanner->electronicsBox = BOX_VERSION_1; break;
-                case 2: curScanner->electronicsBox = BOX_VERSION_4; break; // yes this is actually correct...
-                default: curScanner->electronicsBox = BOX_VERSION_2; break;
+                case 0: curScanner->electronicsBox = BOX_AXIS; break;
+                case 2: curScanner->electronicsBox = BOX_AXIOMTEK; break; // yes this is actually correct...
+                default: curScanner->electronicsBox = BOX_MOXA; break;
             }
             continue;
         }

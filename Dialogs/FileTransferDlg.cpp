@@ -938,7 +938,7 @@ LRESULT CFileTransferDlg::OnUpdateFileTree(WPARAM wParam, LPARAM lParam)
     //ClearOut();
     //ParseDir(m_textA,'A');
     //ParseDir(m_textB,'B');
-    if (!(m_SerialController != NULL && m_SerialController->m_electronicsBox == BOX_VERSION_2))
+    if (!(m_SerialController != NULL && m_SerialController->m_electronicsBox == BOX_MOXA))
     {
         hTRootA = AddOneItem((HTREEITEM)NULL, "Disk A", (HTREEITEM)
             TVI_ROOT, 0);

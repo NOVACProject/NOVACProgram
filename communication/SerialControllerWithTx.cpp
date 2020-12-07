@@ -41,7 +41,7 @@ CSerialControllerWithTx::CSerialControllerWithTx(void)
 	m_commandMode = false;
 	m_sleepFlag = false;
 	m_radioID.Format("");
-	m_electronicsBox = BOX_VERSION_1;
+	m_electronicsBox = BOX_AXIS;
 }
 
 
@@ -235,7 +235,7 @@ RETURN_CODE CSerialControllerWithTx::GetFile(char* fileName,CString filePath,cha
 {
 //	#define maxchunk 8192
 	unsigned long maxchunk;
-	if(m_electronicsBox == BOX_VERSION_2){
+	if(m_electronicsBox == BOX_MOXA){
 		maxchunk = 2048; // This is necessary since it is not possible to download too large chunks using the Axis and the radio modems!!!
 	}else{
 		maxchunk = 8192;
@@ -249,7 +249,7 @@ RETURN_CODE CSerialControllerWithTx::GetFile(char* fileName,CString filePath,cha
 	double downloadedSize;
 	char fullfileName[64];
 	//set the name of the file which will be downloaded
-	if(diskName=='A' && m_electronicsBox != BOX_VERSION_2)
+	if(diskName=='A' && m_electronicsBox != BOX_MOXA)
 		sprintf(fullfileName,"%c:\\%s",diskName,fileName);
 	else
 		sprintf(fullfileName,"%s",fileName);
@@ -448,7 +448,7 @@ void CSerialControllerWithTx::SwitchMode()
 {	
 	char txt[3];
 
-	if(m_electronicsBox == BOX_VERSION_2)
+	if(m_electronicsBox == BOX_MOXA)
 		return; // never necessary to switch disk for the Axis box
 
 	txt[0] = SWITCHMODE;
@@ -462,7 +462,7 @@ bool CSerialControllerWithTx::SwitchToDisk(char diskName)
 {
 	char message[128];
 
-	if(m_electronicsBox == BOX_VERSION_2){
+	if(m_electronicsBox == BOX_MOXA){
 		int nChar = 0;
 		if(diskName == 'A')
 			nChar = sprintf(message, "cd /mnt/flash\r\n");
@@ -492,7 +492,7 @@ RETURN_CODE CSerialControllerWithTx::SwitchToShell()
 	int stdioMode;
 	int byteNum;	
 
-	if(m_electronicsBox == BOX_VERSION_2)
+	if(m_electronicsBox == BOX_MOXA)
 		return SUCCESS; // never necessary to switch disk for the Axis box
 
 	msg.Format("Check remote PC´s mode");
@@ -688,7 +688,7 @@ int CSerialControllerWithTx::OrganizeFileList(CString folderName, char diskName)
 	memset(recBuf,0,MAXBUFFER);
 	memset(smallBuf,0,1024);
 	char command[128];
-	if(this->m_electronicsBox != BOX_VERSION_2){
+	if(this->m_electronicsBox != BOX_MOXA){
 		sprintf(command,"dir %c:\\%s\\", diskName, (LPCSTR)folderName);
 	}else{
 		sprintf(command, "dir %s", (LPCSTR)folderName);
@@ -831,7 +831,7 @@ void CSerialControllerWithTx::EnterFolder(const CString &folderName)
 	CString folder;
 	folder.Format("%s", (LPCSTR)folderName);
 	//make sure folder name is not too long
-	if(m_electronicsBox == BOX_VERSION_1 && folder.GetLength() > 16)
+	if(m_electronicsBox == BOX_AXIS && folder.GetLength() > 16)
 		return;
 	sprintf(command, "cd %s", (LPCSTR)folderName);
 	SendCommand(command);
@@ -1079,7 +1079,7 @@ bool CSerialControllerWithTx::PutFile(char *name, CString fileFullPath,char disk
 	time(&startTime);
 	useHighResolutionCounter = QueryPerformanceCounter(&timingStart);
 
-	if(m_electronicsBox == BOX_VERSION_2){
+	if(m_electronicsBox == BOX_MOXA){
 		sprintf(nametoset, "/mnt/flash/XYZ");
 	}else{
 		sprintf(nametoset,"%c:\\%s",diskName,name);
@@ -1219,7 +1219,7 @@ bool CSerialControllerWithTx::PutFile(char *name, CString fileFullPath,char disk
 	m_linkStatistics.AppendUploadSpeed(avgUploadSpeed / (double)nChunks);
 
 	// If this is an axis-box then change the file-name to the correct one
-	if(m_electronicsBox == BOX_VERSION_2){
+	if(m_electronicsBox == BOX_MOXA){
 		// Close tx
 		Bye();
 		// Rename the file to it's correct filename
@@ -1267,7 +1267,7 @@ bool CSerialControllerWithTx::DelFile(char *fileName,char diskName)
 	char txt[2] = { 0 };
 	CString msg;
 	char fileFullName[64];
-	if(diskName == 'A' && this->m_electronicsBox != BOX_VERSION_2)
+	if(diskName == 'A' && this->m_electronicsBox != BOX_MOXA)
 		sprintf(fileFullName,"%c:\\%s",diskName,fileName);
 	//for B:\R001\U222.pak. long path
 	else
@@ -1535,7 +1535,7 @@ bool CSerialControllerWithTx::DownloadOldPak(long interval)
 bool CSerialControllerWithTx::DeleteFolder(CString folder)
 {//out of tx
 	char cmd[32];
-	if(m_electronicsBox != BOX_VERSION_2){
+	if(m_electronicsBox != BOX_MOXA){
 		sprintf(cmd,"rd %s", (LPCSTR)folder);
 	}else{
 		sprintf(cmd,"rmdir %s", (LPCSTR)folder);
@@ -1774,7 +1774,7 @@ bool CSerialControllerWithTx::GetFileListText(CString& textA,CString& textB)
 	//	
 	//}while(textB.Find("files use") == -1);
 
-	if(m_electronicsBox == BOX_VERSION_2)
+	if(m_electronicsBox == BOX_MOXA)
 		return true; // On the Axis system, there's no A-disk to check...
 
 	//check A disk
@@ -1825,7 +1825,7 @@ bool CSerialControllerWithTx::GetFileListText_Folder(CString& folderName, CStrin
 
 	// The command to send...
 	char command[128];
-	if(this->m_electronicsBox != BOX_VERSION_2){
+	if(this->m_electronicsBox != BOX_MOXA){
 		sprintf(command,"dir B:\\%s\\", (LPCSTR)folderName);
 	}else{
 		sprintf(command, "dir %s", (LPCSTR)folderName);
@@ -1936,7 +1936,7 @@ long CSerialControllerWithTx::GetListFileSize(char* fileName)
 
 /** Go to the top-most directory of the data-disk */
 void CSerialControllerWithTx::GoTo_TopDataDir(){
-	if(m_electronicsBox != BOX_VERSION_2){
+	if(m_electronicsBox != BOX_MOXA){
 		SendCommand("cd ..");
 	}else{
 		SendCommand("cd /mnt/flash/novac/");
@@ -1956,9 +1956,9 @@ int CSerialControllerWithTx::PollElectronicsType(){
 	if(CheckSerial(m_timeout)){
 		ReadSerial(buffer, bufferSize);
 		if(strstr(buffer, "BECK")){
-			this->m_electronicsBox = BOX_VERSION_1;
+			this->m_electronicsBox = BOX_AXIS;
 		}else if(strstr(buffer, "-sh: ver")){
-			this->m_electronicsBox = BOX_VERSION_2;
+			this->m_electronicsBox = BOX_MOXA;
 		}
 	}else{
 		// don't know type of box...

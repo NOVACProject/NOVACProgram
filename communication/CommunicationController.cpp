@@ -221,7 +221,7 @@ UINT ConnectByFTP(LPVOID pParam)
     // Setup the ftp-handler for this connection
     CFTPHandler ftpHandler(g_settings.scanner[mainIndex].electronicsBox);
 
-    if (g_settings.scanner[mainIndex].electronicsBox != BOX_VERSION_4)
+    if (g_settings.scanner[mainIndex].electronicsBox != BOX_AXIOMTEK)
     {
         ftpHandler.SetFTPInfo(mainIndex,
             g_settings.scanner[mainIndex].comm.ftpHostName,
