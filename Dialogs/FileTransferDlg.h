@@ -2,7 +2,6 @@
 #include "afxwin.h"
 
 #include "../Communication/SerialControllerWithTx.h"
-
 #include "../Communication/FTPHandler.h"
 #include "../FileTreeCtrl.h"
 #include "../ScannerFileInfo.h"
@@ -10,11 +9,8 @@
 #include "afxcmn.h"
 #include "afxtempl.h"
 
-namespace Dialogs{
-
-	const enum COMMUNICATION_TYPE {SERIAL_CABLE, FREEWAVE_PXP, FREEWAVE_PMP, ETHERNET};
-
-	// CFileTransferDlg dialog
+namespace Dialogs
+{
 	class CFileTransferDlg : public CDialog
 	{
 		DECLARE_DYNAMIC(CFileTransferDlg)
@@ -54,20 +50,25 @@ namespace Dialogs{
 		/** The list of configured scanning systems */
 		CListBox m_scannerList;
 
-		/**array to store file information*/
+		/** array to store file information */
 		CList <CScannerFileInfo*, CScannerFileInfo*> m_fileListA;
 		CList <CScannerFileInfo*, CScannerFileInfo*> m_fileListB;
 		
 		/** list of Rxxx folders */
 		CList<CScannerFolderInfo*, CScannerFolderInfo*> m_folderListB;
 
-		/** The serial controller, which makes it possible to upload/download data */
-		Communication::CSerialControllerWithTx *m_SerialController;
+        /** The serial controller, which makes it possible to upload/download through serial. */
+        Communication::CSerialControllerWithTx *m_SerialController = nullptr;
 
-		Communication::CFTPHandler *m_ftpController;
-		int m_communicationType;
+        /** The ftp-controller, which makes it possible to upload/download through FTP */
+        Communication::CFTPHandler* m_ftpController = nullptr;
+
+        /** The type of communication, must be either SERIAL_CONNECTION or FTP_CONNECTION */
+        int m_communicationType = SERIAL_CONNECTION;
+
 		/**selected item text*/
 		CString m_selItemText;
+
 		//--------------------------------------------//
 		//------------public functions----------------//
 		//--------------------------------------------//

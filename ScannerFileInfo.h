@@ -13,10 +13,13 @@ public:
 
     char diskName;
 
-    CString	fileName;
+    /** The filename, without the suffix */
+    CString fileName;
 
-    CString fileSubfix;
+    /** The file suffix */
+    CString fileSuffix;
 
+    /** The size of the file, in bytes */
     long fileSize;
 
     CString date;
