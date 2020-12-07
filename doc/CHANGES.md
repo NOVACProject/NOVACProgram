@@ -16,6 +16,7 @@ New features
 * AveSpec spectrometer support
 * Axiomtec instrument computer support
 * Add new "IntegrationMethod" property to STD file (#126)
+* Streamlined logging for FTP upload
 
 -----------------------------------------------------
 
