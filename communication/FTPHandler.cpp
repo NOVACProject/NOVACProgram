@@ -14,7 +14,7 @@ extern CConfigurationSetting g_settings;   // <-- the settings
 // ------------------- Handling the different versions of electronics -------------------
 bool IsPakFileExtension(ELECTRONICS_BOX version, const CString& fileSuffix)
 {
-    if (version == BOX_VERSION_1)
+    if (version == BOX_AXIS)
     {
         return fileSuffix == _T("PAK");
     }
@@ -28,7 +28,7 @@ bool IsPakFileExtension(ELECTRONICS_BOX version, const CString& fileSuffix)
 CString AppendPakFileExtension(const CString& fileNameWithoutExtension, ELECTRONICS_BOX version)
 {
     CString fullFileName;
-    if (version == BOX_VERSION_1)
+    if (version == BOX_AXIS)
     {
         fullFileName.Format("%s.PAK", (LPCSTR)fileNameWithoutExtension);
     }
@@ -41,7 +41,7 @@ CString AppendPakFileExtension(const CString& fileNameWithoutExtension, ELECTRON
 
 // ------------------- CFTPHandle class implementation -------------------
 CFTPHandler::CFTPHandler()
-    : m_electronicsBox(BOX_VERSION_1), m_dataSpeed(4.0)
+    : m_electronicsBox(BOX_AXIS), m_dataSpeed(4.0)
 {
 }
 
@@ -87,7 +87,7 @@ void CFTPHandler::SetFTPInfo(int mainIndex, const CString& hostname, const CStri
 
 void CFTPHandler::SetFTPInfo(int mainIndex, const CString& IP, const CString& userName, const CString &pwd, const CString &admUserName, const CString &admPwd, int timeOut, long portNumber)
 {
-    if (m_electronicsBox == BOX_VERSION_4)
+    if (m_electronicsBox == BOX_AXIOMTEK)
     {
         // The AxiomTek electronics box only uses one login for all uses.
         this->m_ftpInfo.adminUserName = userName;
@@ -288,14 +288,6 @@ long CFTPHandler::GetPakFileList(const CString& folder)
     if (!ftpSocket.Login(m_ftpInfo.hostName, m_ftpInfo.userName, m_ftpInfo.password))
     {
         return -1;
-    }
-
-    // While we're at it, check the brand of the electronics box in the 
-    //  login-response from the FTP-server
-    if (ftpSocket.m_serverMsg.Find("AXIS") >= 0)
-    {
-        m_electronicsBox = BOX_VERSION_2;
-        g_settings.scanner[m_mainIndex].electronicsBox = BOX_VERSION_2;
     }
 
     Sleep(100);
@@ -596,7 +588,7 @@ bool CFTPHandler::DeleteRemoteFile(const CString& remoteFile)
         }
     }
 
-    if (m_electronicsBox == BOX_VERSION_1)
+    if (m_electronicsBox == BOX_AXIS)
     {
         CString localCopyOfRemoteFileName;
         localCopyOfRemoteFileName.Format(remoteFile);

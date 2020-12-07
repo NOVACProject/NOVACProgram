@@ -155,8 +155,8 @@ void UploadToNOVACServer(const CString &fileName, int volcanoIndex, bool deleteF
 	options->deleteFile		= deleteFile;
 
 	// Tell the world about our mission
-	message.Format("Will try to upload %s to NOVAC FTP-Server", (LPCSTR)fileName);
-	ShowMessage(message);
+	//message.Format("Will try to upload %s to NOVAC FTP-Server", (LPCSTR)fileName);
+	//ShowMessage(message);
 
 	// Tell the uploading thread to upload this file
 	g_ftp->PostThreadMessage(WM_UPLOAD_NEW_FILE, (WPARAM)fileNameBuffer, (LPARAM)options);

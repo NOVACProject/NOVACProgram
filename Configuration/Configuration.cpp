@@ -107,7 +107,7 @@ void CConfigurationSetting::ScanningInstrumentSetting::Clear() {
     site = "";
     specNum = 0;
     volcano = "";
-    electronicsBox = BOX_VERSION_2;
+    electronicsBox = BOX_MOXA;
     for (int i = 0; i < MAX_SPECTROMETERS_PER_SCANNER; ++i)
     {
         spec[i].Clear();

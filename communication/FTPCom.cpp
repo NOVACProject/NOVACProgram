@@ -75,8 +75,8 @@ int CFTPCom::Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, int t
 
             BOOL bPassiveMode = (passiveMode) ? TRUE : FALSE;
             m_FtpConnection = m_InternetSession->GetFtpConnection(siteName, userName, password, 21, bPassiveMode);
-            m_ErrorMsg.Format("CONNECTED to FTP server: %s", siteName);
-            ShowMessage(m_ErrorMsg);
+            //m_ErrorMsg.Format("CONNECTED to FTP server: %s", siteName);
+            //ShowMessage(m_ErrorMsg);
             return 1;
         }
         catch (CInternetException* pEx)

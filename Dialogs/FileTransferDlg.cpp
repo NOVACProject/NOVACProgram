@@ -15,7 +15,7 @@ using namespace Dialogs;
 
 //ftp functions
 UINT DownloadFileListWithFTP(LPVOID pParam);
-UINT DownloadDiskWithFTP(LPVOID pParam);
+//UINT DownloadDiskWithFTP(LPVOID pParam);
 UINT DownloadFolderWithFTP(LPVOID pParam);
 UINT DownloadFileWithFTP(LPVOID pParam);
 UINT ViewFileByFTP(LPVOID pParam);
@@ -26,7 +26,7 @@ UINT ExpandFolderByFTP(LPVOID pParam);
 //serial functions
 UINT DownloadFileWithSerial(LPVOID pParam);
 UINT DownloadFolderWithSerial(LPVOID pParam);
-UINT DownloadDiskWithSerial(LPVOID pParam);
+//UINT DownloadDiskWithSerial(LPVOID pParam);
 UINT DownloadFileListWithSerial(LPVOID pParam);
 UINT ViewFileBySerial(LPVOID pParam);
 UINT DeleteFileBySerial(LPVOID pParam);
@@ -111,7 +111,7 @@ UINT DownloadFileListWithFTP(LPVOID pParam)
     }
 
     /** Get the list for 'A'-disk */
-    if (dlg->m_ftpController->m_electronicsBox == BOX_VERSION_1)
+    if (dlg->m_ftpController->m_electronicsBox == BOX_AXIS)
     {
         // Pause a little bit, for the small FTP-server to have time to recover...
         Sleep(1000);
@@ -941,7 +941,7 @@ bool ExistsDiskA(Communication::CSerialControllerWithTx* m_SerialController, Com
 {
     if (m_SerialController != nullptr)
     {
-        return m_SerialController->m_electronicsBox == BOX_VERSION_1;
+        return m_SerialController->m_electronicsBox == BOX_AXIS;
     }
     else
     {
@@ -1502,7 +1502,7 @@ void CFileTransferDlg::OnLbnSelchangeScannerList()
     case FTP_CONNECTION:
         m_ftpController = new Communication::CFTPHandler(g_settings.scanner[curScanner].electronicsBox);
 
-        if (g_settings.scanner[curScanner].electronicsBox != BOX_VERSION_4)
+        if (g_settings.scanner[curScanner].electronicsBox != BOX_AXIOMTEK)
         {
             m_ftpController->SetFTPInfo(curScanner,
                 g_settings.scanner[curScanner].comm.ftpHostName,

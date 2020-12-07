@@ -221,7 +221,7 @@ UINT ConnectByFTP(LPVOID pParam)
     // Setup the ftp-handler for this connection
     CFTPHandler ftpHandler(g_settings.scanner[mainIndex].electronicsBox);
 
-    if (g_settings.scanner[mainIndex].electronicsBox != BOX_VERSION_4)
+    if (g_settings.scanner[mainIndex].electronicsBox != BOX_AXIOMTEK)
     {
         ftpHandler.SetFTPInfo(mainIndex,
             g_settings.scanner[mainIndex].comm.ftpHostName,
@@ -242,7 +242,6 @@ UINT ConnectByFTP(LPVOID pParam)
             g_settings.scanner[mainIndex].comm.ftpPassword,
             g_settings.scanner[mainIndex].comm.timeout / 1000);
     }
-
     spectrometerSerialID.Format("%s", (LPCSTR)g_settings.scanner[mainIndex].spec[0].serialNumber);
 
     while (g_runFlag)
