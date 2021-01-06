@@ -54,12 +54,10 @@ namespace Communication
         return fwrite(buffer, size, nmemb, out->stream);
     }
 
-
     struct CSFTPCom::SftpConnection
     {
         SftpConnection()
         {
-            curllog = fopen("curl.log", "wb");
             this->curlHandle = curl_easy_init();
         }
 
@@ -67,9 +65,6 @@ namespace Communication
         {
             curl_easy_cleanup(curlHandle);
             curlHandle = nullptr;
-#ifdef DEBUG
-            fclose(curllog); 
-#endif
         }
 
         // This object manages a connection and is thus not trivially copyable
@@ -78,10 +73,6 @@ namespace Communication
 
         CURL *curlHandle = nullptr;
 
-        /** curl log file used in debug mode **/
-#ifdef DEBUG
-        FILE* curllog; 
-#endif
     };
 
     CSFTPCom::CSFTPCom()
@@ -155,18 +146,13 @@ namespace Communication
         returnCode = curl_easy_setopt(m_FtpConnection->curlHandle, CURLOPT_VERBOSE, 1L);
         assert(returnCode == CURLE_OK);
 
-        returnCode = curl_easy_setopt(m_FtpConnection->curlHandle, CURLOPT_STDERR, m_FtpConnection->curllog);
-        assert(returnCode == CURLE_OK);
 #endif
 
         {
             std::stringstream site;
-            //char *urlEscapedPwd = curl_easy_escape(m_FtpConnection->curlHandle, password, strlen(password));
-            //site << "sftp://" << userName << ":" << urlEscapedPwd << "@" << siteName;
             site << "sftp://" << siteName;
             m_site = site.str();
 
-            //curl_free(urlEscapedPwd);
         }
 
         return 1;
@@ -194,7 +180,7 @@ namespace Communication
 
         // build the full url, from the filename
         CString remoteUrl;
-        remoteUrl.Format("%s%s%s", m_site.c_str(), GetCurrentPath().c_str(), remoteFile);
+        remoteUrl.Format("%s/sftp%s%s", m_site.c_str(), GetCurrentPath().c_str(), remoteFile);
 
         // set the mode.
         CURLcode returnCode;
@@ -422,7 +408,7 @@ namespace Communication
 
         return (GetFileSize(remoteFile) > 0);
     }
-    
+
     bool CSFTPCom::EnterFolder(CString folder)
     {
         if (0 == strcmp(folder, ".."))
