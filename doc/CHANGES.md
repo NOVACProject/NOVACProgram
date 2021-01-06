@@ -1,6 +1,6 @@
 NOVAC Program Release Notes
 -----------------------------------------------------
-Version 3.2 (TBD)
+Version 3.2 (January 2021)
 
 Bug fixes
 * Fix issue with columns from same scan initially plotting at same time in history (#99)

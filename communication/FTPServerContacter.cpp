@@ -265,6 +265,8 @@ BOOL CFTPServerContacter::OnIdle(LONG /*lCount*/) {
                 // Failed to upload the file...
                 ShowMessage(m_ftp->m_ErrorMsg);
                 m_linkStatistics.AppendFailedUpload();
+                m_ftp->SetCurDirectory("..");
+                m_ftp->SetCurDirectory("..");
                 break;
             }
 
