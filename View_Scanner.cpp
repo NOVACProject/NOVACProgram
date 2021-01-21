@@ -298,7 +298,7 @@ void CView_Scanner::DrawColumn(){
 	// Get the data
 	int dataLength = m_evalDataStorage->GetColumnData(m_serial, column, columnError, BUFFER_SIZE);
 	dataLength     = min(dataLength, m_evalDataStorage->GetAngleData(m_serial, angle, BUFFER_SIZE));
-	dataLength     = min(dataLength, m_evalDataStorage->GetIntensityData(m_serial, peakSat, fitSat, BUFFER_SIZE));
+	dataLength     = min(dataLength, m_evalDataStorage->GetIntensityData(m_serial, peakSat, fitSat, BUFFER_SIZE, false));
 
 	// If there's no data then don't draw anything
 	if(dataLength <= 0)

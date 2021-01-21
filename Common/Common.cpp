@@ -1417,3 +1417,40 @@ bool Common::FillBuffer(char* srcBuf, char* destBuf,long destStart,long moveLen)
 	return true;
 
 }
+
+void Common::CheckForSpectraInDir(const CString& path, CList <CString, CString&>& fileList)
+{
+	WIN32_FIND_DATA FindFileData;
+	char fileToFind[MAX_PATH];
+
+	// Find all .pak-files in the specified directory
+	sprintf(fileToFind, "%s\\?????????.pak", (LPCTSTR)path);
+
+	// Search for the file
+	HANDLE hFile = FindFirstFile(fileToFind, &FindFileData);
+
+	if (hFile == INVALID_HANDLE_VALUE)
+	{
+		return; // no files found
+	}
+
+	do {
+		CString fileName;
+		fileName.Format("%s\\%s", (LPCTSTR)path, FindFileData.cFileName);
+
+		if (!Equals(FindFileData.cFileName, "Upload.pak")) {
+			// Tell the user that we've found one scan which hasn't been evaluated
+			CString msg;
+			msg.Format("Spectra in %s not yet evaluated.  Will evalute now.", FindFileData.cFileName);
+			ShowMessage(msg);
+
+			// Append the found file to the list of files to split and evaluate...
+			fileList.AddTail(fileName);
+		}
+
+	} while (0 != FindNextFile(hFile, &FindFileData));
+
+	FindClose(hFile);
+
+	return;
+}

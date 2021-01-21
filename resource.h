@@ -346,6 +346,7 @@
 #define IDC_BUTTON_ADVANCED_FTP         1063
 #define IDC_BUTTON_SEARCH               1063
 #define IDC_BUTTON_BROWSE_SLF           1063
+#define IDC_BUTTON_POL_DIR_BROWSE       1063
 #define IDC_BUTTON2                     1064
 #define IDC_BTN_CALC_FLUX               1064
 #define IDC_REEVAL_CANCEL               1064
@@ -626,6 +627,7 @@
 #define IDC_RADIO_FTP                   1182
 #define IDC_FTP_IPADDRESS               1183
 #define IDC_RADIO_FREEWAVE_SERIAL       1184
+#define IDC_RADIO_DIRECTORY_POLLING     1185
 #define IDC_LABEL1                      1189
 #define IDC_LABEL2                      1190
 #define IDC_LABEL3                      1191
@@ -633,6 +635,7 @@
 #define IDC_LABEL5                      1193
 #define IDC_LABEL_RADIOID               1194
 #define IDC_STATIC_SPECTRA              1195
+#define IDC_LABEL_DIR                   1195
 #define IDC_BROWSE_SPECTRA_BTN          1196
 #define IDC_RADIO1                      1197
 #define IDC_RADIO2                      1198
@@ -676,6 +679,7 @@
 #define IDC_EDIT_SHIFT_LOWLIMIT         1224
 #define IDC_EDIT_SHELL_EXCECUTE         1224
 #define IDC_EDIT_CHANNEL                1224
+#define IDC_EDIT_POLLING_DIRECTORY      1224
 #define IDC_EDIT_SHIFT_HIGHLIMIT        1225
 #define IDC_EDIT_SHELL_EXCECUTE_PICTURE 1225
 #define IDC_EDIT_SHELL_EXCECUTE_IMAGE   1225
@@ -834,7 +838,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        321
 #define _APS_NEXT_COMMAND_VALUE         32790
-#define _APS_NEXT_CONTROL_VALUE         1363
+#define _APS_NEXT_CONTROL_VALUE         1364
 #define _APS_NEXT_SYMED_VALUE           109
 #endif
 #endif

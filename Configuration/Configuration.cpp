@@ -36,6 +36,9 @@ CConfigurationSetting::CommunicationSetting::CommunicationSetting()
     ftpAdminUserName = "administrator";
     ftpAdminPassword = "1225";
 
+    // directory
+    directory = "";
+
     // General Settings
     this->queryPeriod = 10 * 60; // <-- query every 10 minutes
     this->timeout = 30000;
@@ -67,6 +70,8 @@ void CConfigurationSetting::CommunicationSetting::Clear()
     ftpAdminUserName = "administrator";
     ftpAdminPassword = "1225";
 
+    // directory polling
+    directory = "";
 
     // General Settings
     this->queryPeriod = 8000;
@@ -213,6 +218,9 @@ CConfigurationSetting::CommunicationSetting &CConfigurationSetting::Communicatio
     ftpHostName.Format("%s", (LPCSTR)comm2.ftpHostName);
     ftpUserName.Format("%s", (LPCSTR)comm2.ftpUserName);
     ftpPassword.Format("%s", (LPCSTR)comm2.ftpPassword);
+
+    // directory polling setting
+    directory.Format("%s", (LPCSTR)comm2.directory);
 
     // General Settings
     this->queryPeriod = comm2.queryPeriod;

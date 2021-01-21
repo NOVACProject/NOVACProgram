@@ -239,8 +239,8 @@ RETURN_CODE CEvaluationController::EvaluateScan(const CString &fileName, int vol
     //		spectral information from the scan-file
     std::unique_ptr<CScanFileHandler> scan = std::make_unique<CScanFileHandler>();
 
-    // sucess is true if the evaluation is sucessful
-    bool sucess = true;
+    // success is true if the evaluation is successful
+    bool success = true;
 
     // Check if the output directories needs to be updated
     UpdateOutputDirectories();
@@ -316,7 +316,7 @@ RETURN_CODE CEvaluationController::EvaluateScan(const CString &fileName, int vol
         // 10c. Calculate the flux...
         if (SUCCESS != CalculateFlux(m_lastResult.get(), spectrometer, volcanoIndex, windField)) {
             Output_FluxFailure(m_lastResult.get(), spectrometer);
-            sucess = false;
+            success = false;
         }
     }
 
@@ -339,7 +339,7 @@ RETURN_CODE CEvaluationController::EvaluateScan(const CString &fileName, int vol
     m_lastResult->m_path = std::string((LPCSTR)fileName);
 
     // 16. Share the results with the rest of the program
-    if (sucess) {
+    if (success) {
         CScanResult *newResult = new CScanResult(*m_lastResult);
         pView->PostMessage(WM_EVAL_SUCCESS, (WPARAM)&(spectrometer->SerialNumber()), (LPARAM)newResult);
     }

@@ -5,6 +5,7 @@
 #include "FTPHandler.h"
 #include "SerialControllerWithTx.h"
 #include "NodeControlInfo.h"
+//#include "../Common/Spectra/PakFileHandler.h"
 
 #ifdef _MSC_VER
 // Make sure to use warning level 4
@@ -12,10 +13,12 @@
 #endif
 
 using namespace Communication;
+using namespace FileHandler;
 #define SMALL_NODE_SUM 5
 
 UINT ConnectBySerialWithTX(LPVOID pParam);
 UINT ConnectByFTP(LPVOID pParam);
+UINT PollDirectory(LPVOID pParam);
 void Pause(double startTime, double stopTime, int serialID);
 
 void UploadFile_SerialTx(int i, Communication::CCommunicationController *mainController, Communication::CSerialControllerWithTx *cable);
@@ -47,6 +50,9 @@ CCommunicationController::CCommunicationController()
 
     //the sum of the http connections
     m_totalHttpConnection = 0;
+
+    // the sum of the directory polling connections
+    m_totalDirectoryPolling = 0;
 
     //set the size of serial information list
     m_serialList.SetSize(SMALL_NODE_SUM);
@@ -159,6 +165,9 @@ void CCommunicationController::StartCommunicationThreads()
             m_totalHttpConnection = 1;
             m_httpList.AddTail(i);
             break;
+        case DIRECTORY_POLLING:
+            m_totalDirectoryPolling++;
+            m_dirPolList.AddTail(i);
         default:
             break;
         }
@@ -173,6 +182,85 @@ void CCommunicationController::StartCommunicationThreads()
     {
         StartFTP();
     }
+
+    if (m_totalDirectoryPolling > 0) {
+        StartDirectoryPolling();
+    }
+}
+void CCommunicationController::StartDirectoryPolling() {
+    POSITION pos = m_dirPolList.GetHeadPosition();
+    // Start the directory polling -threads
+    pos = m_dirPolList.GetHeadPosition();
+    while (pos != nullptr) {
+        int* index = new int;
+        *index = m_dirPolList.GetNext(pos);
+        AfxBeginThread(PollDirectory, index, THREAD_PRIORITY_NORMAL, 0, 0, nullptr);
+    }
+}
+
+UINT PollDirectory(LPVOID pParam) {
+    int mainIndex = *(int*)pParam;
+    CString directory = g_settings.scanner[mainIndex].comm.directory;
+    long nRoundsAfterWakeUp = 0;
+    bool sleepFlag = false;
+    long sleepPeriod;
+    CString message;
+    Common common;
+    long queryPeriod = g_settings.scanner[mainIndex].comm.queryPeriod;
+    timeStruct sleepTime = g_settings.scanner[mainIndex].comm.sleepTime;
+    timeStruct wakeupTime = g_settings.scanner[mainIndex].comm.wakeupTime;
+    
+
+    while (g_runFlag)
+    {
+        // --------------- CHECK IF WE SHOULD GO TO SLEEP OR WAKE UP ---------------
+        sleepPeriod = GetSleepTime(sleepTime, wakeupTime);
+
+        //judge sleep time
+        if (sleepPeriod > 0)
+        {
+            sleepFlag = true;
+            Sleep(sleepPeriod);
+            nRoundsAfterWakeUp = 0;
+            continue;
+        }
+        else
+        {
+            if (sleepFlag || nRoundsAfterWakeUp == 0)
+            {
+                sleepFlag = false;
+            }
+        }
+
+        // Check directory for data 
+        message.Format("Checking for pak files in %s", directory);
+        ShowMessage(message);
+        CList <CString, CString&> pakFilesToEvaluate;
+        common.CheckForSpectraInDir(directory, pakFilesToEvaluate);
+
+        // Go through all the spectrum files found and evaluate them
+        if (!pakFilesToEvaluate.IsEmpty())
+        {
+            CPakFileHandler pakFileHandler;
+            POSITION pos = pakFilesToEvaluate.GetHeadPosition();
+            while (pos != nullptr)
+            {
+                CString& fn = pakFilesToEvaluate.GetNext(pos);
+                if (IsExistingFile(fn))
+                {
+                    pakFileHandler.ReadDownloadedFile(fn);
+                }
+
+            }
+
+        }
+        message.Format("Sleeping for %d seconds", queryPeriod);
+        ShowMessage(message);
+        Sleep(queryPeriod*1000);
+        nRoundsAfterWakeUp++;
+    }
+
+    return 0;
 }
 
 void CCommunicationController::StartFTP()
@@ -368,7 +456,7 @@ UINT ConnectBySerialWithTX(LPVOID pParam)
 {
     CString msg, timetxt;
     long sleepPeriod;
-    int i, j, nRound, mainIndex;
+    int nRound, mainIndex;
     CArray <clock_t, clock_t> cStart;
     CArray <clock_t, clock_t> cPrevStart;
     cStart.SetSize(SMALL_NODE_SUM);
@@ -389,9 +477,8 @@ UINT ConnectBySerialWithTX(LPVOID pParam)
 
     while (1)
     {
-        for (j = 0; j < mainController->m_totalSerialConnection; j++)
+        for (int i = 0; i < mainController->m_totalSerialConnection; i++)
         {
-            i = j;
 
             // mainIndex is the connection-ID (instrument-number) that we're currently at...
             mainIndex = mainController->m_serialList[i]->m_mainIndex;
@@ -451,7 +538,7 @@ UINT ConnectBySerialWithTX(LPVOID pParam)
 
         // Check if all instruments are sleeping.
         allSleep = true;
-        for (i = 0; i < mainController->m_totalSerialConnection; i++)
+        for (int i = 0; i < mainController->m_totalSerialConnection; i++)
         {
             allSleep = allSleep && mainController->m_serialList[i]->m_sleepFlag;
         }
