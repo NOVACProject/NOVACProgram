@@ -32,6 +32,7 @@ BEGIN_MESSAGE_MAP(CCommunicationController, CWinThread)
     ON_THREAD_MESSAGE(WM_UPLOAD_CFGONCE, OnUploadCfgOnce)
 END_MESSAGE_MAP()
 
+extern CFormView* pView;                   // <-- the main window
 extern CConfigurationSetting g_settings; // <-- the configuration
 bool g_runFlag;
 
@@ -209,8 +210,8 @@ UINT PollDirectory(LPVOID pParam) {
     long queryPeriod = g_settings.scanner[mainIndex].comm.queryPeriod;
     timeStruct sleepTime = g_settings.scanner[mainIndex].comm.sleepTime;
     timeStruct wakeupTime = g_settings.scanner[mainIndex].comm.wakeupTime;
+    CString serialId = g_settings.scanner[mainIndex].spec[0].serialNumber;
     
-
     while (g_runFlag)
     {
         // --------------- CHECK IF WE SHOULD GO TO SLEEP OR WAKE UP ---------------
@@ -236,30 +237,43 @@ UINT PollDirectory(LPVOID pParam) {
         message.Format("Checking for pak files in %s", directory);
         ShowMessage(message);
         CList <CString, CString&> pakFilesToEvaluate;
-        common.CheckForSpectraInDir(directory, pakFilesToEvaluate);
-
-        // Go through all the spectrum files found and evaluate them
-        if (!pakFilesToEvaluate.IsEmpty())
-        {
-            CPakFileHandler pakFileHandler;
-            POSITION pos = pakFilesToEvaluate.GetHeadPosition();
-            while (pos != nullptr)
-            {
-                CString& fn = pakFilesToEvaluate.GetNext(pos);
-                if (IsExistingFile(fn))
-                {
-                    pakFileHandler.ReadDownloadedFile(fn);
-                }
-
-            }
-
+        int rcode = common.CheckForSpectraInDir(directory, pakFilesToEvaluate);
+        if (rcode == INVALID_FILE_ATTRIBUTES) {
+            pView->PostMessage(WM_SCANNER_NOT_CONNECT, (WPARAM) & (serialId), 0);
+            message.Format("Error reading directory: %s", directory);
+            ShowMessage(message);
         }
-        message.Format("Sleeping for %d seconds", queryPeriod);
+        else {
+            // Go through all the spectrum files found and evaluate them
+            if (!pakFilesToEvaluate.IsEmpty())
+            {
+                pView->PostMessage(WM_SCANNER_RUN, (WPARAM) & (serialId), 0);
+                message.Format("%d pak files found for %s", pakFilesToEvaluate.GetSize(), serialId);
+                ShowMessage(message);
+                CPakFileHandler pakFileHandler;
+                POSITION pos = pakFilesToEvaluate.GetHeadPosition();
+                while (pos != nullptr)
+                {
+                    CString& fn = pakFilesToEvaluate.GetNext(pos);
+                    if (IsExistingFile(fn))
+                    {
+                        pakFileHandler.ReadDownloadedFile(fn);
+                    }
+
+                }
+            }
+            else {
+                pView->PostMessage(WM_SCANNER_SLEEP, (WPARAM) & (serialId), 0);
+                message.Format("0 pak files found for %s", serialId);
+                ShowMessage(message);
+            }
+        }
+        message.Format("%s directory polling sleeping for %d seconds", serialId, queryPeriod);
         ShowMessage(message);
-        Sleep(queryPeriod*1000);
+        Sleep(queryPeriod * 1000);
         nRoundsAfterWakeUp++;
     }
-
+    pView->PostMessage(WM_SCANNER_NOT_CONNECT, (WPARAM) & (serialId), 0);
     return 0;
 }
 
