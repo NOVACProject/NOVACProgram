@@ -1418,8 +1418,12 @@ bool Common::FillBuffer(char* srcBuf, char* destBuf,long destStart,long moveLen)
 
 }
 
-void Common::CheckForSpectraInDir(const CString& path, CList <CString, CString&>& fileList)
+int Common::CheckForSpectraInDir(const CString& path, CList <CString, CString&>& fileList)
 {
+	if (GetFileAttributes(path) == INVALID_FILE_ATTRIBUTES) {
+		return INVALID_FILE_ATTRIBUTES;
+	}
+
 	WIN32_FIND_DATA FindFileData;
 	char fileToFind[MAX_PATH];
 
@@ -1431,7 +1435,7 @@ void Common::CheckForSpectraInDir(const CString& path, CList <CString, CString&>
 
 	if (hFile == INVALID_HANDLE_VALUE)
 	{
-		return; // no files found
+		return 0; // no files found
 	}
 
 	do {
@@ -1452,5 +1456,5 @@ void Common::CheckForSpectraInDir(const CString& path, CList <CString, CString&>
 
 	FindClose(hFile);
 
-	return;
+	return 0;
 }
