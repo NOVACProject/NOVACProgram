@@ -242,7 +242,7 @@ namespace Communication
             return 1;
         }
         else {
-            m_ErrorMsg.Format("Error while uploading, failed to upload file: %s", curl_easy_strerror(returnCode));
+            m_ErrorMsg.Format("Error while uploading, failed to upload file %s: %s", remoteUrl, curl_easy_strerror(returnCode));
             return 0;
         }
     }
