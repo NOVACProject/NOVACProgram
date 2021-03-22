@@ -13,7 +13,7 @@ namespace Communication
         ~CSFTPCom();
 
         // ------------------------ Implementing IFTPDatapload ------------------------
-        virtual int Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, int timeout, bool passiveMode = false) override;
+        virtual int Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, int timeout, bool passiveMode = false, int portNumber = 22) override;
 
         virtual int Disconnect() override;
 

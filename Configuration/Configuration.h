@@ -53,6 +53,9 @@ public:
         /** The IP-number / Host name of the scanning instrument */
         CString ftpHostName;
 
+        /** Port to use for FTP, if not default (21). */
+        int ftpPort;
+
         /** The username at the scanning instrument */
         CString ftpUserName;
 

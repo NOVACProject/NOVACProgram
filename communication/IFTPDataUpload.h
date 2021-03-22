@@ -24,7 +24,7 @@ namespace Communication
         *   @siteName - address of the server
         *   @userName - user name for login
         *   @password - password for login */
-        virtual int Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, int timeout, bool passiveMode = false) = 0;
+        virtual int Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, int timeout, bool passiveMode = false, int portNumber = 21) = 0;
 
         /** Closes the connection to the server. No more calls to this object can be done until the connection is opened again */
         virtual int Disconnect() = 0;

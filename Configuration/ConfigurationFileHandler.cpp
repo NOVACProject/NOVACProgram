@@ -463,6 +463,12 @@ int CConfigurationFileHandler::WriteConfigurationFile(CConfigurationSetting &con
                 str.Format("%s<host>%s</host>\n", (LPCSTR)indent, comm.ftpHostName);
                 fprintf(f, str);
 
+                // ftp port, if not default (21)
+                if (comm.ftpPort != 21) {
+                    str.Format("%s<port>%s</port>\n", (LPCSTR)indent, comm.ftpPort);
+                    fprintf(f, str);
+                }
+
                 // user name to log in on the scanning system
                 str.Format("%s<username>%s</username>\n", (LPCSTR)indent, (LPCSTR)comm.ftpUserName);
                 fprintf(f, str);
@@ -829,6 +835,11 @@ int CConfigurationFileHandler::Parse_Communication() {
 
         if (Equals(szToken, "host")) {
             Parse_StringItem(TEXT("/host"), curComm->ftpHostName); // Parsing the old 'IP' configuration makes sure that the transit from using IP to using host-names is smooth
+            continue;
+        }
+
+        if (Equals(szToken, "port")) {
+            Parse_IntItem(TEXT("/port"), curComm->ftpPort); 
             continue;
         }
 
