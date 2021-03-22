@@ -7,6 +7,7 @@ namespace Communication
 #define SERIAL_CONNECTION 1
 #define FTP_CONNECTION 2
 #define HTTP_CONNECTION 3
+#define DIRECTORY_POLLING 4
 
     class CFTPHandler;
     class CSerialControllerWithTx;
@@ -70,6 +71,9 @@ namespace Communication
         /**start ftp connections for polling scanners*/
         void StartFTP();
 
+        /** start directory polling */
+        void StartDirectoryPolling();
+
         //---------------------------------------------//
         //-------------public variables----------------//
         //---------------------------------------------//
@@ -93,14 +97,21 @@ namespace Communication
         // store the indexes of ftp connection in configuration.xml
         CList<int, int> m_ftpList;
 
-        // store the indexes of http connection in configuration.xml
-        CList<int, int> m_httpList;
-
         //the sum of the ftp connections
         int m_totalFTPConnection;
 
+        // store the indexes of http connection in configuration.xml
+        CList<int, int> m_httpList;
+
         //the sum of the http connections
         int m_totalHttpConnection;
+
+        // store the indexes of directory polling connection in configuration.xml
+        CList<int, int> m_dirPolList;
+
+        // the sum of the directory polling connections
+        int m_totalDirectoryPolling;
+      
 
     };
 }

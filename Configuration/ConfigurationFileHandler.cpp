@@ -472,6 +472,11 @@ int CConfigurationFileHandler::WriteConfigurationFile(CConfigurationSetting &con
                 fprintf(f, str);
             }
 
+            if (comm.connectionType == DIRECTORY_POLLING) {
+                str.Format("%s<directory>%s</directory>\n", (LPCSTR)indent, (LPCSTR)comm.directory);
+                fprintf(f, str);
+            }
+
             // timeout
             str.Format("%s<timeout>%d</timeout>\n", (LPCSTR)indent, comm.timeout);
             fprintf(f, str);
@@ -834,6 +839,11 @@ int CConfigurationFileHandler::Parse_Communication() {
 
         if (Equals(szToken, "password")) {
             Parse_StringItem(TEXT("/password"), curComm->ftpPassword);
+            continue;
+        }
+
+        if (Equals(szToken, "directory")) {
+            Parse_StringItem(TEXT("/directory"), curComm->directory);
             continue;
         }
 

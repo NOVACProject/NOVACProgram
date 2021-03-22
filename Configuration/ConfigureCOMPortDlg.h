@@ -73,6 +73,9 @@ namespace ConfigurationDialog
 
         CStatic m_connectionIntervalLabel;
 
+        /** Polling directory */
+        CString m_directory;
+
     private:
 
         // ------- The serial settings controls --------
@@ -101,6 +104,12 @@ namespace ConfigurationDialog
         CEdit m_editPassword;
         CEdit m_editFtpHostname;
 
+        // ------- Directory polling controls --------
+
+        /** The directory to look for pak files in */
+        CEdit m_editDirectory;
+        CButton m_dirBrowse;
+
         // ------- The sleeping controls --------
         // The edits for the sleeping
         CEdit		m_editSleepHr, m_editSleepMin, m_editSleepSec;
@@ -112,9 +121,10 @@ namespace ConfigurationDialog
         CStatic m_label1, m_label2, m_label3, m_label4, m_label5, m_labelRadioID;
 
         /** The current selection of settings
-                0 == FTP - Communication
-                1 == Serial Cable
-                2 == Freewave Serial Radio modem
+                0 == Serial Cable
+                1 == Freewave Serial Radio 
+                2 == FTP - Communication
+                3 == Directory Polling
         */
         int m_curSetting = 2;
 
@@ -124,7 +134,12 @@ namespace ConfigurationDialog
         /** Showing the settings for connecting using a Freewave serial modem */
         void ShowFreewaveSerial();
 
-        /** Showing the settings for connecting using FTP-Protocol*/
+        /** Showing the settings for connecting using FTP-Protocol */
         void ShowFTP();
+
+        /** Showing the settings when polling directory */
+        void ShowDirectoryPolling();
+public:
+    afx_msg void OnBnClickedButtonPolDirBrowse();
 };
 }
