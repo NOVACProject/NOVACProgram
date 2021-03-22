@@ -21,9 +21,9 @@ CFTPCom::~CFTPCom(void)
 //return 2 - ftp address parsing problem
 //return 3 - can not connect to internet
 //return 4 - ftp exception
-int CFTPCom::Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, int timeout, bool passiveMode)
+int CFTPCom::Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, int timeout, bool passiveMode, int portNumber)
 {
-    INTERNET_PORT port = 21;
+    INTERNET_PORT port = portNumber;
     DWORD dwServiceType = AFX_INET_SERVICE_FTP;
     CString strServer;
     CString strObject;
@@ -74,7 +74,7 @@ int CFTPCom::Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, int t
             m_InternetSession->SetOption(INTERNET_OPTION_SEND_TIMEOUT, timeout * 1000);
 
             BOOL bPassiveMode = (passiveMode) ? TRUE : FALSE;
-            m_FtpConnection = m_InternetSession->GetFtpConnection(siteName, userName, password, 21, bPassiveMode);
+            m_FtpConnection = m_InternetSession->GetFtpConnection(siteName, userName, password, portNumber, bPassiveMode);
             //m_ErrorMsg.Format("CONNECTED to FTP server: %s", siteName);
             //ShowMessage(m_ErrorMsg);
             return 1;

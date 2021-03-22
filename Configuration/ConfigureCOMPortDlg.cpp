@@ -285,6 +285,7 @@ void CConfigureCOMPortDlg::UpdateDlg() {
 
     // 7. The FTP-settings
     m_ftpHostName.Format("%s", (LPCSTR)comm.ftpHostName);
+    //m_ftpPort.Format("%s", (LPCSTR)comm.ftpPort);  // not yet implemented in gui
     m_ftpPassword.Format("%s", (LPCSTR)comm.ftpPassword);
     m_ftpUserName.Format("%s", (LPCSTR)comm.ftpUserName);
 
@@ -368,6 +369,7 @@ void CConfigureCOMPortDlg::SaveData() {
         // 3. The FTP-settings
         comm.ftpHostName.Format("%s", (LPCSTR)m_ftpHostName);
         comm.ftpPassword.Format("%s", (LPCSTR)m_ftpPassword);
+        //comm.ftpPort.Format("%d", m_ftpPort);  // not yet implemented in gui
         comm.ftpUserName.Format("%s", (LPCSTR)m_ftpUserName);
 
         // 4. Directory Polling settings

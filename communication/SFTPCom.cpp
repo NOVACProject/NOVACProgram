@@ -88,7 +88,7 @@ namespace Communication
         }
     }
 
-    int CSFTPCom::Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, int timeout, bool /*mode*/)
+    int CSFTPCom::Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, int timeout, bool /*mode*/, int portNumber)
     {
         if (nullptr != m_FtpConnection)
         {
@@ -116,7 +116,7 @@ namespace Communication
             return 0;
         }
 
-        returnCode = curl_easy_setopt(m_FtpConnection->curlHandle, CURLOPT_PORT, 22);  
+        returnCode = curl_easy_setopt(m_FtpConnection->curlHandle, CURLOPT_PORT, portNumber);  
         if (returnCode != CURLE_OK) {
             m_ErrorMsg.Format("Failed to set port: %s", curl_easy_strerror(returnCode));
             return 0;

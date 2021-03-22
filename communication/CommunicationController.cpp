@@ -331,7 +331,8 @@ UINT ConnectByFTP(LPVOID pParam)
             g_settings.scanner[mainIndex].comm.ftpPassword,
             g_settings.scanner[mainIndex].comm.ftpAdminUserName,
             g_settings.scanner[mainIndex].comm.ftpAdminPassword,
-            g_settings.scanner[mainIndex].comm.timeout / 1000);
+            g_settings.scanner[mainIndex].comm.timeout / 1000,
+            g_settings.scanner[mainIndex].comm.ftpPort);
     }
     else
     {
@@ -342,7 +343,8 @@ UINT ConnectByFTP(LPVOID pParam)
             g_settings.scanner[mainIndex].comm.ftpPassword,
             g_settings.scanner[mainIndex].comm.ftpUserName,
             g_settings.scanner[mainIndex].comm.ftpPassword,
-            g_settings.scanner[mainIndex].comm.timeout / 1000);
+            g_settings.scanner[mainIndex].comm.timeout / 1000,
+            g_settings.scanner[mainIndex].comm.ftpPort);
     }
     spectrometerSerialID.Format("%s", (LPCSTR)g_settings.scanner[mainIndex].spec[0].serialNumber);
 
@@ -437,7 +439,8 @@ void UploadFile_FTP(int mainIndex, CFTPHandler& ftpHandler)
             g_settings.scanner[mainIndex].comm.ftpHostName,
             g_settings.scanner[mainIndex].comm.ftpAdminUserName,
             g_settings.scanner[mainIndex].comm.ftpAdminPassword,
-            g_settings.scanner[mainIndex].comm.timeout))
+            g_settings.scanner[mainIndex].comm.timeout,
+            g_settings.scanner[mainIndex].comm.ftpPort))
         {
             // Upload the file
             if (ftpHandler.UploadFile(fullLocalFileName, remoteFile))

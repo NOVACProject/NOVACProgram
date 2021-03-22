@@ -1510,7 +1510,8 @@ void CFileTransferDlg::OnLbnSelchangeScannerList()
                 g_settings.scanner[curScanner].comm.ftpPassword,
                 g_settings.scanner[curScanner].comm.ftpAdminUserName,
                 g_settings.scanner[curScanner].comm.ftpAdminPassword,
-                g_settings.scanner[curScanner].comm.timeout / 1000);
+                g_settings.scanner[curScanner].comm.timeout / 1000,
+                g_settings.scanner[curScanner].comm.ftpPort);
         }
         else
         {
@@ -1521,7 +1522,8 @@ void CFileTransferDlg::OnLbnSelchangeScannerList()
                 g_settings.scanner[curScanner].comm.ftpPassword,
                 g_settings.scanner[curScanner].comm.ftpUserName,
                 g_settings.scanner[curScanner].comm.ftpPassword,
-                g_settings.scanner[curScanner].comm.timeout / 1000);
+                g_settings.scanner[curScanner].comm.timeout / 1000,
+                g_settings.scanner[curScanner].comm.ftpPort);
         }
 
         AfxBeginThread(DownloadFileListWithFTP, this, THREAD_PRIORITY_NORMAL, 0, 0, NULL);
