@@ -31,6 +31,7 @@ CConfigurationSetting::CommunicationSetting::CommunicationSetting()
 
     // FTP - Settings
     ftpHostName = "192.168.0.1";
+    ftpPort = 21;
     ftpUserName = "novac";
     ftpPassword = "1225";
     ftpAdminUserName = "administrator";
@@ -65,6 +66,7 @@ void CConfigurationSetting::CommunicationSetting::Clear()
 
     // FTP - Settings
     ftpHostName = "192.168.0.1";
+    ftpPort = 21;
     ftpUserName = "novac";
     ftpPassword = "1225";
     ftpAdminUserName = "administrator";
@@ -216,6 +218,7 @@ CConfigurationSetting::CommunicationSetting &CConfigurationSetting::Communicatio
 
     // FTP - Settings
     ftpHostName.Format("%s", (LPCSTR)comm2.ftpHostName);
+    ftpPort = comm2.ftpPort;
     ftpUserName.Format("%s", (LPCSTR)comm2.ftpUserName);
     ftpPassword.Format("%s", (LPCSTR)comm2.ftpPassword);
 
@@ -245,7 +248,7 @@ void CConfigurationSetting::CFTPSetting::SetFTPStatus(int status)
 CConfigurationSetting::CWindFieldDataSettings::CWindFieldDataSettings()
 {
     // By default the wind-field file is on the FTP-server in the 'wind' directory
-    windFieldFile = "ftp://129.16.35.206/wind/";
+    windFieldFile = "sftp://ors20.see.chalmers.se/Wind/";
     windFileReloadInterval = 360; // re-read the file every 6 hours
 }
 
