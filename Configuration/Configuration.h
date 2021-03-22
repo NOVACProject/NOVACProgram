@@ -48,6 +48,8 @@ public:
         /** The RadioID OR callbook number */
         CString radioID;
 
+        // ----- Settings for FTP communication -----
+
         /** The IP-number / Host name of the scanning instrument */
         CString ftpHostName;
 
@@ -62,6 +64,11 @@ public:
 
         /** The administrator-password at the scanning instrument */
         CString ftpAdminPassword;
+
+        // ----- Settings for Directory Polling -----
+
+        /** The directory to check for pak files */
+        CString directory;
 
         // ----------- The general settings for the communication --------------
 

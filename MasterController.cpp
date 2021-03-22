@@ -62,7 +62,7 @@ CCriticalSection g_evalLogCritSect;
     program (if the program is exited while evaluating a pak-file, the pak file
     will still remain in the output directory) */
 UINT CheckForOldSpectra(LPVOID pParam);
-void CheckForSpectraInDir(const CString &path, CList <CString, CString&> &fileList);
+//void CheckForSpectraInDir(const CString &path, CList <CString, CString&> &fileList);
 void CheckForSpectraInHexDir(const CString &path, CList <CString, CString&> &fileList);
 void SetThreadName(DWORD dwThreadID, LPCTSTR szThreadName);
 
@@ -195,7 +195,7 @@ UINT CheckForOldSpectra(LPVOID /*pParam*/)
     {
         path.Format("%sTemp", (LPCTSTR)g_settings.outputDirectory);
     }
-    CheckForSpectraInDir(path, pakFilesToEvaluate);
+    common.CheckForSpectraInDir(path, pakFilesToEvaluate);
 
     // 2. Check for spectra in the output\\temp\\SERIAL - directory(-ies)
     for (unsigned int i = 0; i < g_settings.scannerNum; ++i)
@@ -210,7 +210,7 @@ UINT CheckForOldSpectra(LPVOID /*pParam*/)
         {
             path.Format("%sTemp\\%s", (LPCTSTR)g_settings.outputDirectory, (LPCTSTR)serial);
         }
-        CheckForSpectraInDir(path, pakFilesToEvaluate);
+        common.CheckForSpectraInDir(path, pakFilesToEvaluate);
     }
 
     // 3. Check for spectra in the output\\temp\\RXYZ - directory(-ies)
@@ -244,42 +244,42 @@ UINT CheckForOldSpectra(LPVOID /*pParam*/)
     return 0;
 }
 
-void CheckForSpectraInDir(const CString &path, CList <CString, CString&> &fileList)
-{
-    WIN32_FIND_DATA FindFileData;
-    char fileToFind[MAX_PATH];
-
-    // Find all .pak-files in the specified directory
-    sprintf(fileToFind, "%s\\?????????.pak", (LPCTSTR)path);
-
-    // Search for the file
-    HANDLE hFile = FindFirstFile(fileToFind, &FindFileData);
-
-    if (hFile == INVALID_HANDLE_VALUE)
-    {
-        return; // no files found
-    }
-
-    do {
-        CString fileName;
-        fileName.Format("%s\\%s", (LPCTSTR)path, FindFileData.cFileName);
-
-        if (!Equals(FindFileData.cFileName, "Upload.pak")) {
-            // Tell the user that we've found one scan which hasn't been evaluated
-            CString msg;
-            msg.Format("Spectra in %s not yet evaluated.  Will evalute now.", FindFileData.cFileName);
-            ShowMessage(msg);
-
-            // Append the found file to the list of files to split and evaluate...
-            fileList.AddTail(fileName);
-        }
-
-    } while (0 != FindNextFile(hFile, &FindFileData));
-
-    FindClose(hFile);
-
-    return;
-}
+//void CheckForSpectraInDir(const CString &path, CList <CString, CString&> &fileList)
+//{
+//    WIN32_FIND_DATA FindFileData;
+//    char fileToFind[MAX_PATH];
+//
+//    // Find all .pak-files in the specified directory
+//    sprintf(fileToFind, "%s\\?????????.pak", (LPCTSTR)path);
+//
+//    // Search for the file
+//    HANDLE hFile = FindFirstFile(fileToFind, &FindFileData);
+//
+//    if (hFile == INVALID_HANDLE_VALUE)
+//    {
+//        return; // no files found
+//    }
+//
+//    do {
+//        CString fileName;
+//        fileName.Format("%s\\%s", (LPCTSTR)path, FindFileData.cFileName);
+//
+//        if (!Equals(FindFileData.cFileName, "Upload.pak")) {
+//            // Tell the user that we've found one scan which hasn't been evaluated
+//            CString msg;
+//            msg.Format("Spectra in %s not yet evaluated.  Will evalute now.", FindFileData.cFileName);
+//            ShowMessage(msg);
+//
+//            // Append the found file to the list of files to split and evaluate...
+//            fileList.AddTail(fileName);
+//        }
+//
+//    } while (0 != FindNextFile(hFile, &FindFileData));
+//
+//    FindClose(hFile);
+//
+//    return;
+//}
 
 bool CMasterController::CheckSettings()
 {
@@ -322,6 +322,7 @@ void CheckForSpectraInHexDir(const CString &path, CList <CString, CString&> &fil
     char fileToFind[MAX_PATH];
     CList <CString, CString &> pathList;
     CString pathName;
+    Common common;
 
     // Find all RXYZ - directories...
     sprintf(fileToFind, "%s\\R???", (LPCTSTR)path);
@@ -353,7 +354,7 @@ void CheckForSpectraInHexDir(const CString &path, CList <CString, CString&> &fil
         pathName.Format(pathList.GetNext(pos));
 
         // Check the directory...
-        CheckForSpectraInDir(pathName, fileList);
+        common.CheckForSpectraInDir(pathName, fileList);
     }
 
     return;

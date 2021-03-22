@@ -1,4 +1,11 @@
 NOVAC Program Release Notes
+
+-----------------------------------------------------
+Version 3.3 (TBD)
+
+New features
+* Directory polling option (#111)
+
 -----------------------------------------------------
 Version 3.2 (January 2021)
 

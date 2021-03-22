@@ -53,6 +53,11 @@ void CConfigureCOMPortDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Text(pDX, IDC_FTP_PASSWORD, m_ftpPassword);
     DDX_Control(pDX, IDC_FTP_PASSWORD, m_editPassword);
 
+    // directory polling settings
+    DDX_Text(pDX, IDC_EDIT_POLLING_DIRECTORY, m_directory);
+    DDX_Control(pDX, IDC_EDIT_POLLING_DIRECTORY, m_editDirectory);
+    DDX_Control(pDX, IDC_BUTTON_POL_DIR_BROWSE, m_dirBrowse);
+
     // The serial settings
     DDX_Control(pDX, IDC_COMPORT_COMBO, m_comPort);
     DDX_Control(pDX, IDC_BAUDRATE_COMBO, m_baudrate);
@@ -145,10 +150,16 @@ BEGIN_MESSAGE_MAP(CConfigureCOMPortDlg, CPropertyPage)
     ON_EN_CHANGE(IDC_FTP_USERNAME, SaveData)
     ON_EN_CHANGE(IDC_FTP_PASSWORD, SaveData)
 
+    // Dir polling 
+    ON_EN_CHANGE(IDC_EDIT_POLLING_DIRECTORY, SaveData)
+
     // The FTP/cable/radio radio-box
     ON_BN_CLICKED(IDC_RADIO_FTP, OnChangeMethod)
     ON_BN_CLICKED(IDC_RADIO_SERIAL, OnChangeMethod)
     ON_BN_CLICKED(IDC_RADIO_FREEWAVE_SERIAL, OnChangeMethod)
+    ON_BN_CLICKED(IDC_RADIO_DIRECTORY_POLLING, OnChangeMethod)
+    ON_BN_CLICKED(IDC_BUTTON_POL_DIR_BROWSE, &CConfigureCOMPortDlg::OnBnClickedButtonPolDirBrowse)
+
 END_MESSAGE_MAP()
 
 
@@ -237,6 +248,9 @@ void CConfigureCOMPortDlg::UpdateDlg() {
     if (comm.connectionType == FTP_CONNECTION) {
         m_curSetting = 2;
     }
+    else if (comm.connectionType == DIRECTORY_POLLING) {
+        m_curSetting = 3;
+    }
     else {
         switch (comm.medium) {
         case MEDIUM_CABLE: m_curSetting = 0; break;
@@ -274,7 +288,10 @@ void CConfigureCOMPortDlg::UpdateDlg() {
     m_ftpPassword.Format("%s", (LPCSTR)comm.ftpPassword);
     m_ftpUserName.Format("%s", (LPCSTR)comm.ftpUserName);
 
-    // 8. Update the screen
+    // 8. directory polling setting
+    m_directory.Format("%s", (LPCSTR)comm.directory);
+
+    // 9. Update the screen
     if (m_hWnd != NULL) {
         UpdateData(FALSE);
     }
@@ -290,6 +307,7 @@ void CConfigureCOMPortDlg::OnChangeMethod() {
     case 0:	ShowSerialCable(); break;
     case 1:	ShowFreewaveSerial(); break;
     case 2:	ShowFTP(); break;
+    case 3:	ShowDirectoryPolling(); break;
     default: ShowFTP();
     }
 
@@ -336,6 +354,9 @@ void CConfigureCOMPortDlg::SaveData() {
         case 2:
             comm.connectionType = FTP_CONNECTION;
             break;
+        case 3:
+            comm.connectionType = DIRECTORY_POLLING;
+            break;
         default:
             comm.connectionType = FTP_CONNECTION;
             break;
@@ -349,13 +370,16 @@ void CConfigureCOMPortDlg::SaveData() {
         comm.ftpPassword.Format("%s", (LPCSTR)m_ftpPassword);
         comm.ftpUserName.Format("%s", (LPCSTR)m_ftpUserName);
 
-        // 4. The Timeout
+        // 4. Directory Polling settings
+        comm.directory.Format("%s", (LPCSTR)m_directory);
+
+        // 5. The Timeout
         comm.timeout = m_timeout * 1000;
 
-        // 5. The Query period
+        // 6. The Query period
         comm.queryPeriod = (m_intervalHr * 3600 + m_intervalMin * 60 + m_intervalSec);
 
-        // 6. The sleep period
+        // 7. The sleep period
         comm.sleepTime.hour = m_sleepHr;
         comm.sleepTime.minute = m_sleepMin;
         comm.sleepTime.second = m_sleepSec;
@@ -401,6 +425,8 @@ void CConfigureCOMPortDlg::ShowSerialCable() {
     m_editPassword.ShowWindow(SW_HIDE);
     m_editRadioID.ShowWindow(SW_HIDE);
     m_labelRadioID.ShowWindow(SW_HIDE);
+    m_editDirectory.ShowWindow(SW_HIDE);
+    m_dirBrowse.ShowWindow(SW_HIDE);
 }
 
 /** Showing the settings for connecting using a Freewave serial modem */
@@ -424,6 +450,8 @@ void CConfigureCOMPortDlg::ShowFreewaveSerial() {
     m_editFtpHostname.ShowWindow(SW_HIDE);
     m_editUserName.ShowWindow(SW_HIDE);
     m_editPassword.ShowWindow(SW_HIDE);
+    m_editDirectory.ShowWindow(SW_HIDE);
+    m_dirBrowse.ShowWindow(SW_HIDE);
 }
 
 /** Showing the settings for connecting using FTP-Protocol*/
@@ -447,8 +475,35 @@ void CConfigureCOMPortDlg::ShowFTP() {
     m_handshake.ShowWindow(SW_HIDE);
     m_editRadioID.ShowWindow(SW_HIDE);
     m_labelRadioID.ShowWindow(SW_HIDE);
+    m_editDirectory.ShowWindow(SW_HIDE);
+    m_dirBrowse.ShowWindow(SW_HIDE);
 }
 
+/** Showing the settings when polling directory */
+void CConfigureCOMPortDlg::ShowDirectoryPolling() {
+    // 1. Set the labels
+    SetDlgItemText(IDC_LABEL1, "");
+    SetDlgItemText(IDC_LABEL2, "");
+    SetDlgItemText(IDC_LABEL3, "");
+    SetDlgItemText(IDC_LABEL4, "");
+
+    // 2. Show the controls we want to use
+    m_editDirectory.ShowWindow(SW_SHOW);
+    m_dirBrowse.ShowWindow(SW_SHOW);
+
+    // 3. Hide the controls we don't want to use
+    m_comPort.ShowWindow(SW_HIDE);
+    m_baudrate.ShowWindow(SW_HIDE);
+    m_handshake.ShowWindow(SW_HIDE);
+    m_editRadioID.ShowWindow(SW_HIDE);
+    m_labelRadioID.ShowWindow(SW_HIDE);
+
+    m_editFtpHostname.ShowWindow(SW_HIDE);
+    m_editUserName.ShowWindow(SW_HIDE);
+    m_editPassword.ShowWindow(SW_HIDE);
+    m_editTimeOut.ShowWindow(SW_HIDE);
+    m_label5.ShowWindow(SW_HIDE);
+}
 void CConfigureCOMPortDlg::InitToolTips() {
     if (m_toolTip.m_hWnd != NULL)
         return;
@@ -476,4 +531,14 @@ void CConfigureCOMPortDlg::InitToolTips() {
     m_toolTip.AddTool(&m_editPassword, "The password to log into the scanning instrument");
     m_toolTip.SetMaxTipWidth(SHRT_MAX);
     m_toolTip.Activate(TRUE);
+}
+
+void ConfigurationDialog::CConfigureCOMPortDlg::OnBnClickedButtonPolDirBrowse()
+{
+    Common common;
+    CString folderName;
+
+    if (common.BrowseForDirectory(folderName)) {
+        m_editDirectory.SetWindowText(folderName);
+    }
 }

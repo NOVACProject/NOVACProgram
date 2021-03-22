@@ -137,6 +137,7 @@ const enum MEASUREMENT_MODE {MODE_UNKNOWN, MODE_FLUX, MODE_FIXED, MODE_WINDSPEED
 #define SERIAL_CONNECTION 1
 #define FTP_CONNECTION 2
 #define HTTP_CONNECTION 3
+#define DIRECTORY_POLLING 4 // when acquisition from scanning instrument is done separately
 
 // Defining the types of media through which the communication occurs
 #define MEDIUM_CABLE 0
@@ -549,6 +550,10 @@ public:
 			@moveLen - the size of char to move
 			@return - if destbuf is full, false.*/
 	static bool FillBuffer(char* srcBuf, char* destBuf,long destStart,long moveLen);
+
+
+	/** Get list of spectra files in directory **/
+	static int CheckForSpectraInDir(const CString& path, CList <CString, CString&>& fileList);
 
 };// end of class Common
 
