@@ -235,7 +235,7 @@ CConfigurationSetting::CommunicationSetting &CConfigurationSetting::Communicatio
 }
 /** ------------- Constructor for the ftp-settings ----------------- */
 CConfigurationSetting::CFTPSetting::CFTPSetting()
-    : ftpStatus(0), ftpAddress(""), userName(""), password(""), protocol("SFTP"), ftpStartTime(0), ftpStopTime(86400)
+    : ftpStatus(0), ftpAddress(""), userName(""), password(""), protocol("SFTP"), port(22), ftpStartTime(0), ftpStopTime(86400)
 {
 }
 

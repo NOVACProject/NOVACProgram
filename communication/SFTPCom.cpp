@@ -88,7 +88,7 @@ namespace Communication
         }
     }
 
-    int CSFTPCom::Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, int timeout, bool /*mode*/, int portNumber)
+    int CSFTPCom::Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, int timeout, int portNumber, bool /*mode*/ )
     {
         if (nullptr != m_FtpConnection)
         {
