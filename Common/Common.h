@@ -555,6 +555,9 @@ public:
 	/** Get list of spectra files in directory **/
 	static int CheckForSpectraInDir(const CString& path, CList <CString, CString&>& fileList);
 
+	/** Get list of spectra files in RXYZ directory **/
+	static void CheckForSpectraInHexDir(const CString& path, CList <CString, CString&>& fileList);
+
 };// end of class Common
 
 // --------------------------------------------------------------------

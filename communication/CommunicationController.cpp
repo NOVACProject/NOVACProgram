@@ -244,6 +244,9 @@ UINT PollDirectory(LPVOID pParam) {
             ShowMessage(message);
         }
         else {
+            // Check subdirectories in format of RXYZ for data
+            common.CheckForSpectraInHexDir(directory, pakFilesToEvaluate);
+            
             // Go through all the spectrum files found and evaluate them
             if (!pakFilesToEvaluate.IsEmpty())
             {
@@ -267,6 +270,7 @@ UINT PollDirectory(LPVOID pParam) {
                 message.Format("0 pak files found for %s", serialId);
                 ShowMessage(message);
             }
+
         }
         message.Format("%s directory polling sleeping for %d seconds", serialId, queryPeriod);
         ShowMessage(message);

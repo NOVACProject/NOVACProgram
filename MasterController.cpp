@@ -63,7 +63,7 @@ CCriticalSection g_evalLogCritSect;
     will still remain in the output directory) */
 UINT CheckForOldSpectra(LPVOID pParam);
 //void CheckForSpectraInDir(const CString &path, CList <CString, CString&> &fileList);
-void CheckForSpectraInHexDir(const CString &path, CList <CString, CString&> &fileList);
+//void CheckForSpectraInHexDir(const CString &path, CList <CString, CString&> &fileList);
 void SetThreadName(DWORD dwThreadID, LPCTSTR szThreadName);
 
 #define MS_VC_EXCEPTION 0x406d1388 
@@ -222,7 +222,7 @@ UINT CheckForOldSpectra(LPVOID /*pParam*/)
     {
         path.Format("%sTemp\\", (LPCTSTR)g_settings.outputDirectory);
     }
-    CheckForSpectraInHexDir(path, pakFilesToEvaluate);
+    common.CheckForSpectraInHexDir(path, pakFilesToEvaluate);
 
     // 4. Go through all the spectrum files found and evaluate them
     if (!pakFilesToEvaluate.IsEmpty())
@@ -314,50 +314,6 @@ bool CMasterController::CheckSettings()
     }
 
     return false;
-}
-
-void CheckForSpectraInHexDir(const CString &path, CList <CString, CString&> &fileList)
-{
-    WIN32_FIND_DATA FindFileData;
-    char fileToFind[MAX_PATH];
-    CList <CString, CString &> pathList;
-    CString pathName;
-    Common common;
-
-    // Find all RXYZ - directories...
-    sprintf(fileToFind, "%s\\R???", (LPCTSTR)path);
-
-    // Search for the directories
-    HANDLE hFile = FindFirstFile(fileToFind, &FindFileData);
-
-    if (hFile == INVALID_HANDLE_VALUE)
-    {
-        return; // no directories found
-    }
-
-    do {
-        pathName.Format("%s\\%s", (LPCTSTR)path, (LPCTSTR)FindFileData.cFileName);
-
-        if (FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-            // This is a directory, add it to the list of directories to check...
-
-            pathList.AddTail(pathName);
-        }
-    } while (0 != FindNextFile(hFile, &FindFileData));
-
-    FindClose(hFile);
-
-    // Check each of the directories found...
-    POSITION pos = pathList.GetHeadPosition();
-    while (pos != NULL)
-    {
-        pathName.Format(pathList.GetNext(pos));
-
-        // Check the directory...
-        common.CheckForSpectraInDir(pathName, fileList);
-    }
-
-    return;
 }
 
 void SetThreadName(DWORD dwThreadID, LPCTSTR szThreadName)
