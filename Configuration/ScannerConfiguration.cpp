@@ -78,7 +78,7 @@ BOOL CScannerConfiguration::OnInitDialog()
 		m_pageEvaluation[k].m_pPSP->pszTitle = titles[k].GetBuffer();
 		m_showEvalPage[k] = true;		/** m_showEvalPage[i] is true if m_pageEvaluation[i] is visible */
 		m_showWindPage = true;			/** m_showWindPage is true if the wind configuration page is visible */
-		m_showVIIPage	 = true;			/** m_showVIIPage is true if the version2 configuration page is visible */
+		//m_showVIIPage	 = true;			/** m_showVIIPage is true if the version2 configuration page is visible */
 	}
 
 	// the wind configuration
@@ -89,11 +89,11 @@ BOOL CScannerConfiguration::OnInitDialog()
 	m_pageWind.m_pPSP->dwFlags |= PSP_PREMATURE;
 
 	// the advanced V-II configuration
-	m_pageVII.Construct(IDD_CONFIGURE_VII_ADVANCED);
-	m_pageVII.m_configuration			= m_configuration;
-	m_pageVII.m_scannerTree				= &m_scannerTree;
-	m_pageVII.m_parent					= NULL;
-	m_pageVII.m_pPSP->dwFlags |= PSP_PREMATURE;
+	//m_pageVII.Construct(IDD_CONFIGURE_VII_ADVANCED);
+	//m_pageVII.m_configuration			= m_configuration;
+	//m_pageVII.m_scannerTree				= &m_scannerTree;
+	//m_pageVII.m_parent					= NULL;
+	//m_pageVII.m_pPSP->dwFlags |= PSP_PREMATURE;
 
 	// the communication configuration
 	m_pageCommunication.Construct(IDD_CONFIGURE_COM_PORT);
@@ -116,7 +116,7 @@ BOOL CScannerConfiguration::OnInitDialog()
 	for(k = 0; k < MAX_CHANNEL_NUM; ++k)
 		m_sheet.AddPage(&m_pageEvaluation[k]);
 	m_sheet.AddPage(&m_pageWind);
-	m_sheet.AddPage(&m_pageVII);
+	//m_sheet.AddPage(&m_pageVII);
 	m_sheet.AddPage(&m_pageCommunication);
 
 	// find the position of the sheet
@@ -214,10 +214,10 @@ void CScannerConfiguration::OnChangeScanner(){
 	}
 
 	// Show or not to show the Version2 page
-	if (m_showVIIPage) {
-		m_sheet.RemovePage(&m_pageVII);
-		m_showVIIPage = false;
-	}
+	//if (m_showVIIPage) {
+	//	m_sheet.RemovePage(&m_pageVII);
+	//	m_showVIIPage = false;
+	//}
 
 	// show or not to show the windpage
 	if(nChannels <= 1 && m_showWindPage){
@@ -244,8 +244,8 @@ void CScannerConfiguration::OnChangeScanner(){
 		if(m_showEvalPage[k])
 			m_pageEvaluation[k].OnChangeScanner();
 	}
-	if(m_showVIIPage)
-		m_pageVII.OnChangeScanner();
+	//if(m_showVIIPage)
+	//	m_pageVII.OnChangeScanner();
 	if(m_showWindPage)
 		m_pageWind.OnChangeScanner();
 	//m_pageRemote.OnChangeScanner();
@@ -342,7 +342,7 @@ void CScannerConfiguration::OnAddScanner(){
 	// 8. Update the name of the file that the program should read from the server...
 	for(unsigned int i = 0; i < g_volcanoes.m_volcanoNum; ++i){
 		if(Equals(g_volcanoes.m_name[i], volcano)){
-			m_configuration->windSourceSettings.windFieldFile.Format("ftp://129.16.35.206/wind/wind_%s.txt", (LPCSTR)g_volcanoes.m_simpleName[i]);
+			m_configuration->windSourceSettings.windFieldFile.Format("sftp://ors20.see.chalmers.se/Wind/wind_%s.txt", (LPCSTR)g_volcanoes.m_simpleName[i]);
 		}
 	}
 
@@ -359,30 +359,35 @@ void CScannerConfiguration::OnRemoveScanner() {
 	int currentScanner, currentSpec;
 	GetScannerAndSpec(currentScanner, currentSpec);
 
-	// The currently selected item in the tree
-	HTREEITEM hTree = m_scannerTree.GetSelectedItem();
-
-	m_configuration->scannerNum -= 1;
-
-	// Move the focus to the next sibling in the tree. This lets the 
-	// dialogs update their data before we delete anything
-	HTREEITEM parent = m_scannerTree.GetParentItem(hTree);
-	HTREEITEM sibling = m_scannerTree.GetNextSiblingItem(hTree);
-	if (sibling == NULL)
-		sibling = m_scannerTree.GetPrevSiblingItem(hTree);
-	if (sibling == NULL) {
-		m_scannerTree.SelectItem(parent);
-	}
-	else {
-		m_scannerTree.SelectItem(sibling);
-	}
-
 	CString message;
 	message.Format("Are you sure you want to remove scanner: %s from the list?", (LPCSTR)m_configuration->scanner[currentScanner].spec[currentSpec].serialNumber);
 	int answer = MessageBox(message, NULL, MB_YESNO);
 	if (IDNO == answer) {
-		m_configuration->scannerNum += 1;
 		return;
+	}
+
+	// The currently selected item in the tree
+	HTREEITEM hTree = m_scannerTree.GetSelectedItem();
+
+	// Move the focus to another node in the tree. This lets the 
+	// dialogs update their data before we delete anything
+	HTREEITEM parent = m_scannerTree.GetParentItem(hTree);
+	HTREEITEM sibling = m_scannerTree.GetNextSiblingItem(hTree);
+	if (sibling == NULL) {
+		sibling = m_scannerTree.GetPrevSiblingItem(hTree);
+	}
+	if (sibling == NULL) {
+		HTREEITEM next = m_scannerTree.GetNextItem(hTree, TVGN_NEXTVISIBLE);
+		if (next == NULL) {
+			HTREEITEM first = m_scannerTree.GetFirstVisibleItem();
+			m_scannerTree.SelectItem(first);
+		}
+		else {
+			m_scannerTree.SelectItem(next);
+		}
+	}
+	else {
+		m_scannerTree.SelectItem(sibling);
 	}
 
 	/** remove the scanner from the list */
@@ -394,6 +399,23 @@ void CScannerConfiguration::OnRemoveScanner() {
 	m_scannerTree.DeleteItem(hTree);
 	if (parent != NULL && sibling == NULL) {
 		m_scannerTree.DeleteItem(parent);
+	}
+
+	m_configuration->scannerNum -= 1;
+
+	/** disable Remove button if no more scanners in tree */
+	if (m_configuration->scannerNum < 1) {
+		m_removeScannerBtn.EnableWindow(FALSE);
+
+		// TODO: reset page defaults
+		m_pageCommunication.OnChangeScanner();
+		m_pageLocation.OnChangeScanner();
+		for (int k = 0; k < MAX_CHANNEL_NUM; ++k) {
+			if (m_showEvalPage[k])
+				m_pageEvaluation[k].OnChangeScanner();
+		}
+		if (m_showWindPage)
+			m_pageWind.OnChangeScanner();
 	}
 
 	/** Update the dialog */
