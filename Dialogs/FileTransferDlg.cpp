@@ -204,7 +204,8 @@ UINT DownloadFileWithFTP(LPVOID pParam)
             dlg->m_ftpController->m_ftpInfo.hostName,
             dlg->m_ftpController->m_ftpInfo.userName,
             dlg->m_ftpController->m_ftpInfo.password,
-            dlg->m_ftpController->m_ftpInfo.timeout) != 1)
+            dlg->m_ftpController->m_ftpInfo.timeout,
+            dlg->m_ftpController->m_ftpInfo.port) != 1)
         {
             msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.hostName);
             dlg->m_fileStatusEdit.SetWindowText(msg);
@@ -216,7 +217,8 @@ UINT DownloadFileWithFTP(LPVOID pParam)
         if (dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.hostName,
             dlg->m_ftpController->m_ftpInfo.adminUserName,
             dlg->m_ftpController->m_ftpInfo.adminPassword,
-            dlg->m_ftpController->m_ftpInfo.timeout) != 1)
+            dlg->m_ftpController->m_ftpInfo.timeout,
+            dlg->m_ftpController->m_ftpInfo.port) != 1)
         {
             msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.hostName);
             dlg->m_fileStatusEdit.SetWindowText(msg);
@@ -369,7 +371,8 @@ UINT DownloadFolderWithFTP(LPVOID pParam)
     if (dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.hostName,
         dlg->m_ftpController->m_ftpInfo.userName,
         dlg->m_ftpController->m_ftpInfo.password,
-        dlg->m_ftpController->m_ftpInfo.timeout) != 1)
+        dlg->m_ftpController->m_ftpInfo.timeout,
+        dlg->m_ftpController->m_ftpInfo.port) != 1)
     {
         msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.hostName);
         dlg->m_fileStatusEdit.SetWindowText(msg);
@@ -435,7 +438,8 @@ UINT ViewFileByFTP(LPVOID pParam)
         if (dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.hostName,
             dlg->m_ftpController->m_ftpInfo.userName,
             dlg->m_ftpController->m_ftpInfo.password,
-            dlg->m_ftpController->m_ftpInfo.timeout) != 1)
+            dlg->m_ftpController->m_ftpInfo.timeout,
+            dlg->m_ftpController->m_ftpInfo.port) != 1)
         {
             msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.hostName);
             dlg->m_fileStatusEdit.SetWindowText(msg);
@@ -447,7 +451,8 @@ UINT ViewFileByFTP(LPVOID pParam)
         if (dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.hostName,
             dlg->m_ftpController->m_ftpInfo.adminUserName,
             dlg->m_ftpController->m_ftpInfo.adminPassword,
-            dlg->m_ftpController->m_ftpInfo.timeout) != 1)
+            dlg->m_ftpController->m_ftpInfo.timeout,
+            dlg->m_ftpController->m_ftpInfo.port) != 1)
         {
             msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.hostName);
             dlg->m_fileStatusEdit.SetWindowText(msg);
@@ -638,7 +643,8 @@ UINT UpdateFileWithFTP(LPVOID pParam)
         if (dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.hostName,
             dlg->m_ftpController->m_ftpInfo.userName,
             dlg->m_ftpController->m_ftpInfo.password,
-            dlg->m_ftpController->m_ftpInfo.timeout) != 1)
+            dlg->m_ftpController->m_ftpInfo.timeout,
+            dlg->m_ftpController->m_ftpInfo.port) != 1)
         {
             msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.hostName);
             dlg->m_fileStatusEdit.SetWindowText(msg);
@@ -650,7 +656,8 @@ UINT UpdateFileWithFTP(LPVOID pParam)
         if (dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.hostName,
             dlg->m_ftpController->m_ftpInfo.adminUserName,
             dlg->m_ftpController->m_ftpInfo.adminPassword,
-            dlg->m_ftpController->m_ftpInfo.timeout) != 1)
+            dlg->m_ftpController->m_ftpInfo.timeout,
+            dlg->m_ftpController->m_ftpInfo.port) != 1)
         {
             msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.hostName);
             dlg->m_fileStatusEdit.SetWindowText(msg);
@@ -680,7 +687,8 @@ UINT UploadFileWithFTP(LPVOID pParam)
         if (dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.hostName,
             dlg->m_ftpController->m_ftpInfo.userName,
             dlg->m_ftpController->m_ftpInfo.password,
-            dlg->m_ftpController->m_ftpInfo.timeout) != 1)
+            dlg->m_ftpController->m_ftpInfo.timeout,
+            dlg->m_ftpController->m_ftpInfo.port) != 1)
         {
             msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.hostName);
             dlg->m_fileStatusEdit.SetWindowText(msg);
@@ -692,7 +700,8 @@ UINT UploadFileWithFTP(LPVOID pParam)
         if (dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.hostName,
             dlg->m_ftpController->m_ftpInfo.adminUserName,
             dlg->m_ftpController->m_ftpInfo.adminPassword,
-            dlg->m_ftpController->m_ftpInfo.timeout) != 1)
+            dlg->m_ftpController->m_ftpInfo.timeout,
+            dlg->m_ftpController->m_ftpInfo.port) != 1)
         {
             msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.hostName);
             dlg->m_fileStatusEdit.SetWindowText(msg);
@@ -742,7 +751,8 @@ UINT DeleteFileByFTP(LPVOID pParam)
         if (dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.hostName,
             dlg->m_ftpController->m_ftpInfo.userName,
             dlg->m_ftpController->m_ftpInfo.password,
-            dlg->m_ftpController->m_ftpInfo.timeout) != 1)
+            dlg->m_ftpController->m_ftpInfo.timeout,
+            dlg->m_ftpController->m_ftpInfo.port) != 1)
         {
             msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.hostName);
             dlg->m_fileStatusEdit.SetWindowText(msg);
@@ -754,7 +764,8 @@ UINT DeleteFileByFTP(LPVOID pParam)
         if (dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.hostName,
             dlg->m_ftpController->m_ftpInfo.adminUserName,
             dlg->m_ftpController->m_ftpInfo.adminPassword,
-            dlg->m_ftpController->m_ftpInfo.timeout) != 1)
+            dlg->m_ftpController->m_ftpInfo.timeout,
+            dlg->m_ftpController->m_ftpInfo.port) != 1)
         {
             msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.hostName);
             dlg->m_fileStatusEdit.SetWindowText(msg);

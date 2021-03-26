@@ -288,6 +288,7 @@ public:
         CFTPSetting();
         void SetFTPStatus(int status);
         CString ftpAddress;     // the name of the FTP-server
+        int port;               // FTP port, in case not default
         CString userName;       // the user name at the FTP-server
         CString password;       // the password at the FTP-server
         CString protocol;       // the protocol to use, must be either FTP or SFTP

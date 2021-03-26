@@ -465,7 +465,7 @@ int CConfigurationFileHandler::WriteConfigurationFile(CConfigurationSetting &con
 
                 // ftp port, if not default (21)
                 if (comm.ftpPort != 21) {
-                    str.Format("%s<port>%s</port>\n", (LPCSTR)indent, comm.ftpPort);
+                    str.Format("%s<ftpPort>%d</ftpPort>\n", (LPCSTR)indent, comm.ftpPort);
                     fprintf(f, str);
                 }
 
@@ -838,8 +838,8 @@ int CConfigurationFileHandler::Parse_Communication() {
             continue;
         }
 
-        if (Equals(szToken, "port")) {
-            Parse_IntItem(TEXT("/port"), curComm->ftpPort); 
+        if (Equals(szToken, "ftpPort")) {
+            Parse_IntItem(TEXT("/ftpPort"), curComm->ftpPort); 
             continue;
         }
 

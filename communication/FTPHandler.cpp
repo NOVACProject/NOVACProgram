@@ -107,7 +107,7 @@ bool CFTPHandler::DownloadPakFiles(const CString& folder, std::vector<CScannerFi
     const CString workPak = "WORK.PAK";  // case here doesn't matter since the comparison below is case insensitive
     const CString uploadPak = "upload.pak";  // case here doesn't matter since the comparison below is case insensitive
 
-    if (Connect(m_ftpInfo.hostName, m_ftpInfo.userName, m_ftpInfo.password, m_ftpInfo.timeout) != 1)
+    if (Connect(m_ftpInfo.hostName, m_ftpInfo.userName, m_ftpInfo.password, m_ftpInfo.timeout, m_ftpInfo.port) != 1)
     {
         pView->PostMessage(WM_SCANNER_NOT_CONNECT, (WPARAM)&(m_spectrometerSerialID), 0);
         return false;
@@ -215,7 +215,7 @@ bool CFTPHandler::PollScanner()
             if (DownloadPakFiles(folder, m_fileInfoList))
             {
                 // we managed to download the files, now remove the folder
-                if (Connect(m_ftpInfo.hostName, m_ftpInfo.userName, m_ftpInfo.password, m_ftpInfo.timeout) != 1)
+                if (Connect(m_ftpInfo.hostName, m_ftpInfo.userName, m_ftpInfo.password, m_ftpInfo.timeout, m_ftpInfo.port) != 1)
                 {
                     pView->PostMessage(WM_SCANNER_NOT_CONNECT, (WPARAM)&(m_spectrometerSerialID), 0);
                     return false;
@@ -285,7 +285,7 @@ long CFTPHandler::GetPakFileList(const CString& folder)
     ftpSocket.SetLogFileName(listFilePath);
 
     // Log in to the instrument's FTP-server
-    if (!ftpSocket.Login(m_ftpInfo.hostName, m_ftpInfo.userName, m_ftpInfo.password))
+    if (!ftpSocket.Login(m_ftpInfo.hostName, m_ftpInfo.userName, m_ftpInfo.password, m_ftpInfo.port))
     {
         return -1;
     }
@@ -349,14 +349,14 @@ bool CFTPHandler::GetDiskFileList(char disk)
 
     if (disk == 'B')
     {
-        if (!ftpSocket.Login(m_ftpInfo.hostName, m_ftpInfo.userName, m_ftpInfo.password))
+        if (!ftpSocket.Login(m_ftpInfo.hostName, m_ftpInfo.userName, m_ftpInfo.password, m_ftpInfo.port))
         {
             return false;
         }
     }
     else
     {
-        if (!ftpSocket.Login(m_ftpInfo.hostName, m_ftpInfo.adminUserName, m_ftpInfo.adminPassword))
+        if (!ftpSocket.Login(m_ftpInfo.hostName, m_ftpInfo.adminUserName, m_ftpInfo.adminPassword, m_ftpInfo.port))
         {
             return false;
         }
@@ -581,7 +581,7 @@ bool CFTPHandler::DeleteRemoteFile(const CString& remoteFile)
 {
     if (m_FtpConnection == nullptr)
     {
-        if (Connect(m_ftpInfo.hostName, m_ftpInfo.userName, m_ftpInfo.password, m_ftpInfo.timeout) != 1)
+        if (Connect(m_ftpInfo.hostName, m_ftpInfo.userName, m_ftpInfo.password, m_ftpInfo.timeout, m_ftpInfo.port) != 1)
         {
             pView->PostMessage(WM_SCANNER_NOT_CONNECT, (WPARAM)&(m_spectrometerSerialID), 0);
             return false;
@@ -681,7 +681,7 @@ bool CFTPHandler::SendCommand(const char* cmd)
     }
 
     // Connect to the ftp server
-    if (!Connect(m_ftpInfo.hostName, m_ftpInfo.userName, m_ftpInfo.password, m_ftpInfo.timeout) == 1)
+    if (!Connect(m_ftpInfo.hostName, m_ftpInfo.userName, m_ftpInfo.password, m_ftpInfo.timeout, m_ftpInfo.port) == 1)
     {
         return false;
     }
@@ -759,7 +759,7 @@ int CFTPHandler::DownloadCfgTxt()
     CString localFileName;
 
     // Connect to the administrators account
-    if (Connect(m_ftpInfo.hostName, m_ftpInfo.adminUserName, m_ftpInfo.adminPassword, m_ftpInfo.timeout) != 1)
+    if (Connect(m_ftpInfo.hostName, m_ftpInfo.adminUserName, m_ftpInfo.adminPassword, m_ftpInfo.timeout, m_ftpInfo.port) != 1)
     {
         return 0; // failed to connect
     }

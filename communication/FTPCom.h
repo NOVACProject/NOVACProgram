@@ -15,7 +15,7 @@ namespace Communication
 
         // ------------------------ Implementing IFTPDatapload ------------------------
 
-        virtual int Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, int timeout, bool passiveMode = true, int portNumber = 21) override;
+        virtual int Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, int timeout, int portNumber, bool passiveMode = true) override;
 
         virtual int Disconnect() override;
 

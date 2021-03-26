@@ -8,3 +8,4 @@
 /CppCheck-cppcheck-build-dir
 /*.cppcheck
 *.log
+/UpgradeLog.htm

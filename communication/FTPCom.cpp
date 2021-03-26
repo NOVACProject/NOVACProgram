@@ -21,7 +21,7 @@ CFTPCom::~CFTPCom(void)
 //return 2 - ftp address parsing problem
 //return 3 - can not connect to internet
 //return 4 - ftp exception
-int CFTPCom::Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, int timeout, bool passiveMode, int portNumber)
+int CFTPCom::Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, int timeout, int portNumber, bool passiveMode)
 {
     INTERNET_PORT port = portNumber;
     DWORD dwServiceType = AFX_INET_SERVICE_FTP;

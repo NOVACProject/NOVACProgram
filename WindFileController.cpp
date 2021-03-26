@@ -146,12 +146,13 @@ void CWindFileController::DownloadFileByFTP()
     }
     const CString userName = g_settings.ftpSetting.userName;
     const CString password = g_settings.ftpSetting.password;
+    const int port = g_settings.ftpSetting.port;
 
     // 3. Setup the FTP-communication handler
     std::unique_ptr<Communication::IFTPDataUpload> ftp = Communication::IFTPDataUpload::Create(g_settings.ftpSetting.protocol);
 
     // 4. Connect!
-    if (ftp->Connect(ipNumber, userName, password, TRUE) != 1)
+    if (ftp->Connect(ipNumber, userName, password, port, TRUE) != 1)
     {
         return; // fail
     }

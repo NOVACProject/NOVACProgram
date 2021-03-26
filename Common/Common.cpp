@@ -1458,3 +1458,48 @@ int Common::CheckForSpectraInDir(const CString& path, CList <CString, CString&>&
 
 	return 0;
 }
+
+void Common::CheckForSpectraInHexDir(const CString& path, CList <CString, CString&>& fileList)
+{
+	WIN32_FIND_DATA FindFileData;
+	char fileToFind[MAX_PATH];
+	CList <CString, CString&> pathList;
+	CString pathName;
+
+	// Find all RXYZ - directories...
+	// Since version 3.3, this will check for directories that begin with R and up to 9 chars long.
+	// This is to support subdirectory searching in the directory polling option.
+	sprintf(fileToFind, "%s\\R?????????", (LPCTSTR)path);
+
+	// Search for the directories
+	HANDLE hFile = FindFirstFile(fileToFind, &FindFileData);
+
+	if (hFile == INVALID_HANDLE_VALUE)
+	{
+		return; // no directories found
+	}
+
+	do {
+		pathName.Format("%s\\%s", (LPCTSTR)path, (LPCTSTR)FindFileData.cFileName);
+
+		if (FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+			// This is a directory, add it to the list of directories to check...
+
+			pathList.AddTail(pathName);
+		}
+	} while (0 != FindNextFile(hFile, &FindFileData));
+
+	FindClose(hFile);
+
+	// Check each of the directories found...
+	POSITION pos = pathList.GetHeadPosition();
+	while (pos != NULL)
+	{
+		pathName.Format(pathList.GetNext(pos));
+
+		// Check the directory...
+		CheckForSpectraInDir(pathName, fileList);
+	}
+
+	return;
+}
