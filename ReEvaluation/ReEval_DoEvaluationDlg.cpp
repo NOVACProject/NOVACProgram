@@ -485,7 +485,7 @@ LRESULT CReEval_DoEvaluationDlg::OnProgress(WPARAM wp, LPARAM lp) {
     if (m_reeval->fRun) // Check if the evaluation is still running
     {
         double progress = (double)wp;
-        m_progressBar.SetPos((int)(progress * 1000.0));
+        m_progressBar.SetPos((int)(progress));
     }
 
     return 0;
