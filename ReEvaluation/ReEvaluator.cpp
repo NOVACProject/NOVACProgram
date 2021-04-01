@@ -90,6 +90,7 @@ bool CReEvaluator::DoEvaluation()
     for (int curScanFile = 0; curScanFile < m_scanFileNum; ++curScanFile)
     {
         m_progress = curScanFile / (double)m_scanFileNum;
+        m_progress *= 1000.0;
         if (pView != nullptr)
         {
             pView->PostMessage(WM_PROGRESS, (WPARAM)m_progress);
