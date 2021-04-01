@@ -358,6 +358,9 @@ void CScannerConfiguration::OnAddScanner(){
 void CScannerConfiguration::OnRemoveScanner() {
 	int currentScanner, currentSpec;
 	GetScannerAndSpec(currentScanner, currentSpec);
+	if (currentScanner == -1 || currentSpec == -1) {
+		return;
+	}
 
 	CString message;
 	message.Format("Are you sure you want to remove scanner: %s from the list?", (LPCSTR)m_configuration->scanner[currentScanner].spec[currentSpec].serialNumber);
@@ -408,14 +411,6 @@ void CScannerConfiguration::OnRemoveScanner() {
 		m_removeScannerBtn.EnableWindow(FALSE);
 
 		// TODO: reset page defaults
-		m_pageCommunication.OnChangeScanner();
-		m_pageLocation.OnChangeScanner();
-		for (int k = 0; k < MAX_CHANNEL_NUM; ++k) {
-			if (m_showEvalPage[k])
-				m_pageEvaluation[k].OnChangeScanner();
-		}
-		if (m_showWindPage)
-			m_pageWind.OnChangeScanner();
 	}
 
 	/** Update the dialog */
