@@ -29,9 +29,5 @@ namespace ConfigurationDialog{
 	protected:
 		DECLARE_MESSAGE_MAP()
 
-
-		void GetScan(int &curScan, const CString &volcanoName);
-
-		void GetSpec(int &curScan, int &curSpec, const CString &serial);
 	};
 }

@@ -32,26 +32,19 @@ void CSystemConfigurationPage::OnChangeScanner(){
 		return;
 
 	GetScanAndSpec(curScan, curSpec);
+	if (curScan == -1 || curSpec == -1) {
+		return;
+	}
 
 	m_curScanner = NULL;
 	m_curSpec = NULL;
 
 	// Set the scanner
-	if(curScan == -1){
-		if(m_configuration->scannerNum > 0)
-			m_curScanner = &m_configuration->scanner[0];
-	}else{
-		m_curScanner = &m_configuration->scanner[curScan];
-	}
+	m_curScanner = &m_configuration->scanner[curScan];
 
 	// Set the spectrometer
 	if(m_curScanner != NULL){
-		if(curSpec == -1){
-			if(m_curScanner->specNum > 0)
-				m_curSpec = &m_curScanner->spec[0];
-		}else{
-			m_curSpec = &m_curScanner->spec[curSpec];
-		}
+		m_curSpec = &m_curScanner->spec[curSpec];
 	}
 }
 

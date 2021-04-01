@@ -192,38 +192,36 @@ BOOL CLocationConfigurationDlg::PreTranslateMessage(MSG* pMsg) {
 }
 
 void CLocationConfigurationDlg::OnChangeScanner() {
-    if (UpdateData(TRUE)) { // <-- first save the data in the dialog
 
-        // Then change the settings so that we're using the newly selected scanner
-        CSystemConfigurationPage::OnChangeScanner();
+    // Then change the settings so that we're using the newly selected scanner
+    CSystemConfigurationPage::OnChangeScanner();
 
-        if (m_curScanner == NULL) {
-            return;
-        }
-
-        // Then Update the volcano combo-box
-        for (unsigned int i = 0; i < g_volcanoes.m_volcanoNum; ++i) {
-            if (Equals(g_volcanoes.m_name[i], m_curScanner->volcano)) {
-                m_comboVolcano.SetCurSel(i);
-                break;
-            }
-        }
-
-        // Then update the spectrometer model
-        const int spectrometerTypeIdx = CSpectrometerDatabase::GetInstance().GetModelIndex(m_curScanner->spec[0].modelName);
-        m_comboSpectrometerModel.SetCurSel(spectrometerTypeIdx);
-
-        // Then update the channel numbers
-        m_comboSpectrometerChannels.SetCurSel(m_curScanner->spec[0].channelNum - 1);
-
-        // Update the electronics
-        m_comboElectronics.SetCurSel((int)m_curScanner->electronicsBox);
-
-        m_comboSpectrometerChannels.EnableWindow(TRUE);
-
-        // Finally, update the screen to reflect the changes
-        UpdateData(FALSE);
+    if (m_curScanner == NULL) {
+        return;
     }
+
+    // Then Update the volcano combo-box
+    for (unsigned int i = 0; i < g_volcanoes.m_volcanoNum; ++i) {
+        if (Equals(g_volcanoes.m_name[i], m_curScanner->volcano)) {
+            m_comboVolcano.SetCurSel(i);
+            break;
+        }
+    }
+
+    // Then update the spectrometer model
+    const int spectrometerTypeIdx = CSpectrometerDatabase::GetInstance().GetModelIndex(m_curScanner->spec[0].modelName);
+    m_comboSpectrometerModel.SetCurSel(spectrometerTypeIdx);
+
+    // Then update the channel numbers
+    m_comboSpectrometerChannels.SetCurSel(m_curScanner->spec[0].channelNum - 1);
+
+    // Update the electronics
+    m_comboElectronics.SetCurSel((int)m_curScanner->electronicsBox);
+
+    m_comboSpectrometerChannels.EnableWindow(TRUE);
+
+    // Finally, update the screen to reflect the changes
+    UpdateData(FALSE);
 }
 
 BOOL ConfigurationDialog::CLocationConfigurationDlg::OnSetActive()

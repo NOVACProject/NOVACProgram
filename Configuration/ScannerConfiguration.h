@@ -99,6 +99,6 @@ namespace ConfigurationDialog
 		bool m_showWindPage;
 
 		/** m_showVIIPage is true if the Version-II configuration page is visible */
-		bool m_showVIIPage;
+		//bool m_showVIIPage;
 	};
 }

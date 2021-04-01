@@ -131,7 +131,6 @@ void CConfigurationTreeCtrl::GetCurScanAndSpec(int &curScanner, int &curSpec){
 	if(ItemHasChildren(hTree)){
 		hTree = GetNextItem(hTree, TVGN_CHILD);
 		SelectItem(hTree);
-		return;
 	}
 
 	// Get the serial-number of the spectrometer
