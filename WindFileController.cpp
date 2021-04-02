@@ -152,7 +152,7 @@ void CWindFileController::DownloadFileByFTP()
     std::unique_ptr<Communication::IFTPDataUpload> ftp = Communication::IFTPDataUpload::Create(g_settings.ftpSetting.protocol);
 
     // 4. Connect!
-    if (ftp->Connect(ipNumber, userName, password, port, TRUE) != 1)
+    if (ftp->Connect(ipNumber, userName, password, 60, port, TRUE) != 1)
     {
         return; // fail
     }
