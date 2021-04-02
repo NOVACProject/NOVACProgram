@@ -321,7 +321,7 @@ RETURN_CODE CEvaluationController::EvaluateScan(const CString &fileName, int vol
     }
 
     // 11. Append the result to the log file of the corresponding scanningInstrument
-    if (SUCCESS != WriteEvaluationResult(m_lastResult.get(), *scan, *spectrometer, windField)) {
+    if (SUCCESS != WriteEvaluationResult(m_lastResult.get(), *scan, *spectrometer, windField, volcanoIndex)) {
         spectrometer->m_logFileHandler.WriteErrorMessage(TEXT("Could not write result to file"));
     }
 
@@ -552,7 +552,7 @@ RETURN_CODE CEvaluationController::WriteFluxResult(const CScanResult *result, co
     return SUCCESS;
 }
 
-RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *result, const FileHandler::CScanFileHandler& scan, const CSpectrometer &spectrometer, CWindField &windField) {
+RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *result, const FileHandler::CScanFileHandler& scan, const CSpectrometer &spectrometer, CWindField &windField, int volcanoIndex) {
     CString string, string1, string2, string3, string4;
     const CConfigurationSetting::SpectrometerSetting &settings = spectrometer.m_settings;
     CString pakFile, txtFile, evalLogFile;
@@ -782,6 +782,10 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *resu
         fprintf(f, string);
         fclose(f);
     }
+
+
+    // Upload the flux-log file to the FTP-Server
+    UploadToNOVACServer(evalLogFile, volcanoIndex);
 
     return SUCCESS;
 }
