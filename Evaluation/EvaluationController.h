@@ -161,9 +161,10 @@ namespace Evaluation
 		/** Appends the evaluation result to the appropriate log file.
 			@param result - a CScanResult holding information about the result
 			@param scan - the scan itself, also containing information about the evaluation and the flux.
-			@param scanningInstrument - information about the scanning instrument that generated the scan. 
+			@param scanningInstrument - information about the scanning instrument that generated the scan.  
+			@param volcanoIndex - identifies the volcano that this eval comes from
 			@return SUCCESS if operation completed sucessfully. */
-		RETURN_CODE WriteEvaluationResult(const CScanResult *result, const FileHandler::CScanFileHandler& scan, const CSpectrometer &spectrometer, CWindField &windField);
+		RETURN_CODE WriteEvaluationResult(const CScanResult *result, const FileHandler::CScanFileHandler& scan, const CSpectrometer &spectrometer, CWindField &windField, int volcanoIndex);
 
 		/** Handles the connection of a un-identified spectrometer to the network.
 			@param serialNumber - the serial number of the newly connected spectrometer. 

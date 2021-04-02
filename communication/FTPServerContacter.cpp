@@ -184,7 +184,7 @@ BOOL CFTPServerContacter::OnIdle(LONG /*lCount*/) {
         m_ftp = IFTPDataUpload::Create(g_settings.ftpSetting.protocol);
     }
 
-    if (m_ftp->Connect(g_settings.ftpSetting.ftpAddress, g_settings.ftpSetting.userName, g_settings.ftpSetting.password, 60, TRUE) == 1)
+    if (m_ftp->Connect(g_settings.ftpSetting.ftpAddress, g_settings.ftpSetting.userName, g_settings.ftpSetting.password, 60, 22, TRUE) == 1)
     {
         while (m_fileList.GetCount() > 0)
         {
