@@ -6,6 +6,7 @@ Version 3.3 (TBD)
 Bug fixes
 * Fix quirks when deleting scanners (#140)
 * Fix evaluation progress bar not working in Re-Evaluation dialog (#132)
+* Return parsing error if no ws, wd, or ph read from wind file in post flux dialog (#147)
 
 New features
 * Directory polling option (#111)
