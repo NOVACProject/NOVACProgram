@@ -156,6 +156,10 @@ RETURN_CODE CWindFileReader::ReadWindFile(CWindFieldDatabase& result)
     // close the file
     fclose(f);
 
+    if (result.m_containsWindDirection == false && result.m_containsWindSpeed == false && result.m_containsPlumeHeight == false) {
+        return FAIL;
+    }
+
     // all is ok..
     return SUCCESS;
 }
