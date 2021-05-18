@@ -43,6 +43,7 @@
 #include "Dialogs/ImportSpectraDlg.h"
 #include "Dialogs/FileTransferDlg.h"
 #include "Dialogs/GeometryDlg.h"
+#include "Dialogs/MergeEvalLogDlg.h"
 #include "Dialogs/SplitPakFilesDlg.h"
 #include "Dialogs/MergePakFilesDlg.h"
 #include "Dialogs/DataBrowserDlg.h"
@@ -97,6 +98,7 @@ BEGIN_MESSAGE_MAP(CNovacMasterProgramView, CFormView)
     ON_COMMAND(ID_ANALYSIS_BROWSEMEASUREDDATA, OnMenuAnalysisBrowseData)
     ON_COMMAND(ID_FILE_EXPORT, OnMenuFileExport)
     ON_COMMAND(ID_FILE_IMPORT, OnMenuFileImport)
+    ON_COMMAND(ID_FILE_MERGEEVALUATIONLOGS, OnMenuFileMergeEvaluationLogs)
     ON_COMMAND(ID_FILE_SPLITMERGE, OnMenuFileSplitMergePak)
     ON_COMMAND(ID_FILE_CHECKPAKFILE, OnMenuFileCheckPakFile)
     ON_COMMAND(ID_CONFIGURATION_FILETRANSFER, OnMenuConfigurationFileTransfer)
@@ -1128,6 +1130,12 @@ void CNovacMasterProgramView::OnMenuFileImport()
     dlg.AddPage(&page1);
 
     // show the window
+    dlg.DoModal();
+}
+
+void CNovacMasterProgramView::OnMenuFileMergeEvaluationLogs()
+{
+    Dialogs::CMergeEvalLogDlg dlg;
     dlg.DoModal();
 }
 
