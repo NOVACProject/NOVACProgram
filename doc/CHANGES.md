@@ -10,6 +10,7 @@ Bug fixes
 
 New features
 * Directory polling option (#111)
+* Merge Evaluation Log feature (#136)
 * Upload evaluation logs to FTP/SFTP server (#137)
 * Use passive FTP when connecting to instrument PC
 
