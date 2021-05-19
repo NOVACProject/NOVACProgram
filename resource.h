@@ -244,6 +244,7 @@
 #define IDD_CREATE_REFERENCES_DIALOG    316
 #define IDD_CALIBRATION_DIALOG          319
 #define IDD_FLUX_HISTORY_DLG            320
+#define IDD_DLG_EVALLOGS_MERGE          321
 #define IDC_STATIC_VERSIONNUMBER        1000
 #define IDC_STATIC_COPYRIGHT            1001
 #define IDC_BUTTON_TEST                 1002
@@ -347,6 +348,7 @@
 #define IDC_BUTTON_SEARCH               1063
 #define IDC_BUTTON_BROWSE_SLF           1063
 #define IDC_BUTTON_POL_DIR_BROWSE       1063
+#define IDC_BTN_BROWSEEVALLOGS          1063
 #define IDC_BUTTON2                     1064
 #define IDC_BTN_CALC_FLUX               1064
 #define IDC_REEVAL_CANCEL               1064
@@ -361,6 +363,7 @@
 #define IDC_BUTTON_DARK_SETTINGS        1064
 #define IDC_BUTTON_BROWSE_CLB           1064
 #define IDC_BUTTON_BROWSE_MEASURED_SPECTRUM 1064
+#define IDC_BTN_BROWSEOUTPUTFILE_EVALLOG 1064
 #define IDC_BROWSE_EXPORTDIR            1065
 #define IDC_BUTTON_REFERENCE_PROEPERTIES 1065
 #define IDC_BROWSE_SERIES2              1065
@@ -510,6 +513,7 @@
 #define IDC_EDIT_PLUMECENTRE            1118
 #define IDC_EDIT_SOLARSPECTRUMPATH      1118
 #define IDC_EDIT_MODELNAME              1118
+#define IDC_EDIT_OUTPUTFILE_EVALLOG     1118
 #define IDC_FTPIP                       1119
 #define IDC_EDIT_EXPORTDIR              1119
 #define IDC_REEVAL_LBL_DELTA2           1119
@@ -820,6 +824,7 @@
 #define IDC_STATIC_INITIAL_WAVEL_CALIBRATION2 1361
 #define IDC_FLUX_10DAY_FRAME            1361
 #define IDC_FLUX_FRAME                  1362
+#define IDC_LABEL_EVALLOGS              1364
 #define ID_CONTROL_START                32771
 #define ID_VIEW_PEAKINTENSITY_BD        32779
 #define ID_VIEW_FITINTENSITY_BD         32780
@@ -831,14 +836,15 @@
 #define ID_ANALYSIS_COLUMN_HISTORY      32787
 #define ID_FILE_CREATEREFERENCES        32788
 #define ID_FILE_CALIBRATESPECTROMETER   32789
+#define ID_FILE_MERGEEVALUATIONLOGS     32790
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        321
-#define _APS_NEXT_COMMAND_VALUE         32790
-#define _APS_NEXT_CONTROL_VALUE         1364
+#define _APS_NEXT_RESOURCE_VALUE        323
+#define _APS_NEXT_COMMAND_VALUE         32791
+#define _APS_NEXT_CONTROL_VALUE         1365
 #define _APS_NEXT_SYMED_VALUE           109
 #endif
 #endif

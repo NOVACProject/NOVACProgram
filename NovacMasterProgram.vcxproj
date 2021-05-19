@@ -213,6 +213,7 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
     <ClCompile Include="Dialogs\ReferencePropertiesDlg.cpp" />
     <ClCompile Include="Dialogs\SelectionDialog.cpp" />
     <ClCompile Include="Dialogs\SimplePropertySheet.cpp" />
+    <ClCompile Include="Dialogs\MergeEvalLogDlg.cpp" />
     <ClCompile Include="Dialogs\SplitPakFilesDlg.cpp" />
     <ClCompile Include="Dialogs\SummarizeFluxDataDlg.cpp" />
     <ClCompile Include="DlgControls\GridCtrl\GridCell.cpp" />
@@ -233,6 +234,7 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
     <ClCompile Include="Evaluation\Spectrometer.cpp" />
     <ClCompile Include="Evaluation\SpectrometerHistory.cpp" />
     <ClCompile Include="FileTreeCtrl.cpp" />
+    <ClCompile Include="File\FileMerger.cpp" />
     <ClCompile Include="File\WindFileReader.cpp" />
     <ClCompile Include="Geometry\GeometryCalculator.cpp" />
     <ClCompile Include="Geometry\GeometryEvaluator.cpp" />
@@ -466,6 +468,7 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
     <ClInclude Include="Dialogs\ReferencePropertiesDlg.h" />
     <ClInclude Include="Dialogs\SelectionDialog.h" />
     <ClInclude Include="Dialogs\SimplePropertySheet.h" />
+    <ClInclude Include="Dialogs\MergeEvalLogDlg.h" />
     <ClInclude Include="Dialogs\SplitPakFilesDlg.h" />
     <ClInclude Include="Dialogs\SummarizeFluxDataDlg.h" />
     <ClInclude Include="DlgControls\GridCtrl\CellRange.h" />
@@ -488,6 +491,7 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
     <ClInclude Include="Evaluation\Spectrometer.h" />
     <ClInclude Include="Evaluation\SpectrometerHistory.h" />
     <ClInclude Include="FileTreeCtrl.h" />
+    <ClInclude Include="File\FileMerger.h" />
     <ClInclude Include="File\WindFileReader.h" />
     <ClInclude Include="Geometry\GeometryCalculator.h" />
     <ClInclude Include="Geometry\GeometryEvaluator.h" />

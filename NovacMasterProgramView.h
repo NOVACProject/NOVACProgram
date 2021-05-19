@@ -108,6 +108,7 @@ public:
 	afx_msg void OnMenuFileExport();
 	afx_msg void OnMenuFileImport();
 	afx_msg void OnMenuFileCheckPakFile();
+	afx_msg void OnMenuFileMergeEvaluationLogs();
 	afx_msg void OnMenuFileSplitMergePak();
 	afx_msg void OnMenuConfigurationFileTransfer();
 	afx_msg void OnChangeUnitOfFluxToKgS();
