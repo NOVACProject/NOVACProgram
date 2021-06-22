@@ -16,7 +16,7 @@ FileMerger::~FileMerger(void)
 }
 
 
-/** Specifies the full path and filename
+/** Specifies the full path and file name
 	of the file to output the data to */
 void FileMerger::SetOutputFile(CString &outputFile)
 {
