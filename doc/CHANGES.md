@@ -1,7 +1,7 @@
 NOVAC Program Release Notes
 
 -----------------------------------------------------
-Version 3.3 (TBD)
+Version 3.3 (June 2021)
 
 Bug fixes
 * Fix quirks when deleting scanners (#140)
