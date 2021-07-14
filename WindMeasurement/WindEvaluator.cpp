@@ -18,7 +18,7 @@ extern CFormView *pView;									// <-- The screen
 extern CMeteorologicalData g_metData;			// <-- The meteorological data
 
 using namespace WindSpeedMeasurement;
-
+using namespace novac;
 
 IMPLEMENT_DYNCREATE(CWindEvaluator, CWinThread)
 

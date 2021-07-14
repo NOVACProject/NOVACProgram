@@ -485,7 +485,7 @@ int Common::GetDay()
 		NB!! This calculation is only based on the distance to longitude=0. Thefore
 			the resulting hour can have an error of up to +- 3 hours from the real local-time.
 		*/
-RETURN_CODE Common::ConvertToLocalTime(unsigned short date[3], int &hr, CGPSData &gps){
+RETURN_CODE Common::ConvertToLocalTime(unsigned short date[3], int &hr, novac::CGPSData &gps){
 	// Direction is -1 if the local time is after the GMT-time, otherwise positive.
 	int		 direction = (gps.m_longitude > 0) ? 1 : -1;
 
@@ -627,7 +627,7 @@ int	Common::DaysInMonth(int year, int month){
 
 /** Takes a given date and calculates the day of the year. */
 int	Common::DayNr(const unsigned short day[3]){
-	CDateTime d;
+	novac::CDateTime d;
 	d.year	= day[2];
 	d.month	= (unsigned char)day[1];
 	d.day		= (unsigned char)day[0];
@@ -635,7 +635,7 @@ int	Common::DayNr(const unsigned short day[3]){
 }
 
 /** Takes a given date and calculates the day of the year. */
-int	Common::DayNr(const CDateTime &day){
+int	Common::DayNr(const novac::CDateTime& day){
 	// Check errors in input
 	if(day.month <= 0 || day.month > 12 || day.day < 1 || day.day > DaysInMonth(day.year, day.month))
 		return 0;
@@ -652,7 +652,7 @@ int	Common::DayNr(const CDateTime &day){
 }
 
 /** Returns the Julian Day. */
-double Common::JulianDay(const CDateTime &utcTime){
+double Common::JulianDay(const novac::CDateTime& utcTime){
 	int N, J, b;
 	double Hd,H, JD;
 
@@ -702,7 +702,7 @@ __int64 Common::Epoch() {
 	return rawtime;
 }
 
-__int64 Common::Epoch(const CDateTime &utcTime) {
+__int64 Common::Epoch(const novac::CDateTime& utcTime) {
 	time_t rawtime;
 	struct tm * utc;
 	time(&rawtime);
@@ -725,7 +725,7 @@ __int64 Common::Epoch(const CDateTime &utcTime) {
 		for the site specified by (lat, lon) and for the time given in gmtTime. 
 		Note that the returned angles are in degrees and that the specified
 		time _must_ be GMT-time. */
-RETURN_CODE Common::GetSunPosition(const CDateTime &gmtTime, double lat, double lon, double &SZA, double &SAZ){
+RETURN_CODE Common::GetSunPosition(const novac::CDateTime& gmtTime, double lat, double lon, double &SZA, double &SAZ){
 	SZA = SAZ = 0; // reset the numbers
 
 	// Get the julian day

@@ -7,6 +7,7 @@
 #include "../PostFlux/PostFluxCalculator.h"
 
 using namespace Dialogs;
+using namespace novac;
 
 // CExportEvallogDlg dialog
 

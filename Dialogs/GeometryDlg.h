@@ -64,7 +64,7 @@ namespace Dialogs{
 		int           m_curScan[MAX_N_SCANNERS];
 	
 		/** The position of the scanning instruments */
-		CGPSData			m_gps[MAX_N_SCANNERS];
+		novac::CGPSData			m_gps[MAX_N_SCANNERS];
 
 		/** The index of the nearest volcano into the global g_volcanoes-list */
 		int						m_volcanoIndex[MAX_N_SCANNERS];

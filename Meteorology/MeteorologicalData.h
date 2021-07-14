@@ -22,7 +22,7 @@ public:
 
     /** Sets up the list of volcanoes monitored, this is necessary for the wind-field reading
         to know to which locations the wind data should be monitored */
-    void SetVolcanoes(const std::vector<CNamedLocation>& volcanoes);
+    void SetVolcanoes(const std::vector<novac::CNamedLocation>& volcanoes);
 
     /** Tries to read in a wind-field from a file. If this is successful
         then all wind-data returned will be first searched for in the wind-field
@@ -34,7 +34,7 @@ public:
         The wind-field will first of all be taken from a read-in wind-field file
             if no valid data can be found in the wind-field file then the
             user provided or default wind-field will be returned. */
-    int GetWindField(const CString& serialNumber, const CDateTime& dt, CWindField& windField);
+    int GetWindField(const CString& serialNumber, const novac::CDateTime& dt, CWindField& windField);
 
     /** The default wind field for the calculations */
     CWindField defaultWindField;
@@ -67,7 +67,7 @@ private:
 
     /** This is the list of monitored volcanoes, including their positions.
         Used by the net-cdf reading routine to figure out where to extract the data. */
-    std::vector<CNamedLocation> m_volcanoes;
+    std::vector<novac::CNamedLocation> m_volcanoes;
 
     /** How many scanners that we have defined the wind field for */
     long m_scannerNum = 0;

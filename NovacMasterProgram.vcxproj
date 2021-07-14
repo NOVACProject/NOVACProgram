@@ -189,7 +189,6 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
     <ClCompile Include="Configuration\SystemConfigurationPage.cpp" />
     <ClCompile Include="Configuration\VIIAdvancedConfigurationDlg.cpp" />
     <ClCompile Include="Configuration\WindConfigurationDlg.cpp" />
-    <ClCompile Include="CreateReferencesDlg.cpp" />
     <ClCompile Include="CustomSpectrometerModelDlg.cpp" />
     <ClCompile Include="Dialogs\ColumnHistoryDlg.cpp" />
     <ClCompile Include="Dialogs\ConfigurationDlg.cpp" />
@@ -272,11 +271,18 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
     <ClInclude Include="communication\NodeControlInfo.h" />
     <ClInclude Include="communication\IFTPDataUpload.h" />
     <ClInclude Include="communication\SFTPCom.h" />
-    <ClInclude Include="CreateReferencesDlg.h" />
     <ClInclude Include="CustomSpectrometerModelDlg.h" />
     <ClInclude Include="Dialogs\ColumnHistoryDlg.h" />
     <ClInclude Include="Dialogs\FluxHistoryDlg.h" />
     <ClInclude Include="Evaluation\EvaluationResultView.h" />
+    <ClCompile Include="SpectralEvaluation\src\Calibration\InstrumentLineShapeEstimation.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Calibration\ReferenceSpectrumConvolution.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="SpectralEvaluation\src\DateTime.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
@@ -361,7 +367,7 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="SpectralEvaluation\src\Spectra\ReferenceSpectrumConvolution.cpp">
+    <ClCompile Include="SpectralEvaluation\src\Math\FFT.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -381,7 +387,7 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="SpectralEvaluation\src\Spectra\WavelengthCalibration.cpp">
+    <ClCompile Include="SpectralEvaluation\src\Spectra\SpectrumUtils.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -589,7 +595,6 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Flux\PlumeInScanProperty.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\GPSData.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Interpolation.h" />
-    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Spectra\ReferenceSpectrumConvolution.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Spectra\Scattering.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Spectra\SpectrometerModel.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Spectra\Spectrum.h" />

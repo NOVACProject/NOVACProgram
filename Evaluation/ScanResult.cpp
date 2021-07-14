@@ -16,6 +16,7 @@
 #include <algorithm>
 
 using namespace Evaluation;
+using namespace novac;
 
 extern CMeteorologicalData g_metData;			// <-- The meteorological data
 extern CVolcanoInfo					g_volcanoes;	// <-- A list of all known volcanoes

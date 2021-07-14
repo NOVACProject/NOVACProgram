@@ -5,10 +5,13 @@
 #include "../../Common/Common.h"
 #include <SpectralEvaluation/File/SpectrumIO.h>
 
-namespace FileHandler
+namespace novac
 {
     class CScanFileHandler;
+}
 
+namespace FileHandler
+{
     /** The <b>CPakFileHandler</b> takes care of the downloaded pak-files from the scanning instrument
         and splits them up into several pak-files, each containing the data from one single scan. */
     class CPakFileHandler
@@ -104,7 +107,7 @@ namespace FileHandler
                 If there is no more scan-start spectrum in the file, this function will
                 return FAIL.
                 This function alters the member variable 'm_spectrumNumber' */
-        RETURN_CODE FindNextScanStart(FILE *file, CSpectrum &curSpec);
+        RETURN_CODE FindNextScanStart(FILE *file, novac::CSpectrum &curSpec);
 
         /** Sends a message to the evaluation thread that this scan-file should
                 be evaluated. The file will first be moved to a temporary file
@@ -120,46 +123,46 @@ namespace FileHandler
         RETURN_CODE	ArchiveScan(const CString &scanFileName);
 
         /** Takes appropriate action when a corrupt spectrum has been found */
-        RETURN_CODE HandleCorruptSpectrum(SpectrumIO::CSpectrumIO &reader, FILE *pakFile);
+        RETURN_CODE HandleCorruptSpectrum(novac::CSpectrumIO &reader, FILE *pakFile);
 
         /** Saves a newly found corrupted spectrum into the appropriate folder */
-        RETURN_CODE SaveCorruptSpectrum(const CSpectrum &curSpec, int specHeaderSie, const char *spectrumHeader);
+        RETURN_CODE SaveCorruptSpectrum(const novac::CSpectrum &curSpec, int specHeaderSie, const char *spectrumHeader);
 
         /** This function checks the contents of the opened scan file.
                 @return true - if the spectra are collected in a fixed angle measurement mode.
                 @return false - if the file does not contain spectra,
                         or contains spectra which are not collected in a fixed angle measurement mode. */
-        static bool IsFixedAngleMeasurement(CScanFileHandler& file);
+        static bool IsFixedAngleMeasurement(novac::CScanFileHandler& file);
 
         /** This function checks the contents of the opened scan file.
                 @return true - if the spectra are collected in a wind speed measurement mode.
                 @return false - if the file does not contain spectra,
                         or contains spectra which are not collected in a wind speed measurement mode. */
-        static bool IsWindSpeedMeasurement(CScanFileHandler& file);
+        static bool IsWindSpeedMeasurement(novac::CScanFileHandler& file);
 
         /** This function checks the contents of the opened scan file.
                 @return true - if the spectra are collected in a stratospheric measurement mode.
                 @return false - if the file does not contain spectra,
                         or contains spectra which are not collected in a stratospheric measurement mode. */
-        static bool IsStratosphericMeasurement(CScanFileHandler& file);
+        static bool IsStratosphericMeasurement(novac::CScanFileHandler& file);
 
         /** This function checks the contents of the opened scan file.
                 @return true - if the spectra are collected in a direct-sun mode.
                 @return false - if the file does not contain spectra,
                         or contains spectra which are not collected in a direct-sun measurement mode. */
-        static bool IsDirectSunMeasurement(CScanFileHandler& file);
+        static bool IsDirectSunMeasurement(novac::CScanFileHandler& file);
 
         /** This function checks the contents of the opened scan file.
                 @return true - if the spectra are collected in a lunar mode.
                 @return false - if the file does not contain spectra,
                         or contains spectra which are not collected in a lunar measurement mode. */
-        static bool IsLunarMeasurement(CScanFileHandler& file);
+        static bool IsLunarMeasurement(novac::CScanFileHandler& file);
 
         /** This function checks the contents of the opened scan file.
                 @return true - if the spectra are collected in a composition measurment - mode.
                 @return false - if the file does not contain readable spectra,
                         or contains spectra which are not collected in a composition measurment - mode.*/
-        static bool IsCompositionMeasurement(CScanFileHandler& file);
+        static bool IsCompositionMeasurement(novac::CScanFileHandler& file);
 
     };
 

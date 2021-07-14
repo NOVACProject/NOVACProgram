@@ -15,6 +15,7 @@ extern CUserSettings g_userSettings;       // <-- The users preferences
 // CView_Scanner dialog
 using namespace DlgControls;
 using namespace Graph;
+using namespace novac;
 
 void DDX_Text_Formatted(CDataExchange* pDX, int nIDC, double& value, LPCTSTR lpszOutFormat=_T("%f"), LPCTSTR lpszInFormat=_T("%lf"));
 

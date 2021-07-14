@@ -137,7 +137,7 @@ void CFitWindowListBox::OnLoadFitWindows() {
     // let the user browse for an evaluation log file and if one is selected, read it
     if (common.BrowseForFile(filter, fileName))
     {
-        std::vector<Evaluation::CFitWindow> windowsInFile = fitWindowReader.ReadFitWindowFile(fileName);
+        std::vector<novac::CFitWindow> windowsInFile = fitWindowReader.ReadFitWindowFile(fileName);
 
         // Set the windows of the evaluator
         m_reeval->m_windowNum = windowsInFile.size();

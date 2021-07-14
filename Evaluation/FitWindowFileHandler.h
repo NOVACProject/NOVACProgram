@@ -17,20 +17,20 @@ namespace FileHandler {
                 @param fileName The name and path of the file to read from
                 @return A vector with all the fit windows defined in the file.
                 @return An empty vector if the reading failed. */
-        std::vector<Evaluation::CFitWindow> ReadFitWindowFile(const CString &fileName);
+        std::vector<novac::CFitWindow> ReadFitWindowFile(const CString &fileName);
 
         /** Writes the supplied fit-window to a file.
                 @param window - the fit window to be written to file
                 @param fileName - the name and path of the file to which to write
                 @param overWrite - if true the file will be overwritten, if false, the file will be appended */
-        RETURN_CODE WriteFitWindow(const Evaluation::CFitWindow &window, const CString &fileName, bool overWrite);
+        RETURN_CODE WriteFitWindow(const novac::CFitWindow&window, const CString &fileName, bool overWrite);
 
     private:
 
         /** Parses a fit-window section of the .nfs file */
-        RETURN_CODE Parse_FitWindow(Evaluation::CFitWindow &window);
+        RETURN_CODE Parse_FitWindow(novac::CFitWindow&window);
 
         /** Parses a reference-file section of the .nfs file */
-        RETURN_CODE Parse_Reference(Evaluation::CFitWindow &window);
+        RETURN_CODE Parse_Reference(novac::CFitWindow&window);
     };
 }

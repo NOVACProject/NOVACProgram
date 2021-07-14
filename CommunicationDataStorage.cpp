@@ -2,6 +2,8 @@
 #include "communicationdatastorage.h"
 #include "Common/Common.h"
 
+using namespace novac;
+
 // ----------------- CLinkInfo - class ------------------------
 CCommunicationDataStorage::CLinkInfo::CLinkInfo() {
 	m_downloadSpeed = 0.0;

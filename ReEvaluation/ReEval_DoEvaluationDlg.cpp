@@ -5,6 +5,8 @@
 
 using namespace ReEvaluation;
 using namespace Evaluation;
+using namespace novac;
+
 
 UINT DoEvaluation(LPVOID pParam) {
     CReEvaluator *m_reeval = (CReEvaluator*)pParam;

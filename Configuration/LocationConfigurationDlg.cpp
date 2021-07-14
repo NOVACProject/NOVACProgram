@@ -13,6 +13,7 @@
 #include "../Dialogs/QueryStringDialog.h"
 
 using namespace ConfigurationDialog;
+using namespace novac;
 
 extern CVolcanoInfo			g_volcanoes;
 

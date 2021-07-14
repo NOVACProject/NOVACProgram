@@ -9,6 +9,7 @@
 extern CUserSettings g_userSettings;       // <-- The users preferences
 
 using namespace Dialogs;
+using namespace novac;
 
 IMPLEMENT_DYNAMIC(CPostWindDlg, CDialog)
 CPostWindDlg::CPostWindDlg(CWnd* pParent /*=NULL*/)

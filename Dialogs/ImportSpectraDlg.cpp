@@ -14,7 +14,7 @@
 // CImportSpectraDlg dialog
 
 using namespace Dialogs;
-using namespace SpectrumIO;
+using namespace novac;
 
 int nSpectraDone;
 
@@ -413,7 +413,7 @@ UINT ImportSpectraToOneFile( LPVOID pParam ){
 		return 1;
 
 	unsigned int nSpecFiles		= wnd->m_nSpecFiles;
-	SpectrumIO::CSpectrumIO writer;
+	CSpectrumIO writer;
 	CString serialNumber, scanDate, scanTime, pakFile;
 
 	// Make sure that the output directory exists
@@ -524,7 +524,7 @@ int	 ImportScanDOASSpectraInDirectory(const CArray<CString *, CString *>	&m_spec
 	int	exposureNum						= (wnd->m_userGivenNumExposures);
 	CSpectrum sky, dark, spec;
 	CString serialNumber, scanDate, scanTime, pakFile;
-	SpectrumIO::CSpectrumIO writer;
+	CSpectrumIO writer;
 	int tmpInt;
 	int currentYear					= Common::GetYear();
 

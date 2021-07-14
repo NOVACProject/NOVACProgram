@@ -10,6 +10,7 @@
 
 // CPakFileInspector dialog
 using namespace Dialogs;
+using namespace novac;
 
 IMPLEMENT_DYNAMIC(CPakFileInspector, CDialog)
 CPakFileInspector::CPakFileInspector(CWnd* pParent /*=NULL*/)
@@ -198,7 +199,7 @@ void CPakFileInspector::OnOpenPakFile()
 }
 
 void CPakFileInspector::CheckPakFile(){
-	SpectrumIO::CSpectrumIO reader;
+	CSpectrumIO reader;
 	CSpectrum spec;
 	CFile *pFile = NULL;
 	ULONGLONG fileSize = 0;
@@ -407,7 +408,7 @@ void CPakFileInspector::UpdateFileInfo(){
 }
 
 int CPakFileInspector::TryReadSpectrum(){
-	SpectrumIO::CSpectrumIO reader;
+	CSpectrumIO reader;
 	CString message;
 	char headerBuffer[16384];
 	int headerSize=0;

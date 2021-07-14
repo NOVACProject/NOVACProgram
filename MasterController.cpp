@@ -259,7 +259,7 @@ bool CMasterController::CheckSettings()
         {
             for (int k = 0; k < g_settings.scanner[i].spec[j].channelNum; ++k)
             {
-                const Evaluation::CFitWindow *window = &g_settings.scanner[i].spec[j].channel[k].fitWindow;
+                const novac::CFitWindow*window = &g_settings.scanner[i].spec[j].channel[k].fitWindow;
                 for (int n = 0; n < window->nRef; ++n)
                 {
                     FILE* f = fopen(window->ref[n].m_path.c_str(), "r");

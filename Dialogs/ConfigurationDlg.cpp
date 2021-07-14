@@ -116,7 +116,7 @@ RETURN_CODE ConfigurationDialog::CConfigurationDlg::CheckSettings(){
 
 			for(unsigned int c = 0; c < m_configuration.scanner[i].spec[j].channelNum; ++ c){
 				// Check the fit window
-				Evaluation::CFitWindow &window = m_configuration.scanner[i].spec[j].channel[c].fitWindow;
+				novac::CFitWindow&window = m_configuration.scanner[i].spec[j].channel[c].fitWindow;
 
 				if(window.fitHigh <= window.fitLow){
 					message.Format("FitLow must be lower than FitHigh");

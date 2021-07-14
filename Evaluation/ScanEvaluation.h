@@ -10,21 +10,20 @@
 #include "../Common/Common.h"
 #include "../Configuration/Configuration.h"
 
-class CSpectrum;
-namespace FileHandler
+namespace novac
 {
+    class CSpectrum;
+    class CEvaluationBase;
     class CScanFileHandler;
 }
 
 namespace Evaluation
 {
-    class CEvaluationBase;
-
     /**
         An object of the <b>CScanEvaluation</b>-class handles the evaluation of one
         scan.
     */
-    class CScanEvaluation : public ScanEvaluationBase
+    class CScanEvaluation : public novac::ScanEvaluationBase
     {
 
     public:
@@ -46,7 +45,7 @@ namespace Evaluation
 
         /** Called to evaluate one scan.
                 @return the number of spectra evaluated. */
-        long EvaluateScan(const CString &scanfile, const CFitWindow& window, bool *fRun = NULL, const Configuration::CDarkSettings *darkSettings = NULL);
+        long EvaluateScan(const CString &scanfile, const novac::CFitWindow& window, bool *fRun = NULL, const Configuration::CDarkSettings *darkSettings = NULL);
 
         /** Setting the option for how to get the sky spectrum. */
         void SetOption_Sky(const Configuration::CSkySettings& settings);
@@ -77,21 +76,21 @@ namespace Evaluation
         // ----------------------- PRIVATE METHODS ---------------------------
 
         /** This returns the sky spectrum that is to be used in the fitting. */
-        RETURN_CODE GetSky(FileHandler::CScanFileHandler *scan, CSpectrum &sky);
+        RETURN_CODE GetSky(novac::CScanFileHandler *scan, novac::CSpectrum &sky);
 
         /** This returns the dark spectrum that is to be used in the fitting.
             @param scan - the scan-file handler from which to get the dark spectrum
             @param spec - the spectrum for which the dark spectrum should be retrieved
             @param dark - will on return be filled with the dark spectrum
             @param darkSettings - the settings for how to get the dark spectrum from this spectrometer */
-        RETURN_CODE GetDark(FileHandler::CScanFileHandler *scan, const CSpectrum &spec, CSpectrum &dark, const Configuration::CDarkSettings *darkSettings = NULL);
+        RETURN_CODE GetDark(novac::CScanFileHandler *scan, const novac::CSpectrum &spec, novac::CSpectrum &dark, const Configuration::CDarkSettings *darkSettings = NULL);
 
         /** checks the spectrum to the settings and returns 'true' if the spectrum should not be evaluated */
-        bool Ignore(const CSpectrum &spec, const CFitWindow window);
+        bool Ignore(const novac::CSpectrum& spec, const novac::CFitWindow window);
 
         /** This function updates the 'm_residual' and 'm_fitResult' spectra
             and sends the 'WM_EVAL_SUCCESS' message to the pView-window. */
-        void ShowResult(const CSpectrum &spec, const CEvaluationBase *eval, long curSpecIndex, long specNum);
+        void ShowResult(const novac::CSpectrum &spec, const novac::CEvaluationBase *eval, long curSpecIndex, long specNum);
 
         /** Updates the m_result in a thread safe manner (locking the m_resultMutex) */
         void UpdateResult(std::shared_ptr<CScanResult> newResult);
@@ -100,7 +99,7 @@ namespace Evaluation
                     by looking at the spectrum with the highest absorption of the evaluated specie
                     and evaluate it with shift and squeeze free
              @return the fit-result for the evaluated specie. */
-        CEvaluationResult FindOptimumShiftAndSqueeze(const CEvaluationBase *originalEvaluation, FileHandler::CScanFileHandler *scan, CScanResult *result);
+        novac::CEvaluationResult FindOptimumShiftAndSqueeze(const novac::CEvaluationBase *originalEvaluation, novac::CScanFileHandler *scan, CScanResult *result);
 
         /** Finds the optimum shift and squeeze for an scan by evaluating
             with a solar-reference spectrum and studying the shift of the
@@ -111,7 +110,7 @@ namespace Evaluation
             @param scan - a handle to the spectrum file.
             @return a new CFitWindow to use with the references shift and squeeze fixed to the found optimal value.
             @return nullptr if an optimal shift and squeeze could not be found. */
-        CFitWindow* FindOptimumShiftAndSqueeze_Fraunhofer(const CEvaluationBase *originalEvaluation, FileHandler::CScanFileHandler *scan);
+        novac::CFitWindow* FindOptimumShiftAndSqueeze_Fraunhofer(const novac::CEvaluationBase *originalEvaluation, novac::CScanFileHandler *scan);
 
         // ------------------------ THE PARAMETERS FOR THE EVALUATION ------------------
         /** This is the options for the sky spectrum */

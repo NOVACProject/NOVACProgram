@@ -10,6 +10,7 @@
 
 using namespace ReEvaluation;
 using namespace Evaluation;
+using namespace novac;
 
 // CReEval_WindowDlg dialog
 

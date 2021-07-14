@@ -21,6 +21,7 @@ extern CUserSettings			g_userSettings;
 
 using namespace Graph;
 using namespace FileHandler;
+using namespace novac;
 
 IMPLEMENT_DYNAMIC(FluxHistoryDlg, CPropertyPage)
 

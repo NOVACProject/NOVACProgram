@@ -10,10 +10,10 @@ namespace Evaluation
     struct CEvaluationResultView
     {
         // The scaled references
-        std::vector<CSpectrum> scaledReference;
+        std::vector<novac::CSpectrum> scaledReference;
 
-        CSpectrum measuredSpectrum;
-        CSpectrum residual;
-        CSpectrum polynomial;
+        novac::CSpectrum measuredSpectrum;
+        novac::CSpectrum residual;
+        novac::CSpectrum polynomial;
     };
 }

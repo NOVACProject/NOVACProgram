@@ -10,6 +10,7 @@ extern CUserSettings g_userSettings;       // <-- The users preferences
 using namespace DlgControls;
 using namespace Graph;
 using namespace Dialogs;
+using namespace novac;
 
 // CDataBrowserDlg dialog
 

@@ -84,6 +84,6 @@ namespace WindSpeedMeasurement{
 
 		/** Tells the rest of the program about the result of the correlation - calculation.
 				Either if the calculation was successful or not... */
-		void PostWindMeasurementResult(double avgDelay, double avgCorr, double distance, const CDateTime startTime, const CDateTime stopTime, const CString &serial);
+		void PostWindMeasurementResult(double avgDelay, double avgCorr, double distance, const novac::CDateTime startTime, const novac::CDateTime stopTime, const CString &serial);
 	};
 }

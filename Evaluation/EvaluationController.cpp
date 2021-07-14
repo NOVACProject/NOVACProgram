@@ -28,8 +28,8 @@
 
 
 using namespace Evaluation;
-using namespace SpectrumIO;
 using namespace FileHandler;
+using namespace novac;
 
 extern CMeteorologicalData		g_metData;		// <-- The meteorological data
 extern CConfigurationSetting	g_settings;		// <-- The settings
@@ -111,7 +111,7 @@ void CEvaluationController::OnArrivedSpectra(WPARAM wp, LPARAM /*lp*/)
     CString errorMessage, message;
     CString storeFileName_pak, storeFileName_txt;
     CString str;
-    SpectrumIO::CSpectrumIO reader;
+    CSpectrumIO reader;
     CSpectrum spec;
     bool isFullScan = true;
     int nSpectra = 0;
@@ -350,7 +350,7 @@ RETURN_CODE CEvaluationController::EvaluateScan(const CString &fileName, int vol
 /** Indentifies the scanning instrument from which this scan was generated.
         @param scan a reference to a scan that should be identified.
         @return a pointer to the spectrometer. @return NULL if no spectrometer found */
-CSpectrometer *CEvaluationController::IdentifySpectrometer(const FileHandler::CScanFileHandler& scan) {
+CSpectrometer *CEvaluationController::IdentifySpectrometer(const CScanFileHandler& scan) {
     long spectrometerNum; // iterator
 
     unsigned char channel = scan.m_channel;
@@ -552,7 +552,7 @@ RETURN_CODE CEvaluationController::WriteFluxResult(const CScanResult *result, co
     return SUCCESS;
 }
 
-RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *result, const FileHandler::CScanFileHandler& scan, const CSpectrometer &spectrometer, CWindField &windField, int volcanoIndex) {
+RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *result, const CScanFileHandler& scan, const CSpectrometer &spectrometer, CWindField &windField, int volcanoIndex) {
     CString string, string1, string2, string3, string4;
     const CConfigurationSetting::SpectrometerSetting &settings = spectrometer.m_settings;
     CString pakFile, txtFile, evalLogFile;
@@ -656,7 +656,7 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *resu
     string.AppendFormat("\t<model>%s</model>\n", spectrometer.m_settings.modelName.c_str());
     for (int i = 0; i < settings.channelNum; i++) {
         string.AppendFormat("\t<channel number='%d'>\n", i);
-        const Evaluation::CFitWindow &fitWindow = settings.channel[i].fitWindow;
+        const novac::CFitWindow&fitWindow = settings.channel[i].fitWindow;
         for (int k = 0; k < fitWindow.nRef; k++) {
             const CReferenceFile &ref = fitWindow.ref[k];
             string.AppendFormat("\t\t<Reference>\n");
@@ -664,24 +664,24 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *resu
             string.AppendFormat("\t\t\t<path>%s</path>\n", ref.m_path.c_str());
 
             CString shiftString;
-            if (ref.m_shiftOption == Evaluation::SHIFT_FIX)
+            if (ref.m_shiftOption == novac::SHIFT_FIX)
                 shiftString.Format("fix to %.2lf", ref.m_shiftValue);
-            else if (ref.m_shiftOption == Evaluation::SHIFT_FREE)
+            else if (ref.m_shiftOption == novac::SHIFT_FREE)
                 shiftString.Format("free");
-            else if (ref.m_shiftOption == Evaluation::SHIFT_LIMIT)
+            else if (ref.m_shiftOption == novac::SHIFT_LIMIT)
                 shiftString.Format("limit from %.2lf to %.2lf", ref.m_shiftValue, ref.m_shiftMaxValue);
-            else if (ref.m_shiftOption == Evaluation::SHIFT_LINK)
+            else if (ref.m_shiftOption == novac::SHIFT_LINK)
                 shiftString.Format("link to %.0lf", ref.m_shiftValue);
             string.AppendFormat("\t\t\t<shift>%s</shift>\n", (LPCSTR)shiftString);
 
             CString squeezeString;
-            if (ref.m_squeezeOption == Evaluation::SHIFT_FIX)
+            if (ref.m_squeezeOption == novac::SHIFT_FIX)
                 squeezeString.Format("fix to %.2lf", ref.m_squeezeValue);
-            else if (ref.m_squeezeOption == Evaluation::SHIFT_FREE)
+            else if (ref.m_squeezeOption == novac::SHIFT_FREE)
                 squeezeString.Format("free");
-            else if (ref.m_squeezeOption == Evaluation::SHIFT_LIMIT)
+            else if (ref.m_squeezeOption == novac::SHIFT_LIMIT)
                 squeezeString.Format("limit from %.2lf to %.2lf", ref.m_squeezeValue, ref.m_squeezeMaxValue);
-            else if (ref.m_squeezeOption == Evaluation::SHIFT_LINK)
+            else if (ref.m_squeezeOption == novac::SHIFT_LINK)
                 squeezeString.Format("link to %.0lf", ref.m_squeezeValue);
             string.AppendFormat("\t\t\t<squeeze>%s</squeeze>\n", (LPCSTR)squeezeString);
 
@@ -696,7 +696,7 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *resu
     string.AppendFormat("</spectrometer>\n");
 
     // 1. write the header
-    const Evaluation::CFitWindow &window = settings.channel[0].fitWindow;
+    const novac::CFitWindow&window = settings.channel[0].fitWindow;
     string.AppendFormat("#scanangle\tstarttime\tstoptime\tname\tspecsaturation\tfitsaturation\tcounts_ms\tdelta\tchisquare\texposuretime\tnumspec\t");
 
     for (int itSpecie = 0; itSpecie < spectrometer.m_fitWindows[0].nRef; ++itSpecie) {
@@ -759,7 +759,7 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *resu
         int nSpectra = result->GetSpectrumInfo(itSpectrum).m_numSpec;
 
         // 3a. Pretty print the result and the spectral info into a string
-        Evaluation::CEvaluationResult evResult;
+        CEvaluationResult evResult;
         result->GetResult(itSpectrum, evResult);
 
         CEvaluationLogFileHandler::FormatEvaluationResult(&result->GetSpectrumInfo(itSpectrum), &evResult, maxIntensity * nSpectra, spectrometer.m_fitWindows[0].nRef, string1);
@@ -790,7 +790,7 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult *resu
     return SUCCESS;
 }
 
-CSpectrometer *CEvaluationController::HandleUnIdentifiedSpectrometer(const CString &serialNumber, const FileHandler::CScanFileHandler& scan) {
+CSpectrometer *CEvaluationController::HandleUnIdentifiedSpectrometer(const CString &serialNumber, const CScanFileHandler& scan) {
     CSpectrum tmpSpec;
     CString message;
 
@@ -885,7 +885,7 @@ RETURN_CODE CEvaluationController::InitializeSpectrometers() {
                 curSpec->m_history = history;
 
                 // the fit window
-                Evaluation::CFitWindow &window = spec.channel[k].fitWindow;
+                novac::CFitWindow&window = spec.channel[k].fitWindow;
 
                 if (!ReadReferences(window))
                 {

@@ -2,6 +2,7 @@
 #include "spectrometerhistory.h"
 
 using namespace Evaluation;
+using namespace novac;
 
 CSpectrometerHistory::CScanInfo::CScanInfo(){
 	plumeCentre[0]		= 0;

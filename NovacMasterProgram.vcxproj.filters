@@ -133,6 +133,12 @@
     <Filter Include="Source Files\Meteorology">
       <UniqueIdentifier>{f84a7f7f-56bf-4eef-80ee-166f4b08f303}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\SpectralEvaluation\Calibration">
+      <UniqueIdentifier>{f7eb63f1-a436-4f2f-9f3d-29faf891628a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\SpectralEvaluation\Math">
+      <UniqueIdentifier>{e35817e8-3098-43b9-98ad-f9afd4759d95}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Configuration\AdvancedFTPUploadSettings.cpp">
@@ -525,9 +531,6 @@
     <ClCompile Include="SpectralEvaluation\src\GPSData.cpp">
       <Filter>Source Files\SpectralEvaluation\Spectra</Filter>
     </ClCompile>
-    <ClCompile Include="SpectralEvaluation\src\Spectra\ReferenceSpectrumConvolution.cpp">
-      <Filter>Source Files\SpectralEvaluation\Spectra</Filter>
-    </ClCompile>
     <ClCompile Include="SpectralEvaluation\src\Spectra\SpectrometerModel.cpp">
       <Filter>Source Files\SpectralEvaluation\Spectra</Filter>
     </ClCompile>
@@ -579,13 +582,7 @@
     <ClCompile Include="SpectralEvaluation\src\Evaluation\DarkSpectrum.cpp">
       <Filter>Source Files\Evaluation</Filter>
     </ClCompile>
-    <ClCompile Include="CreateReferencesDlg.cpp">
-      <Filter>Source Files\Dialogs</Filter>
-    </ClCompile>
     <ClCompile Include="SpectralEvaluation\src\Spectra\Scattering.cpp">
-      <Filter>Source Files\SpectralEvaluation\Spectra</Filter>
-    </ClCompile>
-    <ClCompile Include="SpectralEvaluation\src\Spectra\WavelengthCalibration.cpp">
       <Filter>Source Files\SpectralEvaluation\Spectra</Filter>
     </ClCompile>
     <ClCompile Include="SpectralEvaluation\src\StringUtils.cpp">
@@ -608,6 +605,24 @@
     </ClCompile>
     <ClCompile Include="Meteorology\WindFieldInterpolation.cpp">
       <Filter>Source Files\Meteorology</Filter>
+    </ClCompile>
+    <ClCompile Include="Dialogs\MergeEvalLogDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="File\FileMerger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Calibration\ReferenceSpectrumConvolution.cpp">
+      <Filter>Source Files\SpectralEvaluation\Calibration</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Math\FFT.cpp">
+      <Filter>Source Files\SpectralEvaluation\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Calibration\InstrumentLineShapeEstimation.cpp">
+      <Filter>Source Files\SpectralEvaluation\Calibration</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Spectra\SpectrumUtils.cpp">
+      <Filter>Source Files\SpectralEvaluation\Spectra</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1157,9 +1172,6 @@
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\VectorUtils.h">
       <Filter>Header Files\SpectralEvaluation</Filter>
     </ClInclude>
-    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Spectra\ReferenceSpectrumConvolution.h">
-      <Filter>Header Files\SpectralEvaluation\Spectra</Filter>
-    </ClInclude>
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Spectra\SpectrometerModel.h">
       <Filter>Header Files\SpectralEvaluation\Spectra</Filter>
     </ClInclude>
@@ -1196,9 +1208,6 @@
     <ClInclude Include="CustomSpectrometerModelDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CreateReferencesDlg.h">
-      <Filter>Header Files\Dialogs</Filter>
-    </ClInclude>
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Spectra\Scattering.h">
       <Filter>Header Files\SpectralEvaluation\Spectra</Filter>
     </ClInclude>
@@ -1228,6 +1237,12 @@
     </ClInclude>
     <ClInclude Include="Meteorology\WindFieldInterpolation.h">
       <Filter>Header Files\Meteorology</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialogs\MergeEvalLogDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="File\FileMerger.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -2,6 +2,7 @@
 #include "fluxlogfilehandler.h"
 
 using namespace FileHandler;
+using namespace novac;
 
 CFluxLogFileHandler::CFluxLogFileHandler(void)
 {

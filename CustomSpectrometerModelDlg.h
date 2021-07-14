@@ -24,7 +24,7 @@ protected:
 public:
     afx_msg void OnBnClickedOk();
 
-    SpectrometerModel m_configuredSpectrometer;
+    novac::SpectrometerModel m_configuredSpectrometer;
 
 private:
     CString m_modelName;

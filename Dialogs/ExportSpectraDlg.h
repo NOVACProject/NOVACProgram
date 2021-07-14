@@ -49,7 +49,7 @@ namespace Dialogs
 
 	private:
 		/** Saves a spectrum to a correct filename */
-		void SaveSpectrum(const CSpectrum &spec, const CString &path);
+		void SaveSpectrum(const novac::CSpectrum &spec, const CString &path);
 
 		int m_skyIndex, m_darkIndex, m_specIndex;
 

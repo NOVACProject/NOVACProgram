@@ -190,7 +190,6 @@ private:
 public:
 	afx_msg void OnUpdateMenuViewInstrumenttab(CCmdUI *pCmdUI);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
-    afx_msg void OnMenuFileCreatereferences();
     afx_msg void OnFileCalibratespectrometer();
     afx_msg void OnUpdateFileCalibratespectrometer(CCmdUI *pCmdUI);
 };

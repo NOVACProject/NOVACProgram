@@ -141,7 +141,7 @@ namespace Evaluation
 		/** Indentifies the scanning instrument from which this scan was generated. 
 			@param scan a reference to a scan that should be identified. 
 			@return a pointer to the spectrometer. @return NULL if no spectrometer found */
-		CSpectrometer *IdentifySpectrometer(const FileHandler::CScanFileHandler& scan);
+		CSpectrometer *IdentifySpectrometer(const novac::CScanFileHandler& scan);
 
 		/** Calculates the flux from the provided scan using the information given in 'scan' 
 			@param scan - The scan, including evaluated results of the scan, this will be updated with information on the flux. 
@@ -164,13 +164,13 @@ namespace Evaluation
 			@param scanningInstrument - information about the scanning instrument that generated the scan.  
 			@param volcanoIndex - identifies the volcano that this eval comes from
 			@return SUCCESS if operation completed sucessfully. */
-		RETURN_CODE WriteEvaluationResult(const CScanResult *result, const FileHandler::CScanFileHandler& scan, const CSpectrometer &spectrometer, CWindField &windField, int volcanoIndex);
+		RETURN_CODE WriteEvaluationResult(const CScanResult *result, const novac::CScanFileHandler& scan, const CSpectrometer &spectrometer, CWindField &windField, int volcanoIndex);
 
 		/** Handles the connection of a un-identified spectrometer to the network.
 			@param serialNumber - the serial number of the newly connected spectrometer. 
 			@return a pointer to the newly connected spectrometer. 
 			@return NULL upon failure. */
-		CSpectrometer *HandleUnIdentifiedSpectrometer(const CString &serialNumber, const FileHandler::CScanFileHandler& scan);
+		CSpectrometer *HandleUnIdentifiedSpectrometer(const CString &serialNumber, const novac::CScanFileHandler& scan);
 
 		/** Initializes the output logs that are generated. One error-log, one status-log, and one
 			result-log for every spectrometer, and a similar set for the evaluationController as a whole.
@@ -188,7 +188,7 @@ namespace Evaluation
 			@param spectrometer - the spectrometer which collected the scan.
 			@param dt - the time and day for which we want to get the wind-field
 			@return SUCESS if all is ok. @return FAIL if any error occurs.*/
-		RETURN_CODE GetWind(CWindField &wind, const CSpectrometer &spectrometer, const CDateTime &dt);
+		RETURN_CODE GetWind(CWindField &wind, const CSpectrometer &spectrometer, const novac::CDateTime &dt);
 
 		/** Gets the filename under which the scan-file should be stored.
 			@return SUCCESS if a filename is found. */
@@ -222,7 +222,7 @@ namespace Evaluation
 		void Output_SpectrometerNotIdentified();
 
 		/** Shows information about a fit failure */
-		void Output_FitFailure(const CSpectrum &spec);
+		void Output_FitFailure(const novac::CSpectrum &spec);
 
 		/** Shows the information about a failure in the flux calculation */
 		void Output_FluxFailure(const CScanResult *result, const CSpectrometer *spec);

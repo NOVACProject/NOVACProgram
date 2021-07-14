@@ -12,6 +12,7 @@ extern CCriticalSection g_evalLogCritSect; // synchronization access to evaluati
 
 
 using namespace FileHandler;
+using namespace novac;
 
 CEvaluationLogFileHandler::CEvaluationLogFileHandler(void)
 {
@@ -371,7 +372,7 @@ RETURN_CODE CEvaluationLogFileHandler::ReadEvaluationLog() {
 
                     // 2. Calculate the offset
                     if (m_scanNum >= 0 && m_scan[sortOrder[m_scanNum]].m_spec.size() > 0) {
-                        const Evaluation::CEvaluationResult& evResult = m_scan[sortOrder[m_scanNum]].m_spec.front();
+                        const CEvaluationResult& evResult = m_scan[sortOrder[m_scanNum]].m_spec.front();
                         if(evResult.m_referenceResult.size() > 0) {
                             m_scan[sortOrder[m_scanNum]].CalculateOffset(evResult.m_referenceResult.front().m_specieName);
                         }
@@ -1219,7 +1220,7 @@ RETURN_CODE CEvaluationLogFileHandler::WriteEvaluationLog(const CString fileName
         // ------------------- Then write the parameters for each spectrum ---------------------------
         for (unsigned long itSpectrum = 0; itSpectrum < scan.GetEvaluatedNum(); ++itSpectrum) {
             // 3a. Pretty print the result and the spectral info into a string
-            Evaluation::CEvaluationResult result;
+            CEvaluationResult result;
             scan.GetResult(itSpectrum, result);
 
             FormatEvaluationResult(&scan.GetSpectrumInfo(itSpectrum), &result, 0.0, scan.GetSpecieNum(itSpectrum), string);
@@ -1240,7 +1241,7 @@ RETURN_CODE CEvaluationLogFileHandler::WriteEvaluationLog(const CString fileName
     return SUCCESS;
 }
 
-RETURN_CODE CEvaluationLogFileHandler::FormatEvaluationResult(const CSpectrumInfo *info, const Evaluation::CEvaluationResult *result, double maxIntensity, int nSpecies, CString &string) {
+RETURN_CODE CEvaluationLogFileHandler::FormatEvaluationResult(const CSpectrumInfo *info, const CEvaluationResult *result, double maxIntensity, int nSpecies, CString &string) {
     int itSpecie;
     Common common;
 

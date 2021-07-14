@@ -49,7 +49,6 @@
 #include "Dialogs/DataBrowserDlg.h"
 #include "Dialogs/PakFileInspector.h"
 #include "Dialogs/SummarizeFluxDataDlg.h"
-#include "CreateReferencesDlg.h"
 
 #include "WindMeasurement/PostWindDlg.h"
 #include "WindMeasurement/WindSpeedResult.h"
@@ -63,6 +62,8 @@ extern CConfigurationSetting	g_settings;
 extern CUserSettings			g_userSettings;
 
 CFormView* pView;
+
+using namespace novac;
 
 // CNovacMasterProgramView
 
@@ -130,7 +131,6 @@ BEGIN_MESSAGE_MAP(CNovacMasterProgramView, CFormView)
     ON_WM_DESTROY()
     ON_WM_SIZE()
     ON_WM_SIZE()
-    ON_COMMAND(ID_FILE_CREATEREFERENCES, &CNovacMasterProgramView::OnMenuFileCreatereferences)
     ON_COMMAND(ID_FILE_CALIBRATESPECTROMETER, &CNovacMasterProgramView::OnFileCalibratespectrometer)
     ON_UPDATE_COMMAND_UI(ID_FILE_CALIBRATESPECTROMETER, &CNovacMasterProgramView::OnUpdateFileCalibratespectrometer)
 END_MESSAGE_MAP()
@@ -1524,13 +1524,6 @@ void CNovacMasterProgramView::OnSize(UINT nType, int cx, int cy)
         }
     }
 }
-
-void CNovacMasterProgramView::OnMenuFileCreatereferences()
-{
-    Dialogs::CCreateReferencesDlg dlg;
-    dlg.DoModal();
-}
-
 
 void CNovacMasterProgramView::OnFileCalibratespectrometer()
 {

@@ -4,7 +4,7 @@
 #include "../Common/Common.h"
 
 using namespace DlgControls;
-using namespace Evaluation;
+using namespace novac;
 
 CReferenceFileControl::CReferenceFileControl(void)
 {
@@ -31,7 +31,7 @@ void CReferenceFileControl::OnEndEditCell(int nRow, int nCol, CString str){
     return; // TODO - add a message
 
   // A handle to the reference file
-  Evaluation::CReferenceFile &ref = m_window->ref[index];
+  CReferenceFile &ref = m_window->ref[index];
 
   // If the name was changed
   if(nCol == 0){
@@ -86,7 +86,7 @@ void CReferenceFileControl::OnEndEditCell(int nRow, int nCol, CString str){
   return;
 }
 
-void CReferenceFileControl::ParseShiftOption(Evaluation::SHIFT_TYPE &option, double &value, CString &str){
+void CReferenceFileControl::ParseShiftOption(novac::SHIFT_TYPE &option, double &value, CString &str){
   char tmpStr[512];
   char txt[512];
   str.MakeLower();

@@ -7,7 +7,7 @@
 #include "../Common/Common.h"
 
 using namespace Dialogs;
-using namespace Evaluation;
+using namespace novac;
 
 // CReferencePropertiesDlg dialog
 

@@ -16,6 +16,7 @@ extern CVolcanoInfo g_volcanoes;
 // CGeometryDlg dialog
 using namespace Dialogs;
 using namespace Geometry;
+using namespace novac;
 
 IMPLEMENT_DYNAMIC(CGeometryDlg, CDialog)
 CGeometryDlg::CGeometryDlg(CWnd* pParent /*=NULL*/)

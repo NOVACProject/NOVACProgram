@@ -14,8 +14,9 @@
 #include "../Dialogs/FECFileDialog.h"
 
 // CReEval_ScanDlg dialog
-using namespace SpectrumIO;
 using namespace ReEvaluation;
+using namespace novac;
+
 
 IMPLEMENT_DYNAMIC(CReEval_ScanDlg, CPropertyPage)
 CReEval_ScanDlg::CReEval_ScanDlg()

@@ -10,6 +10,8 @@ extern CConfigurationSetting g_settings;   // <-- The settings
 extern CVolcanoInfo g_volcanoes;           // <-- The global database of volcanoes
 extern CUserSettings g_userSettings;       // <-- The users preferences
 
+using namespace novac;
+
 // ------------------------ CSCANDATA ------------------------------
 CEvaluatedDataStorage::CScanData::CScanData(){
 	m_flux		= 0.0;

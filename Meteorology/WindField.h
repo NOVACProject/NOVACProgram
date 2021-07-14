@@ -27,7 +27,7 @@ public:
     void SetPlumeHeight(double ph, MET_SOURCE source, double phError = 0.0);
 
     /** Sets the time and/or date the wind-field is valid for */
-    void SetTimeAndDate(const CDateTime& dt);
+    void SetTimeAndDate(const novac::CDateTime& dt);
 
     /** Sets the time the wind-field is valid for, the date is not touched */
     void SetTime(int hour, int minute, int second);
@@ -69,7 +69,7 @@ public:
     void GetPlumeHeightSource(CString& sourceStr) const;
 
     /** Gets the time and date for which this wind-field is valid */
-    const CDateTime& GetTimeAndDate() const;
+    const novac::CDateTime& GetTimeAndDate() const;
 
 private:
 
@@ -111,7 +111,7 @@ private:
     double m_windError = 30.0;
 
     /** The date and time for which this wind-information is/was valid */
-    CDateTime m_time;
+    novac::CDateTime m_time;
 };
 
 #endif

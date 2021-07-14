@@ -59,7 +59,7 @@ void CWindField::SetPlumeHeight(double ph, MET_SOURCE source, double phError)
     this->m_plumeHeightError = phError;
 }
 
-void CWindField::SetTimeAndDate(const CDateTime &dt)
+void CWindField::SetTimeAndDate(const novac::CDateTime &dt)
 {
     this->m_time = dt;
 }
@@ -160,7 +160,7 @@ void CWindField::GetPlumeHeightSource(CString& sourceStr) const
     return;
 }
 
-const CDateTime &CWindField::GetTimeAndDate() const
+const novac::CDateTime &CWindField::GetTimeAndDate() const
 {
     return this->m_time;
 }

@@ -85,7 +85,7 @@ public:
 	int AddWindData(const CString &serial, WindSpeedMeasurement::CWindSpeedResult *result);
 
 	/** Adds flux result */
-	void AppendFluxResult(int scannerIndex, const CDateTime &time, double fluxValue, bool fluxOk, double batteryVoltage = -999, double temp = -999, long expTime = -999);
+	void AppendFluxResult(int scannerIndex, const novac::CDateTime &time, double fluxValue, bool fluxOk, double batteryVoltage = -999, double temp = -999, long expTime = -999);
 
 	/** Add spec data to history */
 	void AppendSpecDataHistory(int scannerIndex, int time, double column, double columnError,
@@ -287,7 +287,7 @@ private:
 	unsigned int m_serialNum;
 
 	/** Scan end time from evaluation result. */
-	CDateTime m_scanTime[MAX_NUMBER_OF_SCANNING_INSTRUMENTS];
+	novac::CDateTime m_scanTime[MAX_NUMBER_OF_SCANNING_INSTRUMENTS];
 
 	// ----------------------------------------------------------------------
 	// -------------------- PRIVATE METHODS ---------------------------------

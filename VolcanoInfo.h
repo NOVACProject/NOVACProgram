@@ -49,5 +49,5 @@ public:
 int IndexOfVolcano(const std::string& volcanoName);
 
 /** Retrieves the information regarding the volcanoe with the given index */
-CNamedLocation GetVolcano(unsigned int volcanoIndex);
+novac::CNamedLocation GetVolcano(unsigned int volcanoIndex);
 

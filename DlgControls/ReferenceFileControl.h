@@ -19,7 +19,7 @@ namespace DlgControls
     CWnd *parent;
 
     /** Pointer to the fit window that this grid controls */
-    Evaluation::CFitWindow *m_window;
+    novac::CFitWindow *m_window;
 
     /** Called when the user has finished editing one cell */
     void OnEndEditCell(int nRow, int nCol, CString str);
@@ -28,7 +28,7 @@ namespace DlgControls
     afx_msg void OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/);
 
   private:
-    void ParseShiftOption(Evaluation::SHIFT_TYPE &option, double &value, CString &str);
+    void ParseShiftOption(novac::SHIFT_TYPE &option, double &value, CString &str);
 
   };
 }

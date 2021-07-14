@@ -397,7 +397,7 @@ public:
 			NB!! This calculation is only based on the distance to longitude=0. Thefore
 				the resulting hour can have an error of up to +- 3 hours from the real local-time.
 			*/
-	static RETURN_CODE ConvertToLocalTime(unsigned short date[3], int &hr, CGPSData &gps);
+	static RETURN_CODE ConvertToLocalTime(unsigned short date[3], int &hr, novac::CGPSData &gps);
 
 	/** Decreases the given date by the given number of days.
 			If nDays is negative, the date will be increased instead. */
@@ -417,17 +417,17 @@ public:
 
 	/** Takes a given date and calculates the day of the year. 
 			An illegal day will return 0. */
-	static int	DayNr(const CDateTime &day);
+	static int	DayNr(const novac::CDateTime &day);
 	
 	/** Returns the Julian Day corresponding to the given date and time of day. */
-	static double JulianDay(const CDateTime &utcTime);
+	static double JulianDay(const novac::CDateTime& utcTime);
 
 
 	/** Returns the current seconds since 1/1/1970 . */
 	static __int64 Epoch();
 
 	/** Returns the seconds since 1/1/1970 for given date time. */
-	static __int64 Epoch(const CDateTime &utcTime);
+	static __int64 Epoch(const novac::CDateTime& utcTime);
 
 	// --------------------------------------------------------------------
 	// -------------------- SUN - FUNCTIONS -------------------------------
@@ -437,7 +437,7 @@ public:
 			for the site specified by (lat, lon) and for the time given in gmtTime. 
 			Note that the returned angles are in degrees and that the specified
 			time _must_ be GMT-time. */
-	static RETURN_CODE GetSunPosition(const CDateTime &gmtTime, double lat, double lon, double &SZA, double &SAZ);
+	static RETURN_CODE GetSunPosition(const novac::CDateTime& gmtTime, double lat, double lon, double &SZA, double &SAZ);
 
 	/** ???? 
 		D  is the JulianDay counted from the 1st of January 2000 @ midnight

@@ -41,7 +41,7 @@ namespace ReEvaluation
         long    m_scanFileNum;
 
         /** The fit windows */
-        Evaluation::CFitWindow  m_window[MAX_N_WINDOWS];
+        novac::CFitWindow  m_window[MAX_N_WINDOWS];
 
         /** How many windows are defined? */
         long        m_windowNum;
@@ -57,7 +57,7 @@ namespace ReEvaluation
         CString     m_statusMsg;
 
         /** The fit results */
-        Evaluation::CEvaluationResult m_results;
+        novac::CEvaluationResult m_results;
 
         /** when doing lengthy calculations the value of this double varies from 0 (in the beginning) to 1 (in the end)
         every now and then a WM_PROGRESS message is sent to the window pView if pView != NULL
@@ -102,7 +102,7 @@ namespace ReEvaluation
         bool  WriteEvaluationLogHeader(int fitWindowIndex);
 
         /** Appends the evaluation result to the evaluation log */
-        bool AppendResultToEvaluationLog(const Evaluation::CScanResult& result, const FileHandler::CScanFileHandler& scan, int fitWindowIndex);
+        bool AppendResultToEvaluationLog(const Evaluation::CScanResult& result, const novac::CScanFileHandler& scan, int fitWindowIndex);
 
         /** Sorts the scans in the array 'm_scanFile' in alphabetical order */
         void SortScans();
