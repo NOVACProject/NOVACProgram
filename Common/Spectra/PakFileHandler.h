@@ -3,11 +3,12 @@
 #include <string>
 #include <vector>
 #include "../../Common/Common.h"
-#include <SpectralEvaluation/File/SpectrumIO.h>
 
 namespace novac
 {
     class CScanFileHandler;
+    class CSpectrum;
+    class CSpectrumIO;
 }
 
 namespace FileHandler

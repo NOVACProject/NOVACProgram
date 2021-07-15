@@ -2,6 +2,7 @@
 #include "pakfilehandler.h"
 #include <SpectralEvaluation/StringUtils.h>
 #include <SpectralEvaluation/File/ScanFileHandler.h>
+#include <SpectralEvaluation/File/SpectrumIO.h>
 
 #ifdef _MSC_VER
 #pragma warning (push, 4)

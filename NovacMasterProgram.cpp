@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "NovacMasterProgram.h"
 #include "MainFrm.h"
+#include "Common/Version.h"
 
 #include "NovacMasterProgramDoc.h"
 #include "NovacMasterProgramView.h"

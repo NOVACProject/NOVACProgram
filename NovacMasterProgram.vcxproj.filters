@@ -8,9 +8,6 @@
     <Filter Include="Source Files\Common">
       <UniqueIdentifier>{bf891fcf-ab38-403c-81a1-c4a88345b35b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Common\SpectrumFormat">
-      <UniqueIdentifier>{3159fed0-fc4a-4ed9-9e3e-d49e2a03c64f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Common\Spectra">
       <UniqueIdentifier>{7b592c2a-fc42-4c37-99a3-82d5e9cbff4f}</UniqueIdentifier>
     </Filter>
@@ -50,9 +47,6 @@
     </Filter>
     <Filter Include="Header Files\Common">
       <UniqueIdentifier>{ac9b4c9c-d4c1-4c96-9433-dcfce3086bbf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Common\SpectrumFormat">
-      <UniqueIdentifier>{55869d18-cce1-449a-ac1c-a8e5e8a3eeaa}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Common\Spectra">
       <UniqueIdentifier>{a03f0946-068b-4da1-8fc2-b246bd0b5c26}</UniqueIdentifier>
@@ -138,6 +132,12 @@
     </Filter>
     <Filter Include="Source Files\SpectralEvaluation\Math">
       <UniqueIdentifier>{e35817e8-3098-43b9-98ad-f9afd4759d95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\SpectralEvaluation\File">
+      <UniqueIdentifier>{12f362dd-a454-452b-921e-44d8f815ebd3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\SpectralEvaluation\File">
+      <UniqueIdentifier>{d5b49ab0-1d6b-4233-8692-4511bdb1f39d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -507,21 +507,6 @@
     <ClCompile Include="SpectralEvaluation\src\Evaluation\ReferenceFitResult.cpp">
       <Filter>Source Files\SpectralEvaluation\Evaluation</Filter>
     </ClCompile>
-    <ClCompile Include="SpectralEvaluation\src\File\MKPack.cpp">
-      <Filter>Source Files\Common\SpectrumFormat</Filter>
-    </ClCompile>
-    <ClCompile Include="SpectralEvaluation\src\File\ScanFileHandler.cpp">
-      <Filter>Source Files\Common\Spectra</Filter>
-    </ClCompile>
-    <ClCompile Include="SpectralEvaluation\src\File\SpectrumIO.cpp">
-      <Filter>Source Files\Common\Spectra</Filter>
-    </ClCompile>
-    <ClCompile Include="SpectralEvaluation\src\File\STDFile.cpp">
-      <Filter>Source Files\Common\SpectrumFormat</Filter>
-    </ClCompile>
-    <ClCompile Include="SpectralEvaluation\src\File\TXTFile.cpp">
-      <Filter>Source Files\Common\SpectrumFormat</Filter>
-    </ClCompile>
     <ClCompile Include="SpectralEvaluation\src\Fit\MessageLog.cpp">
       <Filter>Source Files\SpectralEvaluation\Fit</Filter>
     </ClCompile>
@@ -551,9 +536,6 @@
     </ClCompile>
     <ClCompile Include="SpectralEvaluation\src\Flux\PlumeInScanProperty.cpp">
       <Filter>Source Files\Common\Flux</Filter>
-    </ClCompile>
-    <ClCompile Include="SpectralEvaluation\src\File\File.cpp">
-      <Filter>Source Files\Common</Filter>
     </ClCompile>
     <ClCompile Include="Dialogs\ColumnHistoryDlg.cpp">
       <Filter>Source Files\Dialogs</Filter>
@@ -623,6 +605,24 @@
     </ClCompile>
     <ClCompile Include="SpectralEvaluation\src\Spectra\SpectrumUtils.cpp">
       <Filter>Source Files\SpectralEvaluation\Spectra</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\File\MKPack.cpp">
+      <Filter>Source Files\SpectralEvaluation\File</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\File\STDFile.cpp">
+      <Filter>Source Files\SpectralEvaluation\File</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\File\TXTFile.cpp">
+      <Filter>Source Files\SpectralEvaluation\File</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\File\File.cpp">
+      <Filter>Source Files\SpectralEvaluation\File</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\File\SpectrumIO.cpp">
+      <Filter>Source Files\SpectralEvaluation\File</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\File\ScanFileHandler.cpp">
+      <Filter>Source Files\SpectralEvaluation\File</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1010,21 +1010,6 @@
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Evaluation\ReferenceFitResult.h">
       <Filter>Header Files\SpectralEvaluation\Evaluation</Filter>
     </ClInclude>
-    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\File\ScanFileHandler.h">
-      <Filter>Header Files\Common\Spectra</Filter>
-    </ClInclude>
-    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\File\SpectrumIO.h">
-      <Filter>Header Files\Common\Spectra</Filter>
-    </ClInclude>
-    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\File\MKPack.h">
-      <Filter>Header Files\Common\SpectrumFormat</Filter>
-    </ClInclude>
-    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\File\STDFile.h">
-      <Filter>Header Files\Common\SpectrumFormat</Filter>
-    </ClInclude>
-    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\File\TXTFile.h">
-      <Filter>Header Files\Common\SpectrumFormat</Filter>
-    </ClInclude>
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Configuration\DarkSettings.h">
       <Filter>Header Files\Configuration</Filter>
     </ClInclude>
@@ -1243,6 +1228,24 @@
     </ClInclude>
     <ClInclude Include="File\FileMerger.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\File\MKPack.h">
+      <Filter>Header Files\SpectralEvaluation\File</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\File\STDFile.h">
+      <Filter>Header Files\SpectralEvaluation\File</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\File\TXTFile.h">
+      <Filter>Header Files\SpectralEvaluation\File</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\File\File.h">
+      <Filter>Header Files\SpectralEvaluation\File</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\File\ScanFileHandler.h">
+      <Filter>Header Files\SpectralEvaluation\File</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\File\SpectrumIO.h">
+      <Filter>Header Files\SpectralEvaluation\File</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

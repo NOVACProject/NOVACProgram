@@ -947,9 +947,6 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Merge Evaluation Log Files",  32790
         MENUITEM "&Split/Merge PakFile(s)",     ID_FILE_SPLITPAKFILE
-        MENUITEM SEPARATOR
-        MENUITEM "Create References",           ID_FILE_CREATEREFERENCES
-        MENUITEM "Calibrate Spectrometer",      ID_FILE_CALIBRATESPECTROMETER
     END
     POPUP "&Control"
     BEGIN
