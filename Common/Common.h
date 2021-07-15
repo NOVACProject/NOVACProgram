@@ -346,10 +346,22 @@ public:
     /** Opens a dialog window and lets the user browse for a filename to save to */
     static bool BrowseForFile_SaveAs(TCHAR* filter, CString& fileName);
 
+    /** Opens a dialog window and lets the user browse for a filename to save to.
+        If filterType is not nullptr then it will be filled with the selected filter. */
+    static bool BrowseForFile_SaveAs(TCHAR* filter, CString& fileName, int* filterType);
+
     /** Opens a dialog window and lets the user browse for a directory.
             @return true if all is ok,
             @return false otherwise */
     bool BrowseForDirectory(CString& folderName);
+
+    /** Lists all files in the provided directory.
+        If a fileNameFilter is supplied, then only files with names matching the given filter are returned.
+        Possible filters are '*.*', '*.xs' or 'SO2_*.txt'
+        This will not recurse into sub-directories.
+        @param directory The name of the directory to search. Must end with a backslash or forwardslash.
+        @return a vector containing the full file path to each file found (i.e. including directory and extension) */
+    static std::vector<std::string> ListFilesInDirectory(const char* directory, const char* fileNameFilter = nullptr);
 
     // --------------------------------------------------------------------
     // ---------------------- DATE & TIME ---------------------------------

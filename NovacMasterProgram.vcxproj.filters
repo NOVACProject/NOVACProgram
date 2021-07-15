@@ -139,6 +139,15 @@
     <Filter Include="Source Files\SpectralEvaluation\File">
       <UniqueIdentifier>{d5b49ab0-1d6b-4233-8692-4511bdb1f39d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Calibration">
+      <UniqueIdentifier>{d9b5fb91-5bef-49ce-8270-17a166d53b44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\SpectralEvaluation\Calibration">
+      <UniqueIdentifier>{4e74ac28-dddd-4205-a6b6-d2676c89bf4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\SpectralEvaluation\Math">
+      <UniqueIdentifier>{690ac6d1-8178-4086-a3f8-dab1c04ead1b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Configuration\AdvancedFTPUploadSettings.cpp">
@@ -623,6 +632,39 @@
     </ClCompile>
     <ClCompile Include="SpectralEvaluation\src\File\ScanFileHandler.cpp">
       <Filter>Source Files\SpectralEvaluation\File</Filter>
+    </ClCompile>
+    <ClCompile Include="Dialogs\SpectrometerCalibrationDlg.cpp">
+      <Filter>Source Files\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="Dialogs\CCalibratePixelToWavelengthDialog.cpp">
+      <Filter>Source Files\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="Dialogs\CCalibrateReferencesDialog.cpp">
+      <Filter>Source Files\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="Dialogs\OpenInstrumentCalibrationDialog.cpp">
+      <Filter>Source Files\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="Calibration\ReferenceCreationController.cpp">
+      <Filter>Source Files\Calibration</Filter>
+    </ClCompile>
+    <ClCompile Include="Calibration\WavelengthCalibrationController.cpp">
+      <Filter>Source Files\Calibration</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Calibration\FraunhoferSpectrumGeneration.cpp">
+      <Filter>Source Files\SpectralEvaluation\Calibration</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Calibration\WavelengthCalibration.cpp">
+      <Filter>Source Files\SpectralEvaluation\Calibration</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Calibration\WavelengthCalibrationByRansac.cpp">
+      <Filter>Source Files\SpectralEvaluation\Calibration</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Math\FunctionFit.cpp">
+      <Filter>Source Files\SpectralEvaluation\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Math\PolynomialFit.cpp">
+      <Filter>Source Files\SpectralEvaluation\Math</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1246,6 +1288,48 @@
     </ClInclude>
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\File\SpectrumIO.h">
       <Filter>Header Files\SpectralEvaluation\File</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialogs\SpectrometerCalibrationDlg.h">
+      <Filter>Header Files\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialogs\CCalibratePixelToWavelengthDialog.h">
+      <Filter>Header Files\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialogs\CCalibrateReferencesDialog.h">
+      <Filter>Header Files\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialogs\OpenInstrumentCalibrationDialog.h">
+      <Filter>Source Files\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="Calibration\InstrumentCalibrationInput.h">
+      <Filter>Source Files\Calibration</Filter>
+    </ClInclude>
+    <ClInclude Include="Calibration\ReferenceCreationController.h">
+      <Filter>Source Files\Calibration</Filter>
+    </ClInclude>
+    <ClInclude Include="Calibration\WavelengthCalibrationController.h">
+      <Filter>Source Files\Calibration</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Calibration\FraunhoferSpectrumGeneration.h">
+      <Filter>Header Files\SpectralEvaluation\Calibration</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Calibration\InstrumentLineShape.h">
+      <Filter>Header Files\SpectralEvaluation\Calibration</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Calibration\WavelengthCalibration.h">
+      <Filter>Header Files\SpectralEvaluation\Calibration</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Calibration\WavelengthCalibrationByRansac.h">
+      <Filter>Header Files\SpectralEvaluation\Calibration</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Math\FFT.h">
+      <Filter>Header Files\SpectralEvaluation\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Math\FunctionFit.h">
+      <Filter>Header Files\SpectralEvaluation\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Math\PolynomialFit.h">
+      <Filter>Header Files\SpectralEvaluation\Math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

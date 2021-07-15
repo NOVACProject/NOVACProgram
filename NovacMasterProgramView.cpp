@@ -48,6 +48,7 @@
 #include "Dialogs/DataBrowserDlg.h"
 #include "Dialogs/PakFileInspector.h"
 #include "Dialogs/SummarizeFluxDataDlg.h"
+#include "Dialogs/SpectrometerCalibrationDlg.h"
 
 #include "WindMeasurement/PostWindDlg.h"
 #include "WindMeasurement/WindSpeedResult.h"
@@ -130,6 +131,7 @@ BEGIN_MESSAGE_MAP(CNovacMasterProgramView, CFormView)
     ON_WM_DESTROY()
     ON_WM_SIZE()
     ON_WM_SIZE()
+    ON_COMMAND(ID_ANALYSIS_CALIBRATESPECTROMETER, &CNovacMasterProgramView::OnAnalysisCalibratesSectrometer)
 END_MESSAGE_MAP()
 
 // CNovacMasterProgramView construction/destruction
@@ -1520,4 +1522,10 @@ void CNovacMasterProgramView::OnSize(UINT nType, int cx, int cy)
             }
         }
     }
+}
+
+void CNovacMasterProgramView::OnAnalysisCalibratesSectrometer()
+{
+    CSpectrometerCalibrationDlg dlg;
+    dlg.DoModal();
 }
