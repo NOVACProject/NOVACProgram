@@ -2,6 +2,7 @@
 #include "ScanEvaluation.h"
 #include "EvaluationResultView.h"
 #include <SpectralEvaluation/Evaluation/EvaluationBase.h>
+#include <SpectralEvaluation/File/SpectrumIO.h>
 #include <SpectralEvaluation/File/ScanFileHandler.h>
 #include <SpectralEvaluation/File/STDFile.h>
 #include <SpectralEvaluation/StringUtils.h>

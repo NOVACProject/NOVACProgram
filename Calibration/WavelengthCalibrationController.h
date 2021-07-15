@@ -15,14 +15,9 @@ public:
     ~WavelengthCalibrationController();
 
     /// <summary>
-    /// The full path to the spectrum to calibrate
+    /// The full path to the spectrum to calibrate (should be a .pak file)
     /// </summary>
     std::string m_inputSpectrumFile;
-
-    /// <summary>
-    /// The full path to the dark spectrum of the spectrum to calibrate
-    /// </summary>
-    std::string m_darkSpectrumFile;
 
     /// <summary>
     /// The full path to the high resolved solar spectrum

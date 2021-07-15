@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "evaluationcontroller.h"
 #include "ScanEvaluation.h"
+#include <SpectralEvaluation/File/SpectrumIO.h>
 #include "../Common/Version.h"
 
 #ifdef _MSC_VER

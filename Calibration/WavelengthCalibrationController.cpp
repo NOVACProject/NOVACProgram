@@ -2,11 +2,14 @@
 
 #undef max
 #undef min
+
 #include <filesystem>
+#include <sstream>
 #include "WavelengthCalibrationController.h"
 #include <SpectralEvaluation/Spectra/Spectrum.h>
 #include <SpectralEvaluation/File/File.h>
 #include <SpectralEvaluation/File/STDFile.h>
+#include <SpectralEvaluation/File/ScanFileHandler.h>
 #include <SpectralEvaluation/Calibration/WavelengthCalibration.h>
 #include <SpectralEvaluation/Calibration/InstrumentLineShapeEstimation.h>
 #include <SpectralEvaluation/Calibration/FraunhoferSpectrumGeneration.h>
@@ -65,15 +68,23 @@ void WavelengthCalibrationController::RunCalibration()
     novac::WavelengthCalibrationSettings settings;
     settings.highResSolarAtlas = this->m_solarSpectrumFile;
 
+    novac::CScanFileHandler pakFileHandler;
+    if (!pakFileHandler.CheckScanFile(this->m_inputSpectrumFile))
+    {
+        std::stringstream msg;
+        msg << "Cannot read the provided input spectrum file. Error:  " << pakFileHandler.m_lastError;
+        throw std::invalid_argument(msg.str());
+    }
+
     novac::CSpectrum measuredSpectrum;
-    if (!novac::ReadSpectrum(this->m_inputSpectrumFile, measuredSpectrum))
+    if (pakFileHandler.GetSky(measuredSpectrum))
     {
         throw std::invalid_argument("Cannot read the provided input spectrum file");
     }
 
-    // subtract the dark-spectrum (if this has been provided)
+    // subtract the dark-spectrum (if this exists)
     novac::CSpectrum darkSpectrum;
-    if (novac::ReadSpectrum(this->m_darkSpectrumFile, darkSpectrum))
+    if (!pakFileHandler.GetDark(darkSpectrum))
     {
         measuredSpectrum.Sub(darkSpectrum);
     }

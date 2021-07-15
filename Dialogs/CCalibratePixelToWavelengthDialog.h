@@ -46,7 +46,6 @@ protected:
 public:
 
     CString m_inputSpectrumFile;
-    CString m_darkSpectrumFile;
 
     CalibratePixelToWavelengthDialogSetup m_setup;
 
@@ -63,7 +62,6 @@ public:
     afx_msg void OnClickedButtonBrowseSpectrum();
     afx_msg void OnClickedButtonBrowseSolarSpectrum();
     afx_msg void OnClickedButtonRun();
-    afx_msg void OnClickedButtonBrowseSpectrumDark();
     afx_msg void OnClickedButtonSave();
     afx_msg void OnSelchangeListGraphType();
     afx_msg void OnButtonSelectInitialCalibration();

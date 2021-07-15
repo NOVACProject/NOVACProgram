@@ -21,7 +21,6 @@ IMPLEMENT_DYNAMIC(CCalibratePixelToWavelengthDialog, CPropertyPage)
 CCalibratePixelToWavelengthDialog::CCalibratePixelToWavelengthDialog(CWnd* pParent /*=nullptr*/)
     : CPropertyPage(IDD_CALIBRATE_WAVELENGTH_DIALOG)
     , m_inputSpectrumFile(_T(""))
-    , m_darkSpectrumFile(_T(""))
     , m_initialCalibrationFileTypeFilter("Novac Instrument Calibration Files\0*.xml\0")
 {
     wavelengthCalibrationDialog = this;
@@ -71,7 +70,6 @@ void CCalibratePixelToWavelengthDialog::DoDataExchange(CDataExchange* pDX)
     DDX_Text(pDX, IDC_EDIT_SPECTRUM, m_inputSpectrumFile);
     DDX_Text(pDX, IDC_EDIT_SOLAR_SPECTRUM, m_setup.m_solarSpectrumFile);
     DDX_Text(pDX, IDC_EDIT_INITIAL_CALIBRATION, m_setup.m_initialCalibrationFile);
-    DDX_Text(pDX, IDC_EDIT_SPECTRUM_DARK2, m_darkSpectrumFile);
     DDX_Control(pDX, IDC_STATIC_GRAPH_HOLDER_PANEL, m_graphHolder);
     DDX_Control(pDX, IDC_BUTTON_RUN, m_runButton);
     DDX_Control(pDX, IDC_BUTTON_SAVE, m_saveButton);
@@ -81,7 +79,6 @@ void CCalibratePixelToWavelengthDialog::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CCalibratePixelToWavelengthDialog, CPropertyPage)
     ON_BN_CLICKED(IDC_BUTTON_BROWSE_SPECTRUM, &CCalibratePixelToWavelengthDialog::OnClickedButtonBrowseSpectrum)
-    ON_BN_CLICKED(IDC_BUTTON_BROWSE_SPECTRUM_DARK2, &CCalibratePixelToWavelengthDialog::OnClickedButtonBrowseSpectrumDark)
     ON_BN_CLICKED(IDC_BUTTON_BROWSE_SOLAR_SPECTRUM, &CCalibratePixelToWavelengthDialog::OnClickedButtonBrowseSolarSpectrum)
     ON_BN_CLICKED(IDC_BUTTON_RUN, &CCalibratePixelToWavelengthDialog::OnClickedButtonRun)
     ON_BN_CLICKED(IDC_BUTTON_SAVE, &CCalibratePixelToWavelengthDialog::OnClickedButtonSave)
@@ -197,7 +194,7 @@ void CCalibratePixelToWavelengthDialog::LoadLastSetup()
 
 void CCalibratePixelToWavelengthDialog::OnClickedButtonBrowseSpectrum()
 {
-    if (!Common::BrowseForFile("Spectrum Files\0*.std;*.txt\0", this->m_inputSpectrumFile))
+    if (!Common::BrowseForFile("Pak Files\0*.pak\0", this->m_inputSpectrumFile))
     {
         return;
     }
@@ -207,15 +204,6 @@ void CCalibratePixelToWavelengthDialog::OnClickedButtonBrowseSpectrum()
 void CCalibratePixelToWavelengthDialog::OnClickedButtonBrowseSolarSpectrum()
 {
     if (!Common::BrowseForFile("Spectrum Files\0*.std;*.txt;*.xs\0", this->m_setup.m_solarSpectrumFile))
-    {
-        return;
-    }
-    UpdateData(FALSE);
-}
-
-void CCalibratePixelToWavelengthDialog::OnClickedButtonBrowseSpectrumDark()
-{
-    if (!Common::BrowseForFile("Spectrum Files\0*.std;*.txt\0", this->m_darkSpectrumFile))
     {
         return;
     }
@@ -454,7 +442,6 @@ void CCalibratePixelToWavelengthDialog::OnClickedButtonRun()
     }
 
     this->m_controller->m_inputSpectrumFile = this->m_inputSpectrumFile;
-    this->m_controller->m_darkSpectrumFile = this->m_darkSpectrumFile;
     this->m_controller->m_solarSpectrumFile = this->m_setup.m_solarSpectrumFile;
     this->m_controller->m_initialCalibrationFile = this->m_setup.m_initialCalibrationFile;
     this->m_controller->m_initialLineShapeFile = this->m_setup.m_instrumentLineshapeFile;
