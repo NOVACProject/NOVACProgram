@@ -246,16 +246,10 @@
     <ClCompile Include="Common\ReportWriter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Graphs\ScanGraph.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ScannerFileInfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ScannerFolderInfo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphs\SpectrumGraph.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="StatusFileReader.cpp">
@@ -412,9 +406,6 @@
       <Filter>Source Files\Dialogs</Filter>
     </ClCompile>
     <ClCompile Include="Dialogs\GeometryDlg.cpp">
-      <Filter>Source Files\Dialogs</Filter>
-    </ClCompile>
-    <ClCompile Include="Dialogs\ImportDlg.cpp">
       <Filter>Source Files\Dialogs</Filter>
     </ClCompile>
     <ClCompile Include="Dialogs\ImportSpectraDlg.cpp">
@@ -666,6 +657,12 @@
     <ClCompile Include="SpectralEvaluation\src\Math\PolynomialFit.cpp">
       <Filter>Source Files\SpectralEvaluation\Math</Filter>
     </ClCompile>
+    <ClCompile Include="Graphs\ScanGraph.cpp">
+      <Filter>Source Files\Graphs</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphs\SpectrumGraph.cpp">
+      <Filter>Source Files\Graphs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Configuration\AdvancedFTPUploadSettings.h">
@@ -693,9 +690,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Common\EvaluationLogFileHandler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Configuration\FTPSettingsDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FileTreeCtrl.h">
@@ -770,16 +764,10 @@
     <ClInclude Include="Resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Graphs\ScanGraph.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ScannerFileInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ScannerFolderInfo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphs\SpectrumGraph.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="StatusFileReader.h">
@@ -957,9 +945,6 @@
       <Filter>Header Files\Dialogs</Filter>
     </ClInclude>
     <ClInclude Include="Dialogs\GeometryDlg.h">
-      <Filter>Header Files\Dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="Dialogs\ImportDlg.h">
       <Filter>Header Files\Dialogs</Filter>
     </ClInclude>
     <ClInclude Include="Dialogs\ImportSpectraDlg.h">
@@ -1330,6 +1315,12 @@
     </ClInclude>
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Math\PolynomialFit.h">
       <Filter>Header Files\SpectralEvaluation\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphs\ScanGraph.h">
+      <Filter>Header Files\Graphs</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphs\SpectrumGraph.h">
+      <Filter>Header Files\Graphs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

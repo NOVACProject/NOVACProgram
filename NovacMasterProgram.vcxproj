@@ -206,7 +206,6 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
     <ClCompile Include="Dialogs\FluxErrorDlg.cpp" />
     <ClCompile Include="Dialogs\FluxHistoryDlg.cpp" />
     <ClCompile Include="Dialogs\GeometryDlg.cpp" />
-    <ClCompile Include="Dialogs\ImportDlg.cpp" />
     <ClCompile Include="Dialogs\ImportSpectraDlg.cpp" />
     <ClCompile Include="Dialogs\ManualCompositionDlg.cpp" />
     <ClCompile Include="Dialogs\ManualWindDlg.cpp" />
@@ -480,7 +479,6 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
     <ClInclude Include="Configuration\ConfigureCOMPortDlg.h" />
     <ClInclude Include="Configuration\DarkConfigurationDlg.h" />
     <ClInclude Include="Configuration\EvaluationConfigurationDlg.h" />
-    <ClInclude Include="Configuration\FTPSettingsDlg.h" />
     <ClInclude Include="Configuration\GlobalConfiguration.h" />
     <ClInclude Include="Configuration\LocationConfigurationDlg.h" />
     <ClInclude Include="Configuration\ScannerConfiguration.h" />
@@ -497,7 +495,6 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
     <ClInclude Include="Dialogs\FileTransferDlg.h" />
     <ClInclude Include="Dialogs\FluxErrorDlg.h" />
     <ClInclude Include="Dialogs\GeometryDlg.h" />
-    <ClInclude Include="Dialogs\ImportDlg.h" />
     <ClInclude Include="Dialogs\ImportSpectraDlg.h" />
     <ClInclude Include="Dialogs\ManualCompositionDlg.h" />
     <ClInclude Include="Dialogs\ManualWindDlg.h" />

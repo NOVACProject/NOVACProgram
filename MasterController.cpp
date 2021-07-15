@@ -62,8 +62,7 @@ CCriticalSection g_evalLogCritSect;
     program (if the program is exited while evaluating a pak-file, the pak file
     will still remain in the output directory) */
 UINT CheckForOldSpectra(LPVOID pParam);
-//void CheckForSpectraInDir(const CString &path, CList <CString, CString&> &fileList);
-//void CheckForSpectraInHexDir(const CString &path, CList <CString, CString&> &fileList);
+
 void SetThreadName(DWORD dwThreadID, LPCTSTR szThreadName);
 
 #define MS_VC_EXCEPTION 0x406d1388 
