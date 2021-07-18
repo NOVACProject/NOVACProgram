@@ -115,10 +115,12 @@ void WavelengthCalibrationController::RunCalibration()
         if (this->m_initialLineShapeFile.size() > 0)
         {
             ReadInstrumentLineShape(m_initialLineShapeFile, settings);
+            this->m_measuredInstrumentLineShapeSpectrum = new novac::CSpectrum(settings.initialInstrumentLineShape);
         }
         else
         {
             CreateGuessForInstrumentLineShape(this->m_solarSpectrumFile, measuredSpectrum, settings);
+            this->m_measuredInstrumentLineShapeSpectrum = new novac::CSpectrum(settings.initialInstrumentLineShape);
         }
     }
 

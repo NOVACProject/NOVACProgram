@@ -60,6 +60,7 @@ BOOL CCalibratePixelToWavelengthDialog::OnInitDialog() {
 
     LoadDefaultSetup();
     LoadLastSetup();
+    UpdateData(FALSE);
 
     return TRUE;  // return TRUE unless you set the focus to a control
 }
@@ -151,7 +152,6 @@ void CCalibratePixelToWavelengthDialog::LoadDefaultSetup()
     if (solarCrossSection.size() > 0)
     {
         this->m_setup.m_solarSpectrumFile = CString(solarCrossSection.front().c_str());
-        UpdateData(FALSE);
     }
 }
 
@@ -179,9 +179,6 @@ void CCalibratePixelToWavelengthDialog::LoadLastSetup()
             else if (line.find("InputFileType") != std::string::npos)
             {
                 this->m_setup.m_calibrationOption = ParseXmlInteger("<InputFileType>", "</InputFileType>", line);
-
-                // TODO: when to set this?
-                // this->m_instrumentCalibrationTypeCombo.SetCurSel(this->m_setup.m_calibrationOption);
             }
         }
     }
