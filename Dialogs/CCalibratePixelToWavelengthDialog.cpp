@@ -547,6 +547,7 @@ void CCalibratePixelToWavelengthDialog::OnButtonSelectInitialCalibration()
     {
         this->m_setup.m_initialCalibrationFile = dlg.m_state.initialCalibrationFile;
         this->m_setup.m_instrumentLineshapeFile = dlg.m_state.instrumentLineshapeFile;
+        this->m_setup.m_calibrationOption = (int)dlg.m_state.calibrationOption;
 
         UpdateData(FALSE);
     }

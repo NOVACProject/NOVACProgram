@@ -24,7 +24,7 @@ OpenInstrumentCalibrationDialog::~OpenInstrumentCalibrationDialog()
 BOOL OpenInstrumentCalibrationDialog::OnInitDialog()
 {
     CDialog::OnInitDialog();
-    this->m_comboDataType.SetCurSel(0);
+    this->m_comboDataType.SetCurSel((int)this->m_state.calibrationOption);
 
     return TRUE;  // return TRUE unless you set the focus to a control
 }
@@ -72,9 +72,9 @@ void OpenInstrumentCalibrationDialog::OnButtonBrowseCalibration()
 
 void OpenInstrumentCalibrationDialog::OnSelchangeDataType()
 {
-    const int currentType = this->m_comboDataType.GetCurSel();
+    this->m_state.calibrationOption = (InstrumentCalibrationInputOption)this->m_comboDataType.GetCurSel();
 
-    if (currentType == 2)
+    if (this->m_state.calibrationOption == InstrumentCalibrationInputOption::NovacInstrumentCalibrationFile)
     {
         // 2: User provides a wavelength calibration file, the program derives the instrument line shape
         m_initialCalibrationFileTypeFilter = "Wavelength Calibration Files\0*.clb\0Spectrum Files\0*.txt;*.xs\0\0";
@@ -82,7 +82,7 @@ void OpenInstrumentCalibrationDialog::OnSelchangeDataType()
         m_labelInstrumentLineShape.EnableWindow(FALSE);
         m_buttonBrowseInstrumentLineShape.EnableWindow(FALSE);
     }
-    else if (currentType == 1)
+    else if (this->m_state.calibrationOption == InstrumentCalibrationInputOption::WavelengthAndSlitFunctionFile)
     {
         // 1: User provides a wavelength calibration file and instrument line shape
         m_initialCalibrationFileTypeFilter = "Wavelength Calibration Files\0*.clb\0Spectrum Files\0*.txt;*.xs\0\0";
