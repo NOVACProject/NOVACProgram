@@ -5,6 +5,8 @@
 
 using namespace ReEvaluation;
 using namespace Evaluation;
+using namespace novac;
+
 
 UINT DoEvaluation(LPVOID pParam) {
     CReEvaluator *m_reeval = (CReEvaluator*)pParam;
@@ -220,6 +222,7 @@ void CReEval_DoEvaluationDlg::OnCancelEvaluation()
     if (hThread != NULL && GetExitCodeThread(hThread, &dwExitCode) && dwExitCode == STILL_ACTIVE) {
         AfxGetApp()->BeginWaitCursor();
         this->m_reeval->Stop();
+        this->m_reeval->m_pause = FALSE;
 
         WaitForSingleObject(hThread, INFINITE);
         AfxGetApp()->EndWaitCursor();

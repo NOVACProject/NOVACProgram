@@ -5,6 +5,7 @@
 #include "../resource.h"
 
 using namespace FileHandler;
+using namespace novac;
 
 extern CVolcanoInfo g_volcanoes;
 
@@ -341,32 +342,32 @@ int CConfigurationFileHandler::WriteConfigurationFile(CConfigurationSetting &con
                 fprintf(f, str);
 
                 // The species
-                Evaluation::CFitWindow &window = spec.channel[l].fitWindow;
+                novac::CFitWindow&window = spec.channel[l].fitWindow;
                 for (int k = 0; k < window.nRef; ++k) {
                     fprintf(f, TEXT(indent + "\t<Reference>\n"));
                     fprintf(f, "%s\t\t<name>%s</name>\n", (LPCSTR)indent, window.ref[k].m_specieName.c_str());
                     fprintf(f, "%s\t\t<path>%s</path>\n", (LPCSTR)indent, window.ref[k].m_path.c_str());
                     // writing the shift
                     fprintf(f, TEXT(indent + "\t\t<shift>"));
-                    if (window.ref[k].m_shiftOption == Evaluation::SHIFT_FIX)
+                    if (window.ref[k].m_shiftOption == novac::SHIFT_FIX)
                         str.Format("fix to %.2lf", window.ref[k].m_shiftValue);
-                    else if (window.ref[k].m_shiftOption == Evaluation::SHIFT_FREE)
+                    else if (window.ref[k].m_shiftOption == novac::SHIFT_FREE)
                         str.Format("free");
-                    else if (window.ref[k].m_shiftOption == Evaluation::SHIFT_LIMIT)
+                    else if (window.ref[k].m_shiftOption == novac::SHIFT_LIMIT)
                         str.Format("limit from %.2lf to %.2lf", window.ref[k].m_shiftValue, window.ref[k].m_shiftMaxValue);
-                    else if (window.ref[k].m_shiftOption == Evaluation::SHIFT_LINK)
+                    else if (window.ref[k].m_shiftOption == novac::SHIFT_LINK)
                         str.Format("link to %.0lf", window.ref[k].m_shiftValue);
                     fprintf(f, str);
                     fprintf(f, "</shift>\n");
                     // writing the squeeze
                     fprintf(f, TEXT(indent + "\t\t<squeeze>"));
-                    if (window.ref[k].m_squeezeOption == Evaluation::SHIFT_FIX)
+                    if (window.ref[k].m_squeezeOption == novac::SHIFT_FIX)
                         str.Format("fix to %.2lf", window.ref[k].m_squeezeValue);
-                    else if (window.ref[k].m_squeezeOption == Evaluation::SHIFT_FREE)
+                    else if (window.ref[k].m_squeezeOption == novac::SHIFT_FREE)
                         str.Format("free");
-                    else if (window.ref[k].m_squeezeOption == Evaluation::SHIFT_LIMIT)
+                    else if (window.ref[k].m_squeezeOption == novac::SHIFT_LIMIT)
                         str.Format("limit from %.2lf to %.2lf", window.ref[k].m_squeezeValue, window.ref[k].m_squeezeMaxValue);
-                    else if (window.ref[k].m_squeezeOption == Evaluation::SHIFT_LINK)
+                    else if (window.ref[k].m_squeezeOption == novac::SHIFT_LINK)
                         str.Format("link to %.0lf", window.ref[k].m_squeezeValue);
                     fprintf(f, str);
                     fprintf(f, "</squeeze>\n");
@@ -1216,7 +1217,7 @@ int CConfigurationFileHandler::Parse_Reference(CConfigurationSetting::Spectromet
         // found the shift
         if (Equals(szToken, "shift")) {
             if (curChannel != NULL) {
-                Evaluation::CReferenceFile &ref = curChannel->fitWindow.ref[refIndex];
+                CReferenceFile &ref = curChannel->fitWindow.ref[refIndex];
                 Parse_ShiftOrSqueeze(TEXT("/shift"), ref.m_shiftOption, ref.m_shiftValue, ref.m_shiftMaxValue);
             }
             continue;
@@ -1225,7 +1226,7 @@ int CConfigurationFileHandler::Parse_Reference(CConfigurationSetting::Spectromet
         // found the squeeze
         if (Equals(szToken, "squeeze")) {
             if (curChannel != NULL) {
-                Evaluation::CReferenceFile &ref = curChannel->fitWindow.ref[refIndex];
+                CReferenceFile &ref = curChannel->fitWindow.ref[refIndex];
                 Parse_ShiftOrSqueeze(TEXT("/squeeze"), ref.m_squeezeOption, ref.m_squeezeValue, ref.m_squeezeMaxValue);
             }
             continue;
@@ -1236,7 +1237,7 @@ int CConfigurationFileHandler::Parse_Reference(CConfigurationSetting::Spectromet
 }
 
 /** Parses a shift or squeeze section */
-int CConfigurationFileHandler::Parse_ShiftOrSqueeze(const CString &label, Evaluation::SHIFT_TYPE &option, double &lowValue, double &highValue) {
+int CConfigurationFileHandler::Parse_ShiftOrSqueeze(const CString &label, novac::SHIFT_TYPE &option, double &lowValue, double &highValue) {
     char *pt = NULL;
 
     // the actual reading loop
@@ -1260,18 +1261,18 @@ int CConfigurationFileHandler::Parse_ShiftOrSqueeze(const CString &label, Evalua
 
         if (pt = strstr(szToken, "fix to")) {
             int ret = sscanf(szToken, "fix to %lf", &lowValue);
-            option = Evaluation::SHIFT_FIX;
+            option = novac::SHIFT_FIX;
         }
         else if (pt = strstr(szToken, "free")) {
-            option = Evaluation::SHIFT_FREE;
+            option = novac::SHIFT_FREE;
         }
         else if (pt = strstr(szToken, "limit")) {
             int ret = sscanf(szToken, "limit from %lf to %lf", &lowValue, &highValue);
-            option = Evaluation::SHIFT_LIMIT;
+            option = novac::SHIFT_LIMIT;
         }
         else if (pt = strstr(szToken, "link")) {
             int ret = sscanf(szToken, "link %lf", &lowValue);
-            option = Evaluation::SHIFT_LINK;
+            option = novac::SHIFT_LINK;
         }
     }
     return 0;

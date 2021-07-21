@@ -59,7 +59,7 @@ protected:
 		~CEvalLogFile();
 		CString   fileName;     // <-- the filename of the evaluation log
 		int       volcanoIndex; // <-- the volcano index tells us which volcano this measurement comes from
-		CDateTime arrived;      // <-- the (local PC) time when this thread found out about the file
+		novac::CDateTime arrived;      // <-- the (local PC) time when this thread found out about the file
 		long      matched;      // <-- how many evaluation-files that this file has been matched with already
 	};
 

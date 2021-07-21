@@ -9,6 +9,7 @@
 
 using namespace ReEvaluation;
 using namespace Evaluation;
+using namespace novac;
 
 CReEvaluator::CReEvaluator(void)
 {
@@ -97,7 +98,7 @@ bool CReEvaluator::DoEvaluation()
         }
 
         // The CScanFileHandler is a structure for reading the spectral information from the scan-file
-        FileHandler::CScanFileHandler scan;
+        CScanFileHandler scan;
 
         // Check the scan file
         const std::string scanFileName((LPCSTR)m_scanFile[curScanFile]);
@@ -348,7 +349,7 @@ bool CReEvaluator::WriteEvaluationLogHeader(int fitWindowIndex)
     return true;
 }
 
-bool CReEvaluator::AppendResultToEvaluationLog(const Evaluation::CScanResult& result, const FileHandler::CScanFileHandler& scan, int fitWindowIndex)
+bool CReEvaluator::AppendResultToEvaluationLog(const Evaluation::CScanResult& result, const CScanFileHandler& scan, int fitWindowIndex)
 {
     CSpectrum skySpec;
 

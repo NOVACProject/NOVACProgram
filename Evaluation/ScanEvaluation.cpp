@@ -2,12 +2,14 @@
 #include "ScanEvaluation.h"
 #include "EvaluationResultView.h"
 #include <SpectralEvaluation/Evaluation/EvaluationBase.h>
+#include <SpectralEvaluation/File/SpectrumIO.h>
 #include <SpectralEvaluation/File/ScanFileHandler.h>
 #include <SpectralEvaluation/File/STDFile.h>
 #include <SpectralEvaluation/StringUtils.h>
 #include <SpectralEvaluation/Spectra/SpectrometerModel.h>
 
 using namespace Evaluation;
+using namespace novac;
 
 CScanEvaluation::CScanEvaluation()
 {
@@ -85,7 +87,7 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
 
     // The CScanFileHandler is a structure for reading the spectral information 
     //  from the scan-file
-    FileHandler::CScanFileHandler scan;
+    CScanFileHandler scan;
 
     // Check the scan file, make sure it's correct and that the file
     //	actually contains spectra
@@ -220,7 +222,7 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
             if (ret == 0)
             {
                 // if something went wrong when reading the spectrum
-                if (scan.m_lastError == SpectrumIO::CSpectrumIO::ERROR_SPECTRUM_NOT_FOUND || scan.m_lastError == SpectrumIO::CSpectrumIO::ERROR_EOF)
+                if (scan.m_lastError == CSpectrumIO::ERROR_SPECTRUM_NOT_FOUND || scan.m_lastError == novac::CSpectrumIO::ERROR_EOF)
                 {
                     // at the end of the file, quit the 'while' loop
                     break;
@@ -230,9 +232,9 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
                     CString errMsg;
                     errMsg.Format("Faulty spectrum found in %s", (LPCSTR)scanfile);
                     switch (scan.m_lastError) {
-                    case SpectrumIO::CSpectrumIO::ERROR_CHECKSUM_MISMATCH:
+                    case novac::CSpectrumIO::ERROR_CHECKSUM_MISMATCH:
                         errMsg.AppendFormat(", Checksum mismatch. Spectrum ignored"); break;
-                    case SpectrumIO::CSpectrumIO::ERROR_DECOMPRESS:
+                    case novac::CSpectrumIO::ERROR_DECOMPRESS:
                         errMsg.AppendFormat(", Decompression error. Spectrum ignored"); break;
                     default:
                         ShowMessage(", Unknown error. Spectrum ignored");
@@ -447,7 +449,7 @@ void CScanEvaluation::ShowResult(const CSpectrum &spec, const CEvaluationBase *e
     pView->PostMessage(WM_PROGRESS2, (WPARAM)m_prog_SpecCur, (LPARAM)m_prog_SpecNum);
 }
 
-RETURN_CODE CScanEvaluation::GetDark(FileHandler::CScanFileHandler *scan, const CSpectrum &spec, CSpectrum &dark, const Configuration::CDarkSettings *darkSettings)
+RETURN_CODE CScanEvaluation::GetDark(CScanFileHandler *scan, const CSpectrum &spec, CSpectrum &dark, const Configuration::CDarkSettings *darkSettings)
 {
     m_lastErrorMessage = "";
     const bool successs = ScanEvaluationBase::GetDark(*scan, spec, dark, darkSettings);
@@ -466,7 +468,7 @@ RETURN_CODE CScanEvaluation::GetDark(FileHandler::CScanFileHandler *scan, const 
 }
 
 /** This returns the sky spectrum that is to be used in the fitting. */
-RETURN_CODE CScanEvaluation::GetSky(FileHandler::CScanFileHandler *scan, CSpectrum &sky) {
+RETURN_CODE CScanEvaluation::GetSky(CScanFileHandler *scan, CSpectrum &sky) {
     CString errorMsg;
 
     // If the sky spectrum is the first spectrum in the scan
@@ -522,7 +524,7 @@ RETURN_CODE CScanEvaluation::GetSky(FileHandler::CScanFileHandler *scan, CSpectr
     if (m_skySettings.skyOption == Configuration::SKY_OPTION::USER_SUPPLIED) {
         if (EqualsIgnoringCase(Right(m_skySettings.skySpectrumFile, 4), ".pak", 4)) {
             // If the spectrum is in .pak format
-            SpectrumIO::CSpectrumIO reader;
+            novac::CSpectrumIO reader;
             if (reader.ReadSpectrum(m_skySettings.skySpectrumFile, 0, sky))
                 return SUCCESS;
             else
@@ -530,7 +532,7 @@ RETURN_CODE CScanEvaluation::GetSky(FileHandler::CScanFileHandler *scan, CSpectr
         }
         else if (EqualsIgnoringCase(Right(m_skySettings.skySpectrumFile, 4), ".std", 4)) {
             // If the spectrum is in .std format
-            if (SpectrumIO::CSTDFile::ReadSpectrum(sky, m_skySettings.skySpectrumFile))
+            if (CSTDFile::ReadSpectrum(sky, m_skySettings.skySpectrumFile))
                 return SUCCESS;
             else
                 return FAIL;
@@ -587,7 +589,7 @@ bool CScanEvaluation::Ignore(const CSpectrum &spec, const CFitWindow window) {
 }
 
 
-CEvaluationResult CScanEvaluation::FindOptimumShiftAndSqueeze(const CEvaluationBase *originalEvaluation, FileHandler::CScanFileHandler *scan, CScanResult *result)
+CEvaluationResult CScanEvaluation::FindOptimumShiftAndSqueeze(const CEvaluationBase *originalEvaluation, CScanFileHandler *scan, CScanResult *result)
 {
     CSpectrum spec, sky, dark;
     int specieNum = 0;
@@ -667,7 +669,7 @@ CEvaluationResult CScanEvaluation::FindOptimumShiftAndSqueeze(const CEvaluationB
     return newResult;
 }
 
-CFitWindow* CScanEvaluation::FindOptimumShiftAndSqueeze_Fraunhofer(const CEvaluationBase *originalEvaluation, FileHandler::CScanFileHandler *scan)
+CFitWindow* CScanEvaluation::FindOptimumShiftAndSqueeze_Fraunhofer(const CEvaluationBase *originalEvaluation, CScanFileHandler *scan)
 {
     CFitWindow newFitWindow = originalEvaluation->FitWindow(); // Create a local copy which we can modify
     double shift, shiftError, squeeze, squeezeError;

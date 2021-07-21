@@ -75,7 +75,7 @@ namespace Geometry{
 		/** Takes the filename of an evaluation log and extracts the 
 				Serial-number of the spectrometer, the date the scan was performed
 				and the start-time of the scan from the filename. */
-		bool GetInfoFromFileName(const CString fileName, CDateTime &start, CString &serial);
+		bool GetInfoFromFileName(const CString fileName, novac::CDateTime &start, CString &serial);
 
 		///** Writes the results of the geometry calculation to a file.
 		//		@param calc - the windspeed calculator which has performed the correlation calculations

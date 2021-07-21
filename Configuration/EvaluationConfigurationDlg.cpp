@@ -12,7 +12,7 @@
 #include "../VolcanoInfo.h"
 
 using namespace ConfigurationDialog;
-using namespace Evaluation;
+using namespace novac;
 
 // CEvaluationConfiguration dialog
 
@@ -185,7 +185,7 @@ void CEvaluationConfigurationDlg::PopulateReferenceFileControl(){
 	m_referenceFileCtrl.SetRowCount(2 + numberOfReferences);
 
 	for(i = 0; i < numberOfReferences; ++i){
-		Evaluation::CReferenceFile &ref = m_curSpec->channel[m_channel].fitWindow.ref[i];
+		CReferenceFile &ref = m_curSpec->channel[m_channel].fitWindow.ref[i];
 
 		m_referenceFileCtrl.SetItemTextFmt(i+1, 0, CString(ref.m_specieName.c_str()));
 		m_referenceFileCtrl.SetItemTextFmt(i+1, 1, CString(ref.m_path.c_str()));

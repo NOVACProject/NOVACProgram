@@ -29,7 +29,7 @@ namespace FileHandler
 		CArray<Evaluation::CFluxResult, Evaluation::CFluxResult&>	m_fluxes;
 
 		/** Information of the instrument at the measurement occation */
-		CArray<CSpectrumInfo, CSpectrumInfo&>											m_scanInfo;
+		CArray<novac::CSpectrumInfo, novac::CSpectrumInfo&> m_scanInfo;
 
 		/** How many fluxes have been read in */
 		int	m_fluxesNum;

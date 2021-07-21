@@ -3,6 +3,7 @@
 #include <SpectralEvaluation/Spectra/SpectrometerModel.h>
 
 using namespace Evaluation;
+using namespace novac;
 
 CSpectrometer::CSpectrometer()
 {

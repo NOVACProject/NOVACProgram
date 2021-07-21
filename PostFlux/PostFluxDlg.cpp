@@ -17,6 +17,8 @@
 extern CVolcanoInfo g_volcanoes;           // The global list of volcanoes in the NOVAC network
 extern CUserSettings g_userSettings;       // <-- The users preferences
 
+using namespace novac;
+
 // CPostFluxDlg dialog
 
 IMPLEMENT_DYNAMIC(CPostFluxDlg, CDialog)

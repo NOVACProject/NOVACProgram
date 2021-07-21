@@ -21,6 +21,7 @@ extern CVolcanoInfo					g_volcanoes;	// <-- A list of all known volcanoes
 extern CFormView *pView;									// <-- The screen
 
 using namespace Geometry;
+using namespace novac;
 
 IMPLEMENT_DYNCREATE(CGeometryEvaluator, CWinThread)
 

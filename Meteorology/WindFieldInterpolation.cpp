@@ -2,6 +2,8 @@
 #include "WindFieldInterpolation.h"
 #include <SpectralEvaluation/Interpolation.h>
 
+using namespace novac;
+
 void SelectCubeValues(const std::vector<float>& tensor, const std::vector<size_t>& tensorDimensions, const std::vector<size_t>& floorIdx, std::vector<double>& corners)
 {
     const size_t timeDim = 0;

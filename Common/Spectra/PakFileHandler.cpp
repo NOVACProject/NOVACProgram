@@ -2,6 +2,7 @@
 #include "pakfilehandler.h"
 #include <SpectralEvaluation/StringUtils.h>
 #include <SpectralEvaluation/File/ScanFileHandler.h>
+#include <SpectralEvaluation/File/SpectrumIO.h>
 
 #ifdef _MSC_VER
 #pragma warning (push, 4)
@@ -12,6 +13,7 @@
 #include <SpectralEvaluation/File/ScanFileHandler.h>
 
 using namespace FileHandler;
+using namespace novac;
 
 extern CWinThread *g_eval;               // <-- The evaluation thread
 extern CFormView *pView;                 // <-- The screen
@@ -62,8 +64,8 @@ int CPakFileHandler::FindFirstScanStart(const CString &fileName, const CString &
     int specNum = 0;
     CSpectrum spec;
     CString message;
-    SpectrumIO::CSpectrumIO reader;
-    SpectrumIO::CSpectrumIO writer;
+    CSpectrumIO reader;
+    CSpectrumIO writer;
 
     const std::string fileNameStr((LPCSTR)fileName);
     const std::string fileNameForLost((LPCSTR)fileForLost);
@@ -96,8 +98,8 @@ int CPakFileHandler::FindFirstScanStart(const CString &fileName, const CString &
         If there is no more scan-start spectrum in the file, this function will
         return FAIL. */
 RETURN_CODE CPakFileHandler::FindNextScanStart(FILE *pakFile, CSpectrum &curSpec) {
-    SpectrumIO::CSpectrumIO reader;
-    SpectrumIO::CSpectrumIO writer;
+    CSpectrumIO reader;
+    CSpectrumIO writer;
     CString incompleteFileName, serialNumber, message;
     char *spectrumHeader = (char*)calloc(HEADER_BUF_SIZE, sizeof(char)); // <-- the spectrum header, in binary format
     int specHeaderSize = 0;
@@ -202,8 +204,8 @@ RETURN_CODE CPakFileHandler::EvaluateScan(const CString &fileName, const CString
 int CPakFileHandler::ReadDownloadedFile(const CString &fileName, bool deletePakFile, bool evaluate, const CString *outputDir)
 {
     CString message;
-    SpectrumIO::CSpectrumIO reader;
-    SpectrumIO::CSpectrumIO writer;
+    CSpectrumIO reader;
+    CSpectrumIO writer;
     CSpectrum curSpec;
     CString lostFile[MAX_CHANNEL_NUM]; // <-- Where to move the lost spectra
     int numSpecRead[MAX_CHANNEL_NUM];  // <-- The number of read spectra in the last started scan
@@ -309,7 +311,7 @@ int CPakFileHandler::ReadDownloadedFile(const CString &fileName, bool deletePakF
             if (!success)
             {
                 // If the spectrum is corrupt, save it to the 'corrupted' - folder
-                if (reader.m_lastError == SpectrumIO::CSpectrumIO::ERROR_CHECKSUM_MISMATCH)
+                if (reader.m_lastError == CSpectrumIO::ERROR_CHECKSUM_MISMATCH)
                 {
                     SaveCorruptSpectrum(curSpec, specHeaderSize, spectrumHeader.data());
                 }
@@ -553,7 +555,7 @@ MEASUREMENT_MODE CPakFileHandler::GetMeasurementMode(const CString &fileName)
 {
     const std::string fileNameStr((LPCSTR)fileName);
 
-    FileHandler::CScanFileHandler scan;
+    CScanFileHandler scan;
     scan.CheckScanFile(fileNameStr);
 
     if (CPakFileHandler::IsStratosphericMeasurement(scan))
@@ -892,7 +894,7 @@ bool CPakFileHandler::IsCompositionMeasurement(CScanFileHandler& file)
 
 /** Takes a scan file and renames it to an approprate name */
 RETURN_CODE	CPakFileHandler::ArchiveScan(const CString &scanFileName) {
-    SpectrumIO::CSpectrumIO reader;
+    CSpectrumIO reader;
 
     CSpectrum tmpSpec;
     CString serialNumber, dateStr, timeStr, nowStr, pakFile;
@@ -901,7 +903,7 @@ RETURN_CODE	CPakFileHandler::ArchiveScan(const CString &scanFileName) {
     int specIndex = 0;
     const std::string fileNameStr((LPCSTR)scanFileName);
     while (SUCCESS != reader.ReadSpectrum(fileNameStr, specIndex++, tmpSpec)) {
-        if (reader.m_lastError == SpectrumIO::CSpectrumIO::ERROR_SPECTRUM_NOT_FOUND)
+        if (reader.m_lastError == CSpectrumIO::ERROR_SPECTRUM_NOT_FOUND)
             return FAIL;
     }
     CSpectrumInfo &info = tmpSpec.m_info;
@@ -958,16 +960,16 @@ bool CPakFileHandler::CorrectChannelNumber(unsigned char &channel)
 }
 
 /** Takes appropriate action when a corrupt spectrum has been found */
-RETURN_CODE CPakFileHandler::HandleCorruptSpectrum(SpectrumIO::CSpectrumIO &reader, FILE *pakFile)
+RETURN_CODE CPakFileHandler::HandleCorruptSpectrum(CSpectrumIO &reader, FILE *pakFile)
 {
     CString str;
-    if (reader.m_lastError == SpectrumIO::CSpectrumIO::ERROR_EOF || reader.m_lastError == SpectrumIO::CSpectrumIO::ERROR_COULD_NOT_OPEN_FILE || reader.m_lastError == SpectrumIO::CSpectrumIO::ERROR_SPECTRUM_NOT_FOUND)
+    if (reader.m_lastError == CSpectrumIO::ERROR_EOF || reader.m_lastError == CSpectrumIO::ERROR_COULD_NOT_OPEN_FILE || reader.m_lastError == CSpectrumIO::ERROR_SPECTRUM_NOT_FOUND)
         return FAIL;
     switch (reader.m_lastError) {
-    case SpectrumIO::CSpectrumIO::ERROR_CHECKSUM_MISMATCH:
+    case CSpectrumIO::ERROR_CHECKSUM_MISMATCH:
         str.Format("Spectrum %d in pak file is corrupt, checksum mismatch", m_spectrumNumber);
         ShowMessage(str); break;
-    case SpectrumIO::CSpectrumIO::ERROR_DECOMPRESS:
+    case CSpectrumIO::ERROR_DECOMPRESS:
         str.Format("Spectrum %d in pak file is corrupt, spectrum could not be decompressed", m_spectrumNumber);
         ShowMessage(str); break;
     }
@@ -1010,7 +1012,7 @@ RETURN_CODE CPakFileHandler::SaveCorruptSpectrum(const CSpectrum &curSpec, int s
     // Write the spectrum to a file
     // TODO: THIS IS TEMPORARILY COMMENTED OUT IN SEARCH FOR THE CRASH OF THE PROGRAM!!!
     // --------- KEEP THIS LINE COMMENTED OUT, IT SEEMS TO SOLVE THE CRASH PROBLEM -------
-    //SpectrumIO::CSpectrumIO writer;
+    //CSpectrumIO writer;
     //writer.AddSpectrumToFile(fileName, curSpec, spectrumHeader, specHeaderSize);
 
     return SUCCESS;

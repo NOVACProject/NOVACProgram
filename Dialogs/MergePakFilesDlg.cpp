@@ -4,12 +4,15 @@
 
 #include "../Common/Common.h"
 #include <SpectralEvaluation/Spectra/Spectrum.h>
+#include <SpectralEvaluation/File/SpectrumIO.h>
 #include "../Common/Spectra/PakFileHandler.h"
 
 // Include the special multi-choice file-dialog
 #include "../Dialogs/FECFileDialog.h"
 
 using namespace Dialogs;
+using namespace novac;
+
 // CMergePakFilesDlg dialog
 
 UINT MergePakFiles_Concatenate( LPVOID pParam );
@@ -227,7 +230,7 @@ UINT MergePakFiles_Concatenate(LPVOID pParam){
 	CString outputFile = CString(dialog->m_outputFile);
 
 	// create a spectrum reader/writer
-	SpectrumIO::CSpectrumIO specHandler;
+	CSpectrumIO specHandler;
 
 	// Try to open the output-file
 	FILE *uf = fopen(outputFile, "wb");
@@ -307,7 +310,7 @@ UINT MergePakFiles_Combine(LPVOID pParam){
 	CString outputFile = CString(dialog->m_outputFile);
 
 	// create a spectrum reader/writer
-	SpectrumIO::CSpectrumIO specHandler;
+	CSpectrumIO specHandler;
 
 	// Try to open the output-file
 	FILE *uf	= fopen(outputFile, "wb");

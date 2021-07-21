@@ -1,43 +1,45 @@
 #pragma once
 
-namespace WindSpeedMeasurement{
-	class CWindSpeedResult
-	{
-	public:
-		/** Default constructor */
-		CWindSpeedResult(void);
+namespace WindSpeedMeasurement
+{
 
-		/** Default destructor */
-		~CWindSpeedResult(void);
+class CWindSpeedResult
+{
+public:
+    /** Default constructor */
+    CWindSpeedResult(void);
 
-		/** Assignement operator */
-		CWindSpeedResult &operator=(const CWindSpeedResult &wr);
+    /** Default destructor */
+    ~CWindSpeedResult(void);
 
-		/** The serial-number of the spectrometer that generated the time-series */
-		CString	m_serial;
+    /** Assignement operator */
+    CWindSpeedResult& operator=(const CWindSpeedResult& wr);
 
-		/** The day of month when the measurement was made */
-		int			m_date;
+    /** The serial-number of the spectrometer that generated the time-series */
+    CString	m_serial;
 
-		/** The starting-time of the measurements (seconds since midnight, UTC) */
-		int			m_startTime;
+    /** The day of month when the measurement was made */
+    int			m_date;
 
-		/** The duration of the measurement (seconds) */
-		int			m_duration;
+    /** The starting-time of the measurements (seconds since midnight, UTC) */
+    int			m_startTime;
 
-		/** The distance between the two viewing-directions at plume-height */
-		double	m_distance;
+    /** The duration of the measurement (seconds) */
+    int			m_duration;
 
-		/** The average delay */
-		double	m_delayAvg;
+    /** The distance between the two viewing-directions at plume-height */
+    double	m_distance;
 
-		/** The standard-deviation of the delay */
-		double	m_delayStd;
+    /** The average delay */
+    double	m_delayAvg;
 
-		/** The average correlation */
-		double	m_corrAvg;
+    /** The standard-deviation of the delay */
+    double	m_delayStd;
 
-		/** The standard deviation of the correlation */
-		double	m_corrStd;
-	};
+    /** The average correlation */
+    double	m_corrAvg;
+
+    /** The standard deviation of the correlation */
+    double	m_corrStd;
+};
 }

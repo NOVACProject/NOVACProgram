@@ -40,10 +40,10 @@ END_MESSAGE_MAP()
 BOOL CAdvancedFTPUploadSettings::OnInitDialog() {
 
     // initialize the values for the start-time
-    SplitToHourMinuteSecond(m_configuration->ftpSetting.ftpStartTime, m_startHr, m_startMin, m_startSec);
+    novac::SplitToHourMinuteSecond(m_configuration->ftpSetting.ftpStartTime, m_startHr, m_startMin, m_startSec);
 
     // initialize the values for the stop-time
-    SplitToHourMinuteSecond(m_configuration->ftpSetting.ftpStopTime, m_stopHr, m_stopMin, m_stopSec);
+    novac::SplitToHourMinuteSecond(m_configuration->ftpSetting.ftpStopTime, m_stopHr, m_stopMin, m_stopSec);
 
     // fill in the data in the form
     UpdateData(FALSE);

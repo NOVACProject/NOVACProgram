@@ -34,7 +34,7 @@ namespace Evaluation
 		CSpectrometerHistory *m_history;
         
         /** A set of fit windows, used to determine how to evaluate the spectra from this device. */
-        std::vector<CFitWindow> m_fitWindows;
+        std::vector<novac::CFitWindow> m_fitWindows;
         		
 		/** The channel that this spectrometer is configured as. For OceanOptics
 				S2000 spectrometers, there can be several channels contained in the

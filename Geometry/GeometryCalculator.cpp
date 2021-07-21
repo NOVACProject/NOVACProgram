@@ -8,6 +8,7 @@
 #include "../Common/EvaluationLogFileHandler.h"
 
 using namespace Geometry;
+using namespace novac;
 
 // The global list of volcanoes in the NOVAC network
 extern CVolcanoInfo g_volcanoes;

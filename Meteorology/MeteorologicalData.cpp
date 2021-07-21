@@ -2,6 +2,8 @@
 #include "MeteorologicalData.h"
 #include "../File/WindFileReader.h"
 
+using namespace novac;
+
 /** The global instance of meterological data */
 CMeteorologicalData g_metData;
 

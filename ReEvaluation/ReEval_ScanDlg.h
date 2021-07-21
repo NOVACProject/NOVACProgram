@@ -59,7 +59,7 @@ namespace ReEvaluation
 		long    m_specNum;
 
 		/** The currently selected spectrum */
-		CSpectrum m_spectrum;
+		novac::CSpectrum m_spectrum;
 
 		// --------------------------- PUBLIC METHODS --------------------------
 

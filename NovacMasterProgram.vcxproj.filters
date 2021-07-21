@@ -8,9 +8,6 @@
     <Filter Include="Source Files\Common">
       <UniqueIdentifier>{bf891fcf-ab38-403c-81a1-c4a88345b35b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Common\SpectrumFormat">
-      <UniqueIdentifier>{3159fed0-fc4a-4ed9-9e3e-d49e2a03c64f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Common\Spectra">
       <UniqueIdentifier>{7b592c2a-fc42-4c37-99a3-82d5e9cbff4f}</UniqueIdentifier>
     </Filter>
@@ -50,9 +47,6 @@
     </Filter>
     <Filter Include="Header Files\Common">
       <UniqueIdentifier>{ac9b4c9c-d4c1-4c96-9433-dcfce3086bbf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Common\SpectrumFormat">
-      <UniqueIdentifier>{55869d18-cce1-449a-ac1c-a8e5e8a3eeaa}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Common\Spectra">
       <UniqueIdentifier>{a03f0946-068b-4da1-8fc2-b246bd0b5c26}</UniqueIdentifier>
@@ -132,6 +126,27 @@
     </Filter>
     <Filter Include="Source Files\Meteorology">
       <UniqueIdentifier>{f84a7f7f-56bf-4eef-80ee-166f4b08f303}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\SpectralEvaluation\Calibration">
+      <UniqueIdentifier>{f7eb63f1-a436-4f2f-9f3d-29faf891628a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\SpectralEvaluation\Math">
+      <UniqueIdentifier>{e35817e8-3098-43b9-98ad-f9afd4759d95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\SpectralEvaluation\File">
+      <UniqueIdentifier>{12f362dd-a454-452b-921e-44d8f815ebd3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\SpectralEvaluation\File">
+      <UniqueIdentifier>{d5b49ab0-1d6b-4233-8692-4511bdb1f39d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Calibration">
+      <UniqueIdentifier>{d9b5fb91-5bef-49ce-8270-17a166d53b44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\SpectralEvaluation\Calibration">
+      <UniqueIdentifier>{4e74ac28-dddd-4205-a6b6-d2676c89bf4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\SpectralEvaluation\Math">
+      <UniqueIdentifier>{690ac6d1-8178-4086-a3f8-dab1c04ead1b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -231,16 +246,10 @@
     <ClCompile Include="Common\ReportWriter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Graphs\ScanGraph.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ScannerFileInfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ScannerFolderInfo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphs\SpectrumGraph.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="StatusFileReader.cpp">
@@ -399,9 +408,6 @@
     <ClCompile Include="Dialogs\GeometryDlg.cpp">
       <Filter>Source Files\Dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="Dialogs\ImportDlg.cpp">
-      <Filter>Source Files\Dialogs</Filter>
-    </ClCompile>
     <ClCompile Include="Dialogs\ImportSpectraDlg.cpp">
       <Filter>Source Files\Dialogs</Filter>
     </ClCompile>
@@ -501,21 +507,6 @@
     <ClCompile Include="SpectralEvaluation\src\Evaluation\ReferenceFitResult.cpp">
       <Filter>Source Files\SpectralEvaluation\Evaluation</Filter>
     </ClCompile>
-    <ClCompile Include="SpectralEvaluation\src\File\MKPack.cpp">
-      <Filter>Source Files\Common\SpectrumFormat</Filter>
-    </ClCompile>
-    <ClCompile Include="SpectralEvaluation\src\File\ScanFileHandler.cpp">
-      <Filter>Source Files\Common\Spectra</Filter>
-    </ClCompile>
-    <ClCompile Include="SpectralEvaluation\src\File\SpectrumIO.cpp">
-      <Filter>Source Files\Common\Spectra</Filter>
-    </ClCompile>
-    <ClCompile Include="SpectralEvaluation\src\File\STDFile.cpp">
-      <Filter>Source Files\Common\SpectrumFormat</Filter>
-    </ClCompile>
-    <ClCompile Include="SpectralEvaluation\src\File\TXTFile.cpp">
-      <Filter>Source Files\Common\SpectrumFormat</Filter>
-    </ClCompile>
     <ClCompile Include="SpectralEvaluation\src\Fit\MessageLog.cpp">
       <Filter>Source Files\SpectralEvaluation\Fit</Filter>
     </ClCompile>
@@ -523,9 +514,6 @@
       <Filter>Source Files\SpectralEvaluation\Spectra</Filter>
     </ClCompile>
     <ClCompile Include="SpectralEvaluation\src\GPSData.cpp">
-      <Filter>Source Files\SpectralEvaluation\Spectra</Filter>
-    </ClCompile>
-    <ClCompile Include="SpectralEvaluation\src\Spectra\ReferenceSpectrumConvolution.cpp">
       <Filter>Source Files\SpectralEvaluation\Spectra</Filter>
     </ClCompile>
     <ClCompile Include="SpectralEvaluation\src\Spectra\SpectrometerModel.cpp">
@@ -548,9 +536,6 @@
     </ClCompile>
     <ClCompile Include="SpectralEvaluation\src\Flux\PlumeInScanProperty.cpp">
       <Filter>Source Files\Common\Flux</Filter>
-    </ClCompile>
-    <ClCompile Include="SpectralEvaluation\src\File\File.cpp">
-      <Filter>Source Files\Common</Filter>
     </ClCompile>
     <ClCompile Include="Dialogs\ColumnHistoryDlg.cpp">
       <Filter>Source Files\Dialogs</Filter>
@@ -579,13 +564,7 @@
     <ClCompile Include="SpectralEvaluation\src\Evaluation\DarkSpectrum.cpp">
       <Filter>Source Files\Evaluation</Filter>
     </ClCompile>
-    <ClCompile Include="CreateReferencesDlg.cpp">
-      <Filter>Source Files\Dialogs</Filter>
-    </ClCompile>
     <ClCompile Include="SpectralEvaluation\src\Spectra\Scattering.cpp">
-      <Filter>Source Files\SpectralEvaluation\Spectra</Filter>
-    </ClCompile>
-    <ClCompile Include="SpectralEvaluation\src\Spectra\WavelengthCalibration.cpp">
       <Filter>Source Files\SpectralEvaluation\Spectra</Filter>
     </ClCompile>
     <ClCompile Include="SpectralEvaluation\src\StringUtils.cpp">
@@ -608,6 +587,81 @@
     </ClCompile>
     <ClCompile Include="Meteorology\WindFieldInterpolation.cpp">
       <Filter>Source Files\Meteorology</Filter>
+    </ClCompile>
+    <ClCompile Include="Dialogs\MergeEvalLogDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="File\FileMerger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Calibration\ReferenceSpectrumConvolution.cpp">
+      <Filter>Source Files\SpectralEvaluation\Calibration</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Math\FFT.cpp">
+      <Filter>Source Files\SpectralEvaluation\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Calibration\InstrumentLineShapeEstimation.cpp">
+      <Filter>Source Files\SpectralEvaluation\Calibration</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Spectra\SpectrumUtils.cpp">
+      <Filter>Source Files\SpectralEvaluation\Spectra</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\File\MKPack.cpp">
+      <Filter>Source Files\SpectralEvaluation\File</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\File\STDFile.cpp">
+      <Filter>Source Files\SpectralEvaluation\File</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\File\TXTFile.cpp">
+      <Filter>Source Files\SpectralEvaluation\File</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\File\File.cpp">
+      <Filter>Source Files\SpectralEvaluation\File</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\File\SpectrumIO.cpp">
+      <Filter>Source Files\SpectralEvaluation\File</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\File\ScanFileHandler.cpp">
+      <Filter>Source Files\SpectralEvaluation\File</Filter>
+    </ClCompile>
+    <ClCompile Include="Dialogs\SpectrometerCalibrationDlg.cpp">
+      <Filter>Source Files\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="Dialogs\CCalibratePixelToWavelengthDialog.cpp">
+      <Filter>Source Files\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="Dialogs\CCalibrateReferencesDialog.cpp">
+      <Filter>Source Files\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="Dialogs\OpenInstrumentCalibrationDialog.cpp">
+      <Filter>Source Files\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="Calibration\ReferenceCreationController.cpp">
+      <Filter>Source Files\Calibration</Filter>
+    </ClCompile>
+    <ClCompile Include="Calibration\WavelengthCalibrationController.cpp">
+      <Filter>Source Files\Calibration</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Calibration\FraunhoferSpectrumGeneration.cpp">
+      <Filter>Source Files\SpectralEvaluation\Calibration</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Calibration\WavelengthCalibration.cpp">
+      <Filter>Source Files\SpectralEvaluation\Calibration</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Calibration\WavelengthCalibrationByRansac.cpp">
+      <Filter>Source Files\SpectralEvaluation\Calibration</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Math\FunctionFit.cpp">
+      <Filter>Source Files\SpectralEvaluation\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Math\PolynomialFit.cpp">
+      <Filter>Source Files\SpectralEvaluation\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphs\ScanGraph.cpp">
+      <Filter>Source Files\Graphs</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphs\SpectrumGraph.cpp">
+      <Filter>Source Files\Graphs</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -636,9 +690,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Common\EvaluationLogFileHandler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Configuration\FTPSettingsDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FileTreeCtrl.h">
@@ -713,16 +764,10 @@
     <ClInclude Include="Resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Graphs\ScanGraph.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ScannerFileInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ScannerFolderInfo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphs\SpectrumGraph.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="StatusFileReader.h">
@@ -902,9 +947,6 @@
     <ClInclude Include="Dialogs\GeometryDlg.h">
       <Filter>Header Files\Dialogs</Filter>
     </ClInclude>
-    <ClInclude Include="Dialogs\ImportDlg.h">
-      <Filter>Header Files\Dialogs</Filter>
-    </ClInclude>
     <ClInclude Include="Dialogs\ImportSpectraDlg.h">
       <Filter>Header Files\Dialogs</Filter>
     </ClInclude>
@@ -994,21 +1036,6 @@
     </ClInclude>
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Evaluation\ReferenceFitResult.h">
       <Filter>Header Files\SpectralEvaluation\Evaluation</Filter>
-    </ClInclude>
-    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\File\ScanFileHandler.h">
-      <Filter>Header Files\Common\Spectra</Filter>
-    </ClInclude>
-    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\File\SpectrumIO.h">
-      <Filter>Header Files\Common\Spectra</Filter>
-    </ClInclude>
-    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\File\MKPack.h">
-      <Filter>Header Files\Common\SpectrumFormat</Filter>
-    </ClInclude>
-    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\File\STDFile.h">
-      <Filter>Header Files\Common\SpectrumFormat</Filter>
-    </ClInclude>
-    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\File\TXTFile.h">
-      <Filter>Header Files\Common\SpectrumFormat</Filter>
     </ClInclude>
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Configuration\DarkSettings.h">
       <Filter>Header Files\Configuration</Filter>
@@ -1157,9 +1184,6 @@
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\VectorUtils.h">
       <Filter>Header Files\SpectralEvaluation</Filter>
     </ClInclude>
-    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Spectra\ReferenceSpectrumConvolution.h">
-      <Filter>Header Files\SpectralEvaluation\Spectra</Filter>
-    </ClInclude>
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Spectra\SpectrometerModel.h">
       <Filter>Header Files\SpectralEvaluation\Spectra</Filter>
     </ClInclude>
@@ -1196,9 +1220,6 @@
     <ClInclude Include="CustomSpectrometerModelDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CreateReferencesDlg.h">
-      <Filter>Header Files\Dialogs</Filter>
-    </ClInclude>
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Spectra\Scattering.h">
       <Filter>Header Files\SpectralEvaluation\Spectra</Filter>
     </ClInclude>
@@ -1228,6 +1249,78 @@
     </ClInclude>
     <ClInclude Include="Meteorology\WindFieldInterpolation.h">
       <Filter>Header Files\Meteorology</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialogs\MergeEvalLogDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="File\FileMerger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\File\MKPack.h">
+      <Filter>Header Files\SpectralEvaluation\File</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\File\STDFile.h">
+      <Filter>Header Files\SpectralEvaluation\File</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\File\TXTFile.h">
+      <Filter>Header Files\SpectralEvaluation\File</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\File\File.h">
+      <Filter>Header Files\SpectralEvaluation\File</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\File\ScanFileHandler.h">
+      <Filter>Header Files\SpectralEvaluation\File</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\File\SpectrumIO.h">
+      <Filter>Header Files\SpectralEvaluation\File</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialogs\SpectrometerCalibrationDlg.h">
+      <Filter>Header Files\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialogs\CCalibratePixelToWavelengthDialog.h">
+      <Filter>Header Files\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialogs\CCalibrateReferencesDialog.h">
+      <Filter>Header Files\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialogs\OpenInstrumentCalibrationDialog.h">
+      <Filter>Source Files\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="Calibration\InstrumentCalibrationInput.h">
+      <Filter>Source Files\Calibration</Filter>
+    </ClInclude>
+    <ClInclude Include="Calibration\ReferenceCreationController.h">
+      <Filter>Source Files\Calibration</Filter>
+    </ClInclude>
+    <ClInclude Include="Calibration\WavelengthCalibrationController.h">
+      <Filter>Source Files\Calibration</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Calibration\FraunhoferSpectrumGeneration.h">
+      <Filter>Header Files\SpectralEvaluation\Calibration</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Calibration\InstrumentLineShape.h">
+      <Filter>Header Files\SpectralEvaluation\Calibration</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Calibration\WavelengthCalibration.h">
+      <Filter>Header Files\SpectralEvaluation\Calibration</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Calibration\WavelengthCalibrationByRansac.h">
+      <Filter>Header Files\SpectralEvaluation\Calibration</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Math\FFT.h">
+      <Filter>Header Files\SpectralEvaluation\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Math\FunctionFit.h">
+      <Filter>Header Files\SpectralEvaluation\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Math\PolynomialFit.h">
+      <Filter>Header Files\SpectralEvaluation\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphs\ScanGraph.h">
+      <Filter>Header Files\Graphs</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphs\SpectrumGraph.h">
+      <Filter>Header Files\Graphs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

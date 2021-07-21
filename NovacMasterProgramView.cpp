@@ -15,7 +15,6 @@
 
 #include "Common/ReportWriter.h"
 #include "Common/FluxLogFileHandler.h"
-#include "Communication/LinkStatistics.h"
 
 #include "Evaluation/ScanResult.h"
 #include "Evaluation/EvaluationController.h"
@@ -49,7 +48,7 @@
 #include "Dialogs/DataBrowserDlg.h"
 #include "Dialogs/PakFileInspector.h"
 #include "Dialogs/SummarizeFluxDataDlg.h"
-#include "CreateReferencesDlg.h"
+#include "Dialogs/SpectrometerCalibrationDlg.h"
 
 #include "WindMeasurement/PostWindDlg.h"
 #include "WindMeasurement/WindSpeedResult.h"
@@ -63,6 +62,8 @@ extern CConfigurationSetting	g_settings;
 extern CUserSettings			g_userSettings;
 
 CFormView* pView;
+
+using namespace novac;
 
 // CNovacMasterProgramView
 
@@ -130,9 +131,7 @@ BEGIN_MESSAGE_MAP(CNovacMasterProgramView, CFormView)
     ON_WM_DESTROY()
     ON_WM_SIZE()
     ON_WM_SIZE()
-    ON_COMMAND(ID_FILE_CREATEREFERENCES, &CNovacMasterProgramView::OnMenuFileCreatereferences)
-    ON_COMMAND(ID_FILE_CALIBRATESPECTROMETER, &CNovacMasterProgramView::OnFileCalibratespectrometer)
-    ON_UPDATE_COMMAND_UI(ID_FILE_CALIBRATESPECTROMETER, &CNovacMasterProgramView::OnUpdateFileCalibratespectrometer)
+    ON_COMMAND(ID_ANALYSIS_CALIBRATESPECTROMETER, &CNovacMasterProgramView::OnAnalysisCalibratesSectrometer)
 END_MESSAGE_MAP()
 
 // CNovacMasterProgramView construction/destruction
@@ -158,13 +157,13 @@ CNovacMasterProgramView::~CNovacMasterProgramView()
     delete m_instrumentView;
 
     for (int i = 0; i < m_scannerPages.GetCount(); ++i) {
-        CPropertyPage *page = m_scannerPages[i];
+        CPropertyPage* page = m_scannerPages[i];
         delete page;
     }
     m_scannerPages.RemoveAll();
 
     for (int i = 0; i < m_colHistoryPages.GetCount(); ++i) {
-        CPropertyPage *page = m_colHistoryPages[i];
+        CPropertyPage* page = m_colHistoryPages[i];
         delete page;
     }
     m_colHistoryPages.RemoveAll();
@@ -225,7 +224,7 @@ void CNovacMasterProgramView::OnInitialUpdate()
 
     // Check if there's any flux-logs with data from last 24 hours
     time_t rawtime;
-    struct tm * utc;
+    struct tm* utc;
     time(&rawtime);
     utc = gmtime(&rawtime);
     int year = utc->tm_year + 1900;
@@ -285,7 +284,7 @@ void CNovacMasterProgramView::OnInitialUpdate()
     if (!m_toolTip.Create(this)) {
         TRACE0("Failed to create tooltip control\n");
     }
-    CTabCtrl *tabPtr = m_sheet.GetTabControl();
+    CTabCtrl* tabPtr = m_sheet.GetTabControl();
 
     for (int i = 0; i < (int)g_settings.scannerNum; ++i) {
         tabPtr->GetItemRect(i, &tabRect);
@@ -344,8 +343,8 @@ void CNovacMasterProgramView::ReadFluxLog(int scannerIndex, CString dateStr, CSt
             int fluxesNum = fluxLogReader.m_fluxesNum;
 
             for (int it2 = 0; it2 < fluxesNum; ++it2) {
-                Evaluation::CFluxResult &fl = fluxLogReader.m_fluxes[it2];
-                CSpectrumInfo &info = fluxLogReader.m_scanInfo[it2];
+                Evaluation::CFluxResult& fl = fluxLogReader.m_fluxes[it2];
+                CSpectrumInfo& info = fluxLogReader.m_scanInfo[it2];
                 m_evalDataStorage->AppendFluxResult(scannerIndex, fl.m_startTime, fl.m_flux, fl.m_fluxOk, info.m_batteryVoltage, info.m_temperature, info.m_exposureTime);
             }
 
@@ -400,7 +399,7 @@ void CNovacMasterProgramView::ReadEvalLog(int scannerIndex, CString dateStr, CSt
             int scanNum = evalLogReader.m_scanNum;
 
             for (int i = 0; i < scanNum; ++i) {
-                Evaluation::CScanResult &sr = evalLogReader.m_scan[i];
+                Evaluation::CScanResult& sr = evalLogReader.m_scan[i];
                 for (unsigned long j = 0; j < sr.GetEvaluatedNum(); ++j) {
                     CDateTime st;
                     sr.GetStopTime(j, st);
@@ -446,9 +445,9 @@ CNovacMasterProgramDoc* CNovacMasterProgramView::GetDocument() const // non-debu
 // updates the status bar
 LRESULT CNovacMasterProgramView::OnShowStatus(WPARAM wParam, LPARAM lParam) {
     // CString str = "status";
-    CString *msg;
+    CString* msg;
     //msg	= &str;
-    msg = (CString *)wParam;
+    msg = (CString*)wParam;
 
     CMainFrame* pFrame = (CMainFrame*)AfxGetApp()->m_pMainWnd;
 
@@ -460,7 +459,7 @@ LRESULT CNovacMasterProgramView::OnShowStatus(WPARAM wParam, LPARAM lParam) {
 //update the first message of list box
 LRESULT CNovacMasterProgramView::OnUpdateMessage(WPARAM wParam, LPARAM lParam)
 {
-    CString *msg = (CString *)wParam;
+    CString* msg = (CString*)wParam;
     int topIndex = 0;
     topIndex = m_statusListBox.GetTopIndex();
     m_statusListBox.DeleteString(topIndex);
@@ -470,7 +469,7 @@ LRESULT CNovacMasterProgramView::OnUpdateMessage(WPARAM wParam, LPARAM lParam)
 }
 
 LRESULT CNovacMasterProgramView::OnShowMessage(WPARAM wParam, LPARAM lParam) {
-    CString *msg = (CString *)wParam;
+    CString* msg = (CString*)wParam;
     CString logFile, dateStr, logPath;
 
     if (msg == NULL)
@@ -482,7 +481,7 @@ LRESULT CNovacMasterProgramView::OnShowMessage(WPARAM wParam, LPARAM lParam) {
 
     CreateDirectory(logPath, NULL);
     logFile.Format("%s\\StatusLog.txt", (LPCTSTR)logPath);
-    FILE *f = fopen(logFile, "a+");
+    FILE* f = fopen(logFile, "a+");
     if (f != NULL) {
         fprintf(f, "%s\n", (LPCTSTR)*msg);
         fclose(f);
@@ -546,7 +545,7 @@ void CNovacMasterProgramView::ForwardMessage(int message, WPARAM wParam, LPARAM 
 
     // 3. Find the scanner view to forward to...
     if (wParam != NULL) {
-        CString *serial = (CString *)wParam;
+        CString* serial = (CString*)wParam;
 
         // 3a. look for the correct spectrometer
         for (i = 0; i < g_settings.scannerNum; ++i) {
@@ -573,7 +572,7 @@ void CNovacMasterProgramView::ForwardMessage(int message, WPARAM wParam, LPARAM 
 
 LRESULT CNovacMasterProgramView::OnScannerRun(WPARAM wParam, LPARAM lParam)
 {
-    CString *serialID = (CString *)wParam;
+    CString* serialID = (CString*)wParam;
     m_commDataStorage->SetStatus(*serialID, COMM_STATUS_GREEN);
 
     // forward the message to the correct scanner view
@@ -584,7 +583,7 @@ LRESULT CNovacMasterProgramView::OnScannerRun(WPARAM wParam, LPARAM lParam)
 
 LRESULT CNovacMasterProgramView::OnScannerSleep(WPARAM wParam, LPARAM lParam)
 {
-    CString *serialID = (CString *)wParam;
+    CString* serialID = (CString*)wParam;
     m_commDataStorage->SetStatus(*serialID, COMM_STATUS_YELLOW);
 
     // forward the message to the correct scanner view
@@ -594,7 +593,7 @@ LRESULT CNovacMasterProgramView::OnScannerSleep(WPARAM wParam, LPARAM lParam)
 }
 LRESULT CNovacMasterProgramView::OnScannerNotConnect(WPARAM wParam, LPARAM lParam)
 {
-    CString *serialID = (CString *)wParam;
+    CString* serialID = (CString*)wParam;
     m_commDataStorage->SetStatus(*serialID, COMM_STATUS_RED);
 
     // forward the message to the correct scanner view
@@ -612,8 +611,8 @@ LRESULT CNovacMasterProgramView::OnNewWindField(WPARAM wParam, LPARAM lParam)
 
 LRESULT CNovacMasterProgramView::OnDownloadFinished(WPARAM wParam, LPARAM lParam)
 {
-    CString *serialID = (CString *)wParam;
-    double	*dataSpeed = (double	*)lParam;
+    CString* serialID = (CString*)wParam;
+    double* dataSpeed = (double*)lParam;
 
     m_commDataStorage->AddDownloadData(*serialID, *dataSpeed);
 
@@ -631,8 +630,8 @@ LRESULT CNovacMasterProgramView::OnUploadFinished(WPARAM wParam, LPARAM lParam)
 
 LRESULT CNovacMasterProgramView::OnEvalSucess(WPARAM wParam, LPARAM lParam) {
     // the serial number of the spectrometer that has sucessfully evaluated one scan
-    CString *serial = (CString *)wParam;
-    Evaluation::CScanResult *result = (Evaluation::CScanResult *)lParam;
+    CString* serial = (CString*)wParam;
+    Evaluation::CScanResult* result = (Evaluation::CScanResult*)lParam;
 
     if (result->GetCorruptedNum() == 0)
         m_evalDataStorage->SetStatus(*serial, STATUS_GREEN);
@@ -653,23 +652,23 @@ LRESULT CNovacMasterProgramView::OnEvalSucess(WPARAM wParam, LPARAM lParam) {
     for (unsigned long i = 0; i < g_settings.scannerNum; ++i) {
         if (Equals(*serial, g_settings.scanner[i].spec[0].serialNumber)) {
             if (m_scannerPages[i]->m_hWnd != NULL) {
-                Evaluation::CScanResult *copiedResult = new Evaluation::CScanResult();
+                Evaluation::CScanResult* copiedResult = new Evaluation::CScanResult();
                 *copiedResult = *result;
                 m_scannerPages[i]->PostMessage(WM_EVAL_SUCCESS, wParam, (LPARAM)copiedResult);
             }
         }
         for (int i = 0; i < m_colHistoryPages.GetCount(); ++i) {
-            ColumnHistoryDlg *page = (ColumnHistoryDlg *)m_colHistoryPages[i];
+            ColumnHistoryDlg* page = (ColumnHistoryDlg*)m_colHistoryPages[i];
             if (page->m_hWnd != NULL) {
                 page->PostMessage(WM_EVAL_SUCCESS, wParam, lParam);
             }
         }
-		for (int i = 0; i < m_fluxHistoryPages.GetCount(); ++i) {
-			FluxHistoryDlg *page = (FluxHistoryDlg *)m_fluxHistoryPages[i];
-			if (page->m_hWnd != NULL) {
-				page->PostMessage(WM_EVAL_SUCCESS, wParam, lParam);
-			}
-		}
+        for (int i = 0; i < m_fluxHistoryPages.GetCount(); ++i) {
+            FluxHistoryDlg* page = (FluxHistoryDlg*)m_fluxHistoryPages[i];
+            if (page->m_hWnd != NULL) {
+                page->PostMessage(WM_EVAL_SUCCESS, wParam, lParam);
+            }
+        }
     }
 
     // See if we need to upload any auxilliary data to the FTP-server
@@ -683,10 +682,10 @@ LRESULT CNovacMasterProgramView::OnEvalSucess(WPARAM wParam, LPARAM lParam) {
 
 LRESULT CNovacMasterProgramView::OnEvalFailure(WPARAM wParam, LPARAM lParam) {
     // the serial number of the spectrometer that has failed to evaluate one scan
-    CString *serial = (CString *)wParam;
+    CString* serial = (CString*)wParam;
 
     if (lParam != NULL) {
-        Evaluation::CScanResult *result = (Evaluation::CScanResult *)lParam;
+        Evaluation::CScanResult* result = (Evaluation::CScanResult*)lParam;
         m_evalDataStorage->AddData(*serial, result);
     }
     m_evalDataStorage->SetStatus(*serial, STATUS_RED);
@@ -699,7 +698,7 @@ LRESULT CNovacMasterProgramView::OnEvalFailure(WPARAM wParam, LPARAM lParam) {
 
 LRESULT CNovacMasterProgramView::OnCorrelationSuccess(WPARAM wParam, LPARAM lParam) {
     // the serial number of the spectrometer from which one wind-speed measurement has been done
-    WindSpeedMeasurement::CWindSpeedResult *result = (WindSpeedMeasurement::CWindSpeedResult *)wParam;
+    WindSpeedMeasurement::CWindSpeedResult* result = (WindSpeedMeasurement::CWindSpeedResult*)wParam;
 
     // Remember the result
     m_evalDataStorage->AddWindData(result->m_serial, result);
@@ -716,7 +715,7 @@ LRESULT CNovacMasterProgramView::OnCorrelationSuccess(WPARAM wParam, LPARAM lPar
 
 LRESULT CNovacMasterProgramView::OnPlumeHeightSuccess(WPARAM wParam, LPARAM lParam) {
     // The result of the measurement...
-    Geometry::CGeometryResult *result = (Geometry::CGeometryResult *)wParam;
+    Geometry::CGeometryResult* result = (Geometry::CGeometryResult*)wParam;
 
     // Release the memory
     delete result;
@@ -755,7 +754,7 @@ void CNovacMasterProgramView::OnMenuSetLanguageSpanish()
     MessageBox(common.GetString(MSG_YOU_HAVE_TO_RESTART), "Change of language", MB_OK);
 }
 
-void CNovacMasterProgramView::OnUpdateSetLanguageEnglish(CCmdUI *pCmdUI)
+void CNovacMasterProgramView::OnUpdateSetLanguageEnglish(CCmdUI* pCmdUI)
 {
     if (primaryLanguage == 0x0c0a) // 0x0c0a == spanish...
         pCmdUI->SetCheck(0);
@@ -763,7 +762,7 @@ void CNovacMasterProgramView::OnUpdateSetLanguageEnglish(CCmdUI *pCmdUI)
         pCmdUI->SetCheck(1);
 }
 
-void CNovacMasterProgramView::OnUpdateSetLanguageSpanish(CCmdUI *pCmdUI)
+void CNovacMasterProgramView::OnUpdateSetLanguageSpanish(CCmdUI* pCmdUI)
 {
     if (primaryLanguage == 0x0c0a)
         pCmdUI->SetCheck(1);
@@ -771,7 +770,7 @@ void CNovacMasterProgramView::OnUpdateSetLanguageSpanish(CCmdUI *pCmdUI)
         pCmdUI->SetCheck(0);
 }
 
-void CNovacMasterProgramView::OnUpdateStart(CCmdUI *pCmdUI)
+void CNovacMasterProgramView::OnUpdateStart(CCmdUI* pCmdUI)
 {
     if (m_controller.m_fRunning) {
         pCmdUI->Enable(FALSE);
@@ -781,7 +780,7 @@ void CNovacMasterProgramView::OnUpdateStart(CCmdUI *pCmdUI)
     }
 }
 
-void CNovacMasterProgramView::OnUpdateFileTransfer(CCmdUI *pCmdUI)
+void CNovacMasterProgramView::OnUpdateFileTransfer(CCmdUI* pCmdUI)
 {
     if (m_controller.m_fRunning) {
         pCmdUI->Enable(FALSE);
@@ -791,7 +790,7 @@ void CNovacMasterProgramView::OnUpdateFileTransfer(CCmdUI *pCmdUI)
     }
 }
 
-void CNovacMasterProgramView::OnUpdateMakeWindMeasurement(CCmdUI *pCmdUI)
+void CNovacMasterProgramView::OnUpdateMakeWindMeasurement(CCmdUI* pCmdUI)
 {
     if (m_controller.m_fRunning) {
         pCmdUI->Enable(TRUE);
@@ -801,7 +800,7 @@ void CNovacMasterProgramView::OnUpdateMakeWindMeasurement(CCmdUI *pCmdUI)
     }
 }
 
-void CNovacMasterProgramView::OnUpdateMakeCompositionMeasurement(CCmdUI *pCmdUI)
+void CNovacMasterProgramView::OnUpdateMakeCompositionMeasurement(CCmdUI* pCmdUI)
 {
     if (m_controller.m_fRunning) {
         pCmdUI->Enable(TRUE);
@@ -811,7 +810,7 @@ void CNovacMasterProgramView::OnUpdateMakeCompositionMeasurement(CCmdUI *pCmdUI)
     }
 }
 
-void CNovacMasterProgramView::OnUpdateMenuSummarizeFluxData(CCmdUI *pCmdUI)
+void CNovacMasterProgramView::OnUpdateMenuSummarizeFluxData(CCmdUI* pCmdUI)
 {
 #ifndef _DEBUG
     pCmdUI->Enable(FALSE);
@@ -883,9 +882,9 @@ BOOL CNovacMasterProgramView::PreTranslateMessage(MSG* pMsg) {
 int CNovacMasterProgramView::InitializeControls() {
     // Initialize the master frame
     CRect rect, rect2;
-    CView_Scanner *page;
-    ColumnHistoryDlg *columnHistoryPage;
-	FluxHistoryDlg *fluxHistoryPage;
+    CView_Scanner* page;
+    ColumnHistoryDlg* columnHistoryPage;
+    FluxHistoryDlg* fluxHistoryPage;
     CString site;
     TCITEM tcItem;
     m_showWindOverView = false;
@@ -953,18 +952,18 @@ int CNovacMasterProgramView::InitializeControls() {
             m_sheet.AddPage(columnHistoryPage);
             m_colHistoryPages.Add(columnHistoryPage);
         }
-		if (g_settings.scanner[i].plotFluxHistory) {
-			fluxHistoryPage = new FluxHistoryDlg();
-			fluxHistoryPage->Construct(IDD_FLUX_HISTORY_DLG);
+        if (g_settings.scanner[i].plotFluxHistory) {
+            fluxHistoryPage = new FluxHistoryDlg();
+            fluxHistoryPage->Construct(IDD_FLUX_HISTORY_DLG);
 
-			fluxHistoryPage->m_evalDataStorage = this->m_evalDataStorage;
-			fluxHistoryPage->m_scannerIndex = i;
-			fluxHistoryPage->m_serialNumber.Format("%s", (LPCTSTR)g_settings.scanner[i].spec[0].serialNumber);
-			fluxHistoryPage->m_siteName.Format("%s", (LPCTSTR)g_settings.scanner[i].site);
+            fluxHistoryPage->m_evalDataStorage = this->m_evalDataStorage;
+            fluxHistoryPage->m_scannerIndex = i;
+            fluxHistoryPage->m_serialNumber.Format("%s", (LPCTSTR)g_settings.scanner[i].spec[0].serialNumber);
+            fluxHistoryPage->m_siteName.Format("%s", (LPCTSTR)g_settings.scanner[i].site);
 
-			m_sheet.AddPage(fluxHistoryPage);
-			m_fluxHistoryPages.Add(fluxHistoryPage);
-		}
+            m_sheet.AddPage(fluxHistoryPage);
+            m_fluxHistoryPages.Add(fluxHistoryPage);
+        }
     }
 
     // At last, add the wind-measurements overview page, 
@@ -987,7 +986,7 @@ int CNovacMasterProgramView::InitializeControls() {
     m_masterFrame.GetWindowRect(rect);
 
     // Get the tab control and set the title of each tab to the serial number of the spectrometer
-    CTabCtrl *tabPtr = m_sheet.GetTabControl();
+    CTabCtrl* tabPtr = m_sheet.GetTabControl();
     if (g_settings.scannerNum <= 0) {
 
         // Get the 'item' of the tab.
@@ -1028,19 +1027,19 @@ int CNovacMasterProgramView::InitializeControls() {
                 histCount++;
             }
 
-			if (g_settings.scanner[i].plotFluxHistory) {
-				tcItem.mask = TCIF_TEXT;
+            if (g_settings.scanner[i].plotFluxHistory) {
+                tcItem.mask = TCIF_TEXT;
 
-				// Set the text in the 'item'. !!!! The serial-string is necessary
-				//	otherwise this function changes the global object !!!!!!!!!!!
-				site.Format("%s Flux History", (LPCTSTR)g_settings.scanner[i].site);
-				tcItem.pszText = site.GetBuffer(256);
+                // Set the text in the 'item'. !!!! The serial-string is necessary
+                //	otherwise this function changes the global object !!!!!!!!!!!
+                site.Format("%s Flux History", (LPCTSTR)g_settings.scanner[i].site);
+                tcItem.pszText = site.GetBuffer(256);
 
-				// Update the tab with the updated 'item'
-				int tabIndex = g_settings.scannerNum + 2 + histCount;
-				tabPtr->SetItem(tabIndex, &tcItem);
-				histCount++;
-			}
+                // Update the tab with the updated 'item'
+                int tabIndex = g_settings.scannerNum + 2 + histCount;
+                tabPtr->SetItem(tabIndex, &tcItem);
+                histCount++;
+            }
         }
     }
     return 0;
@@ -1059,7 +1058,7 @@ void CNovacMasterProgramView::OnMenuAnalysisBrowseData() {
 
 void CNovacMasterProgramView::OnMenuAnalysisReevaluate()
 {
-    ReEvaluation::CReEvaluator *reeval = new ReEvaluation::CReEvaluator();
+    ReEvaluation::CReEvaluator* reeval = new ReEvaluation::CReEvaluator();
 
     ReEvaluation::CReEvaluationDlg dlg;
     dlg.Construct("ReEvaluation", this, 0);
@@ -1253,7 +1252,7 @@ void CNovacMasterProgramView::UploadAuxData() {
         lastUploadDate = todaysDate;
     }// endif
 }
-void CNovacMasterProgramView::OnUpdateMenuViewInstrumenttab(CCmdUI *pCmdUI)
+void CNovacMasterProgramView::OnUpdateMenuViewInstrumenttab(CCmdUI* pCmdUI)
 {
     if (m_instrumentViewVisible)
         pCmdUI->SetCheck(1);
@@ -1271,7 +1270,7 @@ void CNovacMasterProgramView::OnChangeUnitOfFluxToKgS() {
         return;
     }
     for (int i = 0; i < m_scannerPages.GetCount(); ++i) {
-        CView_Scanner *page = (CView_Scanner *)m_scannerPages[i];
+        CView_Scanner* page = (CView_Scanner*)m_scannerPages[i];
         if (page->m_hWnd != NULL) {
             page->DrawFlux();
             return;
@@ -1288,7 +1287,7 @@ void CNovacMasterProgramView::OnChangeUnitOfFluxToTonDay() {
         return;
     }
     for (int i = 0; i < m_scannerPages.GetCount(); ++i) {
-        CView_Scanner *page = (CView_Scanner *)m_scannerPages[i];
+        CView_Scanner* page = (CView_Scanner*)m_scannerPages[i];
         if (page->m_hWnd != NULL) {
             page->DrawFlux();
             return;
@@ -1296,7 +1295,7 @@ void CNovacMasterProgramView::OnChangeUnitOfFluxToTonDay() {
     }
 }
 
-void CNovacMasterProgramView::OnUpdateChangeUnitOfFluxToKgS(CCmdUI *pCmdUI)
+void CNovacMasterProgramView::OnUpdateChangeUnitOfFluxToKgS(CCmdUI* pCmdUI)
 {
     if (g_userSettings.m_fluxUnit == UNIT_KGS)
         pCmdUI->SetCheck(1);
@@ -1304,7 +1303,7 @@ void CNovacMasterProgramView::OnUpdateChangeUnitOfFluxToKgS(CCmdUI *pCmdUI)
         pCmdUI->SetCheck(0);
 }
 
-void CNovacMasterProgramView::OnUpdateChangeUnitOfFluxToTonDay(CCmdUI *pCmdUI)
+void CNovacMasterProgramView::OnUpdateChangeUnitOfFluxToTonDay(CCmdUI* pCmdUI)
 {
     if (g_userSettings.m_fluxUnit == UNIT_TONDAY)
         pCmdUI->SetCheck(1);
@@ -1317,7 +1316,7 @@ void CNovacMasterProgramView::OnChangeUnitOfColumnToPPMM() {
     g_userSettings.WriteToFile();
 
     for (int i = 0; i < m_scannerPages.GetCount(); ++i) {
-        CView_Scanner *page = (CView_Scanner *)m_scannerPages[i];
+        CView_Scanner* page = (CView_Scanner*)m_scannerPages[i];
         if (page->m_hWnd != NULL) {
             page->DrawColumn();
         }
@@ -1335,7 +1334,7 @@ void CNovacMasterProgramView::OnChangeUnitOfColumnToMolecCm2() {
     g_userSettings.WriteToFile();
 
     for (int i = 0; i < m_scannerPages.GetCount(); ++i) {
-        CView_Scanner *page = (CView_Scanner *)m_scannerPages[i];
+        CView_Scanner* page = (CView_Scanner*)m_scannerPages[i];
         if (page->m_hWnd != NULL) {
             page->DrawColumn();
         }
@@ -1349,44 +1348,44 @@ void CNovacMasterProgramView::OnChangeUnitOfColumnToMolecCm2() {
     //}
 }
 
-void CNovacMasterProgramView::OnUpdateChangeUnitOfColumnToPPMM(CCmdUI *pCmdUI)
+void CNovacMasterProgramView::OnUpdateChangeUnitOfColumnToPPMM(CCmdUI* pCmdUI)
 {
-	if (g_userSettings.m_columnUnit == UNIT_PPMM) {
-		pCmdUI->SetCheck(1);
-	}
-	else {
-		pCmdUI->SetCheck(0);
-	}
+    if (g_userSettings.m_columnUnit == UNIT_PPMM) {
+        pCmdUI->SetCheck(1);
+    }
+    else {
+        pCmdUI->SetCheck(0);
+    }
 
-	//for (int i = 0; i < m_fluxHistoryPages.GetCount(); ++i) {
-	//	FluxHistoryDlg *page = (FluxHistoryDlg *)m_fluxHistoryPages[i];
-	//	if (page->m_hWnd != NULL) {
-	//		page->RedrawAll();
-	//	}
-	//}
+    //for (int i = 0; i < m_fluxHistoryPages.GetCount(); ++i) {
+    //	FluxHistoryDlg *page = (FluxHistoryDlg *)m_fluxHistoryPages[i];
+    //	if (page->m_hWnd != NULL) {
+    //		page->RedrawAll();
+    //	}
+    //}
 }
 
-void CNovacMasterProgramView::OnUpdateChangeUnitOfColumnToMolecCm2(CCmdUI *pCmdUI)
+void CNovacMasterProgramView::OnUpdateChangeUnitOfColumnToMolecCm2(CCmdUI* pCmdUI)
 {
-    if (g_userSettings.m_columnUnit == UNIT_MOLEC_CM2){
+    if (g_userSettings.m_columnUnit == UNIT_MOLEC_CM2) {
         pCmdUI->SetCheck(1);
-	}
-	else {
-		pCmdUI->SetCheck(0);
-	}
+    }
+    else {
+        pCmdUI->SetCheck(0);
+    }
 
-	//for (int i = 0; i < m_fluxHistoryPages.GetCount(); ++i) {
-	//	FluxHistoryDlg *page = (FluxHistoryDlg *)m_fluxHistoryPages[i];
-	//	if (page->m_hWnd != NULL) {
-	//		page->RedrawAll();
-	//	}
-	//}
+    //for (int i = 0; i < m_fluxHistoryPages.GetCount(); ++i) {
+    //	FluxHistoryDlg *page = (FluxHistoryDlg *)m_fluxHistoryPages[i];
+    //	if (page->m_hWnd != NULL) {
+    //		page->RedrawAll();
+    //	}
+    //}
 }
 
 void CNovacMasterProgramView::ScanStatusLogFile() {
     CString fileName;
     const int BUFFER_SIZE = 16384;
-    char *szLine = new char[BUFFER_SIZE];
+    char* szLine = new char[BUFFER_SIZE];
     CString serial;
     double linkSpeed;
     int dYear, dMonth, dDay, dHour, dMinute, dSecond;
@@ -1400,7 +1399,7 @@ void CNovacMasterProgramView::ScanStatusLogFile() {
     fileName.Format("%sOutput\\%04d.%02d.%02d\\StatusLog.txt", (LPCTSTR)g_settings.outputDirectory, today.year, today.month, today.day);
 
     // Try to open the status-log file
-    FILE *f = fopen(fileName, "r");
+    FILE* f = fopen(fileName, "r");
     if (NULL == f) {
         delete[] szLine;
         return; // could not open file, skip it...
@@ -1412,8 +1411,8 @@ void CNovacMasterProgramView::ScanStatusLogFile() {
         // look for lines which tells us download-speeds...
         if (strlen(szLine) > 30 && NULL != strstr(szLine, "Finished downloading file ")) {
             // parse the download-speed
-            char *pt1 = strstr(szLine, " from ");
-            char *pt2 = strstr(szLine, "@");
+            char* pt1 = strstr(szLine, " from ");
+            char* pt2 = strstr(szLine, "@");
             int nFound = 0;
             size_t lineLength = strlen(szLine);
             if (pt1 != NULL && pt2 != NULL) {
@@ -1438,7 +1437,7 @@ void CNovacMasterProgramView::ScanStatusLogFile() {
         // also look for lines which tells us upload-speeds to the FTP-Server...
         if (strlen(szLine) > 30 && NULL != strstr(szLine, "Finished uploading file to FTP-Server")) {
             // parse the download-speed
-            char *pt = strstr(szLine, "@");
+            char* pt = strstr(szLine, "@");
             int nFound = 0;
             size_t lineLength = strlen(szLine);
             if (pt != NULL) {
@@ -1515,7 +1514,7 @@ void CNovacMasterProgramView::OnSize(UINT nType, int cx, int cy)
             GetWindowRect(windowOnScreenRegion);
             m_sheet.MoveWindow(masterFrameOnScreenRegion.left - windowOnScreenRegion.left, masterFrameOnScreenRegion.top - windowOnScreenRegion.top, masterFrameOnScreenRegion.Width(), masterFrameOnScreenRegion.Height());
 
-            CTabCtrl *tabPtr = m_sheet.GetTabControl();
+            CTabCtrl* tabPtr = m_sheet.GetTabControl();
             if (NULL != tabPtr)
             {
                 tabPtr->MoveWindow(2, 2, masterFrameOnScreenRegion.Width(), masterFrameOnScreenRegion.Height());
@@ -1525,24 +1524,8 @@ void CNovacMasterProgramView::OnSize(UINT nType, int cx, int cy)
     }
 }
 
-void CNovacMasterProgramView::OnMenuFileCreatereferences()
+void CNovacMasterProgramView::OnAnalysisCalibratesSectrometer()
 {
-    Dialogs::CCreateReferencesDlg dlg;
+    CSpectrometerCalibrationDlg dlg;
     dlg.DoModal();
-}
-
-
-void CNovacMasterProgramView::OnFileCalibratespectrometer()
-{
-    // Dialogs::CSpectrometerCalibrationDlg dlg;
-    // dlg.DoModal();
-}
-
-void CNovacMasterProgramView::OnUpdateFileCalibratespectrometer(CCmdUI *pCmdUI)
-{
-#ifdef _DEBUG
-    pCmdUI->Enable(TRUE);
-#else
-    pCmdUI->Enable(FALSE);
-#endif
 }

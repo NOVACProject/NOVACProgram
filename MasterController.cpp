@@ -62,8 +62,7 @@ CCriticalSection g_evalLogCritSect;
     program (if the program is exited while evaluating a pak-file, the pak file
     will still remain in the output directory) */
 UINT CheckForOldSpectra(LPVOID pParam);
-//void CheckForSpectraInDir(const CString &path, CList <CString, CString&> &fileList);
-//void CheckForSpectraInHexDir(const CString &path, CList <CString, CString&> &fileList);
+
 void SetThreadName(DWORD dwThreadID, LPCTSTR szThreadName);
 
 #define MS_VC_EXCEPTION 0x406d1388 
@@ -259,7 +258,7 @@ bool CMasterController::CheckSettings()
         {
             for (int k = 0; k < g_settings.scanner[i].spec[j].channelNum; ++k)
             {
-                const Evaluation::CFitWindow *window = &g_settings.scanner[i].spec[j].channel[k].fitWindow;
+                const novac::CFitWindow*window = &g_settings.scanner[i].spec[j].channel[k].fitWindow;
                 for (int n = 0; n < window->nRef; ++n)
                 {
                     FILE* f = fopen(window->ref[n].m_path.c_str(), "r");

@@ -34,10 +34,10 @@ namespace Dialogs{
 		int		m_spectrumNum;
 
 		/** The contents of the spectrum 'm_curspectrum' */
-		CSpectrum	m_spectrum;
+		novac::CSpectrum	m_spectrum;
 
 		/** The header of the current spectrum */
-		SpectrumIO::MKZYhdr	m_spectrumHeader;
+		novac::MKZYhdr	m_spectrumHeader;
 
 		/** The timer, to restore the zoomability of the graph 0.5 seconds after
 				the user has opened the file */

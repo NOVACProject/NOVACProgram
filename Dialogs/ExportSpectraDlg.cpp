@@ -12,8 +12,9 @@
 // Include the special multi-choice file-dialog
 #include "../Dialogs/FECFileDialog.h"
 
-using namespace SpectrumIO;
 using namespace Dialogs;
+using namespace novac;
+
 
 // CExportSpectraDlg dialog
 
@@ -113,7 +114,7 @@ void CExportSpectraDlg::OnExportSpectra()
   // Get the export directory
 
   // Export all spectra in the spectrum files. 
-  SpectrumIO::CSpectrumIO reader;
+  CSpectrumIO reader;
   Common common;
   CSpectrum spec;
   CString message, path, pakFileName;
@@ -147,12 +148,12 @@ void CExportSpectraDlg::OnExportSpectra()
 //			while(SUCCESS == reader.ReadNextSpectrum(sFile, spec)){
 				const bool success = reader.ReadNextSpectrum(sFile, spec);
 				if(!success){
-					if(reader.m_lastError == SpectrumIO::CSpectrumIO::ERROR_EOF || reader.m_lastError == SpectrumIO::CSpectrumIO::ERROR_COULD_NOT_OPEN_FILE || reader.m_lastError == SpectrumIO::CSpectrumIO::ERROR_SPECTRUM_NOT_FOUND)
+					if(reader.m_lastError == CSpectrumIO::ERROR_EOF || reader.m_lastError == CSpectrumIO::ERROR_COULD_NOT_OPEN_FILE || reader.m_lastError == CSpectrumIO::ERROR_SPECTRUM_NOT_FOUND)
 						break;
 					switch(reader.m_lastError){
-						case SpectrumIO::CSpectrumIO::ERROR_CHECKSUM_MISMATCH:	
+						case CSpectrumIO::ERROR_CHECKSUM_MISMATCH:	
 							ShowMessage("Pak file contains a corrupt spectrum, checksum mismatch"); break;
-						case SpectrumIO::CSpectrumIO::ERROR_DECOMPRESS:
+						case CSpectrumIO::ERROR_DECOMPRESS:
 							ShowMessage("Pak file contains a corrupt spectrum, could not decompress spectrum"); break;
 					}
 					//else

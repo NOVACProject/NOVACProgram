@@ -3,6 +3,8 @@
 #include <SpectralEvaluation/DateTime.h>
 
 using namespace Communication;
+using namespace novac;
+
 
 CLinkStatistics::CTransferInfo::CTransferInfo(){
 	this->day		= 0;

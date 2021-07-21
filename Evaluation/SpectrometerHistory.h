@@ -21,8 +21,8 @@ namespace Evaluation{
 		public:
 			CScanInfo();
 			~CScanInfo();
-			CDateTime   startTime;         // <-- the start-time of the scan (usually GMT)
-			CDateTime   arrived;           // <-- the time when the scan-info arrived (local PC-time)
+			novac::CDateTime   startTime;         // <-- the start-time of the scan (usually GMT)
+			novac::CDateTime   arrived;           // <-- the time when the scan-info arrived (local PC-time)
 			double      plumeCentre[2];    // <-- the position of the plume, in scanAngles [degrees], for each of the two motors
 			double      plumeEdge[2];      // <-- the edges of the plulm, in scanAngles [degrees] for the first motor
 			double      plumeCompleteness; // <-- how complete is the plume (from 0.5 to 1.0)
@@ -36,8 +36,8 @@ namespace Evaluation{
 		public:
 			CWMInfo();
 			~CWMInfo();
-			CDateTime		startTime;	// <-- the start-time of the scan (usually GMT)
-			CDateTime		arrived;	// <-- the time when the scan-info arrived (local PC-time)
+			novac::CDateTime		startTime;	// <-- the start-time of the scan (usually GMT)
+			novac::CDateTime		arrived;	// <-- the time when the scan-info arrived (local PC-time)
 		};
 	public:
 		 /** Default constructor */
@@ -67,7 +67,7 @@ namespace Evaluation{
 
 		/** Returns the time of the last scan performed. 
 				Return -1 if no scans have arrived */
-		int GetStartTimeOfLastScan(CDateTime &dt);
+		int GetStartTimeOfLastScan(novac::CDateTime &dt);
 
 		/** Returns the number of seconds passed since the last wind-measurement
 				arrived. Return -1 if no wind-measurement has arrived */

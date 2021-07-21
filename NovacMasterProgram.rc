@@ -13,69 +13,145 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
+// Neutral resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NEU)
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+#pragma code_page(1252)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_CALIBRATE_OPEN_CALIBRATION DIALOGEX 0, 0, 503, 92
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Open Calibration"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "Open",IDOK,390,71,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,446,71,50,14
+    RTEXT           "Initial Calibration",IDC_STATIC_INITIAL_CALIBRATION,13,26,86,8
+    EDITTEXT        IDC_EDIT_INITIAL_CALIBRATION,102,23,309,15,ES_AUTOHSCROLL | WS_DISABLED
+    PUSHBUTTON      "Browse...",IDC_BUTTON_BROWSE_LINE_SHAPE,420,41,76,19,WS_DISABLED
+    RTEXT           "Instrument Line Shape",IDC_STATIC_LINEHSHAPE,7,45,92,8,WS_DISABLED
+    EDITTEXT        IDC_EDIT_INITIAL_CALIBRATION2,102,42,309,15,ES_AUTOHSCROLL | WS_DISABLED
+    PUSHBUTTON      "Browse...",IDC_BUTTON_BROWSE_CALIBRATION,420,20,76,19
+    COMBOBOX        IDC_COMBO_INITIAL_DATA_TYPE,102,7,159,72,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    RTEXT           "Format",IDC_STATIC_INITIAL_CALIBRATION2,13,7,86,8
+END
+
+IDD_CALIBRATE_WAVELENGTH_DIALOG DIALOGEX 0, 0, 711, 367
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Wavelength"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    EDITTEXT        IDC_EDIT_SPECTRUM,19,20,336,15,ES_AUTOHSCROLL | WS_DISABLED
+    PUSHBUTTON      "Browse...",IDC_BUTTON_BROWSE_SPECTRUM,363,18,76,19
+    GROUPBOX        "Measured Spectrum",IDC_STATIC_SPECTRUM,7,7,438,59
+    PUSHBUTTON      "Run",IDC_BUTTON_RUN,542,341,76,19
+    EDITTEXT        IDC_EDIT_SOLAR_SPECTRUM,460,19,230,15,ES_AUTOHSCROLL | WS_DISABLED
+    PUSHBUTTON      "Browse...",IDC_BUTTON_BROWSE_SOLAR_SPECTRUM,614,40,76,19
+    RTEXT           "Initial Calibration",IDC_STATIC_INITIAL_CALIBRATION,41,81,95,8
+    EDITTEXT        IDC_EDIT_INITIAL_CALIBRATION,150,79,455,15,ES_AUTOHSCROLL | WS_DISABLED
+    GROUPBOX        "High Resolved Solar Spectrum",IDC_STATIC,451,7,247,59
+    GROUPBOX        "Result",IDC_STATIC,7,111,691,224
+    GROUPBOX        "",IDC_STATIC_GRAPH_HOLDER_PANEL,100,111,598,224
+    PUSHBUTTON      "Save",IDC_BUTTON_SAVE,628,341,76,19,WS_DISABLED
+    GROUPBOX        "Initial Wavelength Calibration + Instrument Line Shape",IDC_STATIC,7,69,692,35
+    LISTBOX         IDC_LIST_GRAPH_TYPE,15,126,81,40,LBS_HASSTRINGS | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "Browse...",IDC_BUTTON_SELECT_INITIAL_CALIBRATION,614,78,76,19
+END
+
+IDD_CALIBRATE_REFERENCES DIALOGEX 0, 0, 711, 367
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Create References"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    GROUPBOX        "Instrument Calibration",IDC_STATIC_SPECTRUM,7,7,438,59
+    PUSHBUTTON      "Select",IDC_BUTTON_SELECT_CALIBRATION,361,40,76,19
+    PUSHBUTTON      "Browse...",IDC_BUTTON_BROWSE_SOLAR_SPECTRUM,614,40,76,19
+    GROUPBOX        "High Resolution Cross Section",IDC_STATIC,451,7,253,59
+    COMBOBOX        IDC_COMBO_HIGH_RES_CROSSSECTION,460,20,230,70,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "Save",IDC_BUTTON_SAVE,628,341,76,19,WS_DISABLED
+    GROUPBOX        "Result",IDC_STATIC_GRAPH,6,75,698,260
+    GROUPBOX        "",IDC_STATIC_GRAPH_HOLDER2,103,75,601,255
+    CONTROL         "High Pass Filter",IDC_CHECK_HIGH_PASS_FILTER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,94,66,10
+    DEFPUSHBUTTON   "Update",IDC_BUTTON_RUN_CREATE_REFERENCE,542,341,76,19
+    CONTROL         "Convert vac -> air",IDC_CHECK_INPUT_IN_VACUUM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,112,75,10
+    EDITTEXT        IDC_EDIT_CALIBRATION,19,20,418,15,ES_AUTOHSCROLL | WS_DISABLED
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_CALIBRATE_OPEN_CALIBRATION, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        TOPMARGIN, 7
+    END
+
+    IDD_CALIBRATE_WAVELENGTH_DIALOG, DIALOG
+    BEGIN
+    END
+
+    IDD_CALIBRATE_REFERENCES, DIALOG
+    BEGIN
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_CALIBRATE_OPEN_CALIBRATION AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_CALIBRATE_WAVELENGTH_DIALOG AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog Info
+//
+
+IDD_CALIBRATE_OPEN_CALIBRATION DLGINIT
+BEGIN
+    IDC_COMBO_INITIAL_DATA_TYPE, 0x403, 18, 0
+0x7845, 0x6574, 0x646e, 0x6465, 0x5320, 0x6474, 0x4620, 0x6c69, 0x0065, 
+
+    IDC_COMBO_INITIAL_DATA_TYPE, 0x403, 56, 0
+0x6157, 0x6576, 0x656c, 0x676e, 0x6874, 0x4320, 0x6c61, 0x6269, 0x6172, 
+0x6974, 0x6e6f, 0x2620, 0x4d20, 0x6165, 0x7573, 0x6572, 0x2064, 0x6e49, 
+0x7473, 0x7572, 0x656d, 0x746e, 0x4c20, 0x6e69, 0x2065, 0x6853, 0x7061, 
+0x0065, 
+    0
+END
+
+#endif    // Neutral resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
 // English (United States) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #pragma code_page(1252)
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Icon
-//
-
-// Icon with lowest ID value placed first to ensure application icon
-// remains consistent on all systems.
-IDR_NovacMasterProgTYPE ICON                    "res\\NovacMasterProgramDoc.ico"
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Bitmap
-//
-
-IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Toolbar
-//
-
-IDR_MAINFRAME TOOLBAR 16, 15
-BEGIN
-    BUTTON      ID_CONTROL_START
-    SEPARATOR
-    BUTTON      ID_CONFIGURATION_CONFIGURATION
-    SEPARATOR
-    BUTTON      ID_CONFIGURATION_FILETRANSFER
-    SEPARATOR
-    BUTTON      ID_APP_ABOUT
-END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Accelerator
-//
-
-IDR_MAINFRAME ACCELERATORS
-BEGIN
-    "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL, NOINVERT
-    VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL, NOINVERT
-    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT, NOINVERT
-    "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL, NOINVERT
-    "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL, NOINVERT
-    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT, NOINVERT
-    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT, NOINVERT
-    "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL, NOINVERT
-    "N",            ID_FILE_NEW,            VIRTKEY, CONTROL, NOINVERT
-    "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL, NOINVERT
-    "S",            ID_FILE_SAVE,           VIRTKEY, CONTROL, NOINVERT
-    VK_F6,          ID_NEXT_PANE,           VIRTKEY, NOINVERT
-    VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT, NOINVERT
-END
-
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -666,45 +742,6 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// Version
-//
-
-VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,0
- PRODUCTVERSION 3,1,0,0
- FILEFLAGSMASK 0x3fL
-#ifdef _DEBUG
- FILEFLAGS 0x1L
-#else
- FILEFLAGS 0x0L
-#endif
- FILEOS 0x4L
- FILETYPE 0x1L
- FILESUBTYPE 0x0L
-BEGIN
-    BLOCK "StringFileInfo"
-    BEGIN
-        BLOCK "040904e4"
-        BEGIN
-            VALUE "CompanyName", "Optical Remote Sensing group, Chalmers University of Technology"
-            VALUE "FileDescription", "NovacProgram"
-            VALUE "FileVersion", "3.1.0.0"
-            VALUE "InternalName", "NovacProgram.exe"
-            VALUE "LegalCopyright", "(c) Chalmers University of Technology.  All rights reserved."
-            VALUE "OriginalFilename", "NovacProgram.exe"
-            VALUE "ProductName", "NovacProgram"
-            VALUE "ProductVersion", "3.1.0.0"
-        END
-    END
-    BLOCK "VarFileInfo"
-    BEGIN
-        VALUE "Translation", 0x409, 1252
-    END
-END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
 // DESIGNINFO
 //
 
@@ -925,121 +962,6 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// RT_MANIFEST
-//
-
-IDR_MANIFEST            RT_MANIFEST             "res\\NovacMasterProgram.manifest"
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Menu
-//
-
-IDR_MAINFRAME MENU
-BEGIN
-    POPUP "&File"
-    BEGIN
-        MENUITEM "&Import",                     ID_FILE_IMPORT
-        MENUITEM "&Export",                     176
-        MENUITEM SEPARATOR
-        MENUITEM "&Check PakFile",              ID_FILE_CHECKPAKFILE
-        MENUITEM SEPARATOR
-        MENUITEM "Merge Evaluation Log Files",  32790
-        MENUITEM "&Split/Merge PakFile(s)",     ID_FILE_SPLITPAKFILE
-        MENUITEM SEPARATOR
-        MENUITEM "Create References",           ID_FILE_CREATEREFERENCES
-        MENUITEM "Calibrate Spectrometer",      ID_FILE_CALIBRATESPECTROMETER
-    END
-    POPUP "&Control"
-    BEGIN
-        MENUITEM "&Start",                      32771
-        MENUITEM SEPARATOR
-        MENUITEM "Make &WindMeasurement",       ID_CONTROL_MAKEWINDMEASUREMENT
-        MENUITEM "Make &Composition Measurement", ID_CONTROL_MAKECOMPOSITIONMEASUREMENT
-        MENUITEM SEPARATOR
-        MENUITEM "E&xit",                       ID_APP_EXIT
-    END
-    POPUP "C&onfiguration"
-    BEGIN
-        MENUITEM "Co&nfiguration",              ID_CONFIGURATION_CONFIGURATION
-        MENUITEM SEPARATOR
-        MENUITEM "File Transfer",               ID_CONFIGURATION_FILETRANSFER
-        MENUITEM SEPARATOR
-        POPUP "&Language"
-        BEGIN
-            MENUITEM "&English",                    ID_SET_LANGUAGE_ENGLISH
-            MENUITEM "E&spañol",                    ID_SET_LANGUAGE_ESPA
-        END
-    END
-    POPUP "&View"
-    BEGIN
-        MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
-        MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
-        MENUITEM SEPARATOR
-        MENUITEM "&Instrument Tab",             ID_MENU_VIEW_INSTRUMENTTAB
-        MENUITEM SEPARATOR
-        POPUP "Unit of Flux"
-        BEGIN
-            MENUITEM "Kg/s",                        ID_UNITOFFLUX_KG
-            MENUITEM "Ton/day",                     ID_UNITOFFLUX_TON
-        END
-        POPUP "Unit of Columns"
-        BEGIN
-            MENUITEM "ppmm",                        ID_UNITOFCOLUMNS_PPMM
-            MENUITEM "Molecules/cm2",               ID_UNITOFCOLUMNS_MOLEC_CM2
-        END
-    END
-    POPUP "A&nalysis"
-    BEGIN
-        MENUITEM "&Flux",                       ID_ANALYSIS_FLUX
-        MENUITEM "&Re Evaluate",                ID_ANALYSIS_REEVALUATE
-        MENUITEM "&Setup",                      ID_ANALYSIS_SETUP
-        MENUITEM "&Wind",                       ID_ANALYSIS_WIND
-        MENUITEM SEPARATOR
-        MENUITEM "&Measured Data",              ID_ANALYSIS_BROWSEMEASUREDDATA
-    END
-    POPUP "&Help"
-    BEGIN
-        MENUITEM "&About NovacProgram...",      ID_APP_ABOUT
-    END
-END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Dialog Info
-//
-
-IDD_CONFIGURE_DARK DLGINIT
-BEGIN
-    IDC_COMBO_OFFSET, 0x403, 33, 0
-0x7355, 0x2065, 0x656d, 0x7361, 0x7275, 0x6465, 0x6f20, 0x6666, 0x6573, 
-0x2074, 0x6669, 0x6120, 0x6176, 0x6c69, 0x6261, 0x656c, "\000" 
-    IDC_COMBO_OFFSET, 0x403, 32, 0
-0x6c41, 0x6177, 0x7379, 0x7520, 0x6573, 0x7420, 0x6968, 0x2073, 0x666f, 
-0x7366, 0x7465, 0x7320, 0x6570, 0x7463, 0x7572, 0x006d, 
-    IDC_COMBO_DARKCURRENT, 0x403, 34, 0
-0x7355, 0x2065, 0x656d, 0x7361, 0x7275, 0x6465, 0x6320, 0x7275, 0x6572, 
-0x746e, 0x6920, 0x2066, 0x7661, 0x6961, 0x616c, 0x6c62, 0x0065, 
-    IDC_COMBO_DARKCURRENT, 0x403, 29, 0
-0x6c41, 0x6177, 0x7379, 0x7520, 0x6573, 0x7420, 0x6968, 0x2073, 0x6144, 
-0x6b72, 0x6320, 0x7275, 0x6572, 0x746e, "\000" 
-    0
-END
-
-IDD_CONFIGURATION_GLOBAL DLGINIT
-BEGIN
-    IDC_DATA_UPLOAD_SERVER_PROTOCOL, 0x403, 5, 0
-0x4653, 0x5054, "\000" 
-    IDC_DATA_UPLOAD_SERVER_PROTOCOL, 0x403, 4, 0
-0x5446, 0x0050, 
-    0
-END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
 // AFX_DIALOG_LAYOUT
 //
 
@@ -1113,6 +1035,216 @@ END
 
 IDD_PAKFILES_SPLIT AFX_DIALOG_LAYOUT
 BEGIN
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_NovacMasterProgTYPE ICON                    "res\\NovacMasterProgramDoc.ico"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDR_MAINFRAME TOOLBAR 16, 15
+BEGIN
+    BUTTON      ID_CONTROL_START
+    SEPARATOR
+    BUTTON      ID_CONFIGURATION_CONFIGURATION
+    SEPARATOR
+    BUTTON      ID_CONFIGURATION_FILETRANSFER
+    SEPARATOR
+    BUTTON      ID_APP_ABOUT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_MAINFRAME ACCELERATORS
+BEGIN
+    "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL, NOINVERT
+    VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL, NOINVERT
+    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT, NOINVERT
+    "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL, NOINVERT
+    "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL, NOINVERT
+    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT, NOINVERT
+    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT, NOINVERT
+    "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL, NOINVERT
+    "N",            ID_FILE_NEW,            VIRTKEY, CONTROL, NOINVERT
+    "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL, NOINVERT
+    "S",            ID_FILE_SAVE,           VIRTKEY, CONTROL, NOINVERT
+    VK_F6,          ID_NEXT_PANE,           VIRTKEY, NOINVERT
+    VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT, NOINVERT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 3,1,0,0
+ PRODUCTVERSION 3,1,0,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904e4"
+        BEGIN
+            VALUE "CompanyName", "Optical Remote Sensing group, Chalmers University of Technology"
+            VALUE "FileDescription", "NovacProgram"
+            VALUE "FileVersion", "3.1.0.0"
+            VALUE "InternalName", "NovacProgram.exe"
+            VALUE "LegalCopyright", "(c) Chalmers University of Technology.  All rights reserved."
+            VALUE "OriginalFilename", "NovacProgram.exe"
+            VALUE "ProductName", "NovacProgram"
+            VALUE "ProductVersion", "3.1.0.0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1252
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// RT_MANIFEST
+//
+
+IDR_MANIFEST            RT_MANIFEST             "res\\NovacMasterProgram.manifest"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAINFRAME MENU
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&Import",                     ID_FILE_IMPORT
+        MENUITEM "&Export",                     176
+        MENUITEM SEPARATOR
+        MENUITEM "&Check PakFile",              ID_FILE_CHECKPAKFILE
+        MENUITEM SEPARATOR
+        MENUITEM "Merge Evaluation Log Files",  32790
+        MENUITEM "&Split/Merge PakFile(s)",     ID_FILE_SPLITPAKFILE
+    END
+    POPUP "&Control"
+    BEGIN
+        MENUITEM "&Start",                      32771
+        MENUITEM SEPARATOR
+        MENUITEM "Make &WindMeasurement",       ID_CONTROL_MAKEWINDMEASUREMENT
+        MENUITEM "Make &Composition Measurement", ID_CONTROL_MAKECOMPOSITIONMEASUREMENT
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+    POPUP "C&onfiguration"
+    BEGIN
+        MENUITEM "Co&nfiguration",              ID_CONFIGURATION_CONFIGURATION
+        MENUITEM SEPARATOR
+        MENUITEM "File Transfer",               ID_CONFIGURATION_FILETRANSFER
+        MENUITEM SEPARATOR
+        POPUP "&Language"
+        BEGIN
+            MENUITEM "&English",                    ID_SET_LANGUAGE_ENGLISH
+            MENUITEM "E&spañol",                    ID_SET_LANGUAGE_ESPA
+        END
+    END
+    POPUP "&View"
+    BEGIN
+        MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
+        MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
+        MENUITEM SEPARATOR
+        MENUITEM "&Instrument Tab",             ID_MENU_VIEW_INSTRUMENTTAB
+        MENUITEM SEPARATOR
+        POPUP "Unit of Flux"
+        BEGIN
+            MENUITEM "Kg/s",                        ID_UNITOFFLUX_KG
+            MENUITEM "Ton/day",                     ID_UNITOFFLUX_TON
+        END
+        POPUP "Unit of Columns"
+        BEGIN
+            MENUITEM "ppmm",                        ID_UNITOFCOLUMNS_PPMM
+            MENUITEM "Molecules/cm2",               ID_UNITOFCOLUMNS_MOLEC_CM2
+        END
+    END
+    POPUP "A&nalysis"
+    BEGIN
+        MENUITEM "&Flux",                       ID_ANALYSIS_FLUX
+        MENUITEM "&Re Evaluate",                ID_ANALYSIS_REEVALUATE
+        MENUITEM "&Setup",                      ID_ANALYSIS_SETUP
+        MENUITEM "&Wind",                       ID_ANALYSIS_WIND
+        MENUITEM SEPARATOR
+        MENUITEM "&Measured Data",              ID_ANALYSIS_BROWSEMEASUREDDATA
+        MENUITEM "Calibrate Spectrometer",      ID_ANALYSIS_CALIBRATESPECTROMETER
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About NovacProgram...",      ID_APP_ABOUT
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog Info
+//
+
+IDD_CONFIGURE_DARK DLGINIT
+BEGIN
+    IDC_COMBO_OFFSET, 0x403, 33, 0
+0x7355, 0x2065, 0x656d, 0x7361, 0x7275, 0x6465, 0x6f20, 0x6666, 0x6573, 
+0x2074, 0x6669, 0x6120, 0x6176, 0x6c69, 0x6261, 0x656c, "\000" 
+    IDC_COMBO_OFFSET, 0x403, 32, 0
+0x6c41, 0x6177, 0x7379, 0x7520, 0x6573, 0x7420, 0x6968, 0x2073, 0x666f, 
+0x7366, 0x7465, 0x7320, 0x6570, 0x7463, 0x7572, 0x006d, 
+    IDC_COMBO_DARKCURRENT, 0x403, 34, 0
+0x7355, 0x2065, 0x656d, 0x7361, 0x7275, 0x6465, 0x6320, 0x7275, 0x6572, 
+0x746e, 0x6920, 0x2066, 0x7661, 0x6961, 0x616c, 0x6c62, 0x0065, 
+    IDC_COMBO_DARKCURRENT, 0x403, 29, 0
+0x6c41, 0x6177, 0x7379, 0x7520, 0x6573, 0x7420, 0x6968, 0x2073, 0x6144, 
+0x6b72, 0x6320, 0x7275, 0x6572, 0x746e, "\000" 
+    0
+END
+
+IDD_CONFIGURATION_GLOBAL DLGINIT
+BEGIN
+    IDC_DATA_UPLOAD_SERVER_PROTOCOL, 0x403, 5, 0
+0x4653, 0x5054, "\000" 
+    IDC_DATA_UPLOAD_SERVER_PROTOCOL, 0x403, 4, 0
+0x5446, 0x0050, 
     0
 END
 
@@ -1448,52 +1580,6 @@ END
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_SVE)
 LANGUAGE LANG_SWEDISH, SUBLANG_SWEDISH
 #pragma code_page(1252)
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Icon
-//
-
-// Icon with lowest ID value placed first to ensure application icon
-// remains consistent on all systems.
-IDR_MAINFRAME           ICON                    "res\\novacico.ico"
-
-IDI_NOVACICON           ICON                    "res\\NOVAClogo2.ico"
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Bitmap
-//
-
-IDB_YELLOW_LIGHT        BITMAP                  "res\\yellow_light.bmp"
-
-IDB_GREEN_LIGHT         BITMAP                  "res\\green_light.bmp"
-
-IDB_RED_LIGHT           BITMAP                  "res\\red_light.bmp"
-
-IDB_BMP_NEXT            BITMAP                  "res\\bitmap1.bmp"
-
-IDB_BMP_PREV            BITMAP                  "res\\bitmap2.bmp"
-
-IDB_DAT                 BITMAP                  "res\\datFile.bmp"
-
-IDB_PAK                 BITMAP                  "res\\pakFile.bmp"
-
-IDB_EXE                 BITMAP                  "res\\exeFile.bmp"
-
-IDB_DISK                BITMAP                  "res\\disk.bmp"
-
-IDB_TXT                 BITMAP                  "res\\file.bmp"
-
-IDB_FOLDER              BITMAP                  "res\\folder.bmp"
-
-IDB_BATTERY             BITMAP                  "res\\battery.bmp"
-
-IDB_BMP_SAVE            BITMAP                  "res\\bitmap3.bmp"
-
-IDB_BMP_OPEN            BITMAP                  "res\\bmp00001.bmp"
-
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1966,27 +2052,6 @@ BEGIN
     CONTROL         "High Pass Filter",IDC_CHECK_HP500,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,172,192,105,10
 END
 
-IDD_CALIBRATION_DIALOG DIALOGEX 0, 0, 399, 207
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Spectrometer Calibration"
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
-BEGIN
-    CONTROL         "Mercury Spectrum",IDC_RADIO_HG,"Button",BS_AUTORADIOBUTTON,15,14,84,10
-    CONTROL         "Measured Spectrum",IDC_RADIO_SKY,"Button",BS_AUTORADIOBUTTON,14,99,303,10
-    LTEXT           "[None Selected]",IDC_STATIC_HG_SPECTRUM_FILENAME,33,28,283,8
-    PUSHBUTTON      " Browse...",IDC_BUTTON_BROWSE_SLF,322,25,50,14
-    LTEXT           "[None Selected]",IDC_STATIC_SKYSPECTRUM_FILENAME,139,116,173,8
-    PUSHBUTTON      " Browse...",IDC_BUTTON_BROWSE_MEASURED_SPECTRUM,318,113,50,14
-    LTEXT           "Initial Wavelength Calibration",IDC_STATIC_INITIAL_WAVEL_CALIBRATION,30,136,96,8
-    LTEXT           "Spectrum",IDC_STATIC_INITIAL_WAVEL_CALIBRATION2,30,116,32,8
-    LTEXT           "[None Selected]",IDC_STATIC_INITIAL_WAVEL_CALIBRATION_FILENAME,138,136,173,8
-    PUSHBUTTON      " Browse...",IDC_BUTTON_BROWSE_INITIAL_WAVEL_CALIBRATION,318,132,50,14
-    LTEXT           "Solar Atlas",IDC_STATIC_KURUCZ_SOLAR_ATLAS,30,155,36,8
-    LTEXT           "[None Selected]",IDC_STATIC_SOLAR_ATLAS_FILENAME,138,155,173,8
-    PUSHBUTTON      " Browse...",IDC_BUTTON_BROWSE_SOLARATLAS,318,151,50,14
-    PUSHBUTTON      "&Run",IDC_BUTTON_RUN,342,186,50,14
-END
-
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -2131,16 +2196,75 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 215
     END
-
-    IDD_CALIBRATION_DIALOG, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 392
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 200
-    END
 END
 #endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_POSTFLUX_DLG AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_CONFIGURE_SPECTROMETERMODEL AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_CREATE_REFERENCES_DIALOG AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\novacico.ico"
+
+IDI_NOVACICON           ICON                    "res\\NOVAClogo2.ico"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_YELLOW_LIGHT        BITMAP                  "res\\yellow_light.bmp"
+
+IDB_GREEN_LIGHT         BITMAP                  "res\\green_light.bmp"
+
+IDB_RED_LIGHT           BITMAP                  "res\\red_light.bmp"
+
+IDB_BMP_NEXT            BITMAP                  "res\\bitmap1.bmp"
+
+IDB_BMP_PREV            BITMAP                  "res\\bitmap2.bmp"
+
+IDB_DAT                 BITMAP                  "res\\datFile.bmp"
+
+IDB_PAK                 BITMAP                  "res\\pakFile.bmp"
+
+IDB_EXE                 BITMAP                  "res\\exeFile.bmp"
+
+IDB_DISK                BITMAP                  "res\\disk.bmp"
+
+IDB_TXT                 BITMAP                  "res\\file.bmp"
+
+IDB_FOLDER              BITMAP                  "res\\folder.bmp"
+
+IDB_BATTERY             BITMAP                  "res\\battery.bmp"
+
+IDB_BMP_SAVE            BITMAP                  "res\\bitmap3.bmp"
+
+IDB_BMP_OPEN            BITMAP                  "res\\bmp00001.bmp"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -2318,32 +2442,6 @@ BEGIN
 END
 
 
-/////////////////////////////////////////////////////////////////////////////
-//
-// AFX_DIALOG_LAYOUT
-//
-
-IDD_POSTFLUX_DLG AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_CONFIGURE_SPECTROMETERMODEL AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_CREATE_REFERENCES_DIALOG AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_CALIBRATION_DIALOG AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -2516,6 +2614,17 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 //
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_CONFIGURE_LOCATION AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
 // Menu
 //
 
@@ -2533,17 +2642,6 @@ BEGIN
         MENUITEM "Save Window(s) To File",      ID__SAVEWINDOWTOFILE
         MENUITEM SEPARATOR
     END
-END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// AFX_DIALOG_LAYOUT
-//
-
-IDD_CONFIGURE_LOCATION AFX_DIALOG_LAYOUT
-BEGIN
-    0
 END
 
 #endif    // Neutral (Sys. Default) resources
@@ -2747,6 +2845,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Summarize Flux Data",         279
         MENUITEM "&Ver datos",                  233
+        MENUITEM "Calibrar Espectrometro",      ID_ANALYSIS_CALIBRATESPECTROMETER
     END
     POPUP "&Ayuda"
     BEGIN

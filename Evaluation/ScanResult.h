@@ -17,7 +17,7 @@ namespace Evaluation
 	    or a judgement wheather each evaluated spectrum is judged to be an ok 
 	    spectrum or not. */
 
-	class CScanResult : public BasicScanEvaluationResult
+	class CScanResult : public novac::BasicScanEvaluationResult
 	{
 	public:
 		CScanResult();
@@ -34,7 +34,7 @@ namespace Evaluation
 		// ----------------------------------------------------------------------
 
 		/** Appends the result to the list of calculated results */
-		int AppendResult(const CEvaluationResult &evalRes, const CSpectrumInfo &specInfo);
+		int AppendResult(const novac::CEvaluationResult &evalRes, const novac::CSpectrumInfo &specInfo);
 
 		/** Removes the spectrum number 'specIndex' from the list of calcualted results */
 		int RemoveResult(unsigned int specIndex);
@@ -46,7 +46,7 @@ namespace Evaluation
 		/** Retrieves the evaluation result for spectrum number 
 		    'specIndex' from the list of calculated results.
 				@return false if specIndex is out of bounds... */
-		bool GetResult(unsigned int specIndex, CEvaluationResult& result) const;
+		bool GetResult(unsigned int specIndex, novac::CEvaluationResult& result) const;
 
 		/** Adds spectrum number 'specIndex' into the list of spectra in the .pak -file 
 				which are corrupted and could not be evaluated */
@@ -56,26 +56,26 @@ namespace Evaluation
 		int GetCorruptedNum() const;
 
 		/** Stores the information about the sky-spectrum used */
-		void SetSkySpecInfo(const CSpectrumInfo &skySpecInfo);
+		void SetSkySpecInfo(const novac::CSpectrumInfo& skySpecInfo);
 
 		/** Stores the information about the dark-spectrum used */
-		void SetDarkSpecInfo(const CSpectrumInfo &darkSpecInfo);
+		void SetDarkSpecInfo(const novac::CSpectrumInfo& darkSpecInfo);
 
 		/** Stores the information about the offset-spectrum used */
-		void SetOffsetSpecInfo(const CSpectrumInfo &offsetSpecInfo);
+		void SetOffsetSpecInfo(const novac::CSpectrumInfo& offsetSpecInfo);
 
 		/** Stores the information about the dark-current-spectrum used */
-		void SetDarkCurrentSpecInfo(const CSpectrumInfo &darkCurSpecInfo);
+		void SetDarkCurrentSpecInfo(const novac::CSpectrumInfo &darkCurSpecInfo);
 
 		/** Check the last spectrum point for goodness of fit.
 		    The parameters 'deltaLimit', 'upperLimit' and 'lowerLimit' are for 
 		    development purposes only. */
-		bool CheckGoodnessOfFit(const CSpectrumInfo& info, float chi2Limit = -1, float upperLimit = -1, float lowerLimit = -1);
+		bool CheckGoodnessOfFit(const novac::CSpectrumInfo& info, float chi2Limit = -1, float upperLimit = -1, float lowerLimit = -1);
 
 		/** Check spectrum number 'index' for goodness of fit.
 		    The parameters 'deltaLimit', 'upperLimit' and 'lowerLimit' are for 
 		    development purposes only. */
-		bool CheckGoodnessOfFit(const CSpectrumInfo& info, int index, float chi2Limit = -1, float upperLimit = -1, float lowerLimit = -1);
+		bool CheckGoodnessOfFit(const novac::CSpectrumInfo& info, int index, float chi2Limit = -1, float upperLimit = -1, float lowerLimit = -1);
 
 		/** Gets the offset of the scan. The offset is calculated as the average of the 
 		  three lowest columns values (bad values are skipped). After this function has 
@@ -233,13 +233,13 @@ namespace Evaluation
         bool RemoveMark(unsigned long index, int MARK_FLAG);
 
 		/** Returns a reference to the desired spectrum info-structure */
-		const CSpectrumInfo &GetSpectrumInfo(unsigned long index) const;
+		const novac::CSpectrumInfo &GetSpectrumInfo(unsigned long index) const;
 
 		/** Returns a reference to the spectrum info-structure of the sky-spectrum used */
-		const CSpectrumInfo &GetSkySpectrumInfo() const;
+		const novac::CSpectrumInfo &GetSkySpectrumInfo() const;
 
 		/** Returns a reference to the spectrum info-structure of the dark-spectrum used */
-		const CSpectrumInfo &GetDarkSpectrumInfo() const;
+		const novac::CSpectrumInfo &GetDarkSpectrumInfo() const;
 
 		/** returns the scan angle of evaluated spectrum number 'index'.
 		    @param index - the zero based index into the list of  evaluated spectra */
@@ -252,26 +252,26 @@ namespace Evaluation
 
 		/** returns the time (UMT) when evaluated spectrum number 'index' was started.
 		    @param index - the zero based index into the list of evaluated spectra */
-		const CDateTime *GetStartTime(unsigned long index) const {return (IsValidSpectrumIndex(index)) ? &m_specInfo[index].m_startTime : NULL; }
+		const novac::CDateTime *GetStartTime(unsigned long index) const {return (IsValidSpectrumIndex(index)) ? &m_specInfo[index].m_startTime : NULL; }
 
 		/** returns the time and date (UMT) when evaluated spectrum number 
 		        'index' was started.
 		    @param index - the zero based index into the list of evaluated spectra.
 		    @return true if the index is valid */
-		bool GetStartTime(unsigned long index, CDateTime &time) const;
+		bool GetStartTime(unsigned long index, novac::CDateTime &time) const;
 
 		/** returns the time and date (UMT) when the sky-spectrum was started. */
-		void CScanResult::GetSkyStartTime(CDateTime &t) const;
+		void CScanResult::GetSkyStartTime(novac::CDateTime &t) const;
 
 		/** return the time (UMT) when evaluated spectrum number 'index' was stopped
 		    @param index - the zero based index into the list of evaluated spectra */
-		const CDateTime *GetStopTime(unsigned long index) const {return (IsValidSpectrumIndex(index)) ? &m_specInfo[index].m_stopTime : NULL; }
+		const novac::CDateTime *GetStopTime(unsigned long index) const {return (IsValidSpectrumIndex(index)) ? &m_specInfo[index].m_stopTime : NULL; }
 
 		/** returns the time and date (UMT) when evaluated spectrum number 'index' 
 		        was stopped.
 		    @param index - the zero based index into the list of evaluated spectra.
 		    @return true if the index is valid */
-		bool GetStopTime(unsigned long index, CDateTime &time) const;
+		bool GetStopTime(unsigned long index, novac::CDateTime &time) const;
 
 		/** returns the date (UMT) when the evaluated spectrum number 'index'
 		        was collected

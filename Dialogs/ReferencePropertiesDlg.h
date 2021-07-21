@@ -17,7 +17,7 @@ namespace Dialogs
 		enum { IDD = IDD_REFERENCE_PROPERTIES_DLG };
 
 		// The reference file that we're modifying
-		Evaluation::CReferenceFile *m_ref;
+		novac::CReferenceFile *m_ref;
 
 		/** The tooltip control */
 		CToolTipCtrl m_toolTip;

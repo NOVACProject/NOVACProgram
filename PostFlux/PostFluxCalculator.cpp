@@ -4,6 +4,7 @@
 #include "../Common/Version.h"
 
 using namespace PostFlux;
+using namespace novac;
 
 CPostFluxCalculator::CPostFluxCalculator(void)
 {

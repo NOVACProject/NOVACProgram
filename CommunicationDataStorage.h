@@ -13,7 +13,7 @@ class CCommunicationDataStorage
 	public:
 		CLinkInfo();
 		~CLinkInfo();
-		CDateTime		m_time;
+		novac::CDateTime		m_time;
 		double			m_downloadSpeed;
 		CLinkInfo &operator=(const CLinkInfo &);
 	};
@@ -53,7 +53,7 @@ public:
 	/** Adds one bit of communication information to the list.
 			If the serial equals "FTP" then the information is 
 				tought to be from the ftp-uploading link */
-	void	AddDownloadData(const CString &serial, double linkSpeed, const CDateTime *timeOfDownload = NULL);
+	void	AddDownloadData(const CString &serial, double linkSpeed, const novac::CDateTime *timeOfDownload = NULL);
 
 	/**Add one serial number into the m_serials[]array*/
 	int AddData(const CString &serial);

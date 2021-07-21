@@ -141,10 +141,10 @@ protected:
 	// ----------------- PROTECTED DATA ------------------------------
 
 	/** The date and time the last received scan started */
-	CDateTime	m_lastScanStart;
+	novac::CDateTime	m_lastScanStart;
 
 	/** The date and time of the most recent scan received */
-	CDateTime	m_mostRecentScanStart;
+	novac::CDateTime	m_mostRecentScanStart;
 
 	/** The channel that the last scan used */
 	int				m_lastScanChannel;

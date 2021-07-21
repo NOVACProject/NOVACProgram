@@ -94,7 +94,7 @@ public:
         void Clear();
         
         /** The fit settings that are defined for this spectrometer */
-        Evaluation::CFitWindow fitWindow;
+        novac::CFitWindow fitWindow;
 
         /** The settings for how to get the dark-spectrum */
         Configuration::CDarkSettings m_darkSettings;
@@ -241,7 +241,7 @@ public:
         double tilt;
 
         /** The gps-coordinates for the scanning instrument */
-        CGPSData  gps;
+        novac::CGPSData  gps;
 
         /** The communication settings for the scanning instrument */
         CommunicationSetting comm;

@@ -37,7 +37,7 @@ namespace FileHandler
 				@param result - the evaluation result, can be NULL
 				@param string - will on return be filled with the output line to be written to the evaluation-log.
 				@return SUCCESS - always */
-		static RETURN_CODE FormatEvaluationResult(const CSpectrumInfo *info, const Evaluation::CEvaluationResult *result, double maxIntensity, int nSpecies, CString &string);
+		static RETURN_CODE FormatEvaluationResult(const novac::CSpectrumInfo *info, const novac::CEvaluationResult *result, double maxIntensity, int nSpecies, CString &string);
 
 		// ------------------- PUBLIC DATA -------------------------
 
@@ -60,7 +60,7 @@ namespace FileHandler
 		long    m_curSpecie;;
 
 		/** The additional spectrum information of one spectrum. */
-		CSpectrumInfo m_specInfo;
+		novac::CSpectrumInfo m_specInfo;
 	protected:
 
 		typedef struct LogColumns{
@@ -91,14 +91,14 @@ namespace FileHandler
 		LogColumns m_col;
 
 		/** The result from the evaluation of one spectrum. */
-		Evaluation::CEvaluationResult m_evResult;
+		novac::CEvaluationResult m_evResult;
 
 		/** Reads the header line for the scan information and retrieves which 
 			column represents which value. */
 		void ParseScanHeader(const char szLine[8192]);
 
 		/** Reads and parses the XML-shaped 'scanInfo' header before the scan */
-		void ParseScanInformation(CSpectrumInfo &scanInfo, double &flux, FILE *f);
+		void ParseScanInformation(novac::CSpectrumInfo &scanInfo, double &flux, FILE *f);
 
 		/** Reads and parses the XML-shaped 'fluxInfo' header before the scan */
 		void ParseFluxInformation(CWindField &windField, double &flux, FILE *f);
@@ -116,7 +116,7 @@ namespace FileHandler
 		/** Makes a quick scan through the evaluation-log 
 			to get the start-times of each scan.
 			@return the number of scans in the file */
-		long GetScanStartTimes(CArray<CDateTime*, CDateTime*> &array);
+		long GetScanStartTimes(CArray<novac::CDateTime*, novac::CDateTime*> &array);
 
 		/** Sorts the scans in order of collection */
 		void SortScans();
@@ -126,7 +126,7 @@ namespace FileHandler
 
 		/** Sorts the CDateTime-objects in the given array.
 				Algorithm based on bubble sort (~O(NlogN)) */
-		void SortScanStartTimes(CArray<CDateTime*, CDateTime*> &array, CArray<unsigned int, unsigned int&> &sortOrder);
+		void SortScanStartTimes(CArray<novac::CDateTime*, novac::CDateTime*> &array, CArray<unsigned int, unsigned int&> &sortOrder);
 
 		/** Sorts the CScanResult-objects in the given array.
 				Algorithm based on MergeSort (~O(NlogN)) */

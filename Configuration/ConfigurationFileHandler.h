@@ -82,7 +82,7 @@ namespace FileHandler
     int Parse_Specie(CConfigurationSetting::SpectrometerChannelSetting *curSpec);
 
     /** Parses a shift or squeeze section */
-    int Parse_ShiftOrSqueeze(const CString &label, Evaluation::SHIFT_TYPE &option, double &lowValue, double &highValue);
+    int Parse_ShiftOrSqueeze(const CString &label, novac::SHIFT_TYPE &option, double &lowValue, double &highValue);
 
     /** Parses the 'Reference'-section. */
     int Parse_Reference(CConfigurationSetting::SpectrometerChannelSetting *curChannel);
