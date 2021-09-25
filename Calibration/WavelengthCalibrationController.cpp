@@ -10,13 +10,55 @@
 #include <SpectralEvaluation/File/File.h>
 #include <SpectralEvaluation/File/STDFile.h>
 #include <SpectralEvaluation/File/ScanFileHandler.h>
+#include <SpectralEvaluation/Calibration/InstrumentCalibration.h>
+#include <SpectralEvaluation/Calibration/Correspondence.h>
 #include <SpectralEvaluation/Calibration/WavelengthCalibration.h>
 #include <SpectralEvaluation/Calibration/InstrumentLineShapeEstimation.h>
 #include <SpectralEvaluation/Calibration/FraunhoferSpectrumGeneration.h>
 #include <SpectralEvaluation/Interpolation.h>
-
-// TODO: It should be possible to remove this header...
 #include <SpectralEvaluation/Calibration/WavelengthCalibrationByRansac.h>
+#include <SpectralEvaluation/VectorUtils.h>
+
+// ----------- Free functions used to assist -----------
+std::string ToString(double value)
+{
+    char buffer[64];
+    sprintf(buffer, "%0.3lf", value);
+    return std::string(buffer);
+}
+
+std::vector<std::pair<std::string, std::string>> GetFunctionDescription(const novac::ParametricInstrumentLineShape* lineShapeFunction)
+{
+    std::vector<std::pair<std::string, std::string>> result;
+
+    if (lineShapeFunction == nullptr)
+    {
+        return result;
+    }
+    else if (lineShapeFunction->Type() == novac::InstrumentLineShapeFunctionType::Gaussian)
+    {
+        const auto func = static_cast<const novac::GaussianLineShape*>(lineShapeFunction);
+        result.push_back(std::make_pair("type", "Gaussian"));
+        result.push_back(std::make_pair("sigma", ToString(func->sigma)));
+        result.push_back(std::make_pair("fwhm", ToString(func->Fwhm())));
+    }
+    else if (lineShapeFunction->Type() == novac::InstrumentLineShapeFunctionType::SuperGaussian)
+    {
+        const auto func = static_cast<const novac::SuperGaussianLineShape*>(lineShapeFunction);
+        result.push_back(std::make_pair("type", "Super Gaussian"));
+        result.push_back(std::make_pair("w", ToString(func->w)));
+        result.push_back(std::make_pair("k", ToString(func->k)));
+        result.push_back(std::make_pair("fwhm", ToString(func->Fwhm())));
+    }
+    else
+    {
+        // unknown type...
+    }
+
+    return result;
+}
+
+// -------------------- WavelengthCalibrationController --------------------
 
 WavelengthCalibrationController::WavelengthCalibrationController()
     : m_calibrationDebug(0U)
@@ -25,10 +67,8 @@ WavelengthCalibrationController::WavelengthCalibrationController()
 
 WavelengthCalibrationController::~WavelengthCalibrationController()
 {
-    if (m_measuredInstrumentLineShapeSpectrum != nullptr)
-    {
-        delete m_measuredInstrumentLineShapeSpectrum;
-    }
+    this->m_initialCalibration.release();
+    this->m_resultingCalibration.release();
 }
 
 /// <summary>
@@ -54,7 +94,7 @@ void CreateGuessForInstrumentLineShape(const std::string& solarSpectrumFile, con
     std::vector<std::pair<std::string, double>> noCrossSections;
     novac::FraunhoferSpectrumGeneration fraunhoferSpectrumGen{ solarSpectrumFile, noCrossSections };
 
-    novac::InstrumentLineShapeEstimation ilsEstimation{ settings.initialPixelToWavelengthMapping };
+    novac::InstrumentLineShapeEstimationFromKeypointDistance ilsEstimation{ settings.initialPixelToWavelengthMapping };
 
     double resultInstrumentFwhm;
     ilsEstimation.EstimateInstrumentLineShape(fraunhoferSpectrumGen, measuredSpectrum, settings.initialInstrumentLineShape, resultInstrumentFwhm);
@@ -91,22 +131,15 @@ void WavelengthCalibrationController::RunCalibration()
 
     if (novac::GetFileExtension(this->m_initialCalibrationFile).compare(".std") == 0)
     {
-        if (m_measuredInstrumentLineShapeSpectrum != nullptr)
-        {
-            delete m_measuredInstrumentLineShapeSpectrum;
-        }
-
-        this->m_measuredInstrumentLineShapeSpectrum = new novac::CSpectrum();
-        if (!novac::ReadInstrumentCalibration(this->m_initialCalibrationFile, *m_measuredInstrumentLineShapeSpectrum, settings.initialPixelToWavelengthMapping))
+        this->m_initialCalibration = std::make_unique<novac::InstrumentCalibration>();
+        if (!novac::ReadInstrumentCalibration(this->m_initialCalibrationFile, *m_initialCalibration))
         {
             throw std::invalid_argument("Failed to read the instrument calibration file");
         }
 
-        // Convert CSpectrum to CCrossSectionData
-        novac::CCrossSectionData measuredInstrumentLineShape(*m_measuredInstrumentLineShapeSpectrum);
-
-        settings.initialInstrumentLineShape = measuredInstrumentLineShape;
-        settings.estimateInstrumentLineShape = novac::InstrumentLineshapeEstimationOption::None;
+        settings.initialPixelToWavelengthMapping = this->m_initialCalibration->pixelToWavelengthMapping;
+        settings.initialInstrumentLineShape.m_crossSection = this->m_initialCalibration->instrumentLineShape;
+        settings.initialInstrumentLineShape.m_waveLength = this->m_initialCalibration->instrumentLineShapeGrid;
     }
     else
     {
@@ -115,14 +148,49 @@ void WavelengthCalibrationController::RunCalibration()
         if (this->m_initialLineShapeFile.size() > 0)
         {
             ReadInstrumentLineShape(m_initialLineShapeFile, settings);
-            this->m_measuredInstrumentLineShapeSpectrum = new novac::CSpectrum(settings.initialInstrumentLineShape);
         }
         else
         {
             CreateGuessForInstrumentLineShape(this->m_solarSpectrumFile, measuredSpectrum, settings);
-            this->m_measuredInstrumentLineShapeSpectrum = new novac::CSpectrum(settings.initialInstrumentLineShape);
         }
     }
+
+    // Normalize the initial instrument line shape
+    Normalize(this->m_initialCalibration->instrumentLineShape);
+
+    if (this->m_instrumentLineShapeFitOption == WavelengthCalibrationController::InstrumentLineShapeFitOption::SuperGaussian)
+    {
+        if (this->m_instrumentLineShapeFitRegion.first > this->m_instrumentLineShapeFitRegion.second)
+        {
+            std::stringstream msg;
+            msg << "Invalid region for fitting the instrument line shape ";
+            msg << "(" << this->m_instrumentLineShapeFitRegion.first << ", " << this->m_instrumentLineShapeFitRegion.second << ") [nm]. ";
+            msg << "From must be smaller than To";
+            throw std::invalid_argument(msg.str());
+        }
+        if (this->m_instrumentLineShapeFitRegion.first < settings.initialPixelToWavelengthMapping.front() ||
+            this->m_instrumentLineShapeFitRegion.second > settings.initialPixelToWavelengthMapping.back())
+        {
+            std::stringstream msg;
+            msg << "Invalid region for fitting the instrument line shape ";
+            msg << "(" << this->m_instrumentLineShapeFitRegion.first << ", " << this->m_instrumentLineShapeFitRegion.second << ") [nm]. ";
+            msg << "Region does not overlap initial pixel to wavelength calibration: ";
+            msg << "(" << settings.initialPixelToWavelengthMapping.front() << ", " << settings.initialPixelToWavelengthMapping.back() << ") [nm]. ";
+            throw std::invalid_argument(msg.str());
+        }
+
+        settings.estimateInstrumentLineShape = novac::InstrumentLineshapeEstimationOption::SuperGaussian;
+        settings.estimateInstrumentLineShapeWavelengthRegion.first = this->m_instrumentLineShapeFitRegion.first;
+        settings.estimateInstrumentLineShapeWavelengthRegion.second = this->m_instrumentLineShapeFitRegion.second;
+    }
+    else
+    {
+        settings.estimateInstrumentLineShape = novac::InstrumentLineshapeEstimationOption::None;
+    }
+
+    // Clear the previous result
+    this->m_resultingCalibration = std::make_unique<novac::InstrumentCalibration>();
+
 
     // So far no cross sections provided...
 
@@ -130,8 +198,21 @@ void WavelengthCalibrationController::RunCalibration()
     auto result = setup.DoWavelengthCalibration(measuredSpectrum);
 
     // Copy out the result
-    this->m_resultingPixelToWavelengthMapping = result.pixelToWavelengthMapping;
-    this->m_resultingPixelToWavelengthMappingCoefficients = result.pixelToWavelengthMappingCoefficients;
+    this->m_resultingCalibration->pixelToWavelengthMapping = result.pixelToWavelengthMapping;
+    this->m_resultingCalibration->pixelToWavelengthPolynomial = result.pixelToWavelengthMappingCoefficients;
+
+    if (result.estimatedInstrumentLineShape.GetSize() > 0)
+    {
+        this->m_resultingCalibration->instrumentLineShape = result.estimatedInstrumentLineShape.m_crossSection;
+        this->m_resultingCalibration->instrumentLineShapeGrid = result.estimatedInstrumentLineShape.m_waveLength;
+        this->m_resultingCalibration->instrumentLineShapeCenter = 0.5 * (this->m_instrumentLineShapeFitRegion.first + this->m_instrumentLineShapeFitRegion.second);
+    }
+
+    if (result.estimatedInstrumentLineShapeParameters != nullptr)
+    {
+        this->m_instrumentLineShapeParameterDescriptions = GetFunctionDescription(&(*result.estimatedInstrumentLineShapeParameters));
+        this->m_resultingCalibration->instrumentLineShapeParameter = result.estimatedInstrumentLineShapeParameters->Clone();
+    }
 
     // Also copy out some debug information, which makes it possible for the user to inspect the calibration
     {
@@ -185,39 +266,48 @@ std::pair<std::string, std::string> FormatProperty(const char* name, double valu
 
 void WavelengthCalibrationController::SaveResultAsStd(const std::string& filename)
 {
-    // Get the peak itself
-    size_t startIdx = 0; // TODO: Set this value to something more reasonable
-
-    // Additional information about the spectrum
-    novac::CSTDFile::ExtendedFormatInformation extendedFileInfo;
-    extendedFileInfo.MinChannel = static_cast<int>(startIdx);
-    extendedFileInfo.MaxChannel = static_cast<int>(startIdx + m_measuredInstrumentLineShapeSpectrum->m_length);
-    extendedFileInfo.MathLow = extendedFileInfo.MinChannel;
-    extendedFileInfo.MathHigh = extendedFileInfo.MaxChannel;
-    novac::LinearInterpolation(m_resultingPixelToWavelengthMapping, 0.5 * m_measuredInstrumentLineShapeSpectrum->m_length, extendedFileInfo.Marker);
-    extendedFileInfo.calibrationPolynomial = this->m_resultingPixelToWavelengthMappingCoefficients;
-
-    // Create the spectrum to save from the instrument line-shape + the 
-    std::unique_ptr<novac::CSpectrum> spectrumToSave;
+    if (this->m_resultingCalibration->instrumentLineShape.size() > 0)
     {
-        // Extend the measured spectrum line shape into a full spectrum
-        std::vector<double> extendedPeak(m_resultingPixelToWavelengthMapping.size(), 0.0);
-        std::copy(m_measuredInstrumentLineShapeSpectrum->m_data, m_measuredInstrumentLineShapeSpectrum->m_data + m_measuredInstrumentLineShapeSpectrum->m_length, extendedPeak.begin() + startIdx);
-
-        spectrumToSave = std::make_unique<novac::CSpectrum>(m_resultingPixelToWavelengthMapping, extendedPeak);
+        // We have fitted both an instrument line shape and a pixel-to-wavelength mapping.
+        //  I.e. m_resultingCalibration contains a full calibration to be saved.
+        if (!novac::SaveInstrumentCalibration(filename, *m_resultingCalibration))
+        {
+            throw std::invalid_argument("Failed to save the resulting instrument calibration file");
+        }
+        return;
     }
 
-    // spectrumToSave->m_info = this->m_inputspectrumInformation;
+    // Create an instrument calibration, taking the instrument line shape from the initial setup 
+    //  and the pixel-to-wavelength mapping from the calibration result
+    novac::InstrumentCalibration mixedCalibration;
+    mixedCalibration.pixelToWavelengthMapping = this->m_resultingCalibration->pixelToWavelengthMapping;
+    mixedCalibration.pixelToWavelengthPolynomial = this->m_resultingCalibration->pixelToWavelengthPolynomial;
 
-    novac::CSTDFile::WriteSpectrum(*spectrumToSave, filename, extendedFileInfo);
+    mixedCalibration.instrumentLineShape = this->m_initialCalibration->instrumentLineShape;
+    mixedCalibration.instrumentLineShapeGrid = this->m_initialCalibration->instrumentLineShapeGrid;
+    mixedCalibration.instrumentLineShapeCenter = this->m_initialCalibration->instrumentLineShapeCenter;
+
+    if (this->m_initialCalibration->instrumentLineShapeParameter != nullptr)
+    {
+        mixedCalibration.instrumentLineShapeParameter = this->m_initialCalibration->instrumentLineShapeParameter->Clone();
+    }
+
+    if (!novac::SaveInstrumentCalibration(filename, mixedCalibration))
+    {
+        throw std::invalid_argument("Failed to save the resulting instrument calibration file");
+    }
 }
 
 void WavelengthCalibrationController::SaveResultAsClb(const std::string& filename)
 {
-    novac::SaveDataToFile(filename, this->m_resultingPixelToWavelengthMapping);
+    novac::SaveDataToFile(filename, m_resultingCalibration->pixelToWavelengthMapping);
 }
 
 void WavelengthCalibrationController::SaveResultAsSlf(const std::string& filename)
 {
-    novac::SaveCrossSectionFile(filename, *m_measuredInstrumentLineShapeSpectrum);
+    novac::CCrossSectionData instrumentLineShape;
+    instrumentLineShape.m_crossSection = this->m_resultingCalibration->instrumentLineShape;
+    instrumentLineShape.m_waveLength = this->m_resultingCalibration->instrumentLineShapeGrid;
+
+    novac::SaveCrossSectionFile(filename, instrumentLineShape);
 }

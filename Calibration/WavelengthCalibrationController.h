@@ -6,6 +6,7 @@
 namespace novac
 {
 class CSpectrum;
+class InstrumentCalibration;
 }
 
 class WavelengthCalibrationController
@@ -13,6 +14,12 @@ class WavelengthCalibrationController
 public:
     WavelengthCalibrationController();
     ~WavelengthCalibrationController();
+
+    enum class InstrumentLineShapeFitOption
+    {
+        None = 0,
+        SuperGaussian = 1
+    };
 
     /// <summary>
     /// The full path to the spectrum to calibrate (should be a .pak file)
@@ -38,19 +45,32 @@ public:
     std::string m_initialLineShapeFile;
 
     /// <summary>
-    /// Output: the final estimate for the pixel to wavelength mapping.
+    /// The option for if an instrument line shape should be fitted as well during
+    /// the retrieval of the pixel-to-wavelength calibration.
     /// </summary>
-    std::vector<double> m_resultingPixelToWavelengthMapping;
+    InstrumentLineShapeFitOption m_instrumentLineShapeFitOption;
 
     /// <summary>
-    /// Output: the coefficients of the pixel-to-wavelength mapping polynomial
+    /// The wavelength region in which the instrument line shape should be fitted (in nm).
     /// </summary>
-    std::vector<double> m_resultingPixelToWavelengthMappingCoefficients;
+    std::pair<double, double> m_instrumentLineShapeFitRegion;
 
     /// <summary>
-    /// If we have read the instrument line shape from file then the result is saved here
+    /// This is the initial calibration, used as a starting point for the calibration routine.
+    /// Must be set before calling RunCalibration().
     /// </summary>
-    novac::CSpectrum* m_measuredInstrumentLineShapeSpectrum = nullptr;
+    std::unique_ptr<novac::InstrumentCalibration> m_initialCalibration;
+
+    /// <summary>
+    /// This is the result of the wavelength calibration.
+    /// Can only be set after calling RunCalibration().
+    /// </summary>
+    std::unique_ptr<novac::InstrumentCalibration> m_resultingCalibration;
+
+    /// <summary>
+    /// User friendly description of the fitted parameters for the instrument line shape function.
+    /// </summary>
+    std::vector<std::pair<std::string, std::string>> m_instrumentLineShapeParameterDescriptions;
 
     /// <summary>
     /// If the calibration fails, for some reason, then this message should be set to indicate why.

@@ -10,6 +10,7 @@
 #include "OpenInstrumentCalibrationDialog.h"
 #include <fstream>
 #include <SpectralEvaluation/File/File.h>
+#include <SpectralEvaluation/Calibration/InstrumentCalibration.h>
 
 // CCalibratePixelToWavelengthDialog dialog
 
@@ -251,8 +252,8 @@ void CCalibratePixelToWavelengthDialog::DrawPolynomialAndInliers()
     // the calibration polynomial
     this->m_graph.SetPlotColor(RGB(255, 0, 0));
     this->m_graph.Plot(
-        m_controller->m_resultingPixelToWavelengthMapping.data(),
-        static_cast<int>(m_controller->m_resultingPixelToWavelengthMapping.size()),
+        m_controller->m_resultingCalibration->pixelToWavelengthMapping.data(),
+        static_cast<int>(m_controller->m_resultingCalibration->pixelToWavelengthMapping.size()),
         Graph::CGraphCtrl::PLOT_CONNECTED | Graph::CGraphCtrl::PLOT_FIXED_AXIS);
 
     // outliers
@@ -313,7 +314,7 @@ void CCalibratePixelToWavelengthDialog::DrawFraunhoferSpectrumAndKeypoints()
     // the Fraunhofer spectrum
     this->m_graph.SetPlotColor(RGB(0, 255, 0));
     this->m_graph.XYPlot(
-        m_controller->m_resultingPixelToWavelengthMapping.data(),
+        m_controller->m_resultingCalibration->pixelToWavelengthMapping.data(),
         m_controller->m_calibrationDebug.fraunhoferSpectrum.data(),
         static_cast<int>(m_controller->m_calibrationDebug.fraunhoferSpectrum.size()),
         Graph::CGraphCtrl::PLOT_CONNECTED);
@@ -346,8 +347,8 @@ void CCalibratePixelToWavelengthDialog::DrawSpectraAndInliers()
     // the calibration polynomial
     this->m_graph.SetPlotColor(RGB(255, 0, 0));
     this->m_graph.Plot(
-        m_controller->m_resultingPixelToWavelengthMapping.data(),
-        static_cast<int>(m_controller->m_resultingPixelToWavelengthMapping.size()),
+        m_controller->m_resultingCalibration->pixelToWavelengthMapping.data(),
+        static_cast<int>(m_controller->m_resultingCalibration->pixelToWavelengthMapping.size()),
         Graph::CGraphCtrl::PLOT_CONNECTED);
 
     // inliers
@@ -505,9 +506,9 @@ void CCalibratePixelToWavelengthDialog::OnClickedButtonSave()
 {
     try
     {
-        if (m_controller->m_measuredInstrumentLineShapeSpectrum == nullptr)
+        if (m_controller->m_resultingCalibration == nullptr)
         {
-            throw std::exception("Cannot find the instrument line shape");
+            throw std::exception("Cannot find the fitted result");
         }
 
         // Save the instrument line shape and the pixel-to-wavelength calibration to file
