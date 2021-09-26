@@ -74,33 +74,35 @@ WavelengthCalibrationController::~WavelengthCalibrationController()
 /// <summary>
 /// Reads and parses m_initialLineShapeFile and saves the result to the provided settings
 /// </summary>
-void ReadInstrumentLineShape(const std::string& initialLineShapeFile, novac::WavelengthCalibrationSettings& settings)
+void ReadInstrumentLineShape(const std::string& initialLineShapeFile, novac::InstrumentCalibration& calibration)
 {
     novac::CCrossSectionData measuredInstrumentLineShape;
     if (!novac::ReadCrossSectionFile(initialLineShapeFile, measuredInstrumentLineShape))
     {
         throw std::invalid_argument("Cannot read the provided instrument lineshape file");
     }
-    settings.initialInstrumentLineShape = measuredInstrumentLineShape;
-    settings.estimateInstrumentLineShape = novac::InstrumentLineshapeEstimationOption::None;
+
+    calibration.instrumentLineShape = measuredInstrumentLineShape.m_crossSection;
+    calibration.instrumentLineShapeGrid = measuredInstrumentLineShape.m_waveLength;
 }
 
 /// <summary>
 /// Guesses for an instrment line shape from the measured spectrum. Useful if no measured instrument line shape exists
 /// </summary>
-void CreateGuessForInstrumentLineShape(const std::string& solarSpectrumFile, const novac::CSpectrum& measuredSpectrum, novac::WavelengthCalibrationSettings& settings)
+void CreateGuessForInstrumentLineShape(const std::string& solarSpectrumFile, const novac::CSpectrum& measuredSpectrum, novac::InstrumentCalibration& calibration)
 {
     // The user has not supplied an instrument-line-shape, create a guess for one.
     std::vector<std::pair<std::string, double>> noCrossSections;
     novac::FraunhoferSpectrumGeneration fraunhoferSpectrumGen{ solarSpectrumFile, noCrossSections };
 
-    novac::InstrumentLineShapeEstimationFromKeypointDistance ilsEstimation{ settings.initialPixelToWavelengthMapping };
+    novac::InstrumentLineShapeEstimationFromKeypointDistance ilsEstimation{ calibration.pixelToWavelengthMapping };
 
     double resultInstrumentFwhm;
-    ilsEstimation.EstimateInstrumentLineShape(fraunhoferSpectrumGen, measuredSpectrum, settings.initialInstrumentLineShape, resultInstrumentFwhm);
+    novac::CCrossSectionData estimatedInstrumentLineShape;
+    ilsEstimation.EstimateInstrumentLineShape(fraunhoferSpectrumGen, measuredSpectrum, estimatedInstrumentLineShape, resultInstrumentFwhm);
 
-    // no need to estimate further (or is it?)
-    settings.estimateInstrumentLineShape = novac::InstrumentLineshapeEstimationOption::None;
+    calibration.instrumentLineShape = estimatedInstrumentLineShape.m_crossSection;
+    calibration.instrumentLineShapeGrid = estimatedInstrumentLineShape.m_waveLength;
 }
 
 void WavelengthCalibrationController::RunCalibration()
@@ -129,31 +131,32 @@ void WavelengthCalibrationController::RunCalibration()
         measuredSpectrum.Sub(darkSpectrum);
     }
 
+    // Read the initial callibration
+    this->m_initialCalibration = std::make_unique<novac::InstrumentCalibration>();
     if (novac::GetFileExtension(this->m_initialCalibrationFile).compare(".std") == 0)
     {
-        this->m_initialCalibration = std::make_unique<novac::InstrumentCalibration>();
         if (!novac::ReadInstrumentCalibration(this->m_initialCalibrationFile, *m_initialCalibration))
         {
             throw std::invalid_argument("Failed to read the instrument calibration file");
         }
-
-        settings.initialPixelToWavelengthMapping = this->m_initialCalibration->pixelToWavelengthMapping;
-        settings.initialInstrumentLineShape.m_crossSection = this->m_initialCalibration->instrumentLineShape;
-        settings.initialInstrumentLineShape.m_waveLength = this->m_initialCalibration->instrumentLineShapeGrid;
     }
     else
     {
-        settings.initialPixelToWavelengthMapping = novac::GetPixelToWavelengthMappingFromFile(this->m_initialCalibrationFile);
+        this->m_initialCalibration->pixelToWavelengthMapping = novac::GetPixelToWavelengthMappingFromFile(this->m_initialCalibrationFile);
 
         if (this->m_initialLineShapeFile.size() > 0)
         {
-            ReadInstrumentLineShape(m_initialLineShapeFile, settings);
+            ReadInstrumentLineShape(m_initialLineShapeFile, *m_initialCalibration);
         }
         else
         {
-            CreateGuessForInstrumentLineShape(this->m_solarSpectrumFile, measuredSpectrum, settings);
+            CreateGuessForInstrumentLineShape(this->m_solarSpectrumFile, measuredSpectrum, *m_initialCalibration);
         }
     }
+    settings.initialPixelToWavelengthMapping = this->m_initialCalibration->pixelToWavelengthMapping;
+    settings.initialInstrumentLineShape.m_crossSection = this->m_initialCalibration->instrumentLineShape;
+    settings.initialInstrumentLineShape.m_waveLength = this->m_initialCalibration->instrumentLineShapeGrid;
+
 
     // Normalize the initial instrument line shape
     Normalize(this->m_initialCalibration->instrumentLineShape);
