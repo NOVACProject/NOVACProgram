@@ -71,38 +71,6 @@ CScanResult::CScanResult(const CScanResult& other)
     this->m_measurementMode = other.m_measurementMode;
 }
 
-CScanResult::~CScanResult(void)
-{
-    m_spec.clear();
-    m_specInfo.clear();
-    m_corruptedSpectra.clear();
-}
-
-/** Intializes the memory arrays to have, initially, space for
-        'specNum' spectra. */
-void CScanResult::InitializeArrays(long specNum) {
-    if (specNum < 0 || specNum > 1024) {
-        return;
-    }
-
-    m_spec.reserve(specNum);
-    m_specInfo.reserve(specNum);
-}
-
-/** Appends the result to the list of calculated results */
-int CScanResult::AppendResult(const CEvaluationResult &evalRes, const CSpectrumInfo &specInfo) {
-
-    // Append the evaluationresult to the end of the 'm_spec'-vector
-    m_spec.push_back(CEvaluationResult(evalRes));
-
-    // Append the spectral information to the end of the 'm_specInfo'-vector
-    m_specInfo.push_back(CSpectrumInfo(specInfo));
-
-    // Increase the numbers of spectra in this result-set.
-    ++m_specNum;
-    return 0;
-}
-
 bool CScanResult::GetResult(unsigned int specIndex, CEvaluationResult& result) const
 {
     if (specIndex >= m_specNum)
@@ -126,38 +94,23 @@ int CScanResult::GetCorruptedNum() const
     return (int)m_corruptedSpectra.size();
 }
 
-/** Removes the spectrum number 'specIndex' from the list of calcualted results */
-int CScanResult::RemoveResult(unsigned int specIndex)
-{
-    if (specIndex >= m_specNum)
-        return 1; // not a valid index
-
-    // Remove the desired value
-    m_specInfo.erase(begin(m_specInfo) + specIndex);
-
-    // Decrease the number of values in the list
-    m_specNum -= 1;
-
-    return 0;
-}
-
 /** Stores the information about the sky-spectrum used */
-void CScanResult::SetSkySpecInfo(const CSpectrumInfo &skySpecInfo) {
+void CScanResult::SetSkySpecInfo(const CSpectrumInfo& skySpecInfo) {
     this->m_skySpecInfo = skySpecInfo;
 }
 
 /** Stores the information about the dark-spectrum used */
-void CScanResult::SetDarkSpecInfo(const CSpectrumInfo &darkSpecInfo) {
+void CScanResult::SetDarkSpecInfo(const CSpectrumInfo& darkSpecInfo) {
     this->m_darkSpecInfo = darkSpecInfo;
 }
 
 /** Stores the information about the offset-spectrum used */
-void CScanResult::SetOffsetSpecInfo(const CSpectrumInfo &offsetSpecInfo) {
+void CScanResult::SetOffsetSpecInfo(const CSpectrumInfo& offsetSpecInfo) {
     this->m_offsetSpecInfo = offsetSpecInfo;
 }
 
 /** Stores the information about the dark-current-spectrum used */
-void CScanResult::SetDarkCurrentSpecInfo(const CSpectrumInfo &darkCurSpecInfo) {
+void CScanResult::SetDarkCurrentSpecInfo(const CSpectrumInfo& darkCurSpecInfo) {
     this->m_darkCurSpecInfo = darkCurSpecInfo;
 }
 
@@ -177,7 +130,7 @@ bool CScanResult::CheckGoodnessOfFit(const CSpectrumInfo& info, int index, float
     return m_spec[index].CheckGoodnessOfFit(info, chi2Limit, upperLimit, lowerLimit);
 }
 
-int CScanResult::CalculateOffset(const std::string &specie)
+int CScanResult::CalculateOffset(const std::string& specie)
 {
     if (m_specNum < 0)
         return 1;
@@ -211,7 +164,7 @@ int CScanResult::CalculateOffset(const std::string &specie)
     return 0;
 }
 
-int CScanResult::GetSpecieIndex(const std::string &specie) const
+int CScanResult::GetSpecieIndex(const std::string& specie) const
 {
     if (m_specNum <= 0) // <-- if there are no spectra, there can be no species
         return -1;
@@ -240,7 +193,7 @@ double CScanResult::FullDynamicRange() const
 }
 
 
-int CScanResult::CalculateFlux(const std::string &specie, const CWindField &wind, double compass, double coneAngle, double tilt) {
+int CScanResult::CalculateFlux(const std::string& specie, const CWindField& wind, double compass, double coneAngle, double tilt) {
 
     // If this is a not a flux measurement, then don't calculate any flux
     if (!IsFluxMeasurement())
@@ -260,9 +213,9 @@ int CScanResult::CalculateFlux(const std::string &specie, const CWindField &wind
     }
 
     // pull out the good data points out of the measurement and ignore the bad points
-    double *scanAngle = new double[m_specNum];
-    double *scanAngle2 = new double[m_specNum];
-    double *column = new double[m_specNum];
+    double* scanAngle = new double[m_specNum];
+    double* scanAngle2 = new double[m_specNum];
+    double* column = new double[m_specNum];
     unsigned int nDataPoints = 0;
     for (unsigned long i = 0; i < m_specNum; ++i) {
         if (m_spec[i].IsBad() || m_spec[i].IsDeleted())
@@ -327,7 +280,7 @@ int CScanResult::CalculateFlux(const std::string &specie, const CWindField &wind
 /** Tries to find a plume in the last scan result. If the plume is found
         this function returns true. The result of the calculations is stored in
         the member-variables 'm_plumeCentre', 'm_plumeCompleteness' and m_plumeEdge[0] and m_plumeEdge[1] */
-bool CScanResult::CalculatePlumeCentre(const std::string &specie) {
+bool CScanResult::CalculatePlumeCentre(const std::string& specie) {
     double plumeCentre_alpha, plumeCentre_phi, plumeCompleteness;
     return CalculatePlumeCentre(specie, plumeCentre_alpha, plumeCentre_phi, plumeCompleteness, m_plumeEdge[0], m_plumeEdge[1]);
 }
@@ -335,7 +288,7 @@ bool CScanResult::CalculatePlumeCentre(const std::string &specie) {
 /** Tries to find a plume in the last scan result. If the plume is found
         this function returns true, and the centre of the plume (in scanAngles)
         is given in 'plumeCentre' */
-bool CScanResult::CalculatePlumeCentre(const std::string &specie, double &plumeCentre_alpha, double &plumeCentre_phi, double &plumeCompleteness, double &plumeEdge_low, double &plumeEdge_high) {
+bool CScanResult::CalculatePlumeCentre(const std::string& specie, double& plumeCentre_alpha, double& plumeCentre_phi, double& plumeCompleteness, double& plumeEdge_low, double& plumeEdge_high) {
     m_plumeCentre[0] = -999.0; // notify that the plume-centre position is unknown
     m_plumeCentre[1] = -999.0; // notify that the plume-centre position is unknown
     m_plumeCompleteness = -999.0;
@@ -467,7 +420,7 @@ bool CScanResult::CalculateWindDirection(double plumeCentre_alpha, double plumeH
 }
 
 /** Calculates the maximum good column value in the scan, corrected for the offset */
-double CScanResult::GetMaxColumn(const std::string &specie) const {
+double CScanResult::GetMaxColumn(const std::string& specie) const {
     double maxColumn = 0.0;
 
     // get the specie index
@@ -488,7 +441,7 @@ double CScanResult::GetMaxColumn(const std::string &specie) const {
 }
 
 /** Returns the calculated plume edges */
-void CScanResult::GetCalculatedPlumeEdges(double &lowEdge, double &highEdge) const {
+void CScanResult::GetCalculatedPlumeEdges(double& lowEdge, double& highEdge) const {
     lowEdge = m_plumeEdge[0];
     highEdge = m_plumeEdge[1];
 }
@@ -549,23 +502,23 @@ double CScanResult::GetFitParameter(unsigned long specIndex, unsigned long speci
     }
 }
 
-const CSpectrumInfo &CScanResult::GetSpectrumInfo(unsigned long index) const {
+const CSpectrumInfo& CScanResult::GetSpectrumInfo(unsigned long index) const {
     return m_specInfo[index];
 }
 
 /** Returns a reference to the spectrum info-structure of the sky-spectrum used */
-const CSpectrumInfo &CScanResult::GetSkySpectrumInfo() const {
+const CSpectrumInfo& CScanResult::GetSkySpectrumInfo() const {
     return m_skySpecInfo;
 }
 
 /** Returns a reference to the spectrum info-structure of the dark-spectrum used */
-const CSpectrumInfo &CScanResult::GetDarkSpectrumInfo() const {
+const CSpectrumInfo& CScanResult::GetDarkSpectrumInfo() const {
     return m_darkSpecInfo;
 }
 
 
 /** Assignment operator */
-CScanResult &CScanResult::operator=(const CScanResult &s2) {
+CScanResult& CScanResult::operator=(const CScanResult& s2) {
     // The calculated flux and offset
     this->m_flux = s2.m_flux;
     this->m_offset = s2.m_offset;
@@ -628,7 +581,7 @@ bool CScanResult::GetDate(unsigned long index, unsigned short date[3]) const {
 /** Returns the latitude of the system */
 double	CScanResult::GetLatitude() const {
     for (unsigned long k = 0; k < m_specNum; ++k) {
-        const CSpectrumInfo &info = m_specInfo.at(k);
+        const CSpectrumInfo& info = m_specInfo.at(k);
         if (fabs(info.m_gps.m_latitude) > 1e-2)
             return info.m_gps.m_latitude;
     }
@@ -638,7 +591,7 @@ double	CScanResult::GetLatitude() const {
 /** Returns the longitude of the system */
 double	CScanResult::GetLongitude() const {
     for (unsigned long k = 0; k < m_specNum; ++k) {
-        const CSpectrumInfo &info = m_specInfo.at(k);
+        const CSpectrumInfo& info = m_specInfo.at(k);
         if (fabs(info.m_gps.m_longitude) > 1e-2)
             return info.m_gps.m_longitude;
     }
@@ -647,7 +600,7 @@ double	CScanResult::GetLongitude() const {
 /** Returns the altitude of the system */
 double	CScanResult::GetAltitude() const {
     for (unsigned long k = 0; k < m_specNum; ++k) {
-        const CSpectrumInfo &info = m_specInfo.at(k);
+        const CSpectrumInfo& info = m_specInfo.at(k);
         if (fabs(info.m_gps.m_altitude) > 1e-2)
             return info.m_gps.m_altitude;
     }
@@ -659,7 +612,7 @@ double	CScanResult::GetCompass() const {
     if (m_specNum == 0)
         return 0.0;
 
-    const CSpectrumInfo &info = m_specInfo.at(0);
+    const CSpectrumInfo& info = m_specInfo.at(0);
     return info.m_compass;
 }
 
@@ -668,7 +621,7 @@ float	CScanResult::GetBatteryVoltage() const {
     if (m_specNum == 0)
         return 0.0;
 
-    const CSpectrumInfo &info = m_specInfo.at(0);
+    const CSpectrumInfo& info = m_specInfo.at(0);
     return info.m_batteryVoltage;
 }
 
@@ -677,7 +630,7 @@ double	CScanResult::GetConeAngle() const {
     if (m_specNum == 0)
         return 90.0;
 
-    const CSpectrumInfo &info = m_specInfo.at(0);
+    const CSpectrumInfo& info = m_specInfo.at(0);
     return info.m_coneAngle;
 }
 
@@ -686,7 +639,7 @@ double	CScanResult::GetPitch() const {
     if (m_specNum == 0)
         return 90.0;
 
-    const CSpectrumInfo &info = m_specInfo.at(0);
+    const CSpectrumInfo& info = m_specInfo.at(0);
     return info.m_pitch;
 }
 
@@ -695,7 +648,7 @@ double	CScanResult::GetRoll() const {
     if (m_specNum == 0)
         return 90.0;
 
-    const CSpectrumInfo &info = m_specInfo.at(0);
+    const CSpectrumInfo& info = m_specInfo.at(0);
     return info.m_roll;
 }
 
@@ -704,14 +657,14 @@ std::string CScanResult::GetName(int index) const {
     if (!IsValidSpectrumIndex(index))
         return "";
 
-    const CSpectrumInfo &info = m_specInfo.at(index);
+    const CSpectrumInfo& info = m_specInfo.at(index);
     return info.m_name;
 }
 
 /** Returns the serial-number of the spectrometer that collected this scan */
 std::string CScanResult::GetSerial() const {
     for (unsigned long k = 0; k < m_specNum; ++k) {
-        const CSpectrumInfo &info = m_specInfo.at(k);
+        const CSpectrumInfo& info = m_specInfo.at(k);
         if (info.m_device.size() > 0)
             return info.m_device;
     }
@@ -947,7 +900,7 @@ bool CScanResult::IsCompositionMeasurement() const {
     return false;
 }
 
-bool CScanResult::GetStartTime(unsigned long index, CDateTime &t) const {
+bool CScanResult::GetStartTime(unsigned long index, CDateTime& t) const {
     if (!IsValidSpectrumIndex(index))
         return false;
 
@@ -964,7 +917,7 @@ bool CScanResult::GetStartTime(unsigned long index, CDateTime &t) const {
     return true;
 }
 
-void CScanResult::GetSkyStartTime(CDateTime &t) const {
+void CScanResult::GetSkyStartTime(CDateTime& t) const {
     // The date
     t.year = m_skySpecInfo.m_startTime.year;
     t.month = (unsigned char)m_skySpecInfo.m_startTime.month;
@@ -976,7 +929,7 @@ void CScanResult::GetSkyStartTime(CDateTime &t) const {
     t.second = (unsigned char)m_skySpecInfo.m_startTime.second;
 }
 
-bool CScanResult::GetStopTime(unsigned long index, CDateTime &t) const {
+bool CScanResult::GetStopTime(unsigned long index, CDateTime& t) const {
     if (!IsValidSpectrumIndex(index))
         return false;
 

@@ -11,6 +11,8 @@
 #include "OpenInstrumentCalibrationDialog.h"
 #include <SpectralEvaluation/Evaluation/CrossSectionData.h>
 #include <SpectralEvaluation/File/File.h>
+#include <SpectralEvaluation/File/XmlUtil.h>
+#include <SpectralEvaluation/Calibration/StandardCrossSectionSetup.h>
 
 // CCalibrateReferenes dialog
 
@@ -21,13 +23,15 @@ CCalibrateReferencesDialog::CCalibrateReferencesDialog(CWnd* pParent /*=nullptr*
     , m_highPassFilterReference(TRUE)
     , m_calibrationFile(_T(""))
     , m_inputInVacuum(TRUE)
+    , m_standardCrossSections(nullptr)
 {
     this->m_controller = new ReferenceCreationController();
 }
 
 CCalibrateReferencesDialog::~CCalibrateReferencesDialog()
 {
-    delete this->m_controller;
+    delete m_controller;
+    delete m_standardCrossSections;
 }
 
 BOOL CCalibrateReferencesDialog::OnInitDialog() {
@@ -49,6 +53,10 @@ BOOL CCalibrateReferencesDialog::OnInitDialog() {
     m_graph.SetPlotColor(RGB(255, 0, 0));
     m_graph.CleanPlot();
 
+    // First load the default setup.
+    LoadDefaultSetup();
+
+    // Then load any references the user may have added.
     LoadLastSetup();
 
     return TRUE;  // return TRUE unless you set the focus to a control
@@ -95,7 +103,11 @@ void CCalibrateReferencesDialog::SaveSetup()
         {
             CString filePath;
             this->m_crossSectionsCombo.GetLBText(ii, filePath);
-            dst << "\t<CrossSection>" << filePath << "</CrossSection>" << std::endl;
+
+            if (filePath.Find(" [Standard]") < 0)
+            {
+                dst << "\t<CrossSection>" << filePath << "</CrossSection>" << std::endl;
+            }
         }
 
         dst << "</CalibrateReferencesDlg>" << std::endl;
@@ -104,8 +116,6 @@ void CCalibrateReferencesDialog::SaveSetup()
     {
     }
 }
-
-CString ParseXmlString(const char* startTag, const char* stopTag, const std::string& line);
 
 void CCalibrateReferencesDialog::LoadLastSetup()
 {
@@ -118,7 +128,8 @@ void CCalibrateReferencesDialog::LoadLastSetup()
         {
             if (line.find("CrossSection") != std::string::npos)
             {
-                CString crossSectionFile = ParseXmlString("<CrossSection>", "</CrossSection>", line);
+                auto str = novac::ParseXmlString("CrossSection", line);
+                CString crossSectionFile(str.c_str());
 
                 if (IsExistingFile(crossSectionFile))
                 {
@@ -135,12 +146,6 @@ void CCalibrateReferencesDialog::LoadLastSetup()
     catch (std::exception&)
     {
     }
-
-    // If this is the first time we used this dialog, then just use the default
-    if (this->m_crossSectionsCombo.GetCount() == 0)
-    {
-        this->LoadDefaultSetup();
-    }
 }
 
 void CCalibrateReferencesDialog::LoadDefaultSetup()
@@ -148,18 +153,22 @@ void CCalibrateReferencesDialog::LoadDefaultSetup()
     Common common;
     common.GetExePath();
 
-    // See if there is any possible references in the current directory already
-    const auto allCrossSections = Common::ListFilesInDirectory(common.m_exePath, "*.xs");
+    m_crossSectionsCombo.Clear();
 
+    std::string exePath = common.m_exePath;
+    m_standardCrossSections = new novac::StandardCrossSectionSetup{ exePath };
+
+    auto allCrossSections = m_standardCrossSections->ListReferences();
     for (const std::string& crossSectionFile : allCrossSections)
     {
         CString fileName{ crossSectionFile.c_str() };
-        this->m_crossSectionsCombo.AddString(fileName);
+        fileName.Append(" [Standard]");
+        m_crossSectionsCombo.AddString(fileName);
     }
 
-    if (this->m_crossSectionsCombo.GetCount() > 0)
+    if (m_crossSectionsCombo.GetCount() > 0)
     {
-        this->m_crossSectionsCombo.SetCurSel(0);
+        m_crossSectionsCombo.SetCurSel(0);
     }
 }
 
@@ -226,8 +235,17 @@ void CCalibrateReferencesDialog::UpdateReference()
         }
 
         int selectedReferenceIdx = this->m_crossSectionsCombo.GetCurSel();
+
         CString crossSectionFilePath;
-        this->m_crossSectionsCombo.GetLBText(selectedReferenceIdx, crossSectionFilePath);
+        if (m_standardCrossSections != nullptr && selectedReferenceIdx < m_standardCrossSections->NumberOfReferences())
+        {
+            const std::string path = m_standardCrossSections->ReferenceFileName(selectedReferenceIdx);
+            crossSectionFilePath.Format("%s", path.c_str());
+        }
+        else
+        {
+            this->m_crossSectionsCombo.GetLBText(selectedReferenceIdx, crossSectionFilePath);
+        }
 
         if (!IsExistingFile(crossSectionFilePath))
         {

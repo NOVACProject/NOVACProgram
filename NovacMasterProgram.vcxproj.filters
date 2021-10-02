@@ -29,9 +29,6 @@
     <Filter Include="Source Files\Dialogs">
       <UniqueIdentifier>{f0900717-7a3e-4a48-8e86-17d43e8d8602}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Evaluation">
-      <UniqueIdentifier>{32873f64-098d-4e3e-9aea-6ec00d8fc1b4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\ReEvaluation">
       <UniqueIdentifier>{33577c37-3303-45c5-8371-af15c0a1f026}</UniqueIdentifier>
     </Filter>
@@ -147,6 +144,12 @@
     </Filter>
     <Filter Include="Header Files\SpectralEvaluation\Math">
       <UniqueIdentifier>{690ac6d1-8178-4086-a3f8-dab1c04ead1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Evaluation">
+      <UniqueIdentifier>{32873f64-098d-4e3e-9aea-6ec00d8fc1b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\SpectralEvaluation\Flux">
+      <UniqueIdentifier>{6cfee539-2fe1-4cdd-9935-cfc6570d00d6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -674,6 +677,18 @@
     </ClCompile>
     <ClCompile Include="SpectralEvaluation\src\Evaluation\DoasFit.cpp">
       <Filter>Source Files\SpectralEvaluation\Evaluation</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Evaluation\BasicScanEvaluationResult.cpp">
+      <Filter>Source Files\SpectralEvaluation\Evaluation</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Flux\ScanFluxResult.cpp">
+      <Filter>Source Files\SpectralEvaluation\Flux</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\File\XmlUtil.cpp">
+      <Filter>Source Files\SpectralEvaluation\File</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Calibration\StandardCrossSectionSetup.cpp">
+      <Filter>Source Files\SpectralEvaluation\Calibration</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1333,6 +1348,12 @@
     </ClInclude>
     <ClInclude Include="Graphs\SpectrumGraph.h">
       <Filter>Header Files\Graphs</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Evaluation\BasicScanEvaluationResult.h">
+      <Filter>Header Files\SpectralEvaluation\Evaluation</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Flux\ScanFluxResult.h">
+      <Filter>Header Files\SpectralEvaluation\Flux</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

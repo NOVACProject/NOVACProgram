@@ -7,6 +7,11 @@
 
 class ReferenceCreationController;
 
+namespace novac
+{
+class StandardCrossSectionSetup;
+}
+
 class CCalibrateReferencesDialog : public CPropertyPage
 {
     DECLARE_DYNAMIC(CCalibrateReferencesDialog)
@@ -58,4 +63,6 @@ private:
     void UpdateGraph();
 
     ReferenceCreationController* m_controller;
+
+    novac::StandardCrossSectionSetup* m_standardCrossSections;
 };

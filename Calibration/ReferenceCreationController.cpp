@@ -5,10 +5,53 @@
 #include <SpectralEvaluation/Spectra/Spectrum.h>
 #include <SpectralEvaluation/File/File.h>
 #include <SpectralEvaluation/Calibration/ReferenceSpectrumConvolution.h>
+#include <algorithm>
+
+#undef min
+#undef max
 
 namespace novac
 {
 std::vector<double> GetPixelToWavelengthMappingFromFile(const std::string& clbFile);
+}
+
+// Question here: should maybe these free function be moved to SpectralEvaluation ?
+
+void DistributeValue(std::vector<double>& data, double value, size_t firstIndex, size_t lastIndex)
+{
+    lastIndex = std::min(lastIndex, data.size());
+
+    for (size_t ii = firstIndex; ii < lastIndex; ++ii)
+    {
+        data[ii] = value;
+    }
+}
+
+void PrepareConvolvedReferenceForHighPassFiltering(const std::unique_ptr<novac::CCrossSectionData>& reference, const std::vector<double>& validWavelengthRange)
+{
+    // If we are to filter the spectrum, then make sure that the first/last valid value in the high-res cross section 
+    //  is copied to the end of the spectrum otherwise we'll have an abrupt step and hence a large spike in the filtered result.
+    if (reference->m_waveLength.front() < validWavelengthRange.front())
+    {
+        size_t indexOfFirstValidValue = 0;
+        while (reference->m_waveLength[indexOfFirstValidValue] < validWavelengthRange.front())
+        {
+            ++indexOfFirstValidValue;
+        }
+
+        DistributeValue(reference->m_crossSection, reference->m_crossSection[indexOfFirstValidValue + 1], 0, indexOfFirstValidValue + 1);
+    }
+
+    if (reference->m_waveLength.back() > validWavelengthRange.back())
+    {
+        size_t indexOfLastValidValue = reference->m_waveLength.size() - 1;
+        while (reference->m_waveLength[indexOfLastValidValue] > validWavelengthRange.back() && indexOfLastValidValue > 0)
+        {
+            --indexOfLastValidValue;
+        }
+
+        DistributeValue(reference->m_crossSection, reference->m_crossSection[indexOfLastValidValue - 1], indexOfLastValidValue, reference->m_waveLength.size());
+    }
 }
 
 ReferenceCreationController::ReferenceCreationController()
@@ -67,10 +110,11 @@ void ReferenceCreationController::ConvolveReference()
 
     if (this->m_highPassFilter)
     {
-        CBasicMath math;
+        PrepareConvolvedReferenceForHighPassFiltering(m_resultingCrossSection, highResReference.m_waveLength);
 
         const int length = (int)this->m_resultingCrossSection->m_crossSection.size();
 
+        CBasicMath math;
         math.Mul(this->m_resultingCrossSection->m_crossSection.data(), length, -2.5e15);
         math.Delog(this->m_resultingCrossSection->m_crossSection.data(), length);
         math.HighPassBinomial(this->m_resultingCrossSection->m_crossSection.data(), length, 500);
