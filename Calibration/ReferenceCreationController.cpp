@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "ReferenceCreationController.h"
+#include <SpectralEvaluation/StringUtils.h>
 #include <SpectralEvaluation/Evaluation/BasicMath.h>
 #include <SpectralEvaluation/Evaluation/CrossSectionData.h>
 #include <SpectralEvaluation/Spectra/Spectrum.h>
@@ -65,7 +66,7 @@ void ReferenceCreationController::ConvolveReference()
     // Read the calibration
     novac::CCrossSectionData instrumentLineShape;
     std::vector<double> pixelToWavelengthMapping;
-    if (novac::GetFileExtension(this->m_calibrationFile).compare(".std") == 0)
+    if (EqualsIgnoringCase(novac::GetFileExtension(this->m_calibrationFile), ".std"))
     {
         novac::CSpectrum instrumentLineShapeSpectrum;
         if (!novac::ReadInstrumentCalibration(this->m_calibrationFile, instrumentLineShapeSpectrum, pixelToWavelengthMapping))
