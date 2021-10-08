@@ -134,7 +134,7 @@ void WavelengthCalibrationController::RunCalibration()
 
     // Read the initial callibration
     this->m_initialCalibration = std::make_unique<novac::InstrumentCalibration>();
-    if (EqualsIgnoringCase(novac::GetFileExtension(this->m_calibrationFile), ".std"))
+    if (EqualsIgnoringCase(novac::GetFileExtension(this->m_initialCalibrationFile), ".std"))
     {
         if (!novac::ReadInstrumentCalibration(this->m_initialCalibrationFile, *m_initialCalibration))
         {
