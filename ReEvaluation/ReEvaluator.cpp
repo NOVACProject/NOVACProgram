@@ -117,7 +117,7 @@ bool CReEvaluator::DoEvaluation()
         // For each scanfile: loop through the fit windows
         for (m_curWindow = 0; m_curWindow < m_windowNum; ++m_curWindow)
         {
-            CFitWindow &thisWindow = m_window[m_curWindow];
+            CFitWindow& thisWindow = m_window[m_curWindow];
 
             // Check the interlace steps
             CSpectrum skySpec;
@@ -213,7 +213,7 @@ bool CReEvaluator::MakeInitialSanityCheck() {
 bool CReEvaluator::CreateOutputDirectory()
 {
     CString cDateTime, path, fileName;
-    struct tm *tim;
+    struct tm* tim;
     time_t t;
 
     time(&t);
@@ -263,13 +263,13 @@ bool CReEvaluator::WriteEvaluationLogHeader(int fitWindowIndex)
     Common::GetTimeText(time);
 
     // simplify the syntax a little bit
-    const CFitWindow &window = m_window[fitWindowIndex];
+    const CFitWindow& window = m_window[fitWindowIndex];
 
     // Get the name of the evaluation log file
     m_evalLog[fitWindowIndex] = m_outputDir + "\\ReEvaluationLog_" + CString(window.name.c_str()) + ".txt";
 
     // Try to open the log file
-    FILE *f = fopen(m_evalLog[fitWindowIndex], "w");
+    FILE* f = fopen(m_evalLog[fitWindowIndex], "w");
     if (f == nullptr)
     {
         MessageBox(NULL, "Could not create evaluation-log file, evaluation aborted", "FileError", MB_OK);
@@ -298,10 +298,10 @@ bool CReEvaluator::WriteEvaluationLogHeader(int fitWindowIndex)
 
     // The sky-spectrum used
     switch (m_skySettings.skyOption) {
-        case Configuration::SKY_OPTION::MEASURED_IN_SCAN:                   fprintf(f, "#Sky: First spectrum in scanFile\n");	break;
-        case Configuration::SKY_OPTION::USER_SUPPLIED:                      fprintf(f, "#Sky: %s\n", m_skySettings.skySpectrumFile.c_str()); break;
-        case Configuration::SKY_OPTION::SPECTRUM_INDEX_IN_SCAN:             fprintf(f, "#Sky: Spectrum number %d", m_skySettings.indexInScan); break;
-        case Configuration::SKY_OPTION::AVERAGE_OF_GOOD_SPECTRA_IN_SCAN:    fprintf(f, "#Sky: Average of all good spectra in scanFile\n");
+    case Configuration::SKY_OPTION::MEASURED_IN_SCAN:                   fprintf(f, "#Sky: First spectrum in scanFile\n");	break;
+    case Configuration::SKY_OPTION::USER_SUPPLIED:                      fprintf(f, "#Sky: %s\n", m_skySettings.skySpectrumFile.c_str()); break;
+    case Configuration::SKY_OPTION::SPECTRUM_INDEX_IN_SCAN:             fprintf(f, "#Sky: Spectrum number %d", m_skySettings.indexInScan); break;
+    case Configuration::SKY_OPTION::AVERAGE_OF_GOOD_SPECTRA_IN_SCAN:    fprintf(f, "#Sky: Average of all good spectra in scanFile\n");
     }
 
     // Write the region used:
@@ -353,14 +353,14 @@ bool CReEvaluator::AppendResultToEvaluationLog(const Evaluation::CScanResult& re
 {
     CSpectrum skySpec;
 
-    FILE *f = fopen(m_evalLog[fitWindowIndex], "a+");
+    FILE* f = fopen(m_evalLog[fitWindowIndex], "a+");
     if (nullptr == f)
     {
         return false;
     }
 
     // simplify the syntax a little bit
-    const CFitWindow &window = m_window[fitWindowIndex];
+    const CFitWindow& window = m_window[fitWindowIndex];
 
     // Write the scan-information to file
     fprintf(f, "<scaninformation>\n");
@@ -369,7 +369,7 @@ bool CReEvaluator::AppendResultToEvaluationLog(const Evaluation::CScanResult& re
     fprintf(f, "\tcompass=%.1lf\n", scan.GetCompass());
     fprintf(f, "\ttilt=%.1lf\n", skySpec.m_info.m_pitch);
 
-    const CGPSData &gps = scan.GetGPS();
+    const CGPSData& gps = scan.GetGPS();
     fprintf(f, "\tlat=%.6lf\n", gps.m_latitude);
     fprintf(f, "\tlong=%.6lf\n", gps.m_longitude);
     fprintf(f, "\talt=%.3lf\n", gps.m_altitude);
@@ -418,7 +418,7 @@ bool CReEvaluator::AppendResultToEvaluationLog(const Evaluation::CScanResult& re
         fprintf(f, "squeeze(%s)\tsqueezeerror(%s)\t", (LPCTSTR)name, (LPCTSTR)name);
     }
 
-    if (window.fitType == FIT_HP_SUB || window.fitType == FIT_POLY)
+    if (window.fitType == novac::FIT_TYPE::FIT_HP_SUB || window.fitType == novac::FIT_TYPE::FIT_POLY)
     {
         CString name = "fraunhoferref";
 
@@ -431,7 +431,7 @@ bool CReEvaluator::AppendResultToEvaluationLog(const Evaluation::CScanResult& re
 
     for (unsigned long i = 0; i < result.GetEvaluatedNum(); ++i)
     {
-        const CSpectrumInfo &info = result.GetSpectrumInfo(i);
+        const CSpectrumInfo& info = result.GetSpectrumInfo(i);
 
         // The scan angle
         fprintf(f, "%.0f\t", info.m_scanAngle);
@@ -477,7 +477,7 @@ bool CReEvaluator::AppendResultToEvaluationLog(const Evaluation::CScanResult& re
 
         // the number of references
         int nRef = window.nRef;
-        if (window.fitType == FIT_HP_SUB || window.fitType == FIT_POLY)
+        if (window.fitType == novac::FIT_TYPE::FIT_HP_SUB || window.fitType == novac::FIT_TYPE::FIT_POLY)
         {
             ++nRef;
         }
@@ -536,8 +536,8 @@ void CReEvaluator::SortScans() {
     do {
         change = false;
         for (int k = 0; k < m_scanFileNum - 1; ++k) {
-            CString &str1 = m_scanFile.GetAt(k);
-            CString &str2 = m_scanFile.GetAt(k + 1);
+            CString& str1 = m_scanFile.GetAt(k);
+            CString& str2 = m_scanFile.GetAt(k + 1);
 
             if (str1.Compare(str2) > 0) {
                 tmp = m_scanFile.GetAt(k); //copy

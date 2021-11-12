@@ -5,8 +5,8 @@
 
 namespace novac
 {
-class CSpectrum;
 class InstrumentCalibration;
+class CSpectrum;
 }
 
 class WavelengthCalibrationController
@@ -77,6 +77,11 @@ public:
     /// </summary>
     std::string m_errorMessage;
 
+    /// <summary>
+    /// An elementary log, will contain debugging information from running the calibration.
+    /// </summary>
+    std::vector<std::string> m_log;
+
     struct WavelengthCalibrationDebugState
     {
         WavelengthCalibrationDebugState(size_t estimatedSize)
@@ -139,4 +144,21 @@ public:
     /// Saves the resulting instrument line shape information as a .slf file.
     /// </summary>
     void SaveResultAsSlf(const std::string& filename);
+
+    /// <summary>
+    /// Empties the previous result (if any).
+    /// </summary>
+    void ClearResult();
+
+private:
+
+    /// <summary>
+    /// Guesses for an instrment line shape from the measured spectrum. Useful if no measured instrument line shape exists
+    /// </summary>
+    void CreateGuessForInstrumentLineShape(const std::string& solarSpectrumFile, const novac::CSpectrum& measuredSpectrum, novac::InstrumentCalibration& calibration);
+
+    void Log(const std::string& message);
+    void Log(const std::string& message, double value);
+    void Log(const std::string& message, const std::string& messagePart2);
+
 };

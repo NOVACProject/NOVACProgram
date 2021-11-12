@@ -62,14 +62,15 @@ std::vector<std::pair<std::string, std::string>> GetFunctionDescription(const no
 // -------------------- WavelengthCalibrationController --------------------
 
 WavelengthCalibrationController::WavelengthCalibrationController()
-    : m_calibrationDebug(0U)
+    : m_calibrationDebug(0U),
+    m_instrumentLineShapeFitOption(InstrumentLineShapeFitOption::None)
 {
 }
 
 WavelengthCalibrationController::~WavelengthCalibrationController()
 {
-    this->m_initialCalibration.release();
-    this->m_resultingCalibration.release();
+    m_initialCalibration.release();
+    m_resultingCalibration.release();
 }
 
 /// <summary>
@@ -87,10 +88,7 @@ void ReadInstrumentLineShape(const std::string& initialLineShapeFile, novac::Ins
     calibration.instrumentLineShapeGrid = measuredInstrumentLineShape.m_waveLength;
 }
 
-/// <summary>
-/// Guesses for an instrment line shape from the measured spectrum. Useful if no measured instrument line shape exists
-/// </summary>
-void CreateGuessForInstrumentLineShape(const std::string& solarSpectrumFile, const novac::CSpectrum& measuredSpectrum, novac::InstrumentCalibration& calibration)
+void WavelengthCalibrationController::CreateGuessForInstrumentLineShape(const std::string& solarSpectrumFile, const novac::CSpectrum& measuredSpectrum, novac::InstrumentCalibration& calibration)
 {
     // The user has not supplied an instrument-line-shape, create a guess for one.
     std::vector<std::pair<std::string, double>> noCrossSections;
@@ -102,14 +100,20 @@ void CreateGuessForInstrumentLineShape(const std::string& solarSpectrumFile, con
     novac::CCrossSectionData estimatedInstrumentLineShape;
     ilsEstimation.EstimateInstrumentLineShape(fraunhoferSpectrumGen, measuredSpectrum, estimatedInstrumentLineShape, resultInstrumentFwhm);
 
+    Log("No initial instrument line shape could be found, estimated instrument line shape as Gaussian with fwhm of: ", resultInstrumentFwhm);
+
     calibration.instrumentLineShape = estimatedInstrumentLineShape.m_crossSection;
     calibration.instrumentLineShapeGrid = estimatedInstrumentLineShape.m_waveLength;
 }
 
 void WavelengthCalibrationController::RunCalibration()
 {
+    m_errorMessage.clear();
+    m_log.clear();
+    m_instrumentLineShapeParameterDescriptions.clear();
+
     novac::WavelengthCalibrationSettings settings;
-    settings.highResSolarAtlas = this->m_solarSpectrumFile;
+    settings.highResSolarAtlas = m_solarSpectrumFile;
 
     novac::CScanFileHandler pakFileHandler;
     if (!pakFileHandler.CheckScanFile(this->m_inputSpectrumFile))
@@ -124,68 +128,94 @@ void WavelengthCalibrationController::RunCalibration()
     {
         throw std::invalid_argument("Cannot read the provided input spectrum file");
     }
+	Log("Read measured spectrum: ", m_inputSpectrumFile);
 
     // subtract the dark-spectrum (if this exists)
     novac::CSpectrum darkSpectrum;
     if (!pakFileHandler.GetDark(darkSpectrum))
     {
         measuredSpectrum.Sub(darkSpectrum);
+		Log("Read and subtracted dark spectrum");
     }
 
-    // Read the initial callibration
-    this->m_initialCalibration = std::make_unique<novac::InstrumentCalibration>();
-    if (EqualsIgnoringCase(novac::GetFileExtension(this->m_initialCalibrationFile), ".std"))
+    // Read the initial calibration
+    m_initialCalibration = std::make_unique<novac::InstrumentCalibration>();
+    if (EqualsIgnoringCase(novac::GetFileExtension(m_initialCalibrationFile), ".std"))
     {
-        if (!novac::ReadInstrumentCalibration(this->m_initialCalibrationFile, *m_initialCalibration))
+        // This is a file which may contain either just the wavelength calibration _or_ both a wavelength calibration and an instrument line shape.
+        if (!novac::ReadInstrumentCalibration(m_initialCalibrationFile, *m_initialCalibration))
         {
             throw std::invalid_argument("Failed to read the instrument calibration file");
+        }
+
+        Log("Read initial instrument calibration from: ", m_initialCalibrationFile);
+
+        if (m_initialCalibration->instrumentLineShapeGrid.size() > 0)
+        {
+            const double fwhm = novac::GetFwhm(m_initialCalibration->instrumentLineShapeGrid, m_initialCalibration->instrumentLineShape);
+            Log("Initial instrument line shape has a fwhm of: ", fwhm);
+        }
+        else
+        {
+            Log("Provided instrument calibration file does not contain an instrument line shape.");
         }
     }
     else
     {
-        this->m_initialCalibration->pixelToWavelengthMapping = novac::GetPixelToWavelengthMappingFromFile(this->m_initialCalibrationFile);
+        m_initialCalibration->pixelToWavelengthMapping = novac::GetPixelToWavelengthMappingFromFile(m_initialCalibrationFile);
+        if (!novac::IsPossiblePixelToWavelengthCalibration(m_initialCalibration->pixelToWavelengthMapping))
+        {
+            throw std::invalid_argument("Error interpreting the provided initial pixel to wavelength calibration, the wavelengths are not monotonically increasing.");
+        }
 
-        if (this->m_initialLineShapeFile.size() > 0)
-        {
-            ReadInstrumentLineShape(m_initialLineShapeFile, *m_initialCalibration);
-        }
-        else
-        {
-            CreateGuessForInstrumentLineShape(this->m_solarSpectrumFile, measuredSpectrum, *m_initialCalibration);
-        }
+        Log("Read initial pixel to wavelength calibration from: ", m_initialCalibrationFile);
     }
-    settings.initialPixelToWavelengthMapping = this->m_initialCalibration->pixelToWavelengthMapping;
-    settings.initialInstrumentLineShape.m_crossSection = this->m_initialCalibration->instrumentLineShape;
-    settings.initialInstrumentLineShape.m_waveLength = this->m_initialCalibration->instrumentLineShapeGrid;
 
+    // Check the initial instrument line shape.
+    if (m_initialLineShapeFile.size() > 0)
+    {
+        ReadInstrumentLineShape(m_initialLineShapeFile, *m_initialCalibration);
+        Log("Read initial instrument line shape from: ", m_initialLineShapeFile);
+
+        const double fwhm = novac::GetFwhm(m_initialCalibration->instrumentLineShapeGrid, m_initialCalibration->instrumentLineShape);
+        Log("Initial instrument line shape has a fwhm of :", fwhm);
+    }
+    else if (m_initialCalibration->instrumentLineShape.size() == 0)
+    {
+        CreateGuessForInstrumentLineShape(m_solarSpectrumFile, measuredSpectrum, *m_initialCalibration);
+    }
+
+    settings.initialPixelToWavelengthMapping = m_initialCalibration->pixelToWavelengthMapping;
+    settings.initialInstrumentLineShape.m_crossSection = m_initialCalibration->instrumentLineShape;
+    settings.initialInstrumentLineShape.m_waveLength = m_initialCalibration->instrumentLineShapeGrid;
 
     // Normalize the initial instrument line shape
-    Normalize(this->m_initialCalibration->instrumentLineShape);
+    Normalize(m_initialCalibration->instrumentLineShape);
 
-    if (this->m_instrumentLineShapeFitOption == WavelengthCalibrationController::InstrumentLineShapeFitOption::SuperGaussian)
+    if (m_instrumentLineShapeFitOption == WavelengthCalibrationController::InstrumentLineShapeFitOption::SuperGaussian)
     {
-        if (this->m_instrumentLineShapeFitRegion.first > this->m_instrumentLineShapeFitRegion.second)
+        if (m_instrumentLineShapeFitRegion.first > m_instrumentLineShapeFitRegion.second)
         {
             std::stringstream msg;
             msg << "Invalid region for fitting the instrument line shape ";
-            msg << "(" << this->m_instrumentLineShapeFitRegion.first << ", " << this->m_instrumentLineShapeFitRegion.second << ") [nm]. ";
+            msg << "(" << m_instrumentLineShapeFitRegion.first << ", " << m_instrumentLineShapeFitRegion.second << ") [nm]. ";
             msg << "From must be smaller than To";
             throw std::invalid_argument(msg.str());
         }
-        if (this->m_instrumentLineShapeFitRegion.first < settings.initialPixelToWavelengthMapping.front() ||
-            this->m_instrumentLineShapeFitRegion.second > settings.initialPixelToWavelengthMapping.back())
+        if (m_instrumentLineShapeFitRegion.first < settings.initialPixelToWavelengthMapping.front() ||
+            m_instrumentLineShapeFitRegion.second > settings.initialPixelToWavelengthMapping.back())
         {
             std::stringstream msg;
             msg << "Invalid region for fitting the instrument line shape ";
-            msg << "(" << this->m_instrumentLineShapeFitRegion.first << ", " << this->m_instrumentLineShapeFitRegion.second << ") [nm]. ";
+            msg << "(" << m_instrumentLineShapeFitRegion.first << ", " << m_instrumentLineShapeFitRegion.second << ") [nm]. ";
             msg << "Region does not overlap initial pixel to wavelength calibration: ";
             msg << "(" << settings.initialPixelToWavelengthMapping.front() << ", " << settings.initialPixelToWavelengthMapping.back() << ") [nm]. ";
             throw std::invalid_argument(msg.str());
         }
 
         settings.estimateInstrumentLineShape = novac::InstrumentLineshapeEstimationOption::SuperGaussian;
-        settings.estimateInstrumentLineShapeWavelengthRegion.first = this->m_instrumentLineShapeFitRegion.first;
-        settings.estimateInstrumentLineShapeWavelengthRegion.second = this->m_instrumentLineShapeFitRegion.second;
+        settings.estimateInstrumentLineShapeWavelengthRegion.first = m_instrumentLineShapeFitRegion.first;
+        settings.estimateInstrumentLineShapeWavelengthRegion.second = m_instrumentLineShapeFitRegion.second;
     }
     else
     {
@@ -193,36 +223,33 @@ void WavelengthCalibrationController::RunCalibration()
     }
 
     // Clear the previous result
-    this->m_resultingCalibration = std::make_unique<novac::InstrumentCalibration>();
-
-
-    // So far no cross sections provided...
+    m_resultingCalibration = std::make_unique<novac::InstrumentCalibration>();
 
     novac::WavelengthCalibrationSetup setup{ settings };
     auto result = setup.DoWavelengthCalibration(measuredSpectrum);
 
     // Copy out the result
-    this->m_resultingCalibration->pixelToWavelengthMapping = result.pixelToWavelengthMapping;
-    this->m_resultingCalibration->pixelToWavelengthPolynomial = result.pixelToWavelengthMappingCoefficients;
+    m_resultingCalibration->pixelToWavelengthMapping = result.pixelToWavelengthMapping;
+    m_resultingCalibration->pixelToWavelengthPolynomial = result.pixelToWavelengthMappingCoefficients;
 
     if (result.estimatedInstrumentLineShape.GetSize() > 0)
     {
-        this->m_resultingCalibration->instrumentLineShape = result.estimatedInstrumentLineShape.m_crossSection;
-        this->m_resultingCalibration->instrumentLineShapeGrid = result.estimatedInstrumentLineShape.m_waveLength;
-        this->m_resultingCalibration->instrumentLineShapeCenter = 0.5 * (this->m_instrumentLineShapeFitRegion.first + this->m_instrumentLineShapeFitRegion.second);
+        m_resultingCalibration->instrumentLineShape = result.estimatedInstrumentLineShape.m_crossSection;
+        m_resultingCalibration->instrumentLineShapeGrid = result.estimatedInstrumentLineShape.m_waveLength;
+        m_resultingCalibration->instrumentLineShapeCenter = 0.5 * (m_instrumentLineShapeFitRegion.first + m_instrumentLineShapeFitRegion.second);
     }
 
     if (result.estimatedInstrumentLineShapeParameters != nullptr)
     {
-        this->m_instrumentLineShapeParameterDescriptions = GetFunctionDescription(&(*result.estimatedInstrumentLineShapeParameters));
-        this->m_resultingCalibration->instrumentLineShapeParameter = result.estimatedInstrumentLineShapeParameters->Clone();
+        m_instrumentLineShapeParameterDescriptions = GetFunctionDescription(&(*result.estimatedInstrumentLineShapeParameters));
+        m_resultingCalibration->instrumentLineShapeParameter = result.estimatedInstrumentLineShapeParameters->Clone();
     }
 
     // Also copy out some debug information, which makes it possible for the user to inspect the calibration
     {
         const auto& calibrationDebug = setup.GetLastCalibrationSetup();
-        this->m_calibrationDebug = WavelengthCalibrationDebugState(calibrationDebug.allCorrespondences.size());
-        this->m_calibrationDebug.initialPixelToWavelengthMapping = settings.initialPixelToWavelengthMapping;
+        m_calibrationDebug = WavelengthCalibrationDebugState(calibrationDebug.allCorrespondences.size());
+        m_calibrationDebug.initialPixelToWavelengthMapping = settings.initialPixelToWavelengthMapping;
 
         for (size_t correspondenceIdx = 0; correspondenceIdx < calibrationDebug.allCorrespondences.size(); ++correspondenceIdx)
         {
@@ -230,39 +257,41 @@ void WavelengthCalibrationController::RunCalibration()
 
             if (calibrationDebug.correspondenceIsInlier[correspondenceIdx])
             {
-                this->m_calibrationDebug.inlierCorrespondencePixels.push_back(corr.measuredValue);
-                this->m_calibrationDebug.inlierCorrespondenceWavelengths.push_back(corr.theoreticalValue);
-                this->m_calibrationDebug.inlierCorrespondenceMeasuredIntensity.push_back(calibrationDebug.measuredKeypoints[corr.measuredIdx].intensity);
-                this->m_calibrationDebug.inlierCorrespondenceFraunhoferIntensity.push_back(calibrationDebug.fraunhoferKeypoints[corr.theoreticalIdx].intensity);
+                m_calibrationDebug.inlierCorrespondencePixels.push_back(corr.measuredValue);
+                m_calibrationDebug.inlierCorrespondenceWavelengths.push_back(corr.theoreticalValue);
+                m_calibrationDebug.inlierCorrespondenceMeasuredIntensity.push_back(calibrationDebug.measuredKeypoints[corr.measuredIdx].intensity);
+                m_calibrationDebug.inlierCorrespondenceFraunhoferIntensity.push_back(calibrationDebug.fraunhoferKeypoints[corr.theoreticalIdx].intensity);
 
-                this->m_calibrationDebug.measuredSpectrumInlierKeypointPixels.push_back(calibrationDebug.measuredKeypoints[corr.measuredIdx].pixel);
-                this->m_calibrationDebug.measuredSpectrumInlierKeypointIntensities.push_back(calibrationDebug.measuredKeypoints[corr.measuredIdx].intensity);
+                m_calibrationDebug.measuredSpectrumInlierKeypointPixels.push_back(calibrationDebug.measuredKeypoints[corr.measuredIdx].pixel);
+                m_calibrationDebug.measuredSpectrumInlierKeypointIntensities.push_back(calibrationDebug.measuredKeypoints[corr.measuredIdx].intensity);
 
-                this->m_calibrationDebug.fraunhoferSpectrumInlierKeypointWavelength.push_back(calibrationDebug.fraunhoferKeypoints[corr.theoreticalIdx].wavelength);
-                this->m_calibrationDebug.fraunhoferSpectrumInlierKeypointIntensities.push_back(calibrationDebug.fraunhoferKeypoints[corr.theoreticalIdx].intensity);
+                m_calibrationDebug.fraunhoferSpectrumInlierKeypointWavelength.push_back(calibrationDebug.fraunhoferKeypoints[corr.theoreticalIdx].wavelength);
+                m_calibrationDebug.fraunhoferSpectrumInlierKeypointIntensities.push_back(calibrationDebug.fraunhoferKeypoints[corr.theoreticalIdx].intensity);
             }
             else
             {
-                this->m_calibrationDebug.outlierCorrespondencePixels.push_back(corr.measuredValue);
-                this->m_calibrationDebug.outlierCorrespondenceWavelengths.push_back(corr.theoreticalValue);
+                m_calibrationDebug.outlierCorrespondencePixels.push_back(corr.measuredValue);
+                m_calibrationDebug.outlierCorrespondenceWavelengths.push_back(corr.theoreticalValue);
             }
         }
 
-        this->m_calibrationDebug.measuredSpectrum = std::vector<double>(calibrationDebug.measuredSpectrum->m_data, calibrationDebug.measuredSpectrum->m_data + calibrationDebug.measuredSpectrum->m_length);
-        this->m_calibrationDebug.fraunhoferSpectrum = std::vector<double>(calibrationDebug.fraunhoferSpectrum->m_data, calibrationDebug.fraunhoferSpectrum->m_data + calibrationDebug.fraunhoferSpectrum->m_length);
+        m_calibrationDebug.measuredSpectrum = std::vector<double>(calibrationDebug.measuredSpectrum->m_data, calibrationDebug.measuredSpectrum->m_data + calibrationDebug.measuredSpectrum->m_length);
+        m_calibrationDebug.fraunhoferSpectrum = std::vector<double>(calibrationDebug.fraunhoferSpectrum->m_data, calibrationDebug.fraunhoferSpectrum->m_data + calibrationDebug.fraunhoferSpectrum->m_length);
 
         for (const auto& pt : calibrationDebug.measuredKeypoints)
         {
-            this->m_calibrationDebug.measuredSpectrumKeypointPixels.push_back(pt.pixel);
-            this->m_calibrationDebug.measuredSpectrumKeypointIntensities.push_back(pt.intensity);
+            m_calibrationDebug.measuredSpectrumKeypointPixels.push_back(pt.pixel);
+            m_calibrationDebug.measuredSpectrumKeypointIntensities.push_back(pt.intensity);
         }
 
         for (const auto& pt : calibrationDebug.fraunhoferKeypoints)
         {
-            this->m_calibrationDebug.fraunhoferSpectrumKeypointWavelength.push_back(pt.wavelength);
-            this->m_calibrationDebug.fraunhoferSpectrumKeypointIntensities.push_back(pt.intensity);
+            m_calibrationDebug.fraunhoferSpectrumKeypointWavelength.push_back(pt.wavelength);
+            m_calibrationDebug.fraunhoferSpectrumKeypointIntensities.push_back(pt.intensity);
         }
     }
+
+    Log("Instrument calibration done");
 }
 
 
@@ -270,7 +299,7 @@ std::pair<std::string, std::string> FormatProperty(const char* name, double valu
 
 void WavelengthCalibrationController::SaveResultAsStd(const std::string& filename)
 {
-    if (this->m_resultingCalibration->instrumentLineShape.size() > 0)
+    if (m_resultingCalibration->instrumentLineShape.size() > 0)
     {
         // We have fitted both an instrument line shape and a pixel-to-wavelength mapping.
         //  I.e. m_resultingCalibration contains a full calibration to be saved.
@@ -284,16 +313,16 @@ void WavelengthCalibrationController::SaveResultAsStd(const std::string& filenam
     // Create an instrument calibration, taking the instrument line shape from the initial setup 
     //  and the pixel-to-wavelength mapping from the calibration result
     novac::InstrumentCalibration mixedCalibration;
-    mixedCalibration.pixelToWavelengthMapping = this->m_resultingCalibration->pixelToWavelengthMapping;
-    mixedCalibration.pixelToWavelengthPolynomial = this->m_resultingCalibration->pixelToWavelengthPolynomial;
+    mixedCalibration.pixelToWavelengthMapping = m_resultingCalibration->pixelToWavelengthMapping;
+    mixedCalibration.pixelToWavelengthPolynomial = m_resultingCalibration->pixelToWavelengthPolynomial;
 
-    mixedCalibration.instrumentLineShape = this->m_initialCalibration->instrumentLineShape;
-    mixedCalibration.instrumentLineShapeGrid = this->m_initialCalibration->instrumentLineShapeGrid;
-    mixedCalibration.instrumentLineShapeCenter = this->m_initialCalibration->instrumentLineShapeCenter;
+    mixedCalibration.instrumentLineShape = m_initialCalibration->instrumentLineShape;
+    mixedCalibration.instrumentLineShapeGrid = m_initialCalibration->instrumentLineShapeGrid;
+    mixedCalibration.instrumentLineShapeCenter = m_initialCalibration->instrumentLineShapeCenter;
 
-    if (this->m_initialCalibration->instrumentLineShapeParameter != nullptr)
+    if (m_initialCalibration->instrumentLineShapeParameter != nullptr)
     {
-        mixedCalibration.instrumentLineShapeParameter = this->m_initialCalibration->instrumentLineShapeParameter->Clone();
+        mixedCalibration.instrumentLineShapeParameter = m_initialCalibration->instrumentLineShapeParameter->Clone();
     }
 
     if (!novac::SaveInstrumentCalibration(filename, mixedCalibration))
@@ -310,8 +339,36 @@ void WavelengthCalibrationController::SaveResultAsClb(const std::string& filenam
 void WavelengthCalibrationController::SaveResultAsSlf(const std::string& filename)
 {
     novac::CCrossSectionData instrumentLineShape;
-    instrumentLineShape.m_crossSection = this->m_resultingCalibration->instrumentLineShape;
-    instrumentLineShape.m_waveLength = this->m_resultingCalibration->instrumentLineShapeGrid;
+    instrumentLineShape.m_crossSection = m_resultingCalibration->instrumentLineShape;
+    instrumentLineShape.m_waveLength = m_resultingCalibration->instrumentLineShapeGrid;
 
     novac::SaveCrossSectionFile(filename, instrumentLineShape);
+}
+
+void WavelengthCalibrationController::ClearResult()
+{
+    m_calibrationDebug = WavelengthCalibrationController::WavelengthCalibrationDebugState(0U);
+    m_errorMessage.clear();
+    m_log.clear();
+    m_instrumentLineShapeParameterDescriptions.clear();
+    m_resultingCalibration.reset();
+}
+
+void WavelengthCalibrationController::Log(const std::string& message)
+{
+    m_log.push_back(message);
+}
+
+void WavelengthCalibrationController::Log(const std::string& message, double value)
+{
+    std::stringstream formattedMessage;
+    formattedMessage << message << value;
+    m_log.push_back(formattedMessage.str());
+}
+
+void WavelengthCalibrationController::Log(const std::string& part1, const std::string& part2)
+{
+    std::string message = part1;
+    message.append(part2);
+    m_log.push_back(message);
 }
