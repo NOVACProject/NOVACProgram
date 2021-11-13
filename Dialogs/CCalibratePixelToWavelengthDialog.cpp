@@ -8,7 +8,7 @@
 #include "../Common/Common.h"
 #include "../Calibration/WavelengthCalibrationController.h"
 #include "OpenInstrumentCalibrationDialog.h"
-#include "../CCalibratePixelToWavelengthSetupDialog.h"
+#include "CCalibratePixelToWavelengthSetupDialog.h"
 #include "CLogDialog.h"
 #include <fstream>
 #include <SpectralEvaluation/File/File.h>
@@ -79,19 +79,16 @@ void CCalibratePixelToWavelengthDialog::DoDataExchange(CDataExchange* pDX)
 {
     CPropertyPage::DoDataExchange(pDX);
     DDX_Text(pDX, IDC_EDIT_SPECTRUM, m_inputSpectrumFile);
-    // DDX_Text(pDX, IDC_EDIT_SOLAR_SPECTRUM, m_setup.m_solarSpectrumFile);
-    // DDX_Text(pDX, IDC_EDIT_INITIAL_CALIBRATION, m_setup.m_initialCalibrationFile);
     DDX_Control(pDX, IDC_STATIC_GRAPH_HOLDER_PANEL, m_graphHolder);
     DDX_Control(pDX, IDC_BUTTON_RUN, m_runButton);
     DDX_Control(pDX, IDC_BUTTON_SAVE, m_saveButton);
-    // DDX_Control(pDX, IDC_STATIC_INITIAL_CALIBRATION, m_wavelengthCalibrationLabel);
     DDX_Control(pDX, IDC_LIST_GRAPH_TYPE, m_graphTypeList);
     DDX_Control(pDX, IDC_WAVELENGTH_CALIBRATION_DETAILS_LIST, m_detailedResultList);
     DDX_Control(pDX, IDC_BUTTON_VIEW_LOG, m_viewLogButton);
     DDX_Control(pDX, IDC_STATIC_LEGEND_GREEN, m_greenLegendLabel);
     DDX_Control(pDX, IDC_STATIC_LEGEND_RED, m_redLegendLabel);
-    // DDX_Control(pDX, IDC_STATIC_RED, m_redLegendIcon);
-    // DDX_Control(pDX, IDC_STATIC_GREEN, m_greenLegendIcon);
+    DDX_Control(pDX, IDC_STATIC_RED, m_redLegendIcon);
+    DDX_Control(pDX, IDC_STATIC_GREEN, m_greenLegendIcon);
 }
 
 BEGIN_MESSAGE_MAP(CCalibratePixelToWavelengthDialog, CPropertyPage)
@@ -679,13 +676,13 @@ void CCalibratePixelToWavelengthDialog::UpdateGreenLegend(bool show, const char*
 {
     if (show && message != nullptr)
     {
-        // m_greenLegendIcon.ShowWindow(SW_SHOW);
+        m_greenLegendIcon.ShowWindow(SW_SHOW);
         m_greenLegendLabel.ShowWindow(SW_SHOW);
         m_greenLegendLabel.SetWindowTextA(message);
     }
     else
     {
-        // m_greenLegendIcon.ShowWindow(SW_HIDE);
+        m_greenLegendIcon.ShowWindow(SW_HIDE);
         m_greenLegendLabel.ShowWindow(SW_HIDE);
     }
 }
@@ -694,13 +691,13 @@ void CCalibratePixelToWavelengthDialog::UpdateRedLegend(bool show, const char* m
 {
     if (show && message != nullptr)
     {
-        // m_redLegendIcon.ShowWindow(SW_SHOW);
+        m_redLegendIcon.ShowWindow(SW_SHOW);
         m_redLegendLabel.ShowWindow(SW_SHOW);
         m_redLegendLabel.SetWindowTextA(message);
     }
     else
     {
-        // m_redLegendIcon.ShowWindow(SW_HIDE);
+        m_redLegendIcon.ShowWindow(SW_HIDE);
         m_redLegendLabel.ShowWindow(SW_HIDE);
     }
 }

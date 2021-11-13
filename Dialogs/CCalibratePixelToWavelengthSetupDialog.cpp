@@ -3,11 +3,11 @@
 
 #include "stdafx.h"
 #include "CCalibratePixelToWavelengthSetupDialog.h"
-#include "./Dialogs/CCalibratePixelToWavelengthDialog.h"
-#include "./Dialogs/OpenInstrumentCalibrationDialog.h"
-#include "./Common/Common.h"
+#include "CCalibratePixelToWavelengthDialog.h"
+#include "OpenInstrumentCalibrationDialog.h"
+#include "../Common/Common.h"
 #include "afxdialogex.h"
-#include "resource.h"
+#include "../resource.h"
 
 
 // CCalibratePixelToWavelengthSetupDialog dialog

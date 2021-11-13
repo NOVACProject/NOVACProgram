@@ -156,7 +156,6 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
   <ItemGroup>
     <ClCompile Include="Calibration\ReferenceCreationController.cpp" />
     <ClCompile Include="Calibration\WavelengthCalibrationController.cpp" />
-    <ClCompile Include="CCalibratePixelToWavelengthSetupDialog.cpp" />
     <ClCompile Include="CombinerThread.cpp" />
     <ClCompile Include="Common\CfgTxtFileHandler.cpp" />
     <ClCompile Include="Common\Common.cpp" />
@@ -196,6 +195,7 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
     <ClCompile Include="Configuration\WindConfigurationDlg.cpp" />
     <ClCompile Include="CustomSpectrometerModelDlg.cpp" />
     <ClCompile Include="Dialogs\CCalibratePixelToWavelengthDialog.cpp" />
+    <ClCompile Include="Dialogs\CCalibratePixelToWavelengthSetupDialog.cpp" />
     <ClCompile Include="Dialogs\CCalibrateReferencesDialog.cpp" />
     <ClCompile Include="Dialogs\CLogDialog.cpp" />
     <ClCompile Include="Dialogs\ColumnHistoryDlg.cpp" />
@@ -279,13 +279,13 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
     <ClInclude Include="Calibration\InstrumentCalibrationInput.h" />
     <ClInclude Include="Calibration\ReferenceCreationController.h" />
     <ClInclude Include="Calibration\WavelengthCalibrationController.h" />
-    <ClInclude Include="CCalibratePixelToWavelengthSetupDialog.h" />
     <ClInclude Include="communication\FileInfo.h" />
     <ClInclude Include="communication\NodeControlInfo.h" />
     <ClInclude Include="communication\IFTPDataUpload.h" />
     <ClInclude Include="communication\SFTPCom.h" />
     <ClInclude Include="CustomSpectrometerModelDlg.h" />
     <ClInclude Include="Dialogs\CCalibratePixelToWavelengthDialog.h" />
+    <ClInclude Include="Dialogs\CCalibratePixelToWavelengthSetupDialog.h" />
     <ClInclude Include="Dialogs\CCalibrateReferencesDialog.h" />
     <ClInclude Include="Dialogs\CLogDialog.h" />
     <ClInclude Include="Dialogs\ColumnHistoryDlg.h" />

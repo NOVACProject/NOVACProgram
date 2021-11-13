@@ -690,11 +690,11 @@
     <ClCompile Include="SpectralEvaluation\src\Calibration\StandardCrossSectionSetup.cpp">
       <Filter>Source Files\SpectralEvaluation\Calibration</Filter>
     </ClCompile>
-    <ClCompile Include="CCalibratePixelToWavelengthSetupDialog.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Dialogs\CLogDialog.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Dialogs\CCalibratePixelToWavelengthSetupDialog.cpp">
+      <Filter>Source Files\Dialogs</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1316,9 +1316,6 @@
     <ClInclude Include="Dialogs\CCalibrateReferencesDialog.h">
       <Filter>Header Files\Dialogs</Filter>
     </ClInclude>
-    <ClInclude Include="Dialogs\OpenInstrumentCalibrationDialog.h">
-      <Filter>Source Files\Dialogs</Filter>
-    </ClInclude>
     <ClInclude Include="Calibration\InstrumentCalibrationInput.h">
       <Filter>Source Files\Calibration</Filter>
     </ClInclude>
@@ -1361,11 +1358,14 @@
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Flux\ScanFluxResult.h">
       <Filter>Header Files\SpectralEvaluation\Flux</Filter>
     </ClInclude>
-    <ClInclude Include="CCalibratePixelToWavelengthSetupDialog.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Dialogs\CLogDialog.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialogs\CCalibratePixelToWavelengthSetupDialog.h">
+      <Filter>Header Files\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialogs\OpenInstrumentCalibrationDialog.h">
+      <Filter>Header Files\Dialogs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

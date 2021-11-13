@@ -250,7 +250,6 @@
 #define IDD_CALIBRATE_WAVELENGTH_SETTINGS_DIALOG 328
 #define IDD_DIALOG3                     330
 #define IDD_VIEW_LOG_DIALOG             330
-#define IDD_DIALOG4                     332
 #define IDC_STATIC_VERSIONNUMBER        1000
 #define IDC_STATIC_COPYRIGHT            1001
 #define IDC_BUTTON_TEST                 1002
@@ -863,6 +862,8 @@
 #define IDC_STATIC_LEGEND_RED           1405
 #define IDC_STATIC_LEGEND_GREEN         1406
 #define IDC_MESSAGE_LIST                1407
+#define IDC_STATIC_RED                  1408
+#define IDC_STATIC_GREEN                1409
 #define ID_CONTROL_START                32771
 #define ID_VIEW_PEAKINTENSITY_BD        32779
 #define ID_VIEW_FITINTENSITY_BD         32780
@@ -884,7 +885,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        334
 #define _APS_NEXT_COMMAND_VALUE         32793
-#define _APS_NEXT_CONTROL_VALUE         1408
+#define _APS_NEXT_CONTROL_VALUE         1410
 #define _APS_NEXT_SYMED_VALUE           109
 #endif
 #endif
