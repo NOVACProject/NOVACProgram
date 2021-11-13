@@ -9,6 +9,7 @@
 #include "../Common/Common.h"
 #include "../Calibration/ReferenceCreationController.h"
 #include "OpenInstrumentCalibrationDialog.h"
+#include "CCreateStandardReferencesDialog.h"
 #include <SpectralEvaluation/Evaluation/CrossSectionData.h>
 #include <SpectralEvaluation/File/File.h>
 #include <SpectralEvaluation/File/XmlUtil.h>
@@ -25,7 +26,7 @@ CCalibrateReferencesDialog::CCalibrateReferencesDialog(CWnd* pParent /*=nullptr*
     , m_inputInVacuum(TRUE)
     , m_standardCrossSections(nullptr)
 {
-    this->m_controller = new ReferenceCreationController();
+    m_controller = new ReferenceCreationController();
 }
 
 CCalibrateReferencesDialog::~CCalibrateReferencesDialog()
@@ -71,16 +72,18 @@ void CCalibrateReferencesDialog::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_STATIC_GRAPH_HOLDER2, m_graphHolder);
     DDX_Check(pDX, IDC_CHECK_INPUT_IN_VACUUM, m_inputInVacuum);
     DDX_Control(pDX, IDC_BUTTON_SAVE, m_saveButton);
+    DDX_Control(pDX, IDC_BUTTON_CREATE_STANDARD_REFERENCES, m_createStandardReferencesButton);
 }
 
 BEGIN_MESSAGE_MAP(CCalibrateReferencesDialog, CPropertyPage)
-    ON_BN_CLICKED(IDC_BUTTON_BROWSE_SOLAR_SPECTRUM, &CCalibrateReferencesDialog::OnBnClickedBrowseCrossSection)
+    ON_BN_CLICKED(IDC_BUTTON_BROWSE_SOLAR_SPECTRUM, &CCalibrateReferencesDialog::OnClickedBrowseCrossSection)
     ON_CBN_SELCHANGE(IDC_COMBO_HIGH_RES_CROSSSECTION, &CCalibrateReferencesDialog::OnConvolutionOptionChanged)
     ON_BN_CLICKED(IDC_CHECK_HIGH_PASS_FILTER, &CCalibrateReferencesDialog::OnConvolutionOptionChanged)
     ON_BN_CLICKED(IDC_CHECK_INPUT_IN_VACUUM, &CCalibrateReferencesDialog::OnConvolutionOptionChanged)
-    ON_BN_CLICKED(IDC_BUTTON_RUN_CREATE_REFERENCE, &CCalibrateReferencesDialog::OnBnClickedButtonRunCreateReference)
+    ON_BN_CLICKED(IDC_BUTTON_RUN_CREATE_REFERENCE, &CCalibrateReferencesDialog::OnClickedButtonRunCreateReference)
     ON_BN_CLICKED(IDC_BUTTON_SAVE, &CCalibrateReferencesDialog::OnClickedButtonSave)
-    ON_BN_CLICKED(IDC_BUTTON_SELECT_CALIBRATION, &CCalibrateReferencesDialog::OnButtonSelectCalibration)
+    ON_BN_CLICKED(IDC_BUTTON_SELECT_CALIBRATION, &CCalibrateReferencesDialog::OnClickedButtonSelectCalibration)
+    ON_BN_CLICKED(IDC_BUTTON_CREATE_STANDARD_REFERENCES, &CCalibrateReferencesDialog::OnClickedButtonCreateStandardReferences)
 END_MESSAGE_MAP()
 
 std::string CCalibrateReferencesDialog::SetupFilePath()
@@ -96,13 +99,13 @@ void CCalibrateReferencesDialog::SaveSetup()
 {
     try
     {
-        std::ofstream dst(this->SetupFilePath(), std::ios::out);
+        std::ofstream dst(SetupFilePath(), std::ios::out);
         dst << "<CalibrateReferencesDlg>" << std::endl;
 
-        for (int ii = 0; ii < this->m_crossSectionsCombo.GetCount(); ++ii)
+        for (int ii = 0; ii < m_crossSectionsCombo.GetCount(); ++ii)
         {
             CString filePath;
-            this->m_crossSectionsCombo.GetLBText(ii, filePath);
+            m_crossSectionsCombo.GetLBText(ii, filePath);
 
             if (filePath.Find(" [Standard]") < 0)
             {
@@ -122,7 +125,7 @@ void CCalibrateReferencesDialog::LoadLastSetup()
     try
     {
         // Super basic xml parsing
-        std::ifstream file(this->SetupFilePath(), std::ios::in);
+        std::ifstream file(SetupFilePath(), std::ios::in);
         std::string line;
         while (std::getline(file, line))
         {
@@ -133,14 +136,14 @@ void CCalibrateReferencesDialog::LoadLastSetup()
 
                 if (IsExistingFile(crossSectionFile))
                 {
-                    this->m_crossSectionsCombo.AddString(crossSectionFile);
+                    m_crossSectionsCombo.AddString(crossSectionFile);
                 }
             }
         }
 
-        if (this->m_crossSectionsCombo.GetCount() > 0)
+        if (m_crossSectionsCombo.GetCount() > 0)
         {
-            this->m_crossSectionsCombo.SetCurSel(0);
+            m_crossSectionsCombo.SetCurSel(0);
         }
     }
     catch (std::exception&)
@@ -174,7 +177,7 @@ void CCalibrateReferencesDialog::LoadDefaultSetup()
 
 // CCalibrateReferenes message handlers
 
-void CCalibrateReferencesDialog::OnBnClickedBrowseCrossSection()
+void CCalibrateReferencesDialog::OnClickedBrowseCrossSection()
 {
     CString crossSectionFile;
     if (!Common::BrowseForFile("Spectrum Files\0*.txt;*.xs\0", crossSectionFile))
@@ -182,10 +185,10 @@ void CCalibrateReferencesDialog::OnBnClickedBrowseCrossSection()
         return;
     }
 
-    int elementIdx = this->m_crossSectionsCombo.AddString(crossSectionFile);
-    this->m_crossSectionsCombo.SetCurSel(elementIdx);
+    int elementIdx = m_crossSectionsCombo.AddString(crossSectionFile);
+    m_crossSectionsCombo.SetCurSel(elementIdx);
 
-    UpdateData(FALSE);
+    UpdateData(FALSE); // Update the UI
     UpdateReference();
 }
 
@@ -194,7 +197,7 @@ void CCalibrateReferencesDialog::OnConvolutionOptionChanged()
     UpdateReference();
 }
 
-void CCalibrateReferencesDialog::OnBnClickedButtonRunCreateReference()
+void CCalibrateReferencesDialog::OnClickedButtonRunCreateReference()
 {
     UpdateReference();
 }
@@ -204,10 +207,10 @@ void CCalibrateReferencesDialog::OnClickedButtonSave()
     try
     {
         CString destinationFileName = "";
-        if (Common::BrowseForFile_SaveAs("Reference Files\0*.xs\0", destinationFileName))
+        if (Common::BrowseForFile_SaveAs("Reference Files\0*.txt\0", destinationFileName))
         {
-            std::string dstFileName = novac::EnsureFilenameHasSuffix(std::string(destinationFileName), "xs");
-            novac::SaveCrossSectionFile(dstFileName, *(this->m_controller->m_resultingCrossSection));
+            std::string dstFileName = novac::EnsureFilenameHasSuffix(std::string(destinationFileName), "txt");
+            novac::SaveCrossSectionFile(dstFileName, *(m_controller->m_resultingCrossSection));
         }
     }
     catch (std::exception& e)
@@ -216,25 +219,24 @@ void CCalibrateReferencesDialog::OnClickedButtonSave()
     }
 }
 
-
 void CCalibrateReferencesDialog::UpdateReference()
 {
     try
     {
         UpdateData(TRUE); // get the selections from the user interface
 
-        if (this->m_calibrationFile.IsEmpty() ||
-            this->m_crossSectionsCombo.GetCurSel() < 0)
+        if (m_calibrationFile.IsEmpty() ||
+            m_crossSectionsCombo.GetCurSel() < 0)
         {
             return;
         }
-        if (!IsExistingFile(this->m_calibrationFile))
+        if (!IsExistingFile(m_calibrationFile))
         {
             MessageBox("Please select an existing wavelength calibration file", "Missing input", MB_OK);
             return;
         }
 
-        int selectedReferenceIdx = this->m_crossSectionsCombo.GetCurSel();
+        int selectedReferenceIdx = m_crossSectionsCombo.GetCurSel();
 
         CString crossSectionFilePath;
         if (m_standardCrossSections != nullptr && selectedReferenceIdx < m_standardCrossSections->NumberOfReferences())
@@ -244,7 +246,7 @@ void CCalibrateReferencesDialog::UpdateReference()
         }
         else
         {
-            this->m_crossSectionsCombo.GetLBText(selectedReferenceIdx, crossSectionFilePath);
+            m_crossSectionsCombo.GetLBText(selectedReferenceIdx, crossSectionFilePath);
         }
 
         if (!IsExistingFile(crossSectionFilePath))
@@ -253,38 +255,39 @@ void CCalibrateReferencesDialog::UpdateReference()
             return;
         }
 
-        this->m_controller->m_calibrationFile = this->m_calibrationFile;
-        this->m_controller->m_instrumentLineshapeFile = this->m_instrumentLineshapeFile;
-        this->m_controller->m_highPassFilter = this->m_highPassFilterReference;
-        this->m_controller->m_convertToAir = this->m_inputInVacuum;
-        this->m_controller->m_highResolutionCrossSection = crossSectionFilePath;
-        this->m_controller->ConvolveReference();
+        m_controller->m_calibrationFile = m_calibrationFile;
+        m_controller->m_instrumentLineshapeFile = m_instrumentLineshapeFile;
+        m_controller->m_highPassFilter = m_highPassFilterReference;
+        m_controller->m_convertToAir = m_inputInVacuum;
+        m_controller->m_highResolutionCrossSection = crossSectionFilePath;
+        m_controller->ConvolveReference();
 
-        this->UpdateGraph();
+        UpdateGraph();
 
-        this->SaveSetup();
+        SaveSetup();
 
-        this->m_saveButton.EnableWindow(TRUE);
+        m_saveButton.EnableWindow(TRUE);
     }
     catch (std::exception& e)
     {
         MessageBox(e.what(), "Failed to convolve reference.", MB_OK);
 
-        this->UpdateGraph();
+        UpdateGraph();
 
-        this->m_saveButton.EnableWindow(FALSE);
+        m_saveButton.EnableWindow(FALSE);
+        m_createStandardReferencesButton.EnableWindow(FALSE);
     }
 }
 
 void CCalibrateReferencesDialog::UpdateGraph()
 {
-    this->m_graph.CleanPlot();
+    m_graph.CleanPlot();
 
     // the reference
-    if (this->m_controller->m_resultingCrossSection != nullptr && m_controller->m_resultingCrossSection->GetSize() > 0)
+    if (m_controller->m_resultingCrossSection != nullptr && m_controller->m_resultingCrossSection->GetSize() > 0)
     {
-        this->m_graph.SetPlotColor(RGB(255, 0, 0));
-        this->m_graph.XYPlot(
+        m_graph.SetPlotColor(RGB(255, 0, 0));
+        m_graph.XYPlot(
             m_controller->m_resultingCrossSection->m_waveLength.data(),
             m_controller->m_resultingCrossSection->m_crossSection.data(),
             static_cast<int>(m_controller->m_resultingCrossSection->GetSize()),
@@ -292,18 +295,75 @@ void CCalibrateReferencesDialog::UpdateGraph()
     }
 }
 
-void CCalibrateReferencesDialog::OnButtonSelectCalibration()
+void CCalibrateReferencesDialog::OnClickedButtonSelectCalibration()
 {
     OpenInstrumentCalibrationDialog dlg;
-    dlg.m_state.initialCalibrationFile = this->m_calibrationFile;
-    dlg.m_state.instrumentLineshapeFile = this->m_instrumentLineshapeFile;
+    dlg.m_state.initialCalibrationFile = m_calibrationFile;
+    dlg.m_state.instrumentLineshapeFile = m_instrumentLineshapeFile;
 
     if (IDOK == dlg.DoModal())
     {
-        this->m_calibrationFile = dlg.m_state.initialCalibrationFile;
-        this->m_instrumentLineshapeFile = dlg.m_state.instrumentLineshapeFile;
+        m_calibrationFile = dlg.m_state.initialCalibrationFile;
+        m_instrumentLineshapeFile = dlg.m_state.instrumentLineshapeFile;
 
         UpdateData(FALSE);
         UpdateReference();
+
+        if (m_standardCrossSections != nullptr &&
+            m_standardCrossSections->NumberOfReferences() > 0)
+        {
+            m_createStandardReferencesButton.EnableWindow(TRUE);
+        }
+    }
+}
+
+void CCalibrateReferencesDialog::OnClickedButtonCreateStandardReferences()
+{
+    if (m_standardCrossSections == nullptr || m_standardCrossSections->NumberOfReferences() == 0)
+    {
+        MessageBox("Failed to load standard references", "Missing data", MB_OK);
+        m_createStandardReferencesButton.EnableWindow(FALSE);
+        return;
+    }
+
+    CCreateStandardReferencesDialog userInputDialog;
+    userInputDialog.m_standardCrossSections = m_standardCrossSections;
+    userInputDialog.m_fileNameFilteringInfix = (m_highPassFilterReference) ? "_HP500" : "";
+    if (IDOK != userInputDialog.DoModal())
+    {
+        return;
+    }
+
+    for (size_t ii = 0; ii < m_standardCrossSections->NumberOfReferences(); ++ii)
+    {
+        try
+        {
+            // Options
+            m_inputInVacuum = m_standardCrossSections->IsReferenceInVacuum(ii);
+            UpdateData(FALSE);
+
+            // Do the convolution
+            m_controller->m_calibrationFile = m_calibrationFile;
+            m_controller->m_instrumentLineshapeFile = m_instrumentLineshapeFile;
+            m_controller->m_highPassFilter = m_highPassFilterReference;
+            m_controller->m_convertToAir = m_standardCrossSections->IsReferenceInVacuum(ii);
+            m_controller->m_highResolutionCrossSection = m_standardCrossSections->ReferenceFileName(ii);
+            m_controller->ConvolveReference();
+
+            UpdateGraph();
+
+            // Save the result
+            std::string dstFileName = userInputDialog.ReferenceName(ii);
+            novac::SaveCrossSectionFile(dstFileName, *(m_controller->m_resultingCrossSection));
+        }
+        catch (std::exception& e)
+        {
+            MessageBox(e.what(), "Failed to convolve reference.", MB_OK);
+
+            UpdateGraph();
+
+            m_saveButton.EnableWindow(FALSE);
+            m_createStandardReferencesButton.EnableWindow(FALSE);
+        }
     }
 }

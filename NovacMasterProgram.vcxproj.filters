@@ -696,6 +696,9 @@
     <ClCompile Include="Dialogs\CCalibratePixelToWavelengthSetupDialog.cpp">
       <Filter>Source Files\Dialogs</Filter>
     </ClCompile>
+    <ClCompile Include="Dialogs\CCreateStandardReferencesDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Configuration\AdvancedFTPUploadSettings.h">
@@ -1366,6 +1369,9 @@
     </ClInclude>
     <ClInclude Include="Dialogs\OpenInstrumentCalibrationDialog.h">
       <Filter>Header Files\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialogs\CCreateStandardReferencesDialog.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

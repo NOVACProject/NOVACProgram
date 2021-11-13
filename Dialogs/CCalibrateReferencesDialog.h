@@ -42,15 +42,17 @@ public:
     BOOL m_inputInVacuum;
 
     CButton m_saveButton;
+    CButton m_createStandardReferencesButton;
 
     Graph::CGraphCtrl m_graph; // The plot for the spectrum
     CStatic m_graphHolder;
 
     afx_msg void OnConvolutionOptionChanged();
-    afx_msg void OnBnClickedBrowseCrossSection();
-    afx_msg void OnBnClickedButtonRunCreateReference();
+    afx_msg void OnClickedBrowseCrossSection();
+    afx_msg void OnClickedButtonRunCreateReference();
     afx_msg void OnClickedButtonSave();
-    afx_msg void OnButtonSelectCalibration();
+    afx_msg void OnClickedButtonSelectCalibration();
+    afx_msg void OnClickedButtonCreateStandardReferences();
 
 private:
     std::string SetupFilePath();

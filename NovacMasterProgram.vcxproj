@@ -197,6 +197,7 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
     <ClCompile Include="Dialogs\CCalibratePixelToWavelengthDialog.cpp" />
     <ClCompile Include="Dialogs\CCalibratePixelToWavelengthSetupDialog.cpp" />
     <ClCompile Include="Dialogs\CCalibrateReferencesDialog.cpp" />
+    <ClCompile Include="Dialogs\CCreateStandardReferencesDialog.cpp" />
     <ClCompile Include="Dialogs\CLogDialog.cpp" />
     <ClCompile Include="Dialogs\ColumnHistoryDlg.cpp" />
     <ClCompile Include="Dialogs\ConfigurationDlg.cpp" />
@@ -287,6 +288,7 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
     <ClInclude Include="Dialogs\CCalibratePixelToWavelengthDialog.h" />
     <ClInclude Include="Dialogs\CCalibratePixelToWavelengthSetupDialog.h" />
     <ClInclude Include="Dialogs\CCalibrateReferencesDialog.h" />
+    <ClInclude Include="Dialogs\CCreateStandardReferencesDialog.h" />
     <ClInclude Include="Dialogs\CLogDialog.h" />
     <ClInclude Include="Dialogs\ColumnHistoryDlg.h" />
     <ClInclude Include="Dialogs\OpenInstrumentCalibrationDialog.h" />

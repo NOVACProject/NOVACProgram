@@ -353,7 +353,7 @@ public:
     /** Opens a dialog window and lets the user browse for a directory.
             @return true if all is ok,
             @return false otherwise */
-    bool BrowseForDirectory(CString& folderName);
+    static bool BrowseForDirectory(CString& folderName);
 
     /** Lists all files in the provided directory.
         If a fileNameFilter is supplied, then only files with names matching the given filter are returned.

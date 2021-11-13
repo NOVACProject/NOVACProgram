@@ -381,6 +381,7 @@ void WavelengthCalibrationController::ClearResult()
     m_log.clear();
     m_instrumentLineShapeParameterDescriptions.clear();
     m_resultingCalibration.reset();
+    m_initialCalibration.reset();
 }
 
 void WavelengthCalibrationController::Log(const std::string& message)
