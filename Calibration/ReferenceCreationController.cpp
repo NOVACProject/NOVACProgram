@@ -66,10 +66,10 @@ void ReferenceCreationController::ConvolveReference()
     // Read the calibration
     novac::CCrossSectionData instrumentLineShape;
     std::vector<double> pixelToWavelengthMapping;
-    if (EqualsIgnoringCase(novac::GetFileExtension(this->m_calibrationFile), ".std"))
+    if (EqualsIgnoringCase(novac::GetFileExtension(m_calibrationFile), ".std"))
     {
         novac::CSpectrum instrumentLineShapeSpectrum;
-        if (!novac::ReadInstrumentCalibration(this->m_calibrationFile, instrumentLineShapeSpectrum, pixelToWavelengthMapping))
+        if (!novac::ReadInstrumentCalibration(m_calibrationFile, instrumentLineShapeSpectrum, pixelToWavelengthMapping))
         {
             throw std::invalid_argument("Failed to read the instrument calibration file");
         }
@@ -78,13 +78,13 @@ void ReferenceCreationController::ConvolveReference()
     }
     else
     {
-        pixelToWavelengthMapping = novac::GetPixelToWavelengthMappingFromFile(this->m_calibrationFile);
+        pixelToWavelengthMapping = novac::GetPixelToWavelengthMappingFromFile(m_calibrationFile);
         if (pixelToWavelengthMapping.size() == 0)
         {
             throw std::invalid_argument("Failed to read the wavelength calibration file");
         }
 
-        if (!novac::ReadCrossSectionFile(this->m_instrumentLineshapeFile, instrumentLineShape))
+        if (!novac::ReadCrossSectionFile(m_instrumentLineshapeFile, instrumentLineShape))
         {
             throw std::invalid_argument("Failed to read the instrument line shape file");
         }
@@ -92,7 +92,7 @@ void ReferenceCreationController::ConvolveReference()
 
     // Red the reference
     novac::CCrossSectionData highResReference;
-    if (!novac::ReadCrossSectionFile(this->m_highResolutionCrossSection, highResReference))
+    if (!novac::ReadCrossSectionFile(m_highResolutionCrossSection, highResReference))
     {
         throw std::exception("Failed to read the reference file");
     }
@@ -105,21 +105,21 @@ void ReferenceCreationController::ConvolveReference()
     }
 
     // Combine the results into the final output cross section data 
-    this->m_resultingCrossSection = std::make_unique<novac::CCrossSectionData>();
-    this->m_resultingCrossSection->m_crossSection = convolutionResult;
-    this->m_resultingCrossSection->m_waveLength = pixelToWavelengthMapping;
+    m_resultingCrossSection = std::make_unique<novac::CCrossSectionData>();
+    m_resultingCrossSection->m_crossSection = convolutionResult;
+    m_resultingCrossSection->m_waveLength = pixelToWavelengthMapping;
 
-    if (this->m_highPassFilter)
+    if (m_highPassFilter)
     {
         PrepareConvolvedReferenceForHighPassFiltering(m_resultingCrossSection, highResReference.m_waveLength);
 
-        const int length = (int)this->m_resultingCrossSection->m_crossSection.size();
+        const int length = (int)m_resultingCrossSection->m_crossSection.size();
 
         CBasicMath math;
-        math.Mul(this->m_resultingCrossSection->m_crossSection.data(), length, -2.5e15);
-        math.Delog(this->m_resultingCrossSection->m_crossSection.data(), length);
-        math.HighPassBinomial(this->m_resultingCrossSection->m_crossSection.data(), length, 500);
-        math.Log(this->m_resultingCrossSection->m_crossSection.data(), length);
+        math.Mul(m_resultingCrossSection->m_crossSection.data(), length, -2.5e15);
+        math.Delog(m_resultingCrossSection->m_crossSection.data(), length);
+        math.HighPassBinomial(m_resultingCrossSection->m_crossSection.data(), length, 500);
+        math.Log(m_resultingCrossSection->m_crossSection.data(), length);
     }
 
 }
