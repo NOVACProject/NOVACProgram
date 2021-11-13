@@ -128,15 +128,21 @@ void WavelengthCalibrationController::RunCalibration()
     {
         throw std::invalid_argument("Cannot read the provided input spectrum file");
     }
-	Log("Read measured spectrum: ", m_inputSpectrumFile);
+    Log("Read measured spectrum: ", m_inputSpectrumFile);
 
     // subtract the dark-spectrum (if this exists)
     novac::CSpectrum darkSpectrum;
     if (!pakFileHandler.GetDark(darkSpectrum))
     {
         measuredSpectrum.Sub(darkSpectrum);
-		Log("Read and subtracted dark spectrum");
+        Log("Read and subtracted dark spectrum");
     }
+
+    // Copy out the spectrum, such that the user can see it.
+    m_calibrationDebug.measuredSpectrum = std::vector<double>(measuredSpectrum.m_data, measuredSpectrum.m_data + measuredSpectrum.m_length);
+
+    // Check that this is a good measurement, according to our standards.
+    CheckSpectrumQuality(measuredSpectrum);
 
     // Read the initial calibration
     m_initialCalibration = std::make_unique<novac::InstrumentCalibration>();
@@ -343,6 +349,29 @@ void WavelengthCalibrationController::SaveResultAsSlf(const std::string& filenam
     instrumentLineShape.m_waveLength = m_resultingCalibration->instrumentLineShapeGrid;
 
     novac::SaveCrossSectionFile(filename, instrumentLineShape);
+}
+
+void WavelengthCalibrationController::CheckSpectrumQuality(const novac::CSpectrum& spectrum) const
+{
+    const double maximumSaturationRatio = novac::GetMaximumSaturationRatioOfSpectrum(spectrum);
+
+    if (maximumSaturationRatio > 0.85)
+    {
+        std::stringstream message;
+        message << "The provided sky spectrum seems to be saturated ";
+        message << "(maximum intensity: " << spectrum.MaxValue(0, spectrum.m_length) << ", corresponding to : " << 100 * maximumSaturationRatio << "% of full range).";
+        message << "Calibration aborted";
+        throw std::invalid_argument(message.str());
+    }
+
+    if (maximumSaturationRatio < 0.20)
+    {
+        std::stringstream message;
+        message << "The provided sky spectrum seems to be too dark for the calibration to succeed ";
+        message << "(maximum intensity: " << spectrum.MaxValue(0, spectrum.m_length) << ", corresponding to : " << 100 * maximumSaturationRatio << "% of full range).";
+        message << "Calibration aborted";
+        throw std::invalid_argument(message.str());
+    }
 }
 
 void WavelengthCalibrationController::ClearResult()

@@ -623,6 +623,10 @@ void CCalibratePixelToWavelengthDialog::HandleCalibrationFailure(const char* err
 
     m_saveButton.EnableWindow(FALSE);
     m_runButton.EnableWindow(TRUE);
+    m_viewLogButton.EnableWindow(m_controller->m_log.size() > 0);
+
+    SaveSetup();
+    UpdateGraph();
 }
 
 void CCalibratePixelToWavelengthDialog::OnClickedButtonSave()

@@ -157,6 +157,12 @@ private:
     /// </summary>
     void CreateGuessForInstrumentLineShape(const std::string& solarSpectrumFile, const novac::CSpectrum& measuredSpectrum, novac::InstrumentCalibration& calibration);
 
+    /// <summary>
+    /// Checks the provided (dark corrected) spectrum and makes sure that it is good enough for the calibration to succeed.
+    /// Throws an std::invalid_argument exception if the spectrum isn't good enough.
+    /// </summary>
+    void CheckSpectrumQuality(const novac::CSpectrum& spectrum) const;
+
     void Log(const std::string& message);
     void Log(const std::string& message, double value);
     void Log(const std::string& message, const std::string& messagePart2);
