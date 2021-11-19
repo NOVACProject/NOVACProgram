@@ -8,21 +8,24 @@
 #include "../Common/Common.h"
 #include "afxdialogex.h"
 #include "../resource.h"
-
+#include <SpectralEvaluation/Calibration/StandardCrossSectionSetup.h>
 
 // CCalibratePixelToWavelengthSetupDialog dialog
 
 IMPLEMENT_DYNAMIC(CCalibratePixelToWavelengthSetupDialog, CDialog)
 
-CCalibratePixelToWavelengthSetupDialog::CCalibratePixelToWavelengthSetupDialog(CalibratePixelToWavelengthDialogSetup* setup, CWnd* pParent /*=nullptr*/)
-    : m_setup(setup),
-    CDialog(IDD_CALIBRATE_WAVELENGTH_SETTINGS_DIALOG, pParent)
+CCalibratePixelToWavelengthSetupDialog::CCalibratePixelToWavelengthSetupDialog(
+    CalibratePixelToWavelengthDialogSetup* setup,
+    novac::StandardCrossSectionSetup* crossSections,
+    CWnd* pParent /*=nullptr*/)
+    : m_setup(setup), m_standardCrossSections(crossSections), CDialog(IDD_CALIBRATE_WAVELENGTH_SETTINGS_DIALOG, pParent)
 {
 }
 
 CCalibratePixelToWavelengthSetupDialog::~CCalibratePixelToWavelengthSetupDialog()
 {
     m_setup = nullptr;
+    m_standardCrossSections = nullptr;
 }
 
 BOOL CCalibratePixelToWavelengthSetupDialog::OnInitDialog() {
@@ -31,6 +34,42 @@ BOOL CCalibratePixelToWavelengthSetupDialog::OnInitDialog() {
     UpdateData(FALSE);
 
     OnBnClickedRadioInstrumentLineShapeFitOption();
+
+    if (m_standardCrossSections != nullptr)
+    {
+        auto allCrossSections = m_standardCrossSections->ListReferences();
+        for (const std::string& crossSectionFile : allCrossSections)
+        {
+            CString fileName{ crossSectionFile.c_str() };
+            fileName.Append(" [Standard]");
+            m_crossSectionsCombo.AddString(fileName);
+        }
+
+        if (m_setup->m_fitInstrumentLineShapeOzoneReference.GetLength() > 3)
+        {
+            m_checkIncludeOzone.SetCheck(1);
+        }
+        else
+        {
+            m_checkIncludeOzone.SetCheck(0);
+        }
+
+        if (m_crossSectionsCombo.GetCount() > 0)
+        {
+            int indexToSelect = 0;
+            for (int ii = 0; ii < static_cast<int>(m_standardCrossSections->NumberOfReferences()); ++ii)
+            {
+                if (m_standardCrossSections->ReferenceSpecieName(ii).find("O3") != std::string::npos ||
+                    m_standardCrossSections->ReferenceSpecieName(ii).find("o3") != std::string::npos)
+                {
+                    indexToSelect = ii;
+                    break;
+                }
+            }
+
+            m_crossSectionsCombo.SetCurSel(indexToSelect);
+        }
+    }
 
     return TRUE;  // return TRUE unless you set the focus to a control
 }
@@ -42,9 +81,11 @@ void CCalibratePixelToWavelengthSetupDialog::DoDataExchange(CDataExchange* pDX)
     DDX_Text(pDX, IDC_EDIT_SOLAR_SPECTRUM_SETTING, m_setup->m_solarSpectrumFile);
     DDX_Control(pDX, IDC_EDIT_INSTRUMENT_LINE_SHAPE_FIT_REGION_LOW, m_fitRegionEditLow);
     DDX_Control(pDX, IDC_EDIT_INSTRUMENT_LINE_SHAPE_FIT_REGION_HIGH, m_fitRegionEditHigh);
+    DDX_Control(pDX, IDC_CHECK_INCLUDE_OZONE_ILS_FIT, m_checkIncludeOzone);
     DDX_Text(pDX, IDC_EDIT_INSTRUMENT_LINE_SHAPE_FIT_REGION_LOW, m_setup->m_fitInstrumentLineShapeRegionStart);
     DDX_Text(pDX, IDC_EDIT_INSTRUMENT_LINE_SHAPE_FIT_REGION_HIGH, m_setup->m_fitInstrumentLineShapeRegionStop);
     DDX_Radio(pDX, IDC_RADIO_INSTRUMENT_LINE_SHAPE_FIT_NOTHING, m_setup->m_fitInstrumentLineShapeOption);
+    DDX_Control(pDX, IDC_COMBO_STANDARD_REFERENCES, m_crossSectionsCombo);
 }
 
 BEGIN_MESSAGE_MAP(CCalibratePixelToWavelengthSetupDialog, CDialog)
@@ -55,6 +96,7 @@ BEGIN_MESSAGE_MAP(CCalibratePixelToWavelengthSetupDialog, CDialog)
     ON_BN_CLICKED(IDC_BUTTON_SELECT_INITIAL_CALIBRATION_SETTING, &CCalibratePixelToWavelengthSetupDialog::OnButtonSelectInitialCalibration)
 
     ON_BN_CLICKED(IDOK, &CCalibratePixelToWavelengthSetupDialog::OnBnClickedOk)
+    ON_BN_CLICKED(IDC_CHECK_INCLUDE_OZONE_ILS_FIT, &CCalibratePixelToWavelengthSetupDialog::OnToggleCheckIncludeOzone)
 END_MESSAGE_MAP()
 
 // CCalibratePixelToWavelengthSetupDialog message handlers
@@ -63,9 +105,11 @@ void CCalibratePixelToWavelengthSetupDialog::OnBnClickedRadioInstrumentLineShape
 {
     UpdateData(TRUE); // get the selections from the user interface
 
-    BOOL enableRegion = m_setup->m_fitInstrumentLineShapeOption == 1;
-    m_fitRegionEditLow.EnableWindow(enableRegion);
-    m_fitRegionEditHigh.EnableWindow(enableRegion);
+    BOOL enableInstrumentLineShapeFit = m_setup->m_fitInstrumentLineShapeOption == 1;
+    m_fitRegionEditLow.EnableWindow(enableInstrumentLineShapeFit);
+    m_fitRegionEditHigh.EnableWindow(enableInstrumentLineShapeFit);
+    m_checkIncludeOzone.EnableWindow(enableInstrumentLineShapeFit);
+    m_crossSectionsCombo.EnableWindow(enableInstrumentLineShapeFit);
 }
 
 void CCalibratePixelToWavelengthSetupDialog::OnButtonSelectInitialCalibration()
@@ -132,4 +176,22 @@ void CCalibratePixelToWavelengthSetupDialog::OnBnClickedOk()
     }
 
     CDialog::OnOK();
+}
+
+void CCalibratePixelToWavelengthSetupDialog::OnToggleCheckIncludeOzone()
+{
+    UpdateData(TRUE); // get the selections from the user interface
+
+    bool includeOzone = m_checkIncludeOzone.GetCheck() == 1;
+    int selectedReferenceIdx = m_crossSectionsCombo.GetCurSel();
+
+    if (includeOzone && m_standardCrossSections != nullptr && selectedReferenceIdx >= 0)
+    {
+        const std::string path = m_standardCrossSections->ReferenceFileName(selectedReferenceIdx);
+        m_setup->m_fitInstrumentLineShapeOzoneReference.Format("%s", path.c_str());
+    }
+    else
+    {
+        m_setup->m_fitInstrumentLineShapeOzoneReference = "";
+    }
 }

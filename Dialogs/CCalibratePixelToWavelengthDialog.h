@@ -6,6 +6,11 @@
 
 class WavelengthCalibrationController;
 
+namespace novac
+{
+class StandardCrossSectionSetup;
+}
+
 /// <summary>
 /// This is a helper structure for keeping togheter the options for the pixel-to-wavelength calibration
 /// as well as for helping persisting these settings to disk.
@@ -20,7 +25,8 @@ public:
         m_solarSpectrumFile(""),
         m_fitInstrumentLineShapeOption(0),
         m_fitInstrumentLineShapeRegionStart("320"),
-        m_fitInstrumentLineShapeRegionStop("350")
+        m_fitInstrumentLineShapeRegionStop("350"),
+        m_fitInstrumentLineShapeOzoneReference("")
     {
     }
 
@@ -31,6 +37,7 @@ public:
     int m_fitInstrumentLineShapeOption; //< the option for what type of instrument line shape to fit.
     CString m_fitInstrumentLineShapeRegionStart;
     CString m_fitInstrumentLineShapeRegionStop;
+    CString m_fitInstrumentLineShapeOzoneReference; //< an optional ozone reference file which can be included into the instrument line shape fit routine.
 };
 
 class CCalibratePixelToWavelengthDialog : public CPropertyPage
@@ -126,6 +133,8 @@ private:
     void HandleCalibrationFailure(const char* errorMessage);
 
     WavelengthCalibrationController* m_controller;
+
+    novac::StandardCrossSectionSetup* m_standardCrossSections;
 
     char* m_initialCalibrationFileTypeFilter = nullptr;
 

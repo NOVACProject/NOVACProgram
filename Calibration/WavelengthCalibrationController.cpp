@@ -222,6 +222,12 @@ void WavelengthCalibrationController::RunCalibration()
         settings.estimateInstrumentLineShape = novac::InstrumentLineshapeEstimationOption::SuperGaussian;
         settings.estimateInstrumentLineShapeWavelengthRegion.first = m_instrumentLineShapeFitRegion.first;
         settings.estimateInstrumentLineShapeWavelengthRegion.second = m_instrumentLineShapeFitRegion.second;
+
+        settings.crossSectionsForInstrumentLineShapeFitting.clear();
+        if (m_crossSectionsForInstrumentLineShapeFitting.size() > 0)
+        {
+            settings.crossSectionsForInstrumentLineShapeFitting.push_back(m_crossSectionsForInstrumentLineShapeFitting);
+        }
     }
     else
     {

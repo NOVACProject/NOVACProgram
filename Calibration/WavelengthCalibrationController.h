@@ -56,6 +56,12 @@ public:
     std::pair<double, double> m_instrumentLineShapeFitRegion;
 
     /// <summary>
+    /// One additional cross section to be included when performing the instrument line shape fitting.
+    /// Typically this is the high resolution cross section for ozone.
+    /// </summary>
+    std::string m_crossSectionsForInstrumentLineShapeFitting;
+
+    /// <summary>
     /// This is the initial calibration, used as a starting point for the calibration routine.
     /// Must be set before calling RunCalibration().
     /// </summary>
