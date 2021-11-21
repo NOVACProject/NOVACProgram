@@ -5,6 +5,7 @@
 #include <SpectralEvaluation/Evaluation/ReferenceFile.h>
 #include <SpectralEvaluation/Evaluation/FitWindow.h>
 #include <SpectralEvaluation/Configuration/DarkSettings.h>
+#include <SpectralEvaluation/Spectra/WavelengthRange.h>
 
 #ifndef _CCONFIGURATIONSETTINGS_H_
 #define _CCONFIGURATIONSETTINGS_H_
@@ -85,11 +86,55 @@ public:
         struct timeStruct wakeupTime;
 
         /** Assignment operator */
-        CommunicationSetting& operator=(const CommunicationSetting& comm2);
+        CommunicationSetting& operator=(const CommunicationSetting& other) = default;
+        CommunicationSetting(const CommunicationSetting& other) = default;
+    };
+
+    class AutomaticCalibrationSetting
+    {
+    public:
+        AutomaticCalibrationSetting() { Clear(); }
+
+        /** If enabled then the automatic calibration will run at the defined intervals. */
+        bool enable = false;
+
+        /** If enabled then new references will be generated and replace the user-configured references. */
+        BOOL generateReferences = FALSE;
+
+        /** Set to true to high-pass filter the created references (and convert them into ppmm). */
+        BOOL filterReferences = TRUE;
+
+        /** The full path to the high resolved solar spectrum */
+        CString solarSpectrumFile;
+
+        /** Path to the intial calibration file (either .std or .clb) */
+        CString initialCalibrationFile;
+
+        /** Path to the initial instrument line shape file (.slf). Ususally not set if m_initialCalibrationFile is .std. */
+        CString instrumentLineshapeFile;
+
+        /** Option for how to interpret the above calibration file and instrument line shape file options. */
+        int initialCalibrationSetupOption = 0;
+
+        /** The option for if an instrument line shape should be fitted as well during
+        *   the retrieval of the pixel-to-wavelength calibration.
+        *   0 corresponds to no fitting of an instrument line shape,
+        *   1 corresponds to fitting a super-gaussian instrument line shape.  */
+        int instrumentLineShapeFitOption = 0;
+
+        /** The wavelength region in which the instrument line shape should be fitted (in nm).  */
+        novac::WavelengthRange instrumentLineShapeFitRegion = novac::WavelengthRange(330.0, 350.0);
+
+        void Clear();
+
+        AutomaticCalibrationSetting(const AutomaticCalibrationSetting& other) = default;
+        AutomaticCalibrationSetting& operator=(const AutomaticCalibrationSetting& other) = default;
     };
 
     class SpectrometerChannelSetting {
     public:
+        SpectrometerChannelSetting() { Clear(); }
+
         /** Resets all values to default */
         void Clear();
 
@@ -97,15 +142,21 @@ public:
         novac::CFitWindow fitWindow;
 
         /** The settings for how to get the dark-spectrum */
-        Configuration::CDarkSettings m_darkSettings;
+        Configuration::CDarkSettings darkSettings;
 
-        /** Assignment operator */
-        SpectrometerChannelSetting& operator=(const SpectrometerChannelSetting& spec2);
+        /** Specifies how and if the instrument should perform self-calibration */
+        AutomaticCalibrationSetting autoCalibration;
+
+        /** Assignment */
+        SpectrometerChannelSetting& operator=(const SpectrometerChannelSetting& other) = default;
+        SpectrometerChannelSetting(const SpectrometerChannelSetting& other) = default;
     };
 
     class SpectrometerSetting
     {
     public:
+        SpectrometerSetting() { Clear(); }
+
         /** Resets all values to default */
         void Clear();
 
@@ -121,12 +172,13 @@ public:
         SpectrometerChannelSetting channel[MAX_CHANNEL_NUM];
 
         /** Assignment operator */
-        SpectrometerSetting& operator=(const SpectrometerSetting& spec2);
+        SpectrometerSetting& operator=(const SpectrometerSetting& other) = default;
+        SpectrometerSetting(const SpectrometerSetting& other) = default;
     };
 
     class WindSpeedMeasurementSetting {
     public:
-        WindSpeedMeasurementSetting();
+        WindSpeedMeasurementSetting() { Clear(); }
 
         /** Resets all values to default */
         void Clear();
@@ -165,13 +217,14 @@ public:
         /** */
         double SwitchRange;
 
-        /** Assignment operator */
-        WindSpeedMeasurementSetting& operator=(const WindSpeedMeasurementSetting& ws2);
+        /** Assignment */
+        WindSpeedMeasurementSetting& operator=(const WindSpeedMeasurementSetting& other) = default;
+        WindSpeedMeasurementSetting(const WindSpeedMeasurementSetting& other) = default;
     };
 
     class SetupChangeSetting {
     public:
-        SetupChangeSetting();
+        SetupChangeSetting() { Clear(); }
 
         /** Resets all values to default */
         void Clear();
@@ -193,13 +246,16 @@ public:
                 CHANGEMODE_SAFE  */
         int mode;
 
-        /** Assignment operator */
-        SetupChangeSetting& operator=(const SetupChangeSetting& ws2);
+        /** Assignment */
+        SetupChangeSetting& operator=(const SetupChangeSetting& other) = default;
+        SetupChangeSetting(const SetupChangeSetting& other) = default;
     };
 
     class MotorSetting
     {
     public:
+        MotorSetting() = default;
+
         /** Resets all values to default */
         void Clear();
 
@@ -210,13 +266,14 @@ public:
         int motorStepsComp = 85;
 
         /** Assignment operator */
-        MotorSetting& operator=(const MotorSetting& other);
+        MotorSetting& operator=(const MotorSetting& other) = default;
+        MotorSetting(const MotorSetting& other) = default;
     };
 
     class ScanningInstrumentSetting
     {
     public:
-        ScanningInstrumentSetting();
+        ScanningInstrumentSetting() { Clear(); }
 
         /** Resets all values to default */
         void Clear();
@@ -241,7 +298,7 @@ public:
         double tilt;
 
         /** The gps-coordinates for the scanning instrument */
-        novac::CGPSData  gps;
+        novac::CGPSData gps;
 
         /** The communication settings for the scanning instrument */
         CommunicationSetting comm;
@@ -277,8 +334,9 @@ public:
         int minFlux;
         int maxFlux;
 
-        /** Assignment operator */
-        ScanningInstrumentSetting& operator=(const ScanningInstrumentSetting& scanner2);
+        /** Assignment */
+        ScanningInstrumentSetting& operator=(const ScanningInstrumentSetting& other) = default;
+        ScanningInstrumentSetting(const ScanningInstrumentSetting& other) = default;
     };
 
     /** Settings for uploading the produced data to the NOVAC server. */
@@ -372,9 +430,5 @@ public:
 
 /** Lists the name of all volcanoes monitored by instruments connected to this computer. */
 std::vector<std::string> ListMonitoredVolcanoes(const CConfigurationSetting& settings);
-
-/** Extracts the name of the volcano which the provided instrument monitors.
-    Returns empty string if the scanner could not be found. */
-std::string GetVolcanoMonitoredByScanner(const CConfigurationSetting& settings, const std::string& serialNumber);
 
 #endif

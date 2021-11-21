@@ -5,7 +5,7 @@ using namespace Graph;
 
 CSpectrumGraph::CSpectrumGraph(void)
 {
-    parentWnd = NULL;
+    parentWnd = nullptr;
     m_zooming = false;
     m_zoomRect.minLambda = 0.0;
     m_zoomRect.maxLambda = 0.0;

@@ -242,7 +242,7 @@ bool CFTPHandler::PollScanner()
     return true;
 }
 
-bool CFTPHandler::DownloadOldPak(long interval)
+bool CFTPHandler::DownloadOldPak(long /*interval*/)
 {
     time_t startTime, stopTime;
 

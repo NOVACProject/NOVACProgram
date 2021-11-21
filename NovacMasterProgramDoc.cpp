@@ -31,12 +31,12 @@ CNovacMasterProgramDoc::~CNovacMasterProgramDoc()
 
 BOOL CNovacMasterProgramDoc::OnNewDocument()
 {
-	if (!CDocument::OnNewDocument())
-		return FALSE;
+    if (!CDocument::OnNewDocument())
+        return FALSE;
 
-	// (SDI documents will reuse this document)
+    // (SDI documents will reuse this document)
 
-	return TRUE;
+    return TRUE;
 }
 
 
@@ -46,12 +46,12 @@ BOOL CNovacMasterProgramDoc::OnNewDocument()
 
 void CNovacMasterProgramDoc::Serialize(CArchive& ar)
 {
-	if (ar.IsStoring())
-	{
-	}
-	else
-	{
-	}
+    if (ar.IsStoring())
+    {
+    }
+    else
+    {
+    }
 }
 
 
@@ -60,12 +60,12 @@ void CNovacMasterProgramDoc::Serialize(CArchive& ar)
 #ifdef _DEBUG
 void CNovacMasterProgramDoc::AssertValid() const
 {
-	CDocument::AssertValid();
+    CDocument::AssertValid();
 }
 
 void CNovacMasterProgramDoc::Dump(CDumpContext& dc) const
 {
-	CDocument::Dump(dc);
+    CDocument::Dump(dc);
 }
 #endif //_DEBUG
 
