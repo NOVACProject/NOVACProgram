@@ -31,7 +31,7 @@ namespace Dialogs {
         // ----------------- PUBLIC DATA -------------------
 
         /** The window for which we want to see the references */
-        novac::CFitWindow*m_window;
+        novac::CFitWindow* m_window;
 
     protected:
         // ----------------- DIALOG COMPONENTS -------------------

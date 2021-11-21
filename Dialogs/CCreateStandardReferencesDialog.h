@@ -6,7 +6,7 @@
 
 namespace novac
 {
-class StandardCrossSectionSetup;
+    class StandardCrossSectionSetup;
 }
 
 class CCreateStandardReferencesDialog : public CDialog

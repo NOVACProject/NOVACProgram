@@ -5,18 +5,18 @@
 
 namespace DlgControls
 {
-	class CMeasGrid :  public CGridCtrl
-	{
-	public:
-		CMeasGrid(void);
-		~CMeasGrid(void);
+    class CMeasGrid : public CGridCtrl
+    {
+    public:
+        CMeasGrid(void);
+        ~CMeasGrid(void);
 
-		CWnd *parent;
+        CWnd* parent;
 
-		void CMeasGrid::OnEndEditCell(int nRow, int nCol, CString str);
+        void CMeasGrid::OnEndEditCell(int nRow, int nCol, CString str);
 
-		DECLARE_MESSAGE_MAP()
-		afx_msg void OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/);
-		afx_msg void OnInsertRow();
-	};
+        DECLARE_MESSAGE_MAP()
+        afx_msg void OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/);
+        afx_msg void OnInsertRow();
+    };
 }

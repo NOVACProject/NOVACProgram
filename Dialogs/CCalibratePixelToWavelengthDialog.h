@@ -8,7 +8,7 @@ class WavelengthCalibrationController;
 
 namespace novac
 {
-class StandardCrossSectionSetup;
+    class StandardCrossSectionSetup;
 }
 
 /// <summary>

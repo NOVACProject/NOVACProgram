@@ -10,25 +10,25 @@
 
 namespace Evaluation
 {
-class CFluxResult : public novac::ScanFluxResult
-{
-public:
-    CFluxResult();
+    class CFluxResult : public novac::ScanFluxResult
+    {
+    public:
+        CFluxResult();
 
-    /** Clears the results */
-    virtual void Clear() override;
+        /** Clears the results */
+        virtual void Clear() override;
 
-    /** Copying */
-    CFluxResult& operator=(const CFluxResult& other) = default;
-    CFluxResult(const CFluxResult& other) = default;
+        /** Copying */
+        CFluxResult& operator=(const CFluxResult& other) = default;
+        CFluxResult(const CFluxResult& other) = default;
 
-    /** The source for the wind-direction */
-    MET_SOURCE m_windDirectionSource;
+        /** The source for the wind-direction */
+        MET_SOURCE m_windDirectionSource;
 
-    /** The source for the wind-speed */
-    MET_SOURCE m_windSpeedSource;
+        /** The source for the wind-speed */
+        MET_SOURCE m_windSpeedSource;
 
-    /** The source for the plume height */
-    MET_SOURCE m_plumeHeightSource;
-};
+        /** The source for the plume height */
+        MET_SOURCE m_plumeHeightSource;
+    };
 }

@@ -15,9 +15,9 @@ std::string FormatEnum(novac::RING_CALCULATION_OPTION value)
 {
     switch (value)
     {
-        case novac::RING_CALCULATION_OPTION::CALCULATE_RING: return "calculate";
-        case novac::RING_CALCULATION_OPTION::CALCULATE_RING_X2: return "calculatex2";
-        default: return "none";
+    case novac::RING_CALCULATION_OPTION::CALCULATE_RING: return "calculate";
+    case novac::RING_CALCULATION_OPTION::CALCULATE_RING_X2: return "calculatex2";
+    default: return "none";
     }
 }
 
@@ -29,7 +29,7 @@ CFitWindowFileHandler::~CFitWindowFileHandler()
 {
 }
 
-std::vector<novac::CFitWindow> CFitWindowFileHandler::ReadFitWindowFile(const CString &fileName)
+std::vector<novac::CFitWindow> CFitWindowFileHandler::ReadFitWindowFile(const CString& fileName)
 {
     std::vector<novac::CFitWindow> allWindowsRead;
 
@@ -69,16 +69,16 @@ std::vector<novac::CFitWindow> CFitWindowFileHandler::ReadFitWindowFile(const CS
     return allWindowsRead;
 }
 
-RETURN_CODE CFitWindowFileHandler::Parse_FitWindow(novac::CFitWindow&window)
+RETURN_CODE CFitWindowFileHandler::Parse_FitWindow(novac::CFitWindow& window)
 {
     window.Clear(); // <-- Reset the data before we start reading from the file.
 
     // find the name for this fit window
-    if (char *pt = strstr(szToken, "name"))
+    if (char* pt = strstr(szToken, "name"))
     {
         if (pt = strstr(pt, "\""))
         {
-            if (char *pt2 = strstr(pt + 1, "\""))
+            if (char* pt2 = strstr(pt + 1, "\""))
                 pt2[0] = 0; // remove the second quote
             char tmpStr[512];
             if (sscanf(pt + 1, "%s", &tmpStr))
@@ -200,13 +200,13 @@ RETURN_CODE CFitWindowFileHandler::Parse_FitWindow(novac::CFitWindow&window)
     return FAIL;
 }
 
-RETURN_CODE CFitWindowFileHandler::Parse_Reference(novac::CFitWindow&window) {
+RETURN_CODE CFitWindowFileHandler::Parse_Reference(novac::CFitWindow& window) {
     int nRef = window.nRef;
 
     // find the name for this reference.
-    if (char *pt = strstr(szToken, "name")) {
+    if (char* pt = strstr(szToken, "name")) {
         if (pt = strstr(pt, "\"")) {
-            if (char *pt2 = strstr(pt + 1, "\""))
+            if (char* pt2 = strstr(pt + 1, "\""))
                 pt2[0] = 0; // remove the second quote
             char tmpStr[512];
             if (sscanf(pt + 1, "%s", &tmpStr)) {
@@ -292,9 +292,9 @@ RETURN_CODE CFitWindowFileHandler::Parse_Reference(novac::CFitWindow&window) {
     return FAIL;
 }
 
-RETURN_CODE CFitWindowFileHandler::WriteFitWindow(const novac::CFitWindow& window, const CString &fileName, bool overWrite)
+RETURN_CODE CFitWindowFileHandler::WriteFitWindow(const novac::CFitWindow& window, const CString& fileName, bool overWrite)
 {
-    FILE *f = nullptr;
+    FILE* f = nullptr;
     CString indent;
 
     // Open the file

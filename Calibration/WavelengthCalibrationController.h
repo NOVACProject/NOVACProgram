@@ -5,8 +5,8 @@
 
 namespace novac
 {
-class InstrumentCalibration;
-class CSpectrum;
+    class InstrumentCalibration;
+    class CSpectrum;
 }
 
 class WavelengthCalibrationController

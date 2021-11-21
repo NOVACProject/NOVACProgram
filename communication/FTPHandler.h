@@ -35,12 +35,12 @@ namespace Communication
         //--------------public functions ------------//
         //-------------------------------------------//
 
-        /** Sets the necessary connection information for us to be able 
+        /** Sets the necessary connection information for us to be able
             to create an FTP connection */
-        void SetFTPInfo(int mainIndex, const CString& hostName, const CString& userName, const CString &pwd, int timeOut, long portNumber = 5551);
-        void SetFTPInfo(int mainIndex, const CString& hostName, const CString& userName, const CString &pwd, const CString &admUserName, const CString &admPwd, int timeOut, long portNumber = 5551);
+        void SetFTPInfo(int mainIndex, const CString& hostName, const CString& userName, const CString& pwd, int timeOut, long portNumber = 5551);
+        void SetFTPInfo(int mainIndex, const CString& hostName, const CString& userName, const CString& pwd, const CString& admUserName, const CString& admPwd, int timeOut, long portNumber = 5551);
 
-        /** Polls the connected instrument for new data. 
+        /** Polls the connected instrument for new data.
             This will attempt to download all old UXXX.pak spectrum files and
             enter the RXXX directories in search of data. */
         bool PollScanner();
@@ -59,7 +59,7 @@ namespace Communication
 
         /** Download a file (pak file or other type) from the instrument computer.
             @param remoteFileName The name of the file to download from the instrument.
-                This shall be a file in the current directory and include the file extension. 
+                This shall be a file in the current directory and include the file extension.
             @param localDirectory The local directory to which the file should be downloaded.
                 This must exist prior to calling this method.
             @param remoteFileSize The size of the file on the instrument, in bytes. */

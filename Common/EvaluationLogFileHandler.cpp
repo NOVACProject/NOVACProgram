@@ -173,7 +173,7 @@ void CEvaluationLogFileHandler::ParseScanHeader(const char szLine[8192]) {
         // The column
         if (0 == _strnicmp(szToken, column, strlen(column))) {
             m_col.column[m_evResult.NumberOfSpecies()] = curCol;
-            char *pt = szToken + strlen(column) + 1;
+            char* pt = szToken + strlen(column) + 1;
             szToken[strlen(szToken) - 1] = 0;
             std::string str(pt);
             m_evResult.InsertSpecie(str);
@@ -301,7 +301,7 @@ RETURN_CODE CEvaluationLogFileHandler::ReadEvaluationLog() {
     CSingleLock singleLock(&g_evalLogCritSect);
     singleLock.Lock();
     if (singleLock.IsLocked()) {
-        FILE *f = fopen(m_evaluationLog, "r");
+        FILE* f = fopen(m_evaluationLog, "r");
         if (NULL == f) {
             singleLock.Unlock();
             return FAIL;
@@ -373,7 +373,7 @@ RETURN_CODE CEvaluationLogFileHandler::ReadEvaluationLog() {
                     // 2. Calculate the offset
                     if (m_scanNum >= 0 && m_scan[sortOrder[m_scanNum]].m_spec.size() > 0) {
                         const CEvaluationResult& evResult = m_scan[sortOrder[m_scanNum]].m_spec.front();
-                        if(evResult.m_referenceResult.size() > 0) {
+                        if (evResult.m_referenceResult.size() > 0) {
                             m_scan[sortOrder[m_scanNum]].CalculateOffset(evResult.m_referenceResult.front().m_specieName);
                         }
                     }
@@ -635,7 +635,7 @@ long CEvaluationLogFileHandler::CountScansInFile() {
     if (singleLock.IsLocked()) {
 
         // Open the evaluation log
-        FILE *f = fopen(m_evaluationLog, "r");
+        FILE* f = fopen(m_evaluationLog, "r");
         if (NULL == f) {
             singleLock.Unlock();
             return 0;
@@ -666,12 +666,12 @@ long CEvaluationLogFileHandler::CountScansInFile() {
 /** Makes a quick scan through the evaluation-log
     to get the start-times of each scan.
     @return the number of scans in the file */
-long CEvaluationLogFileHandler::GetScanStartTimes(CArray<CDateTime*, CDateTime*> &array) {
+long CEvaluationLogFileHandler::GetScanStartTimes(CArray<CDateTime*, CDateTime*>& array) {
     char  scanInfoStart[] = _T("<scaninformation>"); // this string indicates the beginning of a 'scanInformation' section
     char  scanInfoStop[] = _T("</scaninformation>"); // this string indicates the beginning of a 'scanInformation' section
     char szLine[8192];
     long  nScans = 0;
-    char *pt = NULL;
+    char* pt = NULL;
     bool inScanInfoSection = false;
     CDateTime scanStartTime;
     int tmpInt[3];
@@ -686,7 +686,7 @@ long CEvaluationLogFileHandler::GetScanStartTimes(CArray<CDateTime*, CDateTime*>
     if (singleLock.IsLocked()) {
 
         // Open the evaluation log
-        FILE *f = fopen(m_evaluationLog, "r");
+        FILE* f = fopen(m_evaluationLog, "r");
         if (NULL == f) {
             singleLock.Unlock();
             return 0;
@@ -744,9 +744,9 @@ long CEvaluationLogFileHandler::GetScanStartTimes(CArray<CDateTime*, CDateTime*>
 }
 
 /** Reads and parses the 'scanInfo' header before the scan */
-void CEvaluationLogFileHandler::ParseScanInformation(CSpectrumInfo &scanInfo, double &flux, FILE *f) {
+void CEvaluationLogFileHandler::ParseScanInformation(CSpectrumInfo& scanInfo, double& flux, FILE* f) {
     char szLine[8192];
-    char *pt = NULL;
+    char* pt = NULL;
     int tmpInt[3];
     double tmpDouble;
 
@@ -888,9 +888,9 @@ void CEvaluationLogFileHandler::ParseScanInformation(CSpectrumInfo &scanInfo, do
     }
 }
 
-void CEvaluationLogFileHandler::ParseFluxInformation(CWindField &windField, double &flux, FILE *f) {
+void CEvaluationLogFileHandler::ParseFluxInformation(CWindField& windField, double& flux, FILE* f) {
     char szLine[8192];
-    char *pt = NULL;
+    char* pt = NULL;
     double windSpeed = 10, windDirection = 0, plumeHeight = 1000;
     MET_SOURCE windSpeedSource = MET_USER;
     MET_SOURCE windDirectionSource = MET_USER;
@@ -1071,11 +1071,11 @@ bool	CEvaluationLogFileHandler::IsSorted() {
 
 /** Sorts the CDateTime-objects in the given array.
         Algorithm based on bubble sort (~O(N2)) */
-void CEvaluationLogFileHandler::SortScanStartTimes(CArray<CDateTime*, CDateTime*> &allStartTimes, CArray<unsigned int, unsigned int&> &sortOrder) {
+void CEvaluationLogFileHandler::SortScanStartTimes(CArray<CDateTime*, CDateTime*>& allStartTimes, CArray<unsigned int, unsigned int&>& sortOrder) {
     bool change;
     unsigned int k, tmpIndex;
     unsigned int nElements = allStartTimes.GetSize();
-    CDateTime *tmpTime = NULL;
+    CDateTime* tmpTime = NULL;
     CArray<unsigned int, unsigned int&> tmpOrder;
 
     if (nElements == 0)
@@ -1128,11 +1128,11 @@ RETURN_CODE CEvaluationLogFileHandler::WriteEvaluationLog(const CString fileName
         return FAIL;
 
     // 2. Write the file
-    FILE *f = fopen(fileName, "w");
+    FILE* f = fopen(fileName, "w");
 
     for (int scanIndex = 0; scanIndex < this->m_scanNum; ++scanIndex) {
-        Evaluation::CScanResult &scan = this->m_scan[scanIndex];
-        CWindField							&wind = this->m_windField[scanIndex];
+        Evaluation::CScanResult& scan = this->m_scan[scanIndex];
+        CWindField& wind = this->m_windField[scanIndex];
 
         scan.GetStartTime(0, startTime);
 
@@ -1203,7 +1203,7 @@ RETURN_CODE CEvaluationLogFileHandler::WriteEvaluationLog(const CString fileName
         fprintf(f, string);
 
         // ----------------------- write the header --------------------------------
-		string.Format("#scanangle\tstarttime\tstoptime\tname\tspecsaturation\tfitsaturation\tdelta\tchisquare\texposuretime\tnumspec\t");
+        string.Format("#scanangle\tstarttime\tstoptime\tname\tspecsaturation\tfitsaturation\tdelta\tchisquare\texposuretime\tnumspec\t");
 
         for (int itSpecie = 0; itSpecie < scan.GetSpecieNum(0); ++itSpecie) {
             specieName.Format("%s", scan.GetSpecieName(0, itSpecie).c_str());
@@ -1241,7 +1241,7 @@ RETURN_CODE CEvaluationLogFileHandler::WriteEvaluationLog(const CString fileName
     return SUCCESS;
 }
 
-RETURN_CODE CEvaluationLogFileHandler::FormatEvaluationResult(const CSpectrumInfo *info, const CEvaluationResult *result, double maxIntensity, int nSpecies, CString &string) {
+RETURN_CODE CEvaluationLogFileHandler::FormatEvaluationResult(const CSpectrumInfo* info, const CEvaluationResult* result, double maxIntensity, int nSpecies, CString& string) {
     int itSpecie;
     Common common;
 
@@ -1318,7 +1318,7 @@ RETURN_CODE CEvaluationLogFileHandler::FormatEvaluationResult(const CSpectrumInf
 
 /** Sorts the CDateTime-objects in the given array.
         Algorithm based on MergeSort (~O(NlogN)) */
-void FileHandler::CEvaluationLogFileHandler::SortScans(CArray<Evaluation::CScanResult, Evaluation::CScanResult&> &array, bool ascending) {
+void FileHandler::CEvaluationLogFileHandler::SortScans(CArray<Evaluation::CScanResult, Evaluation::CScanResult&>& array, bool ascending) {
     unsigned long nElements = (unsigned long)array.GetSize(); // number of elements
     unsigned long it = 0; // <-- iterator
     unsigned long halfSize = nElements / 2;
@@ -1359,7 +1359,7 @@ void FileHandler::CEvaluationLogFileHandler::SortScans(CArray<Evaluation::CScanR
 
 /** Merges the two arrays in a sorted way and stores the
         result in the output-array 'result' */
-void FileHandler::CEvaluationLogFileHandler::MergeArrays(CArray<Evaluation::CScanResult, Evaluation::CScanResult&> &array1, CArray<Evaluation::CScanResult, Evaluation::CScanResult&> &array2, CArray<Evaluation::CScanResult, Evaluation::CScanResult&> &result, bool ascending) {
+void FileHandler::CEvaluationLogFileHandler::MergeArrays(CArray<Evaluation::CScanResult, Evaluation::CScanResult&>& array1, CArray<Evaluation::CScanResult, Evaluation::CScanResult&>& array2, CArray<Evaluation::CScanResult, Evaluation::CScanResult&>& result, bool ascending) {
     CDateTime	time1, time2;
     unsigned long it1 = 0; // iterator for array1
     unsigned long it2 = 0; // iterator for array2
@@ -1422,7 +1422,7 @@ void FileHandler::CEvaluationLogFileHandler::MergeArrays(CArray<Evaluation::CSca
         Algorithm based on BubbleSort (~O(N2))
         Quite efficient for small arrays since the elements does not have to be copied
             and thus uses very little memory */
-void FileHandler::CEvaluationLogFileHandler::BubbleSortScans(CArray<Evaluation::CScanResult, Evaluation::CScanResult&> &array, bool ascending) {
+void FileHandler::CEvaluationLogFileHandler::BubbleSortScans(CArray<Evaluation::CScanResult, Evaluation::CScanResult&>& array, bool ascending) {
     CDateTime time1, time2;
     bool change;
     unsigned long nElements = (unsigned long)array.GetSize(); // number of elements
@@ -1432,8 +1432,8 @@ void FileHandler::CEvaluationLogFileHandler::BubbleSortScans(CArray<Evaluation::
     CArray<Evaluation::CScanResult, Evaluation::CScanResult&> copiedArray;
 
     // 1. Find the start-time of all the scans
-    CDateTime *allStartTimes = new CDateTime[nElements];
-    unsigned int *sortOrder = new unsigned int[nElements];
+    CDateTime* allStartTimes = new CDateTime[nElements];
+    unsigned int* sortOrder = new unsigned int[nElements];
     for (k = 0; k < nElements; ++k) {
         array[k].GetStartTime(0, allStartTimes[k]);
         sortOrder[k] = k;

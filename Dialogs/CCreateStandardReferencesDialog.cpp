@@ -77,7 +77,7 @@ std::string CCreateStandardReferencesDialog::ReferenceName(size_t referenceIdx, 
     }
 
     dstFileNameStream << ".txt";
-    
+
     return dstFileNameStream.str();
 }
 

@@ -58,7 +58,7 @@ void CFitWindowListBox::OnLButtonDown(UINT nFlags, CPoint point) {
 }
 
 /** Called to show the context menu */
-void CFitWindowListBox::OnContextMenu(CWnd *pWnd, CPoint pos) {
+void CFitWindowListBox::OnContextMenu(CWnd* pWnd, CPoint pos) {
     OnLButtonDown(MK_LBUTTON, pos); // make the current menu item marked
 
     CMenu menu;
@@ -152,7 +152,7 @@ void CFitWindowListBox::OnLoadFitWindows() {
     this->SetCurSel(0);
 
     // Need to tell the parent window to update
-    CWnd *pWnd = GetParent();
+    CWnd* pWnd = GetParent();
     if (nullptr != pWnd)
         pWnd->SendMessage(WM_COMMAND, MAKEWPARAM(GetDlgCtrlID(), LBN_SELCHANGE), (LPARAM)m_hWnd);
 }

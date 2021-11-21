@@ -48,7 +48,7 @@ public:
     MET_SOURCE GetWindSpeedSource() const;
 
     /** Gets the source of the wind-speed */
-    void GetWindSpeedSource(CString &str) const;
+    void GetWindSpeedSource(CString& str) const;
 
     /** Gets the wind-direction */
     double GetWindDirection() const;
@@ -57,7 +57,7 @@ public:
     MET_SOURCE GetWindDirectionSource() const;
 
     /** Gets the source of the wind-direction */
-    void GetWindDirectionSource(CString &str) const;
+    void GetWindDirectionSource(CString& str) const;
 
     /** Gets the plume-height */
     double GetPlumeHeight() const;

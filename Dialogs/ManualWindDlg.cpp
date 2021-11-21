@@ -10,7 +10,7 @@
 using namespace Dialogs;
 
 extern CConfigurationSetting g_settings;	// <-- The settings
-extern CWinThread *g_comm;								// <-- The communication controller
+extern CWinThread* g_comm;								// <-- The communication controller
 
 IMPLEMENT_DYNAMIC(CManualWindDlg, CDialog)
 CManualWindDlg::CManualWindDlg(CWnd* pParent /*=NULL*/)
@@ -102,8 +102,8 @@ BOOL CManualWindDlg::OnInitDialog() {
 
 /** When the user presses the 'Send' - button */
 void CManualWindDlg::OnSend() {
-    CString *fileName = new CString();
-    CString *serialNumber = new CString();
+    CString* fileName = new CString();
+    CString* serialNumber = new CString();
     CString dateTime;
     Common common;
 
@@ -117,7 +117,7 @@ void CManualWindDlg::OnSend() {
         return;
     }
     serialNumber->Format(m_spectrometer[curSel]);
-    CConfigurationSetting::ScanningInstrumentSetting *scanner = NULL;
+    CConfigurationSetting::ScanningInstrumentSetting* scanner = NULL;
     for (unsigned int k = 0; k < g_settings.scannerNum; ++k) {
         if (Equals(g_settings.scanner[k].spec[0].serialNumber, *serialNumber)) {
             scanner = &g_settings.scanner[k];
@@ -137,7 +137,7 @@ void CManualWindDlg::OnSend() {
         common.GetExePath();
         fileName->Format("%s\\cfgonce.txt", (LPCSTR)common.m_exePath);
     }
-    FILE *f = fopen(*fileName, "w");
+    FILE* f = fopen(*fileName, "w");
     if (f == NULL) {
         MessageBox("Could not open cfgonce.txt for writing. Upload failed!!", "Error");
         return;
@@ -221,7 +221,7 @@ void CManualWindDlg::OnChangeSpectrometer() {
         return;
     }
     serialNumber.Format(m_spectrometer[curSel]);
-    CConfigurationSetting::ScanningInstrumentSetting *scanner = NULL;
+    CConfigurationSetting::ScanningInstrumentSetting* scanner = NULL;
     for (unsigned int k = 0; k < g_settings.scannerNum; ++k) {
         if (Equals(g_settings.scanner[k].spec[0].serialNumber, serialNumber)) {
             scanner = &g_settings.scanner[k];

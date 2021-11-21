@@ -65,7 +65,7 @@ bool CScanEvaluation::HasResult()
 }
 
 /** Called to evaluate one scan */
-long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& window, bool *fRun, const Configuration::CDarkSettings *darkSettings)
+long CScanEvaluation::EvaluateScan(const CString& scanfile, const CFitWindow& window, bool* fRun, const Configuration::CDarkSettings* darkSettings)
 {
     CString message;	// used for ShowMessage messages
     int	index = 0;		// keeping track of the index of the current spectrum into the .pak-file
@@ -333,7 +333,7 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
             // i. If the user wants us to sleep between each evaluation. Do so...
             if (m_pause != nullptr && *m_pause == 1 && m_sleeping != nullptr)
             {
-                CWinThread *thread = AfxGetThread();
+                CWinThread* thread = AfxGetThread();
                 *m_sleeping = true;
                 if (pView != 0)
                 {
@@ -397,7 +397,7 @@ void CScanEvaluation::UpdateResult(std::shared_ptr<CScanResult> newResult)
     m_result = newResult;
 }
 
-void CScanEvaluation::ShowResult(const CSpectrum &spec, const CEvaluationBase *eval, long curSpecIndex, long specNum)
+void CScanEvaluation::ShowResult(const CSpectrum& spec, const CEvaluationBase* eval, long curSpecIndex, long specNum)
 {
     if (pView == nullptr)
     {
@@ -449,7 +449,7 @@ void CScanEvaluation::ShowResult(const CSpectrum &spec, const CEvaluationBase *e
     pView->PostMessage(WM_PROGRESS2, (WPARAM)m_prog_SpecCur, (LPARAM)m_prog_SpecNum);
 }
 
-RETURN_CODE CScanEvaluation::GetDark(CScanFileHandler *scan, const CSpectrum &spec, CSpectrum &dark, const Configuration::CDarkSettings *darkSettings)
+RETURN_CODE CScanEvaluation::GetDark(CScanFileHandler* scan, const CSpectrum& spec, CSpectrum& dark, const Configuration::CDarkSettings* darkSettings)
 {
     m_lastErrorMessage = "";
     const bool successs = ScanEvaluationBase::GetDark(*scan, spec, dark, darkSettings);
@@ -468,7 +468,7 @@ RETURN_CODE CScanEvaluation::GetDark(CScanFileHandler *scan, const CSpectrum &sp
 }
 
 /** This returns the sky spectrum that is to be used in the fitting. */
-RETURN_CODE CScanEvaluation::GetSky(CScanFileHandler *scan, CSpectrum &sky) {
+RETURN_CODE CScanEvaluation::GetSky(CScanFileHandler* scan, CSpectrum& sky) {
     CString errorMsg;
 
     // If the sky spectrum is the first spectrum in the scan
@@ -565,7 +565,7 @@ void	CScanEvaluation::SetOption_AveragedSpectra(bool averaged) {
 }
 
 /** Returns true if the spectrum should be ignored */
-bool CScanEvaluation::Ignore(const CSpectrum &spec, const CFitWindow window) {
+bool CScanEvaluation::Ignore(const CSpectrum& spec, const CFitWindow window) {
     bool ret = false;
 
     // Dark spectra
@@ -589,7 +589,7 @@ bool CScanEvaluation::Ignore(const CSpectrum &spec, const CFitWindow window) {
 }
 
 
-CEvaluationResult CScanEvaluation::FindOptimumShiftAndSqueeze(const CEvaluationBase *originalEvaluation, CScanFileHandler *scan, CScanResult *result)
+CEvaluationResult CScanEvaluation::FindOptimumShiftAndSqueeze(const CEvaluationBase* originalEvaluation, CScanFileHandler* scan, CScanResult* result)
 {
     CSpectrum spec, sky, dark;
     int specieNum = 0;
@@ -669,7 +669,7 @@ CEvaluationResult CScanEvaluation::FindOptimumShiftAndSqueeze(const CEvaluationB
     return newResult;
 }
 
-CFitWindow* CScanEvaluation::FindOptimumShiftAndSqueeze_Fraunhofer(const CEvaluationBase *originalEvaluation, CScanFileHandler *scan)
+CFitWindow* CScanEvaluation::FindOptimumShiftAndSqueeze_Fraunhofer(const CEvaluationBase* originalEvaluation, CScanFileHandler* scan)
 {
     CFitWindow newFitWindow = originalEvaluation->FitWindow(); // Create a local copy which we can modify
     double shift, shiftError, squeeze, squeezeError;

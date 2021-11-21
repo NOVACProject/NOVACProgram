@@ -9,7 +9,7 @@ class ReferenceCreationController;
 
 namespace novac
 {
-class StandardCrossSectionSetup;
+    class StandardCrossSectionSetup;
 }
 
 class CCalibrateReferencesDialog : public CPropertyPage

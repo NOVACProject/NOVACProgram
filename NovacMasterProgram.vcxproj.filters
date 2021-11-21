@@ -1374,7 +1374,7 @@
       <Filter>Header Files\Dialogs</Filter>
     </ClInclude>
     <ClInclude Include="Dialogs\CCreateStandardReferencesDialog.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Dialogs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1465,8 +1465,5 @@
     <None Include="res\NovacMasterProgram.rc2">
       <Filter>Resource Files</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="ReadMe.txt" />
   </ItemGroup>
 </Project>

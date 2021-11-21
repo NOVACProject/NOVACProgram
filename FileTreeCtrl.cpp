@@ -15,18 +15,18 @@ using namespace DlgControls;
 IMPLEMENT_DYNAMIC(CFileTreeCtrl, CTreeCtrl)
 CFileTreeCtrl::CFileTreeCtrl()
 {
-	parent = NULL;
+    parent = NULL;
 }
 
 CFileTreeCtrl::~CFileTreeCtrl()
 {
-	parent = NULL;
+    parent = NULL;
 }
 
 
 BEGIN_MESSAGE_MAP(CFileTreeCtrl, CTreeCtrl)
-	ON_WM_RBUTTONDOWN()
-	ON_WM_LBUTTONDOWN()
+    ON_WM_RBUTTONDOWN()
+    ON_WM_LBUTTONDOWN()
 END_MESSAGE_MAP()
 
 
@@ -34,7 +34,7 @@ END_MESSAGE_MAP()
 // CFileTreeCtrl message handlers
 void CFileTreeCtrl::SetWnd(CWnd* pWnd)
 {
-	//m_Wnd = pWnd;
+    //m_Wnd = pWnd;
 }
 //void CFileTreeCtrl::OnItemexpanding(NMHDR* pNMHDR, LRESULT* pResult)
 //{
@@ -68,60 +68,63 @@ void CFileTreeCtrl::SetWnd(CWnd* pWnd)
 //	*pResult = 0;
 //}
 
-void CFileTreeCtrl::OnLButtonDown(UINT nFlags,CPoint point)
+void CFileTreeCtrl::OnLButtonDown(UINT nFlags, CPoint point)
 {
-	//set selected item
-	HTREEITEM hItem = this->HitTest(point, &nFlags);
+    //set selected item
+    HTREEITEM hItem = this->HitTest(point, &nFlags);
 
-	if ((hItem != NULL) && (TVHT_ONITEM & nFlags))
-	{
-		this->SelectItem(hItem);
-	}
-	CTreeCtrl::OnLButtonDown(nFlags,point);
-	// Select the item that is at the point myPoint.
-	
+    if ((hItem != NULL) && (TVHT_ONITEM & nFlags))
+    {
+        this->SelectItem(hItem);
+    }
+    CTreeCtrl::OnLButtonDown(nFlags, point);
+    // Select the item that is at the point myPoint.
+
 }
-void CFileTreeCtrl::OnRButtonDown(UINT nFlags,CPoint point)
+void CFileTreeCtrl::OnRButtonDown(UINT nFlags, CPoint point)
 {
-	CString itemText;
+    CString itemText;
 
-	OnLButtonDown(nFlags,point);
-	//load popup menu
-	CMenu menu;
-  VERIFY(menu.LoadMenu(IDR_FILETREE_POP_MENU));
-  CMenu* pPopup = menu.GetSubMenu(0);
-  ASSERT(pPopup != NULL);
+    OnLButtonDown(nFlags, point);
+    //load popup menu
+    CMenu menu;
+    VERIFY(menu.LoadMenu(IDR_FILETREE_POP_MENU));
+    CMenu* pPopup = menu.GetSubMenu(0);
+    ASSERT(pPopup != NULL);
 
-	// TODO: enable or disable the items depending on what we've marked...
-	// 1. Get the name of the currently selected item
-	itemText		= this->GetItemText(GetSelectedItem());
-	int length	= strlen(itemText);
+    // TODO: enable or disable the items depending on what we've marked...
+    // 1. Get the name of the currently selected item
+    itemText = this->GetItemText(GetSelectedItem());
+    int length = strlen(itemText);
 
-	if(length > 4 && Equals(itemText.Left(4), "disk")){
-		// this is a disk
-    pPopup->EnableMenuItem(ID_FILETREE_VIEWFILE,			MF_DISABLED | MF_GRAYED);
-    pPopup->EnableMenuItem(ID_FILETREE_DELETE,				MF_DISABLED | MF_GRAYED);
-		pPopup->ModifyMenu(ID_FILETREE_DOWNLOAD, MF_BYCOMMAND, ID_FILETREE_DOWNLOAD, "Download All Files");
-	}else if(length == 4 && Equals(itemText.Left(1), "R")){
-		// This is most likely a directory
-    pPopup->EnableMenuItem(ID_FILETREE_VIEWFILE,			MF_DISABLED | MF_GRAYED);
-    pPopup->EnableMenuItem(ID_FILETREE_DELETE,				MF_DISABLED | MF_GRAYED);
-		pPopup->ModifyMenu(ID_FILETREE_DOWNLOAD, MF_BYCOMMAND, ID_FILETREE_DOWNLOAD, "Download Folder");
-	}else{
-		// this is not a directory...
-    pPopup->EnableMenuItem(ID_FILETREE_ENTERFOLDER,		MF_DISABLED | MF_GRAYED);
-		pPopup->ModifyMenu(ID_FILETREE_DOWNLOAD, MF_BYCOMMAND, ID_FILETREE_DOWNLOAD, "Download");
+    if (length > 4 && Equals(itemText.Left(4), "disk")) {
+        // this is a disk
+        pPopup->EnableMenuItem(ID_FILETREE_VIEWFILE, MF_DISABLED | MF_GRAYED);
+        pPopup->EnableMenuItem(ID_FILETREE_DELETE, MF_DISABLED | MF_GRAYED);
+        pPopup->ModifyMenu(ID_FILETREE_DOWNLOAD, MF_BYCOMMAND, ID_FILETREE_DOWNLOAD, "Download All Files");
+    }
+    else if (length == 4 && Equals(itemText.Left(1), "R")) {
+        // This is most likely a directory
+        pPopup->EnableMenuItem(ID_FILETREE_VIEWFILE, MF_DISABLED | MF_GRAYED);
+        pPopup->EnableMenuItem(ID_FILETREE_DELETE, MF_DISABLED | MF_GRAYED);
+        pPopup->ModifyMenu(ID_FILETREE_DOWNLOAD, MF_BYCOMMAND, ID_FILETREE_DOWNLOAD, "Download Folder");
+    }
+    else {
+        // this is not a directory...
+        pPopup->EnableMenuItem(ID_FILETREE_ENTERFOLDER, MF_DISABLED | MF_GRAYED);
+        pPopup->ModifyMenu(ID_FILETREE_DOWNLOAD, MF_BYCOMMAND, ID_FILETREE_DOWNLOAD, "Download");
 
-		// check if this is a text-file
-		if(length > 4 && (Equals(itemText.Right(4), ".txt") || Equals(itemText.Right(4), ".bat") || Equals(itemText.Right(4), ".ini"))){
-			// this is a text-file
-		}else{
-	    pPopup->EnableMenuItem(ID_FILETREE_VIEWFILE,			MF_DISABLED | MF_GRAYED);
-		}
-	}
+        // check if this is a text-file
+        if (length > 4 && (Equals(itemText.Right(4), ".txt") || Equals(itemText.Right(4), ".bat") || Equals(itemText.Right(4), ".ini"))) {
+            // this is a text-file
+        }
+        else {
+            pPopup->EnableMenuItem(ID_FILETREE_VIEWFILE, MF_DISABLED | MF_GRAYED);
+        }
+    }
 
-	CRect rect;
-	GetWindowRect(rect);
-	pPopup->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x + rect.left, point.y + rect.top, parent);
-	
+    CRect rect;
+    GetWindowRect(rect);
+    pPopup->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x + rect.left, point.y + rect.top, parent);
+
 }

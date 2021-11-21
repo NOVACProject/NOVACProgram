@@ -737,9 +737,6 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
   <ItemGroup>
     <None Include="res\NovacMasterProgram.rc2" />
   </ItemGroup>
-  <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

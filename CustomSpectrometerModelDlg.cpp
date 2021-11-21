@@ -12,7 +12,7 @@
 IMPLEMENT_DYNAMIC(CustomSpectrometerModelDlg, CDialog)
 
 CustomSpectrometerModelDlg::CustomSpectrometerModelDlg(CWnd* pParent /*=NULL*/)
-	: CDialog(IDD_CONFIGURE_SPECTROMETERMODEL, pParent)
+    : CDialog(IDD_CONFIGURE_SPECTROMETERMODEL, pParent)
 {
 
 }

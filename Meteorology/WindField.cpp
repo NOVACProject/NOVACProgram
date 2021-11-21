@@ -59,7 +59,7 @@ void CWindField::SetPlumeHeight(double ph, MET_SOURCE source, double phError)
     this->m_plumeHeightError = phError;
 }
 
-void CWindField::SetTimeAndDate(const novac::CDateTime &dt)
+void CWindField::SetTimeAndDate(const novac::CDateTime& dt)
 {
     this->m_time = dt;
 }
@@ -88,7 +88,7 @@ MET_SOURCE CWindField::GetWindSpeedSource() const
     return this->m_windSpeedSource;
 }
 
-void CWindField::GetWindSpeedSource(CString &str) const
+void CWindField::GetWindSpeedSource(CString& str) const
 {
     if (MET_DEFAULT == m_windSpeedSource)
         str = "default";
@@ -116,7 +116,7 @@ MET_SOURCE CWindField::GetWindDirectionSource() const
     return this->m_windDirectionSource;
 }
 
-void CWindField::GetWindDirectionSource(CString &str) const
+void CWindField::GetWindDirectionSource(CString& str) const
 {
     if (MET_DEFAULT == m_windDirectionSource)
         str = "default";
@@ -160,7 +160,7 @@ void CWindField::GetPlumeHeightSource(CString& sourceStr) const
     return;
 }
 
-const novac::CDateTime &CWindField::GetTimeAndDate() const
+const novac::CDateTime& CWindField::GetTimeAndDate() const
 {
     return this->m_time;
 }

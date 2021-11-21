@@ -5,7 +5,7 @@
 
 namespace novac
 {
-class CCrossSectionData;
+    class CCrossSectionData;
 }
 
 class ReferenceCreationController

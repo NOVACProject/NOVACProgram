@@ -6,13 +6,13 @@
 namespace ReEvaluation
 {
 
-	class CReEvaluationDlg :  public Dialogs::CSimplePropertySheet
-	{
-	public:
-		CReEvaluationDlg(void);
-		~CReEvaluationDlg(void);
+    class CReEvaluationDlg : public Dialogs::CSimplePropertySheet
+    {
+    public:
+        CReEvaluationDlg(void);
+        ~CReEvaluationDlg(void);
 
-		DECLARE_MESSAGE_MAP()
-		virtual BOOL OnInitDialog();
-	};
+        DECLARE_MESSAGE_MAP()
+        virtual BOOL OnInitDialog();
+    };
 }

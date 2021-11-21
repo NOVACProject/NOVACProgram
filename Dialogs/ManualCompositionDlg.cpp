@@ -10,7 +10,7 @@
 using namespace Dialogs;
 
 extern CConfigurationSetting g_settings;	// <-- The settings
-extern CWinThread *g_comm;								// <-- The communication controller
+extern CWinThread* g_comm;  // <-- The communication controller
 
 // CManualCompositionDlg dialog
 
@@ -89,8 +89,8 @@ BOOL CManualCompositionDlg::OnInitDialog() {
 
 /** When the user presses the 'Send' - button */
 void CManualCompositionDlg::OnSend() {
-    CString *fileName = new CString();
-    CString *serialNumber = new CString();
+    CString* fileName = new CString();
+    CString* serialNumber = new CString();
     CString dateTime, message;
     double alpha;
     Common common;
@@ -105,7 +105,7 @@ void CManualCompositionDlg::OnSend() {
         return;
     }
     serialNumber->Format(m_spectrometer[curSel]);
-    CConfigurationSetting::ScanningInstrumentSetting *scanner = NULL;
+    CConfigurationSetting::ScanningInstrumentSetting* scanner = NULL;
     for (unsigned int k = 0; k < g_settings.scannerNum; ++k) {
         if (Equals(g_settings.scanner[k].spec[0].serialNumber, *serialNumber)) {
             scanner = &g_settings.scanner[k];
@@ -121,7 +121,7 @@ void CManualCompositionDlg::OnSend() {
         common.GetExePath();
         fileName->Format("%s\\cfgonce.txt", (LPCSTR)common.m_exePath);
     }
-    FILE *f = fopen(*fileName, "w");
+    FILE* f = fopen(*fileName, "w");
     if (f == NULL) {
         message.Format("Could not open %s for writing. Upload failed!!", (LPCSTR)*fileName);
         MessageBox(message, "Error");

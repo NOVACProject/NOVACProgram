@@ -7,17 +7,17 @@ using namespace Dialogs;
 
 IMPLEMENT_DYNAMIC(CSimplePropertySheet, CPropertySheet)
 CSimplePropertySheet::CSimplePropertySheet(UINT nIDCaption, CWnd* pParentWnd, UINT iSelectPage)
-	:CPropertySheet(nIDCaption, pParentWnd, iSelectPage)
+    :CPropertySheet(nIDCaption, pParentWnd, iSelectPage)
 {
 }
 
 CSimplePropertySheet::CSimplePropertySheet(LPCTSTR pszCaption, CWnd* pParentWnd, UINT iSelectPage)
-	:CPropertySheet(pszCaption, pParentWnd, iSelectPage)
+    : CPropertySheet(pszCaption, pParentWnd, iSelectPage)
 {
 }
 
 CSimplePropertySheet::CSimplePropertySheet()
-	:CPropertySheet()
+    : CPropertySheet()
 {
 }
 
@@ -34,32 +34,32 @@ END_MESSAGE_MAP()
 
 BOOL Dialogs::CSimplePropertySheet::OnInitDialog()
 {
-	BOOL bResult = CPropertySheet::OnInitDialog();
+    BOOL bResult = CPropertySheet::OnInitDialog();
 
-	CRect rect;
+    CRect rect;
 
-	// Get the buttons...
-	CWnd *pApply = this->GetDlgItem(ID_APPLY_NOW);
-	CWnd *pCancel = this->GetDlgItem(IDCANCEL);
-	CWnd *pOk = this->GetDlgItem(IDOK);
+    // Get the buttons...
+    CWnd* pApply = this->GetDlgItem(ID_APPLY_NOW);
+    CWnd* pCancel = this->GetDlgItem(IDCANCEL);
+    CWnd* pOk = this->GetDlgItem(IDOK);
 
-	// Get the position of the 'Apply'-button, and then remove it
-	if(pApply){
-		pApply->GetWindowRect(rect);
-		ScreenToClient(rect);
-		pApply->DestroyWindow();
-	}
+    // Get the position of the 'Apply'-button, and then remove it
+    if (pApply) {
+        pApply->GetWindowRect(rect);
+        ScreenToClient(rect);
+        pApply->DestroyWindow();
+    }
 
-	// remove the 'OK'-button
-	if(pOk)
-		pOk->DestroyWindow();
+    // remove the 'OK'-button
+    if (pOk)
+        pOk->DestroyWindow();
 
-	// Change the 'Cancel'-button to a 'Close'-button, move it to where the 
-	//	'Apply'-button was
-	if(pCancel){
-		pCancel->SetWindowText("Close");
-		pCancel->MoveWindow(rect);
-	}
+    // Change the 'Cancel'-button to a 'Close'-button, move it to where the 
+    //	'Apply'-button was
+    if (pCancel) {
+        pCancel->SetWindowText("Close");
+        pCancel->MoveWindow(rect);
+    }
 
-	return bResult;
+    return bResult;
 }

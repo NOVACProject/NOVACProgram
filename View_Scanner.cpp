@@ -41,8 +41,8 @@ IMPLEMENT_DYNAMIC(CView_Scanner, CPropertyPage)
 CView_Scanner::CView_Scanner()
     : CPropertyPage(CView_Scanner::IDD)
 {
-    m_evalDataStorage = NULL;
-    m_commDataStorage = NULL;
+    m_evalDataStorage = nullptr;
+    m_commDataStorage = nullptr;
     m_scannerIndex = 0;
     m_serial.Format("");
     m_siteName.Format("");
@@ -125,7 +125,7 @@ void CView_Scanner::SetLayout() {
     this->ScreenToClient(thisClientRegion);
 
     // Adjust the width of the column frame
-    if (this->m_lastScanFrame.m_hWnd != NULL) {
+    if (this->m_lastScanFrame.m_hWnd != nullptr) {
         CRect lastScanFrameClientRegion;
         m_lastScanFrame.GetWindowRect(&lastScanFrameClientRegion);
         this->ScreenToClient(lastScanFrameClientRegion);
@@ -137,7 +137,7 @@ void CView_Scanner::SetLayout() {
     }
 
     // Adjust the width of the flux frame
-    if (this->m_todayScanFrame.m_hWnd != NULL) {
+    if (this->m_todayScanFrame.m_hWnd != nullptr) {
         CRect fluxFrameClientRegion;
         m_todayScanFrame.GetWindowRect(&fluxFrameClientRegion);
         this->ScreenToClient(fluxFrameClientRegion);
@@ -457,7 +457,7 @@ void CView_Scanner::DrawColumn() {
             // Make a small file which contains the name of the last file generated
             latestInfoFileName.Format("%s\\LastColumnGraph_%s.txt", (LPCTSTR)g_settings.webSettings.localDirectory, (LPCTSTR)m_serial);
             FILE* f = fopen(latestInfoFileName, "w");
-            if (f != NULL) {
+            if (f != nullptr) {
                 fprintf(f, "%s\n", (LPCTSTR)imageFileName);
                 fclose(f);
             }
@@ -605,7 +605,7 @@ void CView_Scanner::DrawColumnDay() {
             // Make a small file which contains the name of the last file generated
             latestInfoFileName.Format("%s\\DayColumnGraph_%s.txt", (LPCTSTR)g_settings.webSettings.localDirectory, (LPCTSTR)m_serial);
             FILE* f = fopen(latestInfoFileName, "w");
-            if (f != NULL) {
+            if (f != nullptr) {
                 fprintf(f, "%s\n", (LPCTSTR)imageFileName);
                 fclose(f);
             }
@@ -926,7 +926,7 @@ void CView_Scanner::ExecuteScript_Image(const CString& imageFile) {
     command.Format("%s", (LPCTSTR)imageFile);
 
     // Call the script
-    int result = (int)ShellExecute(NULL, "open", filePath, command, directory, SW_SHOW);
+    int result = (int)ShellExecute(nullptr, "open", filePath, command, directory, SW_SHOW);
 
     // Check the return-code if there was any error...
     if (result > 32)

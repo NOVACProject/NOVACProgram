@@ -4,19 +4,19 @@
 
 namespace Dialogs
 {
-  // CExportDlg
+    // CExportDlg
 
-  class CExportDlg : public CSimplePropertySheet
-  {
-    DECLARE_DYNAMIC(CExportDlg)
+    class CExportDlg : public CSimplePropertySheet
+    {
+        DECLARE_DYNAMIC(CExportDlg)
 
-  public:
-    CExportDlg(UINT nIDCaption, CWnd* pParentWnd = NULL, UINT iSelectPage = 0);
-    CExportDlg();
-    CExportDlg(LPCTSTR pszCaption, CWnd* pParentWnd = NULL, UINT iSelectPage = 0);
-		virtual ~CExportDlg();
+    public:
+        CExportDlg(UINT nIDCaption, CWnd* pParentWnd = NULL, UINT iSelectPage = 0);
+        CExportDlg();
+        CExportDlg(LPCTSTR pszCaption, CWnd* pParentWnd = NULL, UINT iSelectPage = 0);
+        virtual ~CExportDlg();
 
-  protected:
-    DECLARE_MESSAGE_MAP()
-	};
+    protected:
+        DECLARE_MESSAGE_MAP()
+    };
 }

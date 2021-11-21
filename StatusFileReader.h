@@ -34,50 +34,50 @@ namespace FileHandler
 #define PAUSE 31
 #define RESUME 32
 
-class CStatusFileReader
-{
-public:
-    CStatusFileReader(void);
-    ~CStatusFileReader(void);
+    class CStatusFileReader
+    {
+    public:
+        CStatusFileReader(void);
+        ~CStatusFileReader(void);
 
-    /**reorder the status records, from index=4 to index = 1023, records are listed
-    *from oldest to latest.
-    *@param fileFullName full path and name of the status.dat file
-    */
-    void Reorder();
+        /**reorder the status records, from index=4 to index = 1023, records are listed
+        *from oldest to latest.
+        *@param fileFullName full path and name of the status.dat file
+        */
+        void Reorder();
 
-    /**check latest 10 status records to find out one which is same as the input value
-    *@param status the status to be found
-    *return 0 - if status is not found
-    *return 1 - if status is found
-    */
-    int CheckStatus(unsigned char status);
+        /**check latest 10 status records to find out one which is same as the input value
+        *@param status the status to be found
+        *return 0 - if status is not found
+        *return 1 - if status is found
+        */
+        int CheckStatus(unsigned char status);
 
-    /**Check if command was received
-    *return 0 - if is not received
-    *return 1 - if it is received
-    */
-    int IsCommandReceived();
+        /**Check if command was received
+        *return 0 - if is not received
+        *return 1 - if it is received
+        */
+        int IsCommandReceived();
 
-    /**Check if kongo exited
-    *return 1 - exited
-    */
-    int IsExit();
+        /**Check if kongo exited
+        *return 1 - exited
+        */
+        int IsExit();
 
-    /**check if kongo is started*/
-    int IsStart();
+        /**check if kongo is started*/
+        int IsStart();
 
-    /**check if kongo is power off*/
-    int IsPoweroff();
+        /**check if kongo is power off*/
+        int IsPoweroff();
 
-    void StatusPrint(unsigned char s);
+        void StatusPrint(unsigned char s);
 
-    void RecordStatus(char* txt);
+        void RecordStatus(char* txt);
 
-    void SetWorkingPath(CString path);
+        void SetWorkingPath(CString path);
 
-private:
-    CString m_workingPath;
-    char m_statusList[1024];
-};
+    private:
+        CString m_workingPath;
+        char m_statusList[1024];
+    };
 }

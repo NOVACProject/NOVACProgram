@@ -43,11 +43,11 @@ private:
 
     // This class is not copyable because of the owned pointer.
     //  better to make this explicit here than to discover it later in a crash.
-    CMeteorologicalData(const CMeteorologicalData& ) = delete;
-    CMeteorologicalData& operator=(const CMeteorologicalData& ) = delete;
+    CMeteorologicalData(const CMeteorologicalData&) = delete;
+    CMeteorologicalData& operator=(const CMeteorologicalData&) = delete;
 
     /** The wind-field database read from file.
-        If any wind-field has been read in from a file, 
+        If any wind-field has been read in from a file,
         then the data can be found here. */
     std::unique_ptr<CWindFieldDatabase> m_wfDatabaseFromFile = nullptr;
 

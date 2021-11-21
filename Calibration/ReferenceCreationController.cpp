@@ -13,7 +13,7 @@
 
 namespace novac
 {
-std::vector<double> GetPixelToWavelengthMappingFromFile(const std::string& clbFile);
+    std::vector<double> GetPixelToWavelengthMappingFromFile(const std::string& clbFile);
 }
 
 // Question here: should maybe these free function be moved to SpectralEvaluation ?
