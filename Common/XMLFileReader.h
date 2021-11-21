@@ -10,6 +10,8 @@ namespace FileHandler
         CXMLFileReader();
         virtual ~CXMLFileReader();
 
+        void Close();
+
     protected:
 
         /**retrieve the next token from the xml file*/

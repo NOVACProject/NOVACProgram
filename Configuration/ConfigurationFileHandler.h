@@ -36,7 +36,7 @@ namespace FileHandler
             in the same directory as the executable.
             @return 0 on sucess.
             @return 1 if any error occurs */
-        int WriteConfigurationFile(CConfigurationSetting& configuration, const CString* fileName = NULL);
+        int WriteConfigurationFile(const CConfigurationSetting& configuration, const CString* fileName = nullptr) const;
 
         /** Writes the FTP login configuration file using the values stored in the
             supplied reference 'conf'. If fileName is not-null the reader will
@@ -44,20 +44,24 @@ namespace FileHandler
             in the same directory as the executable.
             @return 0 on sucess.
             @return 1 if any error occurs */
-        int WriteFtpLoginConfigurationFile(CConfigurationSetting& configuration, const CString* fileName = NULL);
+        int WriteFtpLoginConfigurationFile(const CConfigurationSetting& configuration, const CString* fileName = nullptr) const;
 
     private:
         // ---------------------- PRIVATE DATA ----------------------------
-        /** A Pointer to the current scanning instrument */
-        CConfigurationSetting::ScanningInstrumentSetting* curScanner;
+        /** A pointer to the current scanning instrument.
+            This is used while reading and parsing a configuration file, and should in all instances point to the instrument currently being read in.
+            Storing this as a member is error prone, but has at least proven to work so far.. */
+        CConfigurationSetting::ScanningInstrumentSetting* curScanner = nullptr;
 
-        /** A Pointer to the configuration object that we are filling in or reading from */
-        CConfigurationSetting* conf;
+        /** A pointer to the configuration object that we are filling in data into.
+            This is used while reading and parsing a configuration file.
+            Storing this as a member is error prone, but has at least proven to work so far.. */
+        CConfigurationSetting* conf = nullptr;
 
         // -------------------- PRIVATE METHODS --------------------------
 
         /** Makes a sanity check of the settings just read in */
-        int CheckSettings();
+        static void CheckSettings(CConfigurationSetting& configuration);
 
         /** Starts the parsing */
         int Parse();

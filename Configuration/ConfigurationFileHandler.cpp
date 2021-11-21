@@ -1,9 +1,8 @@
 #include "StdAfx.h"
-#include "configurationfilehandler.h"
+#include "ConfigurationFileHandler.h"
 #include <SpectralEvaluation/Spectra/SpectrometerModel.h>
 #include "../VolcanoInfo.h"
 #include "../resource.h"
-#include "Configuration.h"
 
 using namespace FileHandler;
 using namespace novac;
@@ -41,6 +40,7 @@ int CConfigurationFileHandler::ReadConfigurationFile(CConfigurationSetting& conf
     // 2. Open the file
     if (!file.Open(tmp_fileName, CFile::modeRead | CFile::typeText, &exceFile))
     {
+        this->conf = nullptr;
         return 1;
     }
     this->SetFile(&file);
@@ -51,13 +51,17 @@ int CConfigurationFileHandler::ReadConfigurationFile(CConfigurationSetting& conf
     // 3. Parse the file
     if (Parse()) {
         // error in parsing
-        file.Close();
+        conf = nullptr;
+        curScanner = nullptr;
+        Close();
         return 1;
     }
     else {
         // parsing was ok
-        file.Close();
-        CheckSettings();
+        Close();
+        conf = nullptr;
+        curScanner = nullptr;
+        CheckSettings(configuration);
         return 0;
     }
 }
@@ -66,8 +70,6 @@ int CConfigurationFileHandler::ReadFtpLoginConfigurationFile(CConfigurationSetti
     CString tmp_fileName;
     CFileException exceFile;
     CStdioFile file;
-
-    this->conf = &configuration;
 
     // 1. Get the filename
     if (fileName == nullptr) {
@@ -87,21 +89,21 @@ int CConfigurationFileHandler::ReadFtpLoginConfigurationFile(CConfigurationSetti
 
     while (szToken = NextToken()) {
         if (Equals(szToken, "ftpUserName")) {
-            Parse_StringItem(TEXT("/ftpUserName"), conf->ftpSetting.userName);
+            Parse_StringItem(TEXT("/ftpUserName"), configuration.ftpSetting.userName);
             continue;
         }
         if (Equals(szToken, "ftpPassword")) {
-            Parse_StringItem(TEXT("/ftpPassword"), conf->ftpSetting.password);
+            Parse_StringItem(TEXT("/ftpPassword"), configuration.ftpSetting.password);
             continue;
         }
     }
 
-    file.Close();
+    Close();
     return 0;
 
 }
 
-int CConfigurationFileHandler::WriteFtpLoginConfigurationFile(CConfigurationSetting& configuration, const CString* fileName) {
+int CConfigurationFileHandler::WriteFtpLoginConfigurationFile(const CConfigurationSetting& configuration, const CString* fileName) const {
     CString indent, str, tmp_fileName;
     Common common;
     std::string modelStr;
@@ -114,8 +116,6 @@ int CConfigurationFileHandler::WriteFtpLoginConfigurationFile(CConfigurationSett
     else {
         tmp_fileName.Format("%s", (LPCSTR)*fileName);
     }
-
-    this->conf = &configuration;
 
     // 2. Open the file
     FILE* f = fopen(tmp_fileName, "w");
@@ -130,10 +130,10 @@ int CConfigurationFileHandler::WriteFtpLoginConfigurationFile(CConfigurationSett
     fprintf(f, TEXT("<FtpLogin>\n"));
 
     // 4d. The ftp server setting - username
-    str.Format("\t<ftpUserName>%s</ftpUserName>\n", (LPCSTR)conf->ftpSetting.userName);
+    str.Format("\t<ftpUserName>%s</ftpUserName>\n", (LPCSTR)configuration.ftpSetting.userName);
     fprintf(f, str);
     // 4e. The ftp server setting - password
-    str.Format("\t<ftpPassword>%s</ftpPassword>\n", (LPCSTR)conf->ftpSetting.password);
+    str.Format("\t<ftpPassword>%s</ftpPassword>\n", (LPCSTR)configuration.ftpSetting.password);
     fprintf(f, str);
 
     fprintf(f, TEXT("</FtpLogin>"));
@@ -143,7 +143,7 @@ int CConfigurationFileHandler::WriteFtpLoginConfigurationFile(CConfigurationSett
     return 0;
 }
 
-int CConfigurationFileHandler::WriteConfigurationFile(CConfigurationSetting& configuration, const CString* fileName) {
+int CConfigurationFileHandler::WriteConfigurationFile(const CConfigurationSetting& configuration, const CString* fileName) const {
     CString indent, str, tmp_fileName;
     Common common;
     std::string modelStr;
@@ -156,8 +156,6 @@ int CConfigurationFileHandler::WriteConfigurationFile(CConfigurationSetting& con
     else {
         tmp_fileName.Format("%s", (LPCSTR)*fileName);
     }
-
-    this->conf = &configuration;
 
     // 2. Open the file
     FILE* f = fopen(tmp_fileName, "w");
@@ -174,57 +172,57 @@ int CConfigurationFileHandler::WriteConfigurationFile(CConfigurationSetting& con
     // 4. Write the global information
 
     // 4a. The output directory
-    if (strlen(conf->outputDirectory) > 0)
+    if (strlen(configuration.outputDirectory) > 0)
     {
-        fprintf(f, TEXT("\t<outputDir>") + conf->outputDirectory + TEXT("</outputDir>\n"));
+        fprintf(f, TEXT("\t<outputDir>") + configuration.outputDirectory + TEXT("</outputDir>\n"));
     }
 
     // 4b. The startup method
-    str.Format("\t<startup>%d</startup>\n", conf->startup);
+    str.Format("\t<startup>%d</startup>\n", configuration.startup);
     fprintf(f, str);
     // 4c. The data-upload server setting - address
-    str.Format("\t<ftpAddress>%s</ftpAddress>\n", (LPCSTR)conf->ftpSetting.ftpAddress);
+    str.Format("\t<ftpAddress>%s</ftpAddress>\n", (LPCSTR)configuration.ftpSetting.ftpAddress);
     fprintf(f, str);
     // 4d. The data-upload setting - protocol
-    str.Format("\t<ftpProtocol>%s</ftpProtocol>\n", (LPCSTR)conf->ftpSetting.protocol);
+    str.Format("\t<ftpProtocol>%s</ftpProtocol>\n", (LPCSTR)configuration.ftpSetting.protocol);
     fprintf(f, str);
     //// 4e. The ftp server setting - password
-    //str.Format("\t<ftpPassword>%s</ftpPassword>\n", (LPCSTR)conf->ftpSetting.password);
+    //str.Format("\t<ftpPassword>%s</ftpPassword>\n", (LPCSTR)configuration.ftpSetting.password);
     //fprintf(f, str);
     // 4e2. The settings for when to upload to the FTP-server...
-    str.Format("\t<ftpStartTime>%d</ftpStartTime>\n", conf->ftpSetting.ftpStartTime);
+    str.Format("\t<ftpStartTime>%d</ftpStartTime>\n", configuration.ftpSetting.ftpStartTime);
     fprintf(f, str);
-    str.Format("\t<ftpStopTime>%d</ftpStopTime>\n", conf->ftpSetting.ftpStopTime);
+    str.Format("\t<ftpStopTime>%d</ftpStopTime>\n", configuration.ftpSetting.ftpStopTime);
     fprintf(f, str);
 
 
     // 4f. Write if we should publish results
-    if (conf->webSettings.publish) {
-        if (strlen(conf->webSettings.localDirectory) > 0) {
+    if (configuration.webSettings.publish) {
+        if (strlen(configuration.webSettings.localDirectory) > 0) {
             str.Format("\t<publish>1</publish>\n");
-            str.AppendFormat("\t<localPublishDirectory>%s</localPublishDirectory>\n", (LPCSTR)conf->webSettings.localDirectory);
+            str.AppendFormat("\t<localPublishDirectory>%s</localPublishDirectory>\n", (LPCSTR)configuration.webSettings.localDirectory);
             fprintf(f, str);
         }
-        str.Format("\t<publishFormat>%s</publishFormat>\n", (LPCSTR)conf->webSettings.imageFormat);
+        str.Format("\t<publishFormat>%s</publishFormat>\n", (LPCSTR)configuration.webSettings.imageFormat);
         fprintf(f, str);
     }
 
     // 4g. Write if we should call external softwares
-    if (strlen(conf->externalSetting.fullScanScript) > 1) {
-        str.Format("\t<fullScanExecute>%s</fullScanExecute>\n", (LPCSTR)conf->externalSetting.fullScanScript);
+    if (strlen(configuration.externalSetting.fullScanScript) > 1) {
+        str.Format("\t<fullScanExecute>%s</fullScanExecute>\n", (LPCSTR)configuration.externalSetting.fullScanScript);
         fprintf(f, str);
     }
-    if (strlen(conf->externalSetting.imageScript) > 1) {
-        str.Format("\t<imageExecute>%s</imageExecute>\n", (LPCSTR)conf->externalSetting.imageScript);
+    if (strlen(configuration.externalSetting.imageScript) > 1) {
+        str.Format("\t<imageExecute>%s</imageExecute>\n", (LPCSTR)configuration.externalSetting.imageScript);
         fprintf(f, str);
     }
 
     // 4h. If there is a wind-field file which should be re-read every now and then
-    if (conf->windSourceSettings.windFieldFile.GetLength() > 3) {
+    if (configuration.windSourceSettings.windFieldFile.GetLength() > 3) {
         str.Format("\t<windImport>\n");
-        str.AppendFormat("\t\t<path>%s</path>\n", (LPCSTR)conf->windSourceSettings.windFieldFile);
-        str.AppendFormat("\t\t<reloadInterval>%d</reloadInterval>\n", conf->windSourceSettings.windFileReloadInterval);
-        str.AppendFormat("\t\t<enabled>%d</enabled>\n", conf->windSourceSettings.enabled);
+        str.AppendFormat("\t\t<path>%s</path>\n", (LPCSTR)configuration.windSourceSettings.windFieldFile);
+        str.AppendFormat("\t\t<reloadInterval>%d</reloadInterval>\n", configuration.windSourceSettings.windFileReloadInterval);
+        str.AppendFormat("\t\t<enabled>%d</enabled>\n", configuration.windSourceSettings.enabled);
         str.AppendFormat("\t</windImport>\n");
         fprintf(f, str);
     }
@@ -235,18 +233,20 @@ int CConfigurationFileHandler::WriteConfigurationFile(CConfigurationSetting& con
     // 6. Write the information about the scanning Instruments
 
     bool hasDoubleSpectrometer = false;
-    for (unsigned int i = 0; i < conf->scannerNum; ++i) {
+    for (unsigned int scannerIdx = 0; scannerIdx < configuration.scannerNum; ++scannerIdx) {
         indent.Format("\t\t\t\t");
+
+        const auto& currentScanner = configuration.scanner[scannerIdx]; // shorter notation, for better readability below.
 
         fprintf(f, TEXT("\t\t<scanningInstrument>\n"));
 
         // observatory
-        fprintf(f, TEXT("\t\t\t<observatory>" + conf->scanner[i].observatory + "</observatory>\n"));
+        fprintf(f, TEXT("\t\t\t<observatory>" + currentScanner.observatory + "</observatory>\n"));
 
         // If the user has configured a volcano, then also write its additional information
         bool ownerConfiguredSource = false;
         for (unsigned int k = g_volcanoes.m_preConfiguredVolcanoNum; k < g_volcanoes.m_volcanoNum; ++k) {
-            if (Equals(g_volcanoes.m_name[k], conf->scanner[i].volcano)) {
+            if (Equals(g_volcanoes.m_name[k], currentScanner.volcano)) {
                 fprintf(f, TEXT("\t\t\t<sourceInfo>\n"));
                 str.Format("\t\t\t\t<name>%s</name>\n", (LPCSTR)g_volcanoes.m_name[k]);
                 str.AppendFormat("\t\t\t\t<latitude>%lf</latitude>\n", g_volcanoes.m_peakLatitude[k]);
@@ -260,37 +260,37 @@ int CConfigurationFileHandler::WriteConfigurationFile(CConfigurationSetting& con
         }
         if (!ownerConfiguredSource) {
             // volcano
-            fprintf(f, TEXT("\t\t\t<volcano>" + conf->scanner[i].volcano + "</volcano>\n"));
+            fprintf(f, TEXT("\t\t\t<volcano>" + currentScanner.volcano + "</volcano>\n"));
         }
 
         // site
-        fprintf(f, TEXT("\t\t\t<site>" + conf->scanner[i].site + "</site>\n"));
+        fprintf(f, TEXT("\t\t\t<site>" + currentScanner.site + "</site>\n"));
 
         // position
-        str.Format("\t\t\t<instr_latitude>%lf</instr_latitude>\n", conf->scanner[i].gps.m_latitude);
-        str.AppendFormat("\t\t\t<instr_longitude>%lf</instr_longitude>\n", conf->scanner[i].gps.m_longitude);
-        str.AppendFormat("\t\t\t<instr_altitude>%lf</instr_altitude>\n", conf->scanner[i].gps.m_altitude);
-        str.AppendFormat("\t\t\t<instr_compass>%lf</instr_compass>\n", conf->scanner[i].compass);
+        str.Format("\t\t\t<instr_latitude>%lf</instr_latitude>\n", currentScanner.gps.m_latitude);
+        str.AppendFormat("\t\t\t<instr_longitude>%lf</instr_longitude>\n", currentScanner.gps.m_longitude);
+        str.AppendFormat("\t\t\t<instr_altitude>%lf</instr_altitude>\n", currentScanner.gps.m_altitude);
+        str.AppendFormat("\t\t\t<instr_compass>%lf</instr_compass>\n", currentScanner.compass);
         fprintf(f, str);
 
         // electronicsBox
-        str.Format("\t\t\t<electronics>%d</electronics>\n", conf->scanner[i].electronicsBox);
+        str.Format("\t\t\t<electronics>%d</electronics>\n", currentScanner.electronicsBox);
         fprintf(f, str);
 
         // plot options
-        str.Format("\t\t\t<plotColumn>%d</plotColumn>\n", conf->scanner[i].plotColumn);
-        str.AppendFormat("\t\t\t<plotColumnHistory>%d</plotColumnHistory>\n", conf->scanner[i].plotColumnHistory);
-        str.AppendFormat("\t\t\t<minColumn>%d</minColumn>\n", conf->scanner[i].minColumn);
-        str.AppendFormat("\t\t\t<maxColumn>%d</maxColumn>\n", conf->scanner[i].maxColumn);
-        str.AppendFormat("\t\t\t<plotFluxHistory>%d</plotFluxHistory>\n", conf->scanner[i].plotFluxHistory);
-        str.AppendFormat("\t\t\t<minFlux>%d</minFlux>\n", conf->scanner[i].minFlux);
-        str.AppendFormat("\t\t\t<maxFlux>%d</maxFlux>\n", conf->scanner[i].maxFlux);
+        str.Format("\t\t\t<plotColumn>%d</plotColumn>\n", currentScanner.plotColumn);
+        str.AppendFormat("\t\t\t<plotColumnHistory>%d</plotColumnHistory>\n", currentScanner.plotColumnHistory);
+        str.AppendFormat("\t\t\t<minColumn>%d</minColumn>\n", currentScanner.minColumn);
+        str.AppendFormat("\t\t\t<maxColumn>%d</maxColumn>\n", currentScanner.maxColumn);
+        str.AppendFormat("\t\t\t<plotFluxHistory>%d</plotFluxHistory>\n", currentScanner.plotFluxHistory);
+        str.AppendFormat("\t\t\t<minFlux>%d</minFlux>\n", currentScanner.minFlux);
+        str.AppendFormat("\t\t\t<maxFlux>%d</maxFlux>\n", currentScanner.maxFlux);
         fprintf(f, str);
 
         // --- First write the spectrometer information
-        for (unsigned int j = 0; j < conf->scanner[i].specNum; ++j)
+        for (unsigned int spectrometerIdx = 0; spectrometerIdx < currentScanner.specNum; ++spectrometerIdx)
         {
-            CConfigurationSetting::SpectrometerSetting& spec = conf->scanner[i].spec[j];
+            const CConfigurationSetting::SpectrometerSetting& spec = currentScanner.spec[spectrometerIdx];
             fprintf(f, TEXT("\t\t\t<spectrometer>\n"));
 
             // serial Number
@@ -320,83 +320,118 @@ int CConfigurationFileHandler::WriteConfigurationFile(CConfigurationSetting& con
                 fprintf(f, str);
             }
 
-            if (conf->scanner[i].spec[j].channelNum > 1)
+            if (currentScanner.spec[spectrometerIdx].channelNum > 1)
                 hasDoubleSpectrometer = true;
 
             // The channels
-            for (unsigned int l = 0; l < conf->scanner[i].spec[j].channelNum; ++l) {
-                str.Format("%s<channel number=\"%d\">\n", (LPCSTR)indent, l);
+            for (unsigned int channelIdx = 0; channelIdx < currentScanner.spec[spectrometerIdx].channelNum; ++channelIdx) {
+                str.Format("%s<channel number=\"%d\">\n", (LPCSTR)indent, channelIdx);
                 fprintf(f, str);
 
                 // The species
-                novac::CFitWindow& window = spec.channel[l].fitWindow;
-                for (int k = 0; k < window.nRef; ++k) {
+                const novac::CFitWindow& window = spec.channel[channelIdx].fitWindow;
+                for (int referenceIdx = 0; referenceIdx < window.nRef; ++referenceIdx) {
+                    const auto& reference = window.ref[referenceIdx];
+
                     fprintf(f, TEXT(indent + "\t<Reference>\n"));
-                    fprintf(f, "%s\t\t<name>%s</name>\n", (LPCSTR)indent, window.ref[k].m_specieName.c_str());
-                    fprintf(f, "%s\t\t<path>%s</path>\n", (LPCSTR)indent, window.ref[k].m_path.c_str());
+                    fprintf(f, "%s\t\t<name>%s</name>\n", (LPCSTR)indent, reference.m_specieName.c_str());
+                    fprintf(f, "%s\t\t<path>%s</path>\n", (LPCSTR)indent, reference.m_path.c_str());
                     // writing the shift
                     fprintf(f, TEXT(indent + "\t\t<shift>"));
-                    if (window.ref[k].m_shiftOption == novac::SHIFT_FIX)
-                        str.Format("fix to %.2lf", window.ref[k].m_shiftValue);
-                    else if (window.ref[k].m_shiftOption == novac::SHIFT_FREE)
+                    if (reference.m_shiftOption == novac::SHIFT_FIX)
+                        str.Format("fix to %.2lf", reference.m_shiftValue);
+                    else if (reference.m_shiftOption == novac::SHIFT_FREE)
                         str.Format("free");
-                    else if (window.ref[k].m_shiftOption == novac::SHIFT_LIMIT)
-                        str.Format("limit from %.2lf to %.2lf", window.ref[k].m_shiftValue, window.ref[k].m_shiftMaxValue);
-                    else if (window.ref[k].m_shiftOption == novac::SHIFT_LINK)
-                        str.Format("link to %.0lf", window.ref[k].m_shiftValue);
+                    else if (reference.m_shiftOption == novac::SHIFT_LIMIT)
+                        str.Format("limit from %.2lf to %.2lf", reference.m_shiftValue, reference.m_shiftMaxValue);
+                    else if (reference.m_shiftOption == novac::SHIFT_LINK)
+                        str.Format("link to %.0lf", reference.m_shiftValue);
                     fprintf(f, str);
                     fprintf(f, "</shift>\n");
                     // writing the squeeze
                     fprintf(f, TEXT(indent + "\t\t<squeeze>"));
-                    if (window.ref[k].m_squeezeOption == novac::SHIFT_FIX)
-                        str.Format("fix to %.2lf", window.ref[k].m_squeezeValue);
-                    else if (window.ref[k].m_squeezeOption == novac::SHIFT_FREE)
+                    if (reference.m_squeezeOption == novac::SHIFT_FIX)
+                        str.Format("fix to %.2lf", reference.m_squeezeValue);
+                    else if (reference.m_squeezeOption == novac::SHIFT_FREE)
                         str.Format("free");
-                    else if (window.ref[k].m_squeezeOption == novac::SHIFT_LIMIT)
-                        str.Format("limit from %.2lf to %.2lf", window.ref[k].m_squeezeValue, window.ref[k].m_squeezeMaxValue);
-                    else if (window.ref[k].m_squeezeOption == novac::SHIFT_LINK)
-                        str.Format("link to %.0lf", window.ref[k].m_squeezeValue);
+                    else if (reference.m_squeezeOption == novac::SHIFT_LIMIT)
+                        str.Format("limit from %.2lf to %.2lf", reference.m_squeezeValue, reference.m_squeezeMaxValue);
+                    else if (reference.m_squeezeOption == novac::SHIFT_LINK)
+                        str.Format("link to %.0lf", reference.m_squeezeValue);
                     fprintf(f, str);
                     fprintf(f, "</squeeze>\n");
                     fprintf(f, TEXT(indent + "\t</Reference>\n"));
                 }
 
                 // fitLow
-                str.Format("\t%s<fitLow>%ld</fitLow>\n", (LPCSTR)indent, spec.channel[l].fitWindow.fitLow);
+                str.Format("\t%s<fitLow>%ld</fitLow>\n", (LPCSTR)indent, window.fitLow);
                 fprintf(f, str);
 
                 // fitHigh
-                str.Format("\t%s<fitHigh>%ld</fitHigh>\n", (LPCSTR)indent, spec.channel[l].fitWindow.fitHigh);
+                str.Format("\t%s<fitHigh>%ld</fitHigh>\n", (LPCSTR)indent, window.fitHigh);
                 fprintf(f, str);
 
                 // The options for the dark-current
-                if (spec.channel[l].darkSettings.m_darkSpecOption != Configuration::DARK_SPEC_OPTION::MEASURED_IN_SCAN)
+                if (spec.channel[channelIdx].darkSettings.m_darkSpecOption != Configuration::DARK_SPEC_OPTION::MEASURED_IN_SCAN)
                 {
+                    const auto& darkSettings = spec.channel[channelIdx].darkSettings;
+
                     // How to get the dark-spectrum
-                    str.Format("\t%s<dark>%d</dark>\n", (LPCSTR)indent, (int)spec.channel[l].darkSettings.m_darkSpecOption);
+                    str.Format("\t%s<dark>%d</dark>\n", (LPCSTR)indent, (int)darkSettings.m_darkSpecOption);
                     fprintf(f, str);
 
                     // How to use the offset spectrum
-                    str.Format("\t%s<offsetOption>%d</offsetOption>\n", (LPCSTR)indent, (int)spec.channel[l].darkSettings.m_offsetOption);
+                    str.Format("\t%s<offsetOption>%d</offsetOption>\n", (LPCSTR)indent, (int)darkSettings.m_offsetOption);
                     fprintf(f, str);
 
                     // The path of the offset-spectrum
-                    if (spec.channel[l].darkSettings.m_offsetSpec.size() > 1) {
-                        str.Format("\t%s<offsetPath>%s</offsetPath>\n", (LPCSTR)indent, spec.channel[l].darkSettings.m_offsetSpec.c_str());
+                    if (darkSettings.m_offsetSpec.size() > 1) {
+                        str.Format("\t%s<offsetPath>%s</offsetPath>\n", (LPCSTR)indent, darkSettings.m_offsetSpec.c_str());
                         fprintf(f, str);
                     }
 
                     // How to use the dark-current spectrum
-                    str.Format("\t%s<darkcurrentOption>%d</darkcurrentOption>\n", (LPCSTR)indent, (int)spec.channel[l].darkSettings.m_darkCurrentOption);
+                    str.Format("\t%s<darkcurrentOption>%d</darkcurrentOption>\n", (LPCSTR)indent, (int)darkSettings.m_darkCurrentOption);
                     fprintf(f, str);
 
                     // The path of the dark-current spectrum
-                    if (spec.channel[l].darkSettings.m_darkCurrentSpec.size() > 1) {
-                        str.Format("\t%s<darkCurrentPath>%s</darkCurrentPath>\n", (LPCSTR)indent, spec.channel[l].darkSettings.m_darkCurrentSpec.c_str());
+                    if (darkSettings.m_darkCurrentSpec.size() > 1) {
+                        str.Format("\t%s<darkCurrentPath>%s</darkCurrentPath>\n", (LPCSTR)indent, darkSettings.m_darkCurrentSpec.c_str());
                         fprintf(f, str);
                     }
-
                 }
+
+                // The options for automatic (re)calibration.
+                if (spec.channel[channelIdx].autoCalibration.solarSpectrumFile.GetLength() > 0)
+                {
+                    const auto& calibrationSettings = spec.channel[channelIdx].autoCalibration;
+
+                    str.Format("%s<calibration>\n", (LPCSTR)indent);
+
+                    str.AppendFormat("\t%s<enable>%d</enable>\n", (LPCSTR)indent, calibrationSettings.enable);
+                    str.AppendFormat("\t%s<generateReferences>%d</generateReferences>\n", (LPCSTR)indent, calibrationSettings.generateReferences);
+                    str.AppendFormat("\t%s<filterReferences>%d</filterReferences>\n", (LPCSTR)indent, calibrationSettings.filterReferences);
+
+                    str.AppendFormat("\t%s<solarSpectrumFile>%s</solarSpectrumFile>\n", (LPCSTR)indent, calibrationSettings.solarSpectrumFile);
+
+                    if (calibrationSettings.initialCalibrationFile.GetLength() > 0)
+                    {
+                        str.AppendFormat("\t%s<initialCalibrationFile>%s</initialCalibrationFile>\n", (LPCSTR)indent, calibrationSettings.initialCalibrationFile);
+                    }
+                    if (calibrationSettings.instrumentLineshapeFile.GetLength() > 0)
+                    {
+                        str.AppendFormat("\t%s<instrumentLineshapeFile>%s</instrumentLineshapeFile>\n", (LPCSTR)indent, calibrationSettings.instrumentLineshapeFile);
+                    }
+                    str.AppendFormat("\t%s<initialCalibrationSetupOption>%d</initialCalibrationSetupOption>\n", (LPCSTR)indent, calibrationSettings.initialCalibrationSetupOption);
+                    str.AppendFormat("\t%s<instrumentLineShapeFitOption>%d</instrumentLineShapeFitOption>\n", (LPCSTR)indent, calibrationSettings.instrumentLineShapeFitOption);
+
+                    str.AppendFormat("\t%s<instrumentLineShapeFitRegionLow>%d</instrumentLineShapeFitRegionLow>\n", (LPCSTR)indent, calibrationSettings.instrumentLineShapeFitRegion.low);
+                    str.AppendFormat("\t%s<instrumentLineShapeFitRegionHigh>%d</instrumentLineShapeFitRegionHigh>\n", (LPCSTR)indent, calibrationSettings.instrumentLineShapeFitRegion.high);
+
+                    str.AppendFormat("%s</calibration>\n", (LPCSTR)indent);
+                    fprintf(f, str);
+                }
+
                 // End of channel section
                 str.Format("%s</channel>\n", (LPCSTR)indent);
                 fprintf(f, str);
@@ -408,7 +443,7 @@ int CConfigurationFileHandler::WriteConfigurationFile(CConfigurationSetting& con
 
         // --- Then write the communication information
         {
-            CConfigurationSetting::CommunicationSetting& comm = conf->scanner[i].comm;
+            const CConfigurationSetting::CommunicationSetting& comm = currentScanner.comm;
             fprintf(f, TEXT("\t\t\t<communication>\n"));
 
             // connection type
@@ -491,33 +526,33 @@ int CConfigurationFileHandler::WriteConfigurationFile(CConfigurationSetting& con
         }
 
         // .. Third: write the wind measurement settings, if applicable
-        bool doWindMeasurements = (hasDoubleSpectrometer && conf->scanner[i].windSettings.automaticWindMeasurements);
+        bool doWindMeasurements = (hasDoubleSpectrometer && currentScanner.windSettings.automaticWindMeasurements);
         if (doWindMeasurements) {
             indent.Format("\t\t\t\t");
             fprintf(f, TEXT("\t\t\t<windmeasurement>\n"));
 
-            str.Format("%s<interval>%d</interval>\n", (LPCSTR)indent, conf->scanner[i].windSettings.interval);
+            str.Format("%s<interval>%d</interval>\n", (LPCSTR)indent, currentScanner.windSettings.interval);
             fprintf(f, str);
 
-            str.Format("%s<duration>%d</duration>\n", (LPCSTR)indent, conf->scanner[i].windSettings.duration);
+            str.Format("%s<duration>%d</duration>\n", (LPCSTR)indent, currentScanner.windSettings.duration);
             fprintf(f, str);
 
-            str.Format("%s<maxangle>%.2lf</maxangle>\n", (LPCSTR)indent, conf->scanner[i].windSettings.maxAngle);
+            str.Format("%s<maxangle>%.2lf</maxangle>\n", (LPCSTR)indent, currentScanner.windSettings.maxAngle);
             fprintf(f, str);
 
-            str.Format("%s<stableperiod>%d</stableperiod>\n", (LPCSTR)indent, conf->scanner[i].windSettings.stablePeriod);
+            str.Format("%s<stableperiod>%d</stableperiod>\n", (LPCSTR)indent, currentScanner.windSettings.stablePeriod);
             fprintf(f, str);
 
-            str.Format("%s<minpeakcolumn>%.2lf</minpeakcolumn>\n", (LPCSTR)indent, conf->scanner[i].windSettings.minPeakColumn);
+            str.Format("%s<minpeakcolumn>%.2lf</minpeakcolumn>\n", (LPCSTR)indent, currentScanner.windSettings.minPeakColumn);
             fprintf(f, str);
 
-            str.Format("%s<desiredAngle>%.1lf</desiredAngle>\n", (LPCSTR)indent, conf->scanner[i].windSettings.desiredAngle);
+            str.Format("%s<desiredAngle>%.1lf</desiredAngle>\n", (LPCSTR)indent, currentScanner.windSettings.desiredAngle);
             fprintf(f, str);
 
-            str.Format("%s<useCalcWind>%d</useCalcWind>\n", (LPCSTR)indent, conf->scanner[i].windSettings.useCalculatedPlumeParameters);
+            str.Format("%s<useCalcWind>%d</useCalcWind>\n", (LPCSTR)indent, currentScanner.windSettings.useCalculatedPlumeParameters);
             fprintf(f, str);
 
-            str.Format("%s<switchRange>%.1lf</switchRange>\n", (LPCSTR)indent, conf->scanner[i].windSettings.SwitchRange);
+            str.Format("%s<switchRange>%.1lf</switchRange>\n", (LPCSTR)indent, currentScanner.windSettings.SwitchRange);
             fprintf(f, str);
 
             fprintf(f, TEXT("\t\t\t</windmeasurement>\n"));
@@ -846,8 +881,6 @@ int CConfigurationFileHandler::Parse_Communication() {
             continue;
         }
 
-
-
         if (Equals(szToken, "timeout")) {
             Parse_LongItem(TEXT("/timeout"), curComm->timeout);
             continue;
@@ -1134,7 +1167,6 @@ int CConfigurationFileHandler::Parse_Channel()
     return 0;
 }
 
-/** Parses the 'Specie' section */
 int CConfigurationFileHandler::Parse_Specie(CConfigurationSetting::SpectrometerChannelSetting* curChannel) {
     // find if there is a name for this specie
     if (char* pt = strstr(szToken, "name")) {
@@ -1160,7 +1192,6 @@ int CConfigurationFileHandler::Parse_Specie(CConfigurationSetting::SpectrometerC
     return 0;
 }
 
-/** Parses the 'reference' section */
 int CConfigurationFileHandler::Parse_Reference(CConfigurationSetting::SpectrometerChannelSetting* curChannel) {
     int refIndex = curChannel->fitWindow.nRef;
 
@@ -1218,7 +1249,6 @@ int CConfigurationFileHandler::Parse_Reference(CConfigurationSetting::Spectromet
     return 0;
 }
 
-/** Parses a shift or squeeze section */
 int CConfigurationFileHandler::Parse_ShiftOrSqueeze(const CString& label, novac::SHIFT_TYPE& option, double& lowValue, double& highValue) {
     char* pt = nullptr;
 
@@ -1260,7 +1290,6 @@ int CConfigurationFileHandler::Parse_ShiftOrSqueeze(const CString& label, novac:
     return 0;
 }
 
-/** Parses the 'outputDir' section */
 int CConfigurationFileHandler::Parse_OutputDir() {
     int ret = Parse_StringItem(TEXT("/outputDir"), conf->outputDirectory);
     if (conf->outputDirectory.GetAt(max(0, (int)strlen(conf->outputDirectory) - 1)) != '\\')
@@ -1268,7 +1297,6 @@ int CConfigurationFileHandler::Parse_OutputDir() {
     return ret;
 }
 
-/** Parses the section about the local directory where to publish results */
 int CConfigurationFileHandler::Parse_LocalPublishDir() {
     int ret = Parse_StringItem(TEXT("/localPublishDirectory"), conf->webSettings.localDirectory);
     if (conf->webSettings.localDirectory.GetAt(max(0, (int)strlen(conf->webSettings.localDirectory) - 1)) != '\\')
@@ -1368,15 +1396,8 @@ int	CConfigurationFileHandler::Parse_WindMeasurement() {
             Parse_FloatItem("/switchRange", wind->SwitchRange);
             continue;
         }
-        // found the motor steps comp - THIS IS OUTDATED, THE PARAMETER IS NOW
-        //	STORED IN THE MOTOR-PROPERTIES OF EACH OF THE SCANNERS
-        //if(Equals(szToken, "motorstepscomp")){
-        //	if(wind != nullptr)
-        //		Parse_IntItem("/motorstepscomp", curScanner->motor[0].motorStepsComp);
-        //	continue;
-        //}
-
     }
+
     return 0;
 }
 
@@ -1548,33 +1569,31 @@ int CConfigurationFileHandler::Parse_WindImport() {
     return 0;
 }
 
-int CConfigurationFileHandler::CheckSettings() {
+void CConfigurationFileHandler::CheckSettings(CConfigurationSetting& configuration) {
 
     // -------- FTP - SETTINGS -------------------
     // upload times
-    if (conf->ftpSetting.ftpStopTime == conf->ftpSetting.ftpStartTime) {
+    if (configuration.ftpSetting.ftpStopTime == configuration.ftpSetting.ftpStartTime) {
         // start-time is same as stoptime, change to have at least 3 hours uploading-time
-        if (conf->ftpSetting.ftpStopTime > 86400 / 2) {
-            conf->ftpSetting.ftpStopTime += 3 * 3600;
+        if (configuration.ftpSetting.ftpStopTime > 86400 / 2) {
+            configuration.ftpSetting.ftpStopTime += 3 * 3600;
         }
         else {
-            conf->ftpSetting.ftpStartTime -= 3 * 3600;
+            configuration.ftpSetting.ftpStartTime -= 3 * 3600;
         }
     }
-    else if (conf->ftpSetting.ftpStopTime > conf->ftpSetting.ftpStartTime) {
+    else if (configuration.ftpSetting.ftpStopTime > configuration.ftpSetting.ftpStartTime) {
         // stopTime > startTime
-        if (conf->ftpSetting.ftpStopTime - conf->ftpSetting.ftpStartTime < 3 * 3600) {
+        if (configuration.ftpSetting.ftpStopTime - configuration.ftpSetting.ftpStartTime < 3 * 3600) {
             // less than 3 hours uploading time! change!
-            conf->ftpSetting.ftpStopTime = (conf->ftpSetting.ftpStartTime + 3 * 3600) % 86400;
+            configuration.ftpSetting.ftpStopTime = (configuration.ftpSetting.ftpStartTime + 3 * 3600) % 86400;
         }
     }
     else {
         // stopTime < starTime
-        if ((86400 - conf->ftpSetting.ftpStartTime) + conf->ftpSetting.ftpStopTime < 3 * 3600) {
+        if ((86400 - configuration.ftpSetting.ftpStartTime) + configuration.ftpSetting.ftpStopTime < 3 * 3600) {
             // less than 3 hours uploading time! change!
-            conf->ftpSetting.ftpStopTime = (conf->ftpSetting.ftpStartTime + 3 * 3600) % 86400;
+            configuration.ftpSetting.ftpStopTime = (configuration.ftpSetting.ftpStartTime + 3 * 3600) % 86400;
         }
     }
-
-    return 0;
 }
