@@ -1291,16 +1291,6 @@ long Common::RetrieveFileSize(CString& fileName)
     END_CATCH;
 }
 
-void Common::WriteAFile(const CString& fileName, const CString& msg, char* mode)
-{
-    FILE* f = fopen(fileName, mode);
-    if (f != NULL)
-    {
-        fprintf(f, "%s\n", (LPCSTR)msg);
-        fclose(f);
-    }
-}
-
 bool Common::FormatErrorCode(DWORD error, CString& string) {
     /* from System Error Codes */
     switch (error) {

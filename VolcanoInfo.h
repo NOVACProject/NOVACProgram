@@ -3,7 +3,7 @@
 #include <string>
 #include <SpectralEvaluation/GPSData.h>
 
-/** The <b>CVolcanoInfo</b>-class the programs database of known volcanoes with 
+/** The <b>CVolcanoInfo</b>-class the programs database of known volcanoes with
     name, position and associated observatory.
     This information is used throughout the program in order to retrieve information
     about the volcanoes.*/

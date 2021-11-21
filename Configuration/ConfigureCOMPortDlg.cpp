@@ -15,7 +15,7 @@ CConfigureCOMPortDlg::CConfigureCOMPortDlg()
     : CSystemConfigurationPage(CConfigureCOMPortDlg::IDD)
     , m_ftpHostName(_T(""))
 {
-    m_configuration = NULL;
+    m_configuration = nullptr;
 
     m_curSetting = 2;
 
@@ -203,7 +203,7 @@ BOOL ConfigurationDialog::CConfigureCOMPortDlg::OnInitDialog()
 void CConfigureCOMPortDlg::OnChangeScanner() {
     UpdateDlg();
 
-    if (this->m_hWnd != NULL)
+    if (this->m_hWnd != nullptr)
         OnChangeMethod();
 }
 
@@ -211,7 +211,7 @@ void CConfigureCOMPortDlg::UpdateDlg() {
     CString bdr;
     int currentScanner, currentSpec;
 
-    if (m_hWnd == NULL)
+    if (m_hWnd == nullptr)
         return;
 
     HTREEITEM hTree = m_scannerTree->GetSelectedItem();
@@ -227,7 +227,7 @@ void CConfigureCOMPortDlg::UpdateDlg() {
     }
 
     // --- Update the controls ---
-    CConfigurationSetting::CommunicationSetting &comm = m_configuration->scanner[currentScanner].comm;
+    CConfigurationSetting::CommunicationSetting& comm = m_configuration->scanner[currentScanner].comm;
 
     // 1. The settings for the serial communication
 
@@ -279,7 +279,7 @@ void CConfigureCOMPortDlg::UpdateDlg() {
     m_wakeSec = comm.wakeupTime.second;
 
     // 6. Update the screen
-    if (m_hWnd != NULL) {
+    if (m_hWnd != nullptr) {
         UpdateData(FALSE);
     }
 
@@ -293,13 +293,13 @@ void CConfigureCOMPortDlg::UpdateDlg() {
     m_directory.Format("%s", (LPCSTR)comm.directory);
 
     // 9. Update the screen
-    if (m_hWnd != NULL) {
+    if (m_hWnd != nullptr) {
         UpdateData(FALSE);
     }
 }
 
 void CConfigureCOMPortDlg::OnChangeMethod() {
-    if (m_hWnd != NULL)
+    if (m_hWnd != nullptr)
         UpdateData(TRUE); // <-- Save the data in the dialog
 
     SaveData(); // <-- Save the remaining data in the dialog
@@ -318,7 +318,7 @@ void CConfigureCOMPortDlg::OnChangeMethod() {
 void CConfigureCOMPortDlg::SaveData() {
     int currentScanner, currentSpec;
 
-    if (m_hWnd == NULL)
+    if (m_hWnd == nullptr)
         return;
 
     HTREEITEM hTree = m_scannerTree->GetSelectedItem();
@@ -331,7 +331,7 @@ void CConfigureCOMPortDlg::SaveData() {
     // ------- Save the change ----------- 
     if (UpdateData(TRUE))
     {
-        CConfigurationSetting::CommunicationSetting &comm = m_configuration->scanner[currentScanner].comm;
+        CConfigurationSetting::CommunicationSetting& comm = m_configuration->scanner[currentScanner].comm;
 
         // 1. The serial settings
 
@@ -507,7 +507,7 @@ void CConfigureCOMPortDlg::ShowDirectoryPolling() {
     m_label5.ShowWindow(SW_HIDE);
 }
 void CConfigureCOMPortDlg::InitToolTips() {
-    if (m_toolTip.m_hWnd != NULL)
+    if (m_toolTip.m_hWnd != nullptr)
         return;
 
     // Enable the tool tips

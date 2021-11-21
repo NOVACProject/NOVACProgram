@@ -85,14 +85,14 @@ public:
         struct timeStruct wakeupTime;
 
         /** Assignment operator */
-        CommunicationSetting &operator=(const CommunicationSetting &comm2);
+        CommunicationSetting& operator=(const CommunicationSetting& comm2);
     };
 
     class SpectrometerChannelSetting {
     public:
         /** Resets all values to default */
         void Clear();
-        
+
         /** The fit settings that are defined for this spectrometer */
         novac::CFitWindow fitWindow;
 
@@ -100,7 +100,7 @@ public:
         Configuration::CDarkSettings m_darkSettings;
 
         /** Assignment operator */
-        SpectrometerChannelSetting& operator=(const SpectrometerChannelSetting &spec2);
+        SpectrometerChannelSetting& operator=(const SpectrometerChannelSetting& spec2);
     };
 
     class SpectrometerSetting
@@ -121,7 +121,7 @@ public:
         SpectrometerChannelSetting channel[MAX_CHANNEL_NUM];
 
         /** Assignment operator */
-        SpectrometerSetting& operator=(const SpectrometerSetting &spec2);
+        SpectrometerSetting& operator=(const SpectrometerSetting& spec2);
     };
 
     class WindSpeedMeasurementSetting {
@@ -166,7 +166,7 @@ public:
         double SwitchRange;
 
         /** Assignment operator */
-        WindSpeedMeasurementSetting& operator=(const WindSpeedMeasurementSetting &ws2);
+        WindSpeedMeasurementSetting& operator=(const WindSpeedMeasurementSetting& ws2);
     };
 
     class SetupChangeSetting {
@@ -194,7 +194,7 @@ public:
         int mode;
 
         /** Assignment operator */
-        SetupChangeSetting& operator=(const SetupChangeSetting &ws2);
+        SetupChangeSetting& operator=(const SetupChangeSetting& ws2);
     };
 
     class MotorSetting
@@ -272,13 +272,13 @@ public:
         int minColumn;
         int maxColumn;
 
-		/** Plot flux history. */
-		int plotFluxHistory;
-		int minFlux;
-		int maxFlux;
+        /** Plot flux history. */
+        int plotFluxHistory;
+        int minFlux;
+        int maxFlux;
 
         /** Assignment operator */
-        ScanningInstrumentSetting&  operator=(const ScanningInstrumentSetting &scanner2);
+        ScanningInstrumentSetting& operator=(const ScanningInstrumentSetting& scanner2);
     };
 
     /** Settings for uploading the produced data to the NOVAC server. */

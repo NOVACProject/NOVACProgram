@@ -3,26 +3,25 @@
 #include <SpectralEvaluation/Spectra/SpectrometerModel.h>
 #include "../VolcanoInfo.h"
 #include "../resource.h"
+#include "Configuration.h"
 
 using namespace FileHandler;
 using namespace novac;
 
 extern CVolcanoInfo g_volcanoes;
 
-CConfigurationFileHandler::CConfigurationFileHandler(void)
+CConfigurationFileHandler::CConfigurationFileHandler()
+    : conf(nullptr), curScanner(nullptr)
 {
-    conf = NULL;
 }
 
 CConfigurationFileHandler::~CConfigurationFileHandler(void)
 {
+    curScanner = nullptr;
+    conf = nullptr;
 }
 
-/** Reads the configuration file and stores the found values in the
-        supplied reference 'conf'. If fileName is not-null the reader will
-        read from that file, otherwise it will read from 'configuration.xml'
-        in the same directory as the executable. */
-int CConfigurationFileHandler::ReadConfigurationFile(CConfigurationSetting &configuration, const CString *fileName) {
+int CConfigurationFileHandler::ReadConfigurationFile(CConfigurationSetting& configuration, const CString* fileName) {
     CString tmp_fileName;
     CFileException exceFile;
     CStdioFile file;
@@ -30,7 +29,7 @@ int CConfigurationFileHandler::ReadConfigurationFile(CConfigurationSetting &conf
     this->conf = &configuration;
 
     // 1. Get the filename
-    if (fileName == NULL) {
+    if (fileName == nullptr) {
         Common common;
         common.GetExePath();
         tmp_fileName.Format("%sconfiguration.xml", (LPCSTR)common.m_exePath);
@@ -63,11 +62,7 @@ int CConfigurationFileHandler::ReadConfigurationFile(CConfigurationSetting &conf
     }
 }
 
-/** Reads the FTP login configuration file and stores the found values in the
-supplied reference 'conf'. If fileName is not-null the reader will
-read from that file, otherwise it will read from 'ftplogin.xml'
-in the same directory as the executable. */
-int CConfigurationFileHandler::ReadFtpLoginConfigurationFile(CConfigurationSetting &configuration, const CString *fileName) {
+int CConfigurationFileHandler::ReadFtpLoginConfigurationFile(CConfigurationSetting& configuration, const CString* fileName) {
     CString tmp_fileName;
     CFileException exceFile;
     CStdioFile file;
@@ -75,7 +70,7 @@ int CConfigurationFileHandler::ReadFtpLoginConfigurationFile(CConfigurationSetti
     this->conf = &configuration;
 
     // 1. Get the filename
-    if (fileName == NULL) {
+    if (fileName == nullptr) {
         Common common;
         common.GetExePath();
         tmp_fileName.Format("%sftplogin.xml", (LPCSTR)common.m_exePath);
@@ -106,17 +101,13 @@ int CConfigurationFileHandler::ReadFtpLoginConfigurationFile(CConfigurationSetti
 
 }
 
-/** Writes the configuration file using the values stored in the
-supplied reference 'conf'. If fileName is not-null the reader will
-write to that file, otherwise it will write to 'configuration.xml'
-in the same directory as the executable. */
-int CConfigurationFileHandler::WriteFtpLoginConfigurationFile(CConfigurationSetting &configuration, const CString *fileName) {
+int CConfigurationFileHandler::WriteFtpLoginConfigurationFile(CConfigurationSetting& configuration, const CString* fileName) {
     CString indent, str, tmp_fileName;
     Common common;
     std::string modelStr;
 
     // 1. Get the filename
-    if (fileName == NULL) {
+    if (fileName == nullptr) {
         common.GetExePath();
         tmp_fileName.Format("%sftplogin.xml", (LPCSTR)common.m_exePath);
     }
@@ -127,9 +118,9 @@ int CConfigurationFileHandler::WriteFtpLoginConfigurationFile(CConfigurationSett
     this->conf = &configuration;
 
     // 2. Open the file
-    FILE *f = fopen(tmp_fileName, "w");
-    if (NULL == f) {
-        MessageBox(NULL, TEXT(common.GetString(ERROR_COULD_NOT_OPEN_EVALCONFIG)) + "." + common.GetString(MSG_NO_CHANGES_WILL_BE_SAVED), common.GetString(MSG_ERROR), MB_OK);
+    FILE* f = fopen(tmp_fileName, "w");
+    if (nullptr == f) {
+        MessageBox(nullptr, TEXT(common.GetString(ERROR_COULD_NOT_OPEN_EVALCONFIG)) + "." + common.GetString(MSG_NO_CHANGES_WILL_BE_SAVED), common.GetString(MSG_ERROR), MB_OK);
         return 1;
     }
 
@@ -152,17 +143,13 @@ int CConfigurationFileHandler::WriteFtpLoginConfigurationFile(CConfigurationSett
     return 0;
 }
 
-/** Writes the configuration file using the values stored in the
-        supplied reference 'conf'. If fileName is not-null the reader will
-        write to that file, otherwise it will write to 'configuration.xml'
-        in the same directory as the executable. */
-int CConfigurationFileHandler::WriteConfigurationFile(CConfigurationSetting &configuration, const CString *fileName) {
+int CConfigurationFileHandler::WriteConfigurationFile(CConfigurationSetting& configuration, const CString* fileName) {
     CString indent, str, tmp_fileName;
     Common common;
     std::string modelStr;
 
     // 1. Get the filename
-    if (fileName == NULL) {
+    if (fileName == nullptr) {
         common.GetExePath();
         tmp_fileName.Format("%sconfiguration.xml", (LPCSTR)common.m_exePath);
     }
@@ -173,9 +160,9 @@ int CConfigurationFileHandler::WriteConfigurationFile(CConfigurationSetting &con
     this->conf = &configuration;
 
     // 2. Open the file
-    FILE *f = fopen(tmp_fileName, "w");
-    if (NULL == f) {
-        MessageBox(NULL, TEXT(common.GetString(ERROR_COULD_NOT_OPEN_EVALCONFIG)) + "." + common.GetString(MSG_NO_CHANGES_WILL_BE_SAVED), common.GetString(MSG_ERROR), MB_OK);
+    FILE* f = fopen(tmp_fileName, "w");
+    if (nullptr == f) {
+        MessageBox(nullptr, TEXT(common.GetString(ERROR_COULD_NOT_OPEN_EVALCONFIG)) + "." + common.GetString(MSG_NO_CHANGES_WILL_BE_SAVED), common.GetString(MSG_ERROR), MB_OK);
         return 1;
     }
 
@@ -295,15 +282,15 @@ int CConfigurationFileHandler::WriteConfigurationFile(CConfigurationSetting &con
         str.AppendFormat("\t\t\t<plotColumnHistory>%d</plotColumnHistory>\n", conf->scanner[i].plotColumnHistory);
         str.AppendFormat("\t\t\t<minColumn>%d</minColumn>\n", conf->scanner[i].minColumn);
         str.AppendFormat("\t\t\t<maxColumn>%d</maxColumn>\n", conf->scanner[i].maxColumn);
-		str.AppendFormat("\t\t\t<plotFluxHistory>%d</plotFluxHistory>\n", conf->scanner[i].plotFluxHistory);
-		str.AppendFormat("\t\t\t<minFlux>%d</minFlux>\n", conf->scanner[i].minFlux);
-		str.AppendFormat("\t\t\t<maxFlux>%d</maxFlux>\n", conf->scanner[i].maxFlux);
+        str.AppendFormat("\t\t\t<plotFluxHistory>%d</plotFluxHistory>\n", conf->scanner[i].plotFluxHistory);
+        str.AppendFormat("\t\t\t<minFlux>%d</minFlux>\n", conf->scanner[i].minFlux);
+        str.AppendFormat("\t\t\t<maxFlux>%d</maxFlux>\n", conf->scanner[i].maxFlux);
         fprintf(f, str);
 
         // --- First write the spectrometer information
         for (unsigned int j = 0; j < conf->scanner[i].specNum; ++j)
         {
-            CConfigurationSetting::SpectrometerSetting &spec = conf->scanner[i].spec[j];
+            CConfigurationSetting::SpectrometerSetting& spec = conf->scanner[i].spec[j];
             fprintf(f, TEXT("\t\t\t<spectrometer>\n"));
 
             // serial Number
@@ -342,7 +329,7 @@ int CConfigurationFileHandler::WriteConfigurationFile(CConfigurationSetting &con
                 fprintf(f, str);
 
                 // The species
-                novac::CFitWindow&window = spec.channel[l].fitWindow;
+                novac::CFitWindow& window = spec.channel[l].fitWindow;
                 for (int k = 0; k < window.nRef; ++k) {
                     fprintf(f, TEXT(indent + "\t<Reference>\n"));
                     fprintf(f, "%s\t\t<name>%s</name>\n", (LPCSTR)indent, window.ref[k].m_specieName.c_str());
@@ -421,7 +408,7 @@ int CConfigurationFileHandler::WriteConfigurationFile(CConfigurationSetting &con
 
         // --- Then write the communication information
         {
-            CConfigurationSetting::CommunicationSetting &comm = conf->scanner[i].comm;
+            CConfigurationSetting::CommunicationSetting& comm = conf->scanner[i].comm;
             fprintf(f, TEXT("\t\t\t<communication>\n"));
 
             // connection type
@@ -678,11 +665,6 @@ int CConfigurationFileHandler::Parse_ScanningInstrument() {
             Parse_Spectrometer();
         }
 
-        // a motor section
-        //if(Equals(szToken, "motor")){
-        //	Parse_Motor();
-        //}
-
         // a windmeasurement section
         if (Equals(szToken, "windmeasurement")) {
             Parse_WindMeasurement();
@@ -743,9 +725,9 @@ int CConfigurationFileHandler::Parse_ScanningInstrument() {
             Parse_IntItem(TEXT("/electronics"), tmpInt);
             switch (tmpInt)
             {
-                case 0: curScanner->electronicsBox = BOX_AXIS; break;
-                case 2: curScanner->electronicsBox = BOX_AXIOMTEK; break; // yes this is actually correct...
-                default: curScanner->electronicsBox = BOX_MOXA; break;
+            case 0: curScanner->electronicsBox = BOX_AXIS; break;
+            case 2: curScanner->electronicsBox = BOX_AXIOMTEK; break; // yes this is actually correct...
+            default: curScanner->electronicsBox = BOX_MOXA; break;
             }
             continue;
         }
@@ -767,24 +749,24 @@ int CConfigurationFileHandler::Parse_ScanningInstrument() {
             Parse_IntItem(TEXT("/maxColumn"), curScanner->maxColumn);
             continue;
         }
-		if (Equals(szToken, "plotFluxHistory")) {
-			Parse_IntItem(TEXT("/plotFluxHistory"), curScanner->plotFluxHistory);
-			continue;
-		}
-		if (Equals(szToken, "minFlux")) {
-			Parse_IntItem(TEXT("/minFlux"), curScanner->minFlux);
-			continue;
-		}
-		if (Equals(szToken, "maxFlux")) {
-			Parse_IntItem(TEXT("/maxFlux"), curScanner->maxFlux);
-			continue;
-		}
+        if (Equals(szToken, "plotFluxHistory")) {
+            Parse_IntItem(TEXT("/plotFluxHistory"), curScanner->plotFluxHistory);
+            continue;
+        }
+        if (Equals(szToken, "minFlux")) {
+            Parse_IntItem(TEXT("/minFlux"), curScanner->minFlux);
+            continue;
+        }
+        if (Equals(szToken, "maxFlux")) {
+            Parse_IntItem(TEXT("/maxFlux"), curScanner->maxFlux);
+            continue;
+        }
     }
     return 0;
 }
 
 int CConfigurationFileHandler::Parse_Communication() {
-    CConfigurationSetting::CommunicationSetting *curComm = &(curScanner->comm);
+    CConfigurationSetting::CommunicationSetting* curComm = &(curScanner->comm);
 
     // the actual reading loop
     while (szToken = NextToken()) {
@@ -840,7 +822,7 @@ int CConfigurationFileHandler::Parse_Communication() {
         }
 
         if (Equals(szToken, "ftpPort")) {
-            Parse_IntItem(TEXT("/ftpPort"), curComm->ftpPort); 
+            Parse_IntItem(TEXT("/ftpPort"), curComm->ftpPort);
             continue;
         }
 
@@ -906,7 +888,7 @@ int CConfigurationFileHandler::Parse_Communication() {
 
 int CConfigurationFileHandler::Parse_Spectrometer()
 {
-    CConfigurationSetting::SpectrometerSetting *curSpec = &(curScanner->spec[curScanner->specNum]);
+    CConfigurationSetting::SpectrometerSetting* curSpec = &(curScanner->spec[curScanner->specNum]);
 
     // the actual reading loop
     while (szToken = NextToken()) {
@@ -928,7 +910,7 @@ int CConfigurationFileHandler::Parse_Spectrometer()
 
         // found the serial number 
         if (Equals(szToken, "serialNumber")) {
-            if (curSpec != NULL)
+            if (curSpec != nullptr)
                 Parse_StringItem(TEXT("/serialNumber"), curSpec->serialNumber);
             continue;
         }
@@ -943,7 +925,7 @@ int CConfigurationFileHandler::Parse_Spectrometer()
         // found the model number 
         if (Equals(szToken, "model")) {
             std::string tmpStr2;
-            if (curSpec != NULL) {
+            if (curSpec != nullptr) {
                 Parse_StringItem(TEXT("/model"), tmpStr2);
                 curSpec->modelName = tmpStr2;
             }
@@ -951,21 +933,21 @@ int CConfigurationFileHandler::Parse_Spectrometer()
         }
 
         if (Equals(szToken, "channel", 7)) {
-            if (curSpec != NULL)
+            if (curSpec != nullptr)
                 Parse_Channel();
             continue;
         }
 
         // ---- This section is here for backward compatibility only ----------
         if (Equals(szToken, "specie", 6)) {
-            if (curSpec != NULL)
+            if (curSpec != nullptr)
                 Parse_Specie(&curSpec->channel[curSpec->channelNum]);
             continue;
         }
 
         // ---- This section is here for backward compatibility only ----------
         if (Equals(szToken, "fitLow")) {
-            if (curSpec != NULL)
+            if (curSpec != nullptr)
                 Parse_IntItem(TEXT("/fitLow"), curSpec->channel[curSpec->channelNum].fitWindow.fitLow);
             ++curSpec->channelNum;
             continue;
@@ -973,7 +955,7 @@ int CConfigurationFileHandler::Parse_Spectrometer()
 
         // ---- This section is here for backward compatibility only ----------
         if (Equals(szToken, "fitHigh")) {
-            if (curSpec != NULL)
+            if (curSpec != nullptr)
                 Parse_IntItem(TEXT("/fitHigh"), curSpec->channel[curSpec->channelNum].fitWindow.fitHigh);
             continue;
         }
@@ -981,7 +963,7 @@ int CConfigurationFileHandler::Parse_Spectrometer()
     return 0;
 }
 
-int CConfigurationFileHandler::Parse_CustomSpectrometerModel(CConfigurationSetting::SpectrometerSetting *curSpec)
+int CConfigurationFileHandler::Parse_CustomSpectrometerModel(CConfigurationSetting::SpectrometerSetting* curSpec)
 {
     if (nullptr == curSpec)
     {
@@ -1018,7 +1000,7 @@ int CConfigurationFileHandler::Parse_CustomSpectrometerModel(CConfigurationSetti
                 {
                     CString errorMessage;
                     errorMessage.Format("Could not configure new custom spectrometer model with name %s, such a model already exists with a different maximum intensity.", thisModel.modelName);
-                    MessageBox(NULL, errorMessage, "Error", MB_OK);
+                    MessageBox(nullptr, errorMessage, "Error", MB_OK);
                     return 1;
                 }
 
@@ -1060,14 +1042,14 @@ int CConfigurationFileHandler::Parse_CustomSpectrometerModel(CConfigurationSetti
 
 int CConfigurationFileHandler::Parse_Channel()
 {
-    CConfigurationSetting::SpectrometerSetting *curSpec = &(curScanner->spec[curScanner->specNum]);
-    CConfigurationSetting::SpectrometerChannelSetting *curChannel = &curSpec->channel[curSpec->channelNum];
+    CConfigurationSetting::SpectrometerSetting* curSpec = &(curScanner->spec[curScanner->specNum]);
+    CConfigurationSetting::SpectrometerChannelSetting* curChannel = &curSpec->channel[curSpec->channelNum];
     int tmpInt;
 
     // find the number for this channel.
-    if (char *pt = strstr(szToken, "number")) {
+    if (char* pt = strstr(szToken, "number")) {
         if (pt = strstr(pt, "\"")) {
-            if (char *pt2 = strstr(pt + 1, "\""))
+            if (char* pt2 = strstr(pt + 1, "\""))
                 pt2[0] = 0; // remove the second quote
             if (sscanf(pt + 1, "%d", &tmpInt)) {
                 curChannel = &curSpec->channel[tmpInt];
@@ -1093,58 +1075,58 @@ int CConfigurationFileHandler::Parse_Channel()
         }
 
         if (Equals(szToken, "Reference", 9)) {
-            if (curSpec != NULL)
+            if (curSpec != nullptr)
                 Parse_Reference(curChannel);
             continue;
         }
 
         if (Equals(szToken, "specie", 6)) {
-            if (curSpec != NULL)
+            if (curSpec != nullptr)
                 Parse_Specie(curChannel);
             continue;
         }
 
         if (Equals(szToken, "fitLow")) {
-            if (curSpec != NULL)
+            if (curSpec != nullptr)
                 Parse_IntItem(TEXT("/fitLow"), curChannel->fitWindow.fitLow);
             continue;
         }
 
         if (Equals(szToken, "fitHigh")) {
-            if (curSpec != NULL)
+            if (curSpec != nullptr)
                 Parse_IntItem(TEXT("/fitHigh"), curChannel->fitWindow.fitHigh);
             continue;
         }
 
         if (Equals(szToken, "dark")) {
-            if (curSpec != NULL)
+            if (curSpec != nullptr)
                 Parse_IntItem(TEXT("/dark"), tmpInt);
             curChannel->m_darkSettings.m_darkSpecOption = (Configuration::DARK_SPEC_OPTION)tmpInt;
             continue;
         }
 
         if (Equals(szToken, "offsetOption")) {
-            if (curSpec != NULL)
+            if (curSpec != nullptr)
                 Parse_IntItem(TEXT("/offsetOption"), tmpInt);
             curChannel->m_darkSettings.m_offsetOption = (Configuration::DARK_MODEL_OPTION)tmpInt;
             continue;
         }
 
         if (Equals(szToken, "darkcurrentOption")) {
-            if (curSpec != NULL)
+            if (curSpec != nullptr)
                 Parse_IntItem(TEXT("/darkcurrentOption"), tmpInt);
             curChannel->m_darkSettings.m_darkCurrentOption = (Configuration::DARK_MODEL_OPTION)tmpInt;
             continue;
         }
 
         if (Equals(szToken, "offsetPath")) {
-            if (curSpec != NULL)
+            if (curSpec != nullptr)
                 this->Parse_StringItem(TEXT("/offsetPath"), curChannel->m_darkSettings.m_offsetSpec);
             continue;
         }
 
         if (Equals(szToken, "darkCurrentPath")) {
-            if (curSpec != NULL)
+            if (curSpec != nullptr)
                 this->Parse_StringItem(TEXT("/darkCurrentPath"), curChannel->m_darkSettings.m_darkCurrentSpec);
             continue;
         }
@@ -1153,11 +1135,11 @@ int CConfigurationFileHandler::Parse_Channel()
 }
 
 /** Parses the 'Specie' section */
-int CConfigurationFileHandler::Parse_Specie(CConfigurationSetting::SpectrometerChannelSetting *curChannel) {
+int CConfigurationFileHandler::Parse_Specie(CConfigurationSetting::SpectrometerChannelSetting* curChannel) {
     // find if there is a name for this specie
-    if (char *pt = strstr(szToken, "name")) {
+    if (char* pt = strstr(szToken, "name")) {
         if (pt = strstr(pt, "\"")) {
-            if (char *pt2 = strstr(pt + 1, "\""))
+            if (char* pt2 = strstr(pt + 1, "\""))
                 pt2[0] = 0;		 //remove the second quote
             curChannel->fitWindow.ref[curChannel->fitWindow.nRef].m_specieName = std::string(pt + 1);
         }
@@ -1179,7 +1161,7 @@ int CConfigurationFileHandler::Parse_Specie(CConfigurationSetting::SpectrometerC
 }
 
 /** Parses the 'reference' section */
-int CConfigurationFileHandler::Parse_Reference(CConfigurationSetting::SpectrometerChannelSetting *curChannel) {
+int CConfigurationFileHandler::Parse_Reference(CConfigurationSetting::SpectrometerChannelSetting* curChannel) {
     int refIndex = curChannel->fitWindow.nRef;
 
     // the actual reading loop
@@ -1202,22 +1184,22 @@ int CConfigurationFileHandler::Parse_Reference(CConfigurationSetting::Spectromet
 
         // found the specie name 
         if (Equals(szToken, "name")) {
-            if (curChannel != NULL)
+            if (curChannel != nullptr)
                 Parse_StringItem(TEXT("/name"), curChannel->fitWindow.ref[refIndex].m_specieName);
             continue;
         }
 
         // found the path to the reference file 
         if (Equals(szToken, "path")) {
-            if (curChannel != NULL)
+            if (curChannel != nullptr)
                 Parse_StringItem(TEXT("/path"), curChannel->fitWindow.ref[refIndex].m_path);
             continue;
         }
 
         // found the shift
         if (Equals(szToken, "shift")) {
-            if (curChannel != NULL) {
-                CReferenceFile &ref = curChannel->fitWindow.ref[refIndex];
+            if (curChannel != nullptr) {
+                CReferenceFile& ref = curChannel->fitWindow.ref[refIndex];
                 Parse_ShiftOrSqueeze(TEXT("/shift"), ref.m_shiftOption, ref.m_shiftValue, ref.m_shiftMaxValue);
             }
             continue;
@@ -1225,8 +1207,8 @@ int CConfigurationFileHandler::Parse_Reference(CConfigurationSetting::Spectromet
 
         // found the squeeze
         if (Equals(szToken, "squeeze")) {
-            if (curChannel != NULL) {
-                CReferenceFile &ref = curChannel->fitWindow.ref[refIndex];
+            if (curChannel != nullptr) {
+                CReferenceFile& ref = curChannel->fitWindow.ref[refIndex];
                 Parse_ShiftOrSqueeze(TEXT("/squeeze"), ref.m_squeezeOption, ref.m_squeezeValue, ref.m_squeezeMaxValue);
             }
             continue;
@@ -1237,8 +1219,8 @@ int CConfigurationFileHandler::Parse_Reference(CConfigurationSetting::Spectromet
 }
 
 /** Parses a shift or squeeze section */
-int CConfigurationFileHandler::Parse_ShiftOrSqueeze(const CString &label, novac::SHIFT_TYPE &option, double &lowValue, double &highValue) {
-    char *pt = NULL;
+int CConfigurationFileHandler::Parse_ShiftOrSqueeze(const CString& label, novac::SHIFT_TYPE& option, double& lowValue, double& highValue) {
+    char* pt = nullptr;
 
     // the actual reading loop
     while (szToken = NextToken()) {
@@ -1294,7 +1276,7 @@ int CConfigurationFileHandler::Parse_LocalPublishDir() {
     return ret;
 }
 
-int CConfigurationFileHandler::Parse_Medium(CConfigurationSetting::CommunicationSetting *curComm) {
+int CConfigurationFileHandler::Parse_Medium(CConfigurationSetting::CommunicationSetting* curComm) {
     CString tmpStr;
     int ret = Parse_StringItem(TEXT("/medium"), tmpStr);
     if (Equals(tmpStr, "Cable")) {
@@ -1315,7 +1297,7 @@ int CConfigurationFileHandler::Parse_Medium(CConfigurationSetting::Communication
 
 /** Parses one 'windmeasurement' section */
 int	CConfigurationFileHandler::Parse_WindMeasurement() {
-    CConfigurationSetting::WindSpeedMeasurementSetting *wind = &(curScanner->windSettings);
+    CConfigurationSetting::WindSpeedMeasurementSetting* wind = &(curScanner->windSettings);
 
     // the fact that there is a windmeasurement section
     //	in the configuration file means that we should automatically
@@ -1389,7 +1371,7 @@ int	CConfigurationFileHandler::Parse_WindMeasurement() {
         // found the motor steps comp - THIS IS OUTDATED, THE PARAMETER IS NOW
         //	STORED IN THE MOTOR-PROPERTIES OF EACH OF THE SCANNERS
         //if(Equals(szToken, "motorstepscomp")){
-        //	if(wind != NULL)
+        //	if(wind != nullptr)
         //		Parse_IntItem("/motorstepscomp", curScanner->motor[0].motorStepsComp);
         //	continue;
         //}
@@ -1400,7 +1382,7 @@ int	CConfigurationFileHandler::Parse_WindMeasurement() {
 
 /** Parses one 'realtimesetup' section */
 int CConfigurationFileHandler::Parse_RealTimeSetup() {
-    CConfigurationSetting::SetupChangeSetting *scs = &(curScanner->scSettings);
+    CConfigurationSetting::SetupChangeSetting* scs = &(curScanner->scSettings);
 
     // the fact that there is a real-time setup-section
     //	in the configuration file means that we should automatically
@@ -1596,50 +1578,3 @@ int CConfigurationFileHandler::CheckSettings() {
 
     return 0;
 }
-
-//int CConfigurationFileHandler::Parse_Motor(){
-//
-//	// the actual reading loop
-//	while(szToken = NextToken()){
-//
-//		// no use to parse empty lines
-//		if(strlen(szToken) < 3)
-//			continue;
-//
-//		// ignore comments
-//		if(Equals(szToken, "!--", 3)){
-//			continue;
-//		}
-//
-//		// the end of the motor section
-//		if(Equals(szToken, "/motor")){
-//			return 0;
-//		}
-//
-//		// the number of steps per round for motor 1
-//		if(Equals(szToken, "stepsperround1")){
-//			Parse_IntItem("/stepsperround1", curScanner->motor[0].stepsPerRound);
-//			continue;
-//		}
-//
-//		// the number of steps per round for motor 2
-//		if(Equals(szToken, "stepsperround2")){
-//			Parse_IntItem("/stepsperround2", curScanner->motor[1].stepsPerRound);
-//			continue;
-//		}
-//
-//		// the motor steps compensation for motor 1
-//		if(Equals(szToken, "motorstepscomp1")){
-//			Parse_IntItem("/motorstepscomp1", curScanner->motor[0].motorStepsComp);
-//			continue;
-//		}
-//
-//		// the motor steps compensation for motor 2
-//		if(Equals(szToken, "motorstepscomp2")){
-//			Parse_IntItem("/motorstepscomp2", curScanner->motor[1].motorStepsComp);
-//			continue;
-//		}
-//	}
-//
-//	return 0;
-//}

@@ -5,13 +5,12 @@
 class CObservatoryInfo
 {
 public:
-	CObservatoryInfo(void);
-	~CObservatoryInfo(void);
+    CObservatoryInfo();
 
-	/** The number of observatories */
-	unsigned int	m_observatoryNum;
+    /** The number of observatories */
+    unsigned int m_observatoryNum;
 
-	/** The name of the observatories */
-	CString				m_name[MAX_OBSERVATORIES];
+    /** The name of the observatories */
+    CString m_name[MAX_OBSERVATORIES];
 
 };

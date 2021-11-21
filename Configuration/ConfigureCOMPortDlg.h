@@ -122,7 +122,7 @@ namespace ConfigurationDialog
 
         /** The current selection of settings
                 0 == Serial Cable
-                1 == Freewave Serial Radio 
+                1 == Freewave Serial Radio
                 2 == FTP - Communication
                 3 == Directory Polling
         */
@@ -139,7 +139,7 @@ namespace ConfigurationDialog
 
         /** Showing the settings when polling directory */
         void ShowDirectoryPolling();
-public:
-    afx_msg void OnBnClickedButtonPolDirBrowse();
-};
+    public:
+        afx_msg void OnBnClickedButtonPolDirBrowse();
+    };
 }

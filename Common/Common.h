@@ -209,64 +209,64 @@ const enum MEASUREMENT_MODE { MODE_UNKNOWN, MODE_FLUX, MODE_FIXED, MODE_WINDSPEE
 #define WM_GOTO_SLEEP             WM_USER + 17
 
 // Signals to the WindEvaluator that a new Evaluation-log file has been evaluated
-#define WM_NEW_WIND_EVALLOG				WM_USER + 18
+#define WM_NEW_WIND_EVALLOG         WM_USER + 18
 
 // signal to show that scanner is connected and running
-#define WM_SCANNER_RUN						WM_USER + 19
+#define WM_SCANNER_RUN              WM_USER + 19
 
 //signal to show that scanner is sleeping
-#define WM_SCANNER_SLEEP					WM_USER + 20
+#define WM_SCANNER_SLEEP            WM_USER + 20
 
 //signal to show that scanner is not connected
-#define WM_SCANNER_NOT_CONNECT		WM_USER + 21
+#define WM_SCANNER_NOT_CONNECT      WM_USER + 21
 
 //signal to upload a file to FTP server
-#define WM_UPLOAD_NEW_FILE				WM_USER + 22
+#define WM_UPLOAD_NEW_FILE          WM_USER + 22
 
 //signal to begin a ftp uploading. 
-#define  WM_START_FTP							WM_USER + 23
+#define  WM_START_FTP               WM_USER + 23
 
 //signal to update remote file tree
-#define	 WM_UPDATE_FILE_TREE			WM_USER + 24
+#define	 WM_UPDATE_FILE_TREE        WM_USER + 24
 
 // Signals to the GeometryEvaluator that a new Evaluation-log file has been evaluated
-#define WM_NEW_SCAN_EVALLOG				WM_USER + 25
+#define WM_NEW_SCAN_EVALLOG         WM_USER + 25
 
 //signal to upload cfgonce file
-#define  WM_UPLOAD_CFGONCE					WM_USER + 26
+#define  WM_UPLOAD_CFGONCE          WM_USER + 26
 
 //signal from one thread which is going to download pak file
-#define WM_START_DOWNLOAD					WM_USER + 27
+#define WM_START_DOWNLOAD           WM_USER + 27
 
 //signal from one thread which just finished downloading pak file
-#define WM_FINISH_DOWNLOAD				WM_USER + 28
+#define WM_FINISH_DOWNLOAD          WM_USER + 28
 
 //signal from one thread which got error from downloading pak file
-#define WM_DOWNLOAD_ERROR					WM_USER + 29
+#define WM_DOWNLOAD_ERROR           WM_USER + 29
 
 // Signals that progress has been made, different from WM_PROGRESS
-#define WM_PROGRESS2              WM_USER + 30
+#define WM_PROGRESS2                WM_USER + 30
 
 // Signals that the wind-speed measurements thread has succcessfully correlated two time-series
-#define WM_CORR_SUCCESS						WM_USER + 31
+#define WM_CORR_SUCCESS             WM_USER + 31
 
 // Signals that the plume-height measurement thread has succcessfully calculated one plume height
-#define WM_PH_SUCCESS							WM_USER + 32
+#define WM_PH_SUCCESS               WM_USER + 32
 
 // Signals a zooming event
-#define WM_ZOOM										WM_USER + 33
+#define WM_ZOOM                     WM_USER + 33
 
 // signal from one thread which just finished uploading
-#define WM_FINISH_UPLOAD					WM_USER + 34
+#define WM_FINISH_UPLOAD            WM_USER + 34
 
 // signal that it is time to write the daily report
-#define WM_WRITE_REPORT						WM_USER + 35
+#define WM_WRITE_REPORT             WM_USER + 35
 
 // Signal that the wind-field has changed
-#define WM_NEW_WINDFIELD					WM_USER + 36
+#define WM_NEW_WINDFIELD            WM_USER + 36
 
 // Signal that the configuration-file should be re-written...
-#define WM_REWRITE_CONFIGURATION	WM_USER + 37
+#define WM_REWRITE_CONFIGURATION    WM_USER + 37
 
 // -------------------------------------------------------
 // ---------------- CLASS COMMON.H -----------------------
@@ -284,13 +284,6 @@ public:
             @return - The file size (in bytes)
         */
     static long RetrieveFileSize(CString& fileName);
-
-    /** Write a file
-    @param fileName the file name, including path
-    @param msg the string to write into the file
-    @param mode the writing mode, "a+" or  "w"
-    */
-    static void WriteAFile(const CString& fileName, const CString& msg, char* mode);
 
     // --------------------------------------------------------------------
     // ------------------------ SYSTEM FUNCTIONS  -------------------------
