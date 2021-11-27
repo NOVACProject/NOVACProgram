@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Common/Common.h"
-
 /** The <b>CMasterController</b> class controlls the whole program.
     It starts and controlls the communication- and evaluation - threads. */
 class CMasterController
@@ -21,8 +19,4 @@ public:
 
     /** Checks the settings */
     bool CheckSettings();
-
-protected:
-    /** A common object, for doing common things... */
-    Common m_common;
 };

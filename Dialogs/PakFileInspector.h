@@ -28,20 +28,20 @@ namespace Dialogs {
         CString m_fileName;
 
         /** The current spectrum in the .pak-file */
-        int		m_curSpectrum;
+        int m_curSpectrum;
 
-        /** The number of spectra in the .pak-file */
-        int		m_spectrumNum;
+        /** The total number of spectra in the .pak-file */
+        int m_spectrumNum;
 
         /** The contents of the spectrum 'm_curspectrum' */
-        novac::CSpectrum	m_spectrum;
+        novac::CSpectrum m_spectrum;
 
         /** The header of the current spectrum */
-        novac::MKZYhdr	m_spectrumHeader;
+        novac::MKZYhdr m_spectrumHeader;
 
         /** The timer, to restore the zoomability of the graph 0.5 seconds after
                 the user has opened the file */
-        UINT_PTR		m_timer;
+        UINT_PTR m_timer;
 
         // ------------------ PROTECTED DIALOG COMPONENTS -------------------------
 

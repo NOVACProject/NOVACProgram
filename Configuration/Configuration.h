@@ -305,7 +305,7 @@ public:
         double  compass;
 
         /** The opening angle of the cone that the scanner measures in (in degrees).
-        This is 90 degrees for the old scanner, and typically 30 or 45 degrees for the new. */
+            This is 90 degrees for the flat scanner, and typically 30 or 45 degrees for the conical. */
         double  coneAngle;
 
         /** The tilt of the system, in the direction of the scanner. */

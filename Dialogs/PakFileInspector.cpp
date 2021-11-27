@@ -13,7 +13,7 @@ using namespace Dialogs;
 using namespace novac;
 
 IMPLEMENT_DYNAMIC(CPakFileInspector, CDialog)
-CPakFileInspector::CPakFileInspector(CWnd* pParent /*=NULL*/)
+CPakFileInspector::CPakFileInspector(CWnd* pParent /*=nullptr*/)
     : CDialog(CPakFileInspector::IDD, pParent)
 {
     m_curSpectrum = 0;
@@ -90,8 +90,6 @@ void CPakFileInspector::InitPropertiesList() {
 }
 
 void CPakFileInspector::InitHeaderList() {
-    Common common;
-
     // Put out the list of properties...
     CRect rect;
     this->m_headerFrame.GetWindowRect(rect);
@@ -195,13 +193,12 @@ void CPakFileInspector::OnOpenPakFile()
     CheckPakFile();
 
     // 4. Turn on the zoom again in 0.5 second
-    m_timer = this->SetTimer(0, 500, NULL);
+    m_timer = this->SetTimer(0, 500, nullptr);
 }
 
 void CPakFileInspector::CheckPakFile() {
     CSpectrumIO reader;
     CSpectrum spec;
-    CFile* pFile = NULL;
     ULONGLONG fileSize = 0;
     CString str;
     CSpectrum firstSpectrum, lastSpectrum;
@@ -212,16 +209,12 @@ void CPakFileInspector::CheckPakFile() {
 
     // Get the size of the file
     try {
-        pFile = new CFile(m_fileName, CFile::modeRead | CFile::shareDenyNone);
-        fileSize = pFile->GetLength();
+        CFile pFile(m_fileName, CFile::modeRead | CFile::shareDenyNone);
+        fileSize = pFile.GetLength();
         fileSize /= 1024; // we want the size in kB.
     }
-    catch (CFileException* pEx) {
+    catch (CFileException* /*pEx*/) {
         // Here I don't know what to do...
-    }
-    if (pFile != NULL) {
-        pFile->Close();
-        delete pFile;
     }
 
     // Count the spectra
@@ -305,7 +298,7 @@ void CPakFileInspector::DrawSpectrum() {
     m_graph.SetRange(range.minLambda, range.maxLambda, 0, range.minIntens, range.maxIntens, 0);
     m_graph.SetPlotColor(RGB(0, 255, 0));
 
-    m_graph.XYPlot(NULL, m_spectrum.m_data, m_spectrum.m_length, Graph::CGraphCtrl::PLOT_FIXED_AXIS | Graph::CGraphCtrl::PLOT_CONNECTED);
+    m_graph.XYPlot(nullptr, m_spectrum.m_data, m_spectrum.m_length, Graph::CGraphCtrl::PLOT_FIXED_AXIS | Graph::CGraphCtrl::PLOT_CONNECTED);
 }
 
 void CPakFileInspector::UpdateHeaderList() {

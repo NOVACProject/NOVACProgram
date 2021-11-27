@@ -33,13 +33,12 @@ using namespace Evaluation;
 using namespace FileHandler;
 using namespace novac;
 
-extern CMeteorologicalData		g_metData;		// <-- The meteorological data
-extern CConfigurationSetting	g_settings;		// <-- The settings
-extern CVolcanoInfo				g_volcanoes;	// <-- A list of all known volcanoes
-extern CFormView* pView;			// <-- The screen
-extern CWinThread* g_windMeas;	// <-- The thread that evaluates the wind-measurements.
-extern CWinThread* g_geometry;	// <-- The thread that performes geometrical calculations from the scans
-extern CWinThread* g_comm;		// <-- the communication controller
+extern CMeteorologicalData      g_metData;      // <-- The meteorological data
+extern CConfigurationSetting    g_settings;     // <-- The settings
+extern CVolcanoInfo             g_volcanoes;    // <-- A list of all known volcanoes
+extern CFormView* pView;        // <-- The screen
+extern CWinThread* g_windMeas;  // <-- The thread that evaluates the wind-measurements.
+extern CWinThread* g_geometry;  // <-- The thread that performes geometrical calculations from the scans
 
 UINT primaryLanguage;
 UINT subLanguage;
@@ -56,7 +55,6 @@ CEvaluationController::CEvaluationController(void)
     m_fluxSpecie = "SO2";
     m_realTime = false;
     m_date[0] = m_date[1] = m_date[2] = 0;
-    m_lastResult = nullptr;
 }
 
 CEvaluationController::~CEvaluationController(void)
@@ -77,58 +75,38 @@ void CEvaluationController::OnQuit(WPARAM /*wp*/, LPARAM /*lp*/) {
             m_spectrometer[i] = nullptr;
         }
     }
-    this->m_lastResult.reset();
 }
 
-/** This function is to test the evaluation */
-void CEvaluationController::OnTestEvaluation(WPARAM wp, LPARAM /*lp*/) {
-    CSpectrumIO reader;
-    CString* fileName = (CString*)wp;
-    CSpectrum curSpec;
-    CString errorMessage;
-
-    // 1. Check if the file exists
-    if (!IsExistingFile(*fileName)) {
-        errorMessage.Format("EvaluationController recieved filename with erroneous filePath: %s ", (LPCSTR)fileName);
-        this->m_logFileWriter.WriteErrorMessage(errorMessage);
-        fileName->Format("");   // signals that we are done with this file
-        return;
-    }
-
-    // 2. Find the serial number of the spectrometer
-    CString serialNumber;
-    const std::string fileNameStr((LPCSTR)*fileName);
-    reader.ReadSpectrum(fileNameStr, 0, curSpec);
-    serialNumber.Format("%s", curSpec.m_info.m_device.c_str());
-
-    EvaluateScan(*fileName, -1);
-}
-
-/** This function takes care of newly arrived scan files,
-        evaluates the spectra and stores the scan-file in the archives. */
 void CEvaluationController::OnArrivedSpectra(WPARAM wp, LPARAM /*lp*/)
 {
     // The filename of the newly arrived file is the first parameter 
-    const CString* fileName = (CString*)wp;
-    CString errorMessage, message;
+    if ((CString*)wp == nullptr)
+    {
+        CString errorMessage = "EvaluationController recieved filename with null file name.";
+        m_logFileWriter.WriteErrorMessage(errorMessage);
+        ShowMessage(errorMessage);
+        return;
+    }
+
+    const CString fileName = *((CString*)wp); // make a local copy
+
+    CString message;
     CString storeFileName_pak, storeFileName_txt;
-    CString str;
     CSpectrumIO reader;
     CSpectrum spec;
     bool isFullScan = true;
-    int nSpectra = 0;
 
     // 1. Check if the file exists
-    if (!IsExistingFile(*fileName)) {
-        errorMessage.Format("EvaluationController recieved filename with erroneous filePath: %s ", (LPCSTR)fileName);
+    if (!IsExistingFile(fileName)) {
+        CString errorMessage;
+        errorMessage.Format("EvaluationController recieved filename with erroneous filePath: %s ", fileName);
         m_logFileWriter.WriteErrorMessage(errorMessage);
         ShowMessage(errorMessage);
-        delete fileName;
         return;
     }
 
     // 2. Find the serial number of the spectrometer and the channel that was used
-    const std::string fileNameStr((LPCSTR)*fileName);
+    const std::string fileNameStr(fileName);
     reader.ReadSpectrum(fileNameStr, 0, spec); // TODO: check for errors!!
     const CString serialNumber(spec.m_info.m_device.c_str());
     const int specPerScan = spec.SpectraPerScan();
@@ -137,28 +115,29 @@ void CEvaluationController::OnArrivedSpectra(WPARAM wp, LPARAM /*lp*/)
     const int volcanoIndex = Common::GetMonitoredVolcano(serialNumber);
 
     // 4. Check so that this file contains one full scan
-    const MEASUREMENT_MODE measurementMode = CPakFileHandler::GetMeasurementMode(*fileName);
+    const MEASUREMENT_MODE measurementMode = CPakFileHandler::GetMeasurementMode(fileName);
 
     if (measurementMode == MODE_FLUX) {
-        nSpectra = reader.CountSpectra(fileNameStr);
+        const int nSpectra = reader.CountSpectra(fileNameStr);
         isFullScan = (specPerScan == nSpectra); // TODO: will this work if there are repetitions??
     }
 
     // 5. Evaluate the scan
-    EvaluateScan(*fileName, volcanoIndex); // TODO: Check for errors
+    EvaluateScan(fileName, volcanoIndex); // TODO: Check for errors
 
     // 6. Move the file to the archive
-    GetArchivingfileName(storeFileName_pak, storeFileName_txt, *fileName);
-    if (0 == MoveFileEx(*fileName, storeFileName_pak, MOVEFILE_REPLACE_EXISTING)) {// after evaluation, move the file to the archive
+    GetArchivingfileName(storeFileName_pak, storeFileName_txt, fileName);
+    if (0 == MoveFileEx(fileName, storeFileName_pak, MOVEFILE_REPLACE_EXISTING)) {// after evaluation, move the file to the archive
         DWORD errorCode = GetLastError();
         message.Format("Could not move file");
+        CString str;
         if (Common::FormatErrorCode(errorCode, str))
             message.AppendFormat("Reason - %s", (LPCSTR)str);
         else
             message.AppendFormat("Reason - unknown");
         ShowMessage(message);
         // Try to copy the file instead...
-        CopyFile(*fileName, storeFileName_pak, TRUE);
+        CopyFile(fileName, storeFileName_pak, TRUE);
     }
 
     // 7. Upload the file(s) to the data-server
@@ -220,8 +199,7 @@ void CEvaluationController::OnArrivedSpectra(WPARAM wp, LPARAM /*lp*/)
     }
 
     // 11. Clean Up
-    DeleteFile(*fileName);   // If the file still exists, try to delete it.
-    delete fileName;   // signals that we are done with this file
+    DeleteFile(fileName);   // If the file still exists, try to delete it.
 }
 
 /** This function takes a scan-file and evaluates one of the spectra inside it */
@@ -284,13 +262,14 @@ RETURN_CODE CEvaluationController::EvaluateScan(const CString& fileName, int vol
     long spectrumNum = ev->EvaluateScan(fileName, spectrometer->m_fitWindows[0], nullptr, darkSettings);
 
     // 6. Get the result from the evaluation
+    std::unique_ptr<CScanResult> scanEvaluationResult;
     if (ev != nullptr && ev->HasResult()) {
-        m_lastResult = ev->GetResult();
+        scanEvaluationResult = ev->GetResult();
     }
 
     // 7. Get the mode of the evaluation
-    if (m_lastResult) {
-        m_lastResult->CheckMeasurementMode();
+    if (scanEvaluationResult) {
+        scanEvaluationResult->CheckMeasurementMode();
     }
 
     // 8. Check the reasonability of the evaluation
@@ -299,36 +278,36 @@ RETURN_CODE CEvaluationController::EvaluateScan(const CString& fileName, int vol
         return FAIL;
     }
 
-    m_lastResult->GetStartTime(0, startTime);
+    scanEvaluationResult->GetStartTime(0, startTime);
 
     // 9. Get the local wind field when the scan was taken
     if (SUCCESS != GetWind(windField, *spectrometer, startTime)) {
         spectrometer->m_logFileHandler.WriteErrorMessage(m_common.GetString(ERROR_WIND_NOT_FOUND));
     }
     // 10. Calculate the flux. The spectrometer is needed to identify the geometry.
-    if (!m_lastResult->IsWindMeasurement()
-        && !m_lastResult->IsStratosphereMeasurement()
-        && !m_lastResult->IsDirectSunMeasurement()
-        && !m_lastResult->IsLunarMeasurement()
-        && !m_lastResult->IsCompositionMeasurement()) {
+    if (!scanEvaluationResult->IsWindMeasurement()
+        && !scanEvaluationResult->IsStratosphereMeasurement()
+        && !scanEvaluationResult->IsDirectSunMeasurement()
+        && !scanEvaluationResult->IsLunarMeasurement()
+        && !scanEvaluationResult->IsCompositionMeasurement()) {
 
         // 10a. Calculate the centre of the plume
-        bool inplume = m_lastResult->CalculatePlumeCentre("SO2");
+        bool inplume = scanEvaluationResult->CalculatePlumeCentre("SO2");
 
         // 10c. Calculate the flux...
-        if (SUCCESS != CalculateFlux(m_lastResult.get(), spectrometer, volcanoIndex, windField)) {
-            Output_FluxFailure(m_lastResult.get(), spectrometer);
+        if (SUCCESS != CalculateFlux(scanEvaluationResult.get(), spectrometer, volcanoIndex, windField)) {
+            Output_FluxFailure(scanEvaluationResult, spectrometer);
             success = false;
         }
     }
 
     // 11. Append the result to the log file of the corresponding scanningInstrument
-    if (SUCCESS != WriteEvaluationResult(m_lastResult.get(), *scan, *spectrometer, windField, volcanoIndex)) {
+    if (SUCCESS != WriteEvaluationResult(scanEvaluationResult.get(), *scan, *spectrometer, windField, volcanoIndex)) {
         spectrometer->m_logFileHandler.WriteErrorMessage(TEXT("Could not write result to file"));
     }
 
     // 12. Remember the result from the last scan
-    spectrometer->RememberResult(*m_lastResult);
+    spectrometer->RememberResult(*scanEvaluationResult);
 
     // 13. Check if we should do a wind-measurement or a composition mode measurement now
     InitiateSpecialModeMeasurement(spectrometer);
@@ -338,11 +317,11 @@ RETURN_CODE CEvaluationController::EvaluateScan(const CString& fileName, int vol
     Output_TimingOfScanEvaluation(spectrumNum, spectrometer->SerialNumber(), ((double)(cFinish - cStart) / (double)CLOCKS_PER_SEC));
 
     // TODO: Check that this is ok.
-    m_lastResult->m_path = std::string((LPCSTR)fileName);
+    scanEvaluationResult->m_path = std::string((LPCSTR)fileName);
 
     // 16. Share the results with the rest of the program
     if (success) {
-        CScanResult* newResult = new CScanResult(*m_lastResult);
+        CScanResult* newResult = new CScanResult(*scanEvaluationResult);
         pView->PostMessage(WM_EVAL_SUCCESS, (WPARAM) & (spectrometer->SerialNumber()), (LPARAM)newResult);
     }
 
@@ -1000,13 +979,9 @@ void CEvaluationController::Output_FitFailure(const CSpectrum& spec) {
     ShowMessage(message);
 }
 
-/** Shows the information about a failure in the flux calculation */
-void CEvaluationController::Output_FluxFailure(const CScanResult* result, const CSpectrometer* spec) {
+void CEvaluationController::Output_FluxFailure(const std::unique_ptr<CScanResult>& result, const CSpectrometer* spec)
+{
     spec->m_logFileHandler.WriteErrorMessage(TEXT("Could not calculate the flux"));
-
-    if (result != m_lastResult.get()) {
-        *m_lastResult = *result;
-    }
 
     CScanResult* copiedResult = (nullptr != result) ? new CScanResult(*result) : nullptr;
 
@@ -1236,81 +1211,9 @@ void CEvaluationController::ExecuteScript_FullScan(const CString& param1, const 
     case SE_ERR_OOM:break;
     case SE_ERR_SHARE:break;
     }
+
     // don't try again to access the file
     g_settings.externalSetting.fullScanScript.Format("");
-
-}
-
-/** Makes calculations of the geometrical setup using the given
-        Heidelberg (V-II) instrument and the last evaluation result */
-RETURN_CODE CEvaluationController::MakeGeometryCalculations_Heidelberg(CSpectrometer* spectrometer) {
-    CDateTime startTime;
-    CWindField wind;
-    double alpha_center_of_mass, phi_center_of_mass;
-    CString debugFile, dateStr;
-    Common common;
-
-    common.GetDateText(dateStr);
-    debugFile.Format("%sOutput\\%s\\Debug_UHEI_Geometry.txt", (LPCSTR)g_settings.outputDirectory, (LPCSTR)dateStr);
-
-    // if we don't see any plume at all in the last measurement, then there's no
-    //	point in trying to calculate anything
-    alpha_center_of_mass = m_lastResult->GetCalculatedPlumeCentre(0);
-    phi_center_of_mass = m_lastResult->GetCalculatedPlumeCentre(1);
-    if (alpha_center_of_mass < -900) {
-        return FAIL;
-    }
-
-    // Get the user supplied wind field at the time of the last measurement
-    m_lastResult->GetStartTime(0, startTime);
-    GetWind(wind, *spectrometer, startTime);
-
-    // Get the position of the scanner
-    CGPSData& scannerPos = spectrometer->m_scanner.gps;
-
-    // Get the position of the source
-    int volcanoIndex = Common::GetMonitoredVolcano(spectrometer->m_scanner.spec[0].serialNumber);
-    CGPSData source = CGPSData(g_volcanoes.m_peakLatitude[volcanoIndex], g_volcanoes.m_peakLongitude[volcanoIndex], g_volcanoes.m_peakHeight[volcanoIndex]);
-
-    // Calculate the wind-direction from the measured data
-    double calcWindDirection = Geometry::CGeometryCalculator::GetWindDirection(source, scannerPos, wind.GetPlumeHeight(), alpha_center_of_mass, phi_center_of_mass);
-
-    // Calculate the plume-height from the measured data
-    double calcPlumeHeight = Geometry::CGeometryCalculator::GetPlumeHeight_OneInstrument(source, scannerPos, wind.GetWindDirection(), alpha_center_of_mass, phi_center_of_mass);
-
-    // Write the whole thing to a debug-file in the output-directory
-    int exists = IsExistingFile(debugFile);
-    FILE* f = fopen(debugFile, "a+");
-    if (f != nullptr) {
-        if (!exists) {
-            fprintf(f, "alpha_center_of_mass\tphi_center_of_mass\tuser_wind_dir\tuser_plume_height\tcalc_wind_dir\tcalc_plume_height\n");
-        }
-        fprintf(f, "%.2lf\t%.2lf\t%.2lf\t%.2lf\t%.2lf\t%.2lf\n", alpha_center_of_mass, phi_center_of_mass, wind.GetWindDirection(), wind.GetPlumeHeight(), calcWindDirection, calcPlumeHeight);
-        fclose(f);
-    }
-
-    // Should use the result from this measurement to improve the known wind-field ?
-    if (spectrometer->m_scanner.scSettings.useCalculatedPlumeParameters || spectrometer->m_scanner.windSettings.useCalculatedPlumeParameters) {
-        CWindField wf;
-        CDateTime now;
-        now.SetToNow();
-
-        // 1. Get the wind field now
-        if (SUCCESS == GetWind(wf, *spectrometer, now)) {
-
-            // 2. Update the wind-direction
-            wf.SetWindDirection(calcWindDirection, MET_GEOMETRY_CALCULATION);
-
-            // 3. Update the wind-field
-            g_metData.SetWindField(spectrometer->m_settings.serialNumber, wf);
-
-            // 4. Tell the window that we've started to use a new wind-field
-            pView->PostMessage(WM_NEW_WINDFIELD, NULL, NULL);
-
-        }
-    }
-
-    return SUCCESS;
 }
 
 void CEvaluationController::InitiateSpecialModeMeasurement(const CSpectrometer* spectrometer)

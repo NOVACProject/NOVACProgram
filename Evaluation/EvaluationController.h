@@ -45,14 +45,6 @@ namespace Evaluation
         afx_msg void OnQuit(WPARAM wp, LPARAM lp);
 
         // ----------------------------------------------------------------------
-        // ---------------------- PUBLIC DATA -----------------------------------
-        // ----------------------------------------------------------------------
-
-        /** A scan-result, for sharing evaluated data with the rest of the
-            program. This is updated after every evaluation of a full scan. */
-        std::unique_ptr<CScanResult> m_lastResult;
-
-        // ----------------------------------------------------------------------
         // --------------------- PUBLIC METHODS ---------------------------------
         // ----------------------------------------------------------------------
 
@@ -60,11 +52,6 @@ namespace Evaluation
             @param wp is a pointer to a CString object telling the filename of the pak-file.
             @param lp - unused. */
         afx_msg void OnArrivedSpectra(WPARAM wp, LPARAM lp);
-
-        /** Used to test the evaluation.
-            @param wp is a pointer to a CString object telling the filename of the pak-file.
-            @param lp - unused. */
-        afx_msg void OnTestEvaluation(WPARAM wp, LPARAM lp);
 
         /** Evaluates a scan. TODO: THIS FUNCTION ASSUMES THAT THE FIRST SPECTRUM
             IN THE SPECTRUM FILE IS THE SKY-REFERENCE, THE SECOND IS A DARK MEASUREMENT
@@ -202,10 +189,6 @@ namespace Evaluation
             evaluation-log file for geometry calculations. */
         RETURN_CODE MakeGeometryCalculations(const CString& fileName, int volcanoIndex);
 
-        /** Makes calculations of the geometrical setup using the given
-            Heidelberg (V-II) instrument and the last evaluation result */
-        RETURN_CODE MakeGeometryCalculations_Heidelberg(CSpectrometer* spectrometer);
-
         /** Retrieves information from the spectrum-file and saves it */
         void GetSpectrumInformation(CSpectrometer* spectrometer, const CString& fileName);
 
@@ -225,7 +208,7 @@ namespace Evaluation
         void Output_FitFailure(const novac::CSpectrum& spec);
 
         /** Shows the information about a failure in the flux calculation */
-        void Output_FluxFailure(const CScanResult* result, const CSpectrometer* spec);
+        void Output_FluxFailure(const std::unique_ptr<CScanResult>& result, const CSpectrometer* spec);
 
         /** Shows the timing information from evaluating a scan */
         void Output_TimingOfScanEvaluation(int spectrumNum, const CString& serial, double timeElapsed);
