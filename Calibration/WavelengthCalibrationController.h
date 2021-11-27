@@ -2,6 +2,8 @@
 
 #include <string>
 #include <vector>
+#include <SpectralEvaluation/Spectra/SpectrumInfo.h>
+
 
 namespace novac
 {
@@ -63,7 +65,8 @@ public:
 
     /// <summary>
     /// This is the initial calibration, used as a starting point for the calibration routine.
-    /// Must be set before calling RunCalibration().
+    /// This will be set from the contents of m_initialCalibrationFile and m_initialLineShapeFile
+    /// when RunCalibration() is called.
     /// </summary>
     std::unique_ptr<novac::InstrumentCalibration> m_initialCalibration;
 
@@ -109,6 +112,7 @@ public:
         std::vector<double> outlierCorrespondenceWavelengths;
 
         std::vector<double> measuredSpectrum;
+        novac::CSpectrumInfo spectrumInfo;
 
         // All the keypoints from the measured spectrum
         std::vector<double> measuredSpectrumKeypointPixels;
@@ -132,7 +136,8 @@ public:
     WavelengthCalibrationDebugState m_calibrationDebug;
 
     /// <summary>
-    /// Performs the actual wavelength calibration
+    /// Performs the actual wavelength calibration.
+    /// @throws std::invalid_argument with an explanatory error message if the calibration fails.
     /// </summary>
     void RunCalibration();
 

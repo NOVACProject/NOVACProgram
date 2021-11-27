@@ -59,9 +59,6 @@ namespace Evaluation
         /** @return a copy of the scan result */
         std::unique_ptr<CScanResult> GetResult();
 
-        /** @return true if a result has been produced here */
-        bool HasResult();
-
         /** @return the number of spectra in the last scan evaluated */
         int NumberOfSpectraInLastResult();
 

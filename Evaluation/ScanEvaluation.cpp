@@ -57,13 +57,6 @@ std::unique_ptr<CScanResult> CScanEvaluation::GetResult()
     return copiedResult;
 }
 
-bool CScanEvaluation::HasResult()
-{
-    std::lock_guard<std::mutex> lock{ m_resultMutex };
-
-    return (nullptr != m_result.get());
-}
-
 /** Called to evaluate one scan */
 long CScanEvaluation::EvaluateScan(const CString& scanfile, const CFitWindow& window, bool* fRun, const Configuration::CDarkSettings* darkSettings)
 {

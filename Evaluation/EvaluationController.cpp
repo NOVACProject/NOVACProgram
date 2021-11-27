@@ -20,13 +20,11 @@
 // ... the judgements for making real-time composition measurements
 #include "../Common/CompositionMeasurement.h"
 
+// ... the judgements for making instrument calibrations (pixel to wavelength and instrument line shape).
+#include "RealTimeCalibration.h"
+
 // ... support for handling the evaluation-log files...
 #include "../Common/EvaluationLogFileHandler.h"
-
-// For the moment we also need the geometry calculator and the list of volcanoes...
-//	THIS IS ONLY USED FOR THE HEIDELBEG GEOMETRY CALCULATIONS AND SHOULD BE MOVED LATER ...
-#include "../Geometry/GeometryCalculator.h"
-#include "../VolcanoInfo.h"
 
 
 using namespace Evaluation;
@@ -35,7 +33,6 @@ using namespace novac;
 
 extern CMeteorologicalData      g_metData;      // <-- The meteorological data
 extern CConfigurationSetting    g_settings;     // <-- The settings
-extern CVolcanoInfo             g_volcanoes;    // <-- A list of all known volcanoes
 extern CFormView* pView;        // <-- The screen
 extern CWinThread* g_windMeas;  // <-- The thread that evaluates the wind-measurements.
 extern CWinThread* g_geometry;  // <-- The thread that performes geometrical calculations from the scans
@@ -88,7 +85,11 @@ void CEvaluationController::OnArrivedSpectra(WPARAM wp, LPARAM /*lp*/)
         return;
     }
 
-    const CString fileName = *((CString*)wp); // make a local copy
+    const CString fileName = *((CString*)wp); // make a local copy and delete the original
+    {
+        CString* original = (CString*)wp;
+        delete original;
+    }
 
     CString message;
     CString storeFileName_pak, storeFileName_txt;
@@ -258,14 +259,11 @@ RETURN_CODE CEvaluationController::EvaluateScan(const CString& fileName, int vol
     // 5. Evaluate the scan
     std::unique_ptr<CScanEvaluation> ev = std::make_unique<CScanEvaluation>();
     ev->m_pause = nullptr;
-    Configuration::CDarkSettings* darkSettings = &spectrometer->m_settings.channel[0].darkSettings;
-    long spectrumNum = ev->EvaluateScan(fileName, spectrometer->m_fitWindows[0], nullptr, darkSettings);
+    const Configuration::CDarkSettings* darkSettings = &spectrometer->m_settings.channel[0].darkSettings;
+    const long numberOfEvaluatedSpectra = ev->EvaluateScan(fileName, spectrometer->m_fitWindows[0], nullptr, darkSettings);
 
     // 6. Get the result from the evaluation
-    std::unique_ptr<CScanResult> scanEvaluationResult;
-    if (ev != nullptr && ev->HasResult()) {
-        scanEvaluationResult = ev->GetResult();
-    }
+    std::unique_ptr<CScanResult> scanEvaluationResult = ev->GetResult();
 
     // 7. Get the mode of the evaluation
     if (scanEvaluationResult) {
@@ -273,7 +271,7 @@ RETURN_CODE CEvaluationController::EvaluateScan(const CString& fileName, int vol
     }
 
     // 8. Check the reasonability of the evaluation
-    if (spectrumNum == 0) {
+    if (numberOfEvaluatedSpectra == 0) {
         Output_EmptyScan(spectrometer);
         return FAIL;
     }
@@ -292,7 +290,7 @@ RETURN_CODE CEvaluationController::EvaluateScan(const CString& fileName, int vol
         && !scanEvaluationResult->IsCompositionMeasurement()) {
 
         // 10a. Calculate the centre of the plume
-        bool inplume = scanEvaluationResult->CalculatePlumeCentre("SO2");
+        (void)scanEvaluationResult->CalculatePlumeCentre("SO2");
 
         // 10c. Calculate the flux...
         if (SUCCESS != CalculateFlux(scanEvaluationResult.get(), spectrometer, volcanoIndex, windField)) {
@@ -312,9 +310,12 @@ RETURN_CODE CEvaluationController::EvaluateScan(const CString& fileName, int vol
     // 13. Check if we should do a wind-measurement or a composition mode measurement now
     InitiateSpecialModeMeasurement(spectrometer);
 
+    // 14. Run a calibration of the device, if the time is right and the scan seems to be good.
+    UpdateInstrumentCalibration(spectrometer, fileNameStr);
+
     // 15. Calculate the time spent in this function
     cFinish = clock();
-    Output_TimingOfScanEvaluation(spectrumNum, spectrometer->SerialNumber(), ((double)(cFinish - cStart) / (double)CLOCKS_PER_SEC));
+    Output_TimingOfScanEvaluation(numberOfEvaluatedSpectra, spectrometer->SerialNumber(), ((double)(cFinish - cStart) / (double)CLOCKS_PER_SEC));
 
     // TODO: Check that this is ok.
     scanEvaluationResult->m_path = std::string((LPCSTR)fileName);
@@ -328,18 +329,13 @@ RETURN_CODE CEvaluationController::EvaluateScan(const CString& fileName, int vol
     return SUCCESS;
 }
 
-/** Indentifies the scanning instrument from which this scan was generated.
-        @param scan a reference to a scan that should be identified.
-        @return a pointer to the spectrometer. @return nullptr if no spectrometer found */
 CSpectrometer* CEvaluationController::IdentifySpectrometer(const CScanFileHandler& scan) {
-    long spectrometerNum; // iterator
-
     unsigned char channel = scan.m_channel;
     if (true == CPakFileHandler::CorrectChannelNumber(channel))
         return nullptr; // cannot handle multichannel spectra here!!!
 
     // find the spectrometer that corresponds to the serial number
-    for (spectrometerNum = 0; spectrometerNum < m_spectrometer.GetSize(); ++spectrometerNum) {
+    for (long spectrometerNum = 0; spectrometerNum < m_spectrometer.GetSize(); ++spectrometerNum) {
         const CString deviceName(scan.m_device.c_str());
         if (Equals(m_spectrometer[spectrometerNum]->SerialNumber(), deviceName)) {
             if (channel == m_spectrometer[spectrometerNum]->m_channel) {
@@ -838,7 +834,6 @@ BOOL Evaluation::CEvaluationController::InitInstance()
 }
 
 RETURN_CODE CEvaluationController::InitializeSpectrometers() {
-    unsigned int i, j, k;
     long spectrometerNum = 0;
     CString message;
 
@@ -846,16 +841,15 @@ RETURN_CODE CEvaluationController::InitializeSpectrometers() {
     m_spectrometer.SetSize(g_settings.scannerNum); // make the initial assumption that there's only one spectrometer / scanner (reasonable!!!)
 
     /** fill in the content of each spectrometer */
-    for (i = 0; i < g_settings.scannerNum; ++i) {
-        for (j = 0; j < g_settings.scanner[i].specNum; ++j) {
+    for (unsigned long i = 0; i < g_settings.scannerNum; ++i) {
+        for (unsigned long j = 0; j < g_settings.scanner[i].specNum; ++j) {
 
             CSpectrometerHistory* history = new CSpectrometerHistory();
 
-            for (k = 0; k < g_settings.scanner[i].spec[j].channelNum; ++k) {
+            for (unsigned long k = 0; k < g_settings.scanner[i].spec[j].channelNum; ++k) {
 
                 CConfigurationSetting::ScanningInstrumentSetting& scanner = g_settings.scanner[i];
                 CConfigurationSetting::SpectrometerSetting& spec = g_settings.scanner[i].spec[j];
-                CConfigurationSetting::SpectrometerChannelSetting& channel = g_settings.scanner[i].spec[j].channel[k];
 
                 CSpectrometer* curSpec = new CSpectrometer();
 
@@ -989,9 +983,9 @@ void CEvaluationController::Output_FluxFailure(const std::unique_ptr<CScanResult
 }
 
 /** Shows the timing information from evaluating a scan */
-void CEvaluationController::Output_TimingOfScanEvaluation(int spectrumNum, const CString& serial, double timeElapsed) {
+void CEvaluationController::Output_TimingOfScanEvaluation(int numberOfEvaluatedSpectra, const CString& serial, double timeElapsed) {
     CString timingMessage;
-    timingMessage.Format("Evaluated one scan of %d spectra from %s in %lf seconds (%lf seconds/spectrum)", spectrumNum, (LPCSTR)serial, timeElapsed, timeElapsed / (double)spectrumNum);
+    timingMessage.Format("Evaluated one scan of %d spectra from %s in %lf seconds (%lf seconds/spectrum)", numberOfEvaluatedSpectra, (LPCSTR)serial, timeElapsed, timeElapsed / (double)numberOfEvaluatedSpectra);
     ShowMessage(timingMessage);
 }
 
@@ -1226,7 +1220,7 @@ void CEvaluationController::InitiateSpecialModeMeasurement(const CSpectrometer* 
     time(&now);
 
     // If we have done a special-mode measurement recently, then don't
-    //	even check if we should do it again.
+    //  even check if we should do it again.
     if ((cTimeOfLastWindMeasurement != 0) && (difftime(now, cTimeOfLastWindMeasurement) < 3600))
         return;
     if ((cTimeOfLastCompMeasurement != 0) && (difftime(now, cTimeOfLastCompMeasurement) < 3600))
@@ -1249,6 +1243,14 @@ void CEvaluationController::InitiateSpecialModeMeasurement(const CSpectrometer* 
     }
 
     return;
+}
+
+void CEvaluationController::UpdateInstrumentCalibration(const CSpectrometer* spectrometer, const std::string& lastEvaluatedScan)
+{
+    if (CRealTimeCalibration::IsTimeForInstrumentCalibration(spectrometer, lastEvaluatedScan))
+    {
+        CRealTimeCalibration::RunInstrumentCalibration(spectrometer, lastEvaluatedScan);
+    }
 }
 
 #ifdef _MSC_VER

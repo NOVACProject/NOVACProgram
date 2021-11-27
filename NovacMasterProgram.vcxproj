@@ -239,6 +239,7 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
     <ClCompile Include="Evaluation\EvaluationController.cpp" />
     <ClCompile Include="Evaluation\FitWindowFileHandler.cpp" />
     <ClCompile Include="Evaluation\FluxResult.cpp" />
+    <ClCompile Include="Evaluation\RealTimeCalibration.cpp" />
     <ClCompile Include="Evaluation\ScanEvaluation.cpp" />
     <ClCompile Include="Evaluation\ScanResult.cpp" />
     <ClCompile Include="Evaluation\Spectrometer.cpp" />
@@ -568,6 +569,7 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
     <ClInclude Include="Evaluation\EvaluationController.h" />
     <ClInclude Include="Evaluation\FitWindowFileHandler.h" />
     <ClInclude Include="Evaluation\FluxResult.h" />
+    <ClInclude Include="Evaluation\RealTimeCalibration.h" />
     <ClInclude Include="Evaluation\ScanEvaluation.h" />
     <ClInclude Include="Evaluation\ScanResult.h" />
     <ClInclude Include="Evaluation\Spectrometer.h" />

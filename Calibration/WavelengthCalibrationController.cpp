@@ -8,6 +8,7 @@
 #include "WavelengthCalibrationController.h"
 #include <SpectralEvaluation/StringUtils.h>
 #include <SpectralEvaluation/Spectra/Spectrum.h>
+#include <SpectralEvaluation/Spectra/SpectrometerModel.h>
 #include <SpectralEvaluation/File/File.h>
 #include <SpectralEvaluation/File/STDFile.h>
 #include <SpectralEvaluation/File/ScanFileHandler.h>
@@ -140,6 +141,7 @@ void WavelengthCalibrationController::RunCalibration()
 
     // Copy out the spectrum, such that the user can see it.
     m_calibrationDebug.measuredSpectrum = std::vector<double>(measuredSpectrum.m_data, measuredSpectrum.m_data + measuredSpectrum.m_length);
+    m_calibrationDebug.spectrumInfo = measuredSpectrum.m_info;
 
     // Check that this is a good measurement, according to our standards.
     CheckSpectrumQuality(measuredSpectrum);
@@ -359,13 +361,15 @@ void WavelengthCalibrationController::SaveResultAsSlf(const std::string& filenam
 
 void WavelengthCalibrationController::CheckSpectrumQuality(const novac::CSpectrum& spectrum) const
 {
-    const double maximumSaturationRatio = novac::GetMaximumSaturationRatioOfSpectrum(spectrum);
+    // Make sure that the spectrometer model is up-to-date
+    auto model = novac::CSpectrometerDatabase::GetInstance().GuessModelFromSerial(spectrum.m_info.m_device);
+    const double maximumSaturationRatio = novac::GetMaximumSaturationRatioOfSpectrum(spectrum, model);
 
     if (maximumSaturationRatio > 0.85)
     {
         std::stringstream message;
         message << "The provided sky spectrum seems to be saturated ";
-        message << "(maximum intensity: " << spectrum.MaxValue(0, spectrum.m_length) << ", corresponding to : " << 100 * maximumSaturationRatio << "% of full range).";
+        message << "(maximum intensity: " << spectrum.MaxValue(0, spectrum.m_length) << ", corresponding to : " << 100 * maximumSaturationRatio << "% of full range for a " << model.modelName <<").";
         message << "Calibration aborted";
         throw std::invalid_argument(message.str());
     }
@@ -374,7 +378,7 @@ void WavelengthCalibrationController::CheckSpectrumQuality(const novac::CSpectru
     {
         std::stringstream message;
         message << "The provided sky spectrum seems to be too dark for the calibration to succeed ";
-        message << "(maximum intensity: " << spectrum.MaxValue(0, spectrum.m_length) << ", corresponding to : " << 100 * maximumSaturationRatio << "% of full range).";
+        message << "(maximum intensity: " << spectrum.MaxValue(0, spectrum.m_length) << ", corresponding to : " << 100 * maximumSaturationRatio << "% of full range for a " << model.modelName << ").";
         message << "Calibration aborted";
         throw std::invalid_argument(message.str());
     }

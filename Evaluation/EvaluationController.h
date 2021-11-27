@@ -77,6 +77,11 @@ namespace Evaluation
                 1 wind-speed measurements
                 2 composition measurements */
         void InitiateSpecialModeMeasurement(const CSpectrometer* spectrometer);
+
+        /** Checks if we should perform a calibration of the given spectrometer now.
+            If the conditions are good then a calibration will be started. */
+        void UpdateInstrumentCalibration(const CSpectrometer* spectrometer, const std::string& lastEvaluatedScan);
+
     private:
         // ----------------------------------------------------------------------
         // ---------------------- PRIVATE DATA ----------------------------------

@@ -3,8 +3,8 @@
 #include "../VolcanoInfo.h"
 #include "../Evaluation/Spectrometer.h"
 
-extern CConfigurationSetting g_settings;	// <-- The settings
-extern CWinThread* g_comm;					// <-- the communication controller
+extern CConfigurationSetting g_settings;    // <-- The settings
+extern CWinThread* g_comm;                  // <-- the communication controller
 
 namespace WindSpeedMeasurement
 {
@@ -26,11 +26,11 @@ namespace WindSpeedMeasurement
         const int thisVolcano = IndexOfVolcano(volcanoName);
 
         // 0. Local handles, to get less dereferencing...
-        const CConfigurationSetting::WindSpeedMeasurementSetting* windSettings = &spectrometer->m_scanner.windSettings;
+        const CConfigurationSetting::WindSpeedMeasurementSetting& windSettings = spectrometer->m_scanner.windSettings;
 
         // 1. Check the settings for the spectrometer, if there's only one channel or
         //     if the settings says that we should not perform any wind-measurements, then don't
-        if (false == windSettings->automaticWindMeasurements)
+        if (false == windSettings.automaticWindMeasurements)
         {
             FILE* f = fopen(debugFile, "a+");
             if (f != nullptr)
@@ -70,7 +70,7 @@ namespace WindSpeedMeasurement
 
         // 2a. Have we recieved any scans today?
         const int nScansToday = spectrometer->m_history->GetNumScans();
-        if (nScansToday < windSettings->stablePeriod)
+        if (nScansToday < windSettings.stablePeriod)
         {
             // there must be enough scans received from the instrument today for us to make any wind-measurement
             FILE* f = fopen(debugFile, "a+");
@@ -85,7 +85,7 @@ namespace WindSpeedMeasurement
 
         // 2b. How long time has passed since the last ws-measurement?
         const int sPassed = spectrometer->m_history->SecondsSinceLastWindMeas();
-        if (sPassed > 0 && sPassed < windSettings->interval)
+        if (sPassed > 0 && sPassed < windSettings.interval)
         {
             FILE* f = fopen(debugFile, "a+");
             if (f != nullptr)
@@ -107,12 +107,12 @@ namespace WindSpeedMeasurement
         // 2d. Get the plume centre variation over the last few scans
         //			If any scan missed the plume, return false
         double centreMin, centreMax;
-        if (false == spectrometer->m_history->GetPlumeCentreVariation(windSettings->stablePeriod, 0, centreMin, centreMax))
+        if (false == spectrometer->m_history->GetPlumeCentreVariation(windSettings.stablePeriod, 0, centreMin, centreMax))
         {
             FILE* f = fopen(debugFile, "a+");
             if (f != nullptr)
             {
-                fprintf(f, "%s\t%s\t No measurement: At least one of the last %d scans has missed the plume\n", (LPCTSTR)timeStr, (LPCSTR)serial, windSettings->stablePeriod);
+                fprintf(f, "%s\t%s\t No measurement: At least one of the last %d scans has missed the plume\n", (LPCTSTR)timeStr, (LPCSTR)serial, windSettings.stablePeriod);
                 fclose(f);
                 UploadToNOVACServer(debugFile, thisVolcano, false);
             }
@@ -135,13 +135,13 @@ namespace WindSpeedMeasurement
 
         // 2g. If the plumeCentre is at lower angles than the options for the
         //      windmeasurements allow, then don't measure
-        const double plumeCentre = spectrometer->m_history->GetPlumeCentre(windSettings->stablePeriod);
-        if (std::abs(plumeCentre) > std::abs(windSettings->maxAngle))
+        const double plumeCentre = spectrometer->m_history->GetPlumeCentre(windSettings.stablePeriod);
+        if (std::abs(plumeCentre) > std::abs(windSettings.maxAngle))
         {
             FILE* f = fopen(debugFile, "a+");
             if (f != nullptr)
             {
-                fprintf(f, "%s\t%s\t No measurement: Plume centre too low (plumeCentre: %lf, maxAngle: %lf)\n", (LPCTSTR)timeStr, (LPCSTR)serial, plumeCentre, windSettings->maxAngle);
+                fprintf(f, "%s\t%s\t No measurement: Plume centre too low (plumeCentre: %lf, maxAngle: %lf)\n", (LPCTSTR)timeStr, (LPCSTR)serial, plumeCentre, windSettings.maxAngle);
                 fclose(f);
                 UploadToNOVACServer(debugFile, thisVolcano, false);
             }
@@ -150,8 +150,8 @@ namespace WindSpeedMeasurement
 
         // 2h. Check so that the maximum column averaged over the last few scans is at least
         //      50 ppmm
-        const double maxColumn = spectrometer->m_history->GetColumnMax(windSettings->stablePeriod);
-        if (maxColumn < windSettings->minPeakColumn)
+        const double maxColumn = spectrometer->m_history->GetColumnMax(windSettings.stablePeriod);
+        if (maxColumn < windSettings.minPeakColumn)
         {
             FILE* f = fopen(debugFile, "a+");
             if (f != nullptr)
@@ -165,7 +165,7 @@ namespace WindSpeedMeasurement
 
         // 2i. Check so that the average exposure-time over the last few scans is not
         //      too large. This to ensure that we can measure fast enough
-        const double expTime = spectrometer->m_history->GetExposureTime(windSettings->stablePeriod);
+        const double expTime = spectrometer->m_history->GetExposureTime(windSettings.stablePeriod);
         if (expTime < 0 || expTime > 600)
         {
             FILE* f = fopen(debugFile, "a+");

@@ -705,6 +705,9 @@
     <ClCompile Include="Configuration\CCalibrationConfigurationDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Evaluation\RealTimeCalibration.cpp">
+      <Filter>Source Files\Evaluation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Configuration\AdvancedFTPUploadSettings.h">
@@ -1381,6 +1384,9 @@
     </ClInclude>
     <ClInclude Include="Configuration\CCalibrationConfigurationDlg.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Evaluation\RealTimeCalibration.h">
+      <Filter>Header Files\Evaluation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -56,7 +56,7 @@ namespace Evaluation
         /** Getting the maximum intensity of one single spectrum
             (equals to the range of the AD-Converter).
             Returns 0.0 if unknown. */
-        double	GetMaxIntensity() const;
+        double GetMaxIntensity() const;
 
         /** Adds the result from the supplied evaluation to the history
             of evaluations. */
