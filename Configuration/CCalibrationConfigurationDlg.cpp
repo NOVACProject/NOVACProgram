@@ -95,6 +95,12 @@ BOOL CCalibrationConfigurationDlg::OnInitDialog()
             }
         }
 
+        // If the wavelength region over which the instrument line shape can be fitted is empty (or reversed) then set a default.
+        if (currentSettings.instrumentLineShapeFitRegion.Empty())
+        {
+            currentSettings.instrumentLineShapeFitRegion = novac::WavelengthRange(330.0, 350.0);
+        }
+
         int tmp;
         novac::SplitToHourMinuteSecond(currentSettings.intervalTimeOfDay, m_intervalHr, m_intervalMin, tmp);
     }

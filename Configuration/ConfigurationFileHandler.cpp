@@ -144,7 +144,7 @@ int CConfigurationFileHandler::WriteFtpLoginConfigurationFile(const CConfigurati
 }
 
 int CConfigurationFileHandler::WriteConfigurationFile(const CConfigurationSetting& configuration, const CString* fileName) const {
-    CString indent, str, tmp_fileName;
+    CString str, tmp_fileName;
     Common common;
     std::string modelStr;
 
@@ -234,14 +234,14 @@ int CConfigurationFileHandler::WriteConfigurationFile(const CConfigurationSettin
 
     bool hasDoubleSpectrometer = false;
     for (unsigned int scannerIdx = 0; scannerIdx < configuration.scannerNum; ++scannerIdx) {
-        indent.Format("\t\t\t\t");
+        fprintf(f, "\t\t<scanningInstrument>\n");
+
+        CString indent = "\t\t\t";
 
         const auto& currentScanner = configuration.scanner[scannerIdx]; // shorter notation, for better readability below.
 
-        fprintf(f, TEXT("\t\t<scanningInstrument>\n"));
-
         // observatory
-        fprintf(f, TEXT("\t\t\t<observatory>" + currentScanner.observatory + "</observatory>\n"));
+        fprintf(f, indent + "<observatory>" + currentScanner.observatory + "</observatory>\n");
 
         // If the user has configured a volcano, then also write its additional information
         bool ownerConfiguredSource = false;
@@ -260,38 +260,39 @@ int CConfigurationFileHandler::WriteConfigurationFile(const CConfigurationSettin
         }
         if (!ownerConfiguredSource) {
             // volcano
-            fprintf(f, TEXT("\t\t\t<volcano>" + currentScanner.volcano + "</volcano>\n"));
+            fprintf(f, indent + "<volcano>" + currentScanner.volcano + "</volcano>\n");
         }
 
         // site
-        fprintf(f, TEXT("\t\t\t<site>" + currentScanner.site + "</site>\n"));
+        fprintf(f, indent + "<site>" + currentScanner.site + "</site>\n");
 
         // position
-        str.Format("\t\t\t<instr_latitude>%lf</instr_latitude>\n", currentScanner.gps.m_latitude);
-        str.AppendFormat("\t\t\t<instr_longitude>%lf</instr_longitude>\n", currentScanner.gps.m_longitude);
-        str.AppendFormat("\t\t\t<instr_altitude>%lf</instr_altitude>\n", currentScanner.gps.m_altitude);
-        str.AppendFormat("\t\t\t<instr_compass>%lf</instr_compass>\n", currentScanner.compass);
+        str.Format("%s<instr_latitude>%lf</instr_latitude>\n", indent, currentScanner.gps.m_latitude);
+        str.AppendFormat("%s<instr_longitude>%lf</instr_longitude>\n", indent, currentScanner.gps.m_longitude);
+        str.AppendFormat("%s<instr_altitude>%lf</instr_altitude>\n", indent, currentScanner.gps.m_altitude);
+        str.AppendFormat("%s<instr_compass>%lf</instr_compass>\n", indent, currentScanner.compass);
         fprintf(f, str);
 
         // electronicsBox
-        str.Format("\t\t\t<electronics>%d</electronics>\n", currentScanner.electronicsBox);
+        str.Format("%s<electronics>%d</electronics>\n", indent, currentScanner.electronicsBox);
         fprintf(f, str);
 
         // plot options
-        str.Format("\t\t\t<plotColumn>%d</plotColumn>\n", currentScanner.plotColumn);
-        str.AppendFormat("\t\t\t<plotColumnHistory>%d</plotColumnHistory>\n", currentScanner.plotColumnHistory);
-        str.AppendFormat("\t\t\t<minColumn>%d</minColumn>\n", currentScanner.minColumn);
-        str.AppendFormat("\t\t\t<maxColumn>%d</maxColumn>\n", currentScanner.maxColumn);
-        str.AppendFormat("\t\t\t<plotFluxHistory>%d</plotFluxHistory>\n", currentScanner.plotFluxHistory);
-        str.AppendFormat("\t\t\t<minFlux>%d</minFlux>\n", currentScanner.minFlux);
-        str.AppendFormat("\t\t\t<maxFlux>%d</maxFlux>\n", currentScanner.maxFlux);
+        str.Format("%s<plotColumn>%d</plotColumn>\n", indent, currentScanner.plotColumn);
+        str.AppendFormat("%s<plotColumnHistory>%d</plotColumnHistory>\n", indent, currentScanner.plotColumnHistory);
+        str.AppendFormat("%s<minColumn>%d</minColumn>\n", indent, currentScanner.minColumn);
+        str.AppendFormat("%s<maxColumn>%d</maxColumn>\n", indent, currentScanner.maxColumn);
+        str.AppendFormat("%s<plotFluxHistory>%d</plotFluxHistory>\n", indent, currentScanner.plotFluxHistory);
+        str.AppendFormat("%s<minFlux>%d</minFlux>\n", indent, currentScanner.minFlux);
+        str.AppendFormat("%s<maxFlux>%d</maxFlux>\n", indent, currentScanner.maxFlux);
         fprintf(f, str);
 
         // --- First write the spectrometer information
         for (unsigned int spectrometerIdx = 0; spectrometerIdx < currentScanner.specNum; ++spectrometerIdx)
         {
             const CConfigurationSetting::SpectrometerSetting& spec = currentScanner.spec[spectrometerIdx];
-            fprintf(f, TEXT("\t\t\t<spectrometer>\n"));
+
+            fprintf(f, indent + "<spectrometer>\n");
 
             // serial Number
             str.Format("%s<serialNumber>%s</serialNumber>\n", (LPCSTR)indent, (LPCSTR)spec.serialNumber);
@@ -430,8 +431,8 @@ int CConfigurationFileHandler::WriteConfigurationFile(const CConfigurationSettin
                     str.AppendFormat("\t%s<initialCalibrationType>%d</initialCalibrationType>\n", (LPCSTR)indent, calibrationSettings.initialCalibrationType);
                     str.AppendFormat("\t%s<instrumentLineShapeFitOption>%d</instrumentLineShapeFitOption>\n", (LPCSTR)indent, calibrationSettings.instrumentLineShapeFitOption);
 
-                    str.AppendFormat("\t%s<instrumentLineShapeFitRegionLow>%d</instrumentLineShapeFitRegionLow>\n", (LPCSTR)indent, calibrationSettings.instrumentLineShapeFitRegion.low);
-                    str.AppendFormat("\t%s<instrumentLineShapeFitRegionHigh>%d</instrumentLineShapeFitRegionHigh>\n", (LPCSTR)indent, calibrationSettings.instrumentLineShapeFitRegion.high);
+                    str.AppendFormat("\t%s<instrumentLineShapeFitRegionLow>%lf</instrumentLineShapeFitRegionLow>\n", (LPCSTR)indent, calibrationSettings.instrumentLineShapeFitRegion.low);
+                    str.AppendFormat("\t%s<instrumentLineShapeFitRegionHigh>%lf</instrumentLineShapeFitRegionHigh>\n", (LPCSTR)indent, calibrationSettings.instrumentLineShapeFitRegion.high);
 
                     str.AppendFormat("%s</calibration>\n", (LPCSTR)indent);
                     fprintf(f, str);
@@ -1219,11 +1220,13 @@ int CConfigurationFileHandler::Parse_Calibration(CConfigurationSetting::Spectrom
 
         if (Equals(szToken, "intervalDays", strlen("intervalDays"))) {
             Parse_IntItem(TEXT("/intervalDays"), calibrationSettings.intervalDays);
+            calibrationSettings.intervalDays = max(calibrationSettings.intervalDays, 0);
             continue;
         }
 
         if (Equals(szToken, "intervalTimeOfDay", strlen("intervalTimeOfDay"))) {
             Parse_IntItem(TEXT("/intervalTimeOfDay"), calibrationSettings.intervalTimeOfDay);
+            calibrationSettings.intervalTimeOfDay = max(0, min(86399, calibrationSettings.intervalTimeOfDay));
             continue;
         }
 
