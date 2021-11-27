@@ -2,14 +2,12 @@
 //
 
 #include "stdafx.h"
-#include "../NovacMasterProgram.h"
+#include "../resource.h"
 #include "EvaluationConfigurationDlg.h"
-#include "ScannerConfiguration.h"
 #include <SpectralEvaluation/Evaluation/ReferenceFile.h>
 #include "../Dialogs/SelectionDialog.h"
 #include "../Dialogs/ReferencePropertiesDlg.h"
 #include "../Dialogs/ReferencePlotDlg.h"
-#include "../VolcanoInfo.h"
 
 using namespace ConfigurationDialog;
 using namespace novac;
@@ -293,7 +291,6 @@ void CEvaluationConfigurationDlg::OnAddReferenceFile() {
     PopulateReferenceFileControl();
 }
 
-/** Removign a reference file */
 void CEvaluationConfigurationDlg::OnRemoveReferenceFile() {
     /** Get the range of selected cells */
     CCellRange cellRange = m_referenceFileCtrl.GetSelectedCellRange();
@@ -364,8 +361,6 @@ BOOL ConfigurationDialog::CEvaluationConfigurationDlg::OnSetActive()
     return CSystemConfigurationPage::OnSetActive();
 }
 
-
-/** Showing the properties of a reference file */
 void CEvaluationConfigurationDlg::OnShowPropertiesWindow() {
     Dialogs::CReferencePropertiesDlg refDlg;
     int minRow, nRows;

@@ -104,7 +104,7 @@ void CConfigurationSetting::AutomaticCalibrationSetting::Clear()
     solarSpectrumFile = "";
     initialCalibrationFile = "";
     instrumentLineshapeFile = "";
-    initialCalibrationSetupOption = 0;
+    initialCalibrationType = 0;
     instrumentLineShapeFitOption = 0;
     instrumentLineShapeFitRegion = novac::WavelengthRange(330.0, 350.0);
 }

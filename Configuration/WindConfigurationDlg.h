@@ -32,7 +32,7 @@ namespace ConfigurationDialog
         virtual BOOL PreTranslateMessage(MSG* pMsg);
 
         /** Called when the user has changed the currently selected scanner */
-        void OnChangeScanner();
+        virtual void OnChangeScanner() override;
 
         /** Called when the automatic measurements have been turned on/off */
         afx_msg void OnOnOff();

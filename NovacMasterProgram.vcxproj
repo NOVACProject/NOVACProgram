@@ -181,6 +181,7 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
     <ClCompile Include="communication\SerialCOM.cpp" />
     <ClCompile Include="communication\SerialControllerWithTx.cpp" />
     <ClCompile Include="Configuration\AdvancedFTPUploadSettings.cpp" />
+    <ClCompile Include="Configuration\CCalibrationConfigurationDlg.cpp" />
     <ClCompile Include="Configuration\Configuration.cpp" />
     <ClCompile Include="Configuration\ConfigurationFileHandler.cpp" />
     <ClCompile Include="Configuration\ConfigurationTreeCtrl.cpp" />
@@ -284,6 +285,7 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
     <ClInclude Include="communication\NodeControlInfo.h" />
     <ClInclude Include="communication\IFTPDataUpload.h" />
     <ClInclude Include="communication\SFTPCom.h" />
+    <ClInclude Include="Configuration\CCalibrationConfigurationDlg.h" />
     <ClInclude Include="CustomSpectrometerModelDlg.h" />
     <ClInclude Include="Dialogs\CCalibratePixelToWavelengthDialog.h" />
     <ClInclude Include="Dialogs\CCalibratePixelToWavelengthSetupDialog.h" />

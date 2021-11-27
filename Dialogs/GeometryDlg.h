@@ -123,7 +123,7 @@ namespace Dialogs {
         void InitializeControls();
 
         /** Intitializing the plot-legend */
-        void	InitLegend();
+        void InitLegend();
 
         /** Called when the user changes the selected scanner in the list of scanners */
         afx_msg void OnChangeScanner();

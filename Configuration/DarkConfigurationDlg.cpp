@@ -10,18 +10,18 @@ IMPLEMENT_DYNAMIC(CDarkConfigurationDlg, CSystemConfigurationPage)
 CDarkConfigurationDlg::CDarkConfigurationDlg()
     : CSystemConfigurationPage(CDarkConfigurationDlg::IDD)
 {
-    m_configuration = NULL;
-    m_scannerTree = NULL;
-    m_parent = NULL;
+    m_configuration = nullptr;
+    m_scannerTree = nullptr;
+    m_parent = nullptr;
 
     m_initialized = false;
 }
 
 CDarkConfigurationDlg::~CDarkConfigurationDlg()
 {
-    m_configuration = NULL;
-    m_scannerTree = NULL;
-    m_parent = NULL;
+    m_configuration = nullptr;
+    m_scannerTree = nullptr;
+    m_parent = nullptr;
 }
 
 void CDarkConfigurationDlg::DoDataExchange(CDataExchange* pDX)
@@ -108,7 +108,7 @@ BOOL CDarkConfigurationDlg::OnInitDialog() {
 
 void CDarkConfigurationDlg::InitToolTips() {
     // Don't initialize the tool tips twice
-    if (m_toolTip.m_hWnd != NULL)
+    if (m_toolTip.m_hWnd != nullptr)
         return;
 
     // Enable the tool tips
@@ -128,7 +128,7 @@ void CDarkConfigurationDlg::SaveData() {
     int i;
     CString str;
 
-    if (m_hWnd == NULL)
+    if (m_hWnd == nullptr)
         return;
 
     // ------- Save the change ----------- 
@@ -182,7 +182,7 @@ void CDarkConfigurationDlg::OnChangeScanner() {
     if (!m_initialized)
         return;
 
-    if (m_hWnd == NULL)
+    if (m_hWnd == nullptr)
         return; // happens if this tab just disappeared
 
     if (UpdateData(TRUE)) { // <-- first save the data in the dialog
@@ -316,7 +316,7 @@ void CDarkConfigurationDlg::BrowseFile(int editBox) {
     filter[n + 2] = 0;
     Common common;
 
-    if (m_curSpec == NULL)
+    if (m_curSpec == nullptr)
         return;
 
     // Let the user browse for the file

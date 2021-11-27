@@ -20,7 +20,7 @@ namespace ConfigurationDialog
         enum { IDD = IDD_CONFIGURE_COM_PORT };
 
         /** Called when the current selection changes */
-        void  OnChangeScanner();
+        virtual void OnChangeScanner() override;
 
         /** Saving the data in the control */
         afx_msg void SaveData();

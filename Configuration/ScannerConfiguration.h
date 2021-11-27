@@ -7,6 +7,7 @@
 #include "WindConfigurationDlg.h"
 #include "VIIAdvancedConfigurationDlg.h"
 #include "ConfigurationTreeCtrl.h"
+#include "CCalibrationConfigurationDlg.h"
 #include "afxwin.h"
 
 namespace ConfigurationDialog
@@ -32,12 +33,12 @@ namespace ConfigurationDialog
         CStatic m_frame;
         CPropertySheet m_sheet;
 
-        /** the actual configuration */
+        /** Pointer to the configuration which we are modifying here. */
         CConfigurationSetting* m_configuration;
 
     private:
         /** The location configuration */
-        CLocationConfigurationDlg		m_pageLocation;
+        CLocationConfigurationDlg m_pageLocation;
 
         /** the evaluation configuration */
         CEvaluationConfigurationDlg m_pageEvaluation[MAX_CHANNEL_NUM];
@@ -46,13 +47,16 @@ namespace ConfigurationDialog
         CDarkConfigurationDlg  m_pageDark;
 
         /** the automatic wind speed measurements page */
-        CWindConfigurationDlg  m_pageWind;
+        CWindConfigurationDlg m_pageWind;
+
+        /** Setting up automatic instrument calibration */
+        CCalibrationConfigurationDlg m_pageCalibration;
 
         /** the advanced settings for the Version-II instrument */
         CVIIAdvancedConfigurationDlg m_pageVII;
 
         /** The communication configuration */
-        CConfigureCOMPortDlg        m_pageCommunication;
+        CConfigureCOMPortDlg m_pageCommunication;
 
         /** The add scanner button */
         CButton m_addScannerBtn;

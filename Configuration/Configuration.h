@@ -76,7 +76,8 @@ public:
 
         // ----------- The general settings for the communication --------------
 
-        /** How often the scanning Instrument should be queried for new data */
+        /** How often the scanning Instrument should be queried for new data.
+            This is the time between polls in seconds */
         long queryPeriod;
 
         /** Time to start sleeping */
@@ -104,17 +105,30 @@ public:
         /** Set to true to high-pass filter the created references (and convert them into ppmm). */
         BOOL filterReferences = TRUE;
 
+        /** The number of days which needs to pass between each calibration */
+        int intervalDays = 0;
+
+        /** The time of day when the calibration is to be made. In seconds since midnight.
+            Default value is at noon (12 * 60 * 60) */
+        int intervalTimeOfDay = 43200;
+
         /** The full path to the high resolved solar spectrum */
         CString solarSpectrumFile;
 
-        /** Path to the intial calibration file (either .std or .clb) */
+        /** Path to the intial calibration file (either .std, .clb or .xs).
+            If this is a file in the extended std format then it may also contain the instrument line shape
+            (and hence make the instrumentLineshapeFile unnecessary). */
         CString initialCalibrationFile;
 
-        /** Path to the initial instrument line shape file (.slf). Ususally not set if m_initialCalibrationFile is .std. */
+        /** Path to the initial instrument line shape file (.slf) if any is provided.
+            Ususally not set if m_initialCalibrationFile is .std. */
         CString instrumentLineshapeFile;
 
-        /** Option for how to interpret the above calibration file and instrument line shape file options. */
-        int initialCalibrationSetupOption = 0;
+        /** The type of file for the initialCalibrationFile and instrumentLineshapeFile
+        *   (only used for displaying the correct options in the user interface).
+            0 corresponds to both initialCalibrationFile and instrumentLineshapeFile provided
+            1 corresponds to only initialCalibrationFile */
+        int initialCalibrationType = 0;
 
         /** The option for if an instrument line shape should be fitted as well during
         *   the retrieval of the pixel-to-wavelength calibration.

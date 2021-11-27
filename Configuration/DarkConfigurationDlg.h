@@ -45,7 +45,7 @@ namespace ConfigurationDialog
         afx_msg void UpdateControls();
 
         /** Called when the user has changed the currently selected scanner */
-        void OnChangeScanner();
+        virtual void OnChangeScanner() override;
 
         /** Caled when the user has changed the way the dark-spectrum
                 should be collected */

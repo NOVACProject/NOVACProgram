@@ -12,6 +12,7 @@ namespace ConfigurationDialog
             CRemoteConfigurationDlg
             CEvaluationConfigurationDlg
             CConfigureCOMPortDlg
+            CCalibrationConfigurationDlg
         */
     class CSystemConfigurationPage :
         public CPropertyPage
@@ -20,7 +21,7 @@ namespace ConfigurationDialog
     public:
         CSystemConfigurationPage(void);
         CSystemConfigurationPage(UINT nIDTemplate);
-        ~CSystemConfigurationPage(void);
+        virtual ~CSystemConfigurationPage(void);
 
         /** the actual configuration */
         CConfigurationSetting* m_configuration;

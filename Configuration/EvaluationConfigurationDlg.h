@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../Common/Common.h"
 #include "../DlgControls/ReferenceFileControl.h"
 #include "SystemConfigurationPage.h"
 
@@ -37,7 +36,7 @@ namespace ConfigurationDialog
         virtual BOOL PreTranslateMessage(MSG* pMsg);
 
         /** The spectrometer channel that this object is modifying */
-        unsigned int	m_channel;
+        unsigned int m_channel;
 
         /** The 'add a reference file' button */
         CButton m_addReferenceBtn;
@@ -64,7 +63,9 @@ namespace ConfigurationDialog
         void UpdateDlg();
 
         /** Updates the control */
-        void OnChangeScanner();
+        virtual void OnChangeScanner() override;
+
+        virtual BOOL OnSetActive();
 
     private:
         CStatic m_referenceStatic;
@@ -87,7 +88,5 @@ namespace ConfigurationDialog
 
         /** The fitlow and fit high, from the configuration */
         int m_fitLow, m_fitHigh;
-    public:
-        virtual BOOL OnSetActive();
     };
 }

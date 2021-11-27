@@ -20,11 +20,12 @@ IMPLEMENT_DYNAMIC(CScannerConfiguration, CPropertyPage)
 CScannerConfiguration::CScannerConfiguration()
     : CPropertyPage(CScannerConfiguration::IDD)
 {
-    m_configuration = NULL;
+    m_configuration = nullptr;
 }
 
 CScannerConfiguration::~CScannerConfiguration()
 {
+    m_configuration = nullptr;
 }
 
 void CScannerConfiguration::DoDataExchange(CDataExchange* pDX)
@@ -48,7 +49,6 @@ END_MESSAGE_MAP()
 
 BOOL CScannerConfiguration::OnInitDialog()
 {
-    int k;
     static CString titles[MAX_CHANNEL_NUM];
 
     CPropertyPage::OnInitDialog();
@@ -64,7 +64,7 @@ BOOL CScannerConfiguration::OnInitDialog()
     m_pageLocation.m_pPSP->dwFlags |= PSP_PREMATURE;
 
     // the evaluation configuration
-    for (k = 0; k < MAX_CHANNEL_NUM; ++k) {
+    for (int k = 0; k < MAX_CHANNEL_NUM; ++k) {
         m_pageEvaluation[k].Construct(IDD_CONFIGURE_EVALUATION);
         m_pageEvaluation[k].m_configuration = m_configuration;
         m_pageEvaluation[k].m_scannerTree = &m_scannerTree;
@@ -76,9 +76,9 @@ BOOL CScannerConfiguration::OnInitDialog()
             titles[k].Format("Evaluation-Slave %d", k);
         m_pageEvaluation[k].m_pPSP->dwFlags |= PSP_USETITLE | PSP_PREMATURE;
         m_pageEvaluation[k].m_pPSP->pszTitle = titles[k].GetBuffer();
-        m_showEvalPage[k] = true;		/** m_showEvalPage[i] is true if m_pageEvaluation[i] is visible */
-        m_showWindPage = true;			/** m_showWindPage is true if the wind configuration page is visible */
-        //m_showVIIPage	 = true;			/** m_showVIIPage is true if the version2 configuration page is visible */
+        m_showEvalPage[k] = true;   /** m_showEvalPage[i] is true if m_pageEvaluation[i] is visible */
+        m_showWindPage = true;      /** m_showWindPage is true if the wind configuration page is visible */
+        //m_showVIIPage	 = true;    /** m_showVIIPage is true if the version2 configuration page is visible */
     }
 
     // the wind configuration
@@ -90,9 +90,9 @@ BOOL CScannerConfiguration::OnInitDialog()
 
     // the advanced V-II configuration
     //m_pageVII.Construct(IDD_CONFIGURE_VII_ADVANCED);
-    //m_pageVII.m_configuration			= m_configuration;
-    //m_pageVII.m_scannerTree				= &m_scannerTree;
-    //m_pageVII.m_parent					= NULL;
+    //m_pageVII.m_configuration = m_configuration;
+    //m_pageVII.m_scannerTree = &m_scannerTree;
+    //m_pageVII.m_parent = NULL;
     //m_pageVII.m_pPSP->dwFlags |= PSP_PREMATURE;
 
     // the communication configuration
@@ -102,22 +102,29 @@ BOOL CScannerConfiguration::OnInitDialog()
 
     // the dark configuration
     //m_pageDark.Construct(IDD_CONFIGURE_DARK);
-    //m_pageDark.m_configuration				= m_configuration;
-    //m_pageDark.m_scannerTree				= &m_scannerTree;
+    //m_pageDark.m_configuration = m_configuration;
+    //m_pageDark.m_scannerTree = &m_scannerTree;
 
     // the remote configuration
     //m_pageRemote.Construct(IDD_CONFIGURATION_REMOTE);
-    //m_pageRemote.m_configuration        = m_configuration;
-    //m_pageRemote.m_scannerTree          = &m_scannerTree;
-    //m_pageRemote.m_pPSP->dwFlags		|= PSP_PREMATURE;
+    //m_pageRemote.m_configuration = m_configuration;
+    //m_pageRemote.m_scannerTree = &m_scannerTree;
+    //m_pageRemote.m_pPSP->dwFlags |= PSP_PREMATURE;
+
+    // instrument calibration
+    m_pageCalibration.Construct(IDD_CONFIGURE_CALIBRATION);
+    m_pageCalibration.m_configuration = m_configuration;
+    m_pageCalibration.m_channel = 0;
+    m_pageCalibration.m_scannerTree = &m_scannerTree;
 
     // add the pages to the sheet
     m_sheet.AddPage(&m_pageLocation);
-    for (k = 0; k < MAX_CHANNEL_NUM; ++k)
+    for (int k = 0; k < MAX_CHANNEL_NUM; ++k)
         m_sheet.AddPage(&m_pageEvaluation[k]);
     m_sheet.AddPage(&m_pageWind);
     //m_sheet.AddPage(&m_pageVII);
     m_sheet.AddPage(&m_pageCommunication);
+    m_sheet.AddPage(&m_pageCalibration);
 
     // find the position of the sheet
     CRect rect, rect2;
@@ -171,31 +178,31 @@ BOOL CScannerConfiguration::OnInitDialog()
 void CScannerConfiguration::OnScannerSelectionChange(NMHDR* pNMHDR, LRESULT* pResult) {
     OnChangeScanner();
 }
+
 void CScannerConfiguration::OnChangeScanner() {
-    int nChannels;
 
     // Get the currently selected spectrometer and scanning instrument
 
-    if (m_sheet.m_hWnd == NULL)
+    if (m_sheet.m_hWnd == nullptr)
         return;
 
     int currentScanner = 0;
     int currentSpec = 0;
     GetScannerAndSpec(currentScanner, currentSpec);
 
-    // Get the number of channels
-    if (currentScanner != -1 && currentSpec != -1) {
-        m_sheet.ShowWindow(TRUE);
-        nChannels = m_configuration->scanner[currentScanner].spec[currentSpec].channelNum;
-    }
-    else {
-        // no scanner and no spectrometer selected!!!
-        //  this will not work. Disable all controls
+    if (currentScanner == -1 || currentSpec == -1)
+    {
+        // no scanner and no spectrometer selected - this will not work. Disable all controls
         if (m_configuration->scannerNum == 0) {
             m_sheet.ShowWindow(FALSE);
         }
         return;
     }
+
+    m_sheet.ShowWindow(TRUE);
+
+    // Get the number of channels on the spectrometer
+    int nChannels = m_configuration->scanner[currentScanner].spec[currentSpec].channelNum;
 
     // ---- This is a terribly ugly way to re-arrange the pages ----
     bool change = false;
@@ -241,9 +248,12 @@ void CScannerConfiguration::OnChangeScanner() {
     // Tell all windows that we've changed scanner
     m_pageCommunication.OnChangeScanner();
     m_pageLocation.OnChangeScanner();
+    m_pageCalibration.OnChangeScanner();
     for (int k = 0; k < MAX_CHANNEL_NUM; ++k) {
         if (m_showEvalPage[k])
+        {
             m_pageEvaluation[k].OnChangeScanner();
+        }
     }
     //if(m_showVIIPage)
     //	m_pageVII.OnChangeScanner();
@@ -439,7 +449,8 @@ void CScannerConfiguration::GetScannerAndSpec(int& curScanner, int& curSpec) {
     HTREEITEM hTree = m_scannerTree.GetSelectedItem();
     if (hTree == NULL) {
         // nothing selected
-        curSpec = curScanner = -1;
+        curSpec = -1;
+        curScanner = -1;
         return;
     }
 

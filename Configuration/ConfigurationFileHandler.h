@@ -78,6 +78,9 @@ namespace FileHandler
         /** Parses one 'channel' section */
         int Parse_Channel();
 
+        /** Parses one 'calibration' section */
+        int Parse_Calibration(CConfigurationSetting::SpectrometerChannelSetting* curSpec);
+
         /** Parses one 'communication' section */
         int Parse_Communication();
 

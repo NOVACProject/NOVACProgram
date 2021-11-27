@@ -51,10 +51,10 @@ namespace ConfigurationDialog
         afx_msg void UpdateDlg();
 
         /** Adds a volcano to the list of volcanoes */
-        void	AddAVolcano();
+        void AddAVolcano();
 
         /** Called when the user has changed the currently selected scanner */
-        void OnChangeScanner();
+        virtual void OnChangeScanner() override;
 
     private:
 

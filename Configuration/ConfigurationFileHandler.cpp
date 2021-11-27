@@ -405,12 +405,17 @@ int CConfigurationFileHandler::WriteConfigurationFile(const CConfigurationSettin
                 if (spec.channel[channelIdx].autoCalibration.solarSpectrumFile.GetLength() > 0)
                 {
                     const auto& calibrationSettings = spec.channel[channelIdx].autoCalibration;
+                    const auto previousIndent = indent;
+                    indent = indent + "\t";
 
                     str.Format("%s<calibration>\n", (LPCSTR)indent);
 
                     str.AppendFormat("\t%s<enable>%d</enable>\n", (LPCSTR)indent, calibrationSettings.enable);
                     str.AppendFormat("\t%s<generateReferences>%d</generateReferences>\n", (LPCSTR)indent, calibrationSettings.generateReferences);
                     str.AppendFormat("\t%s<filterReferences>%d</filterReferences>\n", (LPCSTR)indent, calibrationSettings.filterReferences);
+
+                    str.AppendFormat("\t%s<intervalDays>%d</intervalDays>\n", (LPCSTR)indent, calibrationSettings.intervalDays);
+                    str.AppendFormat("\t%s<intervalTimeOfDay>%d</intervalTimeOfDay>\n", (LPCSTR)indent, calibrationSettings.intervalTimeOfDay);
 
                     str.AppendFormat("\t%s<solarSpectrumFile>%s</solarSpectrumFile>\n", (LPCSTR)indent, calibrationSettings.solarSpectrumFile);
 
@@ -422,7 +427,7 @@ int CConfigurationFileHandler::WriteConfigurationFile(const CConfigurationSettin
                     {
                         str.AppendFormat("\t%s<instrumentLineshapeFile>%s</instrumentLineshapeFile>\n", (LPCSTR)indent, calibrationSettings.instrumentLineshapeFile);
                     }
-                    str.AppendFormat("\t%s<initialCalibrationSetupOption>%d</initialCalibrationSetupOption>\n", (LPCSTR)indent, calibrationSettings.initialCalibrationSetupOption);
+                    str.AppendFormat("\t%s<initialCalibrationType>%d</initialCalibrationType>\n", (LPCSTR)indent, calibrationSettings.initialCalibrationType);
                     str.AppendFormat("\t%s<instrumentLineShapeFitOption>%d</instrumentLineShapeFitOption>\n", (LPCSTR)indent, calibrationSettings.instrumentLineShapeFitOption);
 
                     str.AppendFormat("\t%s<instrumentLineShapeFitRegionLow>%d</instrumentLineShapeFitRegionLow>\n", (LPCSTR)indent, calibrationSettings.instrumentLineShapeFitRegion.low);
@@ -430,6 +435,8 @@ int CConfigurationFileHandler::WriteConfigurationFile(const CConfigurationSettin
 
                     str.AppendFormat("%s</calibration>\n", (LPCSTR)indent);
                     fprintf(f, str);
+
+                    indent = previousIndent;
                 }
 
                 // End of channel section
@@ -1107,6 +1114,12 @@ int CConfigurationFileHandler::Parse_Channel()
             return 0;
         }
 
+        if (Equals(szToken, "calibration", strlen("calibration"))) {
+            if (curSpec != nullptr)
+                Parse_Calibration(curChannel);
+            continue;
+        }
+
         if (Equals(szToken, "Reference", 9)) {
             if (curSpec != nullptr)
                 Parse_Reference(curChannel);
@@ -1161,6 +1174,92 @@ int CConfigurationFileHandler::Parse_Channel()
         if (Equals(szToken, "darkCurrentPath")) {
             if (curSpec != nullptr)
                 this->Parse_StringItem(TEXT("/darkCurrentPath"), curChannel->darkSettings.m_darkCurrentSpec);
+            continue;
+        }
+    }
+    return 0;
+}
+
+int CConfigurationFileHandler::Parse_Calibration(CConfigurationSetting::SpectrometerChannelSetting* curSpec)
+{
+    auto& calibrationSettings = curSpec->autoCalibration;
+
+    // the actual reading loop
+    while (szToken = NextToken()) {
+
+        // no use to parse empty lines
+        if (strlen(szToken) < 3)
+            continue;
+
+        // ignore comments
+        if (Equals(szToken, "!--", 3)) {
+            continue;
+        }
+
+        if (Equals(szToken, "/calibration")) {
+            return 0;
+        }
+
+        if (Equals(szToken, "enable", strlen("enable"))) {
+            int tmpInt;
+            Parse_IntItem(TEXT("/enable"), tmpInt);
+            calibrationSettings.enable = (tmpInt != 0);
+            continue;
+        }
+
+        if (Equals(szToken, "generateReferences", strlen("generateReferences"))) {
+            Parse_IntItem(TEXT("/generateReferences"), calibrationSettings.generateReferences);
+            continue;
+        }
+
+        if (Equals(szToken, "filterReferences", strlen("filterReferences"))) {
+            Parse_IntItem(TEXT("/filterReferences"), calibrationSettings.filterReferences);
+            continue;
+        }
+
+        if (Equals(szToken, "intervalDays", strlen("intervalDays"))) {
+            Parse_IntItem(TEXT("/intervalDays"), calibrationSettings.intervalDays);
+            continue;
+        }
+
+        if (Equals(szToken, "intervalTimeOfDay", strlen("intervalTimeOfDay"))) {
+            Parse_IntItem(TEXT("/intervalTimeOfDay"), calibrationSettings.intervalTimeOfDay);
+            continue;
+        }
+
+
+        if (Equals(szToken, "solarSpectrumFile", strlen("solarSpectrumFile"))) {
+            Parse_StringItem(TEXT("/solarSpectrumFile"), calibrationSettings.solarSpectrumFile);
+            continue;
+        }
+
+        if (Equals(szToken, "initialCalibrationFile", strlen("initialCalibrationFile"))) {
+            Parse_StringItem(TEXT("/initialCalibrationFile"), calibrationSettings.initialCalibrationFile);
+            continue;
+        }
+
+        if (Equals(szToken, "instrumentLineshapeFile", strlen("instrumentLineshapeFile"))) {
+            Parse_StringItem(TEXT("/instrumentLineshapeFile"), calibrationSettings.instrumentLineshapeFile);
+            continue;
+        }
+
+        if (Equals(szToken, "initialCalibrationType", strlen("initialCalibrationType"))) {
+            Parse_IntItem(TEXT("/initialCalibrationType"), calibrationSettings.initialCalibrationType);
+            continue;
+        }
+
+        if (Equals(szToken, "instrumentLineShapeFitRegionLow", strlen("instrumentLineShapeFitRegionLow"))) {
+            Parse_FloatItem(TEXT("/instrumentLineShapeFitRegionLow"), calibrationSettings.instrumentLineShapeFitRegion.low);
+            continue;
+        }
+
+        if (Equals(szToken, "instrumentLineShapeFitRegionHigh", strlen("instrumentLineShapeFitRegionHigh"))) {
+            Parse_FloatItem(TEXT("/instrumentLineShapeFitRegionHigh"), calibrationSettings.instrumentLineShapeFitRegion.high);
+            continue;
+        }
+
+        if (Equals(szToken, "instrumentLineShapeFitOption", strlen("instrumentLineShapeFitOption"))) {
+            Parse_IntItem(TEXT("/instrumentLineShapeFitOption"), calibrationSettings.instrumentLineShapeFitOption);
             continue;
         }
     }
