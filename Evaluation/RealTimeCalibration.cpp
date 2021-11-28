@@ -91,7 +91,7 @@ std::vector<novac::CReferenceFile> CreateStandardReferences(const novac::CSpectr
             "";
         const std::string dstFileName =
             directoryName +
-            spectrumInformation.m_device + 
+            spectrumInformation.m_device +
             "_" +
             standardCrossSections.ReferenceSpecieName(ii) +
             filteringStr +
@@ -174,8 +174,7 @@ bool CRealTimeCalibration::IsTimeForInstrumentCalibration(const Evaluation::CSpe
 
     const auto& autoCalibrationSettings = spectrometer->m_scanner.spec[0].channel[0].autoCalibration;
 
-    if (!autoCalibrationSettings.enable ||
-        autoCalibrationSettings.solarSpectrumFile.GetLength() == 0 ||
+    if (autoCalibrationSettings.solarSpectrumFile.GetLength() == 0 ||
         autoCalibrationSettings.initialCalibrationFile.GetLength() == 0)
     {
         // The device is not setup. This is expected to be the most common case, hence no debug logging is required.

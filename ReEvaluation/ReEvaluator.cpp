@@ -6,6 +6,7 @@
 #include "../Evaluation/ScanEvaluation.h"
 #include "../Dialogs/QueryStringDialog.h"
 #include <SpectralEvaluation/StringUtils.h>
+#include <SpectralEvaluation/Spectra/SpectrometerModel.h>
 
 using namespace ReEvaluation;
 using namespace Evaluation;
@@ -149,7 +150,10 @@ bool CReEvaluator::DoEvaluation()
             }
 
             // check the quality of the sky-spectrum
-            if (skySpec.AverageValue(thisWindow.fitLow, thisWindow.fitHigh) >= 4090 * skySpec.NumSpectra())
+            auto model = novac::CSpectrometerDatabase::GetInstance().GuessModelFromSerial(skySpec.m_info.m_device);
+            const double maximumSaturationRatio = novac::GetMaximumSaturationRatioOfSpectrum(skySpec, model, thisWindow.fitLow, thisWindow.fitHigh);
+
+            if (maximumSaturationRatio >= 0.95)
             {
                 if (skySpec.NumSpectra() > 0)
                 {
