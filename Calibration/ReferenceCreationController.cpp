@@ -5,7 +5,9 @@
 #include <SpectralEvaluation/Evaluation/CrossSectionData.h>
 #include <SpectralEvaluation/Spectra/Spectrum.h>
 #include <SpectralEvaluation/File/File.h>
+#include <SpectralEvaluation/Calibration/InstrumentCalibration.h>
 #include <SpectralEvaluation/Calibration/ReferenceSpectrumConvolution.h>
+#include <SpectralEvaluation/Calibration/WavelengthCalibration.h>
 #include <algorithm>
 
 #undef min
@@ -59,38 +61,53 @@ ReferenceCreationController::ReferenceCreationController()
 {
 }
 
-void ReferenceCreationController::ConvolveReference()
+novac::InstrumentCalibration ReferenceCreationController::ReadCalibration(std::string calibrationFile, std::string instrumentLineshapeFile)
 {
-    auto conversion = (m_convertToAir) ? novac::WavelengthConversion::VacuumToAir : novac::WavelengthConversion::None;
-
     // Read the calibration
-    novac::CCrossSectionData instrumentLineShape;
-    std::vector<double> pixelToWavelengthMapping;
-    if (EqualsIgnoringCase(novac::GetFileExtension(m_calibrationFile), ".std"))
+    novac::InstrumentCalibration initialCalibration;
+    if (EqualsIgnoringCase(novac::GetFileExtension(calibrationFile), ".std"))
     {
-        novac::CSpectrum instrumentLineShapeSpectrum;
-        if (!novac::ReadInstrumentCalibration(m_calibrationFile, instrumentLineShapeSpectrum, pixelToWavelengthMapping))
+        // This is a file which may contain either just the wavelength calibration _or_ both a wavelength calibration and an instrument line shape.
+        if (!novac::ReadInstrumentCalibration(calibrationFile, initialCalibration))
         {
             throw std::invalid_argument("Failed to read the instrument calibration file");
         }
-
-        instrumentLineShape = novac::CCrossSectionData(instrumentLineShapeSpectrum);
+        if (initialCalibration.instrumentLineShapeGrid.size() == 0)
+        {
+            throw std::invalid_argument("Provided instrument calibration file does not contain an instrument line shape.");
+        }
     }
     else
     {
-        pixelToWavelengthMapping = novac::GetPixelToWavelengthMappingFromFile(m_calibrationFile);
-        if (pixelToWavelengthMapping.size() == 0)
+        initialCalibration.pixelToWavelengthMapping = novac::GetPixelToWavelengthMappingFromFile(calibrationFile);
+        if (!novac::IsPossiblePixelToWavelengthCalibration(initialCalibration.pixelToWavelengthMapping))
         {
             throw std::invalid_argument("Failed to read the wavelength calibration file");
         }
 
-        if (!novac::ReadCrossSectionFile(m_instrumentLineshapeFile, instrumentLineShape))
+        novac::CCrossSectionData instrumentLineShape;
+        if (!novac::ReadCrossSectionFile(instrumentLineshapeFile, instrumentLineShape))
         {
             throw std::invalid_argument("Failed to read the instrument line shape file");
         }
+
+        initialCalibration.instrumentLineShapeGrid = instrumentLineShape.m_waveLength;
+        initialCalibration.instrumentLineShape = instrumentLineShape.m_crossSection;
     }
 
-    // Red the reference
+    return initialCalibration;
+}
+
+void ReferenceCreationController::ConvolveReference(const novac::InstrumentCalibration& initialCalibration)
+{
+    auto conversion = (m_convertToAir) ? novac::WavelengthConversion::VacuumToAir : novac::WavelengthConversion::None;
+
+    // Extract the line shape (needed for the convolution below)
+    novac::CCrossSectionData instrumentLineShape;
+    instrumentLineShape.m_waveLength = initialCalibration.instrumentLineShapeGrid;
+    instrumentLineShape.m_crossSection = initialCalibration.instrumentLineShape;
+
+    // Read the reference
     novac::CCrossSectionData highResReference;
     if (!novac::ReadCrossSectionFile(m_highResolutionCrossSection, highResReference))
     {
@@ -99,12 +116,17 @@ void ReferenceCreationController::ConvolveReference()
 
     // Do the convolution
     std::vector<double> convolutionResult;
-    novac::ConvolveReference(pixelToWavelengthMapping, instrumentLineShape, highResReference, convolutionResult, conversion);
+    novac::ConvolveReference(
+        initialCalibration.pixelToWavelengthMapping,
+        instrumentLineShape,
+        highResReference,
+        convolutionResult,
+        conversion);
 
     // Combine the results into the final output cross section data 
     m_resultingCrossSection = std::make_unique<novac::CCrossSectionData>();
     m_resultingCrossSection->m_crossSection = convolutionResult;
-    m_resultingCrossSection->m_waveLength = pixelToWavelengthMapping;
+    m_resultingCrossSection->m_waveLength = initialCalibration.pixelToWavelengthMapping;
 
     if (m_highPassFilter)
     {

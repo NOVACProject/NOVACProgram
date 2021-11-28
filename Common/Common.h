@@ -389,29 +389,6 @@ public:
     /** pretty prints the current date and time into the string 'txt' */
     static void GetDateTimeText(CString& txt);
 
-    /** Converts the given time to local time using the information in the CGPSData.
-            The date is stored as in the CSpectrumInfo-class with date[0] as 4-digit year,
-            date[1] is month (1-12) and date[2] is day of month (1-31).
-            @param date - the date in GMT
-            @param hr - the hour in GMT
-            @param gps - the GPS-information with latitude and longitude for the site
-                where the local time is wanted
-            @return - SUCCES if all is ok. Upon successful return, the parameters
-                date and hr will be filled with the local time and date.
-            NB!! daylight-saving time is not taken into account in these computations
-            NB!! This calculation is only based on the distance to longitude=0. Thefore
-                the resulting hour can have an error of up to +- 3 hours from the real local-time.
-            */
-    static RETURN_CODE ConvertToLocalTime(unsigned short date[3], int& hr, novac::CGPSData& gps);
-
-    /** Decreases the given date by the given number of days.
-            If nDays is negative, the date will be increased instead. */
-    static RETURN_CODE DecreaseDate(unsigned short date[3], int nDays);
-
-    /** Increases the given date by the given number of days.
-            If nDays is negative, the date will be decreased instead. */
-    static RETURN_CODE IncreaseDate(unsigned short date[3], int nDays);
-
     /** Takes a given year and month and returns the number of days in that month.
             The month ranges from 1 to 12. Any illegal values in the month will return 0. */
     static int	DaysInMonth(int year, int month);

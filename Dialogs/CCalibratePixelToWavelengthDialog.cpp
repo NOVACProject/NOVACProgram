@@ -100,7 +100,7 @@ BEGIN_MESSAGE_MAP(CCalibratePixelToWavelengthDialog, CPropertyPage)
 
     ON_MESSAGE(WM_DONE, OnCalibrationDone)
     ON_LBN_SELCHANGE(IDC_LIST_GRAPH_TYPE, &CCalibratePixelToWavelengthDialog::OnSelchangeListGraphType)
-    ON_BN_CLICKED(IDC_BUTTON_SETUP_WAVELENGTH_CALIBRATION, &CCalibratePixelToWavelengthDialog::OnBnClickedSetupWavelengthCaliBration)
+    ON_BN_CLICKED(IDC_BUTTON_SETUP_WAVELENGTH_CALIBRATION, &CCalibratePixelToWavelengthDialog::OnBnClickedSetupWavelengthCalibration)
     ON_BN_CLICKED(IDC_BUTTON_VIEW_LOG, &CCalibratePixelToWavelengthDialog::OnBnClickedButtonViewLog)
 END_MESSAGE_MAP()
 
@@ -673,7 +673,7 @@ void CCalibratePixelToWavelengthDialog::OnClickedButtonSave()
     }
 }
 
-void CCalibratePixelToWavelengthDialog::OnBnClickedSetupWavelengthCaliBration()
+void CCalibratePixelToWavelengthDialog::OnBnClickedSetupWavelengthCalibration()
 {
     CCalibratePixelToWavelengthSetupDialog setupDlg{ &m_setup, m_standardCrossSections };
     setupDlg.DoModal();

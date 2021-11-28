@@ -239,7 +239,7 @@ void CCalibrateReferencesDialog::UpdateReference()
         int selectedReferenceIdx = m_crossSectionsCombo.GetCurSel();
 
         CString crossSectionFilePath;
-        if (m_standardCrossSections != nullptr && selectedReferenceIdx < m_standardCrossSections->NumberOfReferences())
+        if (m_standardCrossSections != nullptr && selectedReferenceIdx < static_cast<int>(m_standardCrossSections->NumberOfReferences()))
         {
             const std::string path = m_standardCrossSections->ReferenceFileName(selectedReferenceIdx);
             crossSectionFilePath.Format("%s", path.c_str());
@@ -255,12 +255,12 @@ void CCalibrateReferencesDialog::UpdateReference()
             return;
         }
 
-        m_controller->m_calibrationFile = m_calibrationFile;
-        m_controller->m_instrumentLineshapeFile = m_instrumentLineshapeFile;
+        const auto calibration = m_controller->ReadCalibration((LPCSTR)m_calibrationFile, (LPCSTR)m_instrumentLineshapeFile);
+
         m_controller->m_highPassFilter = m_highPassFilterReference;
         m_controller->m_convertToAir = m_inputInVacuum;
         m_controller->m_highResolutionCrossSection = crossSectionFilePath;
-        m_controller->ConvolveReference();
+        m_controller->ConvolveReference(calibration);
 
         UpdateGraph();
 
@@ -334,21 +334,17 @@ void CCalibrateReferencesDialog::OnClickedButtonCreateStandardReferences()
         return;
     }
 
-    for (size_t ii = 0; ii < m_standardCrossSections->NumberOfReferences(); ++ii)
+    try
     {
-        try
-        {
-            // Options
-            m_inputInVacuum = m_standardCrossSections->IsReferenceInVacuum(ii);
-            UpdateData(FALSE);
+        const auto calibration = m_controller->ReadCalibration((LPCSTR)m_calibrationFile, (LPCSTR)m_instrumentLineshapeFile);
 
+        for (size_t ii = 0; ii < m_standardCrossSections->NumberOfReferences(); ++ii)
+        {
             // Do the convolution
-            m_controller->m_calibrationFile = m_calibrationFile;
-            m_controller->m_instrumentLineshapeFile = m_instrumentLineshapeFile;
             m_controller->m_highPassFilter = m_highPassFilterReference;
             m_controller->m_convertToAir = m_standardCrossSections->IsReferenceInVacuum(ii);
             m_controller->m_highResolutionCrossSection = m_standardCrossSections->ReferenceFileName(ii);
-            m_controller->ConvolveReference();
+            m_controller->ConvolveReference(calibration);
 
             UpdateGraph();
 
@@ -356,14 +352,14 @@ void CCalibrateReferencesDialog::OnClickedButtonCreateStandardReferences()
             std::string dstFileName = userInputDialog.ReferenceName(ii);
             novac::SaveCrossSectionFile(dstFileName, *(m_controller->m_resultingCrossSection));
         }
-        catch (std::exception& e)
-        {
-            MessageBox(e.what(), "Failed to convolve reference.", MB_OK);
+    }
+    catch (std::exception& e)
+    {
+        MessageBox(e.what(), "Failed to convolve reference.", MB_OK);
 
-            UpdateGraph();
+        UpdateGraph();
 
-            m_saveButton.EnableWindow(FALSE);
-            m_createStandardReferencesButton.EnableWindow(FALSE);
-        }
+        m_saveButton.EnableWindow(FALSE);
+        m_createStandardReferencesButton.EnableWindow(FALSE);
     }
 }

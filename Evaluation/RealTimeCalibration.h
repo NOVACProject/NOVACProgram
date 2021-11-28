@@ -20,8 +20,10 @@ namespace Evaluation
 
         /** Performs an automatic instrument calibration for the supplied spectrometer using the provided
             .pak file for measurement data.
+            If the AutomaticCalibrationSetting for the spectrometer says that the references should be created and replace existing
+                references in the real-time evaluation then the references will also be updated.
             @return true if the calibration succeeded.*/
-        static bool RunInstrumentCalibration(const Evaluation::CSpectrometer* spec, const std::string& scanFile);
+        static bool RunInstrumentCalibration(Evaluation::CSpectrometer* spec, const std::string& scanFile);
 
     private:
 

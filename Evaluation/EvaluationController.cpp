@@ -1245,7 +1245,7 @@ void CEvaluationController::InitiateSpecialModeMeasurement(const CSpectrometer* 
     return;
 }
 
-void CEvaluationController::UpdateInstrumentCalibration(const CSpectrometer* spectrometer, const std::string& lastEvaluatedScan)
+void CEvaluationController::UpdateInstrumentCalibration(CSpectrometer* spectrometer, const std::string& lastEvaluatedScan)
 {
     if (CRealTimeCalibration::IsTimeForInstrumentCalibration(spectrometer, lastEvaluatedScan))
     {

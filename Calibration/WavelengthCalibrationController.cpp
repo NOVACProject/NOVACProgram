@@ -139,9 +139,8 @@ void WavelengthCalibrationController::RunCalibration()
         Log("Read and subtracted dark spectrum");
     }
 
-    // Copy out the spectrum, such that the user can see it.
+    // Copy out the spectrum, such that the user can see it also if the calibration below should fail.
     m_calibrationDebug.measuredSpectrum = std::vector<double>(measuredSpectrum.m_data, measuredSpectrum.m_data + measuredSpectrum.m_length);
-    m_calibrationDebug.spectrumInfo = measuredSpectrum.m_info;
 
     // Check that this is a good measurement, according to our standards.
     CheckSpectrumQuality(measuredSpectrum);
@@ -264,6 +263,7 @@ void WavelengthCalibrationController::RunCalibration()
         const auto& calibrationDebug = setup.GetLastCalibrationSetup();
         m_calibrationDebug = WavelengthCalibrationDebugState(calibrationDebug.allCorrespondences.size());
         m_calibrationDebug.initialPixelToWavelengthMapping = settings.initialPixelToWavelengthMapping;
+        m_calibrationDebug.spectrumInfo = measuredSpectrum.m_info;
 
         for (size_t correspondenceIdx = 0; correspondenceIdx < calibrationDebug.allCorrespondences.size(); ++correspondenceIdx)
         {
@@ -311,6 +311,37 @@ void WavelengthCalibrationController::RunCalibration()
 
 std::pair<std::string, std::string> FormatProperty(const char* name, double value);
 
+std::unique_ptr<novac::InstrumentCalibration> WavelengthCalibrationController::GetFinalCalibration() const
+{
+    std::unique_ptr<novac::InstrumentCalibration> output;
+
+    if (m_resultingCalibration->instrumentLineShape.size() > 0)
+    {
+        // The created calibration is complete, copy and return
+        output = std::make_unique<novac::InstrumentCalibration>(*m_resultingCalibration);
+    }
+    else
+    {
+        // Create an instrument calibration, taking the instrument line shape from the initial setup 
+        //  and the pixel-to-wavelength mapping from the calibration result
+        output = std::make_unique<novac::InstrumentCalibration>();
+
+        output->pixelToWavelengthMapping = m_resultingCalibration->pixelToWavelengthMapping;
+        output->pixelToWavelengthPolynomial = m_resultingCalibration->pixelToWavelengthPolynomial;
+
+        output->instrumentLineShape = m_initialCalibration->instrumentLineShape;
+        output->instrumentLineShapeGrid = m_initialCalibration->instrumentLineShapeGrid;
+        output->instrumentLineShapeCenter = m_initialCalibration->instrumentLineShapeCenter;
+
+        if (m_initialCalibration->instrumentLineShapeParameter != nullptr)
+        {
+            output->instrumentLineShapeParameter = m_initialCalibration->instrumentLineShapeParameter->Clone();
+        }
+    }
+
+    return output;
+}
+
 void WavelengthCalibrationController::SaveResultAsStd(const std::string& filename)
 {
     if (m_resultingCalibration->instrumentLineShape.size() > 0)
@@ -324,22 +355,8 @@ void WavelengthCalibrationController::SaveResultAsStd(const std::string& filenam
         return;
     }
 
-    // Create an instrument calibration, taking the instrument line shape from the initial setup 
-    //  and the pixel-to-wavelength mapping from the calibration result
-    novac::InstrumentCalibration mixedCalibration;
-    mixedCalibration.pixelToWavelengthMapping = m_resultingCalibration->pixelToWavelengthMapping;
-    mixedCalibration.pixelToWavelengthPolynomial = m_resultingCalibration->pixelToWavelengthPolynomial;
-
-    mixedCalibration.instrumentLineShape = m_initialCalibration->instrumentLineShape;
-    mixedCalibration.instrumentLineShapeGrid = m_initialCalibration->instrumentLineShapeGrid;
-    mixedCalibration.instrumentLineShapeCenter = m_initialCalibration->instrumentLineShapeCenter;
-
-    if (m_initialCalibration->instrumentLineShapeParameter != nullptr)
-    {
-        mixedCalibration.instrumentLineShapeParameter = m_initialCalibration->instrumentLineShapeParameter->Clone();
-    }
-
-    if (!novac::SaveInstrumentCalibration(filename, mixedCalibration))
+    const auto mixedCalibration = GetFinalCalibration();
+    if (!novac::SaveInstrumentCalibration(filename, *mixedCalibration))
     {
         throw std::invalid_argument("Failed to save the resulting instrument calibration file");
     }
@@ -369,7 +386,7 @@ void WavelengthCalibrationController::CheckSpectrumQuality(const novac::CSpectru
     {
         std::stringstream message;
         message << "The provided sky spectrum seems to be saturated ";
-        message << "(maximum intensity: " << spectrum.MaxValue(0, spectrum.m_length) << ", corresponding to : " << 100 * maximumSaturationRatio << "% of full range for a " << model.modelName <<").";
+        message << "(maximum intensity: " << spectrum.MaxValue(0, spectrum.m_length) << ", corresponding to : " << 100 * maximumSaturationRatio << "% of full range for a " << model.modelName << ").";
         message << "Calibration aborted";
         throw std::invalid_argument(message.str());
     }
