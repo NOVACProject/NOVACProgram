@@ -451,4 +451,14 @@ public:
 /** Lists the name of all volcanoes monitored by instruments connected to this computer. */
 std::vector<std::string> ListMonitoredVolcanoes(const CConfigurationSetting& settings);
 
+/** Identifies the spectrometer with the provided serial in the current settings.
+    The returned scannerIdx and spectrometerIdx identifies the found spectrometer.
+        I.e., settings.scanner[scannerIdx].spec[spectrometerIdx].serialNumber will equal the requested serial.
+    @return true if the spectrometer could be found, otherwise false.
+    @param settings The current software settings
+    @param serial The serial number of the spectrometer to locate. Will return the first one if duplicates exist. 
+    @param scannerIdx The index of the scanner.
+    @param spectrometerIdx The index of the spectrometer */
+bool IdentifySpectrometer(const CConfigurationSetting& settings, const std::string& serial, int& scannerIdx, int& spectrometerIdx);
+
 #endif

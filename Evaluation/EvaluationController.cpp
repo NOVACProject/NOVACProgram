@@ -311,7 +311,7 @@ RETURN_CODE CEvaluationController::EvaluateScan(const CString& fileName, int vol
     InitiateSpecialModeMeasurement(spectrometer);
 
     // 14. Run a calibration of the device, if the time is right and the scan seems to be good.
-    UpdateInstrumentCalibration(spectrometer, fileNameStr, scanEvaluationResult->GetStartTime(0));
+    UpdateInstrumentCalibration(*spectrometer, fileNameStr, scanEvaluationResult->GetStartTime(0));
 
     // 15. Calculate the time spent in this function
     cFinish = clock();
@@ -1245,11 +1245,11 @@ void CEvaluationController::InitiateSpecialModeMeasurement(const CSpectrometer* 
     return;
 }
 
-void CEvaluationController::UpdateInstrumentCalibration(CSpectrometer* spectrometer, const std::string& lastEvaluatedScan, const novac::CDateTime* startTimeOfLastScan)
+void CEvaluationController::UpdateInstrumentCalibration(CSpectrometer& spectrometer, const std::string& lastEvaluatedScan, const novac::CDateTime* startTimeOfLastScan)
 {
     if (CRealTimeCalibration::IsTimeForInstrumentCalibration(spectrometer, lastEvaluatedScan, startTimeOfLastScan))
     {
-        CRealTimeCalibration::RunInstrumentCalibration(spectrometer, lastEvaluatedScan);
+        CRealTimeCalibration::RunInstrumentCalibration(spectrometer, lastEvaluatedScan, g_settings);
     }
 }
 

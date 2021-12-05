@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "Configuration.h"
 #include <set>
+#include <SpectralEvaluation/StringUtils.h>
 
 /** The global instance of configuration settings */
 CConfigurationSetting g_settings;
@@ -189,4 +190,26 @@ std::vector<std::string> ListMonitoredVolcanoes(const CConfigurationSetting& set
     return volcanoNames;
 }
 
+
+bool IdentifySpectrometer(const CConfigurationSetting& settings, const std::string& serial, int& scannerIdx, int& spectrometerIdx)
+{
+    scannerIdx = 0;
+    spectrometerIdx = 0;
+
+    for (unsigned long ii = 0; ii < g_settings.scannerNum; ++ii)
+    {
+        for (unsigned long jj = 0; jj < g_settings.scanner[ii].specNum; ++jj)
+        {
+            const std::string thisSerial = std::string(g_settings.scanner[ii].spec[jj].serialNumber);
+            if (EqualsIgnoringCase(thisSerial, serial))
+            {
+                scannerIdx = ii;
+                spectrometerIdx = jj;
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
 

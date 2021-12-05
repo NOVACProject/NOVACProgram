@@ -2,9 +2,9 @@
 #include "RealTimeCalibration.h"
 #include "../Common/Common.h"
 #include "../Evaluation/Spectrometer.h"
+#include "../Configuration/ConfigurationFileHandler.h"
 #include <SpectralEvaluation/DialogControllers/WavelengthCalibrationController.h>
 #include <SpectralEvaluation/DialogControllers/ReferenceCreationController.h>
-
 #include <SpectralEvaluation/File/File.h>
 #include <SpectralEvaluation/Calibration/StandardCrossSectionSetup.h>
 
@@ -68,7 +68,12 @@ void RunCalibration(NovacProgramWavelengthCalibrationController& calibrationCont
     calibrationController.RunCalibration();
 }
 
-std::vector<novac::CReferenceFile> CreateStandardReferences(const novac::CSpectrumInfo& spectrumInformation, const std::unique_ptr<novac::InstrumentCalibration>& calibration, const CConfigurationSetting::AutomaticCalibrationSetting& autoCalibrationSettings, const std::string& directoryName)
+std::vector<novac::CReferenceFile> CreateStandardReferences(
+    const novac::CSpectrumInfo& spectrumInformation,
+    const std::unique_ptr<novac::InstrumentCalibration>& calibration,
+    const CConfigurationSetting::AutomaticCalibrationSetting& autoCalibrationSettings,
+    const std::string& directoryName,
+    CConfigurationSetting& settings)
 {
     Common common;
     common.GetExePath();
@@ -110,7 +115,7 @@ std::vector<novac::CReferenceFile> CreateStandardReferences(const novac::CSpectr
     return referencesCreated;
 }
 
-void ReplaceReferences(std::vector<novac::CReferenceFile>& newReferences, Evaluation::CSpectrometer* spectrometer)
+void ReplaceReferences(std::vector<novac::CReferenceFile>& newReferences, CConfigurationSetting::SpectrometerSetting& spectrometer)
 {
     // First make sure that all the cross sections could be read in before attempting to replace anything
     for (size_t idx = 0; idx < newReferences.size(); ++idx)
@@ -131,18 +136,17 @@ void ReplaceReferences(std::vector<novac::CReferenceFile>& newReferences, Evalua
         }
     }
 
-    // Now replace the references
-    auto& fitWindow = spectrometer->m_scanner.spec[0].channel[0].fitWindow;
+    // Now replace the references. Notice that this only supports replacing the references of the first channel.
+    auto& fitWindow = spectrometer.channel[0].fitWindow;
     fitWindow.nRef = static_cast<int>(newReferences.size());
     for (size_t idx = 0; idx < newReferences.size(); ++idx)
     {
         fitWindow.ref[idx] = newReferences[idx];
     }
-
 }
 
 // ----------- CRealTimeCalibration class -----------
-void CRealTimeCalibration::AppendMessageToLog(const Evaluation::CSpectrometer* spectrometer, const std::string& message)
+void CRealTimeCalibration::AppendMessageToLog(const Evaluation::CSpectrometer& spectrometer, const std::string& message)
 {
     const std::string logFile = GetLogFileName();
 
@@ -152,7 +156,7 @@ void CRealTimeCalibration::AppendMessageToLog(const Evaluation::CSpectrometer* s
         CString timeStr;
         Common::GetTimeText(timeStr);
 
-        const CString serial = spectrometer->m_scanner.spec[0].serialNumber;
+        const CString serial = spectrometer.m_scanner.spec[0].serialNumber;
 
         fprintf(f, "%s\t%s\t", (LPCTSTR)timeStr, (LPCSTR)serial);
         fprintf(f, message.c_str());
@@ -163,16 +167,19 @@ void CRealTimeCalibration::AppendMessageToLog(const Evaluation::CSpectrometer* s
     }
 }
 
-bool CRealTimeCalibration::IsTimeForInstrumentCalibration(const Evaluation::CSpectrometer* spectrometer, const std::string& scanFile, const novac::CDateTime* startTimeOfLastScan)
+bool CRealTimeCalibration::IsTimeForInstrumentCalibration(
+    const Evaluation::CSpectrometer& spectrometer,
+    const std::string& scanFile,
+    const novac::CDateTime* startTimeOfLastScan)
 {
-    if (spectrometer == nullptr || !novac::IsExistingFile(scanFile) || startTimeOfLastScan == nullptr)
+    if (!novac::IsExistingFile(scanFile) || startTimeOfLastScan == nullptr)
     {
         return false;
     }
 
     const std::string logFile = GetLogFileName();
 
-    const auto& autoCalibrationSettings = spectrometer->m_scanner.spec[0].channel[0].autoCalibration;
+    const auto& autoCalibrationSettings = spectrometer.m_scanner.spec[0].channel[0].autoCalibration;
 
     if (!autoCalibrationSettings.enable ||
         autoCalibrationSettings.solarSpectrumFile.GetLength() == 0 ||
@@ -183,7 +190,7 @@ bool CRealTimeCalibration::IsTimeForInstrumentCalibration(const Evaluation::CSpe
     }
 
     // Check if it is time to do a calibration.
-    const double secondsSinceLastCalibration = spectrometer->m_history->SecondsSinceLastInstrumentCalibration();
+    const double secondsSinceLastCalibration = spectrometer.m_history->SecondsSinceLastInstrumentCalibration();
     if (secondsSinceLastCalibration > 0 &&
         secondsSinceLastCalibration < 3600.0 * autoCalibrationSettings.intervalHours)
     {
@@ -197,7 +204,17 @@ bool CRealTimeCalibration::IsTimeForInstrumentCalibration(const Evaluation::CSpe
     {
         std::stringstream message;
         message << "Measurement time (" << startTimeOfLastScan->SecondsSinceMidnight() << ") is outside of configured interval [";
-        message << autoCalibrationSettings.intervalTimeOfDayLow << " to " << autoCalibrationSettings.intervalTimeOfDayHigh;
+        message << autoCalibrationSettings.intervalTimeOfDayLow << " to " << autoCalibrationSettings.intervalTimeOfDayHigh << "]";
+        AppendMessageToLog(spectrometer, message.str());
+        return false;
+    }
+
+    novac::CDateTime now;
+    now.SetToNow();
+    if (startTimeOfLastScan->year != now.year || startTimeOfLastScan->month != now.month || startTimeOfLastScan->day != now.day)
+    {
+        std::stringstream message;
+        message << "Measurement is not from today.";
         AppendMessageToLog(spectrometer, message.str());
         return false;
     }
@@ -230,11 +247,14 @@ bool CRealTimeCalibration::IsTimeForInstrumentCalibration(const Evaluation::CSpe
     return true;
 }
 
-bool CRealTimeCalibration::RunInstrumentCalibration(Evaluation::CSpectrometer* spectrometer, const std::string& scanFile)
+bool CRealTimeCalibration::RunInstrumentCalibration(
+    Evaluation::CSpectrometer& spectrometer,
+    const std::string& scanFile,
+    CConfigurationSetting& settings)
 {
     try
     {
-        const auto& autoCalibrationSettings = spectrometer->m_scanner.spec[0].channel[0].autoCalibration;
+        const auto& autoCalibrationSettings = spectrometer.m_scanner.spec[0].channel[0].autoCalibration;
 
         // Use the WavelengthCalibrationController, which is also used when the 
         //  user performs the instrument calibrations using the CCalibratePixelToWavelengthDialog.
@@ -249,16 +269,37 @@ bool CRealTimeCalibration::RunInstrumentCalibration(Evaluation::CSpectrometer* s
 
         // Create the standard references.
         const auto finalCalibration = calibrationController.GetFinalCalibration();
-        auto referencesCreated = CreateStandardReferences(calibrationController.m_calibrationDebug.spectrumInfo, finalCalibration, autoCalibrationSettings, directoryName);
+        auto referencesCreated = CreateStandardReferences(
+            calibrationController.m_calibrationDebug.spectrumInfo,
+            finalCalibration,
+            autoCalibrationSettings,
+            directoryName,
+            settings);
 
         // All references have successfully been created, replace the references used by the evaluation with the new references.
         if (autoCalibrationSettings.generateReferences && referencesCreated.size() > 0)
         {
-            ReplaceReferences(referencesCreated, spectrometer);
+            int scannerIdx = 0;
+            int spectrometerIdx = 0;
+            const std::string serialNumber = std::string(spectrometer.SerialNumber());
+            if (IdentifySpectrometer(settings, serialNumber, scannerIdx, spectrometerIdx))
+            {
+                // Update the settings.
+                // Notice that there are multiple copies of the settings found in the CSpectrometer (unclear why)
+                //  hence we need to replace all of them for the settings to work (for sure).
+                ReplaceReferences(referencesCreated, settings.scanner[scannerIdx].spec[spectrometerIdx]);
+                ReplaceReferences(referencesCreated, spectrometer.m_settings);
+                ReplaceReferences(referencesCreated, spectrometer.m_scanner.spec[spectrometerIdx]);
+                spectrometer.m_fitWindows[0] = spectrometer.m_settings.channel[0].fitWindow;
+
+                // Save the updated settings to file
+                FileHandler::CConfigurationFileHandler writer;
+                writer.WriteConfigurationFile(settings);
+            }
         }
 
         // Remember the result
-        spectrometer->m_history->AppendInstrumentCalibration(
+        spectrometer.m_history->AppendInstrumentCalibration(
             calibrationController.m_calibrationDebug.spectrumInfo.m_startTime,
             calibrationController.GetFinalCalibration());
 
