@@ -1,24 +1,20 @@
 #include "StdAfx.h"
-#include "spectrometerhistory.h"
+#include "SpectrometerHistory.h"
+#include <SpectralEvaluation/Calibration/InstrumentLineShape.h>
+#include <algorithm>
 
 using namespace Evaluation;
 using namespace novac;
 
-CSpectrometerHistory::CScanInfo::CScanInfo() {
+CSpectrometerHistory::CScanInfo::CScanInfo()
+    : plumeCompleteness(0), exposureTime(0), maxColumn(0)
+{
     plumeCentre[0] = 0;
     plumeCentre[1] = 0;
     plumeEdge[0] = 0;
     plumeEdge[1] = 0;
-    plumeCompleteness = 0;
-    exposureTime = 0;
-    maxColumn = 0;
-}
-CSpectrometerHistory::CScanInfo::~CScanInfo() {
-}
-
-CSpectrometerHistory::CWMInfo::CWMInfo() {
-}
-CSpectrometerHistory::CWMInfo::~CWMInfo() {
+    alpha[0] = 0;
+    alpha[1] = 0;
 }
 
 CSpectrometerHistory::CSpectrometerHistory(void)
@@ -28,12 +24,11 @@ CSpectrometerHistory::CSpectrometerHistory(void)
 CSpectrometerHistory::~CSpectrometerHistory(void)
 {
     //if(m_scanInfo.GetCount() > 0)
-    //	m_scanInfo.RemoveAll();
+    // m_scanInfo.RemoveAll();
     //if(m_windMeasurementTimes.GetCount() > 0)
-    //	m_windMeasurementTimes.RemoveAll();
+    // m_windMeasurementTimes.RemoveAll();
 }
 
-/** Appends a new set of results. */
 void CSpectrometerHistory::AppendScanResult(const CScanResult& result, const std::string& specie) {
     CDateTime startTime;
 
@@ -87,8 +82,6 @@ void CSpectrometerHistory::AppendScanResult(const CScanResult& result, const std
     }
 }
 
-/** Appends the information that a wind-speed measurement has been performed
-        at a specific time. */
 void CSpectrometerHistory::AppendWindMeasurement(int year, int month, int day, int hour, int minute, int second) {
 
     // 1. Create a new CDateTime-object
@@ -99,7 +92,7 @@ void CSpectrometerHistory::AppendWindMeasurement(int year, int month, int day, i
     now.SetToNow();
 
     // 3. Create a new CWMInfo object to insert
-    CWMInfo	newInfo;
+    CWMInfo newInfo;
     newInfo.arrived = now;
     newInfo.startTime = nyTid;
 
@@ -107,7 +100,7 @@ void CSpectrometerHistory::AppendWindMeasurement(int year, int month, int day, i
     POSITION pos = m_windMeasurementTimes.GetHeadPosition();
     while (pos != nullptr) {
         CWMInfo wmInfo = m_windMeasurementTimes.GetAt(pos);
-        if (wmInfo.startTime < nyTid)	break;
+        if (wmInfo.startTime < nyTid) break;
         m_windMeasurementTimes.GetNext(pos);
     }
 
@@ -125,8 +118,6 @@ void CSpectrometerHistory::AppendWindMeasurement(int year, int month, int day, i
     }
 }
 
-/** Appends the information that a composition measurement has been performed
-        at a specific time. */
 void CSpectrometerHistory::AppendCompMeasurement(int year, int month, int day, int hour, int minute, int second) {
 
     // 1. Create a new CDateTime-object
@@ -137,7 +128,7 @@ void CSpectrometerHistory::AppendCompMeasurement(int year, int month, int day, i
     now.SetToNow();
 
     // 3. Create a new CWMInfo object to insert
-    CWMInfo	newInfo;
+    CWMInfo newInfo;
     newInfo.arrived = now;
     newInfo.startTime = nyTid;
 
@@ -145,7 +136,7 @@ void CSpectrometerHistory::AppendCompMeasurement(int year, int month, int day, i
     POSITION pos = m_compMeasurementTimes.GetHeadPosition();
     while (pos != nullptr) {
         CWMInfo wmInfo = m_compMeasurementTimes.GetAt(pos);
-        if (wmInfo.startTime < nyTid)	break;
+        if (wmInfo.startTime < nyTid) break;
         m_compMeasurementTimes.GetNext(pos);
     }
 
@@ -163,19 +154,37 @@ void CSpectrometerHistory::AppendCompMeasurement(int year, int month, int day, i
     }
 }
 
-/** Returns the number of seconds passed since the last scan
-        arrived. Return -1 if no scans has arrived */
-int	CSpectrometerHistory::SecondsSinceLastScan() {
+void CSpectrometerHistory::AppendInstrumentCalibration(const CDateTime& timeOfScan, const std::unique_ptr<novac::InstrumentCalibration>& calibration)
+{
+    CCalibrationInfo newInfo;
+    newInfo.startTime = timeOfScan;
+    newInfo.arrived.SetToNow();
+    newInfo.pixelToWavelengthPolynomial = calibration->pixelToWavelengthPolynomial;
+
+    if (calibration->instrumentLineShapeParameter != nullptr)
+    {
+        newInfo.instrumentFwhm = calibration->instrumentLineShapeParameter->Fwhm();
+    }
+
+    m_instrumentCalibration.push_back(newInfo);
+
+    std::sort(
+        begin(m_instrumentCalibration),
+        end(m_instrumentCalibration),
+        [](const CCalibrationInfo& a, const CCalibrationInfo& b) {return a.startTime > b.startTime; });
+}
+
+int CSpectrometerHistory::SecondsSinceLastScan() const {
 
     // 1. If no scan has arrived, return -1
     if (m_scanInfo.GetCount() == 0)
         return -1;
 
     // 2. The arrival-time of the last scan
-    CScanInfo	lastInfo = m_scanInfo.GetAt(m_scanInfo.GetHeadPosition());
+    CScanInfo lastInfo = m_scanInfo.GetAt(m_scanInfo.GetHeadPosition());
 
     // 3. The local time now
-    CDateTime	now;
+    CDateTime now;
     now.SetToNow();
 
     // 4. Calculate the difference...
@@ -185,31 +194,14 @@ int	CSpectrometerHistory::SecondsSinceLastScan() {
     return (int)fabs(secondsPassed);
 }
 
-/** Returns the time of the last scan performed (in GMT) */
-int CSpectrometerHistory::GetStartTimeOfLastScan(CDateTime& dt) {
-    // 1. If no scan has arrived, return -1
-    if (m_scanInfo.GetCount() == 0)
-        return -1;
-
-    // 2. The arrival-time of the last scan
-    CScanInfo	lastInfo = m_scanInfo.GetAt(m_scanInfo.GetHeadPosition());
-
-    // 3. Set the time
-    dt = lastInfo.startTime;
-
-    return 0;
-}
-
-/** Returns the number of seconds passed since the last wind-measurement
-        arrived. Return -1 if no wind-measurement has arrived */
-int	CSpectrometerHistory::SecondsSinceLastWindMeas() {
+int CSpectrometerHistory::SecondsSinceLastWindMeas() const {
 
     // 1. If no wind-measurement has arrived, return -1
     if (m_windMeasurementTimes.GetCount() == 0)
         return -1;
 
     // 2. The arrival-time of the last wind-measurement (in the time of the observatory PC we're running on)
-    CWMInfo	lastInfo = m_windMeasurementTimes.GetAt(m_windMeasurementTimes.GetHeadPosition());
+    CWMInfo lastInfo = m_windMeasurementTimes.GetAt(m_windMeasurementTimes.GetHeadPosition());
 
     // 3. The local time now
     CDateTime now;
@@ -223,16 +215,14 @@ int	CSpectrometerHistory::SecondsSinceLastWindMeas() {
     return (int)fabs(secondsPassed);
 }
 
-/** Returns the number of seconds passed since the last composition measurement
-        arrived. Return -1 if no composition measurement has arrived */
-int	CSpectrometerHistory::SecondsSinceLastCompMeas() {
+int CSpectrometerHistory::SecondsSinceLastCompMeas() const {
 
     // 1. If no composition-measurement has arrived, return -1
     if (m_compMeasurementTimes.GetCount() == 0)
         return -1;
 
     // 2. The arrival-time of the last composition-measurement (in the time of the observatory PC we're running on)
-    CWMInfo	lastInfo = m_compMeasurementTimes.GetAt(m_compMeasurementTimes.GetHeadPosition());
+    CWMInfo lastInfo = m_compMeasurementTimes.GetAt(m_compMeasurementTimes.GetHeadPosition());
 
     // 3. The local time now
     CDateTime now;
@@ -245,9 +235,27 @@ int	CSpectrometerHistory::SecondsSinceLastCompMeas() {
     return (int)fabs(secondsPassed);
 }
 
-/** Returns the number of scans that have arrived from this spectrometer
-        today. */
-int	CSpectrometerHistory::GetNumScans() {
+int CSpectrometerHistory::SecondsSinceLastInstrumentCalibration() const
+{
+    // 1. If no composition-measurement has arrived, return -1
+    if (m_instrumentCalibration.size() == 0)
+        return -1;
+
+    // 2. The last performed calibration
+    const CCalibrationInfo& lastInfo = m_instrumentCalibration.back();
+
+    // 3. The local time now
+    CDateTime now;
+    now.SetToNow();
+
+    // 4. Calculate the difference...
+    double secondsPassed = CDateTime::Difference(now, lastInfo.arrived);
+
+    // 5. Return
+    return (int)fabs(secondsPassed);
+}
+
+int CSpectrometerHistory::GetNumScans() const {
     // 1. If no scan has arrived...
     if (m_scanInfo.GetCount() == 0)
         return 0;
@@ -257,7 +265,7 @@ int	CSpectrometerHistory::GetNumScans() {
     now.SetToNow();
 
     // 3. Count the number of scans with todays date
-    int	nScans = 0;
+    int nScans = 0;
     POSITION pos = m_scanInfo.GetHeadPosition();
     while (pos != 0) {
         CScanInfo info = m_scanInfo.GetNext(pos);
@@ -276,7 +284,7 @@ int	CSpectrometerHistory::GetNumScans() {
 
 /** Returns the average number of seconds passed between the starting of the
         last 5-10 scans. Return -1 if no scans has arrived */
-double	CSpectrometerHistory::GetScanInterval() {
+double CSpectrometerHistory::GetScanInterval() {
 
     // 1. If no scan has arrived, return -1
     if (m_scanInfo.GetCount() == 0)
@@ -293,7 +301,7 @@ double	CSpectrometerHistory::GetScanInterval() {
     // 4. Go through the list of scans and see the start-times
     CDateTime lastStartTime;
     double avgTimeDiff = 0;
-    int		nScans = 0;
+    int  nScans = 0;
     POSITION pos = m_scanInfo.GetHeadPosition();
 
     while (pos != nullptr) {
@@ -337,11 +345,11 @@ double CSpectrometerHistory::GetPlumeCentre(int scansToAverage, int motor) {
     now.SetToNow();
 
     // 2. Go through the list and average over the last 'scanstoAverage'-last
-    //		scans
+    //  scans
     POSITION pos = m_scanInfo.GetHeadPosition();
     while (pos != 0) {
         CScanInfo info = m_scanInfo.GetNext(pos);
-        CDateTime	tid = info.startTime;
+        CDateTime tid = info.startTime;
         if (tid.year == now.year && tid.month == now.month && fabs(tid.day - now.day) <= 1) {
 
             // If any measurement shows that there's no plume, return -180
@@ -371,8 +379,8 @@ double CSpectrometerHistory::GetPlumeCentre(int scansToAverage, int motor) {
         last 'scansToAverage' scans today. Returns false if there are
         fewer than 'scansToAverage' scans collected today OR
         if any of the last 'scansToAverage' misses the plume. */
-bool	CSpectrometerHistory::GetPlumeEdges(int scansToAverage, double& lowEdge, double& highEdge) {
-    int		nScans = 0;
+bool CSpectrometerHistory::GetPlumeEdges(int scansToAverage, double& lowEdge, double& highEdge) {
+    int  nScans = 0;
     lowEdge = 0.0;
     highEdge = 0.0;
 
@@ -381,11 +389,11 @@ bool	CSpectrometerHistory::GetPlumeEdges(int scansToAverage, double& lowEdge, do
     now.SetToNow();
 
     // 2. Go through the list and average over the last 'scanstoAverage'-last
-    //		scans
+    //  scans
     POSITION pos = m_scanInfo.GetHeadPosition();
     while (pos != 0) {
         CScanInfo info = m_scanInfo.GetNext(pos);
-        CDateTime	tid = info.startTime;
+        CDateTime tid = info.startTime;
         if (tid.year == now.year && tid.month == now.month && fabs(tid.day - now.day) <= 1) {
             // If any measurement shows that there's no plume, return false
             if (info.plumeCentre[0] < -100)
@@ -423,11 +431,11 @@ double CSpectrometerHistory::GetPlumeCompleteness(int scansToAverage) {
     now.SetToNow();
 
     // 2. Go through the list and average over the last 'scanstoAverage'-last
-    //		scans
+    //  scans
     POSITION pos = m_scanInfo.GetHeadPosition();
     while (pos != 0) {
         CScanInfo info = m_scanInfo.GetNext(pos);
-        CDateTime	tid = info.startTime;
+        CDateTime tid = info.startTime;
         if (tid.year == now.year && tid.month == now.month && fabs(tid.day - now.day) <= 1) {
             // If any measurement shows that there's no plume, return -180
             if (info.plumeCompleteness < -100)
@@ -471,7 +479,7 @@ bool CSpectrometerHistory::GetPlumeCentreVariation(int scansToAverage, int motor
     POSITION pos = m_scanInfo.GetHeadPosition();
     while (pos != 0) {
         CScanInfo info = m_scanInfo.GetNext(pos);
-        CDateTime	tid = info.startTime;
+        CDateTime tid = info.startTime;
         if (tid.year == now.year && tid.month == now.month && fabs(tid.day - now.day) <= 1) {
             // If any measurement shows that there's no plume, return false
             if (info.plumeCentre[motor] < -100)
@@ -507,11 +515,11 @@ double CSpectrometerHistory::GetExposureTime(int scansToAverage) {
     now.SetToNow();
 
     // 2. Go through the list and average over the last 'scanstoAverage'-last
-    //		scans
+    //  scans
     POSITION pos = m_scanInfo.GetHeadPosition();
     while (pos != 0) {
         CScanInfo info = m_scanInfo.GetNext(pos);
-        CDateTime	tid = info.startTime;
+        CDateTime tid = info.startTime;
         if (tid.year == now.year && tid.month == now.month && fabs(tid.day - now.day) <= 1) {
             // Avearage
             expTime += info.exposureTime;
@@ -535,7 +543,7 @@ double CSpectrometerHistory::GetExposureTime(int scansToAverage) {
 /** Returns the peak column averaged over the last
         'scansToAverage' scans today. returns -1 if there are fewer
         than 'scansToAverage' scans collected today */
-double	CSpectrometerHistory::GetColumnMax(int scansToAverage) {
+double CSpectrometerHistory::GetColumnMax(int scansToAverage) {
     int nScans = 0;
     double maxColumn = 0.0;
 
@@ -544,11 +552,11 @@ double	CSpectrometerHistory::GetColumnMax(int scansToAverage) {
     now.SetToNow();
 
     // 2. Go through the list and average over the last 'scanstoAverage'-last
-    //		scans
+    //  scans
     POSITION pos = m_scanInfo.GetHeadPosition();
     while (pos != 0) {
         CScanInfo info = m_scanInfo.GetNext(pos);
-        CDateTime	tid = info.startTime;
+        CDateTime tid = info.startTime;
         if (tid.year == now.year && tid.month == now.month && fabs(tid.day - now.day) <= 1) {
             // Average
             maxColumn += info.maxColumn;
@@ -572,8 +580,8 @@ double	CSpectrometerHistory::GetColumnMax(int scansToAverage) {
 /** Returns the range of zenith-angles for the last scan
         (Normally these are from -90 to +90)
         If no scan collected today has been received then alpha_min will be +999.0
-        and alpha_max will be -999.0				*/
-void	CSpectrometerHistory::GetAlphaRange(double& alpha_min, double& alpha_max) {
+        and alpha_max will be -999.0    */
+void CSpectrometerHistory::GetAlphaRange(double& alpha_min, double& alpha_max) {
     alpha_min = +999.0;
     alpha_max = -999.0;
 

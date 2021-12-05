@@ -6,18 +6,13 @@ using namespace Evaluation;
 using namespace novac;
 
 CSpectrometer::CSpectrometer()
+    : m_history(nullptr), m_channel(0), m_gpsReadingsNum(0)
 {
-    m_history = NULL;
-    m_channel = 0;
-    m_gpsReadingsNum = 0;
 }
 
 CSpectrometer::~CSpectrometer(void)
 {
-    //if(this->m_history != NULL){
-    //	delete m_history;
-    //}
-    m_history = NULL;
+    m_history = nullptr;
 }
 
 CSpectrometer& CSpectrometer::operator=(const CSpectrometer& spec2)
@@ -59,8 +54,6 @@ double CSpectrometer::GetMaxIntensity() const {
     return CSpectrometerDatabase::GetInstance().GetModel(m_settings.modelName).maximumIntensity;
 }
 
-/** Adds the result from the supplied evaluation to the history
-        of evaluations. */
 void CSpectrometer::RememberResult(CScanResult& lastResult) {
     std::string specie = "SO2";
 
@@ -85,7 +78,7 @@ void CSpectrometer::RememberResult(CScanResult& lastResult) {
     double maxColumn = lastResult.GetMaxColumn(specie);
 
     // 5. Append the results to the history
-    if (m_history != NULL) {
+    if (m_history != nullptr) {
         if (MODE_FLUX == lastMode) {
             m_history->AppendScanResult(lastResult, specie);
         }

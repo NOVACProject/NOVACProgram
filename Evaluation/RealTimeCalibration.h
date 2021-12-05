@@ -6,6 +6,10 @@ namespace Evaluation
 {
     class CSpectrometer;
 }
+namespace novac
+{
+    class CDateTime;
+}
 
 namespace Evaluation
 {
@@ -16,7 +20,7 @@ namespace Evaluation
             checking the settings for automatic instrument calibrations and the provided measurement
             and judges if we should perform an automatic instrument calibration now.
             @return true if an instrument calibration should be started else return false */
-        static bool IsTimeForInstrumentCalibration(const Evaluation::CSpectrometer* spectrometer, const std::string& scanFile);
+        static bool IsTimeForInstrumentCalibration(const Evaluation::CSpectrometer* spectrometer, const std::string& scanFile, const novac::CDateTime* startTimeOfLastScan);
 
         /** Performs an automatic instrument calibration for the supplied spectrometer using the provided
             .pak file for measurement data.

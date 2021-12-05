@@ -2,8 +2,8 @@
 #include "RealTimeCalibration.h"
 #include "../Common/Common.h"
 #include "../Evaluation/Spectrometer.h"
-#include "../Calibration/WavelengthCalibrationController.h"
-#include "../Calibration/ReferenceCreationController.h"
+#include <SpectralEvaluation/DialogControllers/WavelengthCalibrationController.h>
+#include <SpectralEvaluation/DialogControllers/ReferenceCreationController.h>
 
 #include <SpectralEvaluation/File/File.h>
 #include <SpectralEvaluation/Calibration/StandardCrossSectionSetup.h>
@@ -55,14 +55,14 @@ std::string GetCalibrationFileName(const novac::CSpectrumInfo& spectrumInformati
     return "Calibration_" + spectrumInformation.m_device + "_" + FormatDateAndTimeOfSpectrum(spectrumInformation) + ".std";
 }
 
-void RunCalibration(WavelengthCalibrationController& calibrationController, const std::string& scanFile, const CConfigurationSetting::AutomaticCalibrationSetting& autoCalibrationSettings)
+void RunCalibration(NovacProgramWavelengthCalibrationController& calibrationController, const std::string& scanFile, const CConfigurationSetting::AutomaticCalibrationSetting& autoCalibrationSettings)
 {
     calibrationController.m_inputSpectrumFile = scanFile;
     calibrationController.m_solarSpectrumFile = autoCalibrationSettings.solarSpectrumFile;
     calibrationController.m_initialCalibrationFile = autoCalibrationSettings.initialCalibrationFile;
     calibrationController.m_initialLineShapeFile = autoCalibrationSettings.instrumentLineshapeFile;
     calibrationController.m_instrumentLineShapeFitOption = (WavelengthCalibrationController::InstrumentLineShapeFitOption)autoCalibrationSettings.instrumentLineShapeFitOption;
-    calibrationController.m_instrumentLineShapeFitRegion = std::make_pair(autoCalibrationSettings.instrumentLineShapeFitRegion.low, autoCalibrationSettings.instrumentLineShapeFitRegion.high);
+    calibrationController.m_instrumentLineShapeFitRegion = autoCalibrationSettings.instrumentLineShapeFitRegion;
 
     // Does the actual calibration. Throws a std::exception if the calibration fails.
     calibrationController.RunCalibration();
@@ -163,9 +163,9 @@ void CRealTimeCalibration::AppendMessageToLog(const Evaluation::CSpectrometer* s
     }
 }
 
-bool CRealTimeCalibration::IsTimeForInstrumentCalibration(const Evaluation::CSpectrometer* spectrometer, const std::string& scanFile)
+bool CRealTimeCalibration::IsTimeForInstrumentCalibration(const Evaluation::CSpectrometer* spectrometer, const std::string& scanFile, const novac::CDateTime* startTimeOfLastScan)
 {
-    if (spectrometer == nullptr || !novac::IsExistingFile(scanFile))
+    if (spectrometer == nullptr || !novac::IsExistingFile(scanFile) || startTimeOfLastScan == nullptr)
     {
         return false;
     }
@@ -174,10 +174,31 @@ bool CRealTimeCalibration::IsTimeForInstrumentCalibration(const Evaluation::CSpe
 
     const auto& autoCalibrationSettings = spectrometer->m_scanner.spec[0].channel[0].autoCalibration;
 
-    if (autoCalibrationSettings.solarSpectrumFile.GetLength() == 0 ||
+    if (!autoCalibrationSettings.enable ||
+        autoCalibrationSettings.solarSpectrumFile.GetLength() == 0 ||
         autoCalibrationSettings.initialCalibrationFile.GetLength() == 0)
     {
         // The device is not setup. This is expected to be the most common case, hence no debug logging is required.
+        return false;
+    }
+
+    // Check if it is time to do a calibration.
+    const double secondsSinceLastCalibration = spectrometer->m_history->SecondsSinceLastInstrumentCalibration();
+    if (secondsSinceLastCalibration > 0 &&
+        secondsSinceLastCalibration < 3600.0 * autoCalibrationSettings.intervalHours)
+    {
+        std::stringstream message;
+        message << "Last calibration performed: " << secondsSinceLastCalibration / 3600.0 << " hours ago. Too soon to do next measurement.";
+        AppendMessageToLog(spectrometer, message.str());
+        return false;
+    }
+    else if (startTimeOfLastScan->SecondsSinceMidnight() < autoCalibrationSettings.intervalTimeOfDayLow ||
+             startTimeOfLastScan->SecondsSinceMidnight() > autoCalibrationSettings.intervalTimeOfDayHigh)
+    {
+        std::stringstream message;
+        message << "Measurement time (" << startTimeOfLastScan->SecondsSinceMidnight() << ") is outside of configured interval [";
+        message << autoCalibrationSettings.intervalTimeOfDayLow << " to " << autoCalibrationSettings.intervalTimeOfDayHigh;
+        AppendMessageToLog(spectrometer, message.str());
         return false;
     }
 
@@ -195,6 +216,15 @@ bool CRealTimeCalibration::IsTimeForInstrumentCalibration(const Evaluation::CSpe
         AppendMessageToLog(spectrometer, message.str());
         return false;
     }
+    else if (autoCalibrationSettings.instrumentLineShapeFitOption != 0 &&
+            autoCalibrationSettings.instrumentLineShapeFitRegion.Empty())
+    {
+        std::stringstream message;
+        message << "Cannot fit an instrument line shape if no region is defined. Current region: ";
+        message << "(" << autoCalibrationSettings.instrumentLineShapeFitRegion.low << ", " << autoCalibrationSettings.instrumentLineShapeFitRegion.high << ")";
+        AppendMessageToLog(spectrometer, message.str());
+        return false;
+    }
 
     // no further objections found. 
     return true;
@@ -209,7 +239,7 @@ bool CRealTimeCalibration::RunInstrumentCalibration(Evaluation::CSpectrometer* s
         // Use the WavelengthCalibrationController, which is also used when the 
         //  user performs the instrument calibrations using the CCalibratePixelToWavelengthDialog.
         // This makes sure we get the same behavior in the dialog and here.
-        WavelengthCalibrationController calibrationController;
+        NovacProgramWavelengthCalibrationController calibrationController;
         RunCalibration(calibrationController, scanFile, autoCalibrationSettings);
 
         // Save new instrument calibration.
@@ -226,6 +256,11 @@ bool CRealTimeCalibration::RunInstrumentCalibration(Evaluation::CSpectrometer* s
         {
             ReplaceReferences(referencesCreated, spectrometer);
         }
+
+        // Remember the result
+        spectrometer->m_history->AppendInstrumentCalibration(
+            calibrationController.m_calibrationDebug.spectrumInfo.m_startTime,
+            calibrationController.GetFinalCalibration());
 
         return true;
     }

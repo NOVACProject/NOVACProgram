@@ -34,6 +34,8 @@ void CCalibrationConfigurationDlg::DoDataExchange(CDataExchange* pDX)
 
     if (m_curSpec != nullptr)
     {
+        DDX_Check(pDX, IDC_CHECK_ENABLE_INSTRUMENT_CALIBRATION, m_curSpec->channel[m_channel].autoCalibration.enable);
+
         DDX_Text(pDX, IDC_EDIT_SOLAR_SPECTRUM_SETTING, m_curSpec->channel[m_channel].autoCalibration.solarSpectrumFile);
         DDX_Text(pDX, IDC_EDIT_INITIAL_CALIBRATION_SETTING, m_curSpec->channel[m_channel].autoCalibration.initialCalibrationFile);
 
@@ -45,20 +47,28 @@ void CCalibrationConfigurationDlg::DoDataExchange(CDataExchange* pDX)
 
         DDX_Radio(pDX, IDC_RADIO_INSTRUMENT_LINE_SHAPE_FIT_NOTHING, m_curSpec->channel[m_channel].autoCalibration.instrumentLineShapeFitOption);
 
-        DDX_Text(pDX, IDC_CALIBRATION_INTERVAL_DAYS, m_curSpec->channel[m_channel].autoCalibration.intervalDays);
-        DDV_MinMaxInt(pDX, m_curSpec->channel[m_channel].autoCalibration.intervalDays, 0, 10000);
+        DDX_Text(pDX, IDC_CALIBRATION_INTERVAL_DAYS, m_curSpec->channel[m_channel].autoCalibration.intervalHours);
+        DDV_MinMaxInt(pDX, m_curSpec->channel[m_channel].autoCalibration.intervalHours, 0, 10000);
 
-        DDX_Text(pDX, IDC_CALIBRATION_INTERVAL_HOURS, m_intervalHr);
-        DDV_MinMaxInt(pDX, m_intervalHr, 0, 23);
+        DDX_Text(pDX, IDC_CALIBRATION_INTERVAL_LOW_HOURS, m_intervalLowHr);
+        DDV_MinMaxInt(pDX, m_intervalLowHr, 0, 23);
 
-        DDX_Text(pDX, IDC_CALIBRATION_INTERVAL_MINUTES, m_intervalMin);
-        DDV_MinMaxInt(pDX, m_intervalMin, 0, 59);
+        DDX_Text(pDX, IDC_CALIBRATION_INTERVAL_LOW_MINUTES, m_intervalLowMin);
+        DDV_MinMaxInt(pDX, m_intervalLowMin, 0, 59);
+
+        DDX_Text(pDX, IDC_CALIBRATION_INTERVAL_HIGH_HOURS, m_intervalHighHr);
+        DDV_MinMaxInt(pDX, m_intervalHighHr, 0, 23);
+
+        DDX_Text(pDX, IDC_CALIBRATION_INTERVAL_HIGH_MINUTES, m_intervalHighMin);
+        DDV_MinMaxInt(pDX, m_intervalHighMin, 0, 59);
     }
 }
 
 // Message map
 
 BEGIN_MESSAGE_MAP(CCalibrationConfigurationDlg, CSystemConfigurationPage)
+    ON_COMMAND(IDC_CHECK_ENABLE_INSTRUMENT_CALIBRATION, UpdateDialogState)
+
     ON_BN_CLICKED(IDC_BUTTON_SELECT_INITIAL_CALIBRATION_SETTING, &CCalibrationConfigurationDlg::OnBnClickedButtonSelectInitialCalibrationSetting)
     ON_BN_CLICKED(IDC_BUTTON_BROWSE_SOLAR_SPECTRUM_SETTING, &CCalibrationConfigurationDlg::OnBnClickedButtonBrowseSolarSpectrumSetting)
 
@@ -102,12 +112,48 @@ BOOL CCalibrationConfigurationDlg::OnInitDialog()
         }
 
         int tmp;
-        novac::SplitToHourMinuteSecond(currentSettings.intervalTimeOfDay, m_intervalHr, m_intervalMin, tmp);
+        novac::SplitToHourMinuteSecond(currentSettings.intervalTimeOfDayLow, m_intervalLowHr, m_intervalLowMin, tmp);
+        novac::SplitToHourMinuteSecond(currentSettings.intervalTimeOfDayHigh, m_intervalHighHr, m_intervalHighMin, tmp);
     }
 
-    UpdateData(FALSE);
+    UpdateData(FALSE); // Update the user interface with the new values
+
+    UpdateDialogState();
 
     return TRUE;  // return TRUE unless you set the focus to a control
+}
+
+void CCalibrationConfigurationDlg::UpdateDialogState()
+{
+    const auto itemsToUpdate = std::vector<int>{
+        IDC_BUTTON_SELECT_INITIAL_CALIBRATION_SETTING,
+        IDC_BUTTON_BROWSE_SOLAR_SPECTRUM_SETTING,
+        IDC_RADIO_INSTRUMENT_LINE_SHAPE_FIT_NOTHING,
+        IDC_RADIO_INSTRUMENT_LINE_SHAPE_FIT_SUPER_GAUSS,
+        IDC_EDIT_INSTRUMENT_LINE_SHAPE_FIT_REGION_LOW,
+        IDC_EDIT_INSTRUMENT_LINE_SHAPE_FIT_REGION_HIGH,
+        IDC_CHECK_REPLACE_USER_DEFINED_REFERENCES,
+        IDC_CHECK_FILTER_REFERENCES,
+        IDC_CALIBRATION_INTERVAL_DAYS,
+        IDC_CALIBRATION_INTERVAL_HOURS,
+        IDC_CALIBRATION_INTERVAL_MINUTES
+    };
+
+    UpdateData(TRUE); // get the values from the user interface
+
+    if (m_curSpec != nullptr && m_channel >= 0)
+    {
+        auto& currentSettings = m_curSpec->channel[m_channel].autoCalibration;
+
+        for (int elementId : itemsToUpdate)
+        {
+            auto item = this->GetDlgItem(elementId);
+            if (item != nullptr)
+            {
+                item->EnableWindow(currentSettings.enable);
+            }
+        }
+    }
 }
 
 // CCalibrationConfigurationDlg message handlers
@@ -133,7 +179,7 @@ void ConfigurationDialog::CCalibrationConfigurationDlg::OnBnClickedButtonSelectI
         currentSettings.instrumentLineshapeFile = dlg.m_state.instrumentLineshapeFile;
         currentSettings.initialCalibrationType = (int)dlg.m_state.calibrationOption;
 
-        UpdateData(FALSE);
+        UpdateData(FALSE); // Update the user interface with the new values
     }
 }
 
@@ -149,7 +195,7 @@ void ConfigurationDialog::CCalibrationConfigurationDlg::OnBnClickedButtonBrowseS
         return;
     }
 
-    UpdateData(FALSE);
+    UpdateData(FALSE); // Update the user interface with the new values
 }
 
 void ConfigurationDialog::CCalibrationConfigurationDlg::SaveData()
@@ -161,7 +207,8 @@ void ConfigurationDialog::CCalibrationConfigurationDlg::SaveData()
 
     if (UpdateData(TRUE)) // get the values from the user interface
     {
-        m_curSpec->channel[m_channel].autoCalibration.intervalTimeOfDay = 3600 * m_intervalHr + 60 * m_intervalMin;
+        m_curSpec->channel[m_channel].autoCalibration.intervalTimeOfDayLow = 3600 * m_intervalLowHr + 60 * m_intervalLowMin;
+        m_curSpec->channel[m_channel].autoCalibration.intervalTimeOfDayHigh = 3600 * m_intervalHighHr + 60 * m_intervalHighMin;
     }
 }
 

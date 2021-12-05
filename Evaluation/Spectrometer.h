@@ -4,9 +4,9 @@
 #include <SpectralEvaluation/Evaluation/ReferenceFile.h>
 #include <SpectralEvaluation/Evaluation/EvaluationBase.h>
 #include "../Configuration/Configuration.h"
-
 #include "SpectrometerHistory.h"
 #include "ScanResult.h"
+#include <memory>
 
 namespace Evaluation
 {
@@ -26,19 +26,19 @@ namespace Evaluation
         /** The settings for this spectrometer */
         CConfigurationSetting::SpectrometerSetting m_settings;
 
-        /** The scanning instrument to which the spectrometer is connected */
+        /** The scanning instrument to which the spectrometer is connected (part of m_settings) */
         CConfigurationSetting::ScanningInstrumentSetting m_scanner;
 
-        /** The local history at this spectrometer. For multichannel-
-                spectrometers, this is a shared object between the channels. */
-        CSpectrometerHistory* m_history;
+        /** The local history at this spectrometer.
+            For multichannel- spectrometers, this is a shared object between the channels and not owned by this instance. */
+        std::shared_ptr<CSpectrometerHistory> m_history;
 
         /** A set of fit windows, used to determine how to evaluate the spectra from this device. */
         std::vector<novac::CFitWindow> m_fitWindows;
 
         /** The channel that this spectrometer is configured as. For OceanOptics
                 S2000 spectrometers, there can be several channels contained in the
-                same box. They will then have the same serialnumber, but different channels.
+                same box. They will then have the same serial number, but different channels.
                 If such a spectrometer is used, one CSpectrometer should be configured
                 for each channel. */
         unsigned char m_channel;

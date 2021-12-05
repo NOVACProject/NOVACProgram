@@ -154,8 +154,6 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Calibration\ReferenceCreationController.cpp" />
-    <ClCompile Include="Calibration\WavelengthCalibrationController.cpp" />
     <ClCompile Include="CombinerThread.cpp" />
     <ClCompile Include="Common\CfgTxtFileHandler.cpp" />
     <ClCompile Include="Common\Common.cpp" />
@@ -279,9 +277,6 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
     <ClCompile Include="Dialogs\ReferencePlotDlg.cpp" />
     <ClCompile Include="ScannerFileInfo.cpp" />
     <ClCompile Include="ScannerFolderInfo.cpp" />
-    <ClInclude Include="Calibration\InstrumentCalibrationInput.h" />
-    <ClInclude Include="Calibration\ReferenceCreationController.h" />
-    <ClInclude Include="Calibration\WavelengthCalibrationController.h" />
     <ClInclude Include="communication\FileInfo.h" />
     <ClInclude Include="communication\NodeControlInfo.h" />
     <ClInclude Include="communication\IFTPDataUpload.h" />
@@ -339,6 +334,14 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="SpectralEvaluation\src\DateTime.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\DialogControllers\ReferenceCreationController.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\DialogControllers\WavelengthCalibrationController.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -618,6 +621,8 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Configuration\DarkSettings.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Configuration\SkySettings.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\DateTime.h" />
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\DialogControllers\ReferenceCreationController.h" />
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\DialogControllers\WavelengthCalibrationController.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Evaluation\BasicScanEvaluationResult.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Evaluation\CrossSectionData.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Evaluation\EvaluationBase.h" />

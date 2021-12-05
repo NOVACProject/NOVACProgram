@@ -415,8 +415,9 @@ int CConfigurationFileHandler::WriteConfigurationFile(const CConfigurationSettin
                     str.AppendFormat("\t%s<generateReferences>%d</generateReferences>\n", (LPCSTR)indent, calibrationSettings.generateReferences);
                     str.AppendFormat("\t%s<filterReferences>%d</filterReferences>\n", (LPCSTR)indent, calibrationSettings.filterReferences);
 
-                    str.AppendFormat("\t%s<intervalDays>%d</intervalDays>\n", (LPCSTR)indent, calibrationSettings.intervalDays);
-                    str.AppendFormat("\t%s<intervalTimeOfDay>%d</intervalTimeOfDay>\n", (LPCSTR)indent, calibrationSettings.intervalTimeOfDay);
+                    str.AppendFormat("\t%s<intervalHours>%d</intervalHours>\n", (LPCSTR)indent, calibrationSettings.intervalHours);
+                    str.AppendFormat("\t%s<intervalTimeOfDayLow>%d</intervalTimeOfDayLow>\n", (LPCSTR)indent, calibrationSettings.intervalTimeOfDayLow);
+                    str.AppendFormat("\t%s<intervalTimeOfDayHigh>%d</intervalTimeOfDayHigh>\n", (LPCSTR)indent, calibrationSettings.intervalTimeOfDayHigh);
 
                     str.AppendFormat("\t%s<solarSpectrumFile>%s</solarSpectrumFile>\n", (LPCSTR)indent, calibrationSettings.solarSpectrumFile);
 
@@ -1202,9 +1203,7 @@ int CConfigurationFileHandler::Parse_Calibration(CConfigurationSetting::Spectrom
         }
 
         if (Equals(szToken, "enable", strlen("enable"))) {
-            int tmpInt;
-            Parse_IntItem(TEXT("/enable"), tmpInt);
-            calibrationSettings.enable = (tmpInt != 0);
+            Parse_IntItem(TEXT("/enable"), calibrationSettings.enable);
             continue;
         }
 
@@ -1218,18 +1217,23 @@ int CConfigurationFileHandler::Parse_Calibration(CConfigurationSetting::Spectrom
             continue;
         }
 
-        if (Equals(szToken, "intervalDays", strlen("intervalDays"))) {
-            Parse_IntItem(TEXT("/intervalDays"), calibrationSettings.intervalDays);
-            calibrationSettings.intervalDays = max(calibrationSettings.intervalDays, 0);
+        if (Equals(szToken, "intervalHours", strlen("intervalHours"))) {
+            Parse_IntItem(TEXT("/intervalHours"), calibrationSettings.intervalHours);
+            calibrationSettings.intervalHours = max(calibrationSettings.intervalHours, 0);
             continue;
         }
 
-        if (Equals(szToken, "intervalTimeOfDay", strlen("intervalTimeOfDay"))) {
-            Parse_IntItem(TEXT("/intervalTimeOfDay"), calibrationSettings.intervalTimeOfDay);
-            calibrationSettings.intervalTimeOfDay = max(0, min(86399, calibrationSettings.intervalTimeOfDay));
+        if (Equals(szToken, "intervalTimeOfDayLow", strlen("intervalTimeOfDayLow"))) {
+            Parse_IntItem(TEXT("/intervalTimeOfDayLow"), calibrationSettings.intervalTimeOfDayLow);
+            calibrationSettings.intervalTimeOfDayLow = max(0, min(86399, calibrationSettings.intervalTimeOfDayLow));
             continue;
         }
 
+        if (Equals(szToken, "intervalTimeOfDayHigh", strlen("intervalTimeOfDayHigh"))) {
+            Parse_IntItem(TEXT("/intervalTimeOfDayHigh"), calibrationSettings.intervalTimeOfDayHigh);
+            calibrationSettings.intervalTimeOfDayHigh = max(0, min(86399, calibrationSettings.intervalTimeOfDayHigh));
+            continue;
+        }
 
         if (Equals(szToken, "solarSpectrumFile", strlen("solarSpectrumFile"))) {
             Parse_StringItem(TEXT("/solarSpectrumFile"), calibrationSettings.solarSpectrumFile);

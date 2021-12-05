@@ -7,7 +7,7 @@
 #include "../resource.h"
 #include <fstream>
 #include "../Common/Common.h"
-#include "../Calibration/ReferenceCreationController.h"
+#include <SpectralEvaluation/DialogControllers/ReferenceCreationController.h>
 #include "OpenInstrumentCalibrationDialog.h"
 #include "CCreateStandardReferencesDialog.h"
 #include <SpectralEvaluation/Evaluation/CrossSectionData.h>
@@ -54,6 +54,8 @@ BOOL CCalibrateReferencesDialog::OnInitDialog() {
     m_graph.SetPlotColor(RGB(255, 0, 0));
     m_graph.CleanPlot();
 
+    m_unitCombo.SetCurSel(0);
+
     // First load the default setup.
     LoadDefaultSetup();
 
@@ -73,11 +75,13 @@ void CCalibrateReferencesDialog::DoDataExchange(CDataExchange* pDX)
     DDX_Check(pDX, IDC_CHECK_INPUT_IN_VACUUM, m_inputInVacuum);
     DDX_Control(pDX, IDC_BUTTON_SAVE, m_saveButton);
     DDX_Control(pDX, IDC_BUTTON_CREATE_STANDARD_REFERENCES, m_createStandardReferencesButton);
+    DDX_Control(pDX, IDC_COMBO_REFERENCE_UNIT, m_unitCombo);
 }
 
 BEGIN_MESSAGE_MAP(CCalibrateReferencesDialog, CPropertyPage)
     ON_BN_CLICKED(IDC_BUTTON_BROWSE_SOLAR_SPECTRUM, &CCalibrateReferencesDialog::OnClickedBrowseCrossSection)
     ON_CBN_SELCHANGE(IDC_COMBO_HIGH_RES_CROSSSECTION, &CCalibrateReferencesDialog::OnConvolutionOptionChanged)
+    ON_CBN_SELCHANGE(IDC_COMBO_REFERENCE_UNIT, &CCalibrateReferencesDialog::OnConvolutionOptionChanged)
     ON_BN_CLICKED(IDC_CHECK_HIGH_PASS_FILTER, &CCalibrateReferencesDialog::OnConvolutionOptionChanged)
     ON_BN_CLICKED(IDC_CHECK_INPUT_IN_VACUUM, &CCalibrateReferencesDialog::OnConvolutionOptionChanged)
     ON_BN_CLICKED(IDC_BUTTON_RUN_CREATE_REFERENCE, &CCalibrateReferencesDialog::OnClickedButtonRunCreateReference)
@@ -239,15 +243,20 @@ void CCalibrateReferencesDialog::UpdateReference()
         int selectedReferenceIdx = m_crossSectionsCombo.GetCurSel();
 
         CString crossSectionFilePath;
+        bool isPseudoAbsorber = false;
         if (m_standardCrossSections != nullptr && selectedReferenceIdx < static_cast<int>(m_standardCrossSections->NumberOfReferences()))
         {
             const std::string path = m_standardCrossSections->ReferenceFileName(selectedReferenceIdx);
             crossSectionFilePath.Format("%s", path.c_str());
+            isPseudoAbsorber = m_standardCrossSections->IsAdditionalAbsorber(selectedReferenceIdx);
         }
         else
         {
             m_crossSectionsCombo.GetLBText(selectedReferenceIdx, crossSectionFilePath);
         }
+
+        // Make sure that we can't change the unit of a pseudo absorber
+        m_unitCombo.EnableWindow(isPseudoAbsorber ? 0 : 1);
 
         if (!IsExistingFile(crossSectionFilePath))
         {
@@ -259,6 +268,8 @@ void CCalibrateReferencesDialog::UpdateReference()
 
         m_controller->m_highPassFilter = m_highPassFilterReference;
         m_controller->m_convertToAir = m_inputInVacuum;
+        m_controller->m_unitSelection = m_unitCombo.GetCurSel();
+        m_controller->m_isPseudoAbsorber = isPseudoAbsorber;
         m_controller->m_highResolutionCrossSection = crossSectionFilePath;
         m_controller->ConvolveReference(calibration);
 
@@ -344,9 +355,9 @@ void CCalibrateReferencesDialog::OnClickedButtonCreateStandardReferences()
             m_controller->m_highPassFilter = m_highPassFilterReference;
             m_controller->m_convertToAir = m_standardCrossSections->IsReferenceInVacuum(ii);
             m_controller->m_highResolutionCrossSection = m_standardCrossSections->ReferenceFileName(ii);
+            m_controller->m_isPseudoAbsorber = m_standardCrossSections->IsAdditionalAbsorber(ii);
+            m_controller->m_unitSelection = m_unitCombo.GetCurSel();
             m_controller->ConvolveReference(calibration);
-
-            UpdateGraph();
 
             // Save the result
             std::string dstFileName = userInputDialog.ReferenceName(ii);

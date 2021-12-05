@@ -311,7 +311,7 @@ RETURN_CODE CEvaluationController::EvaluateScan(const CString& fileName, int vol
     InitiateSpecialModeMeasurement(spectrometer);
 
     // 14. Run a calibration of the device, if the time is right and the scan seems to be good.
-    UpdateInstrumentCalibration(spectrometer, fileNameStr);
+    UpdateInstrumentCalibration(spectrometer, fileNameStr, scanEvaluationResult->GetStartTime(0));
 
     // 15. Calculate the time spent in this function
     cFinish = clock();
@@ -798,7 +798,7 @@ CSpectrometer* CEvaluationController::HandleUnIdentifiedSpectrometer(const CStri
     {
         newSpectrometer->m_fitWindows.push_back(window);
     }
-    newSpectrometer->m_history = new CSpectrometerHistory();
+    newSpectrometer->m_history = std::make_shared<CSpectrometerHistory>();
 
     // 5. Insert the new spectrometer
     long spectrometerNum = (long)m_spectrometer.GetSize();
@@ -844,7 +844,7 @@ RETURN_CODE CEvaluationController::InitializeSpectrometers() {
     for (unsigned long i = 0; i < g_settings.scannerNum; ++i) {
         for (unsigned long j = 0; j < g_settings.scanner[i].specNum; ++j) {
 
-            CSpectrometerHistory* history = new CSpectrometerHistory();
+            auto history = std::make_shared<CSpectrometerHistory>();
 
             for (unsigned long k = 0; k < g_settings.scanner[i].spec[j].channelNum; ++k) {
 
@@ -1245,9 +1245,9 @@ void CEvaluationController::InitiateSpecialModeMeasurement(const CSpectrometer* 
     return;
 }
 
-void CEvaluationController::UpdateInstrumentCalibration(CSpectrometer* spectrometer, const std::string& lastEvaluatedScan)
+void CEvaluationController::UpdateInstrumentCalibration(CSpectrometer* spectrometer, const std::string& lastEvaluatedScan, const novac::CDateTime* startTimeOfLastScan)
 {
-    if (CRealTimeCalibration::IsTimeForInstrumentCalibration(spectrometer, lastEvaluatedScan))
+    if (CRealTimeCalibration::IsTimeForInstrumentCalibration(spectrometer, lastEvaluatedScan, startTimeOfLastScan))
     {
         CRealTimeCalibration::RunInstrumentCalibration(spectrometer, lastEvaluatedScan);
     }

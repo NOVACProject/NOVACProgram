@@ -6,7 +6,7 @@
 #include "afxdialogex.h"
 #include "../resource.h"
 #include "../Common/Common.h"
-#include "../Calibration/WavelengthCalibrationController.h"
+#include <SpectralEvaluation/DialogControllers/WavelengthCalibrationController.h>
 #include "OpenInstrumentCalibrationDialog.h"
 #include "CCalibratePixelToWavelengthSetupDialog.h"
 #include "CLogDialog.h"
@@ -32,7 +32,7 @@ CCalibratePixelToWavelengthDialog::CCalibratePixelToWavelengthDialog(CWnd* pPare
 {
     wavelengthCalibrationDialog = this;
 
-    m_controller = new WavelengthCalibrationController();
+    m_controller = new NovacProgramWavelengthCalibrationController();
 }
 
 CCalibratePixelToWavelengthDialog::~CCalibratePixelToWavelengthDialog()
@@ -567,7 +567,7 @@ void CCalibratePixelToWavelengthDialog::OnClickedButtonRun()
     m_controller->m_initialCalibrationFile = m_setup.m_initialCalibrationFile;
     m_controller->m_initialLineShapeFile = m_setup.m_instrumentLineshapeFile;
     m_controller->m_instrumentLineShapeFitOption = (WavelengthCalibrationController::InstrumentLineShapeFitOption)m_setup.m_fitInstrumentLineShapeOption;
-    m_controller->m_instrumentLineShapeFitRegion = std::make_pair(
+    m_controller->m_instrumentLineShapeFitRegion = novac::WavelengthRange(
         std::atof(m_setup.m_fitInstrumentLineShapeRegionStart),
         std::atof(m_setup.m_fitInstrumentLineShapeRegionStop));
     m_controller->m_crossSectionsForInstrumentLineShapeFitting = m_setup.m_fitInstrumentLineShapeOzoneReference;

@@ -40,6 +40,7 @@ public:
 
     BOOL m_highPassFilterReference;
     BOOL m_inputInVacuum;
+    CComboBox m_unitCombo;
 
     CButton m_saveButton;
     CButton m_createStandardReferencesButton;

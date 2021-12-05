@@ -97,7 +97,7 @@ public:
         AutomaticCalibrationSetting() { Clear(); }
 
         /** If enabled then the automatic calibration will run at the defined intervals. */
-        bool enable = false;
+        BOOL enable = FALSE;
 
         /** If enabled then new references will be generated and replace the user-configured references. */
         BOOL generateReferences = FALSE;
@@ -105,12 +105,18 @@ public:
         /** Set to true to high-pass filter the created references (and convert them into ppmm). */
         BOOL filterReferences = TRUE;
 
-        /** The number of days which needs to pass between each calibration */
-        int intervalDays = 0;
+        /** The number of hours which needs to pass between each calibration */
+        int intervalHours = 0;
 
-        /** The time of day when the calibration is to be made. In seconds since midnight.
-            Default value is at noon (12 * 60 * 60) */
-        int intervalTimeOfDay = 43200;
+        /** The time of day when we can start performing calibrations. In seconds since midnight UTC.
+            This time is compared against the time of the scan and hence needs to be in UTC.
+            Default value is at 9 o'clock (9 * 60 * 60) */
+        int intervalTimeOfDayLow = 32400;
+
+        /** The time of day when we can start performing calibrations. In seconds since midnight UTC.
+            This time is compared against the time of the scan and hence needs to be in UTC.
+            Default value is at 15 o'clock (15 * 60 * 60) */
+        int intervalTimeOfDayHigh = 54000;
 
         /** The full path to the high resolved solar spectrum */
         CString solarSpectrumFile;
