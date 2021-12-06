@@ -143,6 +143,7 @@ long CScanEvaluation::EvaluateScan(const CString& scanfile, const CFitWindow& wi
         else
         {
             ShowMessage(m_lastErrorMessage.c_str());
+            eval = std::make_unique<CEvaluationBase>(copyOfWindow);
         }
     }
     else

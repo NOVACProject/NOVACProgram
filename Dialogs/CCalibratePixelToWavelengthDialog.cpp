@@ -7,8 +7,10 @@
 #include "../resource.h"
 #include "../Common/Common.h"
 #include <SpectralEvaluation/DialogControllers/WavelengthCalibrationController.h>
+#include <SpectralEvaluation/DialogControllers/ReferenceCreationController.h>
 #include "OpenInstrumentCalibrationDialog.h"
 #include "CCalibratePixelToWavelengthSetupDialog.h"
+#include "CCreateStandardReferencesDialog.h"
 #include "CLogDialog.h"
 #include <fstream>
 #include <SpectralEvaluation/File/File.h>
@@ -83,7 +85,8 @@ void CCalibratePixelToWavelengthDialog::DoDataExchange(CDataExchange* pDX)
     DDX_Text(pDX, IDC_EDIT_SPECTRUM, m_inputSpectrumFile);
     DDX_Control(pDX, IDC_STATIC_GRAPH_HOLDER_PANEL, m_graphHolder);
     DDX_Control(pDX, IDC_BUTTON_RUN, m_runButton);
-    DDX_Control(pDX, IDC_BUTTON_SAVE, m_saveButton);
+    DDX_Control(pDX, IDC_BUTTON_SAVE, m_saveCalibrationButton);
+    DDX_Control(pDX, IDC_BUTTON_SAVE_REFERENCES, m_saveReferencesButton);
     DDX_Control(pDX, IDC_LIST_GRAPH_TYPE, m_graphTypeList);
     DDX_Control(pDX, IDC_WAVELENGTH_CALIBRATION_DETAILS_LIST, m_detailedResultList);
     DDX_Control(pDX, IDC_BUTTON_VIEW_LOG, m_viewLogButton);
@@ -96,7 +99,8 @@ void CCalibratePixelToWavelengthDialog::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CCalibratePixelToWavelengthDialog, CPropertyPage)
     ON_BN_CLICKED(IDC_BUTTON_BROWSE_SPECTRUM, &CCalibratePixelToWavelengthDialog::OnClickedButtonBrowseSpectrum)
     ON_BN_CLICKED(IDC_BUTTON_RUN, &CCalibratePixelToWavelengthDialog::OnClickedButtonRun)
-    ON_BN_CLICKED(IDC_BUTTON_SAVE, &CCalibratePixelToWavelengthDialog::OnClickedButtonSave)
+    ON_BN_CLICKED(IDC_BUTTON_SAVE, &CCalibratePixelToWavelengthDialog::OnClickedButtonSaveCalibration)
+    ON_BN_CLICKED(IDC_BUTTON_SAVE_REFERENCES, &CCalibratePixelToWavelengthDialog::OnClickedButtonSaveReferences)
 
     ON_MESSAGE(WM_DONE, OnCalibrationDone)
     ON_LBN_SELCHANGE(IDC_LIST_GRAPH_TYPE, &CCalibratePixelToWavelengthDialog::OnSelchangeListGraphType)
@@ -578,7 +582,8 @@ void CCalibratePixelToWavelengthDialog::OnClickedButtonRun()
     {
         m_runButton.SetWindowTextA("Calibrating...");
         m_runButton.EnableWindow(FALSE);
-        m_saveButton.EnableWindow(FALSE);
+        m_saveCalibrationButton.EnableWindow(FALSE);
+        m_saveReferencesButton.EnableWindow(FALSE);
 
         CCmdTarget::BeginWaitCursor();
 
@@ -611,7 +616,8 @@ LRESULT CCalibratePixelToWavelengthDialog::OnCalibrationDone(WPARAM wParam, LPAR
 
         UpdateResultList();
 
-        m_saveButton.EnableWindow(TRUE);
+        m_saveCalibrationButton.EnableWindow(TRUE);
+        m_saveReferencesButton.EnableWindow(TRUE);
         m_runButton.EnableWindow(TRUE);
         m_runButton.SetWindowTextA(runButtonOriginalText);
     }
@@ -630,7 +636,8 @@ void CCalibratePixelToWavelengthDialog::HandleCalibrationFailure(const char* err
 {
     MessageBox(errorMessage, "Failed to calibrate", MB_OK);
 
-    m_saveButton.EnableWindow(FALSE);
+    m_saveCalibrationButton.EnableWindow(FALSE);
+    m_saveReferencesButton.EnableWindow(FALSE);
     m_runButton.EnableWindow(TRUE);
     m_viewLogButton.EnableWindow(m_controller->m_log.size() > 0);
 
@@ -638,7 +645,72 @@ void CCalibratePixelToWavelengthDialog::HandleCalibrationFailure(const char* err
     UpdateGraph();
 }
 
-void CCalibratePixelToWavelengthDialog::OnClickedButtonSave()
+void CCalibratePixelToWavelengthDialog::OnClickedButtonSaveReferences()
+{
+    if (m_standardCrossSections == nullptr || m_standardCrossSections->NumberOfReferences() == 0)
+    {
+        MessageBox("Failed to load standard references", "Missing data", MB_OK);
+        m_saveReferencesButton.EnableWindow(FALSE);
+        return;
+    }
+
+    const bool highPassFilterReference = true;
+
+    CCreateStandardReferencesDialog userInputDialog;
+    userInputDialog.m_standardCrossSections = m_standardCrossSections;
+    userInputDialog.m_fileNameFilteringInfix = "_HP500_PPMM";
+
+    if (IDOK != userInputDialog.DoModal())
+    {
+        return;
+    }
+
+    try
+    {
+        ReferenceCreationController referenceController;
+        referenceController.m_highPassFilter = highPassFilterReference;
+        referenceController.m_unitSelection = 0; // default to ppmm
+
+        const auto calibration = m_controller->GetFinalCalibration();
+
+        // First the ordinary references
+        for (size_t ii = 0; ii < m_standardCrossSections->NumberOfReferences(); ++ii)
+        {
+            // Do the convolution
+            referenceController.m_convertToAir = m_standardCrossSections->IsReferenceInVacuum(ii);
+            referenceController.m_highResolutionCrossSection = m_standardCrossSections->ReferenceFileName(ii);
+            referenceController.m_isPseudoAbsorber = m_standardCrossSections->IsAdditionalAbsorber(ii);
+            referenceController.ConvolveReference(*calibration);
+
+            // Save the result
+            std::string dstFileName = userInputDialog.ReferenceName(ii);
+            novac::SaveCrossSectionFile(dstFileName, *(referenceController.m_resultingCrossSection));
+        }
+
+        // Save the Fraunhofer reference as well
+        {
+            // Do the convolution
+            referenceController.m_convertToAir = false;
+            referenceController.m_highResolutionCrossSection = m_standardCrossSections->FraunhoferReferenceFileName();
+            referenceController.m_isPseudoAbsorber = true;
+            referenceController.ConvolveReference(*calibration);
+
+            // Save the result
+            std::string dstFileName = userInputDialog.FraunhoferReferenceName();
+            novac::SaveCrossSectionFile(dstFileName, *(referenceController.m_resultingCrossSection));
+        }
+    }
+    catch (std::exception& e)
+    {
+        MessageBox(e.what(), "Failed to convolve reference.", MB_OK);
+
+        UpdateGraph();
+
+        m_saveReferencesButton.EnableWindow(FALSE);
+    }
+}
+
+void CCalibratePixelToWavelengthDialog::OnClickedButtonSaveCalibration()
 {
     try
     {

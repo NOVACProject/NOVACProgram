@@ -67,7 +67,8 @@ public:
     CalibratePixelToWavelengthDialogSetup m_setup;
 
     CButton m_runButton;
-    CButton m_saveButton;
+    CButton m_saveCalibrationButton;
+    CButton m_saveReferencesButton;
 
     Graph::CGraphCtrl m_graph; // The plot where we can display the final calibration
     CStatic m_graphHolder; // holder for the graph, for easy ui access
@@ -85,7 +86,8 @@ public:
 
     afx_msg void OnClickedButtonBrowseSpectrum();
     afx_msg void OnClickedButtonRun();
-    afx_msg void OnClickedButtonSave();
+    afx_msg void OnClickedButtonSaveCalibration();
+    afx_msg void OnClickedButtonSaveReferences();
     afx_msg void OnBnClickedButtonViewLog();
     afx_msg void OnSelchangeListGraphType();
     afx_msg void OnBnClickedSetupWavelengthCalibration();

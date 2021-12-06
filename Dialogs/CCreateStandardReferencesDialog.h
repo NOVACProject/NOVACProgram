@@ -39,6 +39,7 @@ public:
 
     // Output from calling this dialog. The full path and filename of each reference
     std::string ReferenceName(size_t referenceIdx, bool includeDirectory = true) const;
+    std::string FraunhoferReferenceName(bool includeDirectory = true) const;
 
     // ---- Message handlers ----
     afx_msg void OnClickedButtonBrowseOutputDirectory();
@@ -54,5 +55,7 @@ private:
     CString m_outputFileNamesExplanation;
 
     void UpdateOutputFileNamesExplanation();
+
+    std::string ReferenceFileName(const std::string& nameOfReference, bool includeDirectory = true) const;
 
 };

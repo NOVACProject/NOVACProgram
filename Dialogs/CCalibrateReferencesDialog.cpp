@@ -340,6 +340,11 @@ void CCalibrateReferencesDialog::OnClickedButtonCreateStandardReferences()
     CCreateStandardReferencesDialog userInputDialog;
     userInputDialog.m_standardCrossSections = m_standardCrossSections;
     userInputDialog.m_fileNameFilteringInfix = (m_highPassFilterReference) ? "_HP500" : "";
+    if (m_unitCombo.GetCurSel() == 0)
+    {
+        userInputDialog.m_fileNameFilteringInfix = userInputDialog.m_fileNameFilteringInfix + "_PPMM";
+    }
+
     if (IDOK != userInputDialog.DoModal())
     {
         return;
@@ -349,18 +354,33 @@ void CCalibrateReferencesDialog::OnClickedButtonCreateStandardReferences()
     {
         const auto calibration = m_controller->ReadCalibration((LPCSTR)m_calibrationFile, (LPCSTR)m_instrumentLineshapeFile);
 
+        m_controller->m_highPassFilter = m_highPassFilterReference;
+        m_controller->m_unitSelection = m_unitCombo.GetCurSel();
+
+        // First the ordinary references
         for (size_t ii = 0; ii < m_standardCrossSections->NumberOfReferences(); ++ii)
         {
             // Do the convolution
-            m_controller->m_highPassFilter = m_highPassFilterReference;
             m_controller->m_convertToAir = m_standardCrossSections->IsReferenceInVacuum(ii);
             m_controller->m_highResolutionCrossSection = m_standardCrossSections->ReferenceFileName(ii);
             m_controller->m_isPseudoAbsorber = m_standardCrossSections->IsAdditionalAbsorber(ii);
-            m_controller->m_unitSelection = m_unitCombo.GetCurSel();
             m_controller->ConvolveReference(calibration);
 
             // Save the result
             std::string dstFileName = userInputDialog.ReferenceName(ii);
+            novac::SaveCrossSectionFile(dstFileName, *(m_controller->m_resultingCrossSection));
+        }
+
+        // Save the Fraunhofer reference as well
+        {
+            // Do the convolution
+            m_controller->m_convertToAir = false;
+            m_controller->m_highResolutionCrossSection = m_standardCrossSections->FraunhoferReferenceFileName();
+            m_controller->m_isPseudoAbsorber = true;
+            m_controller->ConvolveReference(calibration);
+
+            // Save the result
+            std::string dstFileName = userInputDialog.FraunhoferReferenceName();
             novac::SaveCrossSectionFile(dstFileName, *(m_controller->m_resultingCrossSection));
         }
     }
