@@ -3,7 +3,7 @@
 #include "../Common/Common.h"
 #include "../Evaluation/Spectrometer.h"
 #include "../Configuration/ConfigurationFileHandler.h"
-#include <SpectralEvaluation/DialogControllers/WavelengthCalibrationController.h>
+#include "../Calibration/NovacProgramWavelengthCalibrationController.h"
 #include <SpectralEvaluation/DialogControllers/ReferenceCreationController.h>
 #include <SpectralEvaluation/File/File.h>
 #include <SpectralEvaluation/Calibration/StandardCrossSectionSetup.h>
