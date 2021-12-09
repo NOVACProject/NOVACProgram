@@ -6,7 +6,7 @@
 #include "afxdialogex.h"
 #include "../resource.h"
 #include "../Common/Common.h"
-#include "../Calibration/NovacProgramWavelengthCalibrationController.h"
+#include <SpectralEvaluation/DialogControllers/NovacProgramWavelengthCalibrationController.h>
 #include <SpectralEvaluation/DialogControllers/ReferenceCreationController.h>
 #include "OpenInstrumentCalibrationDialog.h"
 #include "CCalibratePixelToWavelengthSetupDialog.h"

@@ -154,9 +154,6 @@
     <Filter Include="Header Files\SpectralEvaluation\DialogControllers">
       <UniqueIdentifier>{ec32462a-478a-4108-83c0-21c45c716393}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Calibration">
-      <UniqueIdentifier>{bc9e8d9a-cb3a-418b-98f7-ff4349c8cba3}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Configuration\AdvancedFTPUploadSettings.cpp">
@@ -714,8 +711,8 @@
     <ClCompile Include="SpectralEvaluation\src\DialogControllers\WavelengthCalibrationController.cpp">
       <Filter>Source Files\SpectralEvaluation\DialogControllers</Filter>
     </ClCompile>
-    <ClCompile Include="Calibration\NovacProgramWavelengthCalibrationController.cpp">
-      <Filter>Header Files\Calibration</Filter>
+    <ClCompile Include="SpectralEvaluation\src\DialogControllers\NovacProgramWavelengthCalibrationController.cpp">
+      <Filter>Source Files\SpectralEvaluation\DialogControllers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1393,9 +1390,6 @@
     </ClInclude>
     <ClInclude Include="Configuration\CCalibrationConfigurationDlg.h">
       <Filter>Header Files\Configuration</Filter>
-    </ClInclude>
-    <ClInclude Include="Calibration\NovacProgramWavelengthCalibrationController.h">
-      <Filter>Header Files\Calibration</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
