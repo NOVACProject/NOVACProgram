@@ -56,7 +56,7 @@ bool CCreateStandardReferencesDialog::IsSetupCorrectly() const
     return true;
 }
 
-std::string CCreateStandardReferencesDialog::ReferenceFileName(const std::string& nameOfReference, bool includeDirectory) const
+std::string CCreateStandardReferencesDialog::ReferenceFileName(const std::string& nameOfReference, bool includFilteringInfix, bool includeDirectory) const
 {
     std::stringstream dstFileNameStream;
     if (includeDirectory)
@@ -69,7 +69,11 @@ std::string CCreateStandardReferencesDialog::ReferenceFileName(const std::string
         dstFileNameStream << m_instrumentName << "_";
     }
     dstFileNameStream << nameOfReference;
-    dstFileNameStream << m_fileNameFilteringInfix;
+
+    if (includFilteringInfix)
+    {
+        dstFileNameStream << m_fileNameFilteringInfix;
+    }
 
     if (m_fileNameSuffix.GetLength() > 0)
     {
@@ -84,12 +88,12 @@ std::string CCreateStandardReferencesDialog::ReferenceFileName(const std::string
 
 std::string CCreateStandardReferencesDialog::FraunhoferReferenceName(bool includeDirectory) const
 {
-    return ReferenceFileName("Fraunhofer", includeDirectory);
+    return ReferenceFileName("Fraunhofer", false, includeDirectory);
 }
 
-std::string CCreateStandardReferencesDialog::ReferenceName(size_t referenceIdx, bool includeDirectory) const
+std::string CCreateStandardReferencesDialog::ReferenceName(size_t referenceIdx, bool includFilteringInfix, bool includeDirectory) const
 {
-    return ReferenceFileName(m_standardCrossSections->ReferenceSpecieName(referenceIdx), includeDirectory);
+    return ReferenceFileName(m_standardCrossSections->ReferenceSpecieName(referenceIdx), includFilteringInfix, includeDirectory);
 }
 
 void CCreateStandardReferencesDialog::OnClickedButtonBrowseOutputDirectory()
@@ -132,7 +136,7 @@ void CCreateStandardReferencesDialog::UpdateOutputFileNamesExplanation()
     for (size_t referenceIdx = 0; referenceIdx < m_standardCrossSections->NumberOfReferences(); ++referenceIdx)
     {
         message << std::endl;
-        message << ReferenceName(referenceIdx, false);
+        message << ReferenceName(referenceIdx, !m_standardCrossSections->IsAdditionalAbsorber(referenceIdx), false);
     }
 
     // Fraunhofer reference

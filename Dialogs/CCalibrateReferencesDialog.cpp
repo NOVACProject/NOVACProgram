@@ -367,13 +367,14 @@ void CCalibrateReferencesDialog::OnClickedButtonCreateStandardReferences()
             m_controller->ConvolveReference(calibration);
 
             // Save the result
-            std::string dstFileName = userInputDialog.ReferenceName(ii);
+            std::string dstFileName = userInputDialog.ReferenceName(ii, !m_standardCrossSections->IsAdditionalAbsorber(ii));
             novac::SaveCrossSectionFile(dstFileName, *(m_controller->m_resultingCrossSection));
         }
 
         // Save the Fraunhofer reference as well
         {
             // Do the convolution
+            m_controller->m_highPassFilter = false;
             m_controller->m_convertToAir = false;
             m_controller->m_highResolutionCrossSection = m_standardCrossSections->FraunhoferReferenceFileName();
             m_controller->m_isPseudoAbsorber = true;

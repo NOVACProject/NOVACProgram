@@ -38,7 +38,7 @@ public:
     bool IsSetupCorrectly() const;
 
     // Output from calling this dialog. The full path and filename of each reference
-    std::string ReferenceName(size_t referenceIdx, bool includeDirectory = true) const;
+    std::string ReferenceName(size_t referenceIdx, bool includFilteringInfix, bool includeDirectory = true) const;
     std::string FraunhoferReferenceName(bool includeDirectory = true) const;
 
     // ---- Message handlers ----
@@ -56,6 +56,6 @@ private:
 
     void UpdateOutputFileNamesExplanation();
 
-    std::string ReferenceFileName(const std::string& nameOfReference, bool includeDirectory = true) const;
+    std::string ReferenceFileName(const std::string& nameOfReference, bool includFilteringInfix, bool includeDirectory = true) const;
 
 };

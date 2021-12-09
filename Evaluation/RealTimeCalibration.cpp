@@ -83,11 +83,14 @@ std::vector<novac::CReferenceFile> CreateStandardReferences(
     ReferenceCreationController referenceController;
     std::vector<novac::CReferenceFile> referencesCreated;
 
+    referenceController.m_highPassFilter = autoCalibrationSettings.filterReferences;
+    referenceController.m_unitSelection = 0;
+
     for (size_t ii = 0; ii < standardCrossSections.NumberOfReferences(); ++ii)
     {
-        referenceController.m_highPassFilter = autoCalibrationSettings.filterReferences;
         referenceController.m_convertToAir = standardCrossSections.IsReferenceInVacuum(ii);
         referenceController.m_highResolutionCrossSection = standardCrossSections.ReferenceFileName(ii);
+        referenceController.m_isPseudoAbsorber = standardCrossSections.IsAdditionalAbsorber(ii);
         referenceController.ConvolveReference(*calibration);
 
         // Save the result

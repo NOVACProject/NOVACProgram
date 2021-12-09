@@ -683,13 +683,14 @@ void CCalibratePixelToWavelengthDialog::OnClickedButtonSaveReferences()
             referenceController.ConvolveReference(*calibration);
 
             // Save the result
-            std::string dstFileName = userInputDialog.ReferenceName(ii);
+            std::string dstFileName = userInputDialog.ReferenceName(ii, m_standardCrossSections->IsAdditionalAbsorber(ii));
             novac::SaveCrossSectionFile(dstFileName, *(referenceController.m_resultingCrossSection));
         }
 
         // Save the Fraunhofer reference as well
         {
             // Do the convolution
+            referenceController.m_highPassFilter = false;
             referenceController.m_convertToAir = false;
             referenceController.m_highResolutionCrossSection = m_standardCrossSections->FraunhoferReferenceFileName();
             referenceController.m_isPseudoAbsorber = true;
