@@ -202,8 +202,24 @@ bool CRealTimeCalibration::IsTimeForInstrumentCalibration(
         AppendMessageToLog(spectrometer, message.str());
         return false;
     }
-    else if (startTimeOfLastScan->SecondsSinceMidnight() < autoCalibrationSettings.intervalTimeOfDayLow ||
-             startTimeOfLastScan->SecondsSinceMidnight() > autoCalibrationSettings.intervalTimeOfDayHigh)
+
+    // Check if the scan lies within the configured interval. Slightly complex logic here since the interval may wrap around midnight UTC.
+    const bool calibrationIntervalWrapsMidnight = autoCalibrationSettings.intervalTimeOfDayLow > autoCalibrationSettings.intervalTimeOfDayHigh;
+    bool scanTimeLiesWithinCalibrationTimeInterval = false;
+    if (calibrationIntervalWrapsMidnight)
+    {
+        scanTimeLiesWithinCalibrationTimeInterval =
+            startTimeOfLastScan->SecondsSinceMidnight() >= autoCalibrationSettings.intervalTimeOfDayLow ||
+            startTimeOfLastScan->SecondsSinceMidnight() <= autoCalibrationSettings.intervalTimeOfDayHigh;
+    }
+    else
+    {
+        scanTimeLiesWithinCalibrationTimeInterval =
+            startTimeOfLastScan->SecondsSinceMidnight() >= autoCalibrationSettings.intervalTimeOfDayLow &&
+            startTimeOfLastScan->SecondsSinceMidnight() <= autoCalibrationSettings.intervalTimeOfDayHigh;
+    }
+
+    if (!scanTimeLiesWithinCalibrationTimeInterval)
     {
         std::stringstream message;
         message << "Measurement time (" << startTimeOfLastScan->SecondsSinceMidnight() << ") is outside of configured interval [";
@@ -214,7 +230,19 @@ bool CRealTimeCalibration::IsTimeForInstrumentCalibration(
 
     novac::CDateTime now;
     now.SetToNow();
-    if (startTimeOfLastScan->year != now.year || startTimeOfLastScan->month != now.month || startTimeOfLastScan->day != now.day)
+    bool scanIsFromToday = false;
+    if (calibrationIntervalWrapsMidnight)
+    {
+        // Allow for some difference since the scan may be from yesterday or tomorrow UTC (compared to local time).
+        // TODO: This does not correctly handle changing month.
+        scanIsFromToday = startTimeOfLastScan->year == now.year && startTimeOfLastScan->month == now.month && std::abs(startTimeOfLastScan->day - now.day) <= 1;
+    }
+    else
+    {
+        scanIsFromToday = startTimeOfLastScan->year == now.year && startTimeOfLastScan->month == now.month && startTimeOfLastScan->day == now.day;
+    }
+
+    if (!scanIsFromToday)
     {
         std::stringstream message;
         message << "Measurement is not from today.";

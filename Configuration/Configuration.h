@@ -110,6 +110,7 @@ public:
 
         /** The time of day when we can start performing calibrations. In seconds since midnight UTC.
             This time is compared against the time of the scan and hence needs to be in UTC.
+            Notice that it is totally valid to have intervalTimeOfDayLow > intervalTimeOfDayHigh for locations far from Europe.
             Default value is at 9 o'clock (9 * 60 * 60) */
         int intervalTimeOfDayLow = 32400;
 
