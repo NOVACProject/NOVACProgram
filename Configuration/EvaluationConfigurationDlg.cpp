@@ -77,8 +77,6 @@ END_MESSAGE_MAP()
 
 BOOL CEvaluationConfigurationDlg::OnInitDialog()
 {
-    Common common;
-
     CDialog::OnInitDialog();
 
     // Initialize the reference grid control

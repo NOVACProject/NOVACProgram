@@ -24,6 +24,14 @@ namespace ConfigurationDialog
         /** The spectrometer channel that this object is modifying */
         unsigned int m_channel = 0;
 
+        /** Updating the data in the control */
+        void UpdateDlg();
+
+        /** Updates the control */
+        virtual void OnChangeScanner() override;
+
+        virtual BOOL OnSetActive();
+
         // Implementation
     protected:
         virtual void DoDataExchange(CDataExchange* pDX);        // DDX/DDV support
@@ -43,8 +51,9 @@ namespace ConfigurationDialog
         afx_msg void OnBnClickedButtonSelectInitialCalibrationSetting();
         afx_msg void OnBnClickedButtonBrowseSolarSpectrumSetting();
         afx_msg void SaveData();
+        afx_msg void ToggleDialogState();
 
         /**  Enable or disable the controls based on if the auto calibration is enabled or nor */
-        afx_msg void UpdateDialogState();
+        void UpdateDialogState();
     };
 }

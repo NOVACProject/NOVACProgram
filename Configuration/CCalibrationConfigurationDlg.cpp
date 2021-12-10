@@ -67,7 +67,7 @@ void CCalibrationConfigurationDlg::DoDataExchange(CDataExchange* pDX)
 // Message map
 
 BEGIN_MESSAGE_MAP(CCalibrationConfigurationDlg, CSystemConfigurationPage)
-    ON_COMMAND(IDC_CHECK_ENABLE_INSTRUMENT_CALIBRATION, UpdateDialogState)
+    ON_COMMAND(IDC_CHECK_ENABLE_INSTRUMENT_CALIBRATION, ToggleDialogState)
 
     ON_BN_CLICKED(IDC_BUTTON_SELECT_INITIAL_CALIBRATION_SETTING, &CCalibrationConfigurationDlg::OnBnClickedButtonSelectInitialCalibrationSetting)
     ON_BN_CLICKED(IDC_BUTTON_BROWSE_SOLAR_SPECTRUM_SETTING, &CCalibrationConfigurationDlg::OnBnClickedButtonBrowseSolarSpectrumSetting)
@@ -85,6 +85,15 @@ BOOL CCalibrationConfigurationDlg::OnInitDialog()
 {
     CDialog::OnInitDialog();
 
+    UpdateDlg();
+
+    OnChangeScanner();
+
+    return TRUE;  // return TRUE unless you set the focus to a control
+}
+
+void CCalibrationConfigurationDlg::UpdateDlg()
+{
     if (m_curSpec != nullptr && m_channel >= 0)
     {
         auto& currentSettings = m_curSpec->channel[m_channel].autoCalibration;
@@ -118,11 +127,38 @@ BOOL CCalibrationConfigurationDlg::OnInitDialog()
         novac::SplitToHourMinuteSecond(currentSettings.intervalTimeOfDayHigh, m_intervalHighHr, m_intervalHighMin, tmp);
     }
 
-    UpdateData(FALSE); // Update the user interface with the new values
-
     UpdateDialogState();
 
-    return TRUE;  // return TRUE unless you set the focus to a control
+    UpdateData(FALSE); // Update the user interface with the new values
+}
+
+void CCalibrationConfigurationDlg::OnChangeScanner()
+{
+    if (m_hWnd == nullptr)
+        return; // happens if this tab just disappeared
+
+    if (UpdateData(TRUE)) { // <-- first save the data in the dialog
+
+        // Then change the settings so that we're using the newly selected scanner
+        CSystemConfigurationPage::OnChangeScanner();
+
+        UpdateDlg();
+
+        UpdateData(FALSE); // Update the user interface with the new values
+    }
+}
+
+BOOL CCalibrationConfigurationDlg::OnSetActive()
+{
+    UpdateDlg();
+    UpdateData(FALSE); // Update the user interface with the new values
+    return CSystemConfigurationPage::OnSetActive();
+}
+
+void CCalibrationConfigurationDlg::ToggleDialogState()
+{
+    UpdateData(TRUE); // get the values from the user interface
+    UpdateDialogState();
 }
 
 void CCalibrationConfigurationDlg::UpdateDialogState()
@@ -137,11 +173,11 @@ void CCalibrationConfigurationDlg::UpdateDialogState()
         IDC_CHECK_REPLACE_USER_DEFINED_REFERENCES,
         IDC_CHECK_FILTER_REFERENCES,
         IDC_CALIBRATION_INTERVAL_DAYS,
-        IDC_CALIBRATION_INTERVAL_HOURS,
-        IDC_CALIBRATION_INTERVAL_MINUTES
+        IDC_CALIBRATION_INTERVAL_LOW_HOURS,
+        IDC_CALIBRATION_INTERVAL_LOW_MINUTES,
+        IDC_CALIBRATION_INTERVAL_HIGH_HOURS,
+        IDC_CALIBRATION_INTERVAL_HIGH_MINUTES
     };
-
-    UpdateData(TRUE); // get the values from the user interface
 
     if (m_curSpec != nullptr && m_channel >= 0)
     {
