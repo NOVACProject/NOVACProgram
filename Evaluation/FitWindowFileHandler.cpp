@@ -241,10 +241,10 @@ RETURN_CODE CFitWindowFileHandler::Parse_Reference(novac::CFitWindow& window) {
             int tmpInt;
             Parse_IntItem(TEXT("/shiftOption"), tmpInt);
             switch (tmpInt) {
-            case 0: window.ref[nRef].m_shiftOption = novac::SHIFT_FREE; break;
-            case 1: window.ref[nRef].m_shiftOption = novac::SHIFT_FIX; break;
-            case 2: window.ref[nRef].m_shiftOption = novac::SHIFT_LINK; break;
-            case 3: window.ref[nRef].m_shiftOption = novac::SHIFT_LIMIT; break;
+            case 0: window.ref[nRef].m_shiftOption = novac::SHIFT_TYPE::SHIFT_FREE; break;
+            case 1: window.ref[nRef].m_shiftOption = novac::SHIFT_TYPE::SHIFT_FIX; break;
+            case 2: window.ref[nRef].m_shiftOption = novac::SHIFT_TYPE::SHIFT_LINK; break;
+            case 3: window.ref[nRef].m_shiftOption = novac::SHIFT_TYPE::SHIFT_LIMIT; break;
             }
             continue;
         }
@@ -258,10 +258,10 @@ RETURN_CODE CFitWindowFileHandler::Parse_Reference(novac::CFitWindow& window) {
             int tmpInt;
             Parse_IntItem(TEXT("/squeezeOption"), tmpInt);
             switch (tmpInt) {
-            case 0: window.ref[nRef].m_squeezeOption = novac::SHIFT_FREE; break;
-            case 1: window.ref[nRef].m_squeezeOption = novac::SHIFT_FIX; break;
-            case 2: window.ref[nRef].m_squeezeOption = novac::SHIFT_LINK; break;
-            case 3: window.ref[nRef].m_squeezeOption = novac::SHIFT_LIMIT; break;
+            case 0: window.ref[nRef].m_squeezeOption = novac::SHIFT_TYPE::SHIFT_FREE; break;
+            case 1: window.ref[nRef].m_squeezeOption = novac::SHIFT_TYPE::SHIFT_FIX; break;
+            case 2: window.ref[nRef].m_squeezeOption = novac::SHIFT_TYPE::SHIFT_LINK; break;
+            case 3: window.ref[nRef].m_squeezeOption = novac::SHIFT_TYPE::SHIFT_LIMIT; break;
             }
             continue;
         }
@@ -275,10 +275,10 @@ RETURN_CODE CFitWindowFileHandler::Parse_Reference(novac::CFitWindow& window) {
             int tmpInt;
             Parse_IntItem(TEXT("/columnOption"), tmpInt);
             switch (tmpInt) {
-            case 0: window.ref[nRef].m_columnOption = novac::SHIFT_FREE; break;
-            case 1: window.ref[nRef].m_columnOption = novac::SHIFT_FIX; break;
-            case 2: window.ref[nRef].m_columnOption = novac::SHIFT_LINK; break;
-            case 3: window.ref[nRef].m_columnOption = novac::SHIFT_LIMIT; break;
+            case 0: window.ref[nRef].m_columnOption = novac::SHIFT_TYPE::SHIFT_FREE; break;
+            case 1: window.ref[nRef].m_columnOption = novac::SHIFT_TYPE::SHIFT_FIX; break;
+            case 2: window.ref[nRef].m_columnOption = novac::SHIFT_TYPE::SHIFT_LINK; break;
+            case 3: window.ref[nRef].m_columnOption = novac::SHIFT_TYPE::SHIFT_LIMIT; break;
             }
             continue;
         }
@@ -343,19 +343,19 @@ RETURN_CODE CFitWindowFileHandler::WriteFitWindow(const novac::CFitWindow& windo
         fprintf(f, "%s\t<path>%s</path>\n", (LPCSTR)indent, window.ref[i].m_path.c_str());
 
         fprintf(f, "%s\t<shiftOption>%d</shiftOption>\n", (LPCSTR)indent, window.ref[i].m_shiftOption);
-        if (window.ref[i].m_shiftOption != novac::SHIFT_FREE)
+        if (window.ref[i].m_shiftOption != novac::SHIFT_TYPE::SHIFT_FREE)
         {
             fprintf(f, "%s\t<shiftValue>%lf</shiftValue>\n", (LPCSTR)indent, window.ref[i].m_shiftValue);
         }
 
         fprintf(f, "%s\t<squeezeOption>%d</squeezeOption>\n", (LPCSTR)indent, window.ref[i].m_squeezeOption);
-        if (window.ref[i].m_squeezeOption != novac::SHIFT_FREE)
+        if (window.ref[i].m_squeezeOption != novac::SHIFT_TYPE::SHIFT_FREE)
         {
             fprintf(f, "%s\t<squeezeValue>%lf</squeezeValue>\n", (LPCSTR)indent, window.ref[i].m_squeezeValue);
         }
 
         fprintf(f, "%s\t<columnOption>%d</columnOption>\n", (LPCSTR)indent, window.ref[i].m_columnOption);
-        if (window.ref[i].m_columnOption != novac::SHIFT_FREE)
+        if (window.ref[i].m_columnOption != novac::SHIFT_TYPE::SHIFT_FREE)
         {
             fprintf(f, "%s\t<columnValue>%lf</columnValue>\n", (LPCSTR)indent, window.ref[i].m_columnValue);
         }

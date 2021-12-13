@@ -339,25 +339,25 @@ int CConfigurationFileHandler::WriteConfigurationFile(const CConfigurationSettin
                     fprintf(f, "%s\t\t<path>%s</path>\n", (LPCSTR)indent, reference.m_path.c_str());
                     // writing the shift
                     fprintf(f, TEXT(indent + "\t\t<shift>"));
-                    if (reference.m_shiftOption == novac::SHIFT_FIX)
+                    if (reference.m_shiftOption == novac::SHIFT_TYPE::SHIFT_FIX)
                         str.Format("fix to %.2lf", reference.m_shiftValue);
-                    else if (reference.m_shiftOption == novac::SHIFT_FREE)
+                    else if (reference.m_shiftOption == novac::SHIFT_TYPE::SHIFT_FREE)
                         str.Format("free");
-                    else if (reference.m_shiftOption == novac::SHIFT_LIMIT)
+                    else if (reference.m_shiftOption == novac::SHIFT_TYPE::SHIFT_LIMIT)
                         str.Format("limit from %.2lf to %.2lf", reference.m_shiftValue, reference.m_shiftMaxValue);
-                    else if (reference.m_shiftOption == novac::SHIFT_LINK)
+                    else if (reference.m_shiftOption == novac::SHIFT_TYPE::SHIFT_LINK)
                         str.Format("link to %.0lf", reference.m_shiftValue);
                     fprintf(f, str);
                     fprintf(f, "</shift>\n");
                     // writing the squeeze
                     fprintf(f, TEXT(indent + "\t\t<squeeze>"));
-                    if (reference.m_squeezeOption == novac::SHIFT_FIX)
+                    if (reference.m_squeezeOption == novac::SHIFT_TYPE::SHIFT_FIX)
                         str.Format("fix to %.2lf", reference.m_squeezeValue);
-                    else if (reference.m_squeezeOption == novac::SHIFT_FREE)
+                    else if (reference.m_squeezeOption == novac::SHIFT_TYPE::SHIFT_FREE)
                         str.Format("free");
-                    else if (reference.m_squeezeOption == novac::SHIFT_LIMIT)
+                    else if (reference.m_squeezeOption == novac::SHIFT_TYPE::SHIFT_LIMIT)
                         str.Format("limit from %.2lf to %.2lf", reference.m_squeezeValue, reference.m_squeezeMaxValue);
-                    else if (reference.m_squeezeOption == novac::SHIFT_LINK)
+                    else if (reference.m_squeezeOption == novac::SHIFT_TYPE::SHIFT_LINK)
                         str.Format("link to %.0lf", reference.m_squeezeValue);
                     fprintf(f, str);
                     fprintf(f, "</squeeze>\n");
@@ -1379,18 +1379,18 @@ int CConfigurationFileHandler::Parse_ShiftOrSqueeze(const CString& label, novac:
 
         if (pt = strstr(szToken, "fix to")) {
             int ret = sscanf(szToken, "fix to %lf", &lowValue);
-            option = novac::SHIFT_FIX;
+            option = novac::SHIFT_TYPE::SHIFT_FIX;
         }
         else if (pt = strstr(szToken, "free")) {
-            option = novac::SHIFT_FREE;
+            option = novac::SHIFT_TYPE::SHIFT_FREE;
         }
         else if (pt = strstr(szToken, "limit")) {
             int ret = sscanf(szToken, "limit from %lf to %lf", &lowValue, &highValue);
-            option = novac::SHIFT_LIMIT;
+            option = novac::SHIFT_TYPE::SHIFT_LIMIT;
         }
         else if (pt = strstr(szToken, "link")) {
             int ret = sscanf(szToken, "link %lf", &lowValue);
-            option = novac::SHIFT_LINK;
+            option = novac::SHIFT_TYPE::SHIFT_LINK;
         }
     }
     return 0;

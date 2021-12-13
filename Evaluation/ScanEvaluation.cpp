@@ -100,8 +100,8 @@ long CScanEvaluation::EvaluateScan(const CString& scanfile, const CFitWindow& wi
     {
         for (int k = 0; k < copyOfWindow.nRef; ++k)
         {
-            copyOfWindow.ref[k].m_shiftOption = SHIFT_FIX;
-            copyOfWindow.ref[k].m_squeezeOption = SHIFT_FIX;
+            copyOfWindow.ref[k].m_shiftOption = SHIFT_TYPE::SHIFT_FIX;
+            copyOfWindow.ref[k].m_squeezeOption = SHIFT_TYPE::SHIFT_FIX;
             copyOfWindow.ref[k].m_shiftValue = 0.0;
             copyOfWindow.ref[k].m_squeezeValue = 1.0;
         }
@@ -365,8 +365,8 @@ long CScanEvaluation::EvaluateScan(const CString& scanfile, const CFitWindow& wi
                         continue;
                     }
 
-                    newWindow.ref[k].m_shiftOption = SHIFT_FIX;
-                    newWindow.ref[k].m_squeezeOption = SHIFT_FIX;
+                    newWindow.ref[k].m_shiftOption = SHIFT_TYPE::SHIFT_FIX;
+                    newWindow.ref[k].m_squeezeOption = SHIFT_TYPE::SHIFT_FIX;
                     newWindow.ref[k].m_shiftValue = result.m_referenceResult[0].m_shift;
                     newWindow.ref[k].m_squeezeValue = result.m_referenceResult[0].m_squeeze;
                 }
@@ -605,16 +605,16 @@ CEvaluationResult CScanEvaluation::FindOptimumShiftAndSqueeze(const CEvaluationB
 
     // 3. Evaluate this spectrum again with free (and linked) shift
     CFitWindow newFitWindow = originalEvaluation->FitWindow(); // Create a local copy which we can modify
-    newFitWindow.ref[0].m_shiftOption = SHIFT_FREE;
-    newFitWindow.ref[0].m_squeezeOption = SHIFT_FIX;
+    newFitWindow.ref[0].m_shiftOption = SHIFT_TYPE::SHIFT_FREE;
+    newFitWindow.ref[0].m_squeezeOption = SHIFT_TYPE::SHIFT_FIX;
     newFitWindow.ref[0].m_squeezeValue = 1.0;
     for (int k = 1; k < newFitWindow.nRef; ++k) {
         if (EqualsIgnoringCase(newFitWindow.ref[k].m_specieName, "FraunhoferRef")) {
             continue;
         }
 
-        newFitWindow.ref[k].m_shiftOption = SHIFT_LINK;
-        newFitWindow.ref[k].m_squeezeOption = SHIFT_LINK;
+        newFitWindow.ref[k].m_shiftOption = SHIFT_TYPE::SHIFT_LINK;
+        newFitWindow.ref[k].m_squeezeOption = SHIFT_TYPE::SHIFT_LINK;
         newFitWindow.ref[k].m_shiftValue = 0.0;
         newFitWindow.ref[k].m_squeezeValue = 0.0;
     }
@@ -767,8 +767,8 @@ CFitWindow* CScanEvaluation::FindOptimumShiftAndSqueeze_Fraunhofer(const CEvalua
             CFitWindow* bestFitWindow = new CFitWindow{ originalEvaluation->FitWindow() };
             // The fit is good enough to use the values
             for (int it = 0; it < originalEvaluation->FitWindow().nRef; ++it) {
-                bestFitWindow->ref[it].m_shiftOption = SHIFT_FIX;
-                bestFitWindow->ref[it].m_squeezeOption = SHIFT_FIX;
+                bestFitWindow->ref[it].m_shiftOption = SHIFT_TYPE::SHIFT_FIX;
+                bestFitWindow->ref[it].m_squeezeOption = SHIFT_TYPE::SHIFT_FIX;
                 bestFitWindow->ref[it].m_shiftValue = shift;
                 bestFitWindow->ref[it].m_squeezeValue = squeeze;
             }

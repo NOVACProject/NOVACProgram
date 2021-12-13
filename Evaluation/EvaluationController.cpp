@@ -641,24 +641,24 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult* resu
             string.AppendFormat("\t\t\t<path>%s</path>\n", ref.m_path.c_str());
 
             CString shiftString;
-            if (ref.m_shiftOption == novac::SHIFT_FIX)
+            if (ref.m_shiftOption == novac::SHIFT_TYPE::SHIFT_FIX)
                 shiftString.Format("fix to %.2lf", ref.m_shiftValue);
-            else if (ref.m_shiftOption == novac::SHIFT_FREE)
+            else if (ref.m_shiftOption == novac::SHIFT_TYPE::SHIFT_FREE)
                 shiftString.Format("free");
-            else if (ref.m_shiftOption == novac::SHIFT_LIMIT)
+            else if (ref.m_shiftOption == novac::SHIFT_TYPE::SHIFT_LIMIT)
                 shiftString.Format("limit from %.2lf to %.2lf", ref.m_shiftValue, ref.m_shiftMaxValue);
-            else if (ref.m_shiftOption == novac::SHIFT_LINK)
+            else if (ref.m_shiftOption == novac::SHIFT_TYPE::SHIFT_LINK)
                 shiftString.Format("link to %.0lf", ref.m_shiftValue);
             string.AppendFormat("\t\t\t<shift>%s</shift>\n", (LPCSTR)shiftString);
 
             CString squeezeString;
-            if (ref.m_squeezeOption == novac::SHIFT_FIX)
+            if (ref.m_squeezeOption == novac::SHIFT_TYPE::SHIFT_FIX)
                 squeezeString.Format("fix to %.2lf", ref.m_squeezeValue);
-            else if (ref.m_squeezeOption == novac::SHIFT_FREE)
+            else if (ref.m_squeezeOption == novac::SHIFT_TYPE::SHIFT_FREE)
                 squeezeString.Format("free");
-            else if (ref.m_squeezeOption == novac::SHIFT_LIMIT)
+            else if (ref.m_squeezeOption == novac::SHIFT_TYPE::SHIFT_LIMIT)
                 squeezeString.Format("limit from %.2lf to %.2lf", ref.m_squeezeValue, ref.m_squeezeMaxValue);
-            else if (ref.m_squeezeOption == novac::SHIFT_LINK)
+            else if (ref.m_squeezeOption == novac::SHIFT_TYPE::SHIFT_LINK)
                 squeezeString.Format("link to %.0lf", ref.m_squeezeValue);
             string.AppendFormat("\t\t\t<squeeze>%s</squeeze>\n", (LPCSTR)squeezeString);
 
@@ -1245,9 +1245,9 @@ void CEvaluationController::InitiateSpecialModeMeasurement(const CSpectrometer* 
     return;
 }
 
-void CEvaluationController::UpdateInstrumentCalibration(CSpectrometer& spectrometer, const std::string& lastEvaluatedScan, const novac::CDateTime* startTimeOfLastScan)
+void CEvaluationController::UpdateInstrumentCalibration(CSpectrometer& spectrometer, const std::string& lastEvaluatedScan, const novac::CDateTime* startTimeOfScan)
 {
-    if (CRealTimeCalibration::IsTimeForInstrumentCalibration(spectrometer, lastEvaluatedScan, startTimeOfLastScan))
+    if (CRealTimeCalibration::IsTimeForInstrumentCalibration(spectrometer, lastEvaluatedScan, startTimeOfScan))
     {
         CRealTimeCalibration::RunInstrumentCalibration(spectrometer, lastEvaluatedScan, g_settings);
     }

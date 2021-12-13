@@ -7,7 +7,7 @@
 #include <SpectralEvaluation/DialogControllers/ReferenceCreationController.h>
 #include <SpectralEvaluation/File/File.h>
 #include <SpectralEvaluation/Calibration/StandardCrossSectionSetup.h>
-
+#include <SpectralEvaluation/StringUtils.h>
 #include <sstream>
 
 extern CConfigurationSetting g_settings;    // <-- The settings
@@ -84,8 +84,9 @@ std::vector<novac::CReferenceFile> CreateStandardReferences(
     std::vector<novac::CReferenceFile> referencesCreated;
 
     referenceController.m_highPassFilter = autoCalibrationSettings.filterReferences;
-    referenceController.m_unitSelection = 0;
+    referenceController.m_unitSelection = 0; // The default unit in NovacProgram is ppmm
 
+    // First the ordinary references
     for (size_t ii = 0; ii < standardCrossSections.NumberOfReferences(); ++ii)
     {
         referenceController.m_convertToAir = standardCrossSections.IsReferenceInVacuum(ii);
@@ -115,6 +116,31 @@ std::vector<novac::CReferenceFile> CreateStandardReferences(
         referencesCreated.push_back(newReference);
     }
 
+    // Save the Fraunhofer reference as well
+    {
+        // Do the convolution
+        referenceController.m_convertToAir = false;
+        referenceController.m_highResolutionCrossSection = standardCrossSections.FraunhoferReferenceFileName();
+        referenceController.m_isPseudoAbsorber = true;
+        referenceController.ConvolveReference(*calibration);
+
+        // Save the result
+        const std::string dstFileName =
+            directoryName +
+            spectrumInformation.m_device +
+            "_Fraunhofer_" +
+            FormatDateAndTimeOfSpectrum(spectrumInformation) +
+            ".txt";
+
+        novac::SaveCrossSectionFile(dstFileName, *(referenceController.m_resultingCrossSection));
+
+        novac::CReferenceFile newReference;
+        newReference.m_specieName = "Fraunhofer";
+        newReference.m_path = dstFileName;
+        newReference.m_isFiltered = referenceController.m_highPassFilter;
+        referencesCreated.push_back(newReference);
+    }
+
     return referencesCreated;
 }
 
@@ -141,10 +167,15 @@ void ReplaceReferences(std::vector<novac::CReferenceFile>& newReferences, CConfi
 
     // Now replace the references. Notice that this only supports replacing the references of the first channel.
     auto& fitWindow = spectrometer.channel[0].fitWindow;
-    fitWindow.nRef = static_cast<int>(newReferences.size());
-    for (size_t idx = 0; idx < newReferences.size(); ++idx)
+    fitWindow.nRef = 0;
+    for (const auto& reference : newReferences)
     {
-        fitWindow.ref[idx] = newReferences[idx];
+        if (!EqualsIgnoringCase(reference.m_specieName, "Fraunhofer"))
+        {
+            // The NovacProgram doesn't use the Fraunhofer reference for determining shift in the real-time evaluations (only in ReEvaluation)
+            fitWindow.ref[fitWindow.nRef] = reference;
+            ++fitWindow.nRef;
+        }
     }
 }
 
@@ -173,9 +204,9 @@ void CRealTimeCalibration::AppendMessageToLog(const Evaluation::CSpectrometer& s
 bool CRealTimeCalibration::IsTimeForInstrumentCalibration(
     const Evaluation::CSpectrometer& spectrometer,
     const std::string& scanFile,
-    const novac::CDateTime* startTimeOfLastScan)
+    const novac::CDateTime* startTimeOfScan)
 {
-    if (!novac::IsExistingFile(scanFile) || startTimeOfLastScan == nullptr)
+    if (!novac::IsExistingFile(scanFile) || startTimeOfScan == nullptr)
     {
         return false;
     }
@@ -209,20 +240,20 @@ bool CRealTimeCalibration::IsTimeForInstrumentCalibration(
     if (calibrationIntervalWrapsMidnight)
     {
         scanTimeLiesWithinCalibrationTimeInterval =
-            startTimeOfLastScan->SecondsSinceMidnight() >= autoCalibrationSettings.intervalTimeOfDayLow ||
-            startTimeOfLastScan->SecondsSinceMidnight() <= autoCalibrationSettings.intervalTimeOfDayHigh;
+            startTimeOfScan->SecondsSinceMidnight() >= autoCalibrationSettings.intervalTimeOfDayLow ||
+            startTimeOfScan->SecondsSinceMidnight() <= autoCalibrationSettings.intervalTimeOfDayHigh;
     }
     else
     {
         scanTimeLiesWithinCalibrationTimeInterval =
-            startTimeOfLastScan->SecondsSinceMidnight() >= autoCalibrationSettings.intervalTimeOfDayLow &&
-            startTimeOfLastScan->SecondsSinceMidnight() <= autoCalibrationSettings.intervalTimeOfDayHigh;
+            startTimeOfScan->SecondsSinceMidnight() >= autoCalibrationSettings.intervalTimeOfDayLow &&
+            startTimeOfScan->SecondsSinceMidnight() <= autoCalibrationSettings.intervalTimeOfDayHigh;
     }
 
     if (!scanTimeLiesWithinCalibrationTimeInterval)
     {
         std::stringstream message;
-        message << "Measurement time (" << startTimeOfLastScan->SecondsSinceMidnight() << ") is outside of configured interval [";
+        message << "Measurement time (" << startTimeOfScan->SecondsSinceMidnight() << ") is outside of configured interval [";
         message << autoCalibrationSettings.intervalTimeOfDayLow << " to " << autoCalibrationSettings.intervalTimeOfDayHigh << "]";
         AppendMessageToLog(spectrometer, message.str());
         return false;
@@ -235,11 +266,11 @@ bool CRealTimeCalibration::IsTimeForInstrumentCalibration(
     {
         // Allow for some difference since the scan may be from yesterday or tomorrow UTC (compared to local time).
         // TODO: This does not correctly handle changing month.
-        scanIsFromToday = startTimeOfLastScan->year == now.year && startTimeOfLastScan->month == now.month && std::abs(startTimeOfLastScan->day - now.day) <= 1;
+        scanIsFromToday = startTimeOfScan->year == now.year && startTimeOfScan->month == now.month && std::abs(startTimeOfScan->day - now.day) <= 1;
     }
     else
     {
-        scanIsFromToday = startTimeOfLastScan->year == now.year && startTimeOfLastScan->month == now.month && startTimeOfLastScan->day == now.day;
+        scanIsFromToday = startTimeOfScan->year == now.year && startTimeOfScan->month == now.month && startTimeOfScan->day == now.day;
     }
 
     if (!scanIsFromToday)
@@ -324,8 +355,8 @@ bool CRealTimeCalibration::RunInstrumentCalibration(
                 spectrometer.m_fitWindows[0] = spectrometer.m_settings.channel[0].fitWindow;
 
                 // Save the updated settings to file
-                FileHandler::CConfigurationFileHandler writer;
-                writer.WriteConfigurationFile(settings);
+                // FileHandler::CConfigurationFileHandler writer;
+                // writer.WriteConfigurationFile(settings);
             }
         }
 

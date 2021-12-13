@@ -80,7 +80,7 @@ namespace Evaluation
 
         /** Checks if we should perform a calibration of the given spectrometer now.
             If the conditions are good then a calibration will be started. */
-        void UpdateInstrumentCalibration(CSpectrometer& spectrometer, const std::string& lastEvaluatedScan, const novac::CDateTime* startTimeOfLastScan);
+        void UpdateInstrumentCalibration(CSpectrometer& spectrometer, const std::string& lastEvaluatedScan, const novac::CDateTime* startTimeOfScan);
 
     private:
         // ----------------------------------------------------------------------

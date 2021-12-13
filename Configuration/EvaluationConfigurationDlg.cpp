@@ -186,28 +186,28 @@ void CEvaluationConfigurationDlg::PopulateReferenceFileControl() {
         m_referenceFileCtrl.SetItemTextFmt(i + 1, 0, CString(ref.m_specieName.c_str()));
         m_referenceFileCtrl.SetItemTextFmt(i + 1, 1, CString(ref.m_path.c_str()));
 
-        if (ref.m_shiftOption == SHIFT_FREE)
+        if (ref.m_shiftOption == SHIFT_TYPE::SHIFT_FREE)
             m_referenceFileCtrl.SetItemTextFmt(1 + i, 2, "free");
 
-        if (ref.m_shiftOption == SHIFT_FIX)
+        if (ref.m_shiftOption == SHIFT_TYPE::SHIFT_FIX)
             m_referenceFileCtrl.SetItemTextFmt(1 + i, 2, "fix to %.2lf", ref.m_shiftValue);
 
-        if (ref.m_shiftOption == SHIFT_LINK)
+        if (ref.m_shiftOption == SHIFT_TYPE::SHIFT_LINK)
             m_referenceFileCtrl.SetItemTextFmt(1 + i, 2, "link to %.2lf", ref.m_shiftValue);
 
-        if (ref.m_shiftOption == SHIFT_LIMIT)
+        if (ref.m_shiftOption == SHIFT_TYPE::SHIFT_LIMIT)
             m_referenceFileCtrl.SetItemTextFmt(1 + i, 2, "limit to %.2lf", ref.m_shiftValue);
 
-        if (ref.m_squeezeOption == SHIFT_FREE)
+        if (ref.m_squeezeOption == SHIFT_TYPE::SHIFT_FREE)
             m_referenceFileCtrl.SetItemTextFmt(1 + i, 3, "free");
 
-        if (ref.m_squeezeOption == SHIFT_FIX)
+        if (ref.m_squeezeOption == SHIFT_TYPE::SHIFT_FIX)
             m_referenceFileCtrl.SetItemTextFmt(1 + i, 3, "fix to %.2lf", ref.m_squeezeValue);
 
-        if (ref.m_squeezeOption == SHIFT_LINK)
+        if (ref.m_squeezeOption == SHIFT_TYPE::SHIFT_LINK)
             m_referenceFileCtrl.SetItemTextFmt(1 + i, 3, "link to %.2lf", ref.m_squeezeValue);
 
-        if (ref.m_squeezeOption == SHIFT_LIMIT)
+        if (ref.m_squeezeOption == SHIFT_TYPE::SHIFT_LIMIT)
             m_referenceFileCtrl.SetItemTextFmt(1 + i, 3, "limit to %.2lf", ref.m_squeezeValue);
     }
     // the last line should be cleared

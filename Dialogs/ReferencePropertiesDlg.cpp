@@ -89,26 +89,26 @@ void CReferencePropertiesDlg::SaveData() {
 
     // save the shift option
     switch (m_shiftOption) {
-    case 0: m_ref->m_shiftOption = SHIFT_FREE;
+    case 0: m_ref->m_shiftOption = SHIFT_TYPE::SHIFT_FREE;
         m_ref->m_shiftValue = 0.0;			break;
-    case 1: m_ref->m_shiftOption = SHIFT_FIX;
+    case 1: m_ref->m_shiftOption = SHIFT_TYPE::SHIFT_FIX;
         m_ref->m_shiftValue = m_shiftFixValue;	break;
-    case 2: m_ref->m_shiftOption = SHIFT_LINK;
+    case 2: m_ref->m_shiftOption = SHIFT_TYPE::SHIFT_LINK;
         m_ref->m_shiftValue = m_shiftLinkValue;	break;
-    case 3: m_ref->m_shiftOption = SHIFT_LIMIT;
+    case 3: m_ref->m_shiftOption = SHIFT_TYPE::SHIFT_LIMIT;
         m_ref->m_shiftMaxValue = m_shiftLimitHigh;
         m_ref->m_shiftValue = m_shiftLimitLow; 			break;
     }
 
     // save the squeeze option
     switch (m_squeezeOption) {
-    case 0: m_ref->m_squeezeOption = SHIFT_FREE;
+    case 0: m_ref->m_squeezeOption = SHIFT_TYPE::SHIFT_FREE;
         m_ref->m_squeezeValue = 0.0;	break;
-    case 1: m_ref->m_squeezeOption = SHIFT_FIX;
+    case 1: m_ref->m_squeezeOption = SHIFT_TYPE::SHIFT_FIX;
         m_ref->m_squeezeValue = m_squeezeFixValue;	break;
-    case 2: m_ref->m_squeezeOption = SHIFT_LINK;
+    case 2: m_ref->m_squeezeOption = SHIFT_TYPE::SHIFT_LINK;
         m_ref->m_squeezeValue = m_squeezeLinkValue;	break;
-    case 3: m_ref->m_squeezeOption = SHIFT_LIMIT;
+    case 3: m_ref->m_squeezeOption = SHIFT_TYPE::SHIFT_LIMIT;
         m_ref->m_squeezeValue = m_squeezeLimitLow;
         m_ref->m_squeezeMaxValue = m_squeezeLimitHigh; break;
     }
@@ -125,24 +125,24 @@ void CReferencePropertiesDlg::UpdateDlg() {
 
     // save the shift option
     switch (m_ref->m_shiftOption) {
-    case 0: SHIFT_FREE; m_shiftOption = 0; break;
-    case 1: SHIFT_FIX;	m_shiftOption = 1;
+    case 0: SHIFT_TYPE::SHIFT_FREE; m_shiftOption = 0; break;
+    case 1: SHIFT_TYPE::SHIFT_FIX;	m_shiftOption = 1;
         m_shiftFixValue = m_ref->m_shiftValue;	break;
-    case 2: SHIFT_LINK; m_shiftOption = 2;
+    case 2: SHIFT_TYPE::SHIFT_LINK; m_shiftOption = 2;
         m_shiftLinkValue = m_ref->m_shiftValue; break;
-    case 3: SHIFT_LIMIT; m_shiftOption = 3;
+    case 3: SHIFT_TYPE::SHIFT_LIMIT; m_shiftOption = 3;
         m_shiftLimitHigh = m_ref->m_shiftMaxValue;
         m_shiftLimitLow = m_ref->m_shiftValue;	break;
     }
 
     // save the squeeze option
     switch (m_ref->m_squeezeOption) {
-    case 0: SHIFT_FREE; m_squeezeOption = 0; break;
-    case 1: SHIFT_FIX;  m_squeezeOption = 1; break;
+    case 0: SHIFT_TYPE::SHIFT_FREE; m_squeezeOption = 0; break;
+    case 1: SHIFT_TYPE::SHIFT_FIX;  m_squeezeOption = 1; break;
         m_squeezeFixValue = m_ref->m_squeezeValue;	break;
-    case 2: SHIFT_LINK; m_squeezeOption = 2; break;
+    case 2: SHIFT_TYPE::SHIFT_LINK; m_squeezeOption = 2; break;
         m_squeezeLinkValue = m_ref->m_squeezeValue; break;
-    case 3: SHIFT_LIMIT; m_squeezeOption = 3;
+    case 3: SHIFT_TYPE::SHIFT_LIMIT; m_squeezeOption = 3;
         m_squeezeLimitHigh = m_ref->m_squeezeMaxValue;
         m_squeezeLimitLow = m_ref->m_squeezeValue;	break;
     }

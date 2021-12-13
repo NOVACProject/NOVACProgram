@@ -25,8 +25,8 @@ CReEvaluator::CReEvaluator(void)
     // initialize the list of references 
     for (int i = 0; i < MAX_N_WINDOWS; ++i) {
         for (int j = 1; j < MAX_N_REFERENCES; ++j) {
-            m_window[i].ref[j].SetShift(SHIFT_FIX, 0.0);
-            m_window[i].ref[j].SetSqueeze(SHIFT_FIX, 1.0);
+            m_window[i].ref[j].SetShift(SHIFT_TYPE::SHIFT_FIX, 0.0);
+            m_window[i].ref[j].SetSqueeze(SHIFT_TYPE::SHIFT_FIX, 1.0);
         }
     }
     m_windowNum = 1;
@@ -324,22 +324,22 @@ bool CReEvaluator::WriteEvaluationLogHeader(int fitWindowIndex)
     for (int i = 0; i < window.nRef; ++i) {
         fprintf(f, "#%s\t", window.ref[i].m_specieName.c_str());
         switch (window.ref[i].m_shiftOption) {
-        case SHIFT_FIX:
+        case SHIFT_TYPE::SHIFT_FIX:
             fprintf(f, "%0.3lf\t", window.ref[i].m_shiftValue); break;
-        case SHIFT_LINK:
+        case SHIFT_TYPE::SHIFT_LINK:
             fprintf(f, "linked to %s\t", window.ref[(int)window.ref[i].m_shiftValue].m_specieName.c_str()); break;
-        case SHIFT_LIMIT:
+        case SHIFT_TYPE::SHIFT_LIMIT:
             fprintf(f, "limited to +-%0.3lf\t", window.ref[i].m_shiftValue);
         default:
             fprintf(f, "free\t"); break;
         }
 
         switch (window.ref[i].m_squeezeOption) {
-        case SHIFT_FIX:
+        case SHIFT_TYPE::SHIFT_FIX:
             fprintf(f, "%0.3lf\t", window.ref[i].m_squeezeValue); break;
-        case SHIFT_LINK:
+        case SHIFT_TYPE::SHIFT_LINK:
             fprintf(f, "linked to %s\t", window.ref[(int)window.ref[i].m_squeezeValue].m_specieName.c_str()); break;
-        case SHIFT_LIMIT:
+        case SHIFT_TYPE::SHIFT_LIMIT:
             fprintf(f, "limited to +-%0.3lf\t", window.ref[i].m_squeezeValue);
         default:
             fprintf(f, "free\t"); break;
