@@ -241,7 +241,9 @@ void CScannerConfiguration::OnChangeScanner() {
     if (change) {
         int active = m_sheet.GetActiveIndex();
         m_sheet.RemovePage(&m_pageCommunication);
+        m_sheet.RemovePage(&m_pageCalibration);
         m_sheet.AddPage(&m_pageCommunication);
+        m_sheet.AddPage(&m_pageCalibration);
         m_sheet.SetActivePage(active);
     }
 
