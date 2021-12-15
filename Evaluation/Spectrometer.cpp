@@ -51,7 +51,7 @@ const CString& CSpectrometer::SerialNumber() const {
 }
 
 double CSpectrometer::GetMaxIntensity() const {
-    return CSpectrometerDatabase::GetInstance().GetModel(m_settings.modelName).maximumIntensity;
+    return CSpectrometerDatabase::GetInstance().GetModel(m_settings.modelName).maximumIntensityForSingleReadout;
 }
 
 void CSpectrometer::RememberResult(CScanResult& lastResult) {

@@ -305,7 +305,7 @@ int CConfigurationFileHandler::WriteConfigurationFile(const CConfigurationSettin
                 {
                     str.Format("%s<customSpectrometer>\n", (LPCSTR)indent);
                     str.AppendFormat("%s\t<name>%s</name>\n", (LPCSTR)indent, spectrometerModel.modelName.c_str());
-                    str.AppendFormat("%s\t<maxIntensity>%lf</maxIntensity>\n", (LPCSTR)indent, spectrometerModel.maximumIntensity);
+                    str.AppendFormat("%s\t<maxIntensity>%lf</maxIntensity>\n", (LPCSTR)indent, spectrometerModel.maximumIntensityForSingleReadout);
 
                     if (spectrometerModel.numberOfChannels != 1)
                     {
@@ -1038,7 +1038,7 @@ int CConfigurationFileHandler::Parse_CustomSpectrometerModel(CConfigurationSetti
             {
                 SpectrometerModel existingModel = CSpectrometerDatabase::GetInstance().GetModel(currentModelIndex);
 
-                if (std::abs(existingModel.maximumIntensity - thisModel.maximumIntensity) > 1.0)
+                if (std::abs(existingModel.maximumIntensityForSingleReadout - thisModel.maximumIntensityForSingleReadout) > 1.0)
                 {
                     CString errorMessage;
                     errorMessage.Format("Could not configure new custom spectrometer model with name %s, such a model already exists with a different maximum intensity.", thisModel.modelName);
@@ -1067,7 +1067,7 @@ int CConfigurationFileHandler::Parse_CustomSpectrometerModel(CConfigurationSetti
         // found the maximum intensity 
         if (Equals(szToken, "maxIntensity"))
         {
-            Parse_FloatItem("/maxIntensity", thisModel.maximumIntensity);
+            Parse_FloatItem("/maxIntensity", thisModel.maximumIntensityForSingleReadout);
             continue;
         }
 

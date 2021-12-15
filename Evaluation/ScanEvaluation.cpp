@@ -678,12 +678,12 @@ CFitWindow* CScanEvaluation::FindOptimumShiftAndSqueeze_Fraunhofer(const CEvalua
     const int NO_SPECTRUM_INDEX = -2;
 
     // 1. Find the spectrum for which we should determine shift & squeeze
-    //			This spectrum should have high enough intensity in the fit-region
-    //			without being saturated.
+    //      This spectrum should have high enough intensity in the fit-region
+    //      without being saturated.
     int indexOfMostSuitableSpectrum = NO_SPECTRUM_INDEX;
     scan->GetSky(spectrum);
     fitIntensity = spectrum.MaxValue(fitLow, fitHigh);
-    maxInt = CSpectrometerDatabase::GetInstance().GetModel(spectrum.m_info.m_specModelName).maximumIntensity;
+    maxInt = CSpectrometerDatabase::GetInstance().GetModel(spectrum.m_info.m_specModelName).FullDynamicRangeForSpectrum(spectrum.m_info);
     if (spectrum.NumSpectra() > 0) {
         fitSaturation = fitIntensity / (spectrum.NumSpectra() * maxInt);
     }
@@ -701,7 +701,7 @@ CFitWindow* CScanEvaluation::FindOptimumShiftAndSqueeze_Fraunhofer(const CEvalua
 
     while (scan->GetNextSpectrum(spectrum)) {
         fitIntensity = spectrum.MaxValue(fitLow, fitHigh);
-        maxInt = CSpectrometerDatabase::GetInstance().GetModel(spectrum.m_info.m_specModelName).maximumIntensity;
+        maxInt = CSpectrometerDatabase::GetInstance().GetModel(spectrum.m_info.m_specModelName).FullDynamicRangeForSpectrum(spectrum.m_info);
 
         // Get the saturation-ratio for this spectrum
         if (spectrum.NumSpectra() > 0) {

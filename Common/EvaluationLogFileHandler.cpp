@@ -588,7 +588,7 @@ RETURN_CODE CEvaluationLogFileHandler::ReadEvaluationLog() {
 
             double dynamicRange = 1.0; // <-- unknown
             if (m_col.peakSaturation != -1) { // If the intensity is specified as a saturation ratio...
-                dynamicRange = CSpectrometerDatabase::GetInstance().GetModel(m_specInfo.m_specModelName).maximumIntensity;
+                dynamicRange = CSpectrometerDatabase::GetInstance().GetModel(m_specInfo.m_specModelName).maximumIntensityForSingleReadout;
             }
             m_scan[sortOrder[m_scanNum]].CheckGoodnessOfFit(m_specInfo);
             ++measNr;
@@ -1174,7 +1174,7 @@ RETURN_CODE CEvaluationLogFileHandler::WriteEvaluationLog(const CString fileName
         else
             string.AppendFormat("\tmode=plume\n");
 
-        double maxIntensity = CSpectrometerDatabase::GetInstance().GetModel(m_specInfo.m_specModelName).maximumIntensity;
+        double maxIntensity = CSpectrometerDatabase::GetInstance().GetModel(m_specInfo.m_specModelName).maximumIntensityForSingleReadout;
 
         // Finally, the version of the file and the version of the program
         string.AppendFormat("\tsoftwareversion=%d.%d\n", CVersion::majorNumber, CVersion::minorNumber);

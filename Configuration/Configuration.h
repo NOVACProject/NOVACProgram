@@ -106,7 +106,7 @@ public:
         BOOL filterReferences = TRUE;
 
         /** The number of hours which needs to pass between each calibration */
-        int intervalHours = 0;
+        int intervalHours = 2;
 
         /** The time of day when we can start performing calibrations. In seconds since midnight UTC.
             This time is compared against the time of the scan and hence needs to be in UTC.

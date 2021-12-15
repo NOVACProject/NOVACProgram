@@ -936,7 +936,7 @@ double CEvaluatedDataStorage::GetDynamicRange(const CString& serial) {
     int scannerIndex = GetScannerIndex(serial);
     if (scannerIndex < 0)
         return -1;
-    return CSpectrometerDatabase::GetInstance().GetModel(m_models[scannerIndex]).maximumIntensity;
+    return CSpectrometerDatabase::GetInstance().GetModel(m_models[scannerIndex]).maximumIntensityForSingleReadout;
 }
 
 /** Gets the temperature of the last scan */
