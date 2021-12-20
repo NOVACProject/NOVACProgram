@@ -525,10 +525,6 @@ void CGraphCtrl::XYPlot(double* xPosition, double* yPosition, double* color, dou
     double xFactor, yFactor, offsLeft, offsBottom;
     int curX, curY, prevX, prevY;
     int curXError[2], curYError[2]; // <-- the extreme points for the error-bars in x- and y-direction
-    double left = (double)m_rectPlot.left;
-    double right = (double)m_rectPlot.right;
-    double top = (double)m_rectPlot.top;
-    double bottom = (double)m_rectPlot.bottom;
     double maxX, minX, maxY, minY;
     double minC, maxC, halfC, halfC_inv;
     COLORREF curColor = m_colors.circles;
@@ -553,6 +549,12 @@ void CGraphCtrl::XYPlot(double* xPosition, double* yPosition, double* color, dou
         // Get the ranges for the data and scale the axes accordingly
         PreparePlot(xPosition, yPosition, pointSum, maxX, minX, maxY, minY);
     }
+
+    // short hand notations
+    const double left = (double)m_rectPlot.left;
+    const double right = (double)m_rectPlot.right;
+    const double top = (double)m_rectPlot.top;
+    const double bottom = (double)m_rectPlot.bottom;
 
     // Prepare the coloring of the plot
     if (color != nullptr) {
