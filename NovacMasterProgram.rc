@@ -876,7 +876,7 @@ BEGIN
     CONTROL         "Generate references and use for evaluation",IDC_CHECK_REPLACE_USER_DEFINED_REFERENCES,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,221,117,158,10
     CONTROL         "High pass filter references",IDC_CHECK_FILTER_REFERENCES,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,221,132,102,10
+                    "Button",BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP,221,132,102,10
     GROUPBOX        "Interval",IDC_STATIC_CALIBRATION_INTERVAL,210,151,194,74
     LTEXT           "From",IDC_STATIC,237,181,18,8
     LTEXT           "Run every",IDC_STATIC,221,161,34,8
@@ -1304,8 +1304,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,3,1,0
- PRODUCTVERSION 3,3,1,0
+ FILEVERSION 3,4,0,0
+ PRODUCTVERSION 3,4,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -1322,12 +1322,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Optical Remote Sensing group, Chalmers University of Technology"
             VALUE "FileDescription", "NovacProgram"
-            VALUE "FileVersion", "3.3.1.0"
+            VALUE "FileVersion", "3.4.0.0"
             VALUE "InternalName", "NovacProgram.exe"
             VALUE "LegalCopyright", "(c) Chalmers University of Technology.  All rights reserved."
             VALUE "OriginalFilename", "NovacProgram.exe"
             VALUE "ProductName", "NovacProgram"
-            VALUE "ProductVersion", "3.3.1.0"
+            VALUE "ProductVersion", "3.4.0.0"
         END
     END
     BLOCK "VarFileInfo"

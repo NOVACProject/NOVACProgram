@@ -141,7 +141,7 @@ public:
         *   the retrieval of the pixel-to-wavelength calibration.
         *   0 corresponds to no fitting of an instrument line shape,
         *   1 corresponds to fitting a super-gaussian instrument line shape.  */
-        int instrumentLineShapeFitOption = 0;
+        int instrumentLineShapeFitOption = 1;
 
         /** The wavelength region in which the instrument line shape should be fitted (in nm).  */
         novac::WavelengthRange instrumentLineShapeFitRegion = novac::WavelengthRange(330.0, 350.0);

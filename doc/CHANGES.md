@@ -1,6 +1,19 @@
 NOVAC Program Release Notes
 
 -----------------------------------------------------
+Version 3.4 (December 2021)
+
+* Added instrument calibration dialog where it is possible to create an instrument calibration from  measured spectra and create references.
+* Added option to automatically perform instrument calibrations with regular intervals, creating nrew references.
+* Added ability to save instrument calibration to extended STD files in a DOASIS compatible format.
+
+Bug fixes
+* Corrected maximum intensity for AVANTES spectrometers
+* Corrected issue where the program was not able to identify MAYAPRO spectra.
+* Fix for possible crash in re-evaluation when determining shift using a Fraunhofer spectrum.
+* Removed hard-coded maximum intensity of 4095 from ReEvaluation, removing warning of saturated spectra from non-S2000 devices.
+
+-----------------------------------------------------
 Version 3.3 (June 2021)
 
 Bug fixes

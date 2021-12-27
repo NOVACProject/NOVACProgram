@@ -9,5 +9,5 @@ public:
     static const int majorNumber = 3;
 
     /** The minor version number */
-    static const int minorNumber = 3;
+    static const int minorNumber = 4;
 };
