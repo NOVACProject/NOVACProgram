@@ -209,64 +209,64 @@ const enum MEASUREMENT_MODE { MODE_UNKNOWN, MODE_FLUX, MODE_FIXED, MODE_WINDSPEE
 #define WM_GOTO_SLEEP             WM_USER + 17
 
 // Signals to the WindEvaluator that a new Evaluation-log file has been evaluated
-#define WM_NEW_WIND_EVALLOG				WM_USER + 18
+#define WM_NEW_WIND_EVALLOG         WM_USER + 18
 
 // signal to show that scanner is connected and running
-#define WM_SCANNER_RUN						WM_USER + 19
+#define WM_SCANNER_RUN              WM_USER + 19
 
 //signal to show that scanner is sleeping
-#define WM_SCANNER_SLEEP					WM_USER + 20
+#define WM_SCANNER_SLEEP            WM_USER + 20
 
 //signal to show that scanner is not connected
-#define WM_SCANNER_NOT_CONNECT		WM_USER + 21
+#define WM_SCANNER_NOT_CONNECT      WM_USER + 21
 
 //signal to upload a file to FTP server
-#define WM_UPLOAD_NEW_FILE				WM_USER + 22
+#define WM_UPLOAD_NEW_FILE          WM_USER + 22
 
 //signal to begin a ftp uploading. 
-#define  WM_START_FTP							WM_USER + 23
+#define  WM_START_FTP               WM_USER + 23
 
 //signal to update remote file tree
-#define	 WM_UPDATE_FILE_TREE			WM_USER + 24
+#define	 WM_UPDATE_FILE_TREE        WM_USER + 24
 
 // Signals to the GeometryEvaluator that a new Evaluation-log file has been evaluated
-#define WM_NEW_SCAN_EVALLOG				WM_USER + 25
+#define WM_NEW_SCAN_EVALLOG         WM_USER + 25
 
 //signal to upload cfgonce file
-#define  WM_UPLOAD_CFGONCE					WM_USER + 26
+#define  WM_UPLOAD_CFGONCE          WM_USER + 26
 
 //signal from one thread which is going to download pak file
-#define WM_START_DOWNLOAD					WM_USER + 27
+#define WM_START_DOWNLOAD           WM_USER + 27
 
 //signal from one thread which just finished downloading pak file
-#define WM_FINISH_DOWNLOAD				WM_USER + 28
+#define WM_FINISH_DOWNLOAD          WM_USER + 28
 
 //signal from one thread which got error from downloading pak file
-#define WM_DOWNLOAD_ERROR					WM_USER + 29
+#define WM_DOWNLOAD_ERROR           WM_USER + 29
 
 // Signals that progress has been made, different from WM_PROGRESS
-#define WM_PROGRESS2              WM_USER + 30
+#define WM_PROGRESS2                WM_USER + 30
 
 // Signals that the wind-speed measurements thread has succcessfully correlated two time-series
-#define WM_CORR_SUCCESS						WM_USER + 31
+#define WM_CORR_SUCCESS             WM_USER + 31
 
 // Signals that the plume-height measurement thread has succcessfully calculated one plume height
-#define WM_PH_SUCCESS							WM_USER + 32
+#define WM_PH_SUCCESS               WM_USER + 32
 
 // Signals a zooming event
-#define WM_ZOOM										WM_USER + 33
+#define WM_ZOOM                     WM_USER + 33
 
 // signal from one thread which just finished uploading
-#define WM_FINISH_UPLOAD					WM_USER + 34
+#define WM_FINISH_UPLOAD            WM_USER + 34
 
 // signal that it is time to write the daily report
-#define WM_WRITE_REPORT						WM_USER + 35
+#define WM_WRITE_REPORT             WM_USER + 35
 
 // Signal that the wind-field has changed
-#define WM_NEW_WINDFIELD					WM_USER + 36
+#define WM_NEW_WINDFIELD            WM_USER + 36
 
 // Signal that the configuration-file should be re-written...
-#define WM_REWRITE_CONFIGURATION	WM_USER + 37
+#define WM_REWRITE_CONFIGURATION    WM_USER + 37
 
 // -------------------------------------------------------
 // ---------------- CLASS COMMON.H -----------------------
@@ -284,13 +284,6 @@ public:
             @return - The file size (in bytes)
         */
     static long RetrieveFileSize(CString& fileName);
-
-    /** Write a file
-    @param fileName the file name, including path
-    @param msg the string to write into the file
-    @param mode the writing mode, "a+" or  "w"
-    */
-    static void WriteAFile(const CString& fileName, const CString& msg, char* mode);
 
     // --------------------------------------------------------------------
     // ------------------------ SYSTEM FUNCTIONS  -------------------------
@@ -353,7 +346,7 @@ public:
     /** Opens a dialog window and lets the user browse for a directory.
             @return true if all is ok,
             @return false otherwise */
-    bool BrowseForDirectory(CString& folderName);
+    static bool BrowseForDirectory(CString& folderName);
 
     /** Lists all files in the provided directory.
         If a fileNameFilter is supplied, then only files with names matching the given filter are returned.
@@ -395,29 +388,6 @@ public:
 
     /** pretty prints the current date and time into the string 'txt' */
     static void GetDateTimeText(CString& txt);
-
-    /** Converts the given time to local time using the information in the CGPSData.
-            The date is stored as in the CSpectrumInfo-class with date[0] as 4-digit year,
-            date[1] is month (1-12) and date[2] is day of month (1-31).
-            @param date - the date in GMT
-            @param hr - the hour in GMT
-            @param gps - the GPS-information with latitude and longitude for the site
-                where the local time is wanted
-            @return - SUCCES if all is ok. Upon successful return, the parameters
-                date and hr will be filled with the local time and date.
-            NB!! daylight-saving time is not taken into account in these computations
-            NB!! This calculation is only based on the distance to longitude=0. Thefore
-                the resulting hour can have an error of up to +- 3 hours from the real local-time.
-            */
-    static RETURN_CODE ConvertToLocalTime(unsigned short date[3], int& hr, novac::CGPSData& gps);
-
-    /** Decreases the given date by the given number of days.
-            If nDays is negative, the date will be increased instead. */
-    static RETURN_CODE DecreaseDate(unsigned short date[3], int nDays);
-
-    /** Increases the given date by the given number of days.
-            If nDays is negative, the date will be decreased instead. */
-    static RETURN_CODE IncreaseDate(unsigned short date[3], int nDays);
 
     /** Takes a given year and month and returns the number of days in that month.
             The month ranges from 1 to 12. Any illegal values in the month will return 0. */

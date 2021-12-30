@@ -19,7 +19,7 @@ namespace ConfigurationDialog
         enum { IDD = IDD_CONFIGURATION_GLOBAL };
 
         /** the actual configuration */
-        CConfigurationSetting *m_configuration;
+        CConfigurationSetting* m_configuration;
 
         /** Browsing for a new output directory */
         afx_msg void OnBrowseOutputPath();

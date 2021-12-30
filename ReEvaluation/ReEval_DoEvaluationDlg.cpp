@@ -9,7 +9,7 @@ using namespace novac;
 
 
 UINT DoEvaluation(LPVOID pParam) {
-    CReEvaluator *m_reeval = (CReEvaluator*)pParam;
+    CReEvaluator* m_reeval = (CReEvaluator*)pParam;
 
     m_reeval->fRun = true;
     m_reeval->DoEvaluation();
@@ -134,7 +134,7 @@ void  CReEval_DoEvaluationDlg::PopulateRefList()
     }
     else
     {
-        const CFitWindow &window = m_reeval->m_window[m_reeval->m_curWindow];
+        const CFitWindow& window = m_reeval->m_window[m_reeval->m_curWindow];
 
         for (int ii = 0; ii < window.nRef; ++ii)
         {
@@ -243,8 +243,8 @@ void CReEval_DoEvaluationDlg::OnCancelEvaluation()
 LRESULT CReEval_DoEvaluationDlg::OnEvaluatedSpectrum(WPARAM wp, LPARAM lp) {
     // if the reevaluator stopped, don't do anything
     if (!m_reeval->fRun) {
-        CEvaluationResultView* resultview = (CEvaluationResultView *)wp;
-        CScanResult * result = (CScanResult *)lp;
+        CEvaluationResultView* resultview = (CEvaluationResultView*)wp;
+        CScanResult* result = (CScanResult*)lp;
 
         // Clean up the pointers which we were given
         m_result.reset();
@@ -257,12 +257,12 @@ LRESULT CReEval_DoEvaluationDlg::OnEvaluatedSpectrum(WPARAM wp, LPARAM lp) {
     int lastWindowUsed = 0; // which window in the re-evaluator was used last time we received an evaluated spectrum?
 
     // Capture the spectrum (remember to delete this later)
-    CEvaluationResultView* resultview = (CEvaluationResultView *)wp;
+    CEvaluationResultView* resultview = (CEvaluationResultView*)wp;
 
-    m_result.reset((CScanResult *)lp);
+    m_result.reset((CScanResult*)lp);
 
     // a handle to the fit window
-    CFitWindow &window = m_reeval->m_window[m_reeval->m_curWindow];
+    CFitWindow& window = m_reeval->m_window[m_reeval->m_curWindow];
     int fitLow = window.fitLow - resultview->measuredSpectrum.m_info.m_startChannel;
     int fitHigh = window.fitHigh - resultview->measuredSpectrum.m_info.m_startChannel;
 
@@ -329,7 +329,7 @@ void CReEval_DoEvaluationDlg::RedrawTotalFitGraph() {
 void CReEval_DoEvaluationDlg::DrawReference()
 {
     // a handle to the fit window
-    CFitWindow &window = m_reeval->m_window[m_reeval->m_curWindow];
+    CFitWindow& window = m_reeval->m_window[m_reeval->m_curWindow];
 
     // The reference that we shall draw
     int refIndex = m_specieList.GetCurSel();
@@ -378,7 +378,7 @@ void CReEval_DoEvaluationDlg::DrawFit() {
     static double oldMinV = 1e16, oldMaxV = -1e16;
 
     // a handle to the fit window
-    CFitWindow &window = m_reeval->m_window[m_reeval->m_curWindow];
+    CFitWindow& window = m_reeval->m_window[m_reeval->m_curWindow];
 
     // the width of the fit region (fitHigh - fitLow)
     int fitLow = window.fitLow;
@@ -427,7 +427,7 @@ void CReEval_DoEvaluationDlg::DrawResidual() {
 
     /* show the residual */
 
-    CFitWindow &window = m_reeval->m_window[m_reeval->m_curWindow];
+    CFitWindow& window = m_reeval->m_window[m_reeval->m_curWindow];
 
     // the width of the fit region (fitHigh - fitLow)
     int fitLow = window.fitLow;

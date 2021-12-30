@@ -7,33 +7,33 @@
 class CNovacMasterProgramDoc : public CDocument
 {
 protected: // create from serialization only
-	CNovacMasterProgramDoc();
-	DECLARE_DYNCREATE(CNovacMasterProgramDoc)
+    CNovacMasterProgramDoc();
+    DECLARE_DYNCREATE(CNovacMasterProgramDoc)
 
-// Attributes
+    // Attributes
 public:
 
-// Operations
+    // Operations
 public:
 
-// Overrides
-	public:
-	virtual BOOL OnNewDocument();
-	virtual void Serialize(CArchive& ar);
-
-// Implementation
+    // Overrides
 public:
-	virtual ~CNovacMasterProgramDoc();
+    virtual BOOL OnNewDocument();
+    virtual void Serialize(CArchive& ar);
+
+    // Implementation
+public:
+    virtual ~CNovacMasterProgramDoc();
 #ifdef _DEBUG
-	virtual void AssertValid() const;
-	virtual void Dump(CDumpContext& dc) const;
+    virtual void AssertValid() const;
+    virtual void Dump(CDumpContext& dc) const;
 #endif
 
 protected:
 
-// Generated message map functions
+    // Generated message map functions
 protected:
-	DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
 };
 
 

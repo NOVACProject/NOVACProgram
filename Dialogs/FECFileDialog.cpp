@@ -32,7 +32,7 @@ IMPLEMENT_DYNAMIC(CFECFileDialog, CFileDialog)
 
 CFECFileDialog::CFECFileDialog(BOOL bOpenFileDialog, LPCTSTR lpszDefExt, LPCTSTR lpszFileName,
                                DWORD dwFlags, LPCTSTR lpszFilter, CWnd* pParentWnd) :
-CFileDialog(bOpenFileDialog, lpszDefExt, lpszFileName, dwFlags, lpszFilter, pParentWnd)
+    CFileDialog(bOpenFileDialog, lpszDefExt, lpszFileName, dwFlags, lpszFilter, pParentWnd)
 {
     Files = NULL;
     Folder = NULL;
@@ -62,8 +62,8 @@ CFECFileDialog::~CFECFileDialog()
 }
 
 BEGIN_MESSAGE_MAP(CFECFileDialog, CFileDialog)
-//{{AFX_MSG_MAP(CFECFileDialog)
-//}}AFX_MSG_MAP
+    //{{AFX_MSG_MAP(CFECFileDialog)
+    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -98,7 +98,7 @@ int CFECFileDialog::DoModal()
         if (err == FNERR_BUFFERTOOSMALL/*0x3003*/ && Files)
             ret = IDOK;
     }
-	return ret;
+    return ret;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -117,13 +117,13 @@ int CFECFileDialog::DoModal()
 //
 /////////////////////////////////////////////////////////////////////////////
 
-CString CFECFileDialog::GetNextPathName(POSITION &pos) const
+CString CFECFileDialog::GetNextPathName(POSITION& pos) const
 {
     if (!Files)
         return CFileDialog::GetNextPathName(pos);
 
-    ASSERT(pos);    
-    TCHAR *ptr = (TCHAR *)pos;
+    ASSERT(pos);
+    TCHAR* ptr = (TCHAR*)pos;
 
     CString ret = Folder;
     ret += _T("\\");
@@ -163,10 +163,10 @@ POSITION CFECFileDialog::GetStartPosition()
         temp.Replace(_T("\" \""), _T("\""));
         temp.Delete(0, 1);                      // remove leading quote mark
         temp.Delete(temp.GetLength() - 1, 1);   // remove trailing space
-    
+
         _tcscpy(Files, temp);
-    
-        TCHAR *ptr = Files;
+
+        TCHAR* ptr = Files;
         while (*ptr)
         {
             if ('\"' == *ptr)
@@ -175,7 +175,7 @@ POSITION CFECFileDialog::GetStartPosition()
         }
         bParsed = TRUE;
     }
-    
+
     return (POSITION)Files;
 }
 
@@ -199,73 +199,73 @@ POSITION CFECFileDialog::GetStartPosition()
 
 void CFECFileDialog::OnFileNameChange()
 {
-	DWORD dwReqBuffSize = _CalcRequiredBuffSize();
-	if (dwReqBuffSize > GetOFN().nMaxFile)
-	{
-		_SetExtBuffer(dwReqBuffSize);
-	}
+    DWORD dwReqBuffSize = _CalcRequiredBuffSize();
+    if (dwReqBuffSize > GetOFN().nMaxFile)
+    {
+        _SetExtBuffer(dwReqBuffSize);
+    }
 
-	CFileDialog::OnFileNameChange();
+    CFileDialog::OnFileNameChange();
 }
 
 void CFECFileDialog::_SetExtBuffer(DWORD dwReqBuffSize)
 {
-	try
-	{
-		GetOFN().nMaxFile = dwReqBuffSize;
-		delete[]m_pFileBuff;
-		m_pFileBuff = new TCHAR[dwReqBuffSize];
-		GetOFN().lpstrFile = m_pFileBuff;
-	}
-	catch (CException* e)
-	{
-		e->ReportError();
-		e->Delete();
-	}
+    try
+    {
+        GetOFN().nMaxFile = dwReqBuffSize;
+        delete[]m_pFileBuff;
+        m_pFileBuff = new TCHAR[dwReqBuffSize];
+        GetOFN().lpstrFile = m_pFileBuff;
+    }
+    catch (CException* e)
+    {
+        e->ReportError();
+        e->Delete();
+    }
 }
 
 DWORD CFECFileDialog::_CalcRequiredBuffSize()
 {
-	DWORD dwRet = 0;
-	IFileOpenDialog* pFileOpen = GetIFileOpenDialog();
-	ASSERT(NULL != pFileOpen);
+    DWORD dwRet = 0;
+    IFileOpenDialog* pFileOpen = GetIFileOpenDialog();
+    ASSERT(NULL != pFileOpen);
 
-	CComPtr<IShellItemArray> pIItemArray;
-	HRESULT hr = pFileOpen->GetSelectedItems(&pIItemArray);
-	DWORD dwItemCount = 0;
-	if (SUCCEEDED(hr))
-	{
-		hr = pIItemArray->GetCount(&dwItemCount);
-		if (SUCCEEDED(hr))
-		{
-			for (DWORD dwItem = 0; dwItem < dwItemCount; dwItem++)
-			{
-				CComPtr<IShellItem> pItem;
-				hr = pIItemArray->GetItemAt(dwItem, &pItem);
-				if (SUCCEEDED(hr))
-				{
-					LPWSTR pszName = NULL;
-					if (dwItem == 0)
-					{
-						// get full path and file name
-						hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszName);
-					}
-					else
-					{
-						// get file name
-						hr = pItem->GetDisplayName(SIGDN_NORMALDISPLAY, &pszName);
-					}
-					if (SUCCEEDED(hr))
-					{
-						dwRet += wcslen(pszName) + 1;
-						::CoTaskMemFree(pszName);
-					}
-				}
-			}
-		}
-	}
-	dwRet += 1; // add an extra character
-				// release the IFileOpenDialog pointer
-	pFileOpen->Release();
-	return dwRet;
+    CComPtr<IShellItemArray> pIItemArray;
+    HRESULT hr = pFileOpen->GetSelectedItems(&pIItemArray);
+    DWORD dwItemCount = 0;
+    if (SUCCEEDED(hr))
+    {
+        hr = pIItemArray->GetCount(&dwItemCount);
+        if (SUCCEEDED(hr))
+        {
+            for (DWORD dwItem = 0; dwItem < dwItemCount; dwItem++)
+            {
+                CComPtr<IShellItem> pItem;
+                hr = pIItemArray->GetItemAt(dwItem, &pItem);
+                if (SUCCEEDED(hr))
+                {
+                    LPWSTR pszName = NULL;
+                    if (dwItem == 0)
+                    {
+                        // get full path and file name
+                        hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszName);
+                    }
+                    else
+                    {
+                        // get file name
+                        hr = pItem->GetDisplayName(SIGDN_NORMALDISPLAY, &pszName);
+                    }
+                    if (SUCCEEDED(hr))
+                    {
+                        dwRet += wcslen(pszName) + 1;
+                        ::CoTaskMemFree(pszName);
+                    }
+                }
+            }
+        }
+    }
+    dwRet += 1; // add an extra character
+                // release the IFileOpenDialog pointer
+    pFileOpen->Release();
+    return dwRet;
 }

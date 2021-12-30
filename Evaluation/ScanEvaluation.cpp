@@ -57,15 +57,8 @@ std::unique_ptr<CScanResult> CScanEvaluation::GetResult()
     return copiedResult;
 }
 
-bool CScanEvaluation::HasResult()
-{
-    std::lock_guard<std::mutex> lock{ m_resultMutex };
-
-    return (nullptr != m_result.get());
-}
-
 /** Called to evaluate one scan */
-long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& window, bool *fRun, const Configuration::CDarkSettings *darkSettings)
+long CScanEvaluation::EvaluateScan(const CString& scanfile, const CFitWindow& window, bool* fRun, const Configuration::CDarkSettings* darkSettings)
 {
     CString message;	// used for ShowMessage messages
     int	index = 0;		// keeping track of the index of the current spectrum into the .pak-file
@@ -107,8 +100,8 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
     {
         for (int k = 0; k < copyOfWindow.nRef; ++k)
         {
-            copyOfWindow.ref[k].m_shiftOption = SHIFT_FIX;
-            copyOfWindow.ref[k].m_squeezeOption = SHIFT_FIX;
+            copyOfWindow.ref[k].m_shiftOption = SHIFT_TYPE::SHIFT_FIX;
+            copyOfWindow.ref[k].m_squeezeOption = SHIFT_TYPE::SHIFT_FIX;
             copyOfWindow.ref[k].m_shiftValue = 0.0;
             copyOfWindow.ref[k].m_squeezeValue = 1.0;
         }
@@ -150,6 +143,7 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
         else
         {
             ShowMessage(m_lastErrorMessage.c_str());
+            eval = std::make_unique<CEvaluationBase>(copyOfWindow);
         }
     }
     else
@@ -333,7 +327,7 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
             // i. If the user wants us to sleep between each evaluation. Do so...
             if (m_pause != nullptr && *m_pause == 1 && m_sleeping != nullptr)
             {
-                CWinThread *thread = AfxGetThread();
+                CWinThread* thread = AfxGetThread();
                 *m_sleeping = true;
                 if (pView != 0)
                 {
@@ -371,8 +365,8 @@ long CScanEvaluation::EvaluateScan(const CString &scanfile, const CFitWindow& wi
                         continue;
                     }
 
-                    newWindow.ref[k].m_shiftOption = SHIFT_FIX;
-                    newWindow.ref[k].m_squeezeOption = SHIFT_FIX;
+                    newWindow.ref[k].m_shiftOption = SHIFT_TYPE::SHIFT_FIX;
+                    newWindow.ref[k].m_squeezeOption = SHIFT_TYPE::SHIFT_FIX;
                     newWindow.ref[k].m_shiftValue = result.m_referenceResult[0].m_shift;
                     newWindow.ref[k].m_squeezeValue = result.m_referenceResult[0].m_squeeze;
                 }
@@ -397,7 +391,7 @@ void CScanEvaluation::UpdateResult(std::shared_ptr<CScanResult> newResult)
     m_result = newResult;
 }
 
-void CScanEvaluation::ShowResult(const CSpectrum &spec, const CEvaluationBase *eval, long curSpecIndex, long specNum)
+void CScanEvaluation::ShowResult(const CSpectrum& spec, const CEvaluationBase* eval, long curSpecIndex, long specNum)
 {
     if (pView == nullptr)
     {
@@ -449,7 +443,7 @@ void CScanEvaluation::ShowResult(const CSpectrum &spec, const CEvaluationBase *e
     pView->PostMessage(WM_PROGRESS2, (WPARAM)m_prog_SpecCur, (LPARAM)m_prog_SpecNum);
 }
 
-RETURN_CODE CScanEvaluation::GetDark(CScanFileHandler *scan, const CSpectrum &spec, CSpectrum &dark, const Configuration::CDarkSettings *darkSettings)
+RETURN_CODE CScanEvaluation::GetDark(CScanFileHandler* scan, const CSpectrum& spec, CSpectrum& dark, const Configuration::CDarkSettings* darkSettings)
 {
     m_lastErrorMessage = "";
     const bool successs = ScanEvaluationBase::GetDark(*scan, spec, dark, darkSettings);
@@ -468,7 +462,7 @@ RETURN_CODE CScanEvaluation::GetDark(CScanFileHandler *scan, const CSpectrum &sp
 }
 
 /** This returns the sky spectrum that is to be used in the fitting. */
-RETURN_CODE CScanEvaluation::GetSky(CScanFileHandler *scan, CSpectrum &sky) {
+RETURN_CODE CScanEvaluation::GetSky(CScanFileHandler* scan, CSpectrum& sky) {
     CString errorMsg;
 
     // If the sky spectrum is the first spectrum in the scan
@@ -565,7 +559,7 @@ void	CScanEvaluation::SetOption_AveragedSpectra(bool averaged) {
 }
 
 /** Returns true if the spectrum should be ignored */
-bool CScanEvaluation::Ignore(const CSpectrum &spec, const CFitWindow window) {
+bool CScanEvaluation::Ignore(const CSpectrum& spec, const CFitWindow window) {
     bool ret = false;
 
     // Dark spectra
@@ -589,7 +583,7 @@ bool CScanEvaluation::Ignore(const CSpectrum &spec, const CFitWindow window) {
 }
 
 
-CEvaluationResult CScanEvaluation::FindOptimumShiftAndSqueeze(const CEvaluationBase *originalEvaluation, CScanFileHandler *scan, CScanResult *result)
+CEvaluationResult CScanEvaluation::FindOptimumShiftAndSqueeze(const CEvaluationBase* originalEvaluation, CScanFileHandler* scan, CScanResult* result)
 {
     CSpectrum spec, sky, dark;
     int specieNum = 0;
@@ -611,16 +605,16 @@ CEvaluationResult CScanEvaluation::FindOptimumShiftAndSqueeze(const CEvaluationB
 
     // 3. Evaluate this spectrum again with free (and linked) shift
     CFitWindow newFitWindow = originalEvaluation->FitWindow(); // Create a local copy which we can modify
-    newFitWindow.ref[0].m_shiftOption = SHIFT_FREE;
-    newFitWindow.ref[0].m_squeezeOption = SHIFT_FIX;
+    newFitWindow.ref[0].m_shiftOption = SHIFT_TYPE::SHIFT_FREE;
+    newFitWindow.ref[0].m_squeezeOption = SHIFT_TYPE::SHIFT_FIX;
     newFitWindow.ref[0].m_squeezeValue = 1.0;
     for (int k = 1; k < newFitWindow.nRef; ++k) {
         if (EqualsIgnoringCase(newFitWindow.ref[k].m_specieName, "FraunhoferRef")) {
             continue;
         }
 
-        newFitWindow.ref[k].m_shiftOption = SHIFT_LINK;
-        newFitWindow.ref[k].m_squeezeOption = SHIFT_LINK;
+        newFitWindow.ref[k].m_shiftOption = SHIFT_TYPE::SHIFT_LINK;
+        newFitWindow.ref[k].m_squeezeOption = SHIFT_TYPE::SHIFT_LINK;
         newFitWindow.ref[k].m_shiftValue = 0.0;
         newFitWindow.ref[k].m_squeezeValue = 0.0;
     }
@@ -669,7 +663,7 @@ CEvaluationResult CScanEvaluation::FindOptimumShiftAndSqueeze(const CEvaluationB
     return newResult;
 }
 
-CFitWindow* CScanEvaluation::FindOptimumShiftAndSqueeze_Fraunhofer(const CEvaluationBase *originalEvaluation, CScanFileHandler *scan)
+CFitWindow* CScanEvaluation::FindOptimumShiftAndSqueeze_Fraunhofer(const CEvaluationBase* originalEvaluation, CScanFileHandler* scan)
 {
     CFitWindow newFitWindow = originalEvaluation->FitWindow(); // Create a local copy which we can modify
     double shift, shiftError, squeeze, squeezeError;
@@ -684,12 +678,12 @@ CFitWindow* CScanEvaluation::FindOptimumShiftAndSqueeze_Fraunhofer(const CEvalua
     const int NO_SPECTRUM_INDEX = -2;
 
     // 1. Find the spectrum for which we should determine shift & squeeze
-    //			This spectrum should have high enough intensity in the fit-region
-    //			without being saturated.
+    //      This spectrum should have high enough intensity in the fit-region
+    //      without being saturated.
     int indexOfMostSuitableSpectrum = NO_SPECTRUM_INDEX;
     scan->GetSky(spectrum);
     fitIntensity = spectrum.MaxValue(fitLow, fitHigh);
-    maxInt = CSpectrometerDatabase::GetInstance().GetModel(spectrum.m_info.m_specModelName).maximumIntensity;
+    maxInt = CSpectrometerDatabase::GetInstance().GetModel(spectrum.m_info.m_specModelName).FullDynamicRangeForSpectrum(spectrum.m_info);
     if (spectrum.NumSpectra() > 0) {
         fitSaturation = fitIntensity / (spectrum.NumSpectra() * maxInt);
     }
@@ -707,7 +701,7 @@ CFitWindow* CScanEvaluation::FindOptimumShiftAndSqueeze_Fraunhofer(const CEvalua
 
     while (scan->GetNextSpectrum(spectrum)) {
         fitIntensity = spectrum.MaxValue(fitLow, fitHigh);
-        maxInt = CSpectrometerDatabase::GetInstance().GetModel(spectrum.m_info.m_specModelName).maximumIntensity;
+        maxInt = CSpectrometerDatabase::GetInstance().GetModel(spectrum.m_info.m_specModelName).FullDynamicRangeForSpectrum(spectrum.m_info);
 
         // Get the saturation-ratio for this spectrum
         if (spectrum.NumSpectra() > 0) {
@@ -773,8 +767,8 @@ CFitWindow* CScanEvaluation::FindOptimumShiftAndSqueeze_Fraunhofer(const CEvalua
             CFitWindow* bestFitWindow = new CFitWindow{ originalEvaluation->FitWindow() };
             // The fit is good enough to use the values
             for (int it = 0; it < originalEvaluation->FitWindow().nRef; ++it) {
-                bestFitWindow->ref[it].m_shiftOption = SHIFT_FIX;
-                bestFitWindow->ref[it].m_squeezeOption = SHIFT_FIX;
+                bestFitWindow->ref[it].m_shiftOption = SHIFT_TYPE::SHIFT_FIX;
+                bestFitWindow->ref[it].m_squeezeOption = SHIFT_TYPE::SHIFT_FIX;
                 bestFitWindow->ref[it].m_shiftValue = shift;
                 bestFitWindow->ref[it].m_squeezeValue = squeeze;
             }

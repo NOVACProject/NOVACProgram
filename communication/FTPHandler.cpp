@@ -8,7 +8,7 @@
 
 using namespace Communication;
 
-extern CFormView *pView;                   // <-- the main window
+extern CFormView* pView;                   // <-- the main window
 extern CConfigurationSetting g_settings;   // <-- the settings
 
 // ------------------- Handling the different versions of electronics -------------------
@@ -59,7 +59,7 @@ CFTPHandler::~CFTPHandler(void)
     ShowMessage(message);
 }
 
-void CFTPHandler::SetFTPInfo(int mainIndex, const CString& hostname, const CString& userName, const CString &pwd, int timeOut, long portNumber)
+void CFTPHandler::SetFTPInfo(int mainIndex, const CString& hostname, const CString& userName, const CString& pwd, int timeOut, long portNumber)
 {
     this->m_mainIndex = mainIndex;
     this->m_ftpInfo.hostName = hostname;
@@ -85,7 +85,7 @@ void CFTPHandler::SetFTPInfo(int mainIndex, const CString& hostname, const CStri
     }
 }
 
-void CFTPHandler::SetFTPInfo(int mainIndex, const CString& IP, const CString& userName, const CString &pwd, const CString &admUserName, const CString &admPwd, int timeOut, long portNumber)
+void CFTPHandler::SetFTPInfo(int mainIndex, const CString& IP, const CString& userName, const CString& pwd, const CString& admUserName, const CString& admPwd, int timeOut, long portNumber)
 {
     if (m_electronicsBox == BOX_AXIOMTEK)
     {
@@ -109,7 +109,7 @@ bool CFTPHandler::DownloadPakFiles(const CString& folder, std::vector<CScannerFi
 
     if (Connect(m_ftpInfo.hostName, m_ftpInfo.userName, m_ftpInfo.password, m_ftpInfo.timeout, m_ftpInfo.port) != 1)
     {
-        pView->PostMessage(WM_SCANNER_NOT_CONNECT, (WPARAM)&(m_spectrometerSerialID), 0);
+        pView->PostMessage(WM_SCANNER_NOT_CONNECT, (WPARAM) & (m_spectrometerSerialID), 0);
         return false;
     }
 
@@ -217,7 +217,7 @@ bool CFTPHandler::PollScanner()
                 // we managed to download the files, now remove the folder
                 if (Connect(m_ftpInfo.hostName, m_ftpInfo.userName, m_ftpInfo.password, m_ftpInfo.timeout, m_ftpInfo.port) != 1)
                 {
-                    pView->PostMessage(WM_SCANNER_NOT_CONNECT, (WPARAM)&(m_spectrometerSerialID), 0);
+                    pView->PostMessage(WM_SCANNER_NOT_CONNECT, (WPARAM) & (m_spectrometerSerialID), 0);
                     return false;
                 }
                 DeleteFolder(folder);
@@ -242,7 +242,7 @@ bool CFTPHandler::PollScanner()
     return true;
 }
 
-bool CFTPHandler::DownloadOldPak(long interval)
+bool CFTPHandler::DownloadOldPak(long /*interval*/)
 {
     time_t startTime, stopTime;
 
@@ -368,7 +368,7 @@ bool CFTPHandler::GetDiskFileList(char disk)
 
         ftpSocket.Disconnect();
         ShowMessage("File list was downloaded.");
-        
+
         return (m_fileInfoList.size() > 0);
     }
     else
@@ -583,7 +583,7 @@ bool CFTPHandler::DeleteRemoteFile(const CString& remoteFile)
     {
         if (Connect(m_ftpInfo.hostName, m_ftpInfo.userName, m_ftpInfo.password, m_ftpInfo.timeout, m_ftpInfo.port) != 1)
         {
-            pView->PostMessage(WM_SCANNER_NOT_CONNECT, (WPARAM)&(m_spectrometerSerialID), 0);
+            pView->PostMessage(WM_SCANNER_NOT_CONNECT, (WPARAM) & (m_spectrometerSerialID), 0);
             return false;
         }
     }
@@ -623,7 +623,7 @@ bool CFTPHandler::DownloadFile(const CString& remoteFileName, const CString& loc
     }
 
     //show running lamp on interface
-    pView->PostMessage(WM_SCANNER_RUN, (WPARAM)&(m_spectrometerSerialID), 0);
+    pView->PostMessage(WM_SCANNER_RUN, (WPARAM) & (m_spectrometerSerialID), 0);
 
     timing_Start = clock(); // <-- timing...
     useHighResolutionCounter = QueryPerformanceCounter(&timingStart);
@@ -658,7 +658,7 @@ bool CFTPHandler::DownloadFile(const CString& remoteFileName, const CString& loc
 
 bool CFTPHandler::MakeCommandFile(const CString& fileName, const char* command)
 {
-    FILE *f = fopen(fileName, "w");
+    FILE* f = fopen(fileName, "w");
     if (f == nullptr)
     {
         return false; // could not open file for writing
@@ -706,7 +706,7 @@ void CFTPHandler::GotoSleep()
         ShowMessage("Remote File command.txt could not be removed");
     }
     SendCommand("pause\npoweroff");
-    pView->PostMessage(WM_SCANNER_SLEEP, (WPARAM)&(m_spectrometerSerialID), 0);
+    pView->PostMessage(WM_SCANNER_SLEEP, (WPARAM) & (m_spectrometerSerialID), 0);
     //download old pak files during sleeping time
     DownloadOldPak(14400);
     //disconnect when finish downloading 2007-09-23

@@ -1,5 +1,6 @@
 #include "StdAfx.h"
-#include "mastercontroller.h"
+#include "MasterController.h"
+#include "Common/Common.h"
 
 #ifdef _MSC_VER
 #pragma warning (push, 4)
@@ -29,25 +30,25 @@ using namespace FileHandler;
 extern CConfigurationSetting g_settings;	// <-- The settings
 
 /** The communication controller */
-CWinThread *g_comm;
+CWinThread* g_comm;
 
 /** The evaluation thread */
-CWinThread *g_eval;
+CWinThread* g_eval;
 
 /** The FTP-upload thread */
-CWinThread *g_ftp;
+CWinThread* g_ftp;
 
 /** The thread that evaluates the wind-measurements */
-CWinThread *g_windMeas;
+CWinThread* g_windMeas;
 
 /** The thread that combines the scans into plume-height calculations */
-CWinThread *g_geometry;
+CWinThread* g_geometry;
 
 /** The thread that re-reads (and downloads) the wind-field file */
-CWinThread *g_windFieldImport;
+CWinThread* g_windFieldImport;
 
 /** The Report-writing thread */
-CWinThread *g_report;
+CWinThread* g_report;
 
 // -------------- We also need to synchronize the threads somewhat -----------
 
@@ -142,7 +143,8 @@ void CMasterController::Start() {
     // Check if there's any old pak-files lying around that should be taken care of
     AfxBeginThread(CheckForOldSpectra, nullptr, THREAD_PRIORITY_NORMAL, 0, 0, nullptr);
 
-    message.Format("%s. Compile date: %s", (LPCTSTR)m_common.GetString(MSG_PROGRAM_STARTED_SUCESSFULLY), __DATE__);
+    Common common;
+    message.Format("%s. Compile date: %s", (LPCTSTR)common.GetString(MSG_PROGRAM_STARTED_SUCESSFULLY), __DATE__);
     ShowMessage(message);
 }
 
@@ -180,48 +182,37 @@ void CMasterController::Stop()
 
 UINT CheckForOldSpectra(LPVOID /*pParam*/)
 {
+    CList <CString, CString&> pakFilesToEvaluate;
     Common common;
-    common.GetExePath();
-    CList <CString, CString &> pakFilesToEvaluate;
 
     // 1. check for spectra in the output\\temp - directory
-    CString path;
+    CString baseDirectory;
     if (strlen(g_settings.outputDirectory) == 0)
     {
-        path.Format("%sTemp", (LPCTSTR)common.m_exePath);
+        baseDirectory.Format("%sTemp\\", (LPCTSTR)common.m_exePath);
     }
     else
     {
-        path.Format("%sTemp", (LPCTSTR)g_settings.outputDirectory);
+        baseDirectory.Format("%sTemp\\", (LPCTSTR)g_settings.outputDirectory);
     }
-    common.CheckForSpectraInDir(path, pakFilesToEvaluate);
+    Common::CheckForSpectraInDir(baseDirectory, pakFilesToEvaluate);
 
     // 2. Check for spectra in the output\\temp\\SERIAL - directory(-ies)
     for (unsigned int i = 0; i < g_settings.scannerNum; ++i)
     {
-        const CString serial = g_settings.scanner[i].spec[0].serialNumber;
+        CString path;
+        path.Format("%s%s", (LPCTSTR)baseDirectory, (LPCTSTR)g_settings.scanner[i].spec[0].serialNumber);
 
-        if (strlen(g_settings.outputDirectory) == 0)
-        {
-            path.Format("%sTemp\\%s", (LPCTSTR)common.m_exePath, (LPCTSTR)serial);
-        }
-        else
-        {
-            path.Format("%sTemp\\%s", (LPCTSTR)g_settings.outputDirectory, (LPCTSTR)serial);
-        }
-        common.CheckForSpectraInDir(path, pakFilesToEvaluate);
+        Common::CheckForSpectraInDir(path, pakFilesToEvaluate);
     }
 
     // 3. Check for spectra in the output\\temp\\RXYZ - directory(-ies)
-    if (strlen(g_settings.outputDirectory) == 0)
     {
-        path.Format("%sTemp\\", (LPCTSTR)common.m_exePath);
+        // TODO: Figure out why this is identical to the path we have already checked above!
+        CString path;
+        path.Format("%s", (LPCTSTR)baseDirectory);
+        Common::CheckForSpectraInDir(path, pakFilesToEvaluate);
     }
-    else
-    {
-        path.Format("%sTemp\\", (LPCTSTR)g_settings.outputDirectory);
-    }
-    common.CheckForSpectraInHexDir(path, pakFilesToEvaluate);
 
     // 4. Go through all the spectrum files found and evaluate them
     if (!pakFilesToEvaluate.IsEmpty())
@@ -230,7 +221,7 @@ UINT CheckForOldSpectra(LPVOID /*pParam*/)
         POSITION pos = pakFilesToEvaluate.GetHeadPosition();
         while (pos != nullptr)
         {
-            CString &fn = pakFilesToEvaluate.GetNext(pos);
+            CString& fn = pakFilesToEvaluate.GetNext(pos);
             if (IsExistingFile(fn))
             {
                 pakFileHandler.ReadDownloadedFile(fn);
@@ -258,7 +249,7 @@ bool CMasterController::CheckSettings()
         {
             for (int k = 0; k < g_settings.scanner[i].spec[j].channelNum; ++k)
             {
-                const novac::CFitWindow*window = &g_settings.scanner[i].spec[j].channel[k].fitWindow;
+                const novac::CFitWindow* window = &g_settings.scanner[i].spec[j].channel[k].fitWindow;
                 for (int n = 0; n < window->nRef; ++n)
                 {
                     FILE* f = fopen(window->ref[n].m_path.c_str(), "r");
@@ -286,7 +277,7 @@ void SetThreadName(DWORD dwThreadID, LPCTSTR szThreadName)
     info.dwThreadID = dwThreadID;
     info.dwFlags = 0;
     __try {
-        RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(DWORD), (DWORD *)&info);
+        RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(DWORD), (DWORD*)&info);
     }
     __except (EXCEPTION_CONTINUE_EXECUTION) {
     }

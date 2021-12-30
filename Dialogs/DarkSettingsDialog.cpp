@@ -108,9 +108,9 @@ void CDarkSettingsDialog::OnOK()
         return; // shouldn't happen...
 
     // Initialize the values of the dialog
-    m_darkSettings->m_darkSpecOption    = (Configuration::DARK_SPEC_OPTION)m_darkSpecOption;
+    m_darkSettings->m_darkSpecOption = (Configuration::DARK_SPEC_OPTION)m_darkSpecOption;
     m_darkSettings->m_darkCurrentOption = (Configuration::DARK_MODEL_OPTION)m_dcSpecOption;
-    m_darkSettings->m_offsetOption      = (Configuration::DARK_MODEL_OPTION)m_offsetSpecOption;
+    m_darkSettings->m_offsetOption = (Configuration::DARK_MODEL_OPTION)m_offsetSpecOption;
 
     // the files
     if (m_darkSettings->m_darkSpecOption == Configuration::DARK_SPEC_OPTION::USER_SUPPLIED) {

@@ -32,7 +32,7 @@ namespace Communication
 
             CSerialInfo(int index, bool sleep, int medium)
                 : m_mainIndex(index), m_sleepFlag(sleep), m_medium(medium)
-                {}
+            {}
         };
 
     public:
@@ -111,7 +111,7 @@ namespace Communication
 
         // the sum of the directory polling connections
         int m_totalDirectoryPolling;
-      
+
 
     };
 }

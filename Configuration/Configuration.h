@@ -5,6 +5,7 @@
 #include <SpectralEvaluation/Evaluation/ReferenceFile.h>
 #include <SpectralEvaluation/Evaluation/FitWindow.h>
 #include <SpectralEvaluation/Configuration/DarkSettings.h>
+#include <SpectralEvaluation/Spectra/WavelengthRange.h>
 
 #ifndef _CCONFIGURATIONSETTINGS_H_
 #define _CCONFIGURATIONSETTINGS_H_
@@ -75,7 +76,8 @@ public:
 
         // ----------- The general settings for the communication --------------
 
-        /** How often the scanning Instrument should be queried for new data */
+        /** How often the scanning Instrument should be queried for new data.
+            This is the time between polls in seconds */
         long queryPeriod;
 
         /** Time to start sleeping */
@@ -85,27 +87,97 @@ public:
         struct timeStruct wakeupTime;
 
         /** Assignment operator */
-        CommunicationSetting &operator=(const CommunicationSetting &comm2);
+        CommunicationSetting& operator=(const CommunicationSetting& other) = default;
+        CommunicationSetting(const CommunicationSetting& other) = default;
+    };
+
+    class AutomaticCalibrationSetting
+    {
+    public:
+        AutomaticCalibrationSetting() { Clear(); }
+
+        /** If enabled then the automatic calibration will run at the defined intervals. */
+        BOOL enable = FALSE;
+
+        /** If enabled then new references will be generated and replace the user-configured references. */
+        BOOL generateReferences = FALSE;
+
+        /** Set to true to high-pass filter the created references (and convert them into ppmm). */
+        BOOL filterReferences = TRUE;
+
+        /** The number of hours which needs to pass between each calibration */
+        int intervalHours = 2;
+
+        /** The time of day when we can start performing calibrations. In seconds since midnight UTC.
+            This time is compared against the time of the scan and hence needs to be in UTC.
+            Notice that it is totally valid to have intervalTimeOfDayLow > intervalTimeOfDayHigh for locations far from Europe.
+            Default value is at 9 o'clock (9 * 60 * 60) */
+        int intervalTimeOfDayLow = 32400;
+
+        /** The time of day when we can start performing calibrations. In seconds since midnight UTC.
+            This time is compared against the time of the scan and hence needs to be in UTC.
+            Default value is at 15 o'clock (15 * 60 * 60) */
+        int intervalTimeOfDayHigh = 54000;
+
+        /** The full path to the high resolved solar spectrum */
+        CString solarSpectrumFile;
+
+        /** Path to the intial calibration file (either .std, .clb or .xs).
+            If this is a file in the extended std format then it may also contain the instrument line shape
+            (and hence make the instrumentLineshapeFile unnecessary). */
+        CString initialCalibrationFile;
+
+        /** Path to the initial instrument line shape file (.slf) if any is provided.
+            Ususally not set if m_initialCalibrationFile is .std. */
+        CString instrumentLineshapeFile;
+
+        /** The type of file for the initialCalibrationFile and instrumentLineshapeFile
+        *   (only used for displaying the correct options in the user interface).
+            0 corresponds to both initialCalibrationFile and instrumentLineshapeFile provided
+            1 corresponds to only initialCalibrationFile */
+        int initialCalibrationType = 0;
+
+        /** The option for if an instrument line shape should be fitted as well during
+        *   the retrieval of the pixel-to-wavelength calibration.
+        *   0 corresponds to no fitting of an instrument line shape,
+        *   1 corresponds to fitting a super-gaussian instrument line shape.  */
+        int instrumentLineShapeFitOption = 1;
+
+        /** The wavelength region in which the instrument line shape should be fitted (in nm).  */
+        novac::WavelengthRange instrumentLineShapeFitRegion = novac::WavelengthRange(330.0, 350.0);
+
+        void Clear();
+
+        AutomaticCalibrationSetting(const AutomaticCalibrationSetting& other) = default;
+        AutomaticCalibrationSetting& operator=(const AutomaticCalibrationSetting& other) = default;
     };
 
     class SpectrometerChannelSetting {
     public:
+        SpectrometerChannelSetting() { Clear(); }
+
         /** Resets all values to default */
         void Clear();
-        
+
         /** The fit settings that are defined for this spectrometer */
         novac::CFitWindow fitWindow;
 
         /** The settings for how to get the dark-spectrum */
-        Configuration::CDarkSettings m_darkSettings;
+        Configuration::CDarkSettings darkSettings;
 
-        /** Assignment operator */
-        SpectrometerChannelSetting& operator=(const SpectrometerChannelSetting &spec2);
+        /** Specifies how and if the instrument should perform self-calibration */
+        AutomaticCalibrationSetting autoCalibration;
+
+        /** Assignment */
+        SpectrometerChannelSetting& operator=(const SpectrometerChannelSetting& other) = default;
+        SpectrometerChannelSetting(const SpectrometerChannelSetting& other) = default;
     };
 
     class SpectrometerSetting
     {
     public:
+        SpectrometerSetting() { Clear(); }
+
         /** Resets all values to default */
         void Clear();
 
@@ -121,12 +193,13 @@ public:
         SpectrometerChannelSetting channel[MAX_CHANNEL_NUM];
 
         /** Assignment operator */
-        SpectrometerSetting& operator=(const SpectrometerSetting &spec2);
+        SpectrometerSetting& operator=(const SpectrometerSetting& other) = default;
+        SpectrometerSetting(const SpectrometerSetting& other) = default;
     };
 
     class WindSpeedMeasurementSetting {
     public:
-        WindSpeedMeasurementSetting();
+        WindSpeedMeasurementSetting() { Clear(); }
 
         /** Resets all values to default */
         void Clear();
@@ -165,13 +238,14 @@ public:
         /** */
         double SwitchRange;
 
-        /** Assignment operator */
-        WindSpeedMeasurementSetting& operator=(const WindSpeedMeasurementSetting &ws2);
+        /** Assignment */
+        WindSpeedMeasurementSetting& operator=(const WindSpeedMeasurementSetting& other) = default;
+        WindSpeedMeasurementSetting(const WindSpeedMeasurementSetting& other) = default;
     };
 
     class SetupChangeSetting {
     public:
-        SetupChangeSetting();
+        SetupChangeSetting() { Clear(); }
 
         /** Resets all values to default */
         void Clear();
@@ -193,13 +267,16 @@ public:
                 CHANGEMODE_SAFE  */
         int mode;
 
-        /** Assignment operator */
-        SetupChangeSetting& operator=(const SetupChangeSetting &ws2);
+        /** Assignment */
+        SetupChangeSetting& operator=(const SetupChangeSetting& other) = default;
+        SetupChangeSetting(const SetupChangeSetting& other) = default;
     };
 
     class MotorSetting
     {
     public:
+        MotorSetting() = default;
+
         /** Resets all values to default */
         void Clear();
 
@@ -210,13 +287,14 @@ public:
         int motorStepsComp = 85;
 
         /** Assignment operator */
-        MotorSetting& operator=(const MotorSetting& other);
+        MotorSetting& operator=(const MotorSetting& other) = default;
+        MotorSetting(const MotorSetting& other) = default;
     };
 
     class ScanningInstrumentSetting
     {
     public:
-        ScanningInstrumentSetting();
+        ScanningInstrumentSetting() { Clear(); }
 
         /** Resets all values to default */
         void Clear();
@@ -234,14 +312,14 @@ public:
         double  compass;
 
         /** The opening angle of the cone that the scanner measures in (in degrees).
-        This is 90 degrees for the old scanner, and typically 30 or 45 degrees for the new. */
+            This is 90 degrees for the flat scanner, and typically 30 or 45 degrees for the conical. */
         double  coneAngle;
 
         /** The tilt of the system, in the direction of the scanner. */
         double tilt;
 
         /** The gps-coordinates for the scanning instrument */
-        novac::CGPSData  gps;
+        novac::CGPSData gps;
 
         /** The communication settings for the scanning instrument */
         CommunicationSetting comm;
@@ -272,13 +350,14 @@ public:
         int minColumn;
         int maxColumn;
 
-		/** Plot flux history. */
-		int plotFluxHistory;
-		int minFlux;
-		int maxFlux;
+        /** Plot flux history. */
+        int plotFluxHistory;
+        int minFlux;
+        int maxFlux;
 
-        /** Assignment operator */
-        ScanningInstrumentSetting&  operator=(const ScanningInstrumentSetting &scanner2);
+        /** Assignment */
+        ScanningInstrumentSetting& operator=(const ScanningInstrumentSetting& other) = default;
+        ScanningInstrumentSetting(const ScanningInstrumentSetting& other) = default;
     };
 
     /** Settings for uploading the produced data to the NOVAC server. */
@@ -373,8 +452,14 @@ public:
 /** Lists the name of all volcanoes monitored by instruments connected to this computer. */
 std::vector<std::string> ListMonitoredVolcanoes(const CConfigurationSetting& settings);
 
-/** Extracts the name of the volcano which the provided instrument monitors.
-    Returns empty string if the scanner could not be found. */
-std::string GetVolcanoMonitoredByScanner(const CConfigurationSetting& settings, const std::string& serialNumber);
+/** Identifies the spectrometer with the provided serial in the current settings.
+    The returned scannerIdx and spectrometerIdx identifies the found spectrometer.
+        I.e., settings.scanner[scannerIdx].spec[spectrometerIdx].serialNumber will equal the requested serial.
+    @return true if the spectrometer could be found, otherwise false.
+    @param settings The current software settings
+    @param serial The serial number of the spectrometer to locate. Will return the first one if duplicates exist. 
+    @param scannerIdx The index of the scanner.
+    @param spectrometerIdx The index of the spectrometer */
+bool IdentifySpectrometer(const CConfigurationSetting& settings, const std::string& serial, int& scannerIdx, int& spectrometerIdx);
 
 #endif

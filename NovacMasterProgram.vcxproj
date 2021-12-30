@@ -154,8 +154,6 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Calibration\ReferenceCreationController.cpp" />
-    <ClCompile Include="Calibration\WavelengthCalibrationController.cpp" />
     <ClCompile Include="CombinerThread.cpp" />
     <ClCompile Include="Common\CfgTxtFileHandler.cpp" />
     <ClCompile Include="Common\Common.cpp" />
@@ -181,6 +179,7 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
     <ClCompile Include="communication\SerialCOM.cpp" />
     <ClCompile Include="communication\SerialControllerWithTx.cpp" />
     <ClCompile Include="Configuration\AdvancedFTPUploadSettings.cpp" />
+    <ClCompile Include="Configuration\CCalibrationConfigurationDlg.cpp" />
     <ClCompile Include="Configuration\Configuration.cpp" />
     <ClCompile Include="Configuration\ConfigurationFileHandler.cpp" />
     <ClCompile Include="Configuration\ConfigurationTreeCtrl.cpp" />
@@ -195,7 +194,10 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
     <ClCompile Include="Configuration\WindConfigurationDlg.cpp" />
     <ClCompile Include="CustomSpectrometerModelDlg.cpp" />
     <ClCompile Include="Dialogs\CCalibratePixelToWavelengthDialog.cpp" />
+    <ClCompile Include="Dialogs\CCalibratePixelToWavelengthSetupDialog.cpp" />
     <ClCompile Include="Dialogs\CCalibrateReferencesDialog.cpp" />
+    <ClCompile Include="Dialogs\CCreateStandardReferencesDialog.cpp" />
+    <ClCompile Include="Dialogs\CLogDialog.cpp" />
     <ClCompile Include="Dialogs\ColumnHistoryDlg.cpp" />
     <ClCompile Include="Dialogs\ConfigurationDlg.cpp" />
     <ClCompile Include="Dialogs\DarkSettingsDialog.cpp" />
@@ -235,6 +237,7 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
     <ClCompile Include="Evaluation\EvaluationController.cpp" />
     <ClCompile Include="Evaluation\FitWindowFileHandler.cpp" />
     <ClCompile Include="Evaluation\FluxResult.cpp" />
+    <ClCompile Include="Evaluation\RealTimeCalibration.cpp" />
     <ClCompile Include="Evaluation\ScanEvaluation.cpp" />
     <ClCompile Include="Evaluation\ScanResult.cpp" />
     <ClCompile Include="Evaluation\Spectrometer.cpp" />
@@ -274,22 +277,39 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
     <ClCompile Include="Dialogs\ReferencePlotDlg.cpp" />
     <ClCompile Include="ScannerFileInfo.cpp" />
     <ClCompile Include="ScannerFolderInfo.cpp" />
-    <ClInclude Include="Calibration\InstrumentCalibrationInput.h" />
-    <ClInclude Include="Calibration\ReferenceCreationController.h" />
-    <ClInclude Include="Calibration\WavelengthCalibrationController.h" />
     <ClInclude Include="communication\FileInfo.h" />
     <ClInclude Include="communication\NodeControlInfo.h" />
     <ClInclude Include="communication\IFTPDataUpload.h" />
     <ClInclude Include="communication\SFTPCom.h" />
+    <ClInclude Include="Configuration\CCalibrationConfigurationDlg.h" />
     <ClInclude Include="CustomSpectrometerModelDlg.h" />
     <ClInclude Include="Dialogs\CCalibratePixelToWavelengthDialog.h" />
+    <ClInclude Include="Dialogs\CCalibratePixelToWavelengthSetupDialog.h" />
     <ClInclude Include="Dialogs\CCalibrateReferencesDialog.h" />
+    <ClInclude Include="Dialogs\CCreateStandardReferencesDialog.h" />
+    <ClInclude Include="Dialogs\CLogDialog.h" />
     <ClInclude Include="Dialogs\ColumnHistoryDlg.h" />
     <ClInclude Include="Dialogs\OpenInstrumentCalibrationDialog.h" />
     <ClInclude Include="Dialogs\SpectrometerCalibrationDlg.h" />
     <ClInclude Include="Dialogs\FluxHistoryDlg.h" />
     <ClInclude Include="Evaluation\EvaluationResultView.h" />
+    <ClCompile Include="SpectralEvaluation\src\Calibration\Correspondence.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Calibration\CrossSectionSpectrumGenerator.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="SpectralEvaluation\src\Calibration\FraunhoferSpectrumGeneration.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Calibration\InstrumentCalibration.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Calibration\InstrumentLineShape.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -298,6 +318,10 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="SpectralEvaluation\src\Calibration\ReferenceSpectrumConvolution.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Calibration\StandardCrossSectionSetup.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -313,7 +337,23 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\DialogControllers\NovacProgramWavelengthCalibrationController.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\DialogControllers\ReferenceCreationController.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\DialogControllers\WavelengthCalibrationController.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="SpectralEvaluation\src\Evaluation\BasicMath.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Evaluation\BasicScanEvaluationResult.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -322,6 +362,10 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="SpectralEvaluation\src\Evaluation\DarkSpectrum.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Evaluation\DoasFit.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -373,6 +417,10 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\File\XmlUtil.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="SpectralEvaluation\src\Fit\MessageLog.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
@@ -382,6 +430,10 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="SpectralEvaluation\src\Flux\PlumeInScanProperty.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Flux\ScanFluxResult.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -524,6 +576,7 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
     <ClInclude Include="Evaluation\EvaluationController.h" />
     <ClInclude Include="Evaluation\FitWindowFileHandler.h" />
     <ClInclude Include="Evaluation\FluxResult.h" />
+    <ClInclude Include="Evaluation\RealTimeCalibration.h" />
     <ClInclude Include="Evaluation\ScanEvaluation.h" />
     <ClInclude Include="Evaluation\ScanResult.h" />
     <ClInclude Include="Evaluation\Spectrometer.h" />
@@ -572,6 +625,9 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Configuration\DarkSettings.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Configuration\SkySettings.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\DateTime.h" />
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\DialogControllers\ReferenceCreationController.h" />
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\DialogControllers\WavelengthCalibrationController.h" />
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Evaluation\BasicScanEvaluationResult.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Evaluation\CrossSectionData.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Evaluation\EvaluationBase.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Evaluation\EvaluationResult.h" />
@@ -630,6 +686,7 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Fit\Vector.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Flux\Flux.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Flux\PlumeInScanProperty.h" />
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Flux\ScanFluxResult.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\GPSData.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Interpolation.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Math\FFT.h" />
@@ -692,9 +749,6 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
   </ItemGroup>
   <ItemGroup>
     <None Include="res\NovacMasterProgram.rc2" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="ReadMe.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

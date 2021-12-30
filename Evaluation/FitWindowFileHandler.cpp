@@ -15,9 +15,9 @@ std::string FormatEnum(novac::RING_CALCULATION_OPTION value)
 {
     switch (value)
     {
-        case novac::RING_CALCULATION_OPTION::CALCULATE_RING: return "calculate";
-        case novac::RING_CALCULATION_OPTION::CALCULATE_RING_X2: return "calculatex2";
-        default: return "none";
+    case novac::RING_CALCULATION_OPTION::CALCULATE_RING: return "calculate";
+    case novac::RING_CALCULATION_OPTION::CALCULATE_RING_X2: return "calculatex2";
+    default: return "none";
     }
 }
 
@@ -29,7 +29,7 @@ CFitWindowFileHandler::~CFitWindowFileHandler()
 {
 }
 
-std::vector<novac::CFitWindow> CFitWindowFileHandler::ReadFitWindowFile(const CString &fileName)
+std::vector<novac::CFitWindow> CFitWindowFileHandler::ReadFitWindowFile(const CString& fileName)
 {
     std::vector<novac::CFitWindow> allWindowsRead;
 
@@ -69,16 +69,16 @@ std::vector<novac::CFitWindow> CFitWindowFileHandler::ReadFitWindowFile(const CS
     return allWindowsRead;
 }
 
-RETURN_CODE CFitWindowFileHandler::Parse_FitWindow(novac::CFitWindow&window)
+RETURN_CODE CFitWindowFileHandler::Parse_FitWindow(novac::CFitWindow& window)
 {
     window.Clear(); // <-- Reset the data before we start reading from the file.
 
     // find the name for this fit window
-    if (char *pt = strstr(szToken, "name"))
+    if (char* pt = strstr(szToken, "name"))
     {
         if (pt = strstr(pt, "\""))
         {
-            if (char *pt2 = strstr(pt + 1, "\""))
+            if (char* pt2 = strstr(pt + 1, "\""))
                 pt2[0] = 0; // remove the second quote
             char tmpStr[512];
             if (sscanf(pt + 1, "%s", &tmpStr))
@@ -200,13 +200,13 @@ RETURN_CODE CFitWindowFileHandler::Parse_FitWindow(novac::CFitWindow&window)
     return FAIL;
 }
 
-RETURN_CODE CFitWindowFileHandler::Parse_Reference(novac::CFitWindow&window) {
+RETURN_CODE CFitWindowFileHandler::Parse_Reference(novac::CFitWindow& window) {
     int nRef = window.nRef;
 
     // find the name for this reference.
-    if (char *pt = strstr(szToken, "name")) {
+    if (char* pt = strstr(szToken, "name")) {
         if (pt = strstr(pt, "\"")) {
-            if (char *pt2 = strstr(pt + 1, "\""))
+            if (char* pt2 = strstr(pt + 1, "\""))
                 pt2[0] = 0; // remove the second quote
             char tmpStr[512];
             if (sscanf(pt + 1, "%s", &tmpStr)) {
@@ -241,10 +241,10 @@ RETURN_CODE CFitWindowFileHandler::Parse_Reference(novac::CFitWindow&window) {
             int tmpInt;
             Parse_IntItem(TEXT("/shiftOption"), tmpInt);
             switch (tmpInt) {
-            case 0: window.ref[nRef].m_shiftOption = novac::SHIFT_FREE; break;
-            case 1: window.ref[nRef].m_shiftOption = novac::SHIFT_FIX; break;
-            case 2: window.ref[nRef].m_shiftOption = novac::SHIFT_LINK; break;
-            case 3: window.ref[nRef].m_shiftOption = novac::SHIFT_LIMIT; break;
+            case 0: window.ref[nRef].m_shiftOption = novac::SHIFT_TYPE::SHIFT_FREE; break;
+            case 1: window.ref[nRef].m_shiftOption = novac::SHIFT_TYPE::SHIFT_FIX; break;
+            case 2: window.ref[nRef].m_shiftOption = novac::SHIFT_TYPE::SHIFT_LINK; break;
+            case 3: window.ref[nRef].m_shiftOption = novac::SHIFT_TYPE::SHIFT_LIMIT; break;
             }
             continue;
         }
@@ -258,10 +258,10 @@ RETURN_CODE CFitWindowFileHandler::Parse_Reference(novac::CFitWindow&window) {
             int tmpInt;
             Parse_IntItem(TEXT("/squeezeOption"), tmpInt);
             switch (tmpInt) {
-            case 0: window.ref[nRef].m_squeezeOption = novac::SHIFT_FREE; break;
-            case 1: window.ref[nRef].m_squeezeOption = novac::SHIFT_FIX; break;
-            case 2: window.ref[nRef].m_squeezeOption = novac::SHIFT_LINK; break;
-            case 3: window.ref[nRef].m_squeezeOption = novac::SHIFT_LIMIT; break;
+            case 0: window.ref[nRef].m_squeezeOption = novac::SHIFT_TYPE::SHIFT_FREE; break;
+            case 1: window.ref[nRef].m_squeezeOption = novac::SHIFT_TYPE::SHIFT_FIX; break;
+            case 2: window.ref[nRef].m_squeezeOption = novac::SHIFT_TYPE::SHIFT_LINK; break;
+            case 3: window.ref[nRef].m_squeezeOption = novac::SHIFT_TYPE::SHIFT_LIMIT; break;
             }
             continue;
         }
@@ -275,10 +275,10 @@ RETURN_CODE CFitWindowFileHandler::Parse_Reference(novac::CFitWindow&window) {
             int tmpInt;
             Parse_IntItem(TEXT("/columnOption"), tmpInt);
             switch (tmpInt) {
-            case 0: window.ref[nRef].m_columnOption = novac::SHIFT_FREE; break;
-            case 1: window.ref[nRef].m_columnOption = novac::SHIFT_FIX; break;
-            case 2: window.ref[nRef].m_columnOption = novac::SHIFT_LINK; break;
-            case 3: window.ref[nRef].m_columnOption = novac::SHIFT_LIMIT; break;
+            case 0: window.ref[nRef].m_columnOption = novac::SHIFT_TYPE::SHIFT_FREE; break;
+            case 1: window.ref[nRef].m_columnOption = novac::SHIFT_TYPE::SHIFT_FIX; break;
+            case 2: window.ref[nRef].m_columnOption = novac::SHIFT_TYPE::SHIFT_LINK; break;
+            case 3: window.ref[nRef].m_columnOption = novac::SHIFT_TYPE::SHIFT_LIMIT; break;
             }
             continue;
         }
@@ -292,9 +292,9 @@ RETURN_CODE CFitWindowFileHandler::Parse_Reference(novac::CFitWindow&window) {
     return FAIL;
 }
 
-RETURN_CODE CFitWindowFileHandler::WriteFitWindow(const novac::CFitWindow& window, const CString &fileName, bool overWrite)
+RETURN_CODE CFitWindowFileHandler::WriteFitWindow(const novac::CFitWindow& window, const CString& fileName, bool overWrite)
 {
-    FILE *f = nullptr;
+    FILE* f = nullptr;
     CString indent;
 
     // Open the file
@@ -343,19 +343,19 @@ RETURN_CODE CFitWindowFileHandler::WriteFitWindow(const novac::CFitWindow& windo
         fprintf(f, "%s\t<path>%s</path>\n", (LPCSTR)indent, window.ref[i].m_path.c_str());
 
         fprintf(f, "%s\t<shiftOption>%d</shiftOption>\n", (LPCSTR)indent, window.ref[i].m_shiftOption);
-        if (window.ref[i].m_shiftOption != novac::SHIFT_FREE)
+        if (window.ref[i].m_shiftOption != novac::SHIFT_TYPE::SHIFT_FREE)
         {
             fprintf(f, "%s\t<shiftValue>%lf</shiftValue>\n", (LPCSTR)indent, window.ref[i].m_shiftValue);
         }
 
         fprintf(f, "%s\t<squeezeOption>%d</squeezeOption>\n", (LPCSTR)indent, window.ref[i].m_squeezeOption);
-        if (window.ref[i].m_squeezeOption != novac::SHIFT_FREE)
+        if (window.ref[i].m_squeezeOption != novac::SHIFT_TYPE::SHIFT_FREE)
         {
             fprintf(f, "%s\t<squeezeValue>%lf</squeezeValue>\n", (LPCSTR)indent, window.ref[i].m_squeezeValue);
         }
 
         fprintf(f, "%s\t<columnOption>%d</columnOption>\n", (LPCSTR)indent, window.ref[i].m_columnOption);
-        if (window.ref[i].m_columnOption != novac::SHIFT_FREE)
+        if (window.ref[i].m_columnOption != novac::SHIFT_TYPE::SHIFT_FREE)
         {
             fprintf(f, "%s\t<columnValue>%lf</columnValue>\n", (LPCSTR)indent, window.ref[i].m_columnValue);
         }

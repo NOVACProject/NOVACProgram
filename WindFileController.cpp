@@ -16,7 +16,7 @@
 
 extern CConfigurationSetting g_settings;    // <-- the settings
 extern CMeteorologicalData g_metData;       // <-- The meteorological data
-extern CFormView *pView;                    // <-- the main window
+extern CFormView* pView;                    // <-- the main window
 
 IMPLEMENT_DYNCREATE(CWindFileController, CWinThread)
 
@@ -26,7 +26,7 @@ BEGIN_MESSAGE_MAP(CWindFileController, CWinThread)
 END_MESSAGE_MAP()
 
 CWindFileController::CWindFileController(void)
- : m_nTimerID(0)
+    : m_nTimerID(0)
 {
 }
 
@@ -43,7 +43,7 @@ void CWindFileController::OnTimer(UINT /*nIDEvent*/, LPARAM /*lp*/)
 void CWindFileController::ReadWindFieldFile()
 {
     // Try to find and read in a wind-field file, if any can be found...
-    if (g_settings.windSourceSettings.enabled == 1 && 
+    if (g_settings.windSourceSettings.enabled == 1 &&
         g_settings.windSourceSettings.windFieldFile.GetLength() > 0)
     {
         // If the file is a local file...
@@ -77,8 +77,8 @@ BOOL CWindFileController::InitInstance()
 
     // Check the global settings if we are to be re-loading the wind-field file
     //	every now and then then set the timer
-    if (g_settings.windSourceSettings.enabled == 1 && 
-        g_settings.windSourceSettings.windFileReloadInterval > 0 && 
+    if (g_settings.windSourceSettings.enabled == 1 &&
+        g_settings.windSourceSettings.windFileReloadInterval > 0 &&
         g_settings.windSourceSettings.windFieldFile.GetLength() > 3) {
 
         // Read the log-file now
@@ -126,7 +126,7 @@ void CWindFileController::DownloadFileByFTP()
 {
     // remove the protocol-prefix ('ftp://' or 'sftp://')
     CString fileName = RemoveProtocol(g_settings.windSourceSettings.windFieldFile);
-    
+
     int firstSlash = fileName.FindOneOf("/\\");
     int remainingFileNameLength = fileName.GetLength();
 

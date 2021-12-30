@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "Configuration.h"
 #include <set>
+#include <SpectralEvaluation/StringUtils.h>
 
 /** The global instance of configuration settings */
 CConfigurationSetting g_settings;
@@ -19,46 +20,23 @@ void CConfigurationSetting::Clear()
 /** ------------- Constructor for the communication-settings ----------------- */
 CConfigurationSetting::CommunicationSetting::CommunicationSetting()
 {
-    // Serial settings
-    this->baudrate = 115200;
-    this->connectionType = FTP_CONNECTION;
-    this->flowControl = 1;
-    this->port = 1;
-    medium = MEDIUM_CABLE;
+    Clear();
 
-    // Freewave radio modems
-    radioID = "0";
-
-    // FTP - Settings
-    ftpHostName = "192.168.0.1";
-    ftpPort = 21;
-    ftpUserName = "novac";
-    ftpPassword = "1225";
-    ftpAdminUserName = "administrator";
-    ftpAdminPassword = "1225";
-
-    // directory
-    directory = "";
-
-    // General Settings
-    this->queryPeriod = 10 * 60; // <-- query every 10 minutes
-    this->timeout = 30000;
-    this->sleepTime.hour = 20;
-    this->sleepTime.minute = 0;
-    this->sleepTime.second = 0;
-    this->wakeupTime.hour = 6;
-    this->wakeupTime.minute = 0;
-    this->wakeupTime.second = 0;
+    // The following settings had a different default value from the value in 'Clear'
+    // unclear why. TODO: Investigate what values are suitable defaults and unify.
+    baudrate = 115200;
+    queryPeriod = 10 * 60; // <-- query every 10 minutes
+    timeout = 30000;
 }
 
 void CConfigurationSetting::CommunicationSetting::Clear()
 {
     // initialize the communication
     // Serial settings
-    this->baudrate = 57600;
-    this->connectionType = FTP_CONNECTION;
-    this->flowControl = 1;
-    this->port = 1;
+    baudrate = 57600;
+    connectionType = FTP_CONNECTION;
+    flowControl = 1;
+    port = 1;
     medium = MEDIUM_CABLE;
 
     // Freewave radio modems
@@ -76,34 +54,21 @@ void CConfigurationSetting::CommunicationSetting::Clear()
     directory = "";
 
     // General Settings
-    this->queryPeriod = 8000;
-    this->timeout = 5000;
-    this->sleepTime.hour = 20;
-    this->sleepTime.minute = 0;
-    this->sleepTime.second = 0;
-    this->wakeupTime.hour = 6;
-    this->wakeupTime.minute = 0;
-    this->wakeupTime.second = 0;
+    queryPeriod = 8000;
+    timeout = 5000;
+    sleepTime.hour = 20;
+    sleepTime.minute = 0;
+    sleepTime.second = 0;
+    wakeupTime.hour = 6;
+    wakeupTime.minute = 0;
+    wakeupTime.second = 0;
 }
 
 /** ------------- Constructor for the motor-settings ----------------- */
 void CConfigurationSetting::MotorSetting::Clear()
 {
-    this->motorStepsComp = 85;
-    this->stepsPerRound = 200;
-}
-
-CConfigurationSetting::MotorSetting& CConfigurationSetting::MotorSetting::operator =(const CConfigurationSetting::MotorSetting &motor2)
-{
-    this->motorStepsComp = motor2.motorStepsComp;
-    this->stepsPerRound = motor2.stepsPerRound;
-    return *this;
-}
-
-/** ------------- Constructor for the scanner-settings ----------------- */
-CConfigurationSetting::ScanningInstrumentSetting::ScanningInstrumentSetting()
-{
-    this->Clear();
+    motorStepsComp = 85;
+    stepsPerRound = 200;
 }
 
 void CConfigurationSetting::ScanningInstrumentSetting::Clear() {
@@ -123,14 +88,28 @@ void CConfigurationSetting::ScanningInstrumentSetting::Clear() {
     plotColumnHistory = 0;
     minColumn = 0;
     maxColumn = 500;
-	plotFluxHistory = 0;
-	minFlux = 0;
-	maxFlux = 500;
+    plotFluxHistory = 0;
+    minFlux = 0;
+    maxFlux = 500;
     windSettings.Clear();
     scSettings.Clear();
     motor[0].Clear();
     motor[1].Clear();
 }
+
+/** --------- Constructor for automatic calibrations for the spectrometer ------------- */
+
+void CConfigurationSetting::AutomaticCalibrationSetting::Clear()
+{
+    enable = false;
+    solarSpectrumFile = "";
+    initialCalibrationFile = "";
+    instrumentLineshapeFile = "";
+    initialCalibrationType = 0;
+    instrumentLineShapeFitOption = 0;
+    instrumentLineShapeFitRegion = novac::WavelengthRange(330.0, 350.0);
+}
+
 
 /** --------- Constructor for the spectrometer channel settings ------------- */
 
@@ -141,99 +120,22 @@ void CConfigurationSetting::SpectrometerChannelSetting::Clear()
     fitWindow.polyOrder = 5;
     fitWindow.specLength = 2048;
 
-    m_darkSettings.Clear();
-}
-
-// assignment
-CConfigurationSetting::SpectrometerChannelSetting &CConfigurationSetting::SpectrometerChannelSetting::operator =(const CConfigurationSetting::SpectrometerChannelSetting &spec2)
-{
-    fitWindow = spec2.fitWindow;
-
-    m_darkSettings = spec2.m_darkSettings;
-    return *this;
+    darkSettings.Clear();
 }
 
 /** ------------- Constructor for the spectrometer-settings ----------------- */
 
 void CConfigurationSetting::SpectrometerSetting::Clear()
 {
-    this->channelNum = 0;
-    this->serialNumber = "";
-    this->modelName = "S2000";
+    channelNum = 0;
+    serialNumber = "";
+    modelName = "S2000";
     for (int i = 0; i < MAX_CHANNEL_NUM; ++i)
     {
-        this->channel[i].Clear();
+        channel[i].Clear();
     }
 }
 
-CConfigurationSetting::SpectrometerSetting &CConfigurationSetting::SpectrometerSetting::operator=(const CConfigurationSetting::SpectrometerSetting& other)
-{
-    this->channelNum = other.channelNum;
-
-    for (int i = 0; i < MAX_CHANNEL_NUM; ++i)
-    {
-        this->channel[i] = other.channel[i];
-    }
-
-    this->serialNumber = other.serialNumber;
-    this->modelName = other.modelName;
-
-    return *this;
-}
-
-CConfigurationSetting::ScanningInstrumentSetting &CConfigurationSetting::ScanningInstrumentSetting::operator=(const CConfigurationSetting::ScanningInstrumentSetting &scanner2) {
-
-    comm = scanner2.comm;
-    compass = scanner2.compass;
-    coneAngle = scanner2.coneAngle;
-    gps = scanner2.gps;
-
-    observatory.Format("%s", (LPCSTR)scanner2.observatory);
-    site.Format("%s", (LPCSTR)scanner2.site);
-
-    for (int i = 0; i < MAX_SPECTROMETERS_PER_SCANNER; ++i)
-        spec[i] = scanner2.spec[i];
-
-    specNum = scanner2.specNum;
-    volcano.Format("%s", (LPCSTR)scanner2.volcano);
-
-    windSettings = scanner2.windSettings;
-    scSettings = scanner2.scSettings;
-    motor[0] = scanner2.motor[0];
-    motor[1] = scanner2.motor[1];
-    return *this;
-}
-
-
-CConfigurationSetting::CommunicationSetting &CConfigurationSetting::CommunicationSetting::operator=(const CConfigurationSetting::CommunicationSetting &comm2) {
-    // Serial settings
-    this->baudrate = comm2.baudrate;
-    this->connectionType = comm2.connectionType;
-    this->flowControl = comm2.flowControl;
-    this->port = comm2.port;
-    this->medium = comm2.medium;
-
-    // Freewave radio modems
-    radioID.Format("%s", (LPCSTR)comm2.radioID);
-
-    // FTP - Settings
-    ftpHostName.Format("%s", (LPCSTR)comm2.ftpHostName);
-    ftpPort = comm2.ftpPort;
-    ftpUserName.Format("%s", (LPCSTR)comm2.ftpUserName);
-    ftpPassword.Format("%s", (LPCSTR)comm2.ftpPassword);
-
-    // directory polling setting
-    directory.Format("%s", (LPCSTR)comm2.directory);
-
-    // General Settings
-    this->queryPeriod = comm2.queryPeriod;
-    this->timeout = comm2.timeout;
-    this->sleepTime = comm2.sleepTime;
-    this->wakeupTime = comm2.wakeupTime;
-
-    return *this;
-}
-/** ------------- Constructor for the ftp-settings ----------------- */
 CConfigurationSetting::CFTPSetting::CFTPSetting()
     : ftpStatus(0), ftpAddress(""), userName(""), password(""), protocol("SFTP"), port(22), ftpStartTime(0), ftpStopTime(86400)
 {
@@ -252,40 +154,17 @@ CConfigurationSetting::CWindFieldDataSettings::CWindFieldDataSettings()
     windFileReloadInterval = 360; // re-read the file every 6 hours
 }
 
-CConfigurationSetting::WindSpeedMeasurementSetting::WindSpeedMeasurementSetting()
-{
-    this->Clear();
-}
-
 void CConfigurationSetting::WindSpeedMeasurementSetting::Clear()
 {
     automaticWindMeasurements = true;
     duration = 20 * 60;		// 20 minutes duration
     interval = 60 * 60;		// measurement once every hour
-    maxAngle = 30;				// only make wind measurements if the plume centre is within 30 degrees from zenith
-    stablePeriod = 3;			// only measure if the plume is stable over the last three scans.
+    maxAngle = 30;			// only make wind measurements if the plume centre is within 30 degrees from zenith
+    stablePeriod = 3;		// only measure if the plume is stable over the last three scans.
     minPeakColumn = 50;		// only measure if the peak column is at least 50 ppmm (over the offset-level)
     desiredAngle = 5;		// the inital desired angle
     useCalculatedPlumeParameters = 0; // the initial settings for using calculated wind-field
     SwitchRange = 50.0;
-}
-/** Assignment operator */
-
-CConfigurationSetting::WindSpeedMeasurementSetting& CConfigurationSetting::WindSpeedMeasurementSetting::operator=(const WindSpeedMeasurementSetting &ws2) {
-    this->automaticWindMeasurements = ws2.automaticWindMeasurements;
-    this->duration = ws2.duration;
-    this->interval = ws2.interval;
-    this->maxAngle = ws2.maxAngle;
-    this->minPeakColumn = ws2.minPeakColumn;
-    this->stablePeriod = ws2.stablePeriod;
-    this->desiredAngle = ws2.desiredAngle;
-    this->useCalculatedPlumeParameters = ws2.useCalculatedPlumeParameters;
-    this->SwitchRange = ws2.SwitchRange;
-    return *this;
-}
-
-CConfigurationSetting::SetupChangeSetting::SetupChangeSetting() {
-    this->Clear();
 }
 
 void CConfigurationSetting::SetupChangeSetting::Clear()
@@ -294,17 +173,6 @@ void CConfigurationSetting::SetupChangeSetting::Clear()
     useCalculatedPlumeParameters = 0;
     windDirectionTolerance = 20.0;
     mode = CHANGEMODE_FAST;
-}
-/** Assignment operator */
-
-CConfigurationSetting::SetupChangeSetting& CConfigurationSetting::SetupChangeSetting::operator=(const SetupChangeSetting &scs2)
-{
-    this->automaticSetupChange = scs2.automaticSetupChange;
-    this->useCalculatedPlumeParameters = scs2.useCalculatedPlumeParameters;
-    this->windDirectionTolerance = scs2.windDirectionTolerance;
-    this->mode = scs2.mode;
-
-    return *this;
 }
 
 std::vector<std::string> ListMonitoredVolcanoes(const CConfigurationSetting& settings)
@@ -322,22 +190,26 @@ std::vector<std::string> ListMonitoredVolcanoes(const CConfigurationSetting& set
     return volcanoNames;
 }
 
-std::string GetVolcanoMonitoredByScanner(const CConfigurationSetting& settings, const std::string& serialNumber)
-{
-    const CString serial = serialNumber.c_str();
 
-    // find the name of the volcano that is monitored
-    for (unsigned int k = 0; k < settings.scannerNum; ++k)
+bool IdentifySpectrometer(const CConfigurationSetting& settings, const std::string& serial, int& scannerIdx, int& spectrometerIdx)
+{
+    scannerIdx = 0;
+    spectrometerIdx = 0;
+
+    for (unsigned long ii = 0; ii < g_settings.scannerNum; ++ii)
     {
-        for (unsigned int j = 0; j < settings.scanner[k].specNum; ++j)
+        for (unsigned long jj = 0; jj < g_settings.scanner[ii].specNum; ++jj)
         {
-            if (Equals(serial, settings.scanner[k].spec[j].serialNumber))
+            const std::string thisSerial = std::string(g_settings.scanner[ii].spec[jj].serialNumber);
+            if (EqualsIgnoringCase(thisSerial, serial))
             {
-                return std::string((LPCSTR)g_settings.scanner[k].volcano);
+                scannerIdx = ii;
+                spectrometerIdx = jj;
+                return true;
             }
         }
     }
 
-    return "";
+    return false;
 }
 

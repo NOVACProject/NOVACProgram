@@ -9,7 +9,7 @@
 #include "WindField.h"
 
 /** The CWindFieldDatabase class contains a series of known CWindField records
-    for a specific location (typically the latitude and longitude of the volcano). 
+    for a specific location (typically the latitude and longitude of the volcano).
     Each record is valid for a given period of time. */
 class CWindFieldDatabase
 {
@@ -44,7 +44,7 @@ public:
         @return SUCCESS - if the wind could be interpolated
         @return FAIL - if the wind lies outside of the time-range of the 'database',
                 or the distance between the two data-points to interpolate is larger than 24 hours. */
-    RETURN_CODE InterpolateWindField(const novac::CDateTime& desiredTime, CWindField &desiredWindField) const;
+    RETURN_CODE InterpolateWindField(const novac::CDateTime& desiredTime, CWindField& desiredWindField) const;
 
     /** Returns the number of points in the database */
     long GetRecordNum() const;

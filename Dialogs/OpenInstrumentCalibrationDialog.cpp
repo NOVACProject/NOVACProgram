@@ -104,5 +104,6 @@ void OpenInstrumentCalibrationDialog::SetInitialCalibrationFiletypeFilter()
         m_labelCalibration.SetWindowTextA("Calibration");
         m_labelInstrumentLineShape.EnableWindow(FALSE);
         m_buttonBrowseInstrumentLineShape.EnableWindow(FALSE);
+        m_state.instrumentLineshapeFile = "";
     }
 }

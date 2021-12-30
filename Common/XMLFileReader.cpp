@@ -10,26 +10,34 @@
 using namespace FileHandler;
 
 CXMLFileReader::CXMLFileReader()
+    : m_File(nullptr), nLinesRead(0), szToken(nullptr)
 {
-    this->m_File = nullptr;
-    this->nLinesRead = 0;
-    this->szToken = nullptr;
 }
 
 CXMLFileReader::~CXMLFileReader()
 {
+    Close();
 }
 
-void CXMLFileReader::SetFile(CStdioFile *file)
+void CXMLFileReader::SetFile(CStdioFile* file)
 {
     this->m_File = file;
     this->nLinesRead = 0;
 }
 
-char *CXMLFileReader::NextToken()
+void CXMLFileReader::Close()
+{
+    if (m_File != nullptr)
+    {
+        m_File->Close();
+        m_File = nullptr;
+    }
+}
+
+char* CXMLFileReader::NextToken()
 {
     char separators[] = "<>\t";
-    static char *pt = nullptr;
+    static char* pt = nullptr;
     szToken = nullptr;
 
     if (nLinesRead == 0)
@@ -63,7 +71,7 @@ char *CXMLFileReader::NextToken()
     return pt;
 }
 
-int CXMLFileReader::Parse_StringItem(const CString &label, CString &str)
+int CXMLFileReader::Parse_StringItem(const CString& label, CString& str)
 {
     while (szToken = NextToken()) {
 
@@ -76,7 +84,7 @@ int CXMLFileReader::Parse_StringItem(const CString &label, CString &str)
     return 0;
 }
 
-int CXMLFileReader::Parse_StringItem(const CString &label, std::string &str)
+int CXMLFileReader::Parse_StringItem(const CString& label, std::string& str)
 {
     while (szToken = NextToken()) {
 
@@ -90,7 +98,7 @@ int CXMLFileReader::Parse_StringItem(const CString &label, std::string &str)
 }
 
 
-int CXMLFileReader::Parse_LongItem(const CString &label, long &number)
+int CXMLFileReader::Parse_LongItem(const CString& label, long& number)
 {
     while (szToken = NextToken())
     {
@@ -103,7 +111,7 @@ int CXMLFileReader::Parse_LongItem(const CString &label, long &number)
     return 0;
 }
 
-int CXMLFileReader::Parse_FloatItem(const CString &label, double &number)
+int CXMLFileReader::Parse_FloatItem(const CString& label, double& number)
 {
     while (szToken = NextToken())
     {
@@ -117,7 +125,7 @@ int CXMLFileReader::Parse_FloatItem(const CString &label, double &number)
 }
 
 
-int CXMLFileReader::Parse_IntItem(const CString &label, int &number)
+int CXMLFileReader::Parse_IntItem(const CString& label, int& number)
 {
     while (szToken = NextToken())
     {
@@ -130,7 +138,7 @@ int CXMLFileReader::Parse_IntItem(const CString &label, int &number)
     return 0;
 }
 
-int CXMLFileReader::Parse_IPNumber(const CString &label, BYTE &ip0, BYTE &ip1, BYTE &ip2, BYTE &ip3)
+int CXMLFileReader::Parse_IPNumber(const CString& label, BYTE& ip0, BYTE& ip1, BYTE& ip2, BYTE& ip3)
 {
     while (szToken = NextToken())
     {

@@ -12,7 +12,7 @@
 IMPLEMENT_DYNAMIC(CustomSpectrometerModelDlg, CDialog)
 
 CustomSpectrometerModelDlg::CustomSpectrometerModelDlg(CWnd* pParent /*=NULL*/)
-	: CDialog(IDD_CONFIGURE_SPECTROMETERMODEL, pParent)
+    : CDialog(IDD_CONFIGURE_SPECTROMETERMODEL, pParent)
 {
 
 }
@@ -57,7 +57,7 @@ void CustomSpectrometerModelDlg::OnBnClickedOk()
     }
 
     m_configuredSpectrometer.modelName = m_modelName;
-    m_configuredSpectrometer.maximumIntensity = configuredMaxIntensity;
+    m_configuredSpectrometer.maximumIntensityForSingleReadout = configuredMaxIntensity;
 
     CDialog::OnOK();
 }

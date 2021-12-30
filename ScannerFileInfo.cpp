@@ -15,7 +15,7 @@ CScannerFileInfo::CScannerFileInfo(char pDiskName, CString pFileName, CString pF
 {
 }
 
-CScannerFileInfo::CScannerFileInfo(const CScannerFileInfo &info2)
+CScannerFileInfo::CScannerFileInfo(const CScannerFileInfo& info2)
     : diskName(info2.diskName),
     fileName(info2.fileName),
     fileSuffix(info2.fileSuffix),

@@ -66,7 +66,7 @@ BOOL CNovacMasterProgramApp::InitInstance()
     // this portion of code reading 'language.txt' is for
     //	backward compatibility only. Should eventually be removed...
     if (IsExistingFile(oldFileName)) {
-        FILE *f = fopen(oldFileName, "r");
+        FILE* f = fopen(oldFileName, "r");
         if (f != 0) {
             char buffer[512];
             fgets(buffer, 512, f);

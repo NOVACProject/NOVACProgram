@@ -366,7 +366,7 @@ void CPostFluxDlg::DrawScan()
     static double chiSquare[MAX_SPEC_PER_SCAN];
     static double selectedAngles[MAX_SPEC_PER_SCAN];
     static double selectedColumns[MAX_SPEC_PER_SCAN];
-    double *xAxisValues = angle;
+    double* xAxisValues = angle;
 
     // remove the old plot
     m_scanGraph.CleanPlot();
@@ -383,7 +383,7 @@ void CPostFluxDlg::DrawScan()
         return;
 
     // A handle to the current scan
-    Evaluation::CScanResult &scan = m_calculator->m_scan[m_curScan];
+    Evaluation::CScanResult& scan = m_calculator->m_scan[m_curScan];
 
     // The number of spectra in this scan
     int numSpec = min(scan.GetEvaluatedNum(), MAX_SPEC_PER_SCAN);
@@ -443,7 +443,7 @@ void CPostFluxDlg::DrawScan()
     {
         for (int k = 0; k < numSpec; ++k)
         {
-            const CDateTime *tid = scan.GetStartTime(k);
+            const CDateTime* tid = scan.GetStartTime(k);
             times[k] = tid->hour * 3600 + tid->minute * 60 + tid->second;
         }
     }
@@ -490,7 +490,7 @@ void CPostFluxDlg::DrawScan()
     SetDlgItemText(IDC_STATUSBAR, message);
 
     // Update the start-time label on the screen
-    const CDateTime *startTime = scan.GetStartTime(0);
+    const CDateTime* startTime = scan.GetStartTime(0);
     if (startTime != nullptr)
     {
         unsigned short date[3];
@@ -511,9 +511,9 @@ void CPostFluxDlg::DrawScan()
     const double spectrometerDynamicRange = FullDynamicRangeForSpectrum(m_calculator->m_specInfo);
 
     double divisor = 1.0;
-	if(maxPeakIntensity >= spectrometerDynamicRange){
-		if(scan.GetSpecNum(0) == 0){
-			divisor = ceil(maxPeakIntensity / spectrometerDynamicRange);
+    if (maxPeakIntensity >= spectrometerDynamicRange) {
+        if (scan.GetSpecNum(0) == 0) {
+            divisor = ceil(maxPeakIntensity / spectrometerDynamicRange);
         }
         else
         {
@@ -556,13 +556,13 @@ void CPostFluxDlg::DrawScan()
         if (m_useSaturationRatio)
         {
             // Initialize the intensity slider
-			m_intensitySlider.SetRange(0, spectrometerDynamicRange);
-			m_intensitySlider.SetPos(0.9 * spectrometerDynamicRange);/* The intensity slider is upside down */
+            m_intensitySlider.SetRange(0, spectrometerDynamicRange);
+            m_intensitySlider.SetPos(0.9 * spectrometerDynamicRange);/* The intensity slider is upside down */
             m_intensitySlider.SetTicFreq(512);
         }
         m_useSaturationRatio = false;
 
-		m_scanGraph.SetSecondRangeY(0, spectrometerDynamicRange, 0, false);
+        m_scanGraph.SetSecondRangeY(0, spectrometerDynamicRange, 0, false);
         m_scanGraph.SetSecondYUnit(common.GetString(AXIS_INTENSITY));
         SetDlgItemText(IDC_STATIC_PEAKINTENSITY, "Peak Intensity");
         SetDlgItemText(IDC_STATIC_FITINTENSITY, "Fit Intensity");
@@ -674,7 +674,7 @@ void CPostFluxDlg::DrawScan()
     {
         m_scanGraph.SetCircleColor(m_color.delta);
         double maxDelta = Max(delta, numSpec);
-		float peakValue = (m_useSaturationRatio) ? 100.0f : spectrometerDynamicRange;
+        float peakValue = (m_useSaturationRatio) ? 100.0f : spectrometerDynamicRange;
         for (int i = 0; i < numSpec; ++i)
             delta[i] *= (peakValue / (float)maxDelta);
         m_scanGraph.DrawCircles(xAxisValues, delta, numSpec, Graph::CGraphCtrl::PLOT_SECOND_AXIS);
@@ -689,7 +689,7 @@ void CPostFluxDlg::DrawScan()
     {
         m_scanGraph.SetCircleColor(m_color.chiSquare);
         double maxChi2 = Max(chiSquare, numSpec);
-		float peakValue = (m_useSaturationRatio) ? 100.0f : spectrometerDynamicRange;
+        float peakValue = (m_useSaturationRatio) ? 100.0f : spectrometerDynamicRange;
         for (int i = 0; i < numSpec; ++i)
             chiSquare[i] *= (peakValue / (float)maxChi2);
         m_scanGraph.DrawCircles(xAxisValues, chiSquare, numSpec, Graph::CGraphCtrl::PLOT_SECOND_AXIS);
@@ -756,7 +756,7 @@ void CPostFluxDlg::InitializeControls()
     SetDlgItemText(IDC_PF_PLUMEHEIGHT, str);
 
     // The scanner setup
-    const CSpectrumInfo &info = m_calculator->m_scan[m_curScan].GetSpectrumInfo(0);
+    const CSpectrumInfo& info = m_calculator->m_scan[m_curScan].GetSpectrumInfo(0);
     m_calculator->m_compass = info.m_compass;
     str.Format("%.1f", m_calculator->m_compass);
     SetDlgItemText(IDC_PF_COMPASS, str);
@@ -836,7 +836,7 @@ void CPostFluxDlg::InitLegend()
     m_legendFitIntensity.SetWindowText("");
     m_labelFitIntensity.ShowWindow(show);
 }
-void CPostFluxDlg::OnChangeSelectedScan(NMHDR *pNMHDR, LRESULT *pResult)
+void CPostFluxDlg::OnChangeSelectedScan(NMHDR* pNMHDR, LRESULT* pResult)
 {
     LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
 
@@ -861,7 +861,7 @@ void CPostFluxDlg::OnChangeSelectedScan(NMHDR *pNMHDR, LRESULT *pResult)
     *pResult = 0;
 }
 
-void CPostFluxDlg::OnReleaseIntensitySlider(NMHDR *pNMHDR, LRESULT *pResult)
+void CPostFluxDlg::OnReleaseIntensitySlider(NMHDR* pNMHDR, LRESULT* pResult)
 {
     UpdateSelectionList();
 
@@ -877,7 +877,7 @@ void CPostFluxDlg::UpdateSelectionList()
         return;
 
     // The currently selected scan
-    Evaluation::CScanResult &scan = m_calculator->m_scan[m_curScan];
+    Evaluation::CScanResult& scan = m_calculator->m_scan[m_curScan];
 
     // The selected intensity level
     double selectedIntensity, divisor;
@@ -1151,7 +1151,7 @@ void CPostFluxDlg::OnDeleteSelectedPoints()
         return;
 
     // A handle to the current scan.
-    Evaluation::CScanResult &scan = m_calculator->m_scan[m_curScan];
+    Evaluation::CScanResult& scan = m_calculator->m_scan[m_curScan];
 
     // Mark the selected data points as deleted
     for (i = 0; i < m_selectedNum; ++i)
@@ -1170,7 +1170,7 @@ void CPostFluxDlg::OnResetDeletion()
         return;
 
     // A handle to the current scan.
-    Evaluation::CScanResult &scan = m_calculator->m_scan[m_curScan];
+    Evaluation::CScanResult& scan = m_calculator->m_scan[m_curScan];
 
     // Mark the selected data points as deleted
     for (unsigned long i = 0; i < scan.GetEvaluatedNum(); ++i)
@@ -1398,7 +1398,7 @@ void CPostFluxDlg::OnCalculateFlux_AllScansInPlume()
     {
 
         // A handle to the current scan
-        Evaluation::CScanResult &scan = m_calculator->m_scan[m_curScan];
+        Evaluation::CScanResult& scan = m_calculator->m_scan[m_curScan];
 
         // Check if this scan is in the plume
         double plumeCentre1, plumeCentre2, plumeCompleteness, plumeEdge_low, plumeEdge_high;
@@ -1453,7 +1453,7 @@ void CPostFluxDlg::OnCalculateWinddirection()
         return;
 
     // A handle to the current scan
-    Evaluation::CScanResult &scan = m_calculator->m_scan[m_curScan];
+    Evaluation::CScanResult& scan = m_calculator->m_scan[m_curScan];
 
     // 1. Get the assumed plume-height
     GetDlgItemText(IDC_PF_PLUMEHEIGHT, phStr);
@@ -1607,7 +1607,7 @@ void CPostFluxDlg::OnImportWindField()
         m_editPlumeHeight.EnableWindow(TRUE);
 }
 
-void CPostFluxDlg::OnInitMenuPopup(CMenu *pPopupMenu, UINT nIndex, BOOL bSysMenu)
+void CPostFluxDlg::OnInitMenuPopup(CMenu* pPopupMenu, UINT nIndex, BOOL bSysMenu)
 {
     ASSERT(pPopupMenu != nullptr);
     // Check the enabled state of various menu items.
@@ -1688,35 +1688,35 @@ void CPostFluxDlg::OnInitMenuPopup(CMenu *pPopupMenu, UINT nIndex, BOOL bSysMenu
     }
 }
 
-void CPostFluxDlg::OnUpdateViewPeakintensity(CCmdUI *pCmdUI)
+void CPostFluxDlg::OnUpdateViewPeakintensity(CCmdUI* pCmdUI)
 {
     if (m_show.peakIntensity)
         pCmdUI->SetCheck(BST_CHECKED);
     else
         pCmdUI->SetCheck(BST_UNCHECKED);
 }
-void CPostFluxDlg::OnUpdateViewFitintensity(CCmdUI *pCmdUI)
+void CPostFluxDlg::OnUpdateViewFitintensity(CCmdUI* pCmdUI)
 {
     if (m_show.fitIntensity)
         pCmdUI->SetCheck(1);
     else
         pCmdUI->SetCheck(0);
 }
-void CPostFluxDlg::OnUpdateViewChiSquare(CCmdUI *pCmdUI)
+void CPostFluxDlg::OnUpdateViewChiSquare(CCmdUI* pCmdUI)
 {
     if (m_show.chiSquare)
         pCmdUI->SetCheck(1);
     else
         pCmdUI->SetCheck(0);
 }
-void CPostFluxDlg::OnUpdateViewDelta(CCmdUI *pCmdUI)
+void CPostFluxDlg::OnUpdateViewDelta(CCmdUI* pCmdUI)
 {
     if (m_show.delta)
         pCmdUI->SetCheck(1);
     else
         pCmdUI->SetCheck(0);
 }
-void CPostFluxDlg::OnUpdateViewColumnError(CCmdUI *pCmdUI)
+void CPostFluxDlg::OnUpdateViewColumnError(CCmdUI* pCmdUI)
 {
     if (m_show.columnError)
         pCmdUI->SetCheck(1);
@@ -1751,7 +1751,7 @@ void CPostFluxDlg::OnSaveScanGraph_AsASCII()
 
     if (common.BrowseForFile_SaveAs(filter, fileName))
     {
-        FILE *f = fopen(fileName, "w");
+        FILE* f = fopen(fileName, "w");
         if (f == nullptr)
         {
             MessageBox("Could not open file for writing. Failed to save graph.");

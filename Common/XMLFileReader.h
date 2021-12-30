@@ -10,37 +10,37 @@ namespace FileHandler
         CXMLFileReader();
         virtual ~CXMLFileReader();
 
-    protected:
-
         /**retrieve the next token from the xml file*/
-        char *NextToken();
+        char* NextToken();
 
         /** General parsing of a single, simple string item */
-        int Parse_StringItem(const CString &label, CString &str);
-        int Parse_StringItem(const CString &label, std::string &str);
+        int Parse_StringItem(const CString& label, CString& str);
+        int Parse_StringItem(const CString& label, std::string& str);
 
         /** General parsing of a single, simple float item */
-        int Parse_FloatItem(const CString &label, double &number);
+        int Parse_FloatItem(const CString& label, double& number);
 
         /** General parsing of a single, simple integer item */
-        int Parse_IntItem(const CString &label, int &number);
+        int Parse_IntItem(const CString& label, int& number);
 
         /** General parsing of a single, simple long integer item */
-        int Parse_LongItem(const CString &label, long &number);
+        int Parse_LongItem(const CString& label, long& number);
 
         /** General parsing of a single, simple long integer item */
-        int Parse_IPNumber(const CString &label, BYTE &ip0, BYTE &ip1, BYTE &ip2, BYTE &ip3);
-
-        /** Set the opened file pointer*/
-        void SetFile(CStdioFile* file);
+        int Parse_IPNumber(const CString& label, BYTE& ip0, BYTE& ip1, BYTE& ip2, BYTE& ip3);
 
         /** The tokenizer */
-        char *szToken;
+        char* szToken;
+
+        void Close();
+
+        /** Set the opened file pointer */
+        void SetFile(CStdioFile* file);
 
     private:
 
         /** A handle to the file to read from. */
-        CStdioFile *m_File;
+        CStdioFile* m_File;
 
         /** The number of lines that has been read from the file */
         long nLinesRead;

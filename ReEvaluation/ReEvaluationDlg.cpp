@@ -16,7 +16,7 @@ END_MESSAGE_MAP()
 
 BOOL ReEvaluation::CReEvaluationDlg::OnInitDialog()
 {
-	BOOL bResult = CSimplePropertySheet::OnInitDialog();
+    BOOL bResult = CSimplePropertySheet::OnInitDialog();
 
-	return bResult;
+    return bResult;
 }

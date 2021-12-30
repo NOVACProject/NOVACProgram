@@ -20,7 +20,7 @@ namespace ConfigurationDialog
         enum { IDD = IDD_CONFIGURE_COM_PORT };
 
         /** Called when the current selection changes */
-        void  OnChangeScanner();
+        virtual void OnChangeScanner() override;
 
         /** Saving the data in the control */
         afx_msg void SaveData();
@@ -122,7 +122,7 @@ namespace ConfigurationDialog
 
         /** The current selection of settings
                 0 == Serial Cable
-                1 == Freewave Serial Radio 
+                1 == Freewave Serial Radio
                 2 == FTP - Communication
                 3 == Directory Polling
         */
@@ -139,7 +139,7 @@ namespace ConfigurationDialog
 
         /** Showing the settings when polling directory */
         void ShowDirectoryPolling();
-public:
-    afx_msg void OnBnClickedButtonPolDirBrowse();
-};
+    public:
+        afx_msg void OnBnClickedButtonPolDirBrowse();
+    };
 }

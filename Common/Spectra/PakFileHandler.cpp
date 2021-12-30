@@ -983,7 +983,7 @@ RETURN_CODE CPakFileHandler::HandleCorruptSpectrum(CSpectrumIO &reader, FILE *pa
     return SUCCESS;
 }
 
-RETURN_CODE CPakFileHandler::SaveCorruptSpectrum(const CSpectrum &curSpec, int specHeaderSize, const char *spectrumHeader)
+RETURN_CODE CPakFileHandler::SaveCorruptSpectrum(const CSpectrum &curSpec, int /*specHeaderSize*/, const char* /*spectrumHeader*/)
 {
     CString fileName, serial, date, time;
 

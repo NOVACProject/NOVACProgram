@@ -53,10 +53,10 @@ BOOL CAdvancedFTPUploadSettings::OnInitDialog() {
 }
 
 
-void CAdvancedFTPUploadSettings::GetNecessaryComponentSize(CWnd *wnd, CString &str, int &width, int &height) {
+void CAdvancedFTPUploadSettings::GetNecessaryComponentSize(CWnd* wnd, CString& str, int& width, int& height) {
     TEXTMETRIC   tm;
-    CDC *dc = wnd->GetDC();
-    CFont *oldFont = dc->SelectObject(wnd->GetFont());
+    CDC* dc = wnd->GetDC();
+    CFont* oldFont = dc->SelectObject(wnd->GetFont());
     dc->GetTextMetrics(&tm);
 
     CSize sz = dc->GetTextExtent(str);

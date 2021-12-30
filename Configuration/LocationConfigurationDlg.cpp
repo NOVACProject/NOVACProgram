@@ -15,7 +15,7 @@
 using namespace ConfigurationDialog;
 using namespace novac;
 
-extern CVolcanoInfo			g_volcanoes;
+extern CVolcanoInfo g_volcanoes;
 
 // CLocationConfigurationDlg dialog
 
@@ -24,16 +24,16 @@ IMPLEMENT_DYNAMIC(CLocationConfigurationDlg, CSystemConfigurationPage)
 CLocationConfigurationDlg::CLocationConfigurationDlg()
     : CSystemConfigurationPage(CLocationConfigurationDlg::IDD)
 {
-    m_configuration = NULL;
-    m_scannerTree = NULL;
-    m_parent = NULL;
+    m_configuration = nullptr;
+    m_scannerTree = nullptr;
+    m_parent = nullptr;
 }
 
 CLocationConfigurationDlg::~CLocationConfigurationDlg()
 {
-    m_configuration = NULL;
-    m_scannerTree = NULL;
-    m_parent = NULL;
+    m_configuration = nullptr;
+    m_scannerTree = nullptr;
+    m_parent = nullptr;
 }
 
 void CLocationConfigurationDlg::DoDataExchange(CDataExchange* pDX)
@@ -62,11 +62,11 @@ void CLocationConfigurationDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Check(pDX, IDC_CHECK_PLOT_COLUMN_HISTORY, m_plotColumnHistory);
     DDX_Control(pDX, IDC_EDIT_MINCOL, m_minColumn);
     DDX_Control(pDX, IDC_EDIT_MAXCOL, m_maxColumn);
-	DDX_Check(pDX, IDC_CHECK_PLOT_FLUX_HISTORY, m_plotFluxHistory);
-	DDX_Control(pDX, IDC_EDIT_MINFLUX, m_minFlux);
-	DDX_Control(pDX, IDC_EDIT_MAXFLUX, m_maxFlux);
+    DDX_Check(pDX, IDC_CHECK_PLOT_FLUX_HISTORY, m_plotFluxHistory);
+    DDX_Control(pDX, IDC_EDIT_MINFLUX, m_minFlux);
+    DDX_Control(pDX, IDC_EDIT_MAXFLUX, m_maxFlux);
 
-    if (m_curScanner != NULL) {
+    if (m_curScanner != nullptr) {
         DDX_Text(pDX, IDC_EDIT_SITE, m_curScanner->site);
         DDX_Text(pDX, IDC_EDIT_OBSERVATORY, m_curScanner->observatory);
         DDX_Text(pDX, IDC_EDIT_SERIALNUMBER, m_curScanner->spec[0].serialNumber);
@@ -75,9 +75,9 @@ void CLocationConfigurationDlg::DoDataExchange(CDataExchange* pDX)
         DDX_Check(pDX, IDC_CHECK_PLOT_COLUMN_HISTORY, m_curScanner->plotColumnHistory);
         DDX_Text(pDX, IDC_EDIT_MINCOL, m_curScanner->minColumn);
         DDX_Text(pDX, IDC_EDIT_MAXCOL, m_curScanner->maxColumn);
-		DDX_Check(pDX, IDC_CHECK_PLOT_FLUX_HISTORY, m_curScanner->plotFluxHistory);
-		DDX_Text(pDX, IDC_EDIT_MINFLUX, m_curScanner->minFlux);
-		DDX_Text(pDX, IDC_EDIT_MAXFLUX, m_curScanner->maxFlux);
+        DDX_Check(pDX, IDC_CHECK_PLOT_FLUX_HISTORY, m_curScanner->plotFluxHistory);
+        DDX_Text(pDX, IDC_EDIT_MINFLUX, m_curScanner->minFlux);
+        DDX_Text(pDX, IDC_EDIT_MAXFLUX, m_curScanner->maxFlux);
 
     }
     else {
@@ -104,9 +104,9 @@ BEGIN_MESSAGE_MAP(CLocationConfigurationDlg, CPropertyPage)
     ON_BN_CLICKED(IDC_CHECK_PLOT_COLUMN_HISTORY, SaveData)
     ON_EN_CHANGE(IDC_EDIT_MINCOL, SaveData)
     ON_EN_CHANGE(IDC_EDIT_MAXCOL, SaveData)
-	ON_BN_CLICKED(IDC_CHECK_PLOT_FLUX_HISTORY, SaveData)
-	ON_EN_CHANGE(IDC_EDIT_MINFLUX, SaveData)
-	ON_EN_CHANGE(IDC_EDIT_MAXFLUX, SaveData)
+    ON_BN_CLICKED(IDC_CHECK_PLOT_FLUX_HISTORY, SaveData)
+    ON_EN_CHANGE(IDC_EDIT_MINFLUX, SaveData)
+    ON_EN_CHANGE(IDC_EDIT_MAXFLUX, SaveData)
 END_MESSAGE_MAP()
 
 BOOL CLocationConfigurationDlg::OnInitDialog()
@@ -130,10 +130,10 @@ BOOL CLocationConfigurationDlg::OnInitDialog()
         m_comboSpectrometerChannels.AddString(str);
     }
 
-	// The electronics combo-box
-	m_comboElectronics.ResetContent();
-	m_comboElectronics.AddString("Axis"); // Axis
-	m_comboElectronics.AddString("Moxa"); // Moxa
+    // The electronics combo-box
+    m_comboElectronics.ResetContent();
+    m_comboElectronics.AddString("Axis"); // Axis
+    m_comboElectronics.AddString("Moxa"); // Moxa
     m_comboElectronics.AddString("Axiomtek"); // Axiomtek
 
     //m_plotColumn = 0;
@@ -153,7 +153,7 @@ BOOL CLocationConfigurationDlg::OnInitDialog()
 
 void CLocationConfigurationDlg::InitToolTips() {
     // Don't initialize the tool tips twice
-    if (m_toolTip.m_hWnd != NULL)
+    if (m_toolTip.m_hWnd != nullptr)
         return;
 
     // Enable the tool tips
@@ -197,7 +197,7 @@ void CLocationConfigurationDlg::OnChangeScanner() {
     // Then change the settings so that we're using the newly selected scanner
     CSystemConfigurationPage::OnChangeScanner();
 
-    if (m_curScanner == NULL) {
+    if (m_curScanner == nullptr) {
         return;
     }
 
@@ -233,7 +233,7 @@ BOOL ConfigurationDialog::CLocationConfigurationDlg::OnSetActive()
 
 void CLocationConfigurationDlg::OnChangeVolcano() {
 
-    if (m_curScanner == NULL)
+    if (m_curScanner == nullptr)
         return;
 
     int curSel = m_comboVolcano.GetCurSel();
@@ -305,7 +305,7 @@ void CLocationConfigurationDlg::OnChangeModel()
 
 /** The user has changed the number of channels in the spectrometer */
 void CLocationConfigurationDlg::OnChangeChannelNum() {
-    if (m_curScanner == NULL)
+    if (m_curScanner == nullptr)
         return;
 
     int curSel = m_comboSpectrometerChannels.GetCurSel();
@@ -314,7 +314,7 @@ void CLocationConfigurationDlg::OnChangeChannelNum() {
 
     m_curScanner->spec[0].channelNum = curSel + 1;
 
-    ((CScannerConfiguration *)m_parent)->OnChangeScanner();
+    ((CScannerConfiguration*)m_parent)->OnChangeScanner();
 }
 
 
@@ -390,7 +390,7 @@ void CLocationConfigurationDlg::UpdateVolcanoList() {
 
 void CLocationConfigurationDlg::OnChangeElectronics()
 {
-    if (m_curScanner == NULL)
+    if (m_curScanner == nullptr)
         return;
 
     int curSel = m_comboElectronics.GetCurSel();

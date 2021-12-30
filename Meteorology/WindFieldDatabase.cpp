@@ -21,7 +21,7 @@ void CWindFieldDatabase::Clear()
     m_containsPlumeHeight = false;
 }
 
-RETURN_CODE CWindFieldDatabase::InterpolateWindField(const CDateTime& desiredTime, CWindField &desiredWindField) const
+RETURN_CODE CWindFieldDatabase::InterpolateWindField(const CDateTime& desiredTime, CWindField& desiredWindField) const
 {
     // First check if there's any records at all in the database
     if (m_windField.size() == 0)
@@ -37,7 +37,7 @@ RETURN_CODE CWindFieldDatabase::InterpolateWindField(const CDateTime& desiredTim
     bool foundClosestAfter = false; // <-- if no wind-field was found after the desired one then return false
     for (size_t i = 0; i < m_windField.size(); ++i)
     {
-        const CWindField &currentRecord = m_windField[i];
+        const CWindField& currentRecord = m_windField[i];
 
         // First check if we've found an exact match, if so
         //  then return the current wind-field
@@ -142,7 +142,7 @@ RETURN_CODE CWindFieldDatabase::InterpolateWindField(const CDateTime& desiredTim
     //  separated by more than 24 hours, the interpolation will not be meaningful
     //  return FALSE
     double totalTimeDifference = CDateTime::Difference(closestAfter.GetTimeAndDate(), closestBefore.GetTimeAndDate());
-    if (totalTimeDifference > 24.0*3600.0)
+    if (totalTimeDifference > 24.0 * 3600.0)
     {
         return FAIL;
     }
@@ -154,9 +154,9 @@ RETURN_CODE CWindFieldDatabase::InterpolateWindField(const CDateTime& desiredTim
 
     // interpolate the wind speed and direction vectorially
     double x_comp = (1.0 - alpha) * closestBefore.GetWindSpeed() * cos(DEGREETORAD * closestBefore.GetWindDirection())
-        + alpha * closestAfter.GetWindSpeed()  * cos(DEGREETORAD * closestAfter.GetWindDirection());
+        + alpha * closestAfter.GetWindSpeed() * cos(DEGREETORAD * closestAfter.GetWindDirection());
     double y_comp = (1.0 - alpha) * closestBefore.GetWindSpeed() * sin(DEGREETORAD * closestBefore.GetWindDirection())
-        + alpha * closestAfter.GetWindSpeed()  * sin(DEGREETORAD * closestAfter.GetWindDirection());
+        + alpha * closestAfter.GetWindSpeed() * sin(DEGREETORAD * closestAfter.GetWindDirection());
     double wd = RADTODEGREE * atan2(y_comp, x_comp);
     double ws = sqrt(x_comp * x_comp + y_comp * y_comp);
     double ph = (1.0 - alpha) * closestBefore.GetPlumeHeight() + alpha * closestAfter.GetPlumeHeight();

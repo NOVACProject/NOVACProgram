@@ -13,12 +13,12 @@ CExportDlg::CExportDlg()
 }
 
 CExportDlg::CExportDlg(UINT nIDCaption, CWnd* pParentWnd, UINT iSelectPage)
-	:CSimplePropertySheet(nIDCaption, pParentWnd, iSelectPage)
+    :CSimplePropertySheet(nIDCaption, pParentWnd, iSelectPage)
 {
 }
 
 CExportDlg::CExportDlg(LPCTSTR pszCaption, CWnd* pParentWnd, UINT iSelectPage)
-	:CSimplePropertySheet(pszCaption, pParentWnd, iSelectPage)
+    : CSimplePropertySheet(pszCaption, pParentWnd, iSelectPage)
 {
 }
 

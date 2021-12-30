@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Calibration/InstrumentCalibrationInput.h"
+#include <SpectralEvaluation/DialogControllers/InstrumentCalibrationInput.h>
 
 // OpenInstrumentCalibrationDialog dialog
 

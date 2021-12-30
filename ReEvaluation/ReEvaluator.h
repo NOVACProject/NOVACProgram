@@ -63,7 +63,7 @@ namespace ReEvaluation
         every now and then a WM_PROGRESS message is sent to the window pView if pView != NULL
         when the process is finished the window is sent the message WM_DONE */
         double  m_progress;
-        CWnd    *pView;
+        CWnd* pView;
 
         /** The directory in which the output is currently directed */
         CString   m_outputDir;

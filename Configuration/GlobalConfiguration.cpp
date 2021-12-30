@@ -216,7 +216,7 @@ void ConfigurationDialog::CGlobalConfiguration::OnAdvancedFTPSettings() {
 
 void ConfigurationDialog::CGlobalConfiguration::OnChangeWindFileUpdate()
 {
-    CButton *m_ctlCheck = (CButton*)GetDlgItem(IDC_CHECK_WINDFIELDFILE_ENABLED);
+    CButton* m_ctlCheck = (CButton*)GetDlgItem(IDC_CHECK_WINDFIELDFILE_ENABLED);
     m_configuration->windSourceSettings.enabled = m_ctlCheck->GetCheck();
     if (m_configuration->windSourceSettings.enabled == 0) {
         GetDlgItem(IDC_BUTTON_BROWSE_WINDFIELDFILE)->EnableWindow(FALSE);

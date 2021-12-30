@@ -20,7 +20,7 @@ RETURN_CODE CWindFileReader::ReadWindFile(CWindFieldDatabase& result)
     }
 
     // Open the wind log
-    FILE *f = fopen(m_windFile, "r");
+    FILE* f = fopen(m_windFile, "r");
     if (nullptr == f)
     {
         return FAIL;

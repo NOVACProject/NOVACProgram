@@ -8,7 +8,7 @@ public:
 
     CScannerFileInfo(char diskName, CString pFileName, CString pFileSubfix, long pFileSize, CString pDate, CString pTime);
 
-    CScannerFileInfo(const CScannerFileInfo &info2);
+    CScannerFileInfo(const CScannerFileInfo& info2);
     CScannerFileInfo& operator=(const CScannerFileInfo& info2);
 
     char diskName;

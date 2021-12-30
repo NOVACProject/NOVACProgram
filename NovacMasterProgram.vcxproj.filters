@@ -29,9 +29,6 @@
     <Filter Include="Source Files\Dialogs">
       <UniqueIdentifier>{f0900717-7a3e-4a48-8e86-17d43e8d8602}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Evaluation">
-      <UniqueIdentifier>{32873f64-098d-4e3e-9aea-6ec00d8fc1b4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\ReEvaluation">
       <UniqueIdentifier>{33577c37-3303-45c5-8371-af15c0a1f026}</UniqueIdentifier>
     </Filter>
@@ -139,14 +136,23 @@
     <Filter Include="Source Files\SpectralEvaluation\File">
       <UniqueIdentifier>{d5b49ab0-1d6b-4233-8692-4511bdb1f39d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Calibration">
-      <UniqueIdentifier>{d9b5fb91-5bef-49ce-8270-17a166d53b44}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\SpectralEvaluation\Calibration">
       <UniqueIdentifier>{4e74ac28-dddd-4205-a6b6-d2676c89bf4f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\SpectralEvaluation\Math">
       <UniqueIdentifier>{690ac6d1-8178-4086-a3f8-dab1c04ead1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Evaluation">
+      <UniqueIdentifier>{32873f64-098d-4e3e-9aea-6ec00d8fc1b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\SpectralEvaluation\Flux">
+      <UniqueIdentifier>{6cfee539-2fe1-4cdd-9935-cfc6570d00d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\SpectralEvaluation\DialogControllers">
+      <UniqueIdentifier>{1bfc3cd9-061d-4ebb-bb7a-d17a87ca0f17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\SpectralEvaluation\DialogControllers">
+      <UniqueIdentifier>{ec32462a-478a-4108-83c0-21c45c716393}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -636,12 +642,6 @@
     <ClCompile Include="Dialogs\OpenInstrumentCalibrationDialog.cpp">
       <Filter>Source Files\Dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="Calibration\ReferenceCreationController.cpp">
-      <Filter>Source Files\Calibration</Filter>
-    </ClCompile>
-    <ClCompile Include="Calibration\WavelengthCalibrationController.cpp">
-      <Filter>Source Files\Calibration</Filter>
-    </ClCompile>
     <ClCompile Include="SpectralEvaluation\src\Calibration\FraunhoferSpectrumGeneration.cpp">
       <Filter>Source Files\SpectralEvaluation\Calibration</Filter>
     </ClCompile>
@@ -662,6 +662,57 @@
     </ClCompile>
     <ClCompile Include="Graphs\SpectrumGraph.cpp">
       <Filter>Source Files\Graphs</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Calibration\Correspondence.cpp">
+      <Filter>Source Files\SpectralEvaluation\Calibration</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Calibration\InstrumentCalibration.cpp">
+      <Filter>Source Files\SpectralEvaluation\Calibration</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Calibration\InstrumentLineShape.cpp">
+      <Filter>Source Files\SpectralEvaluation\Calibration</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Evaluation\DoasFit.cpp">
+      <Filter>Source Files\SpectralEvaluation\Evaluation</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Evaluation\BasicScanEvaluationResult.cpp">
+      <Filter>Source Files\SpectralEvaluation\Evaluation</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Flux\ScanFluxResult.cpp">
+      <Filter>Source Files\SpectralEvaluation\Flux</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\File\XmlUtil.cpp">
+      <Filter>Source Files\SpectralEvaluation\File</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Calibration\StandardCrossSectionSetup.cpp">
+      <Filter>Source Files\SpectralEvaluation\Calibration</Filter>
+    </ClCompile>
+    <ClCompile Include="Dialogs\CLogDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Dialogs\CCalibratePixelToWavelengthSetupDialog.cpp">
+      <Filter>Source Files\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="Dialogs\CCreateStandardReferencesDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Calibration\CrossSectionSpectrumGenerator.cpp">
+      <Filter>Source Files\SpectralEvaluation\Calibration</Filter>
+    </ClCompile>
+    <ClCompile Include="Configuration\CCalibrationConfigurationDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Evaluation\RealTimeCalibration.cpp">
+      <Filter>Source Files\Evaluation</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\DialogControllers\ReferenceCreationController.cpp">
+      <Filter>Source Files\SpectralEvaluation\DialogControllers</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\DialogControllers\WavelengthCalibrationController.cpp">
+      <Filter>Source Files\SpectralEvaluation\DialogControllers</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\DialogControllers\NovacProgramWavelengthCalibrationController.cpp">
+      <Filter>Source Files\SpectralEvaluation\DialogControllers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1283,18 +1334,6 @@
     <ClInclude Include="Dialogs\CCalibrateReferencesDialog.h">
       <Filter>Header Files\Dialogs</Filter>
     </ClInclude>
-    <ClInclude Include="Dialogs\OpenInstrumentCalibrationDialog.h">
-      <Filter>Source Files\Dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="Calibration\InstrumentCalibrationInput.h">
-      <Filter>Source Files\Calibration</Filter>
-    </ClInclude>
-    <ClInclude Include="Calibration\ReferenceCreationController.h">
-      <Filter>Source Files\Calibration</Filter>
-    </ClInclude>
-    <ClInclude Include="Calibration\WavelengthCalibrationController.h">
-      <Filter>Source Files\Calibration</Filter>
-    </ClInclude>
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Calibration\FraunhoferSpectrumGeneration.h">
       <Filter>Header Files\SpectralEvaluation\Calibration</Filter>
     </ClInclude>
@@ -1321,6 +1360,36 @@
     </ClInclude>
     <ClInclude Include="Graphs\SpectrumGraph.h">
       <Filter>Header Files\Graphs</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Evaluation\BasicScanEvaluationResult.h">
+      <Filter>Header Files\SpectralEvaluation\Evaluation</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Flux\ScanFluxResult.h">
+      <Filter>Header Files\SpectralEvaluation\Flux</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialogs\CLogDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialogs\CCalibratePixelToWavelengthSetupDialog.h">
+      <Filter>Header Files\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialogs\OpenInstrumentCalibrationDialog.h">
+      <Filter>Header Files\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialogs\CCreateStandardReferencesDialog.h">
+      <Filter>Header Files\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="Evaluation\RealTimeCalibration.h">
+      <Filter>Header Files\Evaluation</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\DialogControllers\ReferenceCreationController.h">
+      <Filter>Header Files\SpectralEvaluation\DialogControllers</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\DialogControllers\WavelengthCalibrationController.h">
+      <Filter>Header Files\SpectralEvaluation\DialogControllers</Filter>
+    </ClInclude>
+    <ClInclude Include="Configuration\CCalibrationConfigurationDlg.h">
+      <Filter>Header Files\Configuration</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1411,8 +1480,5 @@
     <None Include="res\NovacMasterProgram.rc2">
       <Filter>Resource Files</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="ReadMe.txt" />
   </ItemGroup>
 </Project>

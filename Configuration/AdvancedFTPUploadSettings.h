@@ -47,7 +47,7 @@ namespace ConfigurationDialog
 
         /** Returns the width of the supplied component to be able to fit in
                 the supplied string */
-        void	GetNecessaryComponentSize(CWnd *wnd, CString &str, int &width, int &height);
+        void	GetNecessaryComponentSize(CWnd* wnd, CString& str, int& width, int& height);
 
     };
 }
