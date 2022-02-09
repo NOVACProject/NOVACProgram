@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "WindFieldInterpolation.h"
 #include <SpectralEvaluation/Interpolation.h>
+#include <stdexcept>
+#include <cmath>
 
 using namespace novac;
 
