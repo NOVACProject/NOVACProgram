@@ -200,6 +200,9 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
     <ClCompile Include="Dialogs\CLogDialog.cpp" />
     <ClCompile Include="Dialogs\ColumnHistoryDlg.cpp" />
     <ClCompile Include="Dialogs\ConfigurationDlg.cpp" />
+    <ClCompile Include="Dialogs\CRatioEvaluationDialog.cpp" />
+    <ClCompile Include="Dialogs\CRatioScanFilesDialog.cpp" />
+    <ClCompile Include="Dialogs\CRatioSetupDialog.cpp" />
     <ClCompile Include="Dialogs\DarkSettingsDialog.cpp" />
     <ClCompile Include="Dialogs\DataBrowserDlg.cpp" />
     <ClCompile Include="Dialogs\ExportDlg.cpp" />
@@ -217,6 +220,7 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
     <ClCompile Include="Dialogs\OpenInstrumentCalibrationDialog.cpp" />
     <ClCompile Include="Dialogs\PakFileInspector.cpp" />
     <ClCompile Include="Dialogs\QueryStringDialog.cpp" />
+    <ClCompile Include="Dialogs\CRatioCalculationDlg.cpp" />
     <ClCompile Include="Dialogs\ReferencePropertiesDlg.cpp" />
     <ClCompile Include="Dialogs\SelectionDialog.cpp" />
     <ClCompile Include="Dialogs\SimplePropertySheet.cpp" />
@@ -289,7 +293,11 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
     <ClInclude Include="Dialogs\CCreateStandardReferencesDialog.h" />
     <ClInclude Include="Dialogs\CLogDialog.h" />
     <ClInclude Include="Dialogs\ColumnHistoryDlg.h" />
+    <ClInclude Include="Dialogs\CRatioEvaluationDialog.h" />
+    <ClInclude Include="Dialogs\CRatioScanFilesDialog.h" />
+    <ClInclude Include="Dialogs\CRatioSetupDialog.h" />
     <ClInclude Include="Dialogs\OpenInstrumentCalibrationDialog.h" />
+    <ClInclude Include="Dialogs\CRatioCalculationDlg.h" />
     <ClInclude Include="Dialogs\SpectrometerCalibrationDlg.h" />
     <ClInclude Include="Dialogs\FluxHistoryDlg.h" />
     <ClInclude Include="Evaluation\EvaluationResultView.h" />
