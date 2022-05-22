@@ -726,6 +726,9 @@
     <ClCompile Include="Dialogs\CRatioEvaluationDialog.cpp">
       <Filter>Source Files\Dialogs</Filter>
     </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\DialogControllers\RatioCalculationController.cpp">
+      <Filter>Source Files\SpectralEvaluation\DialogControllers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Configuration\AdvancedFTPUploadSettings.h">
@@ -1414,6 +1417,9 @@
     </ClInclude>
     <ClInclude Include="Dialogs\CRatioEvaluationDialog.h">
       <Filter>Header Files\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\DialogControllers\RatioCalculationController.h">
+      <Filter>Header Files\SpectralEvaluation\DialogControllers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

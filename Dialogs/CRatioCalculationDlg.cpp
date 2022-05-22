@@ -9,12 +9,16 @@
 #include "CRatioSetupDialog.h"
 #include "CRatioEvaluationDialog.h"
 
+#include <SpectralEvaluation/DialogControllers/RatioCalculationController.h>
+
 // CRatioCalculationDlg dialog
 
 CRatioCalculationDlg::CRatioCalculationDlg()
     : CPropertySheet()
 {
-    m_selectScanFilesPage = new CRatioScanFilesDialog();
+    m_controller = new RatioCalculationController();
+
+    m_selectScanFilesPage = new CRatioScanFilesDialog(m_controller);
     m_selectScanFilesPage->Construct(IDD_RATIO_SCANFILES_DIALOG);
 
     m_setupEvaluationPage = new CRatioSetupDialog();
@@ -33,6 +37,9 @@ CRatioCalculationDlg::~CRatioCalculationDlg()
     delete m_selectScanFilesPage;
     delete m_setupEvaluationPage;
     delete m_runEvaluationPage;
+
+    delete m_controller;
+    m_controller = nullptr;
 }
 
 void CRatioCalculationDlg::DoDataExchange(CDataExchange* pDX)

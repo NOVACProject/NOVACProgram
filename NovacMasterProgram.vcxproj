@@ -349,6 +349,10 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\DialogControllers\RatioCalculationController.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="SpectralEvaluation\src\DialogControllers\ReferenceCreationController.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
@@ -633,6 +637,7 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Configuration\DarkSettings.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Configuration\SkySettings.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\DateTime.h" />
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\DialogControllers\RatioCalculationController.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\DialogControllers\ReferenceCreationController.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\DialogControllers\WavelengthCalibrationController.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Evaluation\BasicScanEvaluationResult.h" />

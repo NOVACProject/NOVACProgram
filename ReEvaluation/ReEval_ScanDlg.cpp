@@ -22,7 +22,7 @@ IMPLEMENT_DYNAMIC(CReEval_ScanDlg, CPropertyPage)
 CReEval_ScanDlg::CReEval_ScanDlg()
     : CPropertyPage(CReEval_ScanDlg::IDD)
 {
-    m_reeval = NULL;
+    m_reeval = nullptr;
     m_curSpecFile = 0;
     m_curSpec = 0;
     m_specNum = 0;
@@ -30,7 +30,7 @@ CReEval_ScanDlg::CReEval_ScanDlg()
 
 CReEval_ScanDlg::~CReEval_ScanDlg()
 {
-    m_reeval = NULL;
+    m_reeval = nullptr;
 }
 
 void CReEval_ScanDlg::DoDataExchange(CDataExchange* pDX)
@@ -64,7 +64,7 @@ void CReEval_ScanDlg::OnBnClickedBtnBrowsescanfile()
     UpdateData(TRUE);
 
     // The file-dialog
-    Dialogs::CFECFileDialog fileDialog(TRUE, NULL, NULL, OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_ALLOWMULTISELECT | OFN_EXPLORER, filter);
+    Dialogs::CFECFileDialog fileDialog(TRUE, nullptr, nullptr, OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_ALLOWMULTISELECT | OFN_EXPLORER, filter);
 
     if (fileDialog.DoModal() != IDOK)
         return;
@@ -161,7 +161,7 @@ void CReEval_ScanDlg::DrawSpectrum() {
     m_specGraph.CleanPlot();
     m_specGraph.SetRange(range.minLambda, range.maxLambda, 0, range.minIntens, range.maxIntens, 0);
 
-    m_specGraph.XYPlot(NULL, m_spectrum.m_data, m_spectrum.m_length, Graph::CGraphCtrl::PLOT_FIXED_AXIS | Graph::CGraphCtrl::PLOT_CONNECTED);
+    m_specGraph.XYPlot(nullptr, m_spectrum.m_data, m_spectrum.m_length, Graph::CGraphCtrl::PLOT_FIXED_AXIS | Graph::CGraphCtrl::PLOT_CONNECTED);
 }
 
 int CReEval_ScanDlg::TryReadSpectrum() {

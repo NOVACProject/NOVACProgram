@@ -1,5 +1,7 @@
 #pragma once
 
+class RatioCalculationController;
+
 // This is the CRatioCalculationDlg dialog where the user can calculate BrO to SO2 ratios from measuerd data.
 class CRatioCalculationDlg : public CPropertySheet
 {
@@ -18,5 +20,10 @@ private:
     CPropertyPage* m_selectScanFilesPage;
     CPropertyPage* m_setupEvaluationPage;
     CPropertyPage* m_runEvaluationPage;
+
+    // The controller which performs the ratio calculations.
+    // Notice that this is the owning class for the pointer and will delete it when done. 
+    // The same pointer is referenced by each page in the dialog but this is the sole owner.
+    RatioCalculationController* m_controller;
 
 };

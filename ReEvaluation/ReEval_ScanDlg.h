@@ -4,7 +4,6 @@
 #include "ReEvaluator.h"
 #include "afxcmn.h"
 
-//#include "../Graphs/OScopeCtrl.h"
 #include "../Graphs/SpectrumGraph.h"
 #include "PakFileListBox.h"
 

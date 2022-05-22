@@ -1129,13 +1129,23 @@ BOOL WINAPI Common::KillProcess(IN DWORD dwProcessId)
     return TRUE;
 }
 
-/** Take out the exe name from a long path
-      @param fileName path of the exe file	*/
 void Common::GetFileName(CString& fileName)
 {
     int position = fileName.ReverseFind('\\');
     int length = CString::StringLength(fileName);
     fileName = fileName.Right(length - position - 1);
+}
+
+void Common::GetFileName(std::string& fullFileNameAndPath)
+{
+    auto position = fullFileNameAndPath.rfind('\\');
+    if (position == std::string::npos)
+    {
+        return;
+    }
+    auto length = fullFileNameAndPath.size();
+
+    fullFileNameAndPath = fullFileNameAndPath.substr(position + 1, length - position - 1);
 }
 
 /** Take out the directory from a long path name.

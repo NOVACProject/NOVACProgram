@@ -299,6 +299,10 @@ public:
             @param fileName path of the file	*/
     static void GetFileName(CString& fileName);
 
+    /** Take out the file name from a long path
+            @param fileName path of the file	*/
+    static void GetFileName(std::string& fullFileNameAndPath);
+
     /** Take out the directory from a long path name.
         @param fileName - the complete path of the file */
     static void GetDirectory(CString& fileName);

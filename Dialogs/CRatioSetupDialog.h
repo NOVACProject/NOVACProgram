@@ -2,7 +2,7 @@
 #include "afxdialogex.h"
 
 
-// CRatioScanFilesDialog is the second page in the Ratio calculation dialog
+// CRatioSetupDialog is the second page in the Ratio calculation dialog
 // and makes it possible for the user to setup the properties for the DOAS fits.
 
 class CRatioSetupDialog : public CPropertyPage
