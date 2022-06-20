@@ -228,6 +228,18 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
     <ClCompile Include="Dialogs\SpectrometerCalibrationDlg.cpp" />
     <ClCompile Include="Dialogs\SplitPakFilesDlg.cpp" />
     <ClCompile Include="Dialogs\SummarizeFluxDataDlg.cpp" />
+    <ClCompile Include="DlgControls\CGridListCtrlEx\CGridColumnTraitCombo.cpp" />
+    <ClCompile Include="DlgControls\CGridListCtrlEx\CGridColumnTraitDateTime.cpp" />
+    <ClCompile Include="DlgControls\CGridListCtrlEx\CGridColumnTraitEdit.cpp" />
+    <ClCompile Include="DlgControls\CGridListCtrlEx\CGridColumnTraitHyperLink.cpp" />
+    <ClCompile Include="DlgControls\CGridListCtrlEx\CGridColumnTraitImage.cpp" />
+    <ClCompile Include="DlgControls\CGridListCtrlEx\CGridColumnTraitMultilineEdit.cpp" />
+    <ClCompile Include="DlgControls\CGridListCtrlEx\CGridColumnTraitText.cpp" />
+    <ClCompile Include="DlgControls\CGridListCtrlEx\CGridListCtrlEx.cpp" />
+    <ClCompile Include="DlgControls\CGridListCtrlEx\CGridListCtrlGroups.cpp" />
+    <ClCompile Include="DlgControls\CGridListCtrlEx\CGridRowTraitText.cpp" />
+    <ClCompile Include="DlgControls\CGridListCtrlEx\CGridRowTraitXP.cpp" />
+    <ClCompile Include="DlgControls\CGridListCtrlEx\ViewConfigSection.cpp" />
     <ClCompile Include="DlgControls\GridCtrl\GridCell.cpp" />
     <ClCompile Include="DlgControls\GridCtrl\GridCellBase.cpp" />
     <ClCompile Include="DlgControls\GridCtrl\GridCtrl.cpp" />
@@ -300,6 +312,22 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
     <ClInclude Include="Dialogs\CRatioCalculationDlg.h" />
     <ClInclude Include="Dialogs\SpectrometerCalibrationDlg.h" />
     <ClInclude Include="Dialogs\FluxHistoryDlg.h" />
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridColumnTrait.h" />
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridColumnTraitCombo.h" />
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridColumnTraitDateTime.h" />
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridColumnTraitEdit.h" />
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridColumnTraitHyperLink.h" />
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridColumnTraitImage.h" />
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridColumnTraitMultilineEdit.h" />
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridColumnTraitText.h" />
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridColumnTraitVisitor.h" />
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridListCtrlEx.h" />
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridListCtrlGroups.h" />
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridRowTrait.h" />
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridRowTraitText.h" />
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridRowTraitVisitor.h" />
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridRowTraitXP.h" />
+    <ClInclude Include="DlgControls\CGridListCtrlEx\ViewConfigSection.h" />
     <ClInclude Include="Evaluation\EvaluationResultView.h" />
     <ClCompile Include="SpectralEvaluation\src\Calibration\Correspondence.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
@@ -761,6 +789,7 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
     <ResourceCompile Include="NovacMasterProgram.rc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="DlgControls\CGridListCtrlEx\ReadMe.md" />
     <None Include="res\NovacMasterProgram.rc2" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

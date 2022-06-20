@@ -338,14 +338,14 @@ public:
     CString   m_exeFileName;
 
     /** Opens a dialog window and lets the user browse for a file */
-    static bool BrowseForFile(TCHAR* filter, CString& fileName);
+    static bool BrowseForFile(const TCHAR* filter, CString& fileName);
 
     /** Opens a dialog window and lets the user browse for a filename to save to */
-    static bool BrowseForFile_SaveAs(TCHAR* filter, CString& fileName);
+    static bool BrowseForFile_SaveAs(const TCHAR* filter, CString& fileName);
 
     /** Opens a dialog window and lets the user browse for a filename to save to.
         If filterType is not nullptr then it will be filled with the selected filter. */
-    static bool BrowseForFile_SaveAs(TCHAR* filter, CString& fileName, int* filterType);
+    static bool BrowseForFile_SaveAs(const TCHAR* filter, CString& fileName, int* filterType);
 
     /** Opens a dialog window and lets the user browse for a directory.
             @return true if all is ok,

@@ -27,8 +27,7 @@
 IMPLEMENT_DYNAMIC(CRatioScanFilesDialog, CPropertyPage)
 
 CRatioScanFilesDialog::CRatioScanFilesDialog(RatioCalculationController* controller, CWnd* pParent /*=nullptr*/)
-    : CPropertyPage(IDD_RATIO_SCANFILES_DIALOG),
-    m_controller(controller)
+    : CPropertyPage(IDD_RATIO_SCANFILES_DIALOG), m_controller(controller)
 {
 }
 

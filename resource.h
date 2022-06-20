@@ -276,6 +276,8 @@
 #define IDC_EDIT_MAXCOL2                1011
 #define IDC_EDIT_MAXFLUX                1011
 #define IDC_EDIT_OUTPUTDIR              1012
+#define IDC_EDIT_FITLOW_BRO             1012
+#define IDC_EDIT_FITHIGH_BRO            1013
 #define IDC_STATIC_REFERENCEFILES       1015
 #define IDC_SYSTEM_TAB_CONTROL          1016
 #define IDC_STATIC_COLUMN               1017
@@ -362,6 +364,7 @@
 #define IDC_BUTTON_POL_DIR_BROWSE       1063
 #define IDC_BTN_BROWSEEVALLOGS          1063
 #define IDC_BUTTON_BROWSE_CALIBRATION   1063
+#define IDC_BUTTON_BROWSE_SO2_1         1063
 #define IDC_BUTTON2                     1064
 #define IDC_BTN_CALC_FLUX               1064
 #define IDC_REEVAL_CANCEL               1064
@@ -377,6 +380,7 @@
 #define IDC_BUTTON_BROWSE_CLB           1064
 #define IDC_BTN_BROWSEOUTPUTFILE_EVALLOG 1064
 #define IDC_BUTTON_BROWSE_LINE_SHAPE    1064
+#define IDC_BUTTON_BROWSE_O3_1          1064
 #define IDC_BROWSE_EXPORTDIR            1065
 #define IDC_BUTTON_REFERENCE_PROEPERTIES 1065
 #define IDC_BROWSE_SERIES2              1065
@@ -385,12 +389,19 @@
 #define IDC_BTN_BROWSEDARKCURRENTSPEC   1065
 #define IDC_BTN_BROWSEEVALLOG3          1065
 #define IDC_BUTTON_BROWSE_XS            1065
+#define IDC_BUTTON_BROWSE_RING_1        1065
 #define IDC_BUTTON_BROWSE_DARKCURRENT2  1066
 #define IDC_BTN_BROWSEEVALLOG4          1066
 #define IDC_BUTTON_REFERENCE_VIEW       1066
+#define IDC_BUTTON_BROWSE_RINGL4_1      1066
+#define IDC_BUTTON_BROWSE_SO2_2         1067
+#define IDC_BUTTON_BROWSE_O3_2          1068
 #define IDC_PF_WINDSPEED                1069
+#define IDC_BUTTON_BROWSE_RING_2        1069
 #define IDC_PF_WINDDIRECTION            1070
+#define IDC_BUTTON_BROWSE_RINGL4_2      1070
 #define IDC_PF_COMPASS                  1071
+#define IDC_BUTTON_BROWSE_BRO_2         1071
 #define IDC_PF_PLUMEHEIGHT              1072
 #define IDC_EDIT2                       1073
 #define IDC_EVALUATION_LOG_EDIT         1073
@@ -466,6 +477,7 @@
 #define IDC_FITWINDOW_LIST              1094
 #define IDC_EDIT_POLYNOM                1097
 #define IDC_FIT_HP_DIV                  1098
+#define IDC_EDIT_POLYNOM2               1098
 #define IDC_REF_STATIC                  1099
 #define IDC_CHECK_UV                    1100
 #define IDC_FIT_HP_SUB                  1101
@@ -893,6 +905,18 @@
 #define IDC_CALIBRATION_INTERVAL_HIGH_HOURS 1423
 #define IDC_COMBO_REFERENCE_UNIT        1424
 #define IDC_CALIBRATION_INTERVAL_HIGH_MINUTES 1424
+#define IDC_EDIT_FITLOW_SO2             1425
+#define IDC_EDIT_FITHIGH_SO2            1426
+#define IDC_LIST_REFERENCES_BRO         1434
+#define IDC_LIST_REFERENCES_SO2         1435
+#define IDC_CHECK4                      1438
+#define IDC_CHECK5                      1439
+#define IDC_CHECK6                      1440
+#define IDC_CHECK7                      1441
+#define IDC_CHECK8                      1442
+#define IDC_CHECK9                      1443
+#define IDC_REFERENCES_LIST             1445
+#define IDC_LIST1                       1446
 #define ID_CONTROL_START                32771
 #define ID_VIEW_PEAKINTENSITY_BD        32779
 #define ID_VIEW_FITINTENSITY_BD         32780
@@ -916,7 +940,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        345
 #define _APS_NEXT_COMMAND_VALUE         32795
-#define _APS_NEXT_CONTROL_VALUE         1425
+#define _APS_NEXT_CONTROL_VALUE         1447
 #define _APS_NEXT_SYMED_VALUE           109
 #endif
 #endif

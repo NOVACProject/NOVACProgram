@@ -154,6 +154,9 @@
     <Filter Include="Header Files\SpectralEvaluation\DialogControllers">
       <UniqueIdentifier>{ec32462a-478a-4108-83c0-21c45c716393}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\DlgControls\CGridListCtrlEx">
+      <UniqueIdentifier>{60298a56-d291-41a2-8395-5da8560434ab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Configuration\AdvancedFTPUploadSettings.cpp">
@@ -728,6 +731,42 @@
     </ClCompile>
     <ClCompile Include="SpectralEvaluation\src\DialogControllers\RatioCalculationController.cpp">
       <Filter>Source Files\SpectralEvaluation\DialogControllers</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgControls\CGridListCtrlEx\CGridColumnTraitCombo.cpp">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgControls\CGridListCtrlEx\CGridColumnTraitDateTime.cpp">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgControls\CGridListCtrlEx\CGridColumnTraitEdit.cpp">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgControls\CGridListCtrlEx\CGridColumnTraitHyperLink.cpp">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgControls\CGridListCtrlEx\CGridColumnTraitImage.cpp">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgControls\CGridListCtrlEx\CGridColumnTraitMultilineEdit.cpp">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgControls\CGridListCtrlEx\CGridColumnTraitText.cpp">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgControls\CGridListCtrlEx\CGridListCtrlEx.cpp">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgControls\CGridListCtrlEx\CGridListCtrlGroups.cpp">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgControls\CGridListCtrlEx\CGridRowTraitText.cpp">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgControls\CGridListCtrlEx\CGridRowTraitXP.cpp">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgControls\CGridListCtrlEx\ViewConfigSection.cpp">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1421,6 +1460,54 @@
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\DialogControllers\RatioCalculationController.h">
       <Filter>Header Files\SpectralEvaluation\DialogControllers</Filter>
     </ClInclude>
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridColumnTrait.h">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridColumnTraitCombo.h">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridColumnTraitDateTime.h">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridColumnTraitEdit.h">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridColumnTraitHyperLink.h">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridColumnTraitImage.h">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridColumnTraitMultilineEdit.h">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridColumnTraitText.h">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridColumnTraitVisitor.h">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridListCtrlEx.h">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridListCtrlGroups.h">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridRowTrait.h">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridRowTraitText.h">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridRowTraitVisitor.h">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridRowTraitXP.h">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgControls\CGridListCtrlEx\ViewConfigSection.h">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\NOVAClogo2.ico">
@@ -1509,6 +1596,9 @@
   <ItemGroup>
     <None Include="res\NovacMasterProgram.rc2">
       <Filter>Resource Files</Filter>
+    </None>
+    <None Include="DlgControls\CGridListCtrlEx\ReadMe.md">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
     </None>
   </ItemGroup>
 </Project>

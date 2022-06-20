@@ -288,8 +288,8 @@ void Common::CalculateDestination(double lat1, double lon1, double dist, double 
     lon2 = lon2 * RADTODEGREE;
 }
 
-// open a browser window and let the user search for a file
-bool Common::BrowseForFile(TCHAR* filter, CString& fileName) {
+bool Common::BrowseForFile(const TCHAR* filter, CString& fileName)
+{
     TCHAR szFile[4096];
     sprintf(szFile, "%s", (LPCSTR)fileName);
 
@@ -297,15 +297,15 @@ bool Common::BrowseForFile(TCHAR* filter, CString& fileName) {
     // Initialize OPENFILENAME
     ZeroMemory(&ofn, sizeof(OPENFILENAME));
     ofn.lStructSize = sizeof(OPENFILENAME);
-    ofn.hwndOwner = NULL;
+    ofn.hwndOwner = nullptr;
     ofn.hInstance = AfxGetInstanceHandle();
     ofn.lpstrFile = szFile;
     ofn.nMaxFile = sizeof(szFile);
     ofn.lpstrFilter = filter;
     ofn.nFilterIndex = 1;
-    ofn.lpstrFileTitle = NULL;
+    ofn.lpstrFileTitle = nullptr;
     ofn.nMaxFileTitle = 0;
-    ofn.lpstrInitialDir = NULL;
+    ofn.lpstrInitialDir = nullptr;
     ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_EXPLORER;
 
     if (GetOpenFileName(&ofn) == TRUE) {
@@ -316,13 +316,12 @@ bool Common::BrowseForFile(TCHAR* filter, CString& fileName) {
     return false;
 }
 
-// open a browser window and let the user search for a file
-bool Common::BrowseForFile_SaveAs(TCHAR* filter, CString& fileName)
+bool Common::BrowseForFile_SaveAs(const TCHAR* filter, CString& fileName)
 {
     return BrowseForFile_SaveAs(filter, fileName, nullptr);
 }
 
-bool Common::BrowseForFile_SaveAs(TCHAR* filter, CString& fileName, int* filterType)
+bool Common::BrowseForFile_SaveAs(const TCHAR* filter, CString& fileName, int* filterType)
 {
     static TCHAR szFile[4096];
     sprintf(szFile, "%s", (LPCTSTR)fileName);

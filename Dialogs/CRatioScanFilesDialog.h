@@ -13,7 +13,6 @@ namespace novac
     class CSpectrum;
 }
 
-
 class CRatioScanFilesDialog : public CPropertyPage
 {
     DECLARE_DYNAMIC(CRatioScanFilesDialog)

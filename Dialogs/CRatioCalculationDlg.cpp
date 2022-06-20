@@ -21,10 +21,10 @@ CRatioCalculationDlg::CRatioCalculationDlg()
     m_selectScanFilesPage = new CRatioScanFilesDialog(m_controller);
     m_selectScanFilesPage->Construct(IDD_RATIO_SCANFILES_DIALOG);
 
-    m_setupEvaluationPage = new CRatioSetupDialog();
+    m_setupEvaluationPage = new CRatioSetupDialog(m_controller);
     m_setupEvaluationPage->Construct(IDD_RATIO_WINDOW_SETUP_DIALOG);
 
-    m_runEvaluationPage = new CRatioEvaluationDialog();
+    m_runEvaluationPage = new CRatioEvaluationDialog(m_controller);
     m_runEvaluationPage->Construct(IDD_RATIO_EVALUATE_DIALOG);
 
     AddPage(m_selectScanFilesPage);

@@ -6,19 +6,21 @@
 #include "../resource.h"
 #include "CRatioEvaluationDialog.h"
 
+#include <SpectralEvaluation/DialogControllers/RatioCalculationController.h>
+
 
 // CRatioEvaluationDialog dialog
 
 IMPLEMENT_DYNAMIC(CRatioEvaluationDialog, CPropertyPage)
 
-CRatioEvaluationDialog::CRatioEvaluationDialog(CWnd* pParent /*=nullptr*/)
-    : CPropertyPage(IDD_RATIO_EVALUATE_DIALOG)
+CRatioEvaluationDialog::CRatioEvaluationDialog(RatioCalculationController* controller, CWnd* pParent /*=nullptr*/)
+    : CPropertyPage(IDD_RATIO_EVALUATE_DIALOG), m_controller(controller)
 {
-
 }
 
 CRatioEvaluationDialog::~CRatioEvaluationDialog()
 {
+    m_controller = nullptr;
 }
 
 BOOL CRatioEvaluationDialog::OnInitDialog() {
