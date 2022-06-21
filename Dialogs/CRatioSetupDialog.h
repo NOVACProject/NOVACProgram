@@ -23,22 +23,6 @@ public:
     enum { IDD = IDD_RATIO_WINDOW_SETUP_DIALOG };
 #endif
 
-    CEdit m_fitLowSO2;
-    CEdit m_fitHighSO2;
-    CEdit m_fitLowBrO;
-    CEdit m_fitHighBrO;
-
-    // The browse for reference files buttons. The ones ending with '1' belongs to the SO2 window, the ones ending with '2' belongs to BrO
-    afx_msg void OnBnClickedButtonBrowseSo21();
-    afx_msg void OnBnClickedButtonBrowseO31();
-    afx_msg void OnBnClickedButtonBrowseRing1();
-    afx_msg void OnBnClickedButtonBrowseRingl41();
-    afx_msg void OnBnClickedButtonBrowseBro2();
-    afx_msg void OnBnClickedButtonBrowseSo22();
-    afx_msg void OnBnClickedButtonBrowseO32();
-    afx_msg void OnBnClickedButtonBrowseRing2();
-    afx_msg void OnBnClickedButtonBrowseRingl42();
-
 protected:
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
@@ -46,16 +30,43 @@ protected:
 
 private:
 
+    afx_msg void OnClickInReferenceList(NMHDR* pNMHDR, LRESULT* pResult);
+    afx_msg void OnKillfocusEditBox();
+
     // The controller which this dialog helps to setup. Notice that this dialog does not own the pointer and will not delete it.
     RatioCalculationController* m_controller;
 
     // Sets up the m_referenceGrid
     void InitReferenceFileControl();
 
-public:
-
     /** The reference grid, enables the user to select reference files */
     GridListCtrl::CGridListCtrlEx m_referencesList;
 
+    enum ReferenceListColumns
+    {
+        NAME = 1,
+        PATH,
+        INCLUDE_SO2,
+        INCLUDE_BRO,
+        AUTOCALCULATE
+    };
+
     CImageList m_ImageList;
+
+    // Saving the fit ranges from the user, in nano meters.
+    CString m_fitLowSO2;
+    CString m_fitHighSO2;
+    CString m_fitLowBrO;
+    CString m_fitHighBrO;
+    CString m_polyOrderSO2;
+    CString m_polyOrderBrO;
+    CListBox m_selectedReferencesSO2;
+    CListBox m_selectedReferencesBrO;
+
+    // Updates th m_fitLow... and m_fitHhigh...
+    void UpdateFitParametersFromController();
+
+    void UpdateDisplayedListOfReferencesPerWindow();
+
+    void BrowseForReference(int referenceIdx);
 };
