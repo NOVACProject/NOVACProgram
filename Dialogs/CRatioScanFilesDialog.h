@@ -3,6 +3,8 @@
 
 #include "../Graphs/SpectrumGraph.h"
 
+#include <string>
+
 // CRatioScanFilesDialog is the first page in the Ratio calculation dialog
 // and makes it possible for the user to select a number of scan-files (.pak) to use in the calculations.
 

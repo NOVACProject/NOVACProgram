@@ -2,6 +2,8 @@
 
 #include "../Graphs/GraphCtrl.h"
 
+#include <string>
+
 // CCalibratePixelToWavelengthDialog dialog
 
 class NovacProgramWavelengthCalibrationController;

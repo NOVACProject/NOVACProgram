@@ -63,7 +63,7 @@ BOOL ColumnHistoryDlg::OnInitDialog()
 {
     CPropertyPage::OnInitDialog();
 
-    m_lastDay = common.GetDay();
+    m_lastDay = Common::GetDay();
 
     m_minColumn = g_settings.scanner[m_scannerIndex].minColumn;
     m_maxColumn = g_settings.scanner[m_scannerIndex].maxColumn;
@@ -405,7 +405,7 @@ LRESULT ColumnHistoryDlg::OnEvalSuccess(WPARAM wParam, LPARAM lParam) {
     DrawPlot();
 
     // check to see if new UTC day. If so, draw history plot too.
-    int today = common.GetDay();
+    int today = Common::GetDay();
     if (m_lastDay == today) {
         return 0;
     }

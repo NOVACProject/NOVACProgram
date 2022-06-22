@@ -15,9 +15,9 @@
 #pragma comment( lib, "PSAPI.LIB" )
 
 extern CFormView* pView;
-extern CConfigurationSetting g_settings;	// <-- the settings for the scanners
-extern CVolcanoInfo g_volcanoes;					// <-- the list of volcanoes
-extern CWinThread* g_ftp;									// <-- The Ftp-uploading thread.
+extern CConfigurationSetting g_settings;    // <-- the settings for the scanners
+extern CVolcanoInfo g_volcanoes;            // <-- the list of volcanoes
+extern CWinThread* g_ftp;                   // <-- The Ftp-uploading thread.
 
 long GetSleepTime(struct timeStruct& startTime, struct timeStruct& stopTime)
 {

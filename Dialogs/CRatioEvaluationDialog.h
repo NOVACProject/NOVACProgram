@@ -1,6 +1,7 @@
 #pragma once
 #include "afxdialogex.h"
 
+#include "../Graphs/SpectrumGraph.h"
 
 class RatioCalculationController;
 
@@ -33,4 +34,11 @@ private:
     // The controller which this dialog helps to setup. Notice that this dialog does not own the pointer and will not delete it.
     RatioCalculationController* m_controller;
 
+    // The graph of the SO2 fit
+    Graph::CSpectrumGraph m_so2FitGraph;
+    CStatic m_fitFrameSO2;
+
+    // The graph of the BrO fit
+    Graph::CSpectrumGraph m_broFitGraph;
+    CStatic m_fitFrameBrO;
 };

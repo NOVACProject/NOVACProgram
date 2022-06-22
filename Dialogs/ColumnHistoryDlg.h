@@ -46,8 +46,6 @@ public:
     void RedrawAll();
 private:
 
-    Common common;
-
     // min and max column (Y-axis range)
     int m_minColumn;
     int m_maxColumn;
