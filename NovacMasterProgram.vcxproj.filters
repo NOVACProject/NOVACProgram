@@ -768,6 +768,15 @@
     <ClCompile Include="DlgControls\CGridListCtrlEx\ViewConfigSection.cpp">
       <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
     </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Evaluation\RatioEvaluation.cpp">
+      <Filter>Source Files\SpectralEvaluation\Evaluation</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Evaluation\DoasFitPreparation.cpp">
+      <Filter>Source Files\SpectralEvaluation\Evaluation</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Math\SpectrumMath.cpp">
+      <Filter>Source Files\SpectralEvaluation\Math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Configuration\AdvancedFTPUploadSettings.h">
@@ -1507,6 +1516,12 @@
     </ClInclude>
     <ClInclude Include="DlgControls\CGridListCtrlEx\ViewConfigSection.h">
       <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Evaluation\Ratio.h">
+      <Filter>Header Files\SpectralEvaluation\Evaluation</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Evaluation\RatioEvaluation.h">
+      <Filter>Header Files\SpectralEvaluation\Evaluation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

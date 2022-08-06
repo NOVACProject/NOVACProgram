@@ -39,7 +39,8 @@ private:
     // Sets up the m_referenceGrid
     void InitReferenceFileControl();
 
-    /** The reference grid, enables the user to select reference files */
+    /** The reference grid, enables the user to select reference files.
+        This also makes it possible to select which fit window the references should be included in. */
     GridListCtrl::CGridListCtrlEx m_referencesList;
 
     enum ReferenceListColumns

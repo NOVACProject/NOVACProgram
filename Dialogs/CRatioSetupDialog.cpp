@@ -240,8 +240,8 @@ void CRatioSetupDialog::OnKillfocusEditBox()
     // Update the controller
     m_controller->m_so2FitRange = ParseWavelengthRange((LPCSTR)m_fitLowSO2, (LPCSTR)m_fitHighSO2);
     m_controller->m_broFitRange = ParseWavelengthRange((LPCSTR)m_fitLowBrO, (LPCSTR)m_fitHighBrO);
-    m_controller->m_so2Window.polyOrder = std::atoi((LPCSTR)m_polyOrderSO2);
-    m_controller->m_broWindow.polyOrder = std::atoi((LPCSTR)m_polyOrderBrO);
+    m_controller->m_so2PolynomialOrder = std::atoi((LPCSTR)m_polyOrderSO2);
+    m_controller->m_broPolynomialOrder = std::atoi((LPCSTR)m_polyOrderBrO);
 
     UpdateFitParametersFromController();
 }
@@ -250,11 +250,11 @@ void CRatioSetupDialog::UpdateFitParametersFromController()
 {
     m_fitLowSO2.Format("%.1lf", m_controller->m_so2FitRange.low);
     m_fitHighSO2.Format("%.1lf", m_controller->m_so2FitRange.high);
-    m_polyOrderSO2.Format("%d", m_controller->m_so2Window.polyOrder);
+    m_polyOrderSO2.Format("%d", m_controller->m_so2PolynomialOrder);
 
     m_fitLowBrO.Format("%.1lf", m_controller->m_broFitRange.low);
     m_fitHighBrO.Format("%.1lf", m_controller->m_broFitRange.high);
-    m_polyOrderBrO.Format("%d", m_controller->m_broWindow.polyOrder);
+    m_polyOrderBrO.Format("%d", m_controller->m_broPolynomialOrder);
 
     // Update the UI with the values
     UpdateData(FALSE);

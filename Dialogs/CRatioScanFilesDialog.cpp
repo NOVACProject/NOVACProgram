@@ -85,7 +85,7 @@ void CRatioScanFilesDialog::OnBnClickedBtnBrowsescanfile()
     TCHAR filter[] = _T("Pak Files|*.pak|All Files|*.*||");
 
     // Reset all data
-    m_controller->m_pakfiles.clear();
+    m_controller->SetupPakFileList(std::vector<std::string>{});
     m_currentlyDisplayedSpectrumIdx = 0;
 
     // Let the user select the file.
@@ -108,10 +108,10 @@ void CRatioScanFilesDialog::OnBnClickedBtnBrowsescanfile()
     std::sort(begin(pakfileList), end(pakfileList));
 
     // update the list
-    m_controller->m_pakfiles = pakfileList;
+    m_controller->SetupPakFileList(pakfileList);
 
     m_pakFileListBox.ResetContent();
-    for (const auto& file : m_controller->m_pakfiles)
+    for (const auto& file : m_controller->ListPakFiles())
     {
         CString fileName{ file.c_str() };
         m_pakFileListBox.AddString(fileName);
@@ -129,7 +129,7 @@ void CRatioScanFilesDialog::OnChangeSpectrumInFile(NMHDR* pNMHDR, LRESULT* pResu
 {
     LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
 
-    if (m_controller->m_pakfiles.size() == 0)
+    if (m_controller->ListPakFiles().size() == 0)
     {
         return;
     }
@@ -170,18 +170,18 @@ void CRatioScanFilesDialog::OnChangeSelectedSpectrumFile()
 
 std::string CRatioScanFilesDialog::GetCurrentlySelectedPakFile() const
 {
-    if (m_controller->m_pakfiles.size() == 0)
+    if (m_controller->NumberOfPakFilesInSetup() == 0)
     {
         return "";
     }
 
     int idx = m_pakFileListBox.GetCurSel();
-    if (idx < 0 || idx >= static_cast<int>(m_controller->m_pakfiles.size()))
+    if (idx < 0 || idx >= static_cast<int>(m_controller->NumberOfPakFilesInSetup()))
     {
         return "";
     }
 
-    return m_controller->m_pakfiles[idx];
+    return m_controller->ListPakFiles()[idx];
 }
 
 int CRatioScanFilesDialog::GetcurrentlySelectedSpectrumIndexInFile() const

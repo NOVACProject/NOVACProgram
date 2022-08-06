@@ -484,7 +484,6 @@
 #define IDC_IGNORE_DARK                 1108
 #define IDC_LBL_SHOWING2                1108
 #define IDC_IGNORE_SATURATED            1109
-#define IDC_REFFIT_FRAME2               1109
 #define IDC_FIT_FRAME_BRO               1109
 #define IDC_IGNORE_INTENSITY            1110
 #define IDC_SPECIE_LIST2                1110
@@ -911,6 +910,10 @@
 #define IDC_LIST_REFERENCES_SO2         1435
 #define IDC_REFERENCES_LIST             1445
 #define IDC_FIT_FRAME_SO2               1447
+#define IDC_RATIO_RUN_EVALUATION        1448
+#define IDC_RATIO_RUN_EVALUATION2       1449
+#define IDC_RATIO_RUN_EVALUATION_NEXT_SCAN 1449
+#define IDC_FIT_FRAME_SCAN              1451
 #define ID_CONTROL_START                32771
 #define ID_VIEW_PEAKINTENSITY_BD        32779
 #define ID_VIEW_FITINTENSITY_BD         32780
@@ -934,7 +937,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        345
 #define _APS_NEXT_COMMAND_VALUE         32795
-#define _APS_NEXT_CONTROL_VALUE         1448
+#define _APS_NEXT_CONTROL_VALUE         1452
 #define _APS_NEXT_SYMED_VALUE           109
 #endif
 #endif
