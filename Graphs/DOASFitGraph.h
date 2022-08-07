@@ -1,16 +1,18 @@
 #pragma once
 
-#include "GraphCtrl.h"
-#include "../Common/Common.h"
-#include <SpectralEvaluation/Spectra/Spectrum.h>
+#include <string>
+#include <vector>
 
-namespace Graph {
+#include "GraphCtrl.h"
+
+namespace Graph
+{
     class CDOASFitGraph :
         public CGraphCtrl
     {
     public:
-        CDOASFitGraph(void);
-        ~CDOASFitGraph(void);
+        CDOASFitGraph();
+        ~CDOASFitGraph();
 
         /** the pixel range used for the fit */
         int m_fitLow;
@@ -20,13 +22,14 @@ namespace Graph {
         int m_nReferences;
 
         /** A local copy of the residual of the last fit */
-        double m_residual[MAX_SPECTRUM_LENGTH];
+        std::vector<double> m_residual;
 
-        /** A local copy of the last fit result */
-        double m_fitResult[MAX_N_REFERENCES][MAX_SPECTRUM_LENGTH];
+        /** A local copy of the last fit result.
+            First index is reference, second is pixel. */
+        std::vector<std::vector<double>> m_fitResult;
 
         /** A local copy of the names of the references fitted */
-        CString m_specieName[MAX_N_REFERENCES];
+        std::vector<std::string> m_specieName;
 
         /** Draws the spectrum fit */
         void DrawFit(int refIndex = 0);

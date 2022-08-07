@@ -1,17 +1,25 @@
 #include "StdAfx.h"
 #include "DOASFitGraph.h"
 #include "../resource.h"
+#include "../Common/Common.h"
+#include <SpectralEvaluation/Spectra/Spectrum.h>
 
 using namespace Graph;
 
-CDOASFitGraph::CDOASFitGraph(void)
+CDOASFitGraph::CDOASFitGraph()
+    : m_nReferences(0), m_fitLow(0), m_fitHigh(0)
 {
-    m_nReferences = 0;
-    m_fitLow = 0;
-    m_fitHigh = 0;
+    m_residual.resize(MAX_SPECTRUM_LENGTH);
+    m_specieName.resize(MAX_N_REFERENCES);
+
+    m_fitResult.resize(MAX_N_REFERENCES);
+    for (int ii = 0; ii < MAX_N_REFERENCES; ++ii)
+    {
+        m_fitResult[ii].resize(MAX_SPECTRUM_LENGTH);
+    }
 }
 
-CDOASFitGraph::~CDOASFitGraph(void)
+CDOASFitGraph::~CDOASFitGraph()
 {
 }
 
@@ -69,7 +77,7 @@ void CDOASFitGraph::DrawFit(int refIndex) {
 
         // draw the fitted (scaled & shifted) reference
         this->SetPlotColor(RGB(0, 0, 255));
-        this->XYPlot(number + m_fitLow, m_fitResult[refIndex] + m_fitLow, fitWidth, PLOT_FIXED_AXIS | PLOT_CONNECTED);
+        this->XYPlot(number + m_fitLow, m_fitResult[refIndex].data() + m_fitLow, fitWidth, PLOT_FIXED_AXIS | PLOT_CONNECTED);
     }
 
     delete[] CS_And_Residual;
@@ -120,7 +128,7 @@ void CDOASFitGraph::WriteAsciiFile(const CString& fileName) {
     if (NULL != f) {
         fprintf(f, "Pixel\tResidual\t");
         for (j = 0; j < m_nReferences; ++j) {
-            fprintf(f, "OD(%s)\t", (LPCSTR)m_specieName[j]);
+            fprintf(f, "OD(%s)\t", m_specieName[j].c_str());
         }
         fprintf(f, "\n");
 

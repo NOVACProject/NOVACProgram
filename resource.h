@@ -486,7 +486,7 @@
 #define IDC_IGNORE_SATURATED            1109
 #define IDC_FIT_FRAME_BRO               1109
 #define IDC_IGNORE_INTENSITY            1110
-#define IDC_SPECIE_LIST2                1110
+#define IDC_MINOR_SPECIE_LIST           1110
 #define IDC_EDIT_IGNORE_INTENSITY       1111
 #define IDC_EDIT_IGNORE_CHANNEL         1112
 #define IDC_PROGRESSBAR                 1112
@@ -578,18 +578,18 @@
 #define IDC_EDIT_DARKCURRENT_SPECTRUM3  1122
 #define IDC_EDIT_USER_SUPPLIED_DARK_SPECTRUM 1122
 #define IDC_EDIT_EVALLOG4               1122
-#define IDC_REEVAL_LBL_COLUMN2          1122
+#define IDC_RATIO_MINOR_LBL_COLUMN      1122
 #define IDC_EDIT_PERCENT                1123
 #define IDC_EDIT9                       1123
 #define IDC_EDIT_STOP_SEC               1123
 #define IDC_EDIT_COMPASSDIR             1123
-#define IDC_REEVAL_LBL_SHIFT2           1123
+#define IDC_RATIO_MINOR_LBL_SHIFT       1123
 #define IDC_EDIT_COMPASS                1124
-#define IDC_REEVAL_LBL_SQUEEZE2         1124
+#define IDC_RATIO_MINOR_LBL_SQUEEZE     1124
 #define IDC_EDIT_INTERVAL               1125
-#define IDC_REEVAL_LBL_DELTA3           1125
+#define IDC_RATIO_MINOR_LBL_DELTA       1125
 #define IDC_EDIT_DURATION               1126
-#define IDC_REEVAL_LBL_CHISQUARE2       1126
+#define IDC_RATIO_MINOR_LBL_CHISQUARE   1126
 #define IDC_EDIT_MAXANGLE               1127
 #define IDC_SCANGRAPH_FRAME             1128
 #define IDC_SCAN_SPINBTN                1129
@@ -911,9 +911,16 @@
 #define IDC_REFERENCES_LIST             1445
 #define IDC_FIT_FRAME_SO2               1447
 #define IDC_RATIO_RUN_EVALUATION        1448
-#define IDC_RATIO_RUN_EVALUATION2       1449
 #define IDC_RATIO_RUN_EVALUATION_NEXT_SCAN 1449
 #define IDC_FIT_FRAME_SCAN              1451
+#define IDC_RATIO_MAJOR_LBL_COLUMN      1452
+#define IDC_RATIO_MAJOR_LBL_SHIFT       1453
+#define IDC_RATIO_MAJOR_LBL_SQUEEZE     1454
+#define IDC_RATIO_MAJOR_LBL_DELTA       1455
+#define IDC_RATIO_MAJOR_LBL_CHISQUARE   1456
+#define IDC_MAJOR_SPECIE_LIST           1457
+#define IDC_RATIO_MAJOR_LBL_COLUMN2     1458
+#define IDC_FINAL_RATIO_LBL_COLUMN      1458
 #define ID_CONTROL_START                32771
 #define ID_VIEW_PEAKINTENSITY_BD        32779
 #define ID_VIEW_FITINTENSITY_BD         32780
@@ -937,7 +944,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        345
 #define _APS_NEXT_COMMAND_VALUE         32795
-#define _APS_NEXT_CONTROL_VALUE         1452
+#define _APS_NEXT_CONTROL_VALUE         1458
 #define _APS_NEXT_SYMED_VALUE           109
 #endif
 #endif
