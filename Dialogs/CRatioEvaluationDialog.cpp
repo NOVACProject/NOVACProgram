@@ -108,38 +108,8 @@ BOOL CRatioEvaluationDialog::OnInitDialog() {
     CPropertyPage::OnInitDialog();
 
     Common common;
-
-    // Initialize the SO2 fit graph.
     CRect rect;
     int margin = -8;
-    m_fitFrameSO2.GetWindowRect(&rect);
-    rect.bottom -= rect.top + margin;
-    rect.right -= rect.left + margin;
-    rect.top = margin + 10;
-    rect.left = margin;
-    m_so2FitGraph.Create(WS_VISIBLE | WS_CHILD, rect, &m_fitFrameSO2);
-    m_so2FitGraph.SetRange(0, MAX_SPECTRUM_LENGTH, 1, 0.0, 4095.0, 1);
-    m_so2FitGraph.SetYUnits(common.GetString(AXIS_INTENSITY));
-    m_so2FitGraph.SetXUnits(common.GetString(AXIS_CHANNEL));
-    m_so2FitGraph.SetBackgroundColor(RGB(0, 0, 0));
-    m_so2FitGraph.SetGridColor(RGB(255, 255, 255));
-    m_so2FitGraph.SetPlotColor(RGB(0, 255, 0));
-    // m_so2FitGraph.parentWnd = this;
-
-    // Initialize the BrO fit graph
-    m_fitFrameBrO.GetWindowRect(&rect);
-    rect.bottom -= rect.top + margin;
-    rect.right -= rect.left + margin;
-    rect.top = margin + 10;
-    rect.left = margin;
-    m_broFitGraph.Create(WS_VISIBLE | WS_CHILD, rect, &m_fitFrameBrO);
-    m_broFitGraph.SetRange(0, MAX_SPECTRUM_LENGTH, 1, 0.0, 4095.0, 1);
-    m_broFitGraph.SetYUnits(common.GetString(AXIS_INTENSITY));
-    m_broFitGraph.SetXUnits(common.GetString(AXIS_CHANNEL));
-    m_broFitGraph.SetBackgroundColor(RGB(0, 0, 0));
-    m_broFitGraph.SetGridColor(RGB(255, 255, 255));
-    m_broFitGraph.SetPlotColor(RGB(0, 255, 0));
-    // m_broFitGraph.parentWnd = this;
 
     // Initialize the graph showing the SO2 columns from the initial evaluation
     m_scanFrame.GetWindowRect(&rect);
@@ -154,7 +124,12 @@ BOOL CRatioEvaluationDialog::OnInitDialog() {
     m_scanGraph.SetBackgroundColor(RGB(0, 0, 0));
     m_scanGraph.SetGridColor(RGB(255, 255, 255));
     m_scanGraph.SetPlotColor(RGB(255, 0, 0));
-    // m_scanGraph.parentWnd = this;
+
+    // Initialize the list of graphs to show
+    m_resultTypeList.AddString("Scan");
+    m_resultTypeList.AddString("SO2 Fit");
+    m_resultTypeList.AddString("BrO Fit");
+    m_resultTypeList.SetCurSel(0);
 
     return TRUE;  // return TRUE unless you set the focus to a control
 }
@@ -162,11 +137,10 @@ BOOL CRatioEvaluationDialog::OnInitDialog() {
 void CRatioEvaluationDialog::DoDataExchange(CDataExchange* pDX)
 {
     CPropertyPage::DoDataExchange(pDX);
-    DDX_Control(pDX, IDC_FIT_FRAME_SO2, m_fitFrameSO2);
-    DDX_Control(pDX, IDC_FIT_FRAME_BRO, m_fitFrameBrO);
     DDX_Control(pDX, IDC_FIT_FRAME_SCAN, m_scanFrame);
     DDX_Control(pDX, IDC_MAJOR_SPECIE_LIST, m_so2SpecieList);
-    DDX_Control(pDX, IDC_MINOR_SPECIE_LIST, m_broSpecieList);
+    DDX_Control(pDX, IDC_RATIO_SHOW_SELECTION_LIST, m_resultTypeList);
+    DDX_Control(pDX, IDC_RATIO_SHOW_RESULT_LIST, m_resultList);
 }
 
 
@@ -174,30 +148,32 @@ BEGIN_MESSAGE_MAP(CRatioEvaluationDialog, CPropertyPage)
     ON_BN_CLICKED(IDC_RATIO_RUN_EVALUATION_NEXT_SCAN, &CRatioEvaluationDialog::OnBnClickedRunEvaluationOnNextScan)
     ON_BN_CLICKED(IDC_RATIO_RUN_EVALUATION_NEXT_SCAN, &CRatioEvaluationDialog::OnBnClickedRunEvaluationOnAllScans)
 
-    ON_LBN_SELCHANGE(IDC_MAJOR_SPECIE_LIST, OnChangeMajorSpecie)
-    ON_LBN_SELCHANGE(IDC_MINOR_SPECIE_LIST, OnChangeMinorSpecie)
+    ON_LBN_SELCHANGE(IDC_MAJOR_SPECIE_LIST, OnChangeSelectedSpecie)
 
+    ON_LBN_SELCHANGE(IDC_RATIO_SHOW_SELECTION_LIST, &CRatioEvaluationDialog::OnSelchangeRatioShowSelectionList)
 END_MESSAGE_MAP()
 
 // CRatioEvaluationDialog message handlers
 
-void CRatioEvaluationDialog::OnChangeMajorSpecie()
+void CRatioEvaluationDialog::OnChangeSelectedSpecie()
 {
-    UpdateMajorFitGraph();
-}
-
-void CRatioEvaluationDialog::OnChangeMinorSpecie()
-{
-    UpdateMinorFitGraph();
+    const int currentGraph = m_resultTypeList.GetCurSel();
+    if (currentGraph == 1) // SO2
+    {
+        UpdateMajorFitGraph();
+    }
+    else if (currentGraph == 2) // BrO
+    {
+        UpdateMinorFitGraph();
+    }
 }
 
 void CRatioEvaluationDialog::UpdateUserInterfaceWithResult()
 {
-    UpdateScanGraph();
+    UpdateGraph();
+    UpdateResultList();
     UpdateListOfReferences();
-    UpdateMajorFitGraph();
-    UpdateMinorFitGraph();
-    UpdateFinalRatioLabel();
+    UpdateResultList();
 }
 
 const novac::DoasResult& CRatioEvaluationDialog::GetMajorWindowResult()
@@ -208,6 +184,23 @@ const novac::DoasResult& CRatioEvaluationDialog::GetMajorWindowResult()
 const novac::DoasResult& CRatioEvaluationDialog::GetMinorWindowResult()
 {
     return m_controller->m_lastResult.debugInfo.doasResults[1]; // Second result is for BrO
+}
+
+void CRatioEvaluationDialog::UpdateGraph()
+{
+    const int currentGraph = m_resultTypeList.GetCurSel();
+    if (currentGraph == 0)
+    {
+        UpdateScanGraph();
+    }
+    else if (currentGraph == 1)
+    {
+        UpdateMajorFitGraph();
+    }
+    else if (currentGraph == 2)
+    {
+        UpdateMinorFitGraph();
+    }
 }
 
 void CRatioEvaluationDialog::UpdateScanGraph()
@@ -268,19 +261,46 @@ void CRatioEvaluationDialog::UpdateScanGraph()
     m_scanGraph.BarChart(outOfPlumeScanAngles.data(), outOfPlumeColumns.data(), static_cast<int>(outOfPlumeScanAngles.size()), Graph::CGraphCtrl::PLOT_FIXED_AXIS | Graph::CGraphCtrl::PLOT_BAR_SHOW_X);
 }
 
-void CRatioEvaluationDialog::UpdateListOfReferences()
+void CRatioEvaluationDialog::UpdateResultList()
 {
-    UpdateNamesOfReferencesInListBox(m_so2SpecieList, GetMajorWindowResult());
-    UpdateNamesOfReferencesInListBox(m_broSpecieList, GetMinorWindowResult());
+    m_resultList.ResetContent();
+
+    CString str;
+    str.Format("SO2/BrO Ratio: %.2G ± %.2G", m_controller->m_lastResult.ratio.ratio, m_controller->m_lastResult.ratio.error);
+    m_resultList.AddString(str);
+
+    const novac::DoasResult& so2FitResult = GetMajorWindowResult();
+    m_resultList.AddString("SO2 Fit:");
+    str.Format("Chi²: %.2e", so2FitResult.chiSquare);
+    m_resultList.AddString(str);
+    str.Format("SO2 %.2G ± %.2G", so2FitResult.referenceResult[0].column, so2FitResult.referenceResult[0].columnError);
+    m_resultList.AddString(str);
+
+    const novac::DoasResult& broFitResult = GetMinorWindowResult();
+    m_resultList.AddString("BrO Fit:");
+    str.Format("Chi²: %.2e", broFitResult.chiSquare);
+    m_resultList.AddString(str);
+    str.Format("BrO %.2G ± %.2G", broFitResult.referenceResult[0].column, broFitResult.referenceResult[0].columnError);
+    m_resultList.AddString(str);
 }
 
-void CRatioEvaluationDialog::UpdateFinalRatioLabel()
+void CRatioEvaluationDialog::UpdateListOfReferences()
 {
-    CString ratioStr;
-
-    ratioStr.Format("Calculated SO2/BrO Ratio: %.2G ± %.2G", m_controller->m_lastResult.ratio.ratio, m_controller->m_lastResult.ratio.error);
-
-    SetDlgItemText(IDC_FINAL_RATIO_LBL_COLUMN, ratioStr);
+    const int currentGraph = m_resultTypeList.GetCurSel();
+    if (currentGraph == 1) // SO2
+    {
+        m_so2SpecieList.ShowWindow(SW_SHOW);
+        UpdateNamesOfReferencesInListBox(m_so2SpecieList, GetMajorWindowResult());
+    }
+    else if (currentGraph == 2) // BrO
+    {
+        m_so2SpecieList.ShowWindow(SW_SHOW);
+        UpdateNamesOfReferencesInListBox(m_so2SpecieList, GetMinorWindowResult());
+    }
+    else
+    {
+        m_so2SpecieList.ShowWindow(SW_HIDE);
+    }
 }
 
 void CRatioEvaluationDialog::UpdateReferenceResultMajorFit(int indexOfSelectedReference)
@@ -294,18 +314,14 @@ void CRatioEvaluationDialog::UpdateReferenceResultMajorFit(int indexOfSelectedRe
     double squeeze = doasResult.referenceResult[indexOfSelectedReference].squeeze;
     double squeezeError = doasResult.referenceResult[indexOfSelectedReference].squeezeError;
 
-    CString columnStr, shiftStr, squeezeStr, deltaStr, chi2Str;
+    CString columnStr, shiftStr, squeezeStr;
     columnStr.Format("Column %.2G ± %.2G", column, columnError);
     shiftStr.Format("Shift: %.2lf ± %.2lf", shift, shiftError);
     squeezeStr.Format("Squeeze: %.2lf ± %.2lf", squeeze, squeezeError);
-    deltaStr.Format("Delta: %.2e", doasResult.delta);
-    chi2Str.Format("Chi²: %.2e", doasResult.chiSquare);
 
     SetDlgItemText(IDC_RATIO_MAJOR_LBL_COLUMN, columnStr);
     SetDlgItemText(IDC_RATIO_MAJOR_LBL_SHIFT, shiftStr);
     SetDlgItemText(IDC_RATIO_MAJOR_LBL_SQUEEZE, squeezeStr);
-    SetDlgItemText(IDC_RATIO_MAJOR_LBL_DELTA, deltaStr);
-    SetDlgItemText(IDC_RATIO_MAJOR_LBL_CHISQUARE, chi2Str);
 }
 
 void CRatioEvaluationDialog::UpdateReferenceResultMinorFit(int indexOfSelectedReference)
@@ -319,23 +335,18 @@ void CRatioEvaluationDialog::UpdateReferenceResultMinorFit(int indexOfSelectedRe
     double squeeze = doasResult.referenceResult[indexOfSelectedReference].squeeze;
     double squeezeError = doasResult.referenceResult[indexOfSelectedReference].squeezeError;
 
-    CString columnStr, shiftStr, squeezeStr, deltaStr, chi2Str;
+    CString columnStr, shiftStr, squeezeStr;
     columnStr.Format("Column %.2G ± %.2G", column, columnError);
     shiftStr.Format("Shift: %.2lf ± %.2lf", shift, shiftError);
     squeezeStr.Format("Squeeze: %.2lf ± %.2lf", squeeze, squeezeError);
-    deltaStr.Format("Delta: %.2e", doasResult.delta);
-    chi2Str.Format("Chi²: %.2e", doasResult.chiSquare);
 
     SetDlgItemText(IDC_RATIO_MINOR_LBL_COLUMN, columnStr);
     SetDlgItemText(IDC_RATIO_MINOR_LBL_SHIFT, shiftStr);
     SetDlgItemText(IDC_RATIO_MINOR_LBL_SQUEEZE, squeezeStr);
-    SetDlgItemText(IDC_RATIO_MINOR_LBL_DELTA, deltaStr);
-    SetDlgItemText(IDC_RATIO_MINOR_LBL_CHISQUARE, chi2Str);
 }
 
 void CRatioEvaluationDialog::UpdateMajorFitGraph()
 {
-    // The reference that we shall draw
     int refIndex = m_so2SpecieList.GetCurSel();
     if (refIndex < 0)
     {
@@ -343,26 +354,25 @@ void CRatioEvaluationDialog::UpdateMajorFitGraph()
         refIndex = 0;
     }
 
-    UpdateDataInDoasFitGraph(m_so2FitGraph, GetMajorWindowResult());
+    UpdateDataInDoasFitGraph(m_scanGraph, GetMajorWindowResult());
 
-    m_so2FitGraph.DrawFit(refIndex);
+    m_scanGraph.DrawFit(refIndex);
 
     UpdateReferenceResultMajorFit(refIndex);
 }
 
 void CRatioEvaluationDialog::UpdateMinorFitGraph()
 {
-    // The reference that we shall draw
-    int refIndex = m_broSpecieList.GetCurSel();
+    int refIndex = m_so2SpecieList.GetCurSel();
     if (refIndex < 0)
     {
-        m_broSpecieList.SetCurSel(0);
+        m_so2SpecieList.SetCurSel(0);
         refIndex = 0;
     }
 
-    UpdateDataInDoasFitGraph(m_broFitGraph, GetMinorWindowResult());
+    UpdateDataInDoasFitGraph(m_scanGraph, GetMinorWindowResult());
 
-    m_broFitGraph.DrawFit(refIndex);
+    m_scanGraph.DrawFit(refIndex);
 
     UpdateReferenceResultMinorFit(refIndex);
 }
@@ -392,4 +402,10 @@ void CRatioEvaluationDialog::OnBnClickedRunEvaluationOnNextScan()
 void CRatioEvaluationDialog::OnBnClickedRunEvaluationOnAllScans()
 {
     // TODO: Add your control notification handler code here
+}
+
+
+void CRatioEvaluationDialog::OnSelchangeRatioShowSelectionList()
+{
+    UpdateUserInterfaceWithResult();
 }

@@ -33,8 +33,9 @@ public:
     afx_msg void OnBnClickedRunEvaluationOnNextScan();
     afx_msg void OnBnClickedRunEvaluationOnAllScans();
 
-    afx_msg void OnChangeMajorSpecie();
-    afx_msg void OnChangeMinorSpecie();
+    afx_msg void OnChangeSelectedSpecie();
+
+    afx_msg void OnSelchangeRatioShowSelectionList();
 
 protected:
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -46,27 +47,26 @@ private:
     // The controller which this dialog helps to setup. Notice that this dialog does not own the pointer and will not delete it.
     RatioCalculationController* m_controller;
 
-    // The graph of the SO2 fit
-    Graph::CDOASFitGraph m_so2FitGraph;
-    CStatic m_fitFrameSO2;
+    // Graph type selector
+    CListBox m_resultTypeList;
+
+    // The list of species, for the current FitWindow
     CListBox m_so2SpecieList;
 
-    // The graph of the BrO fit
-    Graph::CDOASFitGraph m_broFitGraph;
-    CStatic m_fitFrameBrO;
-    CListBox m_broSpecieList;
+    // Displaying the results
+    CListBox m_resultList;
 
-    // m_scanGraph is the graph of which spectra have been selected in the scan.
-    Graph::CGraphCtrl m_scanGraph;
+    // m_scanGraph is the main graph in the window
+    Graph::CDOASFitGraph m_scanGraph;
     CStatic m_scanFrame;
 
     void UpdateUserInterfaceWithResult();
+    void UpdateGraph();
     void UpdateScanGraph();
     void UpdateMajorFitGraph();
     void UpdateMinorFitGraph();
+    void UpdateResultList();
     void UpdateListOfReferences();
-
-    void UpdateFinalRatioLabel();
 
     void UpdateReferenceResultMajorFit(int indexOfSelectedReference);
     void UpdateReferenceResultMinorFit(int indexOfSelectedReference);

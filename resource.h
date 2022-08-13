@@ -480,7 +480,9 @@
 #define IDC_SPECIE_LIST                 1104
 #define IDC_LBL_SHOWING                 1105
 #define IDC_TOTALFIT_FRAME              1106
+#define IDC_LBL_SHOWING3                1106
 #define IDC_REFFIT_FRAME                1107
+#define IDC_LBL_SHOWING4                1107
 #define IDC_IGNORE_DARK                 1108
 #define IDC_LBL_SHOWING2                1108
 #define IDC_IGNORE_SATURATED            1109
@@ -921,6 +923,9 @@
 #define IDC_MAJOR_SPECIE_LIST           1457
 #define IDC_RATIO_MAJOR_LBL_COLUMN2     1458
 #define IDC_FINAL_RATIO_LBL_COLUMN      1458
+#define IDC_RATIO_SHOW_SELECTION_LIST   1459
+#define IDC_RATIO_SHOW_SELECTION_LIST2  1460
+#define IDC_RATIO_SHOW_RESULT_LIST      1460
 #define ID_CONTROL_START                32771
 #define ID_VIEW_PEAKINTENSITY_BD        32779
 #define ID_VIEW_FITINTENSITY_BD         32780
@@ -944,7 +949,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        345
 #define _APS_NEXT_COMMAND_VALUE         32795
-#define _APS_NEXT_CONTROL_VALUE         1458
+#define _APS_NEXT_CONTROL_VALUE         1461
 #define _APS_NEXT_SYMED_VALUE           109
 #endif
 #endif
