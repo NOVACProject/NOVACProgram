@@ -27,7 +27,6 @@ CRatioSetupDialog::CRatioSetupDialog(RatioCalculationController* controller, CWn
     , m_polyOrderSO2(_T(""))
     , m_polyOrderBrO(_T(""))
 {
-
 }
 
 CRatioSetupDialog::~CRatioSetupDialog()

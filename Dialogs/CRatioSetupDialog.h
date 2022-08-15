@@ -2,6 +2,8 @@
 #include "afxdialogex.h"
 #include "../DlgControls/CGridListCtrlEx/CGridListCtrlEx.h"
 
+#include <string>
+
 class RatioCalculationController;
 
 // CRatioSetupDialog is the second page in the Ratio calculation dialog
@@ -64,7 +66,7 @@ private:
     CListBox m_selectedReferencesSO2;
     CListBox m_selectedReferencesBrO;
 
-    // Updates th m_fitLow... and m_fitHhigh...
+    // Updates th m_fitLow... and m_fitHigh...
     void UpdateFitParametersFromController();
 
     void UpdateDisplayedListOfReferencesPerWindow();

@@ -137,31 +137,6 @@ void CCalibratePixelToWavelengthDialog::SaveSetup()
     }
 }
 
-CString ParseXmlString(const char* startTag, const char* stopTag, const std::string& line)
-{
-    const size_t firstIdx = line.find(startTag);
-    const size_t start = firstIdx + strlen(startTag);
-    const size_t stop = line.find(stopTag);
-    if (stop > start && firstIdx != line.npos && stop != line.npos)
-    {
-        return CString(line.c_str() + start, static_cast<int>(stop - start));
-    }
-    return CString(); // parse failure, return empty string.
-}
-
-int ParseXmlInteger(const char* startTag, const char* stopTag, const std::string& line)
-{
-    const size_t firstIdx = line.find(startTag);
-    const size_t start = firstIdx + strlen(startTag);
-    const size_t stop = line.find(stopTag);
-    if (stop > start && firstIdx != line.npos && stop != line.npos)
-    {
-        std::string valueStr = line.substr(start, stop - start);
-        return std::atoi(valueStr.c_str());
-    }
-    return 0; // parse failure, return zero
-}
-
 void CCalibratePixelToWavelengthDialog::LoadDefaultSetup()
 {
     Common common;

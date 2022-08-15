@@ -8,6 +8,7 @@
 #include "CRatioScanFilesDialog.h"
 #include "CRatioSetupDialog.h"
 #include "CRatioEvaluationDialog.h"
+#include "../Common/Common.h"
 
 #include <SpectralEvaluation/DialogControllers/RatioCalculationController.h>
 
@@ -17,6 +18,7 @@ CRatioCalculationDlg::CRatioCalculationDlg()
     : CPropertySheet()
 {
     m_controller = new RatioCalculationController();
+    m_controller->LoadSetup(SetupFilePath());
 
     m_selectScanFilesPage = new CRatioScanFilesDialog(m_controller);
     m_selectScanFilesPage->Construct(IDD_RATIO_SCANFILES_DIALOG);
@@ -73,5 +75,14 @@ BOOL CRatioCalculationDlg::OnInitDialog()
 BEGIN_MESSAGE_MAP(CRatioCalculationDlg, CPropertySheet)
 END_MESSAGE_MAP()
 
+// Persisting the setup to file
+std::string CRatioCalculationDlg::SetupFilePath()
+{
+    Common common;
+    common.GetExePath();
+    CString path;
+    path.Format("%sRatioCalculationDlg.config", common.m_exePath);
+    return std::string(path);
+}
 
 // CRatioCalculationDlg message handlers

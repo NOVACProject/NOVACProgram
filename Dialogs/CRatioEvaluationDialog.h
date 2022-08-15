@@ -35,7 +35,8 @@ public:
 
     afx_msg void OnChangeSelectedSpecie();
 
-    afx_msg void OnSelchangeRatioShowSelectionList();
+    afx_msg void OnChangeSelectedDoasSpecie();
+    afx_msg void OnBnClickedSaveResults();
 
 protected:
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -53,11 +54,17 @@ private:
     // The list of species, for the current FitWindow
     CListBox m_so2SpecieList;
 
-    // Displaying the results
-    CListBox m_resultList;
+    // The labels showing the column, shift and squeeze for the current specie.
+    CStatic m_referenceHeaderLabel;
+    CStatic m_referenceColumnLabel;
+    CStatic m_referenceShiftLabel;
+    CStatic m_referenceSqueezeLabel;
 
-    // m_scanGraph is the main graph in the window
-    Graph::CDOASFitGraph m_scanGraph;
+    // Displaying the results
+    CTreeCtrl m_resultTree;
+
+    // m_graph is the main graph in the window
+    Graph::CDOASFitGraph m_graph;
     CStatic m_scanFrame;
 
     void UpdateUserInterfaceWithResult();
@@ -68,9 +75,9 @@ private:
     void UpdateResultList();
     void UpdateListOfReferences();
 
-    void UpdateReferenceResultMajorFit(int indexOfSelectedReference);
-    void UpdateReferenceResultMinorFit(int indexOfSelectedReference);
+    void UpdateReferenceResultLabels(const novac::DoasResult& doasResult, int indexOfSelectedReference);
 
     const novac::DoasResult& GetMajorWindowResult();
     const novac::DoasResult& GetMinorWindowResult();
+
 };

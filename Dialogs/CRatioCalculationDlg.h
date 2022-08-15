@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 class RatioCalculationController;
 
 // This is the CRatioCalculationDlg dialog where the user can calculate BrO to SO2 ratios from measuerd data.
@@ -25,5 +27,8 @@ private:
     // Notice that this is the owning class for the pointer and will delete it when done. 
     // The same pointer is referenced by each page in the dialog but this is the sole owner.
     RatioCalculationController* m_controller;
+
+    // Persisting the setup between sessions
+    std::string SetupFilePath();
 
 };

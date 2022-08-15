@@ -9,6 +9,7 @@
 
 #include <SpectralEvaluation/DialogControllers/RatioCalculationController.h>
 #include <SpectralEvaluation/Spectra/Spectrum.h>
+#include <SpectralEvaluation/File/File.h>
 #include <SpectralEvaluation/VectorUtils.h>
 
 #include <sstream>
@@ -86,8 +87,6 @@ void UpdateNamesOfReferencesInListBox(CListBox& destination, const novac::DoasRe
     }
 }
 
-
-
 #pragma endregion
 
 // CRatioEvaluationDialog dialog
@@ -117,13 +116,13 @@ BOOL CRatioEvaluationDialog::OnInitDialog() {
     rect.right -= rect.left + margin;
     rect.top = margin + 10;
     rect.left = margin;
-    m_scanGraph.Create(WS_VISIBLE | WS_CHILD, rect, &m_scanFrame);
-    m_scanGraph.SetRange(-90, 90, 0, 0, 100, 0);
-    m_scanGraph.SetXUnits(common.GetString(AXIS_ANGLE));
-    m_scanGraph.SetYUnits("Column [ppmm]");
-    m_scanGraph.SetBackgroundColor(RGB(0, 0, 0));
-    m_scanGraph.SetGridColor(RGB(255, 255, 255));
-    m_scanGraph.SetPlotColor(RGB(255, 0, 0));
+    m_graph.Create(WS_VISIBLE | WS_CHILD, rect, &m_scanFrame);
+    m_graph.SetRange(-90, 90, 0, 0, 100, 0);
+    m_graph.SetXUnits(common.GetString(AXIS_ANGLE));
+    m_graph.SetYUnits("Column [ppmm]");
+    m_graph.SetBackgroundColor(RGB(0, 0, 0));
+    m_graph.SetGridColor(RGB(255, 255, 255));
+    m_graph.SetPlotColor(RGB(255, 0, 0));
 
     // Initialize the list of graphs to show
     m_resultTypeList.AddString("Scan");
@@ -140,17 +139,20 @@ void CRatioEvaluationDialog::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_FIT_FRAME_SCAN, m_scanFrame);
     DDX_Control(pDX, IDC_MAJOR_SPECIE_LIST, m_so2SpecieList);
     DDX_Control(pDX, IDC_RATIO_SHOW_SELECTION_LIST, m_resultTypeList);
-    DDX_Control(pDX, IDC_RATIO_SHOW_RESULT_LIST, m_resultList);
+    DDX_Control(pDX, IDC_RATIO_RESULT_TREE, m_resultTree);
+    DDX_Control(pDX, IDC_RATIO_MAJOR_LBL_COLUMN, m_referenceColumnLabel);
+    DDX_Control(pDX, IDC_RATIO_MAJOR_LBL_SHIFT, m_referenceShiftLabel);
+    DDX_Control(pDX, IDC_RATIO_MAJOR_LBL_SQUEEZE, m_referenceSqueezeLabel);
+    DDX_Control(pDX, IDC_LBL_SHOWING, m_referenceHeaderLabel);
 }
-
 
 BEGIN_MESSAGE_MAP(CRatioEvaluationDialog, CPropertyPage)
     ON_BN_CLICKED(IDC_RATIO_RUN_EVALUATION_NEXT_SCAN, &CRatioEvaluationDialog::OnBnClickedRunEvaluationOnNextScan)
-    ON_BN_CLICKED(IDC_RATIO_RUN_EVALUATION_NEXT_SCAN, &CRatioEvaluationDialog::OnBnClickedRunEvaluationOnAllScans)
+    ON_BN_CLICKED(IDC_RATIO_RUN_EVALUATION, &CRatioEvaluationDialog::OnBnClickedRunEvaluationOnAllScans)
+    ON_BN_CLICKED(IDC_RATIO_SAVE_RESULTS, &CRatioEvaluationDialog::OnBnClickedSaveResults)
 
     ON_LBN_SELCHANGE(IDC_MAJOR_SPECIE_LIST, OnChangeSelectedSpecie)
-
-    ON_LBN_SELCHANGE(IDC_RATIO_SHOW_SELECTION_LIST, &CRatioEvaluationDialog::OnSelchangeRatioShowSelectionList)
+    ON_LBN_SELCHANGE(IDC_RATIO_SHOW_SELECTION_LIST, &CRatioEvaluationDialog::OnChangeSelectedDoasSpecie)
 END_MESSAGE_MAP()
 
 // CRatioEvaluationDialog message handlers
@@ -174,16 +176,22 @@ void CRatioEvaluationDialog::UpdateUserInterfaceWithResult()
     UpdateResultList();
     UpdateListOfReferences();
     UpdateResultList();
+
+    {
+        CString progressStr;
+        progressStr.Format("Evaluated scan %d out of %d", m_controller->CurrentPakFileIndex(), m_controller->NumberOfPakFilesInSetup());
+        SetDlgItemText(IDC_RATIO_PROGRESS_LABEL, progressStr);
+    }
 }
 
 const novac::DoasResult& CRatioEvaluationDialog::GetMajorWindowResult()
 {
-    return m_controller->m_lastResult.debugInfo.doasResults[0]; // First result is for SO2
+    return m_controller->m_results.back().debugInfo.doasResults[0]; // First result is for SO2
 }
 
 const novac::DoasResult& CRatioEvaluationDialog::GetMinorWindowResult()
 {
-    return m_controller->m_lastResult.debugInfo.doasResults[1]; // Second result is for BrO
+    return m_controller->m_results.back().debugInfo.doasResults[1]; // Second result is for BrO
 }
 
 void CRatioEvaluationDialog::UpdateGraph()
@@ -206,17 +214,19 @@ void CRatioEvaluationDialog::UpdateGraph()
 void CRatioEvaluationDialog::UpdateScanGraph()
 {
     // Draw the evaluated columns vs scan-angle, highlighting the selected in-plume and out-of-plume spectra.
-    m_scanGraph.CleanPlot();
+    m_graph.CleanPlot();
+    m_graph.SetXUnits("Angle [deg]");
+    m_graph.SetYUnits("Column [molec/cm2]");
 
-    const double columnOffset = m_controller->m_lastResult.plumeInScanProperties.offset;
+    const double columnOffset = m_controller->m_results.back().plumeInScanProperties.offset;
 
     std::vector<double> scanAngles;
     std::vector<double> columns;
     std::vector<double> columnErrors;
-    for (int ii = 0; ii < static_cast<int>(m_controller->m_lastResult.initialEvaluation.m_spec.size()); ++ii)
+    for (int ii = 0; ii < static_cast<int>(m_controller->m_results.back().initialEvaluation.m_spec.size()); ++ii)
     {
-        const novac::CEvaluationResult& result = m_controller->m_lastResult.initialEvaluation.m_spec[ii];
-        const novac::CSpectrumInfo& spectrumInfo = m_controller->m_lastResult.initialEvaluation.m_specInfo[ii];
+        const novac::CEvaluationResult& result = m_controller->m_results.back().initialEvaluation.m_spec[ii];
+        const novac::CSpectrumInfo& spectrumInfo = m_controller->m_results.back().initialEvaluation.m_specInfo[ii];
 
         scanAngles.push_back(spectrumInfo.m_scanAngle);
         columns.push_back(result.m_referenceResult[0].m_column - columnOffset);
@@ -224,64 +234,91 @@ void CRatioEvaluationDialog::UpdateScanGraph()
     }
 
     // All the column-values
-    m_scanGraph.SetRange(
+    m_graph.SetRange(
         Min(scanAngles),
         Max(scanAngles),
         1,
         Min(columns),
         Max(columns),
         0);
-    m_scanGraph.SetPlotColor(RGB(128, 0, 0));
-    m_scanGraph.BarChart(scanAngles.data(), columns.data(), columnErrors.data(), static_cast<int>(scanAngles.size()), Graph::CGraphCtrl::PLOT_FIXED_AXIS | Graph::CGraphCtrl::PLOT_BAR_SHOW_X);
+    m_graph.SetPlotColor(RGB(128, 0, 0));
+    m_graph.BarChart(scanAngles.data(), columns.data(), columnErrors.data(), static_cast<int>(scanAngles.size()), Graph::CGraphCtrl::PLOT_FIXED_AXIS | Graph::CGraphCtrl::PLOT_BAR_SHOW_X);
 
     // The selected in-plume column-values
     std::vector<double> inPlumeScanAngles;
     std::vector<double> inPlumeColumns;
     SelectScanAngleAndColumnFromBasicScanEvaluationResult(
-        m_controller->m_lastResult.initialEvaluation,
-        m_controller->m_lastResult.debugInfo.plumeSpectra,
+        m_controller->m_results.back().initialEvaluation,
+        m_controller->m_results.back().debugInfo.plumeSpectra,
         columnOffset,
         inPlumeScanAngles,
         inPlumeColumns);
 
-    m_scanGraph.SetPlotColor(RGB(0, 255, 0));
-    m_scanGraph.BarChart(inPlumeScanAngles.data(), inPlumeColumns.data(), static_cast<int>(inPlumeColumns.size()), Graph::CGraphCtrl::PLOT_FIXED_AXIS | Graph::CGraphCtrl::PLOT_BAR_SHOW_X);
+    m_graph.SetPlotColor(RGB(0, 255, 0));
+    m_graph.BarChart(inPlumeScanAngles.data(), inPlumeColumns.data(), static_cast<int>(inPlumeColumns.size()), Graph::CGraphCtrl::PLOT_FIXED_AXIS | Graph::CGraphCtrl::PLOT_BAR_SHOW_X);
 
     // The selected out-of-plume column-values
     std::vector<double> outOfPlumeScanAngles;
     std::vector<double> outOfPlumeColumns;
     SelectScanAngleAndColumnFromBasicScanEvaluationResult(
-        m_controller->m_lastResult.initialEvaluation,
-        m_controller->m_lastResult.debugInfo.outOfPlumeSpectra,
+        m_controller->m_results.back().initialEvaluation,
+        m_controller->m_results.back().debugInfo.outOfPlumeSpectra,
         columnOffset,
         outOfPlumeScanAngles,
         outOfPlumeColumns);
 
-    m_scanGraph.SetPlotColor(RGB(255, 0, 0));
-    m_scanGraph.BarChart(outOfPlumeScanAngles.data(), outOfPlumeColumns.data(), static_cast<int>(outOfPlumeScanAngles.size()), Graph::CGraphCtrl::PLOT_FIXED_AXIS | Graph::CGraphCtrl::PLOT_BAR_SHOW_X);
+    m_graph.SetPlotColor(RGB(255, 0, 0));
+    m_graph.BarChart(outOfPlumeScanAngles.data(), outOfPlumeColumns.data(), static_cast<int>(outOfPlumeScanAngles.size()), Graph::CGraphCtrl::PLOT_FIXED_AXIS | Graph::CGraphCtrl::PLOT_BAR_SHOW_X);
 }
 
 void CRatioEvaluationDialog::UpdateResultList()
 {
-    m_resultList.ResetContent();
+    m_resultTree.DeleteAllItems();
 
     CString str;
-    str.Format("SO2/BrO Ratio: %.2G ± %.2G", m_controller->m_lastResult.ratio.ratio, m_controller->m_lastResult.ratio.error);
-    m_resultList.AddString(str);
 
-    const novac::DoasResult& so2FitResult = GetMajorWindowResult();
-    m_resultList.AddString("SO2 Fit:");
-    str.Format("Chi²: %.2e", so2FitResult.chiSquare);
-    m_resultList.AddString(str);
-    str.Format("SO2 %.2G ± %.2G", so2FitResult.referenceResult[0].column, so2FitResult.referenceResult[0].columnError);
-    m_resultList.AddString(str);
+    const auto& lastResult = m_controller->m_results.back();
 
-    const novac::DoasResult& broFitResult = GetMinorWindowResult();
-    m_resultList.AddString("BrO Fit:");
-    str.Format("Chi²: %.2e", broFitResult.chiSquare);
-    m_resultList.AddString(str);
-    str.Format("BrO %.2G ± %.2G", broFitResult.referenceResult[0].column, broFitResult.referenceResult[0].columnError);
-    m_resultList.AddString(str);
+    str.Format("Device: %s", lastResult.deviceSerial.c_str());
+    m_resultTree.InsertItem(str, TVI_ROOT);
+
+    str.Format("Time: %04d.%02d.%02d %02d:%02d:%02d", lastResult.startTime.year, lastResult.startTime.month, lastResult.startTime.day, lastResult.startTime.hour, lastResult.startTime.minute, lastResult.startTime.second);
+    m_resultTree.InsertItem(str, TVI_ROOT);
+
+    str.Format("SO2/BrO Ratio: %.2G ± %.2G", lastResult.ratio.ratio, lastResult.ratio.error);
+    m_resultTree.InsertItem(str, TVI_ROOT);
+
+    {
+        const novac::DoasResult& so2FitResult = GetMajorWindowResult();
+        HTREEITEM hTree = m_resultTree.InsertItem("SO2 Fit:", TVI_ROOT);
+        str.Format("Chi²: %.2e", so2FitResult.chiSquare);
+        m_resultTree.InsertItem(str, hTree);
+
+        for (const auto& result : so2FitResult.referenceResult)
+        {
+            str.Format("%s %.2G ± %.2G", result.name.c_str(), result.column, result.columnError);
+            m_resultTree.InsertItem(str, hTree);
+        }
+
+        m_resultTree.Expand(hTree, TVE_EXPAND);
+    }
+
+    {
+        const novac::DoasResult& broFitResult = GetMinorWindowResult();
+        HTREEITEM hTree = m_resultTree.InsertItem("BrO Fit:", TVI_ROOT);
+        str.Format("Chi²: %.2e", broFitResult.chiSquare);
+        m_resultTree.InsertItem(str, hTree);
+
+        for (const auto& result : broFitResult.referenceResult)
+        {
+            str.Format("%s %.2G ± %.2G", result.name.c_str(), result.column, result.columnError);
+            m_resultTree.InsertItem(str, hTree);
+        }
+
+        m_resultTree.Expand(hTree, TVE_EXPAND);
+    }
+
+    m_resultTree.ModifyStyle(0, TVS_LINESATROOT);
 }
 
 void CRatioEvaluationDialog::UpdateListOfReferences()
@@ -290,23 +327,33 @@ void CRatioEvaluationDialog::UpdateListOfReferences()
     if (currentGraph == 1) // SO2
     {
         m_so2SpecieList.ShowWindow(SW_SHOW);
+        m_referenceHeaderLabel.ShowWindow(SW_SHOW);
+        m_referenceColumnLabel.ShowWindow(SW_SHOW);
+        m_referenceShiftLabel.ShowWindow(SW_SHOW);
+        m_referenceSqueezeLabel.ShowWindow(SW_SHOW);
         UpdateNamesOfReferencesInListBox(m_so2SpecieList, GetMajorWindowResult());
     }
     else if (currentGraph == 2) // BrO
     {
         m_so2SpecieList.ShowWindow(SW_SHOW);
+        m_referenceHeaderLabel.ShowWindow(SW_SHOW);
+        m_referenceColumnLabel.ShowWindow(SW_SHOW);
+        m_referenceShiftLabel.ShowWindow(SW_SHOW);
+        m_referenceSqueezeLabel.ShowWindow(SW_SHOW);
         UpdateNamesOfReferencesInListBox(m_so2SpecieList, GetMinorWindowResult());
     }
     else
     {
         m_so2SpecieList.ShowWindow(SW_HIDE);
+        m_referenceHeaderLabel.ShowWindow(SW_HIDE);
+        m_referenceColumnLabel.ShowWindow(SW_HIDE);
+        m_referenceShiftLabel.ShowWindow(SW_HIDE);
+        m_referenceSqueezeLabel.ShowWindow(SW_HIDE);
     }
 }
 
-void CRatioEvaluationDialog::UpdateReferenceResultMajorFit(int indexOfSelectedReference)
+void CRatioEvaluationDialog::UpdateReferenceResultLabels(const novac::DoasResult& doasResult, int indexOfSelectedReference)
 {
-    const novac::DoasResult& doasResult = GetMajorWindowResult();
-
     double column = doasResult.referenceResult[indexOfSelectedReference].column;
     double columnError = doasResult.referenceResult[indexOfSelectedReference].columnError;
     double shift = doasResult.referenceResult[indexOfSelectedReference].shift;
@@ -324,27 +371,6 @@ void CRatioEvaluationDialog::UpdateReferenceResultMajorFit(int indexOfSelectedRe
     SetDlgItemText(IDC_RATIO_MAJOR_LBL_SQUEEZE, squeezeStr);
 }
 
-void CRatioEvaluationDialog::UpdateReferenceResultMinorFit(int indexOfSelectedReference)
-{
-    const novac::DoasResult& doasResult = GetMinorWindowResult();
-
-    double column = doasResult.referenceResult[indexOfSelectedReference].column;
-    double columnError = doasResult.referenceResult[indexOfSelectedReference].columnError;
-    double shift = doasResult.referenceResult[indexOfSelectedReference].shift;
-    double shiftError = doasResult.referenceResult[indexOfSelectedReference].shiftError;
-    double squeeze = doasResult.referenceResult[indexOfSelectedReference].squeeze;
-    double squeezeError = doasResult.referenceResult[indexOfSelectedReference].squeezeError;
-
-    CString columnStr, shiftStr, squeezeStr;
-    columnStr.Format("Column %.2G ± %.2G", column, columnError);
-    shiftStr.Format("Shift: %.2lf ± %.2lf", shift, shiftError);
-    squeezeStr.Format("Squeeze: %.2lf ± %.2lf", squeeze, squeezeError);
-
-    SetDlgItemText(IDC_RATIO_MINOR_LBL_COLUMN, columnStr);
-    SetDlgItemText(IDC_RATIO_MINOR_LBL_SHIFT, shiftStr);
-    SetDlgItemText(IDC_RATIO_MINOR_LBL_SQUEEZE, squeezeStr);
-}
-
 void CRatioEvaluationDialog::UpdateMajorFitGraph()
 {
     int refIndex = m_so2SpecieList.GetCurSel();
@@ -354,11 +380,15 @@ void CRatioEvaluationDialog::UpdateMajorFitGraph()
         refIndex = 0;
     }
 
-    UpdateDataInDoasFitGraph(m_scanGraph, GetMajorWindowResult());
+    m_graph.SetXUnits("Pixel");
+    m_graph.SetYUnits("Intensity [-]");
 
-    m_scanGraph.DrawFit(refIndex);
+    UpdateDataInDoasFitGraph(m_graph, GetMajorWindowResult());
 
-    UpdateReferenceResultMajorFit(refIndex);
+    m_graph.DrawFit(refIndex);
+
+    const novac::DoasResult& doasResult = GetMajorWindowResult();
+    UpdateReferenceResultLabels(doasResult, refIndex);
 }
 
 void CRatioEvaluationDialog::UpdateMinorFitGraph()
@@ -370,26 +400,49 @@ void CRatioEvaluationDialog::UpdateMinorFitGraph()
         refIndex = 0;
     }
 
-    UpdateDataInDoasFitGraph(m_scanGraph, GetMinorWindowResult());
+    UpdateDataInDoasFitGraph(m_graph, GetMinorWindowResult());
 
-    m_scanGraph.DrawFit(refIndex);
+    m_graph.DrawFit(refIndex);
 
-    UpdateReferenceResultMinorFit(refIndex);
+    const novac::DoasResult& doasResult = GetMinorWindowResult();
+    UpdateReferenceResultLabels(doasResult, refIndex);
+}
+
+std::string SetupFilePath()
+{
+    Common common;
+    common.GetExePath();
+    CString path;
+    path.Format("%sRatioCalculationDlg.config", common.m_exePath);
+    return std::string(path);
 }
 
 void CRatioEvaluationDialog::OnBnClickedRunEvaluationOnNextScan()
 {
     try
     {
-        if (m_controller->HasMoreScansToEvaluate())
+        if (!m_controller->HasMoreScansToEvaluate())
         {
-            // TODO: SetupFitWindows shouldn't have to be done for each scan
-            const auto windows = m_controller->SetupFitWindows();
+            int answer = MessageBox("All scans evaluated. Start over from beginning?", "All scans evaluated", MB_YESNO);
+            if (IDNO == answer)
+            {
+                return;
+            }
 
-            m_controller->EvaluateNextScan(windows);
-
-            UpdateUserInterfaceWithResult();
+            // Reset the list of .pak files and results.
+            m_controller->SetupPakFileList(m_controller->ListPakFiles());
+            m_controller->m_results.clear();
         }
+
+        // TODO: SetupFitWindows shouldn't have to be done for each scan
+        const auto windows = m_controller->SetupFitWindows();
+
+        // TODO: Make background operation
+        m_controller->EvaluateNextScan(windows);
+
+        UpdateUserInterfaceWithResult();
+
+        m_controller->SaveSetup(SetupFilePath());
     }
     catch (std::exception& ex)
     {
@@ -401,11 +454,54 @@ void CRatioEvaluationDialog::OnBnClickedRunEvaluationOnNextScan()
 
 void CRatioEvaluationDialog::OnBnClickedRunEvaluationOnAllScans()
 {
-    // TODO: Add your control notification handler code here
+    try
+    {
+        const auto windows = m_controller->SetupFitWindows();
+
+        if (!m_controller->HasMoreScansToEvaluate())
+        {
+            int answer = MessageBox("All scans evaluated. Start over from beginning?", "All scans evaluated", MB_YESNO);
+            if (IDNO == answer)
+            {
+                return;
+            }
+
+            // Reset the list of .pak files and results.
+            m_controller->SetupPakFileList(m_controller->ListPakFiles());
+            m_controller->m_results.clear();
+        }
+
+        while (m_controller->HasMoreScansToEvaluate())
+        {
+            // TODO: Make background operation
+            m_controller->EvaluateNextScan(windows);
+
+            UpdateUserInterfaceWithResult();
+        }
+
+        m_controller->SaveSetup(SetupFilePath());
+    }
+    catch (std::exception& ex)
+    {
+        std::stringstream message;
+        message << "Ratio calculation failed. Error: " << ex.what();
+        MessageBox(message.str().c_str());
+    }
 }
 
-
-void CRatioEvaluationDialog::OnSelchangeRatioShowSelectionList()
+void CRatioEvaluationDialog::OnChangeSelectedDoasSpecie()
 {
-    UpdateUserInterfaceWithResult();
+    UpdateGraph();
+    UpdateListOfReferences();
+}
+
+void CRatioEvaluationDialog::OnBnClickedSaveResults()
+{
+    CString destinationFileName = "";
+    if (Common::BrowseForFile_SaveAs("CSV Data Files\0*.csv\0", destinationFileName))
+    {
+        std::string dstFileName = novac::EnsureFilenameHasSuffix(std::string(destinationFileName), "csv");
+        const std::string columnSeparatorChar = ";"; // TODO: Let the user choose this
+        m_controller->SaveResultsToCsvFile(dstFileName, columnSeparatorChar);
+    }
 }
