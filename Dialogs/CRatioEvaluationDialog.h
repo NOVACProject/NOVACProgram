@@ -75,9 +75,12 @@ private:
     void UpdateResultList();
     void UpdateListOfReferences();
 
-    void UpdateReferenceResultLabels(const novac::DoasResult& doasResult, int indexOfSelectedReference);
+    void UpdateReferenceResultLabels(const novac::DoasResult* doasResult, int indexOfSelectedReference);
 
-    const novac::DoasResult& GetMajorWindowResult();
-    const novac::DoasResult& GetMinorWindowResult();
+    // returns the last result for the major window. returns nullptr if none exists.
+    const novac::DoasResult* GetMajorWindowResult();
+
+    // returns the last result for the minor window. returns nullptr if none exists.
+    const novac::DoasResult* GetMinorWindowResult();
 
 };

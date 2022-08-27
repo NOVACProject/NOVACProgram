@@ -36,54 +36,63 @@ void SelectScanAngleAndColumnFromBasicScanEvaluationResult(
     }
 }
 
-void UpdateDataInDoasFitGraph(Graph::CDOASFitGraph& doasFitGraph, const novac::DoasResult& doasResult)
+void UpdateDataInDoasFitGraph(Graph::CDOASFitGraph& doasFitGraph, const novac::DoasResult* doasResult)
 {
-    // The CDoasFitGraph holds its own buffers for drawing the data...
+    if (doasResult == nullptr)
+    {
+        doasFitGraph.m_nReferences = 0;
+        return;
+    }
+
+    // The CDoasFitGraph holds its own buffers for drawing the data. Just save the data in these buffers.
 
     // copy the fitted cross-sections to a local variable
-    const int numberOfReferences = static_cast<int>(doasResult.referenceResult.size());
+    const int numberOfReferences = static_cast<int>(doasResult->referenceResult.size());
     for (int k = 0; k < numberOfReferences; ++k)
     {
         // Copy out the scaled values for the reference, but pad with zeros to the left such that the length of the vector equals 'fitHigh'
-        doasFitGraph.m_fitResult[k].resize(doasResult.fitHigh);
+        doasFitGraph.m_fitResult[k].resize(doasResult->fitHigh);
         std::fill_n(
             begin(doasFitGraph.m_fitResult[k]),
-            doasResult.fitLow,
+            doasResult->fitLow,
             0.0);
 
         std::copy(
-            begin(doasResult.referenceResult[k].scaledValues),
-            end(doasResult.referenceResult[k].scaledValues),
-            begin(doasFitGraph.m_fitResult[k]) + doasResult.fitLow);
+            begin(doasResult->referenceResult[k].scaledValues),
+            end(doasResult->referenceResult[k].scaledValues),
+            begin(doasFitGraph.m_fitResult[k]) + doasResult->fitLow);
 
-        doasFitGraph.m_specieName[k] = doasResult.referenceResult[k].name;
+        doasFitGraph.m_specieName[k] = doasResult->referenceResult[k].name;
     }
     doasFitGraph.m_nReferences = numberOfReferences;
 
     // also copy the residual, in the same way
-    doasFitGraph.m_residual.resize(doasResult.fitHigh);
+    doasFitGraph.m_residual.resize(doasResult->fitHigh);
     std::fill_n(
         begin(doasFitGraph.m_residual),
-        doasResult.fitLow,
+        doasResult->fitLow,
         0.0);
 
     std::copy(
-        begin(doasResult.residual),
-        end(doasResult.residual),
-        begin(doasFitGraph.m_residual) + doasResult.fitLow);
+        begin(doasResult->residual),
+        end(doasResult->residual),
+        begin(doasFitGraph.m_residual) + doasResult->fitLow);
 
-    doasFitGraph.m_fitLow = doasResult.fitLow;
-    doasFitGraph.m_fitHigh = doasResult.fitHigh;
+    doasFitGraph.m_fitLow = doasResult->fitLow;
+    doasFitGraph.m_fitHigh = doasResult->fitHigh;
 }
 
-void UpdateNamesOfReferencesInListBox(CListBox& destination, const novac::DoasResult& doasResult)
+void UpdateNamesOfReferencesInListBox(CListBox& destination, const novac::DoasResult* doasResult)
 {
     destination.ResetContent();
-    const int numberOfReferences = static_cast<int>(doasResult.referenceResult.size());
-    for (int k = 0; k < numberOfReferences; ++k)
+    if (doasResult != nullptr)
     {
-        CString name = (LPCSTR)doasResult.referenceResult[k].name.c_str();
-        destination.AddString(name);
+        const int numberOfReferences = static_cast<int>(doasResult->referenceResult.size());
+        for (int k = 0; k < numberOfReferences; ++k)
+        {
+            CString name = (LPCSTR)doasResult->referenceResult[k].name.c_str();
+            destination.AddString(name);
+        }
     }
 }
 
@@ -184,14 +193,30 @@ void CRatioEvaluationDialog::UpdateUserInterfaceWithResult()
     }
 }
 
-const novac::DoasResult& CRatioEvaluationDialog::GetMajorWindowResult()
+const novac::DoasResult* CRatioEvaluationDialog::GetMajorWindowResult()
 {
-    return m_controller->m_results.back().debugInfo.doasResults[0]; // First result is for SO2
+    if (m_controller->m_results.empty())
+    {
+        return nullptr;
+    }
+    if (m_controller->m_results.back().debugInfo.doasResults.empty())
+    {
+        return nullptr;
+    }
+    return &m_controller->m_results.back().debugInfo.doasResults[0]; // First result is for SO2
 }
 
-const novac::DoasResult& CRatioEvaluationDialog::GetMinorWindowResult()
+const novac::DoasResult* CRatioEvaluationDialog::GetMinorWindowResult()
 {
-    return m_controller->m_results.back().debugInfo.doasResults[1]; // Second result is for BrO
+    if (m_controller->m_results.empty())
+    {
+        return nullptr;
+    }
+    if (m_controller->m_results.back().debugInfo.doasResults.size() < 2)
+    {
+        return nullptr;
+    }
+    return &m_controller->m_results.back().debugInfo.doasResults[1]; // Second result is for BrO
 }
 
 void CRatioEvaluationDialog::UpdateGraph()
@@ -217,6 +242,11 @@ void CRatioEvaluationDialog::UpdateScanGraph()
     m_graph.CleanPlot();
     m_graph.SetXUnits("Angle [deg]");
     m_graph.SetYUnits("Column [molec/cm2]");
+
+    if (m_controller->m_results.empty())
+    {
+        return;
+    }
 
     const double columnOffset = m_controller->m_results.back().plumeInScanProperties.offset;
 
@@ -274,6 +304,10 @@ void CRatioEvaluationDialog::UpdateScanGraph()
 void CRatioEvaluationDialog::UpdateResultList()
 {
     m_resultTree.DeleteAllItems();
+    if (m_controller->m_results.empty())
+    {
+        return;
+    }
 
     CString str;
 
@@ -285,37 +319,50 @@ void CRatioEvaluationDialog::UpdateResultList()
     str.Format("Time: %04d.%02d.%02d %02d:%02d:%02d", lastResult.startTime.year, lastResult.startTime.month, lastResult.startTime.day, lastResult.startTime.hour, lastResult.startTime.minute, lastResult.startTime.second);
     m_resultTree.InsertItem(str, TVI_ROOT);
 
+    if (!lastResult.errorMessage.empty())
+    {
+        str.Format("%s", lastResult.errorMessage.c_str());
+        m_resultTree.InsertItem(str, TVI_ROOT);
+        return;
+    }
+
     str.Format("SO2/BrO Ratio: %.2G ± %.2G", lastResult.ratio.ratio, lastResult.ratio.error);
     m_resultTree.InsertItem(str, TVI_ROOT);
 
     {
-        const novac::DoasResult& so2FitResult = GetMajorWindowResult();
-        HTREEITEM hTree = m_resultTree.InsertItem("SO2 Fit:", TVI_ROOT);
-        str.Format("Chi²: %.2e", so2FitResult.chiSquare);
-        m_resultTree.InsertItem(str, hTree);
-
-        for (const auto& result : so2FitResult.referenceResult)
+        const novac::DoasResult* so2FitResult = GetMajorWindowResult();
+        if (so2FitResult != nullptr)
         {
-            str.Format("%s %.2G ± %.2G", result.name.c_str(), result.column, result.columnError);
+            HTREEITEM hTree = m_resultTree.InsertItem("SO2 Fit:", TVI_ROOT);
+            str.Format("Chi²: %.2e", so2FitResult->chiSquare);
             m_resultTree.InsertItem(str, hTree);
-        }
 
-        m_resultTree.Expand(hTree, TVE_EXPAND);
+            for (const auto& result : so2FitResult->referenceResult)
+            {
+                str.Format("%s %.2G ± %.2G", result.name.c_str(), result.column, result.columnError);
+                m_resultTree.InsertItem(str, hTree);
+            }
+
+            m_resultTree.Expand(hTree, TVE_EXPAND);
+        }
     }
 
     {
-        const novac::DoasResult& broFitResult = GetMinorWindowResult();
-        HTREEITEM hTree = m_resultTree.InsertItem("BrO Fit:", TVI_ROOT);
-        str.Format("Chi²: %.2e", broFitResult.chiSquare);
-        m_resultTree.InsertItem(str, hTree);
-
-        for (const auto& result : broFitResult.referenceResult)
+        const novac::DoasResult* broFitResult = GetMinorWindowResult();
+        if (broFitResult != nullptr)
         {
-            str.Format("%s %.2G ± %.2G", result.name.c_str(), result.column, result.columnError);
+            HTREEITEM hTree = m_resultTree.InsertItem("BrO Fit:", TVI_ROOT);
+            str.Format("Chi²: %.2e", broFitResult->chiSquare);
             m_resultTree.InsertItem(str, hTree);
-        }
 
-        m_resultTree.Expand(hTree, TVE_EXPAND);
+            for (const auto& result : broFitResult->referenceResult)
+            {
+                str.Format("%s %.2G ± %.2G", result.name.c_str(), result.column, result.columnError);
+                m_resultTree.InsertItem(str, hTree);
+            }
+
+            m_resultTree.Expand(hTree, TVE_EXPAND);
+        }
     }
 
     m_resultTree.ModifyStyle(0, TVS_LINESATROOT);
@@ -324,7 +371,7 @@ void CRatioEvaluationDialog::UpdateResultList()
 void CRatioEvaluationDialog::UpdateListOfReferences()
 {
     const int currentGraph = m_resultTypeList.GetCurSel();
-    if (currentGraph == 1) // SO2
+    if (currentGraph == 1 && !m_controller->m_results.empty()) // SO2
     {
         m_so2SpecieList.ShowWindow(SW_SHOW);
         m_referenceHeaderLabel.ShowWindow(SW_SHOW);
@@ -333,7 +380,7 @@ void CRatioEvaluationDialog::UpdateListOfReferences()
         m_referenceSqueezeLabel.ShowWindow(SW_SHOW);
         UpdateNamesOfReferencesInListBox(m_so2SpecieList, GetMajorWindowResult());
     }
-    else if (currentGraph == 2) // BrO
+    else if (currentGraph == 2 && !m_controller->m_results.empty()) // BrO
     {
         m_so2SpecieList.ShowWindow(SW_SHOW);
         m_referenceHeaderLabel.ShowWindow(SW_SHOW);
@@ -352,14 +399,22 @@ void CRatioEvaluationDialog::UpdateListOfReferences()
     }
 }
 
-void CRatioEvaluationDialog::UpdateReferenceResultLabels(const novac::DoasResult& doasResult, int indexOfSelectedReference)
+void CRatioEvaluationDialog::UpdateReferenceResultLabels(const novac::DoasResult* doasResult, int indexOfSelectedReference)
 {
-    double column = doasResult.referenceResult[indexOfSelectedReference].column;
-    double columnError = doasResult.referenceResult[indexOfSelectedReference].columnError;
-    double shift = doasResult.referenceResult[indexOfSelectedReference].shift;
-    double shiftError = doasResult.referenceResult[indexOfSelectedReference].shiftError;
-    double squeeze = doasResult.referenceResult[indexOfSelectedReference].squeeze;
-    double squeezeError = doasResult.referenceResult[indexOfSelectedReference].squeezeError;
+    if (doasResult == nullptr)
+    {
+        SetDlgItemText(IDC_RATIO_MAJOR_LBL_COLUMN, "");
+        SetDlgItemText(IDC_RATIO_MAJOR_LBL_SHIFT, "");
+        SetDlgItemText(IDC_RATIO_MAJOR_LBL_SQUEEZE, "");
+        return;
+    }
+
+    double column = doasResult->referenceResult[indexOfSelectedReference].column;
+    double columnError = doasResult->referenceResult[indexOfSelectedReference].columnError;
+    double shift = doasResult->referenceResult[indexOfSelectedReference].shift;
+    double shiftError = doasResult->referenceResult[indexOfSelectedReference].shiftError;
+    double squeeze = doasResult->referenceResult[indexOfSelectedReference].squeeze;
+    double squeezeError = doasResult->referenceResult[indexOfSelectedReference].squeezeError;
 
     CString columnStr, shiftStr, squeezeStr;
     columnStr.Format("Column %.2G ± %.2G", column, columnError);
@@ -383,11 +438,16 @@ void CRatioEvaluationDialog::UpdateMajorFitGraph()
     m_graph.SetXUnits("Pixel");
     m_graph.SetYUnits("Intensity [-]");
 
+    if (m_controller->m_results.empty())
+    {
+        return;
+    }
+
     UpdateDataInDoasFitGraph(m_graph, GetMajorWindowResult());
 
     m_graph.DrawFit(refIndex);
 
-    const novac::DoasResult& doasResult = GetMajorWindowResult();
+    const novac::DoasResult* doasResult = GetMajorWindowResult();
     UpdateReferenceResultLabels(doasResult, refIndex);
 }
 
@@ -400,11 +460,16 @@ void CRatioEvaluationDialog::UpdateMinorFitGraph()
         refIndex = 0;
     }
 
+    if (m_controller->m_results.empty())
+    {
+        return;
+    }
+
     UpdateDataInDoasFitGraph(m_graph, GetMinorWindowResult());
 
     m_graph.DrawFit(refIndex);
 
-    const novac::DoasResult& doasResult = GetMinorWindowResult();
+    const novac::DoasResult* doasResult = GetMinorWindowResult();
     UpdateReferenceResultLabels(doasResult, refIndex);
 }
 

@@ -299,8 +299,17 @@ void CGridColumnTraitHyperLink::OnShellExecute(CGridListCtrlEx& owner, int nRow,
 {
     (nRow);	// Avoid unreferenced variable warning
     (nCol);	// Avoid unreferenced variable warning
-    if (m_ShellApplication.IsEmpty())
-        ShellExecute(owner.m_hWnd, m_ShellOperation.IsEmpty() ? (LPCTSTR)NULL : static_cast<LPCTSTR>(m_ShellOperation), m_ShellFilePrefix + cellText + m_ShellFileSuffix, NULL, NULL, m_ShellShowCommand);
-    else
-        ShellExecute(owner.m_hWnd, m_ShellOperation.IsEmpty() ? (LPCTSTR)NULL : static_cast<LPCTSTR>(m_ShellOperation), m_ShellApplication, m_ShellFilePrefix + cellText + m_ShellFileSuffix, NULL, m_ShellShowCommand);
+
+    // The following is a modification which disables this control from opening files, instead letting the parent control take care of message handling.
+    {
+        (owner);
+        (cellText);
+        return;
+    }
+
+    // Original code below
+    // if (m_ShellApplication.IsEmpty())
+    //     ShellExecute(owner.m_hWnd, m_ShellOperation.IsEmpty() ? (LPCTSTR)NULL : static_cast<LPCTSTR>(m_ShellOperation), m_ShellFilePrefix + cellText + m_ShellFileSuffix, NULL, NULL, m_ShellShowCommand);
+    // else
+    //     ShellExecute(owner.m_hWnd, m_ShellOperation.IsEmpty() ? (LPCTSTR)NULL : static_cast<LPCTSTR>(m_ShellOperation), m_ShellApplication, m_ShellFilePrefix + cellText + m_ShellFileSuffix, NULL, m_ShellShowCommand);
 }
