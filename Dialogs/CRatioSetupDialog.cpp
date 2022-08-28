@@ -37,11 +37,16 @@ CRatioSetupDialog::~CRatioSetupDialog()
 BOOL CRatioSetupDialog::OnInitDialog() {
     CPropertyPage::OnInitDialog();
 
+    m_fitTypeCombo.AddString("Polynomial");
+    m_fitTypeCombo.AddString("HP Divide by sky");
+    m_fitTypeCombo.AddString("HP Subtract sky");
+
     InitReferenceFileControl();
 
     UpdateFitParametersFromController();
 
     UpdateDisplayedListOfReferencesPerWindow();
+
 
     return TRUE;  // return TRUE unless you set the focus to a control
 }
@@ -143,6 +148,7 @@ void CRatioSetupDialog::DoDataExchange(CDataExchange* pDX)
     DDX_Text(pDX, IDC_EDIT_POLYNOM2, m_polyOrderBrO);
     DDX_Control(pDX, IDC_LIST_REFERENCES_SO2, m_selectedReferencesSO2);
     DDX_Control(pDX, IDC_LIST_REFERENCES_BRO, m_selectedReferencesBrO);
+    DDX_Control(pDX, IDC_COMBO_FIT_TYPE, m_fitTypeCombo);
 }
 
 BEGIN_MESSAGE_MAP(CRatioSetupDialog, CPropertyPage)
@@ -155,6 +161,7 @@ BEGIN_MESSAGE_MAP(CRatioSetupDialog, CPropertyPage)
     ON_EN_KILLFOCUS(IDC_EDIT_FITHIGH_BRO, &CRatioSetupDialog::OnKillfocusEditBox)
     ON_EN_KILLFOCUS(IDC_EDIT_POLYNOM2, &CRatioSetupDialog::OnKillfocusEditBox)
 
+    ON_CBN_SELCHANGE(IDC_COMBO_FIT_TYPE, &CRatioSetupDialog::OnSelchangeComboFitType)
 END_MESSAGE_MAP()
 
 
@@ -197,7 +204,7 @@ void CRatioSetupDialog::OnClickInReferenceList(NMHDR* pNMHDR, LRESULT* pResult)
     }
 
     UpdateDisplayedListOfReferencesPerWindow();
- }
+}
 
 void CRatioSetupDialog::BrowseForReference(int referenceIdx)
 {
@@ -255,6 +262,13 @@ void CRatioSetupDialog::UpdateFitParametersFromController()
     m_fitHighBrO.Format("%.1lf", m_controller->m_broFitRange.high);
     m_polyOrderBrO.Format("%d", m_controller->m_broPolynomialOrder);
 
+    switch (m_controller->m_doasFitType)
+    {
+    case novac::FIT_TYPE::FIT_POLY: m_fitTypeCombo.SetCurSel(0); break;
+    case novac::FIT_TYPE::FIT_HP_DIV: m_fitTypeCombo.SetCurSel(1); break;
+    case novac::FIT_TYPE::FIT_HP_SUB: m_fitTypeCombo.SetCurSel(2); break;
+    }
+
     // Update the UI with the values
     UpdateData(FALSE);
 }
@@ -280,5 +294,17 @@ void CRatioSetupDialog::UpdateDisplayedListOfReferencesPerWindow()
         {
             m_selectedReferencesBrO.AddString(CString(m_controller->m_references[idx].m_name.c_str()));
         }
+    }
+}
+
+void CRatioSetupDialog::OnSelchangeComboFitType()
+{
+    const int selection = m_fitTypeCombo.GetCurSel();
+
+    switch (selection)
+    {
+    case 1: m_controller->m_doasFitType = novac::FIT_TYPE::FIT_HP_DIV; break;
+    case 2: m_controller->m_doasFitType = novac::FIT_TYPE::FIT_HP_SUB; break;
+    default:m_controller->m_doasFitType = novac::FIT_TYPE::FIT_POLY; break;
     }
 }

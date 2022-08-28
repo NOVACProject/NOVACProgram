@@ -437,6 +437,7 @@
 #define IDC_COMBO_OFFSET                1078
 #define IDC_COMBO_WAVELENGTH_CONVERSION 1078
 #define IDC_COMBO_INITIAL_DATA_TYPE     1078
+#define IDC_COMBO_FIT_TYPE              1078
 #define IDC_SLEEPHR                     1079
 #define IDC_COMBO_DARKCURRENT           1079
 #define IDC_COMBO_VOLCANO2              1079

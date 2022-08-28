@@ -34,6 +34,7 @@ private:
 
     afx_msg void OnClickInReferenceList(NMHDR* pNMHDR, LRESULT* pResult);
     afx_msg void OnKillfocusEditBox();
+    afx_msg void OnSelchangeComboFitType();
 
     // The controller which this dialog helps to setup. Notice that this dialog does not own the pointer and will not delete it.
     RatioCalculationController* m_controller;
@@ -65,6 +66,7 @@ private:
     CString m_polyOrderBrO;
     CListBox m_selectedReferencesSO2;
     CListBox m_selectedReferencesBrO;
+    CComboBox m_fitTypeCombo;
 
     // Updates th m_fitLow... and m_fitHigh...
     void UpdateFitParametersFromController();
