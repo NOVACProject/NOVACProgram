@@ -160,6 +160,9 @@ BEGIN_MESSAGE_MAP(CRatioEvaluationDialog, CPropertyPage)
     ON_BN_CLICKED(IDC_RATIO_RUN_EVALUATION, &CRatioEvaluationDialog::OnBnClickedRunEvaluationOnAllScans)
     ON_BN_CLICKED(IDC_RATIO_SAVE_RESULTS, &CRatioEvaluationDialog::OnBnClickedSaveResults)
 
+    ON_MESSAGE(WM_DONE, OnBackgroundProcessingDone)
+    ON_MESSAGE(WM_PROGRESS, OnOneRatioEvaluationDone)
+
     ON_LBN_SELCHANGE(IDC_MAJOR_SPECIE_LIST, OnChangeSelectedSpecie)
     ON_LBN_SELCHANGE(IDC_RATIO_SHOW_SELECTION_LIST, &CRatioEvaluationDialog::OnChangeSelectedDoasSpecie)
 END_MESSAGE_MAP()
@@ -169,22 +172,53 @@ END_MESSAGE_MAP()
 void CRatioEvaluationDialog::OnChangeSelectedSpecie()
 {
     const int currentGraph = m_resultTypeList.GetCurSel();
+
+    if (m_controller->m_results.empty())
+    {
+        return;
+    }
+
+    auto lastResult = m_controller->m_results.back();
+
     if (currentGraph == 1) // SO2
     {
-        UpdateMajorFitGraph();
+        UpdateMajorFitGraph(lastResult);
     }
     else if (currentGraph == 2) // BrO
     {
-        UpdateMinorFitGraph();
+        UpdateMinorFitGraph(lastResult);
     }
 }
 
-void CRatioEvaluationDialog::UpdateUserInterfaceWithResult()
+LRESULT CRatioEvaluationDialog::OnBackgroundProcessingDone(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
-    UpdateGraph();
-    UpdateResultList();
-    UpdateListOfReferences();
-    UpdateResultList();
+    // Re-enable the UI buttons
+    GetDlgItem(IDC_RATIO_RUN_EVALUATION_NEXT_SCAN)->EnableWindow(TRUE);
+    GetDlgItem(IDC_RATIO_RUN_EVALUATION)->EnableWindow(TRUE);
+    GetDlgItem(IDC_RATIO_SAVE_RESULTS)->EnableWindow(TRUE);
+
+    return 0;
+}
+
+LRESULT CRatioEvaluationDialog::OnOneRatioEvaluationDone(WPARAM wParam, LPARAM /*lParam*/)
+{
+    RatioCalculationResult* newResult = reinterpret_cast<RatioCalculationResult*>(wParam);
+    if (newResult == nullptr)
+    {
+        return 0;
+    }
+
+    UpdateUserInterfaceWithResult(*newResult);
+
+    return 0;
+}
+
+void CRatioEvaluationDialog::UpdateUserInterfaceWithResult(RatioCalculationResult& result)
+{
+    UpdateGraph(result);
+    UpdateResultList(result);
+    UpdateListOfReferences(result);
+    UpdateResultList(result);
 
     {
         CString progressStr;
@@ -193,50 +227,42 @@ void CRatioEvaluationDialog::UpdateUserInterfaceWithResult()
     }
 }
 
-const novac::DoasResult* CRatioEvaluationDialog::GetMajorWindowResult()
+const novac::DoasResult* CRatioEvaluationDialog::GetMajorWindowResult(const RatioCalculationResult& result)
 {
-    if (m_controller->m_results.empty())
+    if (result.debugInfo.doasResults.empty())
     {
         return nullptr;
     }
-    if (m_controller->m_results.back().debugInfo.doasResults.empty())
-    {
-        return nullptr;
-    }
-    return &m_controller->m_results.back().debugInfo.doasResults[0]; // First result is for SO2
+    return &result.debugInfo.doasResults[0]; // First result is for SO2
 }
 
-const novac::DoasResult* CRatioEvaluationDialog::GetMinorWindowResult()
+const novac::DoasResult* CRatioEvaluationDialog::GetMinorWindowResult(const RatioCalculationResult& result)
 {
-    if (m_controller->m_results.empty())
+    if (result.debugInfo.doasResults.size() < 2)
     {
         return nullptr;
     }
-    if (m_controller->m_results.back().debugInfo.doasResults.size() < 2)
-    {
-        return nullptr;
-    }
-    return &m_controller->m_results.back().debugInfo.doasResults[1]; // Second result is for BrO
+    return &result.debugInfo.doasResults[1]; // Second result is for BrO
 }
 
-void CRatioEvaluationDialog::UpdateGraph()
+void CRatioEvaluationDialog::UpdateGraph(RatioCalculationResult& result)
 {
     const int currentGraph = m_resultTypeList.GetCurSel();
     if (currentGraph == 0)
     {
-        UpdateScanGraph();
+        UpdateScanGraph(result);
     }
     else if (currentGraph == 1)
     {
-        UpdateMajorFitGraph();
+        UpdateMajorFitGraph(result);
     }
     else if (currentGraph == 2)
     {
-        UpdateMinorFitGraph();
+        UpdateMinorFitGraph(result);
     }
 }
 
-void CRatioEvaluationDialog::UpdateScanGraph()
+void CRatioEvaluationDialog::UpdateScanGraph(RatioCalculationResult& result)
 {
     // Draw the evaluated columns vs scan-angle, highlighting the selected in-plume and out-of-plume spectra.
     m_graph.CleanPlot();
@@ -248,19 +274,19 @@ void CRatioEvaluationDialog::UpdateScanGraph()
         return;
     }
 
-    const double columnOffset = m_controller->m_results.back().plumeInScanProperties.offset;
+    const double columnOffset = result.plumeInScanProperties.offset;
 
     std::vector<double> scanAngles;
     std::vector<double> columns;
     std::vector<double> columnErrors;
-    for (int ii = 0; ii < static_cast<int>(m_controller->m_results.back().initialEvaluation.m_spec.size()); ++ii)
+    for (int ii = 0; ii < static_cast<int>(result.initialEvaluation.m_spec.size()); ++ii)
     {
-        const novac::CEvaluationResult& result = m_controller->m_results.back().initialEvaluation.m_spec[ii];
-        const novac::CSpectrumInfo& spectrumInfo = m_controller->m_results.back().initialEvaluation.m_specInfo[ii];
+        const novac::CEvaluationResult& initialEvaluation = result.initialEvaluation.m_spec[ii];
+        const novac::CSpectrumInfo& spectrumInfo = result.initialEvaluation.m_specInfo[ii];
 
         scanAngles.push_back(spectrumInfo.m_scanAngle);
-        columns.push_back(result.m_referenceResult[0].m_column - columnOffset);
-        columnErrors.push_back(result.m_referenceResult[0].m_columnError);
+        columns.push_back(initialEvaluation.m_referenceResult[0].m_column - columnOffset);
+        columnErrors.push_back(initialEvaluation.m_referenceResult[0].m_columnError);
     }
 
     // All the column-values
@@ -278,8 +304,8 @@ void CRatioEvaluationDialog::UpdateScanGraph()
     std::vector<double> inPlumeScanAngles;
     std::vector<double> inPlumeColumns;
     SelectScanAngleAndColumnFromBasicScanEvaluationResult(
-        m_controller->m_results.back().initialEvaluation,
-        m_controller->m_results.back().debugInfo.plumeSpectra,
+        result.initialEvaluation,
+        result.debugInfo.plumeSpectra,
         columnOffset,
         inPlumeScanAngles,
         inPlumeColumns);
@@ -291,8 +317,8 @@ void CRatioEvaluationDialog::UpdateScanGraph()
     std::vector<double> outOfPlumeScanAngles;
     std::vector<double> outOfPlumeColumns;
     SelectScanAngleAndColumnFromBasicScanEvaluationResult(
-        m_controller->m_results.back().initialEvaluation,
-        m_controller->m_results.back().debugInfo.outOfPlumeSpectra,
+        result.initialEvaluation,
+        result.debugInfo.outOfPlumeSpectra,
         columnOffset,
         outOfPlumeScanAngles,
         outOfPlumeColumns);
@@ -301,7 +327,7 @@ void CRatioEvaluationDialog::UpdateScanGraph()
     m_graph.BarChart(outOfPlumeScanAngles.data(), outOfPlumeColumns.data(), static_cast<int>(outOfPlumeScanAngles.size()), Graph::CGraphCtrl::PLOT_FIXED_AXIS | Graph::CGraphCtrl::PLOT_BAR_SHOW_X);
 }
 
-void CRatioEvaluationDialog::UpdateResultList()
+void CRatioEvaluationDialog::UpdateResultList(const RatioCalculationResult& lastResult)
 {
     m_resultTree.DeleteAllItems();
     if (m_controller->m_results.empty())
@@ -311,17 +337,15 @@ void CRatioEvaluationDialog::UpdateResultList()
 
     CString str;
 
-    const auto& lastResult = m_controller->m_results.back();
-
     str.Format("Device: %s", lastResult.deviceSerial.c_str());
     m_resultTree.InsertItem(str, TVI_ROOT);
 
     str.Format("Time: %04d.%02d.%02d %02d:%02d:%02d", lastResult.startTime.year, lastResult.startTime.month, lastResult.startTime.day, lastResult.startTime.hour, lastResult.startTime.minute, lastResult.startTime.second);
     m_resultTree.InsertItem(str, TVI_ROOT);
 
-    if (!lastResult.errorMessage.empty())
+    if (!lastResult.debugInfo.errorMessage.empty())
     {
-        str.Format("%s", lastResult.errorMessage.c_str());
+        str.Format("%s", lastResult.debugInfo.errorMessage.c_str());
         m_resultTree.InsertItem(str, TVI_ROOT);
         return;
     }
@@ -330,7 +354,7 @@ void CRatioEvaluationDialog::UpdateResultList()
     m_resultTree.InsertItem(str, TVI_ROOT);
 
     {
-        const novac::DoasResult* so2FitResult = GetMajorWindowResult();
+        const novac::DoasResult* so2FitResult = GetMajorWindowResult(lastResult);
         if (so2FitResult != nullptr)
         {
             HTREEITEM hTree = m_resultTree.InsertItem("SO2 Fit:", TVI_ROOT);
@@ -348,7 +372,7 @@ void CRatioEvaluationDialog::UpdateResultList()
     }
 
     {
-        const novac::DoasResult* broFitResult = GetMinorWindowResult();
+        const novac::DoasResult* broFitResult = GetMinorWindowResult(lastResult);
         if (broFitResult != nullptr)
         {
             HTREEITEM hTree = m_resultTree.InsertItem("BrO Fit:", TVI_ROOT);
@@ -365,10 +389,10 @@ void CRatioEvaluationDialog::UpdateResultList()
         }
     }
 
-    m_resultTree.ModifyStyle(0, TVS_LINESATROOT);
+    // m_resultTree.ModifyStyle(0, TVS_LINESATROOT);
 }
 
-void CRatioEvaluationDialog::UpdateListOfReferences()
+void CRatioEvaluationDialog::UpdateListOfReferences(const RatioCalculationResult& lastResult)
 {
     const int currentGraph = m_resultTypeList.GetCurSel();
     if (currentGraph == 1 && !m_controller->m_results.empty()) // SO2
@@ -378,7 +402,7 @@ void CRatioEvaluationDialog::UpdateListOfReferences()
         m_referenceColumnLabel.ShowWindow(SW_SHOW);
         m_referenceShiftLabel.ShowWindow(SW_SHOW);
         m_referenceSqueezeLabel.ShowWindow(SW_SHOW);
-        UpdateNamesOfReferencesInListBox(m_so2SpecieList, GetMajorWindowResult());
+        UpdateNamesOfReferencesInListBox(m_so2SpecieList, GetMajorWindowResult(lastResult));
     }
     else if (currentGraph == 2 && !m_controller->m_results.empty()) // BrO
     {
@@ -387,7 +411,7 @@ void CRatioEvaluationDialog::UpdateListOfReferences()
         m_referenceColumnLabel.ShowWindow(SW_SHOW);
         m_referenceShiftLabel.ShowWindow(SW_SHOW);
         m_referenceSqueezeLabel.ShowWindow(SW_SHOW);
-        UpdateNamesOfReferencesInListBox(m_so2SpecieList, GetMinorWindowResult());
+        UpdateNamesOfReferencesInListBox(m_so2SpecieList, GetMinorWindowResult(lastResult));
     }
     else
     {
@@ -426,7 +450,7 @@ void CRatioEvaluationDialog::UpdateReferenceResultLabels(const novac::DoasResult
     SetDlgItemText(IDC_RATIO_MAJOR_LBL_SQUEEZE, squeezeStr);
 }
 
-void CRatioEvaluationDialog::UpdateMajorFitGraph()
+void CRatioEvaluationDialog::UpdateMajorFitGraph(RatioCalculationResult& lastResult)
 {
     int refIndex = m_so2SpecieList.GetCurSel();
     if (refIndex < 0)
@@ -443,15 +467,15 @@ void CRatioEvaluationDialog::UpdateMajorFitGraph()
         return;
     }
 
-    UpdateDataInDoasFitGraph(m_graph, GetMajorWindowResult());
+    UpdateDataInDoasFitGraph(m_graph, GetMajorWindowResult(lastResult));
 
     m_graph.DrawFit(refIndex);
 
-    const novac::DoasResult* doasResult = GetMajorWindowResult();
+    const novac::DoasResult* doasResult = GetMajorWindowResult(lastResult);
     UpdateReferenceResultLabels(doasResult, refIndex);
 }
 
-void CRatioEvaluationDialog::UpdateMinorFitGraph()
+void CRatioEvaluationDialog::UpdateMinorFitGraph(RatioCalculationResult& lastResult)
 {
     int refIndex = m_so2SpecieList.GetCurSel();
     if (refIndex < 0)
@@ -465,11 +489,11 @@ void CRatioEvaluationDialog::UpdateMinorFitGraph()
         return;
     }
 
-    UpdateDataInDoasFitGraph(m_graph, GetMinorWindowResult());
+    UpdateDataInDoasFitGraph(m_graph, GetMinorWindowResult(lastResult));
 
     m_graph.DrawFit(refIndex);
 
-    const novac::DoasResult* doasResult = GetMinorWindowResult();
+    const novac::DoasResult* doasResult = GetMinorWindowResult(lastResult);
     UpdateReferenceResultLabels(doasResult, refIndex);
 }
 
@@ -505,7 +529,9 @@ void CRatioEvaluationDialog::OnBnClickedRunEvaluationOnNextScan()
         // TODO: Make background operation
         m_controller->EvaluateNextScan(windows);
 
-        UpdateUserInterfaceWithResult();
+        auto& result = m_controller->m_results.back();
+
+        UpdateUserInterfaceWithResult(result);
 
         m_controller->SaveSetup(SetupFilePath());
     }
@@ -517,12 +543,50 @@ void CRatioEvaluationDialog::OnBnClickedRunEvaluationOnNextScan()
     }
 }
 
+struct BackgroundEvaluationInterface
+{
+    bool* evaluationIsRunning = nullptr;
+
+    HWND window = nullptr;
+
+    RatioCalculationController* controller;
+};
+
+// Background thread for doing the evaluations
+UINT EvaluateAllScans(void* pParam) {
+    BackgroundEvaluationInterface* evaluationInterface = (BackgroundEvaluationInterface*)pParam;
+
+    // Setup the evaluation
+    const auto windows = evaluationInterface->controller->SetupFitWindows();
+
+    while (evaluationInterface->controller->HasMoreScansToEvaluate() && *(evaluationInterface->evaluationIsRunning) == true)
+    {
+        // Evaluate one scan
+        evaluationInterface->controller->EvaluateNextScan(windows);
+
+        // Get the last result and send this to the UI
+        auto newResult = &(evaluationInterface->controller->m_results.back());
+        PostMessage(evaluationInterface->window, WM_PROGRESS, reinterpret_cast<WPARAM>(newResult), 0);
+    }
+
+    *(evaluationInterface->evaluationIsRunning) = false;
+
+    // Tell the user interface that we are done processing
+    PostMessage(evaluationInterface->window, WM_DONE, 0, 0);
+
+    // Clean up..
+    evaluationInterface->evaluationIsRunning = nullptr;
+    evaluationInterface->controller = nullptr;
+    evaluationInterface->window = nullptr;
+    delete evaluationInterface;
+
+    return 0;
+}
+
 void CRatioEvaluationDialog::OnBnClickedRunEvaluationOnAllScans()
 {
     try
     {
-        const auto windows = m_controller->SetupFitWindows();
-
         if (!m_controller->HasMoreScansToEvaluate())
         {
             int answer = MessageBox("All scans evaluated. Start over from beginning?", "All scans evaluated", MB_YESNO);
@@ -536,28 +600,46 @@ void CRatioEvaluationDialog::OnBnClickedRunEvaluationOnAllScans()
             m_controller->m_results.clear();
         }
 
-        while (m_controller->HasMoreScansToEvaluate())
-        {
-            // TODO: Make background operation
-            m_controller->EvaluateNextScan(windows);
-
-            UpdateUserInterfaceWithResult();
-        }
-
         m_controller->SaveSetup(SetupFilePath());
+
+        // Disable the UI buttons
+        GetDlgItem(IDC_RATIO_RUN_EVALUATION_NEXT_SCAN)->EnableWindow(FALSE);
+        GetDlgItem(IDC_RATIO_RUN_EVALUATION)->EnableWindow(FALSE);
+        GetDlgItem(IDC_RATIO_SAVE_RESULTS)->EnableWindow(FALSE);
+
+        // Start the background thread which does the processing
+        this->m_backgroundProcessingIsRunning = true;
+
+        BackgroundEvaluationInterface* processingSync = new BackgroundEvaluationInterface();
+        processingSync->window = this->m_hWnd;
+        processingSync->controller = this->m_controller;
+        processingSync->evaluationIsRunning = &(this->m_backgroundProcessingIsRunning);
+        AfxBeginThread(EvaluateAllScans, processingSync, THREAD_PRIORITY_NORMAL, 0, 0, NULL);
     }
     catch (std::exception& ex)
     {
         std::stringstream message;
         message << "Ratio calculation failed. Error: " << ex.what();
         MessageBox(message.str().c_str());
+
+        // Re-enable the UI buttons
+        GetDlgItem(IDC_RATIO_RUN_EVALUATION_NEXT_SCAN)->EnableWindow(TRUE);
+        GetDlgItem(IDC_RATIO_RUN_EVALUATION)->EnableWindow(TRUE);
+        GetDlgItem(IDC_RATIO_SAVE_RESULTS)->EnableWindow(TRUE);
     }
 }
 
 void CRatioEvaluationDialog::OnChangeSelectedDoasSpecie()
 {
-    UpdateGraph();
-    UpdateListOfReferences();
+    if (m_controller->m_results.empty())
+    {
+        return;
+    }
+
+    auto lastResult = m_controller->m_results.back();
+
+    UpdateGraph(lastResult);
+    UpdateListOfReferences(lastResult);
 }
 
 void CRatioEvaluationDialog::OnBnClickedSaveResults()

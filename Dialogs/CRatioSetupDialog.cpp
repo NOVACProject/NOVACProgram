@@ -41,12 +41,13 @@ BOOL CRatioSetupDialog::OnInitDialog() {
     m_fitTypeCombo.AddString("HP Divide by sky");
     m_fitTypeCombo.AddString("HP Subtract sky");
 
+    m_unitCombo.SetCurSel(0);
+
     InitReferenceFileControl();
 
     UpdateFitParametersFromController();
 
     UpdateDisplayedListOfReferencesPerWindow();
-
 
     return TRUE;  // return TRUE unless you set the focus to a control
 }
@@ -146,9 +147,12 @@ void CRatioSetupDialog::DoDataExchange(CDataExchange* pDX)
     DDX_Text(pDX, IDC_EDIT_FITHIGH_BRO, m_fitHighBrO);
     DDX_Text(pDX, IDC_EDIT_POLYNOM, m_polyOrderSO2);
     DDX_Text(pDX, IDC_EDIT_POLYNOM2, m_polyOrderBrO);
+    DDX_Text(pDX, IDC_EDIT_MIN_IN_PLUME_COLUMN, m_minInPlumeSpectrumColumn);
+
     DDX_Control(pDX, IDC_LIST_REFERENCES_SO2, m_selectedReferencesSO2);
     DDX_Control(pDX, IDC_LIST_REFERENCES_BRO, m_selectedReferencesBrO);
     DDX_Control(pDX, IDC_COMBO_FIT_TYPE, m_fitTypeCombo);
+    DDX_Control(pDX, IDC_COMBO_REFERENCE_UNIT, m_unitCombo);
 }
 
 BEGIN_MESSAGE_MAP(CRatioSetupDialog, CPropertyPage)
@@ -156,12 +160,14 @@ BEGIN_MESSAGE_MAP(CRatioSetupDialog, CPropertyPage)
     ON_EN_KILLFOCUS(IDC_EDIT_FITLOW_SO2, &CRatioSetupDialog::OnKillfocusEditBox)
     ON_EN_KILLFOCUS(IDC_EDIT_FITHIGH_SO2, &CRatioSetupDialog::OnKillfocusEditBox)
     ON_EN_KILLFOCUS(IDC_EDIT_POLYNOM, &CRatioSetupDialog::OnKillfocusEditBox)
+    ON_EN_KILLFOCUS(IDC_EDIT_MIN_IN_PLUME_COLUMN, &CRatioSetupDialog::OnKillfocusEditBox)
 
     ON_EN_KILLFOCUS(IDC_EDIT_FITLOW_BRO, &CRatioSetupDialog::OnKillfocusEditBox)
     ON_EN_KILLFOCUS(IDC_EDIT_FITHIGH_BRO, &CRatioSetupDialog::OnKillfocusEditBox)
     ON_EN_KILLFOCUS(IDC_EDIT_POLYNOM2, &CRatioSetupDialog::OnKillfocusEditBox)
 
     ON_CBN_SELCHANGE(IDC_COMBO_FIT_TYPE, &CRatioSetupDialog::OnSelchangeComboFitType)
+    ON_CBN_SELCHANGE(IDC_COMBO_REFERENCE_UNIT, &CRatioSetupDialog::OnSelchangeComboReferenceUnit)
 END_MESSAGE_MAP()
 
 
@@ -249,7 +255,14 @@ void CRatioSetupDialog::OnKillfocusEditBox()
     m_controller->m_so2PolynomialOrder = std::atoi((LPCSTR)m_polyOrderSO2);
     m_controller->m_broPolynomialOrder = std::atoi((LPCSTR)m_polyOrderBrO);
 
+    m_controller->m_ratioEvaluationSettings.minInPlumeColumn = std::atof((LPCSTR)m_minInPlumeSpectrumColumn);
+
     UpdateFitParametersFromController();
+}
+
+bool IsInPpmm(double value)
+{
+    return value < 1e15;
 }
 
 void CRatioSetupDialog::UpdateFitParametersFromController()
@@ -262,11 +275,31 @@ void CRatioSetupDialog::UpdateFitParametersFromController()
     m_fitHighBrO.Format("%.1lf", m_controller->m_broFitRange.high);
     m_polyOrderBrO.Format("%d", m_controller->m_broPolynomialOrder);
 
+    if (IsInPpmm(m_controller->m_ratioEvaluationSettings.minInPlumeColumn))
+    {
+        m_minInPlumeSpectrumColumn.Format("%.0f", m_controller->m_ratioEvaluationSettings.minInPlumeColumn);
+        SetDlgItemText(IDC_STATIC_UNIT_MIN_IN_PLUME_COLUMN, "[ppmm]");
+    }
+    else
+    {
+        m_minInPlumeSpectrumColumn.Format("%.2g", m_controller->m_ratioEvaluationSettings.minInPlumeColumn);
+        SetDlgItemText(IDC_STATIC_UNIT_MIN_IN_PLUME_COLUMN, "[molec/cm2]");
+    }
+
     switch (m_controller->m_doasFitType)
     {
-    case novac::FIT_TYPE::FIT_POLY: m_fitTypeCombo.SetCurSel(0); break;
-    case novac::FIT_TYPE::FIT_HP_DIV: m_fitTypeCombo.SetCurSel(1); break;
-    case novac::FIT_TYPE::FIT_HP_SUB: m_fitTypeCombo.SetCurSel(2); break;
+    case novac::FIT_TYPE::FIT_POLY:
+        m_fitTypeCombo.SetCurSel(0);
+        m_unitCombo.SetCurSel(1);
+        break;
+    case novac::FIT_TYPE::FIT_HP_DIV:
+        m_fitTypeCombo.SetCurSel(1);
+        m_unitCombo.SetCurSel(0);
+        break;
+    case novac::FIT_TYPE::FIT_HP_SUB:
+        m_fitTypeCombo.SetCurSel(2);
+        m_unitCombo.SetCurSel(0);
+        break;
     }
 
     // Update the UI with the values
@@ -303,8 +336,41 @@ void CRatioSetupDialog::OnSelchangeComboFitType()
 
     switch (selection)
     {
-    case 1: m_controller->m_doasFitType = novac::FIT_TYPE::FIT_HP_DIV; break;
-    case 2: m_controller->m_doasFitType = novac::FIT_TYPE::FIT_HP_SUB; break;
-    default:m_controller->m_doasFitType = novac::FIT_TYPE::FIT_POLY; break;
+    case 1:
+        m_controller->m_doasFitType = novac::FIT_TYPE::FIT_HP_DIV;
+        m_unitCombo.SetCurSel(0);
+        break;
+    case 2:
+        m_controller->m_doasFitType = novac::FIT_TYPE::FIT_HP_SUB;
+        m_unitCombo.SetCurSel(0);
+        break;
+    default:
+        m_controller->m_doasFitType = novac::FIT_TYPE::FIT_POLY;
+        m_unitCombo.SetCurSel(1);
+        break;
     }
+}
+
+void CRatioSetupDialog::OnSelchangeComboReferenceUnit()
+{
+    const int selection = m_fitTypeCombo.GetCurSel();
+
+    switch (selection)
+    {
+    case 1:
+        // User selected molec/cm2
+        if (IsInPpmm(m_controller->m_ratioEvaluationSettings.minInPlumeColumn))
+        {
+            m_controller->m_ratioEvaluationSettings.minInPlumeColumn *= 2.5e15;
+        }
+        break;
+    case 0:
+        // User selected ppmm
+        if (!IsInPpmm(m_controller->m_ratioEvaluationSettings.minInPlumeColumn))
+        {
+            m_controller->m_ratioEvaluationSettings.minInPlumeColumn /= 2.5e15;
+        }
+    }
+
+    UpdateFitParametersFromController();
 }

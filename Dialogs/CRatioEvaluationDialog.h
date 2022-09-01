@@ -5,6 +5,7 @@
 #include "../Graphs/DOASFitGraph.h"
 
 class RatioCalculationController;
+struct RatioCalculationResult;
 
 namespace novac
 {
@@ -48,6 +49,9 @@ private:
     // The controller which this dialog helps to setup. Notice that this dialog does not own the pointer and will not delete it.
     RatioCalculationController* m_controller;
 
+    // Boolean flag which is set to true while the processing of the scans is running in the background
+    bool m_backgroundProcessingIsRunning = false;
+
     // Graph type selector
     CListBox m_resultTypeList;
 
@@ -67,20 +71,23 @@ private:
     Graph::CDOASFitGraph m_graph;
     CStatic m_scanFrame;
 
-    void UpdateUserInterfaceWithResult();
-    void UpdateGraph();
-    void UpdateScanGraph();
-    void UpdateMajorFitGraph();
-    void UpdateMinorFitGraph();
-    void UpdateResultList();
-    void UpdateListOfReferences();
+    LRESULT OnBackgroundProcessingDone(WPARAM wParam, LPARAM lParam);
+    LRESULT OnOneRatioEvaluationDone(WPARAM wParam, LPARAM lParam);
+
+    void UpdateUserInterfaceWithResult(RatioCalculationResult& result);
+    void UpdateGraph(RatioCalculationResult& result);
+    void UpdateScanGraph(RatioCalculationResult& result);
+    void UpdateMajorFitGraph(RatioCalculationResult& result);
+    void UpdateMinorFitGraph(RatioCalculationResult& result);
+    void UpdateResultList(const RatioCalculationResult& lastResult);
+    void UpdateListOfReferences(const RatioCalculationResult& lastResult);
 
     void UpdateReferenceResultLabels(const novac::DoasResult* doasResult, int indexOfSelectedReference);
 
     // returns the last result for the major window. returns nullptr if none exists.
-    const novac::DoasResult* GetMajorWindowResult();
+    const novac::DoasResult* GetMajorWindowResult(const RatioCalculationResult& result);
 
     // returns the last result for the minor window. returns nullptr if none exists.
-    const novac::DoasResult* GetMinorWindowResult();
+    const novac::DoasResult* GetMinorWindowResult(const RatioCalculationResult& result);
 
 };
