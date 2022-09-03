@@ -14,6 +14,11 @@
 #include "../DlgControls/CGridListCtrlEx/CGridColumnTraitText.h"
 #include "../DlgControls/CGridListCtrlEx/CGridRowTraitXP.h"
 
+#undef min
+#undef max
+
+#include <algorithm>
+
 // CRatioSetupDialog dialog
 
 IMPLEMENT_DYNAMIC(CRatioSetupDialog, CPropertyPage)
@@ -148,6 +153,8 @@ void CRatioSetupDialog::DoDataExchange(CDataExchange* pDX)
     DDX_Text(pDX, IDC_EDIT_POLYNOM, m_polyOrderSO2);
     DDX_Text(pDX, IDC_EDIT_POLYNOM2, m_polyOrderBrO);
     DDX_Text(pDX, IDC_EDIT_MIN_IN_PLUME_COLUMN, m_minInPlumeSpectrumColumn);
+    DDX_Text(pDX, IDC_EDIT_MIN_IN_PLUME_SPECTRA, m_minInPlumeSpectrumNumber);
+    DDX_Text(pDX, IDC_EDIT_MIN_OUT_OF_PLUME_SPECTRA, m_minOutOfPlumeSpectrumNumber);
 
     DDX_Control(pDX, IDC_LIST_REFERENCES_SO2, m_selectedReferencesSO2);
     DDX_Control(pDX, IDC_LIST_REFERENCES_BRO, m_selectedReferencesBrO);
@@ -165,6 +172,8 @@ BEGIN_MESSAGE_MAP(CRatioSetupDialog, CPropertyPage)
     ON_EN_KILLFOCUS(IDC_EDIT_FITLOW_BRO, &CRatioSetupDialog::OnKillfocusEditBox)
     ON_EN_KILLFOCUS(IDC_EDIT_FITHIGH_BRO, &CRatioSetupDialog::OnKillfocusEditBox)
     ON_EN_KILLFOCUS(IDC_EDIT_POLYNOM2, &CRatioSetupDialog::OnKillfocusEditBox)
+    ON_EN_KILLFOCUS(IDC_EDIT_MIN_IN_PLUME_SPECTRA, &CRatioSetupDialog::OnKillfocusEditBox)
+    ON_EN_KILLFOCUS(IDC_EDIT_MIN_OUT_OF_PLUME_SPECTRA, &CRatioSetupDialog::OnKillfocusEditBox)
 
     ON_CBN_SELCHANGE(IDC_COMBO_FIT_TYPE, &CRatioSetupDialog::OnSelchangeComboFitType)
     ON_CBN_SELCHANGE(IDC_COMBO_REFERENCE_UNIT, &CRatioSetupDialog::OnSelchangeComboReferenceUnit)
@@ -256,6 +265,8 @@ void CRatioSetupDialog::OnKillfocusEditBox()
     m_controller->m_broPolynomialOrder = std::atoi((LPCSTR)m_polyOrderBrO);
 
     m_controller->m_ratioEvaluationSettings.minInPlumeColumn = std::atof((LPCSTR)m_minInPlumeSpectrumColumn);
+    m_controller->m_ratioEvaluationSettings.minNumberOfSpectraInPlume = std::max(1, std::atoi((LPCSTR)m_minInPlumeSpectrumNumber));
+    m_controller->m_ratioEvaluationSettings.minNumberOfReferenceSpectra = std::max(1, std::atoi((LPCSTR)m_minOutOfPlumeSpectrumNumber));
 
     UpdateFitParametersFromController();
 }
@@ -285,6 +296,9 @@ void CRatioSetupDialog::UpdateFitParametersFromController()
         m_minInPlumeSpectrumColumn.Format("%.2g", m_controller->m_ratioEvaluationSettings.minInPlumeColumn);
         SetDlgItemText(IDC_STATIC_UNIT_MIN_IN_PLUME_COLUMN, "[molec/cm2]");
     }
+
+    m_minInPlumeSpectrumNumber.Format("%d", m_controller->m_ratioEvaluationSettings.minNumberOfSpectraInPlume);
+    m_minOutOfPlumeSpectrumNumber.Format("%d", m_controller->m_ratioEvaluationSettings.minNumberOfReferenceSpectra);
 
     switch (m_controller->m_doasFitType)
     {

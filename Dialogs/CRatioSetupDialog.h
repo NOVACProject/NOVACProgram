@@ -66,6 +66,8 @@ private:
     CString m_polyOrderSO2;
     CString m_polyOrderBrO;
     CString m_minInPlumeSpectrumColumn;
+    CString m_minInPlumeSpectrumNumber;
+    CString m_minOutOfPlumeSpectrumNumber;
 
     CListBox m_selectedReferencesSO2;
     CListBox m_selectedReferencesBrO;

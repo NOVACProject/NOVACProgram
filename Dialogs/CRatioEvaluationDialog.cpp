@@ -1,4 +1,4 @@
-// CRatioEvaluationDialog.cpp : implementation file
+""// CRatioEvaluationDialog.cpp : implementation file
 //
 
 #include "StdAfx.h"
@@ -17,11 +17,11 @@
 #pragma region General helper methods for simplifying the display of data
 
 void SelectScanAngleAndColumnFromBasicScanEvaluationResult(
-    const novac::BasicScanEvaluationResult& evaluationResult,
+    const novac::BasicScanEvaluationResult & evaluationResult,
     const std::vector<int> indicesToSelect,
     double columnOffset,
-    std::vector<double>& scanAngles,
-    std::vector<double>& columns)
+    std::vector<double>&scanAngles,
+    std::vector<double>&columns)
 {
     scanAngles.clear();
     columns.clear();
@@ -215,6 +215,29 @@ LRESULT CRatioEvaluationDialog::OnOneRatioEvaluationDone(WPARAM wParam, LPARAM /
 
 void CRatioEvaluationDialog::UpdateUserInterfaceWithResult(RatioCalculationResult& result)
 {
+    if (!result.debugInfo.errorMessage.empty())
+    {
+        // If there was an error in the evaluation, then don't attemp to show all the references.
+        m_resultTypeList.ResetContent();
+        m_resultTypeList.AddString("Scan");
+        m_resultTypeList.SetCurSel(0);
+
+        GetDlgItem(IDC_RATIO_ERROR_MESSAGE_LABEL)->ShowWindow(SW_SHOW);
+        SetDlgItemText(IDC_RATIO_ERROR_MESSAGE_LABEL, result.debugInfo.errorMessage.c_str());
+    }
+    else
+    {
+        if (m_resultTypeList.GetCount() != 3)
+        {
+            m_resultTypeList.ResetContent();
+            m_resultTypeList.AddString("Scan");
+            m_resultTypeList.AddString("SO2 Fit");
+            m_resultTypeList.AddString("BrO Fit");
+            m_resultTypeList.SetCurSel(0);
+        }
+        GetDlgItem(IDC_RATIO_ERROR_MESSAGE_LABEL)->ShowWindow(SW_HIDE);
+    }
+
     UpdateGraph(result);
     UpdateResultList(result);
     UpdateListOfReferences(result);
@@ -325,6 +348,15 @@ void CRatioEvaluationDialog::UpdateScanGraph(RatioCalculationResult& result)
 
     m_graph.SetPlotColor(RGB(255, 0, 0));
     m_graph.BarChart(outOfPlumeScanAngles.data(), outOfPlumeColumns.data(), static_cast<int>(outOfPlumeScanAngles.size()), Graph::CGraphCtrl::PLOT_FIXED_AXIS | Graph::CGraphCtrl::PLOT_BAR_SHOW_X);
+
+
+    // Draw the plume-centre position. TODO: Improve on this such that the user can
+    // visualize which region is considered to be plume and hence which spectra are eligible for being in-plume spectrum...
+    if (result.plumeInScanProperties.plumeCenter > -200) {
+        // m_graph.DrawLine(Graph::VERTICAL, result.plumeInScanProperties.plumeCenter, RGB(255, 255, 0), Graph::STYLE_DASHED);
+        m_graph.DrawLine(Graph::VERTICAL, result.plumeInScanProperties.plumeEdgeLow, RGB(255, 255, 0), Graph::STYLE_DASHED);
+        m_graph.DrawLine(Graph::VERTICAL, result.plumeInScanProperties.plumeEdgeHigh, RGB(255, 255, 0), Graph::STYLE_DASHED);
+    }
 }
 
 void CRatioEvaluationDialog::UpdateResultList(const RatioCalculationResult& lastResult)
@@ -388,8 +420,6 @@ void CRatioEvaluationDialog::UpdateResultList(const RatioCalculationResult& last
             m_resultTree.Expand(hTree, TVE_EXPAND);
         }
     }
-
-    // m_resultTree.ModifyStyle(0, TVS_LINESATROOT);
 }
 
 void CRatioEvaluationDialog::UpdateListOfReferences(const RatioCalculationResult& lastResult)
