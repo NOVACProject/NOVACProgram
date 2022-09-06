@@ -1,8 +1,4 @@
-// CRatioScanFilesDialog.cpp : implementation file
-//
-
 #include "StdAfx.h"
-#include "afxdialogex.h"
 #include "../resource.h"
 #include "CRatioScanFilesDialog.h"
 
@@ -54,7 +50,7 @@ BOOL CRatioScanFilesDialog::OnInitDialog() {
     m_specGraph.SetYUnits(common.GetString(AXIS_INTENSITY));
     m_specGraph.SetXUnits(common.GetString(AXIS_CHANNEL));
     m_specGraph.SetBackgroundColor(RGB(0, 0, 0));
-    m_specGraph.SetGridColor(RGB(255, 255, 255));//(192, 192, 255)) ;
+    m_specGraph.SetGridColor(RGB(255, 255, 255));
     m_specGraph.SetPlotColor(RGB(0, 255, 0));
     m_specGraph.parentWnd = this;
 
@@ -212,13 +208,14 @@ void CRatioScanFilesDialog::UpdateUserInterfaceWithSelectedSpectrum()
 
 void CRatioScanFilesDialog::DrawSpectrum(novac::CSpectrum& spectrum)
 {
-    Graph::CSpectrumGraph::plotRange range;
+    Graph::CSpectrumGraph::plotRange range{};
     range.minIntens = 0.0;
     range.maxIntens = FullDynamicRangeForSpectrum(spectrum.m_info);
     range.minLambda = 0.0;
     range.maxLambda = spectrum.m_length;
 
     m_specGraph.CleanPlot();
+    m_specGraph.SetPlotColor(RGB(0, 255, 0));
     m_specGraph.SetRange(range.minLambda, range.maxLambda, 0, range.minIntens, range.maxIntens, 0);
 
     m_specGraph.XYPlot(nullptr, spectrum.m_data, spectrum.m_length, Graph::CGraphCtrl::PLOT_FIXED_AXIS | Graph::CGraphCtrl::PLOT_CONNECTED);

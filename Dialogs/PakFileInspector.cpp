@@ -453,7 +453,7 @@ LRESULT CPakFileInspector::OnZoomGraph(WPARAM wParam, LPARAM lParam) {
     return 0;
 }
 
-void Dialogs::CPakFileInspector::OnTimer(UINT nIDEvent)
+void Dialogs::CPakFileInspector::OnTimer(WPARAM nIDEvent)
 {
     m_graph.m_userZoomableGraph = true;
 

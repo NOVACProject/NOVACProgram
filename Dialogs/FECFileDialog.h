@@ -1,9 +1,4 @@
-#if !defined(AFX_FECFILEDIALOG_H__F15965B0_B05A_11D4_B625_A1459D96AB20__INCLUDED_)
-#define AFX_FECFILEDIALOG_H__F15965B0_B05A_11D4_B625_A1459D96AB20__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 namespace Dialogs {
 
@@ -28,7 +23,7 @@ namespace Dialogs {
 
         virtual ~CFECFileDialog();// { if (Files) { delete[] Files; delete[] Folder; } }
 
-        virtual int DoModal();
+        virtual INT_PTR DoModal() override;
         CString GetNextPathName(POSITION& pos) const;
         POSITION GetStartPosition();
 
@@ -40,4 +35,4 @@ namespace Dialogs {
         DECLARE_MESSAGE_MAP()
     };
 }
-#endif
+

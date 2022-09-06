@@ -3,7 +3,6 @@
 
 #include "stdafx.h"
 #include "CustomSpectrometerModelDlg.h"
-#include "afxdialogex.h"
 #include "resource.h"
 
 

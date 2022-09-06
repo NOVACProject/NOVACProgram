@@ -3,7 +3,7 @@
 
 #include "StdAfx.h"
 #include "CCalibrateReferencesDialog.h"
-#include "afxdialogex.h"
+#include "afxdlgs.h"
 #include "../resource.h"
 #include <fstream>
 #include "../Common/Common.h"

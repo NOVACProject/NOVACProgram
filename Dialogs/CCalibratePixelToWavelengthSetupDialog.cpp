@@ -6,7 +6,7 @@
 #include "CCalibratePixelToWavelengthDialog.h"
 #include "OpenInstrumentCalibrationDialog.h"
 #include "../Common/Common.h"
-#include "afxdialogex.h"
+#include "afxdlgs.h"
 #include "../resource.h"
 #include <SpectralEvaluation/Calibration/StandardCrossSectionSetup.h>
 

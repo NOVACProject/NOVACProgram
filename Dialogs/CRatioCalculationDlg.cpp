@@ -1,9 +1,5 @@
-// CRatioCalculationDlg.cpp : implementation file
-//
-
 #include "StdAfx.h"
 #include "CRatioCalculationDlg.h"
-#include "afxdialogex.h"
 #include "../resource.h"
 #include "CRatioScanFilesDialog.h"
 #include "CRatioSetupDialog.h"

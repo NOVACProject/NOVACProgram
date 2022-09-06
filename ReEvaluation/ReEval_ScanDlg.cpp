@@ -110,7 +110,7 @@ BOOL CReEval_ScanDlg::OnInitDialog()
     m_specGraph.SetYUnits(common.GetString(AXIS_INTENSITY));
     m_specGraph.SetXUnits(common.GetString(AXIS_CHANNEL));
     m_specGraph.SetBackgroundColor(RGB(0, 0, 0));
-    m_specGraph.SetGridColor(RGB(255, 255, 255));//(192, 192, 255)) ;
+    m_specGraph.SetGridColor(RGB(255, 255, 255));
     m_specGraph.SetPlotColor(RGB(0, 255, 0));
     m_specGraph.parentWnd = this;
 
@@ -159,6 +159,7 @@ void CReEval_ScanDlg::DrawSpectrum() {
     GetPlotRange(range);
 
     m_specGraph.CleanPlot();
+    m_specGraph.SetPlotColor(RGB(0, 255, 0));
     m_specGraph.SetRange(range.minLambda, range.maxLambda, 0, range.minIntens, range.maxIntens, 0);
 
     m_specGraph.XYPlot(nullptr, m_spectrum.m_data, m_spectrum.m_length, Graph::CGraphCtrl::PLOT_FIXED_AXIS | Graph::CGraphCtrl::PLOT_CONNECTED);

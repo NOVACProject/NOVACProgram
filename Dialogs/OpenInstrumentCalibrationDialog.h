@@ -1,5 +1,7 @@
 #pragma once
 
+#include "afxdlgs.h"
+
 #include <SpectralEvaluation/DialogControllers/InstrumentCalibrationInput.h>
 
 // OpenInstrumentCalibrationDialog dialog

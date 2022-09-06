@@ -777,6 +777,9 @@
     <ClCompile Include="SpectralEvaluation\src\Math\SpectrumMath.cpp">
       <Filter>Source Files\SpectralEvaluation\Math</Filter>
     </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Evaluation\PlumeSpectrumSelector.cpp">
+      <Filter>Source Files\SpectralEvaluation\Evaluation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Configuration\AdvancedFTPUploadSettings.h">
@@ -1521,6 +1524,9 @@
       <Filter>Header Files\SpectralEvaluation\Evaluation</Filter>
     </ClInclude>
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Evaluation\RatioEvaluation.h">
+      <Filter>Header Files\SpectralEvaluation\Evaluation</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Evaluation\PlumeSpectrumSelector.h">
       <Filter>Header Files\SpectralEvaluation\Evaluation</Filter>
     </ClInclude>
   </ItemGroup>

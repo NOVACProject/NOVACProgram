@@ -1,5 +1,7 @@
 #pragma once
 
+#include "afxdlgs.h"
+
 // This is the spectrometer calibration dialog
 //  where we can both fit an instrument line shape _and_ calibrate the wavelength
 class CSpectrometerCalibrationDlg : public CPropertySheet

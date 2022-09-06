@@ -1,8 +1,7 @@
 // CRatioSetupDialog.cpp : implementation file
 //
 
-#include "StdAfx.h"
-#include "afxdialogex.h"
+#include "stdafx.h"
 #include "../resource.h"
 #include "CRatioSetupDialog.h"
 #include <SpectralEvaluation/DialogControllers/RatioCalculationController.h>
@@ -266,7 +265,7 @@ void CRatioSetupDialog::OnKillfocusEditBox()
 
     m_controller->m_ratioEvaluationSettings.minInPlumeColumn = std::atof((LPCSTR)m_minInPlumeSpectrumColumn);
     m_controller->m_ratioEvaluationSettings.minNumberOfSpectraInPlume = std::max(1, std::atoi((LPCSTR)m_minInPlumeSpectrumNumber));
-    m_controller->m_ratioEvaluationSettings.minNumberOfReferenceSpectra = std::max(1, std::atoi((LPCSTR)m_minOutOfPlumeSpectrumNumber));
+    m_controller->m_ratioEvaluationSettings.numberOfSpectraOutsideOfPlume = std::max(1, std::atoi((LPCSTR)m_minOutOfPlumeSpectrumNumber));
 
     UpdateFitParametersFromController();
 }
@@ -298,7 +297,7 @@ void CRatioSetupDialog::UpdateFitParametersFromController()
     }
 
     m_minInPlumeSpectrumNumber.Format("%d", m_controller->m_ratioEvaluationSettings.minNumberOfSpectraInPlume);
-    m_minOutOfPlumeSpectrumNumber.Format("%d", m_controller->m_ratioEvaluationSettings.minNumberOfReferenceSpectra);
+    m_minOutOfPlumeSpectrumNumber.Format("%d", m_controller->m_ratioEvaluationSettings.numberOfSpectraOutsideOfPlume);
 
     switch (m_controller->m_doasFitType)
     {
@@ -376,6 +375,7 @@ void CRatioSetupDialog::OnSelchangeComboReferenceUnit()
         if (IsInPpmm(m_controller->m_ratioEvaluationSettings.minInPlumeColumn))
         {
             m_controller->m_ratioEvaluationSettings.minInPlumeColumn *= 2.5e15;
+            m_controller->m_crossSectionUnit = novac::CrossSectionUnit::cm2_molecule;
         }
         break;
     case 0:
@@ -383,6 +383,7 @@ void CRatioSetupDialog::OnSelchangeComboReferenceUnit()
         if (!IsInPpmm(m_controller->m_ratioEvaluationSettings.minInPlumeColumn))
         {
             m_controller->m_ratioEvaluationSettings.minInPlumeColumn /= 2.5e15;
+            m_controller->m_crossSectionUnit = novac::CrossSectionUnit::ppmm;
         }
     }
 

@@ -2,7 +2,6 @@
 //
 #include "StdAfx.h"
 #include "SpectrometerCalibrationDlg.h"
-#include "afxdialogex.h"
 #include "../resource.h"
 #include "CCalibratePixelToWavelengthDialog.h"
 #include "CCalibrateReferencesDialog.h"

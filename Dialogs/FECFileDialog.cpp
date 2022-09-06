@@ -80,7 +80,7 @@ END_MESSAGE_MAP()
 //
 /////////////////////////////////////////////////////////////////////////////
 
-int CFECFileDialog::DoModal()
+INT_PTR CFECFileDialog::DoModal()
 {
     if (Files)
     {
@@ -90,7 +90,7 @@ int CFECFileDialog::DoModal()
         Folder = NULL;
     }
 
-    int ret = CFileDialog::DoModal();
+    auto ret = CFileDialog::DoModal();
 
     if (ret == IDCANCEL)
     {
@@ -265,7 +265,7 @@ DWORD CFECFileDialog::_CalcRequiredBuffSize()
         }
     }
     dwRet += 1; // add an extra character
-                // release the IFileOpenDialog pointer
+    // release the IFileOpenDialog pointer
     pFileOpen->Release();
     return dwRet;
 }

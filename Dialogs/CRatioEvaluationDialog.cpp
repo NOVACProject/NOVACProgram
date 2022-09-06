@@ -1,7 +1,4 @@
-""// CRatioEvaluationDialog.cpp : implementation file
-//
-
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "../resource.h"
 #include "CRatioEvaluationDialog.h"
 
@@ -17,22 +14,29 @@
 #pragma region General helper methods for simplifying the display of data
 
 void SelectScanAngleAndColumnFromBasicScanEvaluationResult(
-    const novac::BasicScanEvaluationResult & evaluationResult,
+    const novac::BasicScanEvaluationResult& evaluationResult,
     const std::vector<int> indicesToSelect,
     double columnOffset,
-    std::vector<double>&scanAngles,
-    std::vector<double>&columns)
+    std::vector<double>& scanAngles,
+    std::vector<double>& columns)
 {
-    scanAngles.clear();
-    columns.clear();
+    scanAngles.resize(evaluationResult.m_spec.size());
+    columns.resize(evaluationResult.m_spec.size());
 
-    for (int ii : indicesToSelect)
+    for (size_t ii = 0; ii < evaluationResult.m_spec.size(); ++ii)
     {
-        const novac::CEvaluationResult& result = evaluationResult.m_spec[ii];
         const novac::CSpectrumInfo& spectrumInfo = evaluationResult.m_specInfo[ii];
+        scanAngles[ii] = spectrumInfo.m_scanAngle;
 
-        scanAngles.push_back(spectrumInfo.m_scanAngle);
-        columns.push_back(result.m_referenceResult[0].m_column - columnOffset);
+        if (std::find(begin(indicesToSelect), end(indicesToSelect), static_cast<int>(ii)) != indicesToSelect.end())
+        {
+            const novac::CEvaluationResult& result = evaluationResult.m_spec[ii];
+            columns[ii] = result.m_referenceResult[0].m_column - columnOffset;
+        }
+        else
+        {
+            columns[ii] = 0.0;
+        }
     }
 }
 
@@ -290,7 +294,14 @@ void CRatioEvaluationDialog::UpdateScanGraph(RatioCalculationResult& result)
     // Draw the evaluated columns vs scan-angle, highlighting the selected in-plume and out-of-plume spectra.
     m_graph.CleanPlot();
     m_graph.SetXUnits("Angle [deg]");
-    m_graph.SetYUnits("Column [molec/cm2]");
+    if (m_controller->m_crossSectionUnit == novac::CrossSectionUnit::ppmm)
+    {
+        m_graph.SetYUnits("Column [ppmm]");
+    }
+    else
+    {
+        m_graph.SetYUnits("Column [molec/cm2]");
+    }
 
     if (m_controller->m_results.empty())
     {
@@ -328,7 +339,7 @@ void CRatioEvaluationDialog::UpdateScanGraph(RatioCalculationResult& result)
     std::vector<double> inPlumeColumns;
     SelectScanAngleAndColumnFromBasicScanEvaluationResult(
         result.initialEvaluation,
-        result.debugInfo.plumeSpectra,
+        result.debugInfo.plumeSpectrumIndices,
         columnOffset,
         inPlumeScanAngles,
         inPlumeColumns);
@@ -341,7 +352,7 @@ void CRatioEvaluationDialog::UpdateScanGraph(RatioCalculationResult& result)
     std::vector<double> outOfPlumeColumns;
     SelectScanAngleAndColumnFromBasicScanEvaluationResult(
         result.initialEvaluation,
-        result.debugInfo.outOfPlumeSpectra,
+        result.debugInfo.outOfPlumeSpectrumIndices,
         columnOffset,
         outOfPlumeScanAngles,
         outOfPlumeColumns);
@@ -349,13 +360,12 @@ void CRatioEvaluationDialog::UpdateScanGraph(RatioCalculationResult& result)
     m_graph.SetPlotColor(RGB(255, 0, 0));
     m_graph.BarChart(outOfPlumeScanAngles.data(), outOfPlumeColumns.data(), static_cast<int>(outOfPlumeScanAngles.size()), Graph::CGraphCtrl::PLOT_FIXED_AXIS | Graph::CGraphCtrl::PLOT_BAR_SHOW_X);
 
-
     // Draw the plume-centre position. TODO: Improve on this such that the user can
     // visualize which region is considered to be plume and hence which spectra are eligible for being in-plume spectrum...
     if (result.plumeInScanProperties.plumeCenter > -200) {
         // m_graph.DrawLine(Graph::VERTICAL, result.plumeInScanProperties.plumeCenter, RGB(255, 255, 0), Graph::STYLE_DASHED);
-        m_graph.DrawLine(Graph::VERTICAL, result.plumeInScanProperties.plumeEdgeLow, RGB(255, 255, 0), Graph::STYLE_DASHED);
-        m_graph.DrawLine(Graph::VERTICAL, result.plumeInScanProperties.plumeEdgeHigh, RGB(255, 255, 0), Graph::STYLE_DASHED);
+        m_graph.DrawLine(Graph::VERTICAL, result.plumeInScanProperties.plumeHalfLow, RGB(255, 255, 0), Graph::STYLE_DASHED);
+        m_graph.DrawLine(Graph::VERTICAL, result.plumeInScanProperties.plumeHalfHigh, RGB(255, 255, 0), Graph::STYLE_DASHED);
     }
 }
 
@@ -375,12 +385,21 @@ void CRatioEvaluationDialog::UpdateResultList(const RatioCalculationResult& last
     str.Format("Time: %04d.%02d.%02d %02d:%02d:%02d", lastResult.startTime.year, lastResult.startTime.month, lastResult.startTime.day, lastResult.startTime.hour, lastResult.startTime.minute, lastResult.startTime.second);
     m_resultTree.InsertItem(str, TVI_ROOT);
 
+    str.Format("Plume completeness: %.1lf", lastResult.plumeInScanProperties.completeness);
+    m_resultTree.InsertItem(str, TVI_ROOT);
+
     if (!lastResult.debugInfo.errorMessage.empty())
     {
         str.Format("%s", lastResult.debugInfo.errorMessage.c_str());
         m_resultTree.InsertItem(str, TVI_ROOT);
         return;
     }
+
+    str.Format("Plume center: %.1lf", lastResult.plumeInScanProperties.plumeCenter);
+    m_resultTree.InsertItem(str, TVI_ROOT);
+
+    str.Format("Plume range: %.1lf to %.1lf", lastResult.plumeInScanProperties.plumeHalfLow, lastResult.plumeInScanProperties.plumeHalfHigh);
+    m_resultTree.InsertItem(str, TVI_ROOT);
 
     str.Format("SO2/BrO Ratio: %.2G ± %.2G", lastResult.ratio.ratio, lastResult.ratio.error);
     m_resultTree.InsertItem(str, TVI_ROOT);

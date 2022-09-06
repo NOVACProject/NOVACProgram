@@ -72,7 +72,7 @@ void CFTPServerContacter::OnStartFTP(WPARAM /*wp*/, LPARAM /*lp*/)
     m_hasReadInFileList = true;
 }
 
-void CFTPServerContacter::OnTimer(UINT /*nIDEvent*/, LPARAM /*lp*/) {
+void CFTPServerContacter::OnTimer(WPARAM /*nIDEvent*/, LPARAM /*lp*/) {
     // Call the uploading thing...
     OnIdle(0);
 }

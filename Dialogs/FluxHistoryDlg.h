@@ -1,5 +1,6 @@
 #pragma once
 #include "afxwin.h"
+#include "afxdlgs.h"
 #include "../Graphs/GraphCtrl.h"
 #include "../EvaluatedDataStorage.h"
 

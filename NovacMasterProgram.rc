@@ -953,10 +953,11 @@ BEGIN
     LTEXT           "Min column for spectrum in plume",IDC_STATIC,399,282,112,8
     EDITTEXT        IDC_EDIT_MIN_IN_PLUME_COLUMN,533,281,44,12,ES_AUTOHSCROLL
     LTEXT           "[ppmm]",IDC_STATIC_UNIT_MIN_IN_PLUME_COLUMN,585,282,27,8
-    LTEXT           "Min number of spectra In Plume",IDC_STATIC,399,297,106,8
-    LTEXT           "Min number of spectra Out of Plume",IDC_STATIC,399,312,119,8
+    LTEXT           "Min number of spectra In Plume",IDC_STATIC,399,299,106,8
+    LTEXT           "Min number of spectra Out of Plume",IDC_STATIC,398,332,119,8
     EDITTEXT        IDC_EDIT_MIN_IN_PLUME_SPECTRA,533,297,44,12,ES_AUTOHSCROLL
-    EDITTEXT        IDC_EDIT_MIN_OUT_OF_PLUME_SPECTRA,533,312,44,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_MIN_OUT_OF_PLUME_SPECTRA,533,332,44,12,ES_AUTOHSCROLL
+    LTEXT           "(at least this many spectra must be found between the two edges of the plume)",IDC_STATIC_UNIT_MIN_IN_PLUME_COLUMN2,398,311,300,8
 END
 
 IDD_RATIO_EVALUATE_DIALOG DIALOGEX 0, 0, 711, 367

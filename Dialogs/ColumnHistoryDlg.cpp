@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include "../resource.h"
 #include "ColumnHistoryDlg.h"
-#include "afxdialogex.h"
 #include <afxwin.h>
 #include <ctime>
 #include <fstream>

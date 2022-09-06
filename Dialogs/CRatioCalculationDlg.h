@@ -1,4 +1,5 @@
 #pragma once
+#include "afxdlgs.h"
 
 #include <string>
 
