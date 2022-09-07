@@ -15,7 +15,7 @@
 
 void SelectScanAngleAndColumnFromBasicScanEvaluationResult(
     const novac::BasicScanEvaluationResult& evaluationResult,
-    const std::vector<int> indicesToSelect,
+    const std::vector<int>& indicesToSelect,
     double columnOffset,
     std::vector<double>& scanAngles,
     std::vector<double>& columns)
@@ -38,6 +38,23 @@ void SelectScanAngleAndColumnFromBasicScanEvaluationResult(
             columns[ii] = 0.0;
         }
     }
+}
+
+
+void SelectScanAngleAndColumnFromBasicScanEvaluationResult(
+    const novac::BasicScanEvaluationResult& evaluationResult,
+    const std::vector<std::pair<int, std::string>>& indicesToSelect,
+    double columnOffset,
+    std::vector<double>& scanAngles,
+    std::vector<double>& columns)
+{
+    std::vector<int> indices;
+    for (const auto& v : indicesToSelect)
+    {
+        indices.push_back(v.first);
+    }
+
+    return SelectScanAngleAndColumnFromBasicScanEvaluationResult(evaluationResult, indices, columnOffset, scanAngles, columns);
 }
 
 void UpdateDataInDoasFitGraph(Graph::CDOASFitGraph& doasFitGraph, const novac::DoasResult* doasResult)
@@ -313,6 +330,7 @@ void CRatioEvaluationDialog::UpdateScanGraph(RatioCalculationResult& result)
     std::vector<double> scanAngles;
     std::vector<double> columns;
     std::vector<double> columnErrors;
+    std::vector<double> peakSaturation;
     for (int ii = 0; ii < static_cast<int>(result.initialEvaluation.m_spec.size()); ++ii)
     {
         const novac::CEvaluationResult& initialEvaluation = result.initialEvaluation.m_spec[ii];
@@ -321,6 +339,7 @@ void CRatioEvaluationDialog::UpdateScanGraph(RatioCalculationResult& result)
         scanAngles.push_back(spectrumInfo.m_scanAngle);
         columns.push_back(initialEvaluation.m_referenceResult[0].m_column - columnOffset);
         columnErrors.push_back(initialEvaluation.m_referenceResult[0].m_columnError);
+        peakSaturation.push_back(100.0 * spectrumInfo.m_peakIntensity / (double)(spectrumInfo.m_numSpec * result.debugInfo.spectrometerFullDynamicRange));
     }
 
     // All the column-values
@@ -331,7 +350,7 @@ void CRatioEvaluationDialog::UpdateScanGraph(RatioCalculationResult& result)
         Min(columns),
         Max(columns),
         0);
-    m_graph.SetPlotColor(RGB(128, 0, 0));
+    m_graph.SetPlotColor(RGB(255, 0, 0)); // red
     m_graph.BarChart(scanAngles.data(), columns.data(), columnErrors.data(), static_cast<int>(scanAngles.size()), Graph::CGraphCtrl::PLOT_FIXED_AXIS | Graph::CGraphCtrl::PLOT_BAR_SHOW_X);
 
     // The selected in-plume column-values
@@ -344,7 +363,7 @@ void CRatioEvaluationDialog::UpdateScanGraph(RatioCalculationResult& result)
         inPlumeScanAngles,
         inPlumeColumns);
 
-    m_graph.SetPlotColor(RGB(0, 255, 0));
+    m_graph.SetPlotColor(RGB(0, 255, 0)); // green
     m_graph.BarChart(inPlumeScanAngles.data(), inPlumeColumns.data(), static_cast<int>(inPlumeColumns.size()), Graph::CGraphCtrl::PLOT_FIXED_AXIS | Graph::CGraphCtrl::PLOT_BAR_SHOW_X);
 
     // The selected out-of-plume column-values
@@ -357,15 +376,35 @@ void CRatioEvaluationDialog::UpdateScanGraph(RatioCalculationResult& result)
         outOfPlumeScanAngles,
         outOfPlumeColumns);
 
-    m_graph.SetPlotColor(RGB(255, 0, 0));
+    m_graph.SetPlotColor(RGB(0, 128, 0)); // dark greens
     m_graph.BarChart(outOfPlumeScanAngles.data(), outOfPlumeColumns.data(), static_cast<int>(outOfPlumeScanAngles.size()), Graph::CGraphCtrl::PLOT_FIXED_AXIS | Graph::CGraphCtrl::PLOT_BAR_SHOW_X);
+
+    // The rejected spectra
+    std::vector<double> rejectedScanAngles;
+    std::vector<double> rejectedPlumeColumns;
+    SelectScanAngleAndColumnFromBasicScanEvaluationResult(
+        result.initialEvaluation,
+        result.debugInfo.rejectedSpectrumIndices,
+        columnOffset,
+        rejectedScanAngles,
+        rejectedPlumeColumns);
+
+    m_graph.SetPlotColor(RGB(128, 0, 0)); // dark red
+    m_graph.BarChart(rejectedScanAngles.data(), rejectedPlumeColumns.data(), static_cast<int>(rejectedPlumeColumns.size()), Graph::CGraphCtrl::PLOT_FIXED_AXIS | Graph::CGraphCtrl::PLOT_BAR_SHOW_X);
+
+    // draw the peak saturation
+    m_graph.SetSecondRangeY(0, 100, 0, false);
+    m_graph.SetSecondYUnit("Saturation");
+    m_graph.SetCircleColor(RGB(255, 255, 255));
+    m_graph.DrawCircles(scanAngles.data(), peakSaturation.data(), static_cast<int>(scanAngles.size()), Graph::CGraphCtrl::PLOT_SECOND_AXIS);
+
 
     // Draw the plume-centre position. TODO: Improve on this such that the user can
     // visualize which region is considered to be plume and hence which spectra are eligible for being in-plume spectrum...
     if (result.plumeInScanProperties.plumeCenter > -200) {
-        // m_graph.DrawLine(Graph::VERTICAL, result.plumeInScanProperties.plumeCenter, RGB(255, 255, 0), Graph::STYLE_DASHED);
-        m_graph.DrawLine(Graph::VERTICAL, result.plumeInScanProperties.plumeHalfLow, RGB(255, 255, 0), Graph::STYLE_DASHED);
-        m_graph.DrawLine(Graph::VERTICAL, result.plumeInScanProperties.plumeHalfHigh, RGB(255, 255, 0), Graph::STYLE_DASHED);
+        m_graph.DrawLine(Graph::VERTICAL, result.plumeInScanProperties.plumeCenter, RGB(255, 255, 0), Graph::STYLE_DASHED);
+        m_graph.DrawLine(Graph::VERTICAL, result.plumeInScanProperties.plumeHalfLow, RGB(128, 128, 0), Graph::STYLE_DASHED);
+        m_graph.DrawLine(Graph::VERTICAL, result.plumeInScanProperties.plumeHalfHigh, RGB(128, 128, 0), Graph::STYLE_DASHED);
     }
 }
 

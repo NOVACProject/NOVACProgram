@@ -326,11 +326,14 @@ bool CScanResult::CalculatePlumeCentre(const std::string& specie, double& plumeC
         }
     }
 
+    // calculate the offset of the plume first
+    const double plumeOffset = CalculatePlumeOffset(column, badEval, m_specNum);
+
     // Calculate the centre of the plume
     CPlumeInScanProperty plumeProperties;
-    bool ret = FindPlume(scanAngle, phi, column, columnError, badEval, m_specNum, plumeProperties);
+    const bool plumeWasFound = FindPlume(scanAngle, phi, column, columnError, badEval, m_specNum, plumeOffset, plumeProperties);
 
-    if (ret) {
+    if (plumeWasFound) {
         // Remember the calculated value of the plume centre
         m_plumeCentre[0] = plumeProperties.plumeCenter;
         m_plumeCentre[1] = plumeProperties.plumeCenter2;
@@ -342,10 +345,8 @@ bool CScanResult::CalculatePlumeCentre(const std::string& specie, double& plumeC
         plumeEdge_low = plumeProperties.plumeEdgeLow;
         plumeEdge_high = plumeProperties.plumeEdgeHigh;
 
-        double offset = CalculatePlumeOffset(column, badEval, m_specNum);
-
         // Estimate the completeness of the plume
-        CalculatePlumeCompleteness(scanAngle, phi, column, columnError, badEval, offset, m_specNum, plumeProperties);
+        CalculatePlumeCompleteness(scanAngle, phi, column, columnError, badEval, plumeOffset, m_specNum, plumeProperties);
         m_plumeCompleteness = plumeProperties.completeness;
         plumeCompleteness = plumeProperties.completeness;
 
@@ -360,7 +361,7 @@ bool CScanResult::CalculatePlumeCentre(const std::string& specie, double& plumeC
         m_flux.m_fluxOk = false;
     }
 
-    return ret;
+    return plumeWasFound;
 }
 
 /** Tries to calculate the local wind-direction when this scan was collected */

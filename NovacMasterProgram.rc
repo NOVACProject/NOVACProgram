@@ -968,7 +968,7 @@ BEGIN
     LTEXT           "Showing Reference:",IDC_LBL_SHOWING,7,254,69,13
     GROUPBOX        "Scan",IDC_STATIC,144,7,564,334
     PUSHBUTTON      "Evaluate All Scans",IDC_RATIO_RUN_EVALUATION,521,345,95,15
-    LTEXT           "Static",IDC_FIT_FRAME_SCAN,151,17,557,305
+    LTEXT           "Static",IDC_FIT_FRAME_SCAN,151,17,557,293
     LISTBOX         IDC_MAJOR_SPECIE_LIST,7,265,136,48,LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
     LTEXT           "Column:",IDC_RATIO_MAJOR_LBL_COLUMN,7,318,135,8
     LTEXT           "Shift:",IDC_RATIO_MAJOR_LBL_SHIFT,7,330,135,8
@@ -976,7 +976,7 @@ BEGIN
     PUSHBUTTON      "Evaluate Next Scan",IDC_RATIO_RUN_EVALUATION_NEXT_SCAN,425,345,79,15
     LTEXT           "Selected out of plume spectra",IDC_STATIC_LEGEND_RED,267,328,130,8
     LTEXT           "Selected in plume spectra",IDC_STATIC_LEGEND_GREEN,161,328,95,8
-    CONTROL         IDB_RED_LIGHT1,IDC_STATIC_RED,"Static",SS_BITMAP,255,328,9,8
+    CONTROL         IDR_MENU_REEVALUATION,IDC_STATIC_RED,"Static",SS_BITMAP,255,328,9,8
     CONTROL         IDB_GREEN_LIGHT,IDC_STATIC_GREEN,"Static",SS_BITMAP,149,328,9,8
     LISTBOX         IDC_RATIO_SHOW_SELECTION_LIST,7,196,136,48,LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
     LTEXT           "Plot",IDC_LBL_SHOWING3,7,182,69,13
@@ -984,7 +984,9 @@ BEGIN
     CONTROL         "",IDC_RATIO_RESULT_TREE,"SysTreeView32",TVS_HASBUTTONS | WS_BORDER | WS_HSCROLL | WS_TABSTOP,7,19,136,153
     PUSHBUTTON      "Save Results",IDC_RATIO_SAVE_RESULTS,626,345,82,15
     LTEXT           "No scans evaluated",IDC_RATIO_PROGRESS_LABEL,152,344,164,8
-    LTEXT           "[Error messages goes here]",IDC_RATIO_ERROR_MESSAGE_LABEL,376,328,321,8,NOT WS_VISIBLE
+    LTEXT           "[Error messages goes here]",IDC_RATIO_ERROR_MESSAGE_LABEL,149,316,550,8,NOT WS_VISIBLE
+    LTEXT           "Rejected spectra",IDC_STATIC_LEGEND_RED2,388,328,130,8
+    CONTROL         ID_FILE_LOADSCAN,IDC_STATIC_RED2,"Static",SS_BITMAP,376,328,9,8
 END
 
 
@@ -2616,6 +2618,10 @@ IDB_BATTERY             BITMAP                  "res\\battery.bmp"
 IDB_BMP_SAVE            BITMAP                  "res\\bitmap3.bmp"
 
 IDB_BMP_OPEN            BITMAP                  "res\\bmp00001.bmp"
+
+IDB_DARK_GREEN_LIGHT    BITMAP                  "res\\red_ligh.bmp"
+
+IDB_DARK_RED_LIGHT      BITMAP                  "res\\bmp00002.bmp"
 
 
 /////////////////////////////////////////////////////////////////////////////

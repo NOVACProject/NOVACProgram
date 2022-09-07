@@ -202,7 +202,10 @@
 #define IDB_BMP_SAVE                    256
 #define IDB_BMP_OPEN                    257
 #define IDR_MENU_REEVALUATION           258
+#define IDB_DARK_GREEN_LIGHT            258
 #define ID_FILE_LOADSCAN                259
+#define IDB_RED_LIGHT2                  259
+#define IDB_DARK_RED_LIGHT              259
 #define ID_FILE_LOADFITWINDOWS          260
 #define ID_FILE_SAVECURRENTFITWINDOWS   261
 #define ID_FILE_LOADMISC                262
@@ -891,9 +894,11 @@
 #define IDC_STATIC_LEGEND_RED           1405
 #define IDC_STATIC_LEGEND_GREEN         1406
 #define IDC_MESSAGE_LIST                1407
+#define IDC_STATIC_LEGEND_RED2          1407
 #define IDC_STATIC_RED                  1408
 #define IDC_STATIC_GREEN                1409
 #define IDC_BUTTON_CREATE_STANDARD_REFERENCES 1410
+#define IDC_STATIC_RED2                 1410
 #define IDC_BUTTON_BROWSE_STANDARD_REFERENCES_DIRECTORY 1411
 #define IDC_EDIT_STANDARD_REFERENCES_OUTPUT_DIRECTORY 1412
 #define IDC_EDIT_FILE_SUFFIX            1413

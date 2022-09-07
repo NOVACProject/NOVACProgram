@@ -605,7 +605,6 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult* resu
     double plumeEdge1, plumeEdge2;
     double plumeCompleteness = result->GetCalculatedPlumeCompleteness();
     double plumeCentre1 = result->GetCalculatedPlumeCentre(0);
-    double plumeCentre2 = result->GetCalculatedPlumeCentre(1);
     result->GetCalculatedPlumeEdges(plumeEdge1, plumeEdge2);
 
     string.AppendFormat("<fluxinfo>\n");

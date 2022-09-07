@@ -1603,6 +1603,12 @@
     <Image Include="res\yellow_light.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="res\red_ligh.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bmp00002.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="res\NovacMasterProgram.manifest">

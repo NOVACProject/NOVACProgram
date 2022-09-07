@@ -1012,6 +1012,7 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
     <Image Include="res\bitmap2.bmp" />
     <Image Include="res\bitmap3.bmp" />
     <Image Include="res\bmp00001.bmp" />
+    <Image Include="res\bmp00002.bmp" />
     <Image Include="res\datFile.bmp" />
     <Image Include="res\disk.bmp" />
     <Image Include="res\exeFile.bmp" />
@@ -1027,6 +1028,7 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
     <Image Include="res\NovacMasterProgram.ico" />
     <Image Include="res\NovacMasterProgramDoc.ico" />
     <Image Include="res\pakFile.bmp" />
+    <Image Include="res\red_ligh.bmp" />
     <Image Include="res\red_light.bmp" />
     <Image Include="res\Toolbar.bmp" />
     <Image Include="res\yellow_l.bmp" />
