@@ -5,6 +5,7 @@
 #include <SpectralEvaluation/DialogControllers/RatioCalculationController.h>
 
 #include <SpectralEvaluation/File/SpectrumIO.h>
+#include <SpectralEvaluation/File/File.h>
 #include <SpectralEvaluation/Spectra/Spectrum.h>
 #include <SpectralEvaluation/Spectra/SpectrometerModel.h>
 
@@ -109,8 +110,8 @@ void CRatioScanFilesDialog::OnBnClickedBtnBrowsescanfile()
     m_pakFileListBox.ResetContent();
     for (const auto& file : m_controller->ListPakFiles())
     {
-        CString fileName{ file.c_str() };
-        m_pakFileListBox.AddString(fileName);
+        std::string filename = novac::GetFileName(file);
+        m_pakFileListBox.AddString(filename.c_str());
     }
 
     // reset the counters

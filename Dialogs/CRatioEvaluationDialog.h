@@ -33,11 +33,13 @@ public:
 
     afx_msg void OnBnClickedRunEvaluationOnNextScan();
     afx_msg void OnBnClickedRunEvaluationOnAllScans();
+    afx_msg void OnBnClickedClearResults();
+    afx_msg void OnBnClickedSaveResults();
 
     afx_msg void OnChangeSelectedSpecie();
+    afx_msg void OnSelchangeEvaluatedScansList();
 
     afx_msg void OnChangeSelectedDoasSpecie();
-    afx_msg void OnBnClickedSaveResults();
 
 protected:
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -52,14 +54,18 @@ private:
     // Boolean flag which is set to true while the processing of the scans is running in the background
     bool m_backgroundProcessingIsRunning = false;
 
+    CWinThread* m_backgroundProcessingThread = nullptr;
+
     // Graph type selector
     CListBox m_resultTypeList;
 
     // The list of species, for the current FitWindow
     CListBox m_so2SpecieList;
 
+    // The list of results of the evaluation
+    CListBox m_resultsList;
+
     // The labels showing the column, shift and squeeze for the current specie.
-    CStatic m_referenceHeaderLabel;
     CStatic m_referenceColumnLabel;
     CStatic m_referenceShiftLabel;
     CStatic m_referenceSqueezeLabel;
@@ -74,20 +80,24 @@ private:
     LRESULT OnBackgroundProcessingDone(WPARAM wParam, LPARAM lParam);
     LRESULT OnOneRatioEvaluationDone(WPARAM wParam, LPARAM lParam);
 
-    void UpdateUserInterfaceWithResult(RatioCalculationResult& result);
-    void UpdateGraph(RatioCalculationResult& result);
-    void UpdateScanGraph(RatioCalculationResult& result);
-    void UpdateMajorFitGraph(RatioCalculationResult& result);
-    void UpdateMinorFitGraph(RatioCalculationResult& result);
-    void UpdateResultList(const RatioCalculationResult& lastResult);
-    void UpdateListOfReferences(const RatioCalculationResult& lastResult);
+    void UpdateUserInterfaceWithResult(RatioCalculationResult* result);
+    void UpdateGraph(RatioCalculationResult* result);
+    void UpdateScanGraph(RatioCalculationResult* result);
+    void UpdateMajorFitGraph(RatioCalculationResult* result);
+    void UpdateMinorFitGraph(RatioCalculationResult* result);
+    void UpdateCurrentResultTree(const RatioCalculationResult* result);
+    void UpdateListOfReferences(const RatioCalculationResult* result);
 
     void UpdateReferenceResultLabels(const novac::DoasResult* doasResult, int indexOfSelectedReference);
 
+    void UpdateStateWhileBackgroundProcessingIsRunning();
+
     // returns the last result for the major window. returns nullptr if none exists.
-    const novac::DoasResult* GetMajorWindowResult(const RatioCalculationResult& result);
+    const novac::DoasResult* GetMajorWindowResult(const RatioCalculationResult* result);
 
     // returns the last result for the minor window. returns nullptr if none exists.
-    const novac::DoasResult* GetMinorWindowResult(const RatioCalculationResult& result);
+    const novac::DoasResult* GetMinorWindowResult(const RatioCalculationResult* result);
 
+    // Update the listing of the results.
+    void UpdateListOfResults();
 };

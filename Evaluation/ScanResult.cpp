@@ -127,7 +127,8 @@ bool CScanResult::CheckGoodnessOfFit(const CSpectrumInfo& info, int index, float
     // remember the electronic offset (NB. this is not same as the scan-offset)
 //  m_specInfo[index].m_offset				= (float)offsetLevel;
 
-    return m_spec[index].CheckGoodnessOfFit(info, chi2Limit, upperLimit, lowerLimit);
+    // TODO: we should be able to pass in a spectrometer model here and not have to recreate it for each an every spectrum.
+    return m_spec[index].CheckGoodnessOfFit(info, nullptr, chi2Limit, upperLimit, lowerLimit);
 }
 
 int CScanResult::CalculateOffset(const std::string& specie)

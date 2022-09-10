@@ -53,6 +53,8 @@ BOOL CRatioSetupDialog::OnInitDialog() {
 
     UpdateDisplayedListOfReferencesPerWindow();
 
+    SetDlgItemText(IDC_EDIT_EXPLANATION, "In addition to this, the plume completeness must be at least 0.7 and all saturated spectra are rejected.");
+
     return TRUE;  // return TRUE unless you set the focus to a control
 }
 
@@ -151,7 +153,6 @@ void CRatioSetupDialog::DoDataExchange(CDataExchange* pDX)
     DDX_Text(pDX, IDC_EDIT_FITHIGH_BRO, m_fitHighBrO);
     DDX_Text(pDX, IDC_EDIT_POLYNOM, m_polyOrderSO2);
     DDX_Text(pDX, IDC_EDIT_POLYNOM2, m_polyOrderBrO);
-    DDX_Text(pDX, IDC_EDIT_MIN_IN_PLUME_COLUMN, m_minInPlumeSpectrumColumn);
     DDX_Text(pDX, IDC_EDIT_MIN_IN_PLUME_SPECTRA, m_minInPlumeSpectrumNumber);
     DDX_Text(pDX, IDC_EDIT_MIN_OUT_OF_PLUME_SPECTRA, m_minOutOfPlumeSpectrumNumber);
 
@@ -166,7 +167,6 @@ BEGIN_MESSAGE_MAP(CRatioSetupDialog, CPropertyPage)
     ON_EN_KILLFOCUS(IDC_EDIT_FITLOW_SO2, &CRatioSetupDialog::OnKillfocusEditBox)
     ON_EN_KILLFOCUS(IDC_EDIT_FITHIGH_SO2, &CRatioSetupDialog::OnKillfocusEditBox)
     ON_EN_KILLFOCUS(IDC_EDIT_POLYNOM, &CRatioSetupDialog::OnKillfocusEditBox)
-    ON_EN_KILLFOCUS(IDC_EDIT_MIN_IN_PLUME_COLUMN, &CRatioSetupDialog::OnKillfocusEditBox)
 
     ON_EN_KILLFOCUS(IDC_EDIT_FITLOW_BRO, &CRatioSetupDialog::OnKillfocusEditBox)
     ON_EN_KILLFOCUS(IDC_EDIT_FITHIGH_BRO, &CRatioSetupDialog::OnKillfocusEditBox)
@@ -263,16 +263,10 @@ void CRatioSetupDialog::OnKillfocusEditBox()
     m_controller->m_so2PolynomialOrder = std::atoi((LPCSTR)m_polyOrderSO2);
     m_controller->m_broPolynomialOrder = std::atoi((LPCSTR)m_polyOrderBrO);
 
-    m_controller->m_ratioEvaluationSettings.minInPlumeColumn = std::atof((LPCSTR)m_minInPlumeSpectrumColumn);
     m_controller->m_ratioEvaluationSettings.minNumberOfSpectraInPlume = std::max(1, std::atoi((LPCSTR)m_minInPlumeSpectrumNumber));
     m_controller->m_ratioEvaluationSettings.numberOfSpectraOutsideOfPlume = std::max(1, std::atoi((LPCSTR)m_minOutOfPlumeSpectrumNumber));
 
     UpdateFitParametersFromController();
-}
-
-bool IsInPpmm(double value)
-{
-    return value < 1e15;
 }
 
 void CRatioSetupDialog::UpdateFitParametersFromController()
@@ -284,17 +278,6 @@ void CRatioSetupDialog::UpdateFitParametersFromController()
     m_fitLowBrO.Format("%.1lf", m_controller->m_broFitRange.low);
     m_fitHighBrO.Format("%.1lf", m_controller->m_broFitRange.high);
     m_polyOrderBrO.Format("%d", m_controller->m_broPolynomialOrder);
-
-    if (IsInPpmm(m_controller->m_ratioEvaluationSettings.minInPlumeColumn))
-    {
-        m_minInPlumeSpectrumColumn.Format("%.0f", m_controller->m_ratioEvaluationSettings.minInPlumeColumn);
-        SetDlgItemText(IDC_STATIC_UNIT_MIN_IN_PLUME_COLUMN, "[ppmm]");
-    }
-    else
-    {
-        m_minInPlumeSpectrumColumn.Format("%.2g", m_controller->m_ratioEvaluationSettings.minInPlumeColumn);
-        SetDlgItemText(IDC_STATIC_UNIT_MIN_IN_PLUME_COLUMN, "[molec/cm2]");
-    }
 
     m_minInPlumeSpectrumNumber.Format("%d", m_controller->m_ratioEvaluationSettings.minNumberOfSpectraInPlume);
     m_minOutOfPlumeSpectrumNumber.Format("%d", m_controller->m_ratioEvaluationSettings.numberOfSpectraOutsideOfPlume);
@@ -372,19 +355,11 @@ void CRatioSetupDialog::OnSelchangeComboReferenceUnit()
     {
     case 1:
         // User selected molec/cm2
-        if (IsInPpmm(m_controller->m_ratioEvaluationSettings.minInPlumeColumn))
-        {
-            m_controller->m_ratioEvaluationSettings.minInPlumeColumn *= 2.5e15;
-            m_controller->m_crossSectionUnit = novac::CrossSectionUnit::cm2_molecule;
-        }
+        m_controller->m_crossSectionUnit = novac::CrossSectionUnit::cm2_molecule;
         break;
     case 0:
         // User selected ppmm
-        if (!IsInPpmm(m_controller->m_ratioEvaluationSettings.minInPlumeColumn))
-        {
-            m_controller->m_ratioEvaluationSettings.minInPlumeColumn /= 2.5e15;
-            m_controller->m_crossSectionUnit = novac::CrossSectionUnit::ppmm;
-        }
+        m_controller->m_crossSectionUnit = novac::CrossSectionUnit::ppmm;
     }
 
     UpdateFitParametersFromController();
