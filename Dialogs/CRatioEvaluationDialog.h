@@ -100,4 +100,7 @@ private:
 
     // Update the listing of the results.
     void UpdateListOfResults();
+
+    // Adds one element to the list of results, does not clear previously added results.
+    void AddToListOfResults(const RatioCalculationResult* result);
 };

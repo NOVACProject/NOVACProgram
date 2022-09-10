@@ -231,7 +231,6 @@ LRESULT CRatioEvaluationDialog::OnBackgroundProcessingDone(WPARAM /*wParam*/, LP
     m_backgroundProcessingThread = nullptr;
 
     // Re-enable the UI buttons
-    assert(m_backgroundProcessingIsRunning == false);
     UpdateStateWhileBackgroundProcessingIsRunning();
 
     return 0;
@@ -245,9 +244,11 @@ LRESULT CRatioEvaluationDialog::OnOneRatioEvaluationDone(WPARAM wParam, LPARAM /
         return 0;
     }
 
-    UpdateListOfResults();
+    AddToListOfResults(newResult);
 
     UpdateUserInterfaceWithResult(newResult);
+
+    delete newResult;
 
     return 0;
 }
@@ -682,8 +683,8 @@ UINT EvaluateAllScans(void* pParam) {
         // Evaluate one scan
         evaluationInterface->controller->EvaluateNextScan(windows);
 
-        // Get the last result and send this to the UI
-        auto newResult = &(evaluationInterface->controller->m_results.back());
+        // Copy out the last result and send this to the UI (copy since we are passing data from one thread to another)
+        RatioCalculationResult* newResult = new RatioCalculationResult(evaluationInterface->controller->m_results.back());
         PostMessage(evaluationInterface->window, WM_PROGRESS, reinterpret_cast<WPARAM>(newResult), 0);
     }
 
@@ -767,6 +768,22 @@ void CRatioEvaluationDialog::OnBnClickedSaveResults()
         const std::string columnSeparatorChar = ";"; // TODO: Let the user choose this
         m_controller->SaveResultsToCsvFile(dstFileName, columnSeparatorChar);
     }
+}
+
+void CRatioEvaluationDialog::AddToListOfResults(const RatioCalculationResult* result)
+{
+    if (result == nullptr)
+    {
+        return;
+    }
+
+    std::string filename = novac::GetFileName(result->filename);
+    if (!result->debugInfo.errorMessage.empty())
+    {
+        filename = filename + " (no ratio)";
+    }
+
+    m_resultsList.AddString(filename.c_str());
 }
 
 void CRatioEvaluationDialog::UpdateListOfResults()
