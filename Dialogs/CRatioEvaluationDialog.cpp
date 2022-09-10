@@ -226,12 +226,22 @@ void CRatioEvaluationDialog::UpdateStateWhileBackgroundProcessingIsRunning()
     GetDlgItem(IDC_RATIO_EVALUATED_SCANS_LIST)->EnableWindow(enableUserInteraction);
 }
 
-LRESULT CRatioEvaluationDialog::OnBackgroundProcessingDone(WPARAM /*wParam*/, LPARAM /*lParam*/)
+LRESULT CRatioEvaluationDialog::OnBackgroundProcessingDone(WPARAM wParam, LPARAM /*lParam*/)
 {
     m_backgroundProcessingThread = nullptr;
 
     // Re-enable the UI buttons
     UpdateStateWhileBackgroundProcessingIsRunning();
+
+    // If there was an error message, then display it to the user
+    if (wParam != 0)
+    {
+        std::string* errorMessage = reinterpret_cast<std::string*>(wParam);
+
+        MessageBox(errorMessage->c_str());
+
+        delete errorMessage;
+    }
 
     return 0;
 }
@@ -675,23 +685,37 @@ struct BackgroundEvaluationInterface
 UINT EvaluateAllScans(void* pParam) {
     BackgroundEvaluationInterface* evaluationInterface = (BackgroundEvaluationInterface*)pParam;
 
-    // Setup the evaluation
-    const auto windows = evaluationInterface->controller->SetupFitWindows();
-
-    while (evaluationInterface->controller->HasMoreScansToEvaluate() && *(evaluationInterface->evaluationIsRunning) == true)
+    try
     {
-        // Evaluate one scan
-        evaluationInterface->controller->EvaluateNextScan(windows);
+        // Setup the evaluation
+        const auto windows = evaluationInterface->controller->SetupFitWindows();
 
-        // Copy out the last result and send this to the UI (copy since we are passing data from one thread to another)
-        RatioCalculationResult* newResult = new RatioCalculationResult(evaluationInterface->controller->m_results.back());
-        PostMessage(evaluationInterface->window, WM_PROGRESS, reinterpret_cast<WPARAM>(newResult), 0);
+        while (evaluationInterface->controller->HasMoreScansToEvaluate() && *(evaluationInterface->evaluationIsRunning) == true)
+        {
+            // Evaluate one scan
+            evaluationInterface->controller->EvaluateNextScan(windows);
+
+            // Copy out the last result and send this to the UI (copy since we are passing data from one thread to another)
+            RatioCalculationResult* newResult = new RatioCalculationResult(evaluationInterface->controller->m_results.back());
+            PostMessage(evaluationInterface->window, WM_PROGRESS, reinterpret_cast<WPARAM>(newResult), 0);
+        }
+
+        *(evaluationInterface->evaluationIsRunning) = false;
+
+        // Tell the user interface that we are done processing
+        PostMessage(evaluationInterface->window, WM_DONE, 0, 0);
     }
+    catch (std::exception& ex)
+    {
+        std::stringstream message;
+        message << "Ratio calculation failed. Error: " << ex.what();
+        std::string* errorMessage = new std::string(message.str());
 
-    *(evaluationInterface->evaluationIsRunning) = false;
+        *(evaluationInterface->evaluationIsRunning) = false;
 
-    // Tell the user interface that we are done processing
-    PostMessage(evaluationInterface->window, WM_DONE, 0, 0);
+        // Tell the user interface that we are done processing
+        PostMessage(evaluationInterface->window, WM_DONE, reinterpret_cast<WPARAM>(errorMessage), 0);
+    }
 
     // Clean up..
     evaluationInterface->evaluationIsRunning = nullptr;
