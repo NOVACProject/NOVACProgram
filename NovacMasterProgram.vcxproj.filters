@@ -348,9 +348,6 @@
     <ClCompile Include="DlgControls\Label.cpp">
       <Filter>Source Files\DlgControls</Filter>
     </ClCompile>
-    <ClCompile Include="DlgControls\MeasGrid.cpp">
-      <Filter>Source Files\DlgControls</Filter>
-    </ClCompile>
     <ClCompile Include="DlgControls\ReferenceFileControl.cpp">
       <Filter>Source Files\DlgControls</Filter>
     </ClCompile>
@@ -987,9 +984,6 @@
       <Filter>Header Files\Configuration</Filter>
     </ClInclude>
     <ClInclude Include="DlgControls\Label.h">
-      <Filter>Header Files\DlgControls</Filter>
-    </ClInclude>
-    <ClInclude Include="DlgControls\MeasGrid.h">
       <Filter>Header Files\DlgControls</Filter>
     </ClInclude>
     <ClInclude Include="DlgControls\ReferenceFileControl.h">

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "../NovacMasterProgram.h"
+#include "../resource.h"       // main symbols
 #include "SimplePropertySheet.h"
 
 using namespace Dialogs;

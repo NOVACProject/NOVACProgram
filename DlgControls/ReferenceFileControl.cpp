@@ -1,10 +1,39 @@
 #include "StdAfx.h"
-#include "../NovacMasterProgram.h"
-#include "referencefilecontrol.h"
-#include "../Common/Common.h"
+#include "../resource.h"       // main symbols
+#include "ReferenceFileControl.h"
+
+#include <SpectralEvaluation/Evaluation/FitWindow.h>
 
 using namespace DlgControls;
-using namespace novac;
+
+void ParseShiftOption(novac::SHIFT_TYPE& option, double& value, CString& str)
+{
+    char tmpStr[512];
+    char txt[512];
+    str.MakeLower();
+    sprintf(txt, "%s", (LPCSTR)str);
+    char* pt = 0;
+
+    // 1. Shift Fixed 
+    if ((pt = strstr(txt, "fix to")) || (pt = strstr(txt, "fixed to")) || (pt = strstr(txt, "set to"))) {
+        option = novac::SHIFT_TYPE::SHIFT_FIX;
+        if (0 == sscanf(pt, "%s to %lf", &tmpStr, &value))
+            value = 0;
+    }
+
+    // 2. Shift Linked
+    if ((pt = strstr(txt, "link to")) || (pt = strstr(txt, "linked to"))) {
+        option = novac::SHIFT_TYPE::SHIFT_LINK;
+        if (0 == sscanf(pt, "%s to %lf", &tmpStr, &value))
+            value = 0;
+    }
+
+    // 3. Shift free
+    if (pt = strstr(txt, "free")) {
+        option = novac::SHIFT_TYPE::SHIFT_FREE;
+    }
+}
+
 
 CReferenceFileControl::CReferenceFileControl(void)
 {
@@ -27,11 +56,11 @@ void CReferenceFileControl::OnEndEditCell(int nRow, int nCol, CString str) {
     CGridCtrl::OnEndEditCell(nRow, nCol, str);
 
     int index = nRow - 1;
-    if (index < 0 || index > MAX_FIT_WINDOWS)
+    if (index < 0 || index > MAX_N_REFERENCES)
         return; // TODO - add a message
 
       // A handle to the reference file
-    CReferenceFile& ref = m_window->ref[index];
+    novac::CReferenceFile& ref = m_window->ref[index];
 
     // If the name was changed
     if (nCol == 0) {
@@ -62,9 +91,9 @@ void CReferenceFileControl::OnEndEditCell(int nRow, int nCol, CString str) {
     if (nCol == 2) {
         ParseShiftOption(ref.m_shiftOption, ref.m_shiftValue, str);
         switch (ref.m_shiftOption) {
-        case SHIFT_TYPE::SHIFT_FREE:  SetItemTextFmt(nRow, 2, "free"); break;
-        case SHIFT_TYPE::SHIFT_FIX:   SetItemTextFmt(nRow, 2, "fix to %.4lf", ref.m_shiftValue); break;
-        case SHIFT_TYPE::SHIFT_LINK:  SetItemTextFmt(nRow, 2, "link to %.4lf", ref.m_shiftValue); break;
+        case novac::SHIFT_TYPE::SHIFT_FREE:  SetItemTextFmt(nRow, 2, "free"); break;
+        case novac::SHIFT_TYPE::SHIFT_FIX:   SetItemTextFmt(nRow, 2, "fix to %.4lf", ref.m_shiftValue); break;
+        case novac::SHIFT_TYPE::SHIFT_LINK:  SetItemTextFmt(nRow, 2, "link to %.4lf", ref.m_shiftValue); break;
         }
     }
 
@@ -72,9 +101,9 @@ void CReferenceFileControl::OnEndEditCell(int nRow, int nCol, CString str) {
     if (nCol == 3) {
         ParseShiftOption(ref.m_squeezeOption, ref.m_squeezeValue, str);
         switch (ref.m_squeezeOption) {
-        case SHIFT_TYPE::SHIFT_FREE:  SetItemTextFmt(nRow, 2, "free"); break;
-        case SHIFT_TYPE::SHIFT_FIX:   SetItemTextFmt(nRow, 2, "fix to %.4lf", ref.m_squeezeValue); break;
-        case SHIFT_TYPE::SHIFT_LINK:  SetItemTextFmt(nRow, 2, "link to %.4lf", ref.m_squeezeValue); break;
+        case novac::SHIFT_TYPE::SHIFT_FREE:  SetItemTextFmt(nRow, 2, "free"); break;
+        case novac::SHIFT_TYPE::SHIFT_FIX:   SetItemTextFmt(nRow, 2, "fix to %.4lf", ref.m_squeezeValue); break;
+        case novac::SHIFT_TYPE::SHIFT_LINK:  SetItemTextFmt(nRow, 2, "link to %.4lf", ref.m_squeezeValue); break;
         }
     }
 
@@ -85,33 +114,6 @@ void CReferenceFileControl::OnEndEditCell(int nRow, int nCol, CString str) {
     }
 
     return;
-}
-
-void CReferenceFileControl::ParseShiftOption(novac::SHIFT_TYPE& option, double& value, CString& str) {
-    char tmpStr[512];
-    char txt[512];
-    str.MakeLower();
-    sprintf(txt, "%s", (LPCSTR)str);
-    char* pt = 0;
-
-    // 1. Shift Fixed 
-    if ((pt = strstr(txt, "fix to")) || (pt = strstr(txt, "fixed to")) || (pt = strstr(txt, "set to"))) {
-        option = SHIFT_TYPE::SHIFT_FIX;
-        if (0 == sscanf(pt, "%s to %lf", &tmpStr, &value))
-            value = 0;
-    }
-
-    // 2. Shift Linked
-    if ((pt = strstr(txt, "link to")) || (pt = strstr(txt, "linked to"))) {
-        option = SHIFT_TYPE::SHIFT_LINK;
-        if (0 == sscanf(pt, "%s to %lf", &tmpStr, &value))
-            value = 0;
-    }
-
-    // 3. Shift free
-    if (pt = strstr(txt, "free")) {
-        option = SHIFT_TYPE::SHIFT_FREE;
-    }
 }
 
 void CReferenceFileControl::OnContextMenu(CWnd* pWnd, CPoint point) {

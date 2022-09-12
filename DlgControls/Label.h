@@ -25,12 +25,12 @@ namespace DlgControls {
         DECLARE_MESSAGE_MAP()
 
         /** The color of the text */
-        COLORREF	m_textColor;
+        COLORREF m_textColor;
 
         /** The color of the background */
-        COLORREF	m_backgroundColor;
+        COLORREF m_backgroundColor;
 
         /** The brush used for drawing the background */
-        CBrush		m_backgroundBrush;
+        CBrush m_backgroundBrush;
     };
 }

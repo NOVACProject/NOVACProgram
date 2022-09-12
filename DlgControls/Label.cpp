@@ -2,7 +2,6 @@
 //
 
 #include "stdafx.h"
-#include "../NovacMasterProgram.h"
 #include "Label.h"
 
 using namespace DlgControls;

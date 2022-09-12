@@ -370,7 +370,6 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
     <ClCompile Include="DlgControls\GridCtrl\InPlaceEdit.cpp" />
     <ClCompile Include="DlgControls\GridCtrl\TitleTip.cpp" />
     <ClCompile Include="DlgControls\Label.cpp" />
-    <ClCompile Include="DlgControls\MeasGrid.cpp" />
     <ClCompile Include="DlgControls\ReferenceFileControl.cpp" />
     <ClCompile Include="EvaluatedDataStorage.cpp" />
     <ClCompile Include="Evaluation\EvaluationController.cpp" />
@@ -858,7 +857,6 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
     <ClInclude Include="DlgControls\GridCtrl\MemDC.h" />
     <ClInclude Include="DlgControls\GridCtrl\TitleTip.h" />
     <ClInclude Include="DlgControls\Label.h" />
-    <ClInclude Include="DlgControls\MeasGrid.h" />
     <ClInclude Include="DlgControls\ReferenceFileControl.h" />
     <ClInclude Include="EvaluatedDataStorage.h" />
     <ClInclude Include="Evaluation\EvaluationController.h" />
