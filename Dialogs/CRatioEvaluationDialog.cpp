@@ -490,9 +490,12 @@ void CRatioEvaluationDialog::UpdateScanGraph(RatioCalculationResult* result)
 
 void CRatioEvaluationDialog::UpdateCurrentResultTree(const RatioCalculationResult* result)
 {
+    m_resultTree.DisableRedraw();
+
     m_resultTree.DeleteAllItems();
     if (result == nullptr)
     {
+        m_resultTree.EnableRedraw();
         return;
     }
 
@@ -513,6 +516,8 @@ void CRatioEvaluationDialog::UpdateCurrentResultTree(const RatioCalculationResul
         m_resultTree.InsertItem(str, TVI_ROOT);
 
         m_resultTree.SelectItem(firstItem);
+
+        m_resultTree.EnableRedraw();
         return;
     }
 
@@ -562,6 +567,8 @@ void CRatioEvaluationDialog::UpdateCurrentResultTree(const RatioCalculationResul
     }
 
     m_resultTree.SelectItem(firstItem);
+
+    m_resultTree.EnableRedraw();
 }
 
 void CRatioEvaluationDialog::UpdateListOfReferences(const RatioCalculationResult* result)

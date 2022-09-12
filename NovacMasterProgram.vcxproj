@@ -451,6 +451,7 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
     <ClInclude Include="DlgControls\CGridListCtrlEx\CGridRowTraitVisitor.h" />
     <ClInclude Include="DlgControls\CGridListCtrlEx\CGridRowTraitXP.h" />
     <ClInclude Include="DlgControls\CGridListCtrlEx\ViewConfigSection.h" />
+    <ClInclude Include="DlgControls\NonFlickeringTreeControl.h" />
     <ClInclude Include="Evaluation\EvaluationResultView.h" />
     <ClCompile Include="SpectralEvaluation\src\Calibration\Correspondence.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>

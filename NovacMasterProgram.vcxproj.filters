@@ -1529,6 +1529,9 @@
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Evaluation\PlumeSpectrumSelector.h">
       <Filter>Header Files\SpectralEvaluation\Evaluation</Filter>
     </ClInclude>
+    <ClInclude Include="DlgControls\NonFlickeringTreeControl.h">
+      <Filter>Header Files\DlgControls</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\NOVAClogo2.ico">

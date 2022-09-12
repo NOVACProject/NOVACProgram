@@ -3,6 +3,7 @@
 
 #include "../Graphs/SpectrumGraph.h"
 #include "../Graphs/DOASFitGraph.h"
+#include "../DlgControls/NonFlickeringTreeControl.h"
 
 class RatioCalculationController;
 struct RatioCalculationResult;
@@ -71,7 +72,7 @@ private:
     CStatic m_referenceSqueezeLabel;
 
     // Displaying the results
-    CTreeCtrl m_resultTree;
+    CNonFlickeringTreeControl m_resultTree;
 
     // m_graph is the main graph in the window
     Graph::CDOASFitGraph m_graph;
