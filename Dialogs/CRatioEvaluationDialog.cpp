@@ -189,11 +189,26 @@ BEGIN_MESSAGE_MAP(CRatioEvaluationDialog, CPropertyPage)
 
     ON_LBN_SELCHANGE(IDC_MAJOR_SPECIE_LIST, OnChangeSelectedSpecie)
     ON_LBN_SELCHANGE(IDC_RATIO_SHOW_SELECTION_LIST, &CRatioEvaluationDialog::OnChangeSelectedDoasSpecie)
-    ON_LBN_SELCHANGE(IDC_RATIO_EVALUATED_SCANS_LIST, &CRatioEvaluationDialog::OnSelchangeEvaluatedScansList)
+    ON_LBN_SELCHANGE(IDC_RATIO_EVALUATED_SCANS_LIST, &CRatioEvaluationDialog::OnChangeEvaluatedScan)
     ON_BN_CLICKED(IDC_RATIO_CLEAR_RESULTS, &CRatioEvaluationDialog::OnBnClickedClearResults)
 END_MESSAGE_MAP()
 
 // CRatioEvaluationDialog message handlers
+
+RatioCalculationResult GetResultToDisplay(const RatioCalculationController* controller, CListBox& resultSelector)
+{
+    const int index = resultSelector.GetCurSel();
+
+    if (static_cast<size_t>(index) >= controller->m_results.size())
+    {
+        // invalid index, take the last result
+        return controller->m_results.back();
+    }
+    else
+    {
+        return controller->m_results[index];
+    }
+}
 
 void CRatioEvaluationDialog::OnChangeSelectedSpecie()
 {
@@ -204,7 +219,7 @@ void CRatioEvaluationDialog::OnChangeSelectedSpecie()
         return;
     }
 
-    auto lastResult = m_controller->m_results.back();
+    RatioCalculationResult lastResult = GetResultToDisplay(m_controller, m_resultsList);
 
     if (currentGraph == 1) // SO2
     {
@@ -215,6 +230,33 @@ void CRatioEvaluationDialog::OnChangeSelectedSpecie()
         UpdateMinorFitGraph(&lastResult);
     }
 }
+
+void CRatioEvaluationDialog::OnChangeEvaluatedScan()
+{
+    if (m_backgroundProcessingIsRunning)
+    {
+        return;
+    }
+
+    RatioCalculationResult lastResult = GetResultToDisplay(m_controller, m_resultsList);
+
+    UpdateUserInterfaceWithResult(&lastResult);
+}
+
+
+void CRatioEvaluationDialog::OnChangeSelectedDoasSpecie()
+{
+    if (m_controller->m_results.empty())
+    {
+        return;
+    }
+
+    RatioCalculationResult lastResult = GetResultToDisplay(m_controller, m_resultsList);
+
+    UpdateGraph(&lastResult);
+    UpdateListOfReferences(&lastResult);
+}
+
 
 void CRatioEvaluationDialog::UpdateStateWhileBackgroundProcessingIsRunning()
 {
@@ -770,19 +812,6 @@ void CRatioEvaluationDialog::OnBnClickedRunEvaluationOnAllScans()
     }
 }
 
-void CRatioEvaluationDialog::OnChangeSelectedDoasSpecie()
-{
-    if (m_controller->m_results.empty())
-    {
-        return;
-    }
-
-    auto lastResult = m_controller->m_results.back();
-
-    UpdateGraph(&lastResult);
-    UpdateListOfReferences(&lastResult);
-}
-
 void CRatioEvaluationDialog::OnBnClickedSaveResults()
 {
     CString destinationFileName = "";
@@ -830,21 +859,6 @@ void CRatioEvaluationDialog::UpdateListOfResults()
     {
         m_resultsList.SetCurSel(static_cast<int>(m_controller->m_results.size() - 1));
     }
-}
-
-void CRatioEvaluationDialog::OnSelchangeEvaluatedScansList()
-{
-    if (m_backgroundProcessingIsRunning)
-    {
-        return;
-    }
-    const int index = m_resultsList.GetCurSel();
-    if (static_cast<size_t>(index) >= m_controller->m_results.size())
-    {
-        return;
-    }
-
-    UpdateUserInterfaceWithResult(&m_controller->m_results[index]);
 }
 
 void CRatioEvaluationDialog::OnBnClickedClearResults()

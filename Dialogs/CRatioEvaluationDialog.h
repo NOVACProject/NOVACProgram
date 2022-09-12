@@ -37,7 +37,7 @@ public:
     afx_msg void OnBnClickedSaveResults();
 
     afx_msg void OnChangeSelectedSpecie();
-    afx_msg void OnSelchangeEvaluatedScansList();
+    afx_msg void OnChangeEvaluatedScan();
 
     afx_msg void OnChangeSelectedDoasSpecie();
 
