@@ -11,7 +11,7 @@
 
 
 // Include the special multi-choice file-dialog
-#include "../Dialogs/FECFileDialog.h"
+#include "../Dialogs/CMultiSelectOpenFileDialog.h"
 
 // CReEval_ScanDlg dialog
 using namespace ReEvaluation;

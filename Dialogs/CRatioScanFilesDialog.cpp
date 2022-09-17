@@ -12,7 +12,7 @@
 #include <algorithm>
 
 // Include the special multi-choice file-dialog
-#include "../Dialogs/FECFileDialog.h"
+#include "../Dialogs/CMultiSelectOpenFileDialog.h"
 
 #include "../Common/Common.h" // TODO: try to avoid this
 

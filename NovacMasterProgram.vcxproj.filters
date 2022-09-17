@@ -405,9 +405,6 @@
     <ClCompile Include="Dialogs\ExportSpectraDlg.cpp">
       <Filter>Source Files\Dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="Dialogs\FECFileDialog.cpp">
-      <Filter>Source Files\Dialogs</Filter>
-    </ClCompile>
     <ClCompile Include="Dialogs\FileTransferDlg.cpp">
       <Filter>Source Files\Dialogs</Filter>
     </ClCompile>
@@ -777,6 +774,9 @@
     <ClCompile Include="SpectralEvaluation\src\Evaluation\PlumeSpectrumSelector.cpp">
       <Filter>Source Files\SpectralEvaluation\Evaluation</Filter>
     </ClCompile>
+    <ClCompile Include="Dialogs\CMultiSelectOpenFileDialog.cpp">
+      <Filter>Source Files\Dialogs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Configuration\AdvancedFTPUploadSettings.h">
@@ -1047,9 +1047,6 @@
       <Filter>Header Files\Dialogs</Filter>
     </ClInclude>
     <ClInclude Include="Dialogs\ExportSpectraDlg.h">
-      <Filter>Header Files\Dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="Dialogs\FECFileDialog.h">
       <Filter>Header Files\Dialogs</Filter>
     </ClInclude>
     <ClInclude Include="Dialogs\FileTransferDlg.h">
@@ -1525,6 +1522,9 @@
     </ClInclude>
     <ClInclude Include="DlgControls\NonFlickeringTreeControl.h">
       <Filter>Header Files\DlgControls</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialogs\CMultiSelectOpenFileDialog.h">
+      <Filter>Header Files\Dialogs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -6,7 +6,7 @@
 #include "../Common/Common.h"
 
 // Include the special multi-choice file-dialog
-#include "../Dialogs/FECFileDialog.h"
+#include "../Dialogs/CMultiSelectOpenFileDialog.h"
 
 using namespace Dialogs;
 

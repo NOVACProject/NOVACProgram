@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "FECFileDialog.h"
+#include "CMultiSelectOpenFileDialog.h"
 
 #ifndef _INC_CDERR
 #include <cderr.h>     // for FNERR_BUFFERTOSMALL
