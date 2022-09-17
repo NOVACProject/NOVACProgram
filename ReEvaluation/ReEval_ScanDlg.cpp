@@ -64,7 +64,7 @@ void CReEval_ScanDlg::OnBnClickedBtnBrowsescanfile()
     UpdateData(TRUE);
 
     // The file-dialog
-    Dialogs::CFECFileDialog fileDialog(TRUE, nullptr, nullptr, OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_ALLOWMULTISELECT | OFN_EXPLORER, filter);
+    Dialogs::CMultiSelectOpenFileDialog fileDialog(TRUE, nullptr, nullptr, OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_ALLOWMULTISELECT | OFN_EXPLORER, filter);
 
     if (fileDialog.DoModal() != IDOK)
         return;
