@@ -55,8 +55,10 @@ private:
     CListBox m_pakFileListBox;
 
     CStatic m_graphFrame; // The frame for the spectrum graph
+
     Graph::CSpectrumGraph m_specGraph; // The spectrum graph
-    CSpinButtonCtrl m_specSpin;// The spin button, controlls which spectrum to show
+
+    CSpinButtonCtrl m_specSpin;// The spin button, controls which spectrum to show
 
     int m_currentlyDisplayedSpectrumIdx; // For the display of the spectrum. this is the index of the spectrum in the .pak file currently displayed.
 

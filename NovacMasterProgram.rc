@@ -905,14 +905,14 @@ BEGIN
     PUSHBUTTON      "Browse Files...",IDC_BTN_BROWSESCANFILE,47,334,82,17
     GROUPBOX        "Scan Info.",IDC_STATIC,192,8,513,354
     LTEXT           "´",IDC_SPECGRAPH_FRAME,204,17,493,236
-    LTEXT           "Static",IDC_NUMSPEC_LABEL,342,272,285,11
+    LTEXT           "Please select one or more .pak files using the 'Browse Files' button to the left",IDC_NUMSPEC_LABEL,342,272,285,11
     LTEXT           "Date:",IDC_LBL_DATE,340,304,108,10
     LTEXT           "Start Time:",IDC_LBL_STARTTIME,340,317,105,10
     LTEXT           "Stop Time:",IDC_LBL_STOPTIME,340,330,114,11
     LTEXT           "Exposure Time:",IDC_LBL_EXPTIME,455,292,116,10
     LTEXT           "# Exposures:",IDC_LBL_NUMSPEC,455,304,116,10
     LTEXT           "Elevation Angle:",IDC_LBL_MOTORPOS,455,317,116,10
-    CONTROL         "",IDC_SPEC_SPIN,"msctls_updown32",UDS_ARROWKEYS | UDS_HORZ,282,272,47,13
+    CONTROL         "",IDC_SPEC_SPIN,"msctls_updown32",UDS_ARROWKEYS | UDS_HORZ,282,269,47,13
     LTEXT           "Geometry:",IDC_LBL_CONEORFLAT,455,331,116,10
     LTEXT           "Device:",IDC_LBL_DEVICE,340,292,108,10
 END
@@ -922,40 +922,44 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Evaluation Setup"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "SO2 Setup",IDC_STATIC,7,151,350,98
-    LTEXT           "Polynomial order",IDC_STATIC,21,184,56,8
+    GROUPBOX        "SO2 Setup",IDC_STATIC,7,151,350,87
+    LTEXT           "Polynomial order",IDC_STATIC,21,182,56,8
     EDITTEXT        IDC_EDIT_POLYNOM,81,181,39,12,ES_AUTOHSCROLL
-    GROUPBOX        "BrO Setup",IDC_STATIC,369,151,336,100
-    LTEXT           "Fit From:",IDC_STATIC,19,168,30,8
-    EDITTEXT        IDC_EDIT_FITLOW_SO2,53,166,39,12,ES_AUTOHSCROLL
-    EDITTEXT        IDC_EDIT_FITHIGH_SO2,115,166,39,12,ES_AUTOHSCROLL
-    LTEXT           "[nm]",IDC_STATIC,162,168,21,8
-    LTEXT           "to",IDC_STATIC,95,167,17,8
-    LTEXT           "Fit From:",IDC_STATIC,395,166,30,8
-    EDITTEXT        IDC_EDIT_FITLOW_BRO,429,164,39,12,ES_AUTOHSCROLL
-    EDITTEXT        IDC_EDIT_FITHIGH_BRO,491,164,39,12,ES_AUTOHSCROLL
-    LTEXT           "[nm]",IDC_STATIC,539,166,21,8
-    LTEXT           "to",IDC_STATIC,471,165,17,8
-    LISTBOX         IDC_LIST_REFERENCES_BRO,574,173,119,53,LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
-    LISTBOX         IDC_LIST_REFERENCES_SO2,219,176,119,53,LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Polynomial order",IDC_STATIC,397,184,56,8
+    GROUPBOX        "BrO Setup",IDC_STATIC,369,151,336,87
+    LTEXT           "Fit From:",IDC_STATIC,19,164,30,8
+    EDITTEXT        IDC_EDIT_FITLOW_SO2,53,162,39,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_FITHIGH_SO2,115,162,39,12,ES_AUTOHSCROLL
+    LTEXT           "[nm]",IDC_STATIC,162,164,21,8
+    LTEXT           "to",IDC_STATIC,98,164,12,8
+    LTEXT           "Fit From:",IDC_STATIC,395,164,30,8
+    EDITTEXT        IDC_EDIT_FITLOW_BRO,429,162,39,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_FITHIGH_BRO,491,162,39,12,ES_AUTOHSCROLL
+    LTEXT           "[nm]",IDC_STATIC,539,164,21,8
+    LTEXT           "to",IDC_STATIC,473,164,14,8
+    LISTBOX         IDC_LIST_REFERENCES_BRO,574,173,119,57,LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    LISTBOX         IDC_LIST_REFERENCES_SO2,219,176,119,55,LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Polynomial order",IDC_STATIC,397,182,56,8
     EDITTEXT        IDC_EDIT_POLYNOM2,457,181,39,12,ES_AUTOHSCROLL
-    CONTROL         "",IDC_REFERENCES_LIST,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,44,685,92
+    CONTROL         "",IDC_REFERENCES_LIST,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,14,44,682,92
     GROUPBOX        "References",IDC_STATIC,7,7,698,136
-    LTEXT           "Start by selecting the references to include for calculating the ratios. Notice that these must contain a wavelength calibration\nThe Ring spectra can be calculated from the out-of-plume spectrum",IDC_STATIC,7,17,434,24
-    LTEXT           "References",IDC_STATIC,221,163,38,8
-    LTEXT           "References",IDC_STATIC,573,162,38,8
+    LTEXT           "Start by selecting the references to include for calculating the ratios. Notice that these must contain a wavelength calibration\nThe Ring spectra can be calculated from the out-of-plume spectrum",IDC_STATIC,14,17,434,24
+    LTEXT           "References",IDC_STATIC,221,164,38,8
+    LTEXT           "References",IDC_STATIC,573,164,38,8
     COMBOBOX        IDC_COMBO_FIT_TYPE,83,262,67,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     LTEXT           "Fit Type",IDC_STATIC,48,264,27,8
     LTEXT           "Unit of References",IDC_STATIC,14,278,61,8
-    COMBOBOX        IDC_COMBO_REFERENCE_UNIT,82,278,67,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    GROUPBOX        "Spectrum Selection",IDC_STATIC,369,261,336,100
-    LTEXT           "Min number of spectra In Plume",IDC_STATIC,395,272,106,8
-    LTEXT           "Min number of spectra Out of Plume",IDC_STATIC,396,300,119,8
-    EDITTEXT        IDC_EDIT_MIN_IN_PLUME_SPECTRA,529,270,44,12,ES_AUTOHSCROLL
-    EDITTEXT        IDC_EDIT_MIN_OUT_OF_PLUME_SPECTRA,531,300,44,12,ES_AUTOHSCROLL
-    LTEXT           "(at least this many spectra must be found between the two edges of the plume)",IDC_STATIC_UNIT_MIN_IN_PLUME_COLUMN2,394,284,300,8
-    EDITTEXT        IDC_EDIT_EXPLANATION,390,325,278,28,ES_MULTILINE | ES_AUTOHSCROLL | NOT WS_BORDER
+    COMBOBOX        IDC_COMBO_REFERENCE_UNIT,83,278,67,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    GROUPBOX        "Spectrum Selection",IDC_STATIC,369,245,336,116
+    LTEXT           "Min number of spectra In Plume",IDC_STATIC,395,258,106,8
+    LTEXT           "Min number of spectra Out of Plume",IDC_STATIC,395,285,119,8
+    EDITTEXT        IDC_EDIT_MIN_IN_PLUME_SPECTRA,530,256,44,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_MIN_OUT_OF_PLUME_SPECTRA,530,283,44,12,ES_AUTOHSCROLL
+    LTEXT           "(at least this many spectra must be found between the two edges of the plume)",IDC_STATIC_UNIT_MIN_IN_PLUME_COLUMN2,405,269,300,8
+    LTEXT           "Static",IDC_STATIC_EXPLANATION,382,341,316,18
+    LTEXT           "Min plume completeness",IDC_STATIC,395,303,82,8
+    EDITTEXT        IDC_EDIT_MIN_PLUME_COMPLETENESS,530,301,44,12,ES_AUTOHSCROLL
+    CONTROL         "Require column to fall 50% on both flanks",IDC_CHECK_RATIO_REQUIRE_TWO_PLUME_EDGES,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,531,322,165,10
 END
 
 IDD_RATIO_EVALUATE_DIALOG DIALOGEX 0, 0, 711, 367

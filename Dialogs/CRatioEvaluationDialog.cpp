@@ -43,6 +43,15 @@ void SelectScanAngleAndColumnFromBasicScanEvaluationResult(
     }
 }
 
+std::string FormatUnit(novac::CrossSectionUnit unit)
+{
+    if (unit == novac::CrossSectionUnit::ppmm)
+    {
+        return "ppmm";
+    }
+    return "molec/cm²";
+}
+
 
 void SelectScanAngleAndColumnFromBasicScanEvaluationResult(
     const novac::BasicScanEvaluationResult& evaluationResult,
@@ -382,13 +391,10 @@ void CRatioEvaluationDialog::UpdateScanGraph(RatioCalculationResult* result)
     // Draw the evaluated columns vs scan-angle, highlighting the selected in-plume and out-of-plume spectra.
     m_graph.CleanPlot();
     m_graph.SetXUnits("Angle [deg]");
-    if (m_controller->m_crossSectionUnit == novac::CrossSectionUnit::ppmm)
     {
-        m_graph.SetYUnits("Column [ppmm]");
-    }
-    else
-    {
-        m_graph.SetYUnits("Column [molec/cm2]");
+        CString columnStr;
+        columnStr.Format("Column [%s]", FormatUnit(m_controller->m_crossSectionUnit).c_str());
+        m_graph.SetYUnits(columnStr);
     }
 
     if (result == nullptr)
@@ -402,8 +408,11 @@ void CRatioEvaluationDialog::UpdateScanGraph(RatioCalculationResult* result)
     std::vector<double> columns;
     std::vector<double> columnErrors;
     std::vector<double> peakSaturation;
+    int numberOfGoodColumnValue = 0;
     double minimumGoodColumnValue = std::numeric_limits<double>::max();
     double maximumGoodColumnValue = std::numeric_limits<double>::lowest();
+    double minimumOfAllColumnValues = std::numeric_limits<double>::max();
+    double maximumOfAllColumnValues = std::numeric_limits<double>::lowest();
     for (int ii = 0; ii < static_cast<int>(result->initialEvaluation.m_spec.size()); ++ii)
     {
         const novac::CEvaluationResult& initialEvaluation = result->initialEvaluation.m_spec[ii];
@@ -414,7 +423,10 @@ void CRatioEvaluationDialog::UpdateScanGraph(RatioCalculationResult* result)
         {
             minimumGoodColumnValue = std::min(minimumGoodColumnValue, columnValue);
             maximumGoodColumnValue = std::max(maximumGoodColumnValue, columnValue);
+            ++numberOfGoodColumnValue;
         }
+        minimumOfAllColumnValues = std::min(minimumOfAllColumnValues, columnValue);
+        maximumOfAllColumnValues = std::max(maximumOfAllColumnValues, columnValue);
 
         scanAngles.push_back(spectrumInfo.m_scanAngle);
         columns.push_back(columnValue);
@@ -422,7 +434,9 @@ void CRatioEvaluationDialog::UpdateScanGraph(RatioCalculationResult* result)
         peakSaturation.push_back(100.0 * spectrumInfo.m_peakIntensity / (double)(spectrumInfo.m_numSpec * result->debugInfo.spectrometerFullDynamicRange));
     }
 
-    // All the column-values
+    // Set up the plot
+    const double plotMinValue = (numberOfGoodColumnValue > 0) ? minimumGoodColumnValue : minimumOfAllColumnValues;
+    const double plotMaxValue = (numberOfGoodColumnValue > 0) ? maximumGoodColumnValue : maximumOfAllColumnValues;
     m_graph.SetRange(
         -90.0,
         90.0,
@@ -499,12 +513,14 @@ void CRatioEvaluationDialog::UpdateCurrentResultTree(const RatioCalculationResul
         return;
     }
 
+    const std::string unit = FormatUnit(m_controller->m_crossSectionUnit);
+
     CString str;
 
     str.Format("Device: %s", result->deviceSerial.c_str());
     auto firstItem = m_resultTree.InsertItem(str, TVI_ROOT);
 
-    str.Format("Time: %04d.%02d.%02d %02d:%02d:%02d", result->startTime.year, result->startTime.month, result->startTime.day, result->startTime.hour, result->startTime.minute, result->startTime.second);
+    str.Format("Time: %04d.%02d.%02d %02d:%02d:%02d UTC", result->startTime.year, result->startTime.month, result->startTime.day, result->startTime.hour, result->startTime.minute, result->startTime.second);
     m_resultTree.InsertItem(str, TVI_ROOT);
 
     str.Format("Plume completeness: %.1lf", result->plumeInScanProperties.completeness);
@@ -521,13 +537,13 @@ void CRatioEvaluationDialog::UpdateCurrentResultTree(const RatioCalculationResul
         return;
     }
 
-    str.Format("Plume center: %.1lf", result->plumeInScanProperties.plumeCenter);
+    str.Format("Plume center: %.1lf [deg]", result->plumeInScanProperties.plumeCenter);
     m_resultTree.InsertItem(str, TVI_ROOT);
 
-    str.Format("Plume range: %.1lf to %.1lf", result->plumeInScanProperties.plumeHalfLow, result->plumeInScanProperties.plumeHalfHigh);
+    str.Format("Plume range: %.1lf to %.1lf [deg]", result->plumeInScanProperties.plumeHalfLow, result->plumeInScanProperties.plumeHalfHigh);
     m_resultTree.InsertItem(str, TVI_ROOT);
 
-    str.Format("SO2/BrO Ratio: %.2G ± %.2G", result->ratio.ratio, result->ratio.error);
+    str.Format("BrO/SO2 Ratio: %.2E ± %.2E", result->ratio.ratio, result->ratio.error);
     m_resultTree.InsertItem(str, TVI_ROOT);
 
     {
@@ -535,12 +551,12 @@ void CRatioEvaluationDialog::UpdateCurrentResultTree(const RatioCalculationResul
         if (so2FitResult != nullptr)
         {
             HTREEITEM hTree = m_resultTree.InsertItem("SO2 Fit:", TVI_ROOT);
-            str.Format("Chi²: %.2e", so2FitResult->chiSquare);
+            str.Format("Chi²: %.2E", so2FitResult->chiSquare);
             m_resultTree.InsertItem(str, hTree);
 
             for (const auto& result : so2FitResult->referenceResult)
             {
-                str.Format("%s %.2G ± %.2G", result.name.c_str(), result.column, result.columnError);
+                str.Format("%s %.2E ± %.2E [%s]", result.name.c_str(), result.column, result.columnError, unit.c_str());
                 m_resultTree.InsertItem(str, hTree);
             }
 
@@ -553,12 +569,12 @@ void CRatioEvaluationDialog::UpdateCurrentResultTree(const RatioCalculationResul
         if (broFitResult != nullptr)
         {
             HTREEITEM hTree = m_resultTree.InsertItem("BrO Fit:", TVI_ROOT);
-            str.Format("Chi²: %.2e", broFitResult->chiSquare);
+            str.Format("Chi²: %.2E", broFitResult->chiSquare);
             m_resultTree.InsertItem(str, hTree);
 
             for (const auto& result : broFitResult->referenceResult)
             {
-                str.Format("%s %.2G ± %.2G", result.name.c_str(), result.column, result.columnError);
+                str.Format("%s %.2E ± %.2E [%s]", result.name.c_str(), result.column, result.columnError, unit.c_str());
                 m_resultTree.InsertItem(str, hTree);
             }
 

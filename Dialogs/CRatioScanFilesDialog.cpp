@@ -152,12 +152,6 @@ void CRatioScanFilesDialog::OnChangeSelectedSpectrumFile()
     novac::CSpectrumIO reader;
     const int numberOfSpectraInFile = reader.CountSpectra(pakFile);
 
-    // if (numberOfSpectraInFile == 0) {
-    //     status.Format("Scan file is corrupt");
-    //     SetDlgItemText(IDC_NUMSPEC_LABEL, status);
-    //     return;
-    // }
-
     // Update the spin control
     m_specSpin.SetRange(0, (short)(numberOfSpectraInFile - 1));
     m_specSpin.SetPos((short)0);

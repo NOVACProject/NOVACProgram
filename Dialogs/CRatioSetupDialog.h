@@ -20,6 +20,9 @@ public:
     /** Initializes the controls and the dialog */
     virtual BOOL OnInitDialog();
 
+    /** Handling the tool tips */
+    virtual BOOL PreTranslateMessage(MSG* pMsg);
+
     // Dialog Data
 #ifdef AFX_DESIGN_TIME
     enum { IDD = IDD_RATIO_WINDOW_SETUP_DIALOG };
@@ -68,11 +71,15 @@ private:
     CString m_minInPlumeSpectrumColumn;
     CString m_minInPlumeSpectrumNumber;
     CString m_minOutOfPlumeSpectrumNumber;
+    CString m_minPlumeCompleteness;
+    BOOL m_requireVisiblePlumeEdges;
 
     CListBox m_selectedReferencesSO2;
     CListBox m_selectedReferencesBrO;
     CComboBox m_fitTypeCombo;
     CComboBox m_unitCombo;
+
+    CToolTipCtrl m_toolTip;
 
     // Updates th m_fitLow... and m_fitHigh...
     void UpdateFitParametersFromController();
@@ -80,4 +87,8 @@ private:
     void UpdateDisplayedListOfReferencesPerWindow();
 
     void BrowseForReference(int referenceIdx);
+
+    void AddTooltipForControl(int dialogItemId, const char* toolTipText);
+public:
+    afx_msg void OnCheckChangeRatioRequireTwoPlumeEdges();
 };

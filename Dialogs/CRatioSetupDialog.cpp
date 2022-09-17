@@ -1,4 +1,4 @@
-// CRatioSetupDialog.cpp : implementation file
+﻿// CRatioSetupDialog.cpp : implementation file
 //
 
 #include "stdafx.h"
@@ -43,7 +43,6 @@ BOOL CRatioSetupDialog::OnInitDialog() {
 
     m_fitTypeCombo.AddString("Polynomial");
     m_fitTypeCombo.AddString("HP Divide by sky");
-    m_fitTypeCombo.AddString("HP Subtract sky");
 
     m_unitCombo.SetCurSel(0);
 
@@ -53,9 +52,37 @@ BOOL CRatioSetupDialog::OnInitDialog() {
 
     UpdateDisplayedListOfReferencesPerWindow();
 
-    SetDlgItemText(IDC_EDIT_EXPLANATION, "In addition to this, the plume completeness must be at least 0.7 and all saturated spectra are rejected.");
+    SetDlgItemText(IDC_STATIC_EXPLANATION, "In addition to this, all too dark and saturated spectra are rejected.");
+
+    if (!m_toolTip.Create(this)) {
+        TRACE0("Failed to create tooltip control\n");
+    }
+    m_toolTip.AddTool(&m_fitTypeCombo, "Select 'HP Divide by sky' if the references are High Pass filtered, otherwise 'Polynomial'");
+    m_toolTip.AddTool(&m_unitCombo, "Select the unit the references are scaled to. For correct display of the column values.");
+    m_toolTip.AddTool(&m_selectedReferencesSO2, "The following references will be included in the SO₂ fit");
+    m_toolTip.AddTool(&m_selectedReferencesBrO, "The following references will be included in the BrO fit");
+
+    AddTooltipForControl(IDC_EDIT_FITLOW_SO2, "The shortest wavelength (nm) over which SO₂ will be fitted");
+    AddTooltipForControl(IDC_EDIT_FITHIGH_SO2, "The longest wavelength (nm) over which SO₂ will be fitted");
+    AddTooltipForControl(IDC_EDIT_FITLOW_BRO, "The shortest wavelength (nm) over which BrO will be fitted");
+    AddTooltipForControl(IDC_EDIT_FITHIGH_BRO, "The longest wavelength (nm) over which BrO will be fitted");
+    AddTooltipForControl(IDC_EDIT_POLYNOM, "The order of the polynomial included in the SO₂ DOAS fit");
+    AddTooltipForControl(IDC_EDIT_POLYNOM2, "The order of the polynomial included in the BrO DOAS fit");
+    AddTooltipForControl(IDC_EDIT_MIN_IN_PLUME_SPECTRA, "The minimum required good spectra between the two edges of the plume for a BrO/SO₂ ratio to be calculated, default 4");
+    AddTooltipForControl(IDC_EDIT_MIN_OUT_OF_PLUME_SPECTRA, "The minimum required spectra out of the plume for a BrO/SO₂ ratio to be calculated, default 10");
+    AddTooltipForControl(IDC_EDIT_MIN_PLUME_COMPLETENESS, "The minimum completeness of the plume for a ratio to be calculated. Range 0.5 to 1.0, default 0.7");
+
+    m_toolTip.SetMaxTipWidth(SHRT_MAX);
+    m_toolTip.Activate(TRUE);
 
     return TRUE;  // return TRUE unless you set the focus to a control
+}
+
+BOOL CRatioSetupDialog::PreTranslateMessage(MSG* pMsg)
+{
+    m_toolTip.RelayEvent(pMsg);
+
+    return CPropertyPage::PreTranslateMessage(pMsg);
 }
 
 GridListCtrl::CGridColumnTraitImage* CreateCheckBoxColumn(int nStateImageIdx)
@@ -83,16 +110,18 @@ void CRatioSetupDialog::InitReferenceFileControl()
     int nStateImageIdx = GridListCtrl::CGridColumnTraitImage::AppendStateImages(m_referencesList, m_ImageList);	// Add checkboxes
     m_referencesList.SetImageList(&m_ImageList, LVSIL_SMALL);
 
-    // auto pDefaultRowTrait = new GridListCtrl::CGridRowTraitXP;
-    // m_referencesList.SetDefaultRowTrait(pDefaultRowTrait);
+    CRect referenceCtrlRect;
+    m_referencesList.GetWindowRect(referenceCtrlRect);
+    const int defaultColumnWidth = 100; // the width of all the columns, except for the path
+    const int pathColumnWidth = referenceCtrlRect.Width() - 4 * defaultColumnWidth - 10; // the width of the path, expands to (almost) the entire available width of the control
 
     // Set the columns of the grid
     m_referencesList.InsertHiddenLabelColumn();	// Requires one never uses column 0
-    m_referencesList.InsertColumnTrait(1, "Name", LVCFMT_LEFT, 100, -1, new GridListCtrl::CGridColumnTraitEdit());
-    m_referencesList.InsertColumnTrait(2, "Path", LVCFMT_LEFT, 100, -1, CreateLinkColumn());
-    m_referencesList.InsertColumnTrait(3, "Include in SO2 Fit", LVCFMT_CENTER, 100, -1, CreateCheckBoxColumn(nStateImageIdx));
-    m_referencesList.InsertColumnTrait(4, "Include in BrO Fit", LVCFMT_CENTER, 100, -1, CreateCheckBoxColumn(nStateImageIdx));
-    m_referencesList.InsertColumnTrait(5, "Calculate", LVCFMT_CENTER, 100, -1, CreateCheckBoxColumn(nStateImageIdx));
+    m_referencesList.InsertColumnTrait(1, "Name", LVCFMT_LEFT, defaultColumnWidth, -1, new GridListCtrl::CGridColumnTraitEdit());
+    m_referencesList.InsertColumnTrait(2, "Path", LVCFMT_LEFT, pathColumnWidth, -1, CreateLinkColumn());
+    m_referencesList.InsertColumnTrait(3, "Include in SO₂ Fit", LVCFMT_CENTER, defaultColumnWidth, -1, CreateCheckBoxColumn(nStateImageIdx));
+    m_referencesList.InsertColumnTrait(4, "Include in BrO Fit", LVCFMT_CENTER, defaultColumnWidth, -1, CreateCheckBoxColumn(nStateImageIdx));
+    m_referencesList.InsertColumnTrait(5, "Calculate", LVCFMT_CENTER, defaultColumnWidth, -1, CreateCheckBoxColumn(nStateImageIdx));
 
     // Add the default references
     for (int rowIdx = 0; rowIdx < static_cast<int>(m_controller->m_references.size()); ++rowIdx)
@@ -155,6 +184,9 @@ void CRatioSetupDialog::DoDataExchange(CDataExchange* pDX)
     DDX_Text(pDX, IDC_EDIT_POLYNOM2, m_polyOrderBrO);
     DDX_Text(pDX, IDC_EDIT_MIN_IN_PLUME_SPECTRA, m_minInPlumeSpectrumNumber);
     DDX_Text(pDX, IDC_EDIT_MIN_OUT_OF_PLUME_SPECTRA, m_minOutOfPlumeSpectrumNumber);
+    DDX_Text(pDX, IDC_EDIT_MIN_PLUME_COMPLETENESS, m_minPlumeCompleteness);
+
+    DDX_Check(pDX, IDC_CHECK_RATIO_REQUIRE_TWO_PLUME_EDGES, m_requireVisiblePlumeEdges);
 
     DDX_Control(pDX, IDC_LIST_REFERENCES_SO2, m_selectedReferencesSO2);
     DDX_Control(pDX, IDC_LIST_REFERENCES_BRO, m_selectedReferencesBrO);
@@ -173,9 +205,11 @@ BEGIN_MESSAGE_MAP(CRatioSetupDialog, CPropertyPage)
     ON_EN_KILLFOCUS(IDC_EDIT_POLYNOM2, &CRatioSetupDialog::OnKillfocusEditBox)
     ON_EN_KILLFOCUS(IDC_EDIT_MIN_IN_PLUME_SPECTRA, &CRatioSetupDialog::OnKillfocusEditBox)
     ON_EN_KILLFOCUS(IDC_EDIT_MIN_OUT_OF_PLUME_SPECTRA, &CRatioSetupDialog::OnKillfocusEditBox)
+    ON_EN_KILLFOCUS(IDC_EDIT_MIN_PLUME_COMPLETENESS, &CRatioSetupDialog::OnKillfocusEditBox)
 
     ON_CBN_SELCHANGE(IDC_COMBO_FIT_TYPE, &CRatioSetupDialog::OnSelchangeComboFitType)
     ON_CBN_SELCHANGE(IDC_COMBO_REFERENCE_UNIT, &CRatioSetupDialog::OnSelchangeComboReferenceUnit)
+    ON_BN_CLICKED(IDC_CHECK_RATIO_REQUIRE_TWO_PLUME_EDGES, &CRatioSetupDialog::OnCheckChangeRatioRequireTwoPlumeEdges)
 END_MESSAGE_MAP()
 
 
@@ -265,6 +299,7 @@ void CRatioSetupDialog::OnKillfocusEditBox()
 
     m_controller->m_ratioEvaluationSettings.minNumberOfSpectraInPlume = std::max(1, std::atoi((LPCSTR)m_minInPlumeSpectrumNumber));
     m_controller->m_ratioEvaluationSettings.numberOfSpectraOutsideOfPlume = std::max(1, std::atoi((LPCSTR)m_minOutOfPlumeSpectrumNumber));
+    m_controller->m_ratioEvaluationSettings.minimumPlumeCompleteness = std::max(0.5, std::min(1.0, std::atof((LPCSTR)m_minPlumeCompleteness)));
 
     UpdateFitParametersFromController();
 }
@@ -281,6 +316,8 @@ void CRatioSetupDialog::UpdateFitParametersFromController()
 
     m_minInPlumeSpectrumNumber.Format("%d", m_controller->m_ratioEvaluationSettings.minNumberOfSpectraInPlume);
     m_minOutOfPlumeSpectrumNumber.Format("%d", m_controller->m_ratioEvaluationSettings.numberOfSpectraOutsideOfPlume);
+    m_minPlumeCompleteness.Format("%.1lf", m_controller->m_ratioEvaluationSettings.minimumPlumeCompleteness);
+    m_requireVisiblePlumeEdges = m_controller->m_ratioEvaluationSettings.requireVisiblePlumeEdges;
 
     switch (m_controller->m_doasFitType)
     {
@@ -362,5 +399,26 @@ void CRatioSetupDialog::OnSelchangeComboReferenceUnit()
         m_controller->m_crossSectionUnit = novac::CrossSectionUnit::ppmm;
     }
 
+    UpdateFitParametersFromController();
+}
+
+void CRatioSetupDialog::AddTooltipForControl(int dialogItemId, const char* toolTipText)
+{
+    auto item = GetDlgItem(dialogItemId);
+
+    if (item != nullptr)
+    {
+        m_toolTip.AddTool(item, toolTipText);
+    }
+}
+
+void CRatioSetupDialog::OnCheckChangeRatioRequireTwoPlumeEdges()
+{
+    // Update data from the UI
+    UpdateData(TRUE);
+
+    m_controller->m_ratioEvaluationSettings.requireVisiblePlumeEdges = (TRUE == m_requireVisiblePlumeEdges);
+
+    // Update the UI
     UpdateFitParametersFromController();
 }
