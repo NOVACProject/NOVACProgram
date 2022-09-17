@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "../resource.h"
 #include "CRatioEvaluationDialog.h"
 
@@ -15,6 +15,11 @@
 #undef max
 
 #pragma region General helper methods for simplifying the display of data
+
+bool HasSuccessfullyCalculatedRatio(const RatioCalculationResult* result)
+{
+    return result->debugInfo.errorMessage.empty();
+}
 
 void SelectScanAngleAndColumnFromBasicScanEvaluationResult(
     const novac::BasicScanEvaluationResult& evaluationResult,
@@ -49,7 +54,7 @@ std::string FormatUnit(novac::CrossSectionUnit unit)
     {
         return "ppmm";
     }
-    return "molec/cm²";
+    return "molec/cmÂ²";
 }
 
 
@@ -115,8 +120,19 @@ void UpdateDataInDoasFitGraph(Graph::CDOASFitGraph& doasFitGraph, const novac::D
     doasFitGraph.m_fitHigh = doasResult->fitHigh;
 }
 
-void UpdateNamesOfReferencesInListBox(CListBox& destination, const novac::DoasResult* doasResult)
+void UpdateNamesOfReferencesInListBox(CNonFlickeringListBoxControl& destination, const novac::DoasResult* doasResult)
 {
+    destination.DisableRedraw();
+
+    // Make sure to save the name of the last selected refences
+    CString previouslySelectedReferenceName;
+    if (destination.GetCurSel() >= 0)
+    {
+        destination.GetText(destination.GetCurSel(), previouslySelectedReferenceName);
+    }
+    int indexToSelectAfterUpdate = -1;
+
+    // Repopulate the list box
     destination.ResetContent();
     if (doasResult != nullptr)
     {
@@ -125,8 +141,32 @@ void UpdateNamesOfReferencesInListBox(CListBox& destination, const novac::DoasRe
         {
             CString name = (LPCSTR)doasResult->referenceResult[k].name.c_str();
             destination.AddString(name);
+
+            if (name == previouslySelectedReferenceName)
+            {
+                indexToSelectAfterUpdate = k;
+            }
         }
     }
+
+    // Re-select the previously selected specie, if it still remains in the list
+    if (indexToSelectAfterUpdate >= 0)
+    {
+        destination.SetCurSel(indexToSelectAfterUpdate);
+    }
+
+    destination.EnableRedraw();
+}
+
+bool ResultShouldBeShown(const RatioCalculationResult* result, int resultFilterOption)
+{
+    if (resultFilterOption <= 0)
+    {
+        // resultFilterOption == 0 means show everything.
+        return true;
+    }
+    // resultFilterOption == 1 means only showing results where we got a ratio.
+    return HasSuccessfullyCalculatedRatio(result);
 }
 
 #pragma endregion
@@ -172,20 +212,30 @@ BOOL CRatioEvaluationDialog::OnInitDialog() {
     m_resultTypeList.AddString("BrO Fit");
     m_resultTypeList.SetCurSel(0);
 
+    m_resultFilterSelector.SetCurSel(0);
+
     return TRUE;  // return TRUE unless you set the focus to a control
+}
+
+BOOL CRatioEvaluationDialog::OnSetActive()
+{
+    UpdateListOfResults();
+
+    return CPropertyPage::OnSetActive();
 }
 
 void CRatioEvaluationDialog::DoDataExchange(CDataExchange* pDX)
 {
     CPropertyPage::DoDataExchange(pDX);
     DDX_Control(pDX, IDC_FIT_FRAME_SCAN, m_scanFrame);
-    DDX_Control(pDX, IDC_MAJOR_SPECIE_LIST, m_so2SpecieList);
+    DDX_Control(pDX, IDC_MAJOR_SPECIE_LIST, m_doasFitReferencesList);
     DDX_Control(pDX, IDC_RATIO_SHOW_SELECTION_LIST, m_resultTypeList);
     DDX_Control(pDX, IDC_RATIO_RESULT_TREE, m_resultTree);
     DDX_Control(pDX, IDC_RATIO_MAJOR_LBL_COLUMN, m_referenceColumnLabel);
     DDX_Control(pDX, IDC_RATIO_MAJOR_LBL_SHIFT, m_referenceShiftLabel);
     DDX_Control(pDX, IDC_RATIO_MAJOR_LBL_SQUEEZE, m_referenceSqueezeLabel);
     DDX_Control(pDX, IDC_RATIO_EVALUATED_SCANS_LIST, m_resultsList);
+    DDX_Control(pDX, IDC_RATIO_EVALUATED_SCANS_SELECTOR_COMBO, m_resultFilterSelector);
 }
 
 BEGIN_MESSAGE_MAP(CRatioEvaluationDialog, CPropertyPage)
@@ -200,11 +250,12 @@ BEGIN_MESSAGE_MAP(CRatioEvaluationDialog, CPropertyPage)
     ON_LBN_SELCHANGE(IDC_RATIO_SHOW_SELECTION_LIST, &CRatioEvaluationDialog::OnChangeSelectedDoasSpecie)
     ON_LBN_SELCHANGE(IDC_RATIO_EVALUATED_SCANS_LIST, &CRatioEvaluationDialog::OnChangeEvaluatedScan)
     ON_BN_CLICKED(IDC_RATIO_CLEAR_RESULTS, &CRatioEvaluationDialog::OnBnClickedClearResults)
+    ON_CBN_SELCHANGE(IDC_RATIO_EVALUATED_SCANS_SELECTOR_COMBO, &CRatioEvaluationDialog::OnSelchangeEvaluatedScansSelectorCombo)
 END_MESSAGE_MAP()
 
 // CRatioEvaluationDialog message handlers
 
-RatioCalculationResult GetResultToDisplay(const RatioCalculationController* controller, CListBox& resultSelector)
+RatioCalculationResult GetResultToDisplay(const RatioCalculationController* controller, CListBox& resultSelector, CComboBox& resultFilterSelector)
 {
     const int index = resultSelector.GetCurSel();
 
@@ -213,10 +264,29 @@ RatioCalculationResult GetResultToDisplay(const RatioCalculationController* cont
         // invalid index, take the last result
         return controller->m_results.back();
     }
-    else
+    if (resultFilterSelector.GetCurSel() <= 0)
     {
+        // Default option, show all the results. This means we can just just indexing.
         return controller->m_results[index];
     }
+
+    // Since we now may be filtering the list of results, we can't just use an index and must revert to looping throught he results
+    int successfulResultIndex = 0;
+    for (int ii = 0; ii < static_cast<int>(controller->m_results.size()); ++ii)
+    {
+        if (HasSuccessfullyCalculatedRatio(&controller->m_results[ii]))
+        {
+            if (successfulResultIndex == index)
+            {
+                return controller->m_results[ii];
+            }
+            ++successfulResultIndex;
+        }
+    }
+
+    // We shouldn't get here but let's just return the last result to have something to show...
+    ASSERT(false);
+    return controller->m_results.back();
 }
 
 void CRatioEvaluationDialog::OnChangeSelectedSpecie()
@@ -228,7 +298,7 @@ void CRatioEvaluationDialog::OnChangeSelectedSpecie()
         return;
     }
 
-    RatioCalculationResult lastResult = GetResultToDisplay(m_controller, m_resultsList);
+    RatioCalculationResult lastResult = GetResultToDisplay(m_controller, m_resultsList, m_resultFilterSelector);
 
     if (currentGraph == 1) // SO2
     {
@@ -247,7 +317,7 @@ void CRatioEvaluationDialog::OnChangeEvaluatedScan()
         return;
     }
 
-    RatioCalculationResult lastResult = GetResultToDisplay(m_controller, m_resultsList);
+    RatioCalculationResult lastResult = GetResultToDisplay(m_controller, m_resultsList, m_resultFilterSelector);
 
     UpdateUserInterfaceWithResult(&lastResult);
 }
@@ -260,12 +330,11 @@ void CRatioEvaluationDialog::OnChangeSelectedDoasSpecie()
         return;
     }
 
-    RatioCalculationResult lastResult = GetResultToDisplay(m_controller, m_resultsList);
+    RatioCalculationResult lastResult = GetResultToDisplay(m_controller, m_resultsList, m_resultFilterSelector);
 
     UpdateGraph(&lastResult);
     UpdateListOfReferences(&lastResult);
 }
-
 
 void CRatioEvaluationDialog::UpdateStateWhileBackgroundProcessingIsRunning()
 {
@@ -275,6 +344,8 @@ void CRatioEvaluationDialog::UpdateStateWhileBackgroundProcessingIsRunning()
     GetDlgItem(IDC_RATIO_RUN_EVALUATION)->EnableWindow(enableUserInteraction);
     GetDlgItem(IDC_RATIO_SAVE_RESULTS)->EnableWindow(enableUserInteraction);
     GetDlgItem(IDC_RATIO_EVALUATED_SCANS_LIST)->EnableWindow(enableUserInteraction);
+    GetDlgItem(IDC_RATIO_CLEAR_RESULTS)->EnableWindow(enableUserInteraction);
+    GetDlgItem(IDC_RATIO_EVALUATED_SCANS_SELECTOR_COMBO)->EnableWindow(enableUserInteraction);
 }
 
 LRESULT CRatioEvaluationDialog::OnBackgroundProcessingDone(WPARAM wParam, LPARAM /*lParam*/)
@@ -342,11 +413,17 @@ void CRatioEvaluationDialog::UpdateUserInterfaceWithResult(RatioCalculationResul
     UpdateGraph(result);
     UpdateCurrentResultTree(result);
     UpdateListOfReferences(result);
-    UpdateCurrentResultTree(result);
 
     {
         CString progressStr;
-        progressStr.Format("Evaluated scan %d out of %d", m_controller->CurrentPakFileIndex(), m_controller->NumberOfPakFilesInSetup());
+        if (m_controller->CurrentPakFileIndex() == m_controller->NumberOfPakFilesInSetup())
+        {
+            progressStr.Format("All %d scans evaluated", m_controller->NumberOfPakFilesInSetup());
+        }
+        else
+        {
+            progressStr.Format("Evaluated scan %d out of %d", m_controller->CurrentPakFileIndex(), m_controller->NumberOfPakFilesInSetup());
+        }
         SetDlgItemText(IDC_RATIO_PROGRESS_LABEL, progressStr);
     }
 }
@@ -441,8 +518,8 @@ void CRatioEvaluationDialog::UpdateScanGraph(RatioCalculationResult* result)
         -90.0,
         90.0,
         1,
-        minimumGoodColumnValue,
-        maximumGoodColumnValue,
+        plotMinValue,
+        plotMaxValue,
         0);
     m_graph.SetPlotColor(RGB(255, 0, 0)); // red
     m_graph.BarChart(scanAngles.data(), columns.data(), columnErrors.data(), static_cast<int>(scanAngles.size()), Graph::CGraphCtrl::PLOT_FIXED_AXIS | Graph::CGraphCtrl::PLOT_BAR_SHOW_X);
@@ -526,7 +603,7 @@ void CRatioEvaluationDialog::UpdateCurrentResultTree(const RatioCalculationResul
     str.Format("Plume completeness: %.1lf", result->plumeInScanProperties.completeness);
     m_resultTree.InsertItem(str, TVI_ROOT);
 
-    if (!result->debugInfo.errorMessage.empty())
+    if (!HasSuccessfullyCalculatedRatio(result))
     {
         str.Format("%s", result->debugInfo.errorMessage.c_str());
         m_resultTree.InsertItem(str, TVI_ROOT);
@@ -543,7 +620,7 @@ void CRatioEvaluationDialog::UpdateCurrentResultTree(const RatioCalculationResul
     str.Format("Plume range: %.1lf to %.1lf [deg]", result->plumeInScanProperties.plumeHalfLow, result->plumeInScanProperties.plumeHalfHigh);
     m_resultTree.InsertItem(str, TVI_ROOT);
 
-    str.Format("BrO/SO2 Ratio: %.2E ± %.2E", result->ratio.ratio, result->ratio.error);
+    str.Format("BrO/SO2 Ratio: %.2E Â± %.2E", result->ratio.ratio, result->ratio.error);
     m_resultTree.InsertItem(str, TVI_ROOT);
 
     {
@@ -551,12 +628,12 @@ void CRatioEvaluationDialog::UpdateCurrentResultTree(const RatioCalculationResul
         if (so2FitResult != nullptr)
         {
             HTREEITEM hTree = m_resultTree.InsertItem("SO2 Fit:", TVI_ROOT);
-            str.Format("Chi²: %.2E", so2FitResult->chiSquare);
+            str.Format("ChiÂ²: %.2E", so2FitResult->chiSquare);
             m_resultTree.InsertItem(str, hTree);
 
             for (const auto& result : so2FitResult->referenceResult)
             {
-                str.Format("%s %.2E ± %.2E [%s]", result.name.c_str(), result.column, result.columnError, unit.c_str());
+                str.Format("%s %.2E Â± %.2E", result.name.c_str(), result.column, result.columnError);
                 m_resultTree.InsertItem(str, hTree);
             }
 
@@ -569,12 +646,12 @@ void CRatioEvaluationDialog::UpdateCurrentResultTree(const RatioCalculationResul
         if (broFitResult != nullptr)
         {
             HTREEITEM hTree = m_resultTree.InsertItem("BrO Fit:", TVI_ROOT);
-            str.Format("Chi²: %.2E", broFitResult->chiSquare);
+            str.Format("ChiÂ²: %.2E", broFitResult->chiSquare);
             m_resultTree.InsertItem(str, hTree);
 
             for (const auto& result : broFitResult->referenceResult)
             {
-                str.Format("%s %.2E ± %.2E [%s]", result.name.c_str(), result.column, result.columnError, unit.c_str());
+                str.Format("%s %.2E Â± %.2E", result.name.c_str(), result.column, result.columnError);
                 m_resultTree.InsertItem(str, hTree);
             }
 
@@ -592,23 +669,23 @@ void CRatioEvaluationDialog::UpdateListOfReferences(const RatioCalculationResult
     const int currentGraph = m_resultTypeList.GetCurSel();
     if (currentGraph == 1 && result != nullptr) // SO2
     {
-        m_so2SpecieList.ShowWindow(SW_SHOW);
+        m_doasFitReferencesList.ShowWindow(SW_SHOW);
         m_referenceColumnLabel.ShowWindow(SW_SHOW);
         m_referenceShiftLabel.ShowWindow(SW_SHOW);
         m_referenceSqueezeLabel.ShowWindow(SW_SHOW);
-        UpdateNamesOfReferencesInListBox(m_so2SpecieList, GetMajorWindowResult(result));
+        UpdateNamesOfReferencesInListBox(m_doasFitReferencesList, GetMajorWindowResult(result));
     }
     else if (currentGraph == 2 && result != nullptr) // BrO
     {
-        m_so2SpecieList.ShowWindow(SW_SHOW);
+        m_doasFitReferencesList.ShowWindow(SW_SHOW);
         m_referenceColumnLabel.ShowWindow(SW_SHOW);
         m_referenceShiftLabel.ShowWindow(SW_SHOW);
         m_referenceSqueezeLabel.ShowWindow(SW_SHOW);
-        UpdateNamesOfReferencesInListBox(m_so2SpecieList, GetMinorWindowResult(result));
+        UpdateNamesOfReferencesInListBox(m_doasFitReferencesList, GetMinorWindowResult(result));
     }
     else
     {
-        m_so2SpecieList.ShowWindow(SW_HIDE);
+        m_doasFitReferencesList.ShowWindow(SW_HIDE);
         m_referenceColumnLabel.ShowWindow(SW_HIDE);
         m_referenceShiftLabel.ShowWindow(SW_HIDE);
         m_referenceSqueezeLabel.ShowWindow(SW_HIDE);
@@ -633,9 +710,9 @@ void CRatioEvaluationDialog::UpdateReferenceResultLabels(const novac::DoasResult
     double squeezeError = doasResult->referenceResult[indexOfSelectedReference].squeezeError;
 
     CString columnStr, shiftStr, squeezeStr;
-    columnStr.Format("Column %.2G ± %.2G", column, columnError);
-    shiftStr.Format("Shift: %.2lf ± %.2lf", shift, shiftError);
-    squeezeStr.Format("Squeeze: %.2lf ± %.2lf", squeeze, squeezeError);
+    columnStr.Format("Column %.2G Â± %.2G", column, columnError);
+    shiftStr.Format("Shift: %.2lf Â± %.2lf", shift, shiftError);
+    squeezeStr.Format("Squeeze: %.2lf Â± %.2lf", squeeze, squeezeError);
 
     SetDlgItemText(IDC_RATIO_MAJOR_LBL_COLUMN, columnStr);
     SetDlgItemText(IDC_RATIO_MAJOR_LBL_SHIFT, shiftStr);
@@ -644,10 +721,10 @@ void CRatioEvaluationDialog::UpdateReferenceResultLabels(const novac::DoasResult
 
 void CRatioEvaluationDialog::UpdateMajorFitGraph(RatioCalculationResult* result)
 {
-    int refIndex = m_so2SpecieList.GetCurSel();
+    int refIndex = m_doasFitReferencesList.GetCurSel();
     if (refIndex < 0)
     {
-        m_so2SpecieList.SetCurSel(0);
+        m_doasFitReferencesList.SetCurSel(0);
         refIndex = 0;
     }
 
@@ -669,10 +746,10 @@ void CRatioEvaluationDialog::UpdateMajorFitGraph(RatioCalculationResult* result)
 
 void CRatioEvaluationDialog::UpdateMinorFitGraph(RatioCalculationResult* result)
 {
-    int refIndex = m_so2SpecieList.GetCurSel();
+    int refIndex = m_doasFitReferencesList.GetCurSel();
     if (refIndex < 0)
     {
-        m_so2SpecieList.SetCurSel(0);
+        m_doasFitReferencesList.SetCurSel(0);
         refIndex = 0;
     }
 
@@ -715,10 +792,8 @@ void CRatioEvaluationDialog::OnBnClickedRunEvaluationOnNextScan()
             m_controller->m_results.clear();
         }
 
-        // TODO: SetupFitWindows shouldn't have to be done for each scan
         const auto windows = m_controller->SetupFitWindows();
 
-        // TODO: Make background operation
         m_controller->EvaluateNextScan(windows);
 
         auto& result = m_controller->m_results.back();
@@ -829,9 +904,7 @@ void CRatioEvaluationDialog::OnBnClickedRunEvaluationOnAllScans()
         MessageBox(message.str().c_str());
 
         // Re-enable the UI buttons
-        GetDlgItem(IDC_RATIO_RUN_EVALUATION_NEXT_SCAN)->EnableWindow(TRUE);
-        GetDlgItem(IDC_RATIO_RUN_EVALUATION)->EnableWindow(TRUE);
-        GetDlgItem(IDC_RATIO_SAVE_RESULTS)->EnableWindow(TRUE);
+        UpdateStateWhileBackgroundProcessingIsRunning();
     }
 }
 
@@ -852,14 +925,19 @@ void CRatioEvaluationDialog::AddToListOfResults(const RatioCalculationResult* re
     {
         return;
     }
+    if (!ResultShouldBeShown(result, m_resultFilterSelector.GetCurSel()))
+    {
+        return;
+    }
 
     std::string filename = novac::GetFileName(result->filename);
-    if (!result->debugInfo.errorMessage.empty())
+    if (!HasSuccessfullyCalculatedRatio(result))
     {
         filename = filename + " (no ratio)";
     }
 
     m_resultsList.AddString(filename.c_str());
+    m_resultsList.SetCurSel(m_resultsList.GetCount() - 1); // select the new item
 }
 
 void CRatioEvaluationDialog::UpdateListOfResults()
@@ -868,6 +946,10 @@ void CRatioEvaluationDialog::UpdateListOfResults()
 
     for (const auto& result : m_controller->m_results)
     {
+        if (!ResultShouldBeShown(&result, m_resultFilterSelector.GetCurSel()))
+        {
+            continue;
+        }
         std::string filename = novac::GetFileName(result.filename);
         if (!result.debugInfo.errorMessage.empty())
         {
@@ -895,4 +977,9 @@ void CRatioEvaluationDialog::OnBnClickedClearResults()
 
     UpdateListOfResults();
     UpdateUserInterfaceWithResult(nullptr);
+}
+
+void CRatioEvaluationDialog::OnSelchangeEvaluatedScansSelectorCombo()
+{
+    UpdateListOfResults();
 }

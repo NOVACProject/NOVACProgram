@@ -59,17 +59,17 @@ BOOL CRatioSetupDialog::OnInitDialog() {
     }
     m_toolTip.AddTool(&m_fitTypeCombo, "Select 'HP Divide by sky' if the references are High Pass filtered, otherwise 'Polynomial'");
     m_toolTip.AddTool(&m_unitCombo, "Select the unit the references are scaled to. For correct display of the column values.");
-    m_toolTip.AddTool(&m_selectedReferencesSO2, "The following references will be included in the SO₂ fit");
+    m_toolTip.AddTool(&m_selectedReferencesSO2, "The following references will be included in the SO2 fit");
     m_toolTip.AddTool(&m_selectedReferencesBrO, "The following references will be included in the BrO fit");
 
-    AddTooltipForControl(IDC_EDIT_FITLOW_SO2, "The shortest wavelength (nm) over which SO₂ will be fitted");
-    AddTooltipForControl(IDC_EDIT_FITHIGH_SO2, "The longest wavelength (nm) over which SO₂ will be fitted");
+    AddTooltipForControl(IDC_EDIT_FITLOW_SO2, "The shortest wavelength (nm) over which SO2 will be fitted");
+    AddTooltipForControl(IDC_EDIT_FITHIGH_SO2, "The longest wavelength (nm) over which SO2 will be fitted");
     AddTooltipForControl(IDC_EDIT_FITLOW_BRO, "The shortest wavelength (nm) over which BrO will be fitted");
     AddTooltipForControl(IDC_EDIT_FITHIGH_BRO, "The longest wavelength (nm) over which BrO will be fitted");
-    AddTooltipForControl(IDC_EDIT_POLYNOM, "The order of the polynomial included in the SO₂ DOAS fit");
+    AddTooltipForControl(IDC_EDIT_POLYNOM, "The order of the polynomial included in the SO2 DOAS fit");
     AddTooltipForControl(IDC_EDIT_POLYNOM2, "The order of the polynomial included in the BrO DOAS fit");
-    AddTooltipForControl(IDC_EDIT_MIN_IN_PLUME_SPECTRA, "The minimum required good spectra between the two edges of the plume for a BrO/SO₂ ratio to be calculated, default 4");
-    AddTooltipForControl(IDC_EDIT_MIN_OUT_OF_PLUME_SPECTRA, "The minimum required spectra out of the plume for a BrO/SO₂ ratio to be calculated, default 10");
+    AddTooltipForControl(IDC_EDIT_MIN_IN_PLUME_SPECTRA, "The minimum required good spectra between the two edges of the plume for a BrO/SO2 ratio to be calculated, default 4");
+    AddTooltipForControl(IDC_EDIT_MIN_OUT_OF_PLUME_SPECTRA, "The minimum required spectra out of the plume for a BrO/SO2 ratio to be calculated, default 10");
     AddTooltipForControl(IDC_EDIT_MIN_PLUME_COMPLETENESS, "The minimum completeness of the plume for a ratio to be calculated. Range 0.5 to 1.0, default 0.7");
 
     m_toolTip.SetMaxTipWidth(SHRT_MAX);
@@ -119,7 +119,7 @@ void CRatioSetupDialog::InitReferenceFileControl()
     m_referencesList.InsertHiddenLabelColumn();	// Requires one never uses column 0
     m_referencesList.InsertColumnTrait(1, "Name", LVCFMT_LEFT, defaultColumnWidth, -1, new GridListCtrl::CGridColumnTraitEdit());
     m_referencesList.InsertColumnTrait(2, "Path", LVCFMT_LEFT, pathColumnWidth, -1, CreateLinkColumn());
-    m_referencesList.InsertColumnTrait(3, "Include in SO₂ Fit", LVCFMT_CENTER, defaultColumnWidth, -1, CreateCheckBoxColumn(nStateImageIdx));
+    m_referencesList.InsertColumnTrait(3, "Include in SO2 Fit", LVCFMT_CENTER, defaultColumnWidth, -1, CreateCheckBoxColumn(nStateImageIdx));
     m_referencesList.InsertColumnTrait(4, "Include in BrO Fit", LVCFMT_CENTER, defaultColumnWidth, -1, CreateCheckBoxColumn(nStateImageIdx));
     m_referencesList.InsertColumnTrait(5, "Calculate", LVCFMT_CENTER, defaultColumnWidth, -1, CreateCheckBoxColumn(nStateImageIdx));
 

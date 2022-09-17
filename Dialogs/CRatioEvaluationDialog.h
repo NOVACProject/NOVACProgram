@@ -1,9 +1,10 @@
 #pragma once
-#include "afxdlgs.h"
+#include <afxdlgs.h>
 
 #include "../Graphs/SpectrumGraph.h"
 #include "../Graphs/DOASFitGraph.h"
 #include "../DlgControls/NonFlickeringTreeControl.h"
+#include "../DlgControls/NonFlickeringListBoxControl.h"
 
 class RatioCalculationController;
 struct RatioCalculationResult;
@@ -26,6 +27,9 @@ public:
 
     /** Initializes the controls and the dialog */
     virtual BOOL OnInitDialog();
+
+    /** Called when this is selected and becomes active */
+    virtual BOOL OnSetActive();
 
     // Dialog Data
 #ifdef AFX_DESIGN_TIME
@@ -61,10 +65,13 @@ private:
     CListBox m_resultTypeList;
 
     // The list of species, for the current FitWindow
-    CListBox m_so2SpecieList;
+    CNonFlickeringListBoxControl m_doasFitReferencesList;
 
     // The list of results of the evaluation
     CListBox m_resultsList;
+
+    // A filtering selector for what results to show in m_resultsList
+    CComboBox m_resultFilterSelector;
 
     // The labels showing the column, shift and squeeze for the current specie.
     CStatic m_referenceColumnLabel;
@@ -104,4 +111,6 @@ private:
 
     // Adds one element to the list of results, does not clear previously added results.
     void AddToListOfResults(const RatioCalculationResult* result);
+public:
+    afx_msg void OnSelchangeEvaluatedScansSelectorCombo();
 };

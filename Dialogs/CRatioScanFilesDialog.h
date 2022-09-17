@@ -60,6 +60,8 @@ private:
 
     CSpinButtonCtrl m_specSpin;// The spin button, controls which spectrum to show
 
+    CComboBox m_spectrometerModelCombo;
+
     int m_currentlyDisplayedSpectrumIdx; // For the display of the spectrum. this is the index of the spectrum in the .pak file currently displayed.
 
     /** Retrieves the full file name and path of the currently selected .pak file
@@ -81,4 +83,8 @@ private:
     /** Update the information labels */
     void UpdateSpectrumInfo(const novac::CSpectrum& spectrum, int spectrumIndex, const std::string& fullFilePath);
 
+    /** Updates the m_spectrometerModelCombo by selecting the model with the provided name */
+    void SelectSpectrometerModelWithName(const std::string& modelName);
+public:
+    afx_msg void OnSelchangeSpectrometerModel();
 };

@@ -1526,6 +1526,9 @@
     <ClInclude Include="Dialogs\CMultiSelectOpenFileDialog.h">
       <Filter>Header Files\Dialogs</Filter>
     </ClInclude>
+    <ClInclude Include="DlgControls\NonFlickeringListBoxControl.h">
+      <Filter>Header Files\DlgControls</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\NOVAClogo2.ico">

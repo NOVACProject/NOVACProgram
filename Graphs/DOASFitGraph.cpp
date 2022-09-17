@@ -29,33 +29,41 @@ BEGIN_MESSAGE_MAP(CDOASFitGraph, CGraphCtrl)
     ON_COMMAND(ID__SAVEASASCII, OnSaveAsAscii)
 END_MESSAGE_MAP()
 
-/** Draws the spectrum fit */
-void CDOASFitGraph::DrawFit(int refIndex) {
+void CDOASFitGraph::DrawFit(int referenceIndex)
+{
     double minV = 1e16, maxV = -1e16;
     static double oldMinV = 1e16, oldMaxV = -1e16;
 
-    if (refIndex < 0 || refIndex >= m_nReferences)
+    if (referenceIndex < 0 || referenceIndex >= m_nReferences)
+    {
         return;
+    }
 
-    long fitWidth = m_fitHigh - m_fitLow - 1;
+    const long fitWidth = m_fitHigh - m_fitLow - 1;
 
     // The scaled cross section + the residual
-    double* CS_And_Residual = new double[m_fitHigh];
-    double* number = new double[m_fitHigh];
-    for (int i = m_fitLow; i < m_fitHigh; ++i) {
-        CS_And_Residual[i] = m_fitResult[refIndex][i] + m_residual[i];
-        number[i] = i;
+    std::vector<double> CS_And_Residual;
+    CS_And_Residual.resize(m_fitHigh);
+    std::vector<double> number;
+    number.resize(m_fitHigh);
+
+    for (int pixelIdx = m_fitLow; pixelIdx < m_fitHigh; ++pixelIdx)
+    {
+        CS_And_Residual[pixelIdx] = m_fitResult[referenceIndex][pixelIdx] + m_residual[pixelIdx];
+        number[pixelIdx] = pixelIdx;
     }
 
     // find the minimum and maximum value
-    minV = Min(CS_And_Residual + m_fitLow + 3, fitWidth - 6);
-    maxV = Max(CS_And_Residual + m_fitLow + 3, fitWidth - 6);
+    minV = Min(CS_And_Residual.data() + m_fitLow + 3, fitWidth - 6);
+    maxV = Max(CS_And_Residual.data() + m_fitLow + 3, fitWidth - 6);
 
-    if ((maxV - minV) < 0.25 * (oldMaxV - oldMinV)) {
+    if ((maxV - minV) < 0.25 * (oldMaxV - oldMinV))
+    {
         oldMaxV = maxV;
         oldMinV = minV;
     }
-    else {
+    else
+    {
         if (minV < oldMinV)
             oldMinV = minV;
         else
@@ -67,22 +75,20 @@ void CDOASFitGraph::DrawFit(int refIndex) {
             maxV = oldMaxV;
     }
 
-    if (minV < maxV) {
+    if (minV < maxV)
+    {
         // set the range for the plot
-        this->SetRange(m_fitLow, m_fitHigh, 0, minV, maxV, 0);
+        SetRange(m_fitLow, m_fitHigh, 0, minV, maxV, 0);
 
         // draw the residual + the fitted (scaled & shifted) reference
-        this->SetPlotColor(RGB(255, 0, 0));
-        this->XYPlot(number + m_fitLow, CS_And_Residual + m_fitLow, fitWidth, PLOT_FIXED_AXIS | PLOT_CONNECTED);
+        SetYAxisNumberFormat(Graph::FORMAT_GENERAL);
+        SetPlotColor(RGB(255, 0, 0));
+        XYPlot(number.data() + m_fitLow, CS_And_Residual.data() + m_fitLow, fitWidth, PLOT_FIXED_AXIS | PLOT_CONNECTED);
 
         // draw the fitted (scaled & shifted) reference
-        this->SetPlotColor(RGB(0, 0, 255));
-        this->XYPlot(number + m_fitLow, m_fitResult[refIndex].data() + m_fitLow, fitWidth, PLOT_FIXED_AXIS | PLOT_CONNECTED);
+        SetPlotColor(RGB(0, 0, 255));
+        XYPlot(number.data() + m_fitLow, m_fitResult[referenceIndex].data() + m_fitLow, fitWidth, PLOT_FIXED_AXIS | PLOT_CONNECTED);
     }
-
-    delete[] CS_And_Residual;
-    delete[] number;
-
 }
 
 void CDOASFitGraph::OnContextMenu(CWnd* pWnd, CPoint point) {

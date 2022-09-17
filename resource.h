@@ -444,6 +444,8 @@
 #define IDC_COMBO_WAVELENGTH_CONVERSION 1078
 #define IDC_COMBO_INITIAL_DATA_TYPE     1078
 #define IDC_COMBO_FIT_TYPE              1078
+#define IDC_COMBO_RATIO_SPECTROMETER_MODEL 1078
+#define IDC_RATIO_EVALUATED_SCANS_SELECTOR_COMBO 1078
 #define IDC_SLEEPHR                     1079
 #define IDC_COMBO_DARKCURRENT           1079
 #define IDC_COMBO_VOLCANO2              1079
@@ -473,6 +475,7 @@
 #define IDC_LBL_DEVICE                  1092
 #define IDC_SPEC_SPIN                   1093
 #define IDC_FITWINDOW_LIST              1094
+#define IDC_LBL_DEVICE_MODEL            1094
 #define IDC_EDIT_POLYNOM                1097
 #define IDC_FIT_HP_DIV                  1098
 #define IDC_EDIT_POLYNOM2               1098
@@ -965,7 +968,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        347
+#define _APS_NEXT_RESOURCE_VALUE        348
 #define _APS_NEXT_COMMAND_VALUE         32795
 #define _APS_NEXT_CONTROL_VALUE         1466
 #define _APS_NEXT_SYMED_VALUE           109

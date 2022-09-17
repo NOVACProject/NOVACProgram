@@ -3,9 +3,9 @@
 #include "CRatioScanFilesDialog.h"
 
 #include <SpectralEvaluation/DialogControllers/RatioCalculationController.h>
-
 #include <SpectralEvaluation/File/SpectrumIO.h>
 #include <SpectralEvaluation/File/File.h>
+#include <SpectralEvaluation/StringUtils.h>
 #include <SpectralEvaluation/Spectra/Spectrum.h>
 #include <SpectralEvaluation/Spectra/SpectrometerModel.h>
 
@@ -13,8 +13,6 @@
 
 // Include the special multi-choice file-dialog
 #include "../Dialogs/CMultiSelectOpenFileDialog.h"
-
-#include "../Common/Common.h" // TODO: try to avoid this
 
 #undef min
 #undef max
@@ -36,8 +34,6 @@ CRatioScanFilesDialog::~CRatioScanFilesDialog()
 BOOL CRatioScanFilesDialog::OnInitDialog() {
     CPropertyPage::OnInitDialog();
 
-    Common common;
-
     // Initialize the spectrum graph.
     CRect rect;
     int margin = -8;
@@ -48,12 +44,20 @@ BOOL CRatioScanFilesDialog::OnInitDialog() {
     rect.left = margin;
     m_specGraph.Create(WS_VISIBLE | WS_CHILD, rect, &m_graphFrame);
     m_specGraph.SetRange(0, MAX_SPECTRUM_LENGTH, 1, 0.0, 4095.0, 1);
-    m_specGraph.SetYUnits(common.GetString(AXIS_INTENSITY));
-    m_specGraph.SetXUnits(common.GetString(AXIS_CHANNEL));
+    m_specGraph.SetYUnits("Intensity");
+    m_specGraph.SetXUnits("Channel");
     m_specGraph.SetBackgroundColor(RGB(0, 0, 0));
     m_specGraph.SetGridColor(RGB(255, 255, 255));
     m_specGraph.SetPlotColor(RGB(0, 255, 0));
     m_specGraph.parentWnd = this;
+
+    // List all the spectrometer models
+    const auto& models = novac::CSpectrometerDatabase::GetInstance();
+    const auto allSpectrometerModels = models.ListModels();
+    for (const auto modelName : allSpectrometerModels)
+    {
+        m_spectrometerModelCombo.AddString(modelName.c_str());
+    }
 
     return TRUE;  // return TRUE unless you set the focus to a control
 }
@@ -64,6 +68,7 @@ void CRatioScanFilesDialog::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_SCANFILE_LIST, m_pakFileListBox);
     DDX_Control(pDX, IDC_SPECGRAPH_FRAME, m_graphFrame);
     DDX_Control(pDX, IDC_SPEC_SPIN, m_specSpin);
+    DDX_Control(pDX, IDC_COMBO_RATIO_SPECTROMETER_MODEL, m_spectrometerModelCombo);
 }
 
 
@@ -71,6 +76,7 @@ BEGIN_MESSAGE_MAP(CRatioScanFilesDialog, CPropertyPage)
     ON_BN_CLICKED(IDC_BTN_BROWSESCANFILE, &CRatioScanFilesDialog::OnBnClickedBtnBrowsescanfile)
     ON_NOTIFY(UDN_DELTAPOS, IDC_SPEC_SPIN, &CRatioScanFilesDialog::OnChangeSpectrumInFile)
     ON_LBN_SELCHANGE(IDC_SCANFILE_LIST, &CRatioScanFilesDialog::OnChangeSelectedSpectrumFile)
+    ON_CBN_SELCHANGE(IDC_COMBO_RATIO_SPECTROMETER_MODEL, &CRatioScanFilesDialog::OnSelchangeSpectrometerModel)
 END_MESSAGE_MAP()
 
 
@@ -203,9 +209,11 @@ void CRatioScanFilesDialog::UpdateUserInterfaceWithSelectedSpectrum()
 
 void CRatioScanFilesDialog::DrawSpectrum(novac::CSpectrum& spectrum)
 {
+    const double maximumIntensity = (m_controller->m_spectrometerModel != nullptr) ? m_controller->m_spectrometerModel->FullDynamicRangeForSpectrum(spectrum.m_info) : FullDynamicRangeForSpectrum(spectrum.m_info);
+
     Graph::CSpectrumGraph::plotRange range{};
     range.minIntens = 0.0;
-    range.maxIntens = FullDynamicRangeForSpectrum(spectrum.m_info);
+    range.maxIntens = maximumIntensity;
     range.minLambda = 0.0;
     range.maxLambda = spectrum.m_length;
 
@@ -222,8 +230,7 @@ void CRatioScanFilesDialog::UpdateSpectrumInfo(const novac::CSpectrum& spectrum,
     CString deviceStr, numSpecStr, motorStr, geomStr;
     const novac::CSpectrumInfo& info = spectrum.m_info;
 
-    std::string fileName = fullFilePath;
-    Common::GetFileName(fileName);
+    std::string fileName = novac::GetFileName(fullFilePath);
 
     // show the status bar
     status.Format("Showing spectrum %d in %s", spectrumIndex + 1, fileName.c_str());
@@ -264,4 +271,45 @@ void CRatioScanFilesDialog::UpdateSpectrumInfo(const novac::CSpectrum& spectrum,
         geomStr.Format("Geometry: Cone, %.1lf [deg]", info.m_coneAngle);
     SetDlgItemText(IDC_LBL_CONEORFLAT, geomStr);
 
+    if (m_controller->m_spectrometerModel == nullptr)
+    {
+        const auto model = novac::CSpectrometerDatabase::GetInstance().GuessModelFromSerial(info.m_device);
+        m_controller->m_spectrometerModel = std::make_unique<novac::SpectrometerModel>(model);
+    }
+    SelectSpectrometerModelWithName(m_controller->m_spectrometerModel->modelName);
+}
+
+void CRatioScanFilesDialog::SelectSpectrometerModelWithName(const std::string& modelName)
+{
+    for (int itemIdx = 0; itemIdx < m_spectrometerModelCombo.GetCount(); ++itemIdx)
+    {
+        CString str;
+        m_spectrometerModelCombo.GetLBText(itemIdx, str);
+        if (EqualsIgnoringCase((LPCSTR)str, modelName.c_str()))
+        {
+            m_spectrometerModelCombo.SetCurSel(itemIdx);
+            return;
+        }
+    }
+}
+
+void CRatioScanFilesDialog::OnSelchangeSpectrometerModel()
+{
+    int selectedIndex = m_spectrometerModelCombo.GetCurSel();
+    if (selectedIndex < 0)
+    {
+        return;
+    }
+
+    CString listBoxItemText;
+    m_spectrometerModelCombo.GetLBText(selectedIndex, listBoxItemText);
+    const std::string modelName{ listBoxItemText };
+
+    if (novac::CSpectrometerDatabase::GetInstance().Exists(modelName))
+    {
+        auto model = novac::CSpectrometerDatabase::GetInstance().GetModel(modelName);
+        m_controller->m_spectrometerModel = std::make_unique<novac::SpectrometerModel>(model);
+
+        UpdateUserInterfaceWithSelectedSpectrum();
+    }
 }

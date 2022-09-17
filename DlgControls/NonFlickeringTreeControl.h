@@ -1,6 +1,6 @@
 #pragma once
 
-#include "afxdlgs.h"
+#include <afxcmn.h>
 
 // The CNonFlickeringTreeControl attempts to resolve one problem with the MFC CTreeControl,
 // the tree will flicker (alot) when adding/remvoing objects from the tree as each change 

@@ -1,5 +1,5 @@
 #pragma once
-#include "afxdlgs.h"
+#include <afxdlgs.h>
 #include "../DlgControls/CGridListCtrlEx/CGridListCtrlEx.h"
 
 #include <string>
