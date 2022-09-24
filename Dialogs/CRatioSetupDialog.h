@@ -75,6 +75,7 @@ private:
     CString m_minInPlumeSpectrumColumn;
     CString m_minInPlumeSpectrumNumber;
     CString m_minOutOfPlumeSpectrumNumber;
+    CString m_minInPlumeSpectrumColumnDifference;
     CString m_minPlumeCompleteness;
     BOOL m_requireVisiblePlumeEdges;
 

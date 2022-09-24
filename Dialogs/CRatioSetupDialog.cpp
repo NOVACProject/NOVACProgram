@@ -193,6 +193,7 @@ void CRatioSetupDialog::DoDataExchange(CDataExchange* pDX)
     DDX_Text(pDX, IDC_EDIT_MIN_IN_PLUME_SPECTRA, m_minInPlumeSpectrumNumber);
     DDX_Text(pDX, IDC_EDIT_MIN_OUT_OF_PLUME_SPECTRA, m_minOutOfPlumeSpectrumNumber);
     DDX_Text(pDX, IDC_EDIT_MIN_PLUME_COMPLETENESS, m_minPlumeCompleteness);
+    DDX_Text(pDX, IDC_EDIT_MIN_PLUME_COLUMN_DIFFERENCE, m_minInPlumeSpectrumColumnDifference);
 
     DDX_Check(pDX, IDC_CHECK_RATIO_REQUIRE_TWO_PLUME_EDGES, m_requireVisiblePlumeEdges);
 
@@ -349,6 +350,10 @@ void CRatioSetupDialog::OnKillfocusEditBox()
     changedSettings = changedSettings || newMinPlumeCompleteness != m_controller->m_ratioEvaluationSettings.minimumPlumeCompleteness;
     m_controller->m_ratioEvaluationSettings.minimumPlumeCompleteness = newMinPlumeCompleteness;
 
+    const auto newMinimumInPlumeColumnDifference = std::atof((LPCSTR)m_minInPlumeSpectrumColumnDifference);
+    changedSettings = changedSettings || newMinimumInPlumeColumnDifference != m_controller->m_ratioEvaluationSettings.minimumInPlumeColumnDifference;
+    m_controller->m_ratioEvaluationSettings.minimumInPlumeColumnDifference = newMinimumInPlumeColumnDifference;
+
     if (changedSettings)
     {
         m_controller->ResetResults();
@@ -372,19 +377,37 @@ void CRatioSetupDialog::UpdateFitParametersFromController()
     m_minPlumeCompleteness.Format("%.1lf", m_controller->m_ratioEvaluationSettings.minimumPlumeCompleteness);
     m_requireVisiblePlumeEdges = m_controller->m_ratioEvaluationSettings.requireVisiblePlumeEdges;
 
+    if (m_controller->m_crossSectionUnit == novac::CrossSectionUnit::ppmm)
+    {
+        m_minInPlumeSpectrumColumnDifference.Format("%.0f", m_controller->m_ratioEvaluationSettings.minimumInPlumeColumnDifference);
+        SetDlgItemText(IDC_STATIC_UNIT_MIN_IN_PLUME_COLUMN, "[ppmm]");
+    }
+    else
+    {
+        m_minInPlumeSpectrumColumnDifference.Format("%.2g", m_controller->m_ratioEvaluationSettings.minimumInPlumeColumnDifference);
+        SetDlgItemText(IDC_STATIC_UNIT_MIN_IN_PLUME_COLUMN, "[molec/cm2]");
+    }
+
     switch (m_controller->m_doasFitType)
     {
     case novac::FIT_TYPE::FIT_POLY:
         m_fitTypeCombo.SetCurSel(0);
-        m_unitCombo.SetCurSel(1);
         break;
     case novac::FIT_TYPE::FIT_HP_DIV:
         m_fitTypeCombo.SetCurSel(1);
-        m_unitCombo.SetCurSel(0);
         break;
     case novac::FIT_TYPE::FIT_HP_SUB:
         m_fitTypeCombo.SetCurSel(2);
+        break;
+    }
+
+    switch (m_controller->m_crossSectionUnit)
+    {
+    case novac::CrossSectionUnit::ppmm:
         m_unitCombo.SetCurSel(0);
+        break;
+    default:
+        m_unitCombo.SetCurSel(1);
         break;
     }
 
@@ -426,17 +449,14 @@ void CRatioSetupDialog::OnSelchangeComboFitType()
     case 1:
         changedSettings = m_controller->m_doasFitType != novac::FIT_TYPE::FIT_HP_DIV;
         m_controller->m_doasFitType = novac::FIT_TYPE::FIT_HP_DIV;
-        m_unitCombo.SetCurSel(0);
         break;
     case 2:
         changedSettings = m_controller->m_doasFitType != novac::FIT_TYPE::FIT_HP_SUB;
         m_controller->m_doasFitType = novac::FIT_TYPE::FIT_HP_SUB;
-        m_unitCombo.SetCurSel(0);
         break;
     default:
         changedSettings = m_controller->m_doasFitType != novac::FIT_TYPE::FIT_POLY;
         m_controller->m_doasFitType = novac::FIT_TYPE::FIT_POLY;
-        m_unitCombo.SetCurSel(1);
         break;
     }
 
@@ -448,7 +468,7 @@ void CRatioSetupDialog::OnSelchangeComboFitType()
 
 void CRatioSetupDialog::OnSelchangeComboReferenceUnit()
 {
-    const int selection = m_fitTypeCombo.GetCurSel();
+    const int selection = m_unitCombo.GetCurSel();
 
     switch (selection)
     {
