@@ -20,6 +20,9 @@ public:
     /** Initializes the controls and the dialog */
     virtual BOOL OnInitDialog();
 
+    /** Called when this is about to become inactive */
+    virtual BOOL OnKillActive();
+
     /** Handling the tool tips */
     virtual BOOL PreTranslateMessage(MSG* pMsg);
 
@@ -39,6 +42,7 @@ private:
     afx_msg void OnKillfocusEditBox();
     afx_msg void OnSelchangeComboFitType();
     afx_msg void OnSelchangeComboReferenceUnit();
+    afx_msg void OnCheckChangeRatioRequireTwoPlumeEdges();
 
     // The controller which this dialog helps to setup. Notice that this dialog does not own the pointer and will not delete it.
     RatioCalculationController* m_controller;
@@ -89,6 +93,4 @@ private:
     void BrowseForReference(int referenceIdx);
 
     void AddTooltipForControl(int dialogItemId, const char* toolTipText);
-public:
-    afx_msg void OnCheckChangeRatioRequireTwoPlumeEdges();
 };

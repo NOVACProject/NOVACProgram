@@ -16,11 +16,6 @@
 
 #pragma region General helper methods for simplifying the display of data
 
-bool HasSuccessfullyCalculatedRatio(const RatioCalculationResult* result)
-{
-    return result->debugInfo.errorMessage.empty();
-}
-
 void SelectScanAngleAndColumnFromBasicScanEvaluationResult(
     const novac::BasicScanEvaluationResult& evaluationResult,
     const std::vector<int>& indicesToSelect,
@@ -160,13 +155,19 @@ void UpdateNamesOfReferencesInListBox(CNonFlickeringListBoxControl& destination,
 
 bool ResultShouldBeShown(const RatioCalculationResult* result, int resultFilterOption)
 {
-    if (resultFilterOption <= 0)
+    if (resultFilterOption == 1)
     {
-        // resultFilterOption == 0 means show everything.
-        return true;
+        // resultFilterOption == 1 means only showing results where we got a ratio.
+        return result->RatioCalculationSuccessful();
     }
-    // resultFilterOption == 1 means only showing results where we got a ratio.
-    return HasSuccessfullyCalculatedRatio(result);
+    else if (resultFilterOption == 2)
+    {
+        // resultFilterOption == 2 means only showing results where there is a significant BrO detection.
+        return result->SignificantMinorSpecieDetection();
+    }
+
+    // resultFilterOption == 0 means show everything.
+    return true;
 }
 
 #pragma endregion
@@ -221,6 +222,11 @@ BOOL CRatioEvaluationDialog::OnSetActive()
 {
     UpdateListOfResults();
 
+    if (m_controller->m_results.size() == 0)
+    {
+        UpdateUserInterfaceWithResult(nullptr);
+    }
+
     return CPropertyPage::OnSetActive();
 }
 
@@ -264,29 +270,44 @@ RatioCalculationResult GetResultToDisplay(const RatioCalculationController* cont
         // invalid index, take the last result
         return controller->m_results.back();
     }
-    if (resultFilterSelector.GetCurSel() <= 0)
+
+    if (resultFilterSelector.GetCurSel() == 1)
+    {
+        // Since we now may be filtering the list of results, we can't just use an index and must revert to looping throught he results
+        int successfulResultIndex = 0;
+        for (int ii = 0; ii < static_cast<int>(controller->m_results.size()); ++ii)
+        {
+            if (controller->m_results[ii].RatioCalculationSuccessful())
+            {
+                if (successfulResultIndex == index)
+                {
+                    return controller->m_results[ii];
+                }
+                ++successfulResultIndex;
+            }
+        }
+    }
+    else if (resultFilterSelector.GetCurSel() == 2)
+    {
+        // Since we now may be filtering the list of results, we can't just use an index and must revert to looping throught he results
+        int successfulResultIndex = 0;
+        for (int ii = 0; ii < static_cast<int>(controller->m_results.size()); ++ii)
+        {
+            if (controller->m_results[ii].SignificantMinorSpecieDetection())
+            {
+                if (successfulResultIndex == index)
+                {
+                    return controller->m_results[ii];
+                }
+                ++successfulResultIndex;
+            }
+        }
+    }
+    else
     {
         // Default option, show all the results. This means we can just just indexing.
         return controller->m_results[index];
     }
-
-    // Since we now may be filtering the list of results, we can't just use an index and must revert to looping throught he results
-    int successfulResultIndex = 0;
-    for (int ii = 0; ii < static_cast<int>(controller->m_results.size()); ++ii)
-    {
-        if (HasSuccessfullyCalculatedRatio(&controller->m_results[ii]))
-        {
-            if (successfulResultIndex == index)
-            {
-                return controller->m_results[ii];
-            }
-            ++successfulResultIndex;
-        }
-    }
-
-    // We shouldn't get here but let's just return the last result to have something to show...
-    ASSERT(false);
-    return controller->m_results.back();
 }
 
 void CRatioEvaluationDialog::OnChangeSelectedSpecie()
@@ -332,8 +353,8 @@ void CRatioEvaluationDialog::OnChangeSelectedDoasSpecie()
 
     RatioCalculationResult lastResult = GetResultToDisplay(m_controller, m_resultsList, m_resultFilterSelector);
 
-    UpdateGraph(&lastResult);
     UpdateListOfReferences(&lastResult);
+    UpdateGraph(&lastResult);
 }
 
 void CRatioEvaluationDialog::UpdateStateWhileBackgroundProcessingIsRunning()
@@ -603,7 +624,7 @@ void CRatioEvaluationDialog::UpdateCurrentResultTree(const RatioCalculationResul
     str.Format("Plume completeness: %.1lf", result->plumeInScanProperties.completeness);
     m_resultTree.InsertItem(str, TVI_ROOT);
 
-    if (!HasSuccessfullyCalculatedRatio(result))
+    if (!result->RatioCalculationSuccessful())
     {
         str.Format("%s", result->debugInfo.errorMessage.c_str());
         m_resultTree.InsertItem(str, TVI_ROOT);
@@ -931,7 +952,7 @@ void CRatioEvaluationDialog::AddToListOfResults(const RatioCalculationResult* re
     }
 
     std::string filename = novac::GetFileName(result->filename);
-    if (!HasSuccessfullyCalculatedRatio(result))
+    if (!result->RatioCalculationSuccessful())
     {
         filename = filename + " (no ratio)";
     }

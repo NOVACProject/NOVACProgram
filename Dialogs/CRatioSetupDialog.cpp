@@ -78,6 +78,14 @@ BOOL CRatioSetupDialog::OnInitDialog() {
     return TRUE;  // return TRUE unless you set the focus to a control
 }
 
+BOOL CRatioSetupDialog::OnKillActive()
+{
+    // Move the focus away from the input-boxes, such that we can validate and save their content.
+    m_unitCombo.SetFocus();
+
+    return CPropertyPage::OnKillActive();
+}
+
 BOOL CRatioSetupDialog::PreTranslateMessage(MSG* pMsg)
 {
     m_toolTip.RelayEvent(pMsg);
@@ -237,18 +245,30 @@ void CRatioSetupDialog::OnClickInReferenceList(NMHDR* pNMHDR, LRESULT* pResult)
 
     // Not selecting a path, possibly just checking a box. Get the status of the check-boxes in the UI
     const int imgIdx = m_referencesList.GetCellImage(rowIdx, colIdx);
+    bool changedSettings = false;
 
     if (colIdx == ReferenceListColumns::INCLUDE_SO2)
     {
-        m_controller->m_references[rowIdx].m_includeInMajor = (imgIdx == 1);
+        const bool newValue = (imgIdx == 1);
+        changedSettings = m_controller->m_references[rowIdx].m_includeInMajor != newValue;
+        m_controller->m_references[rowIdx].m_includeInMajor = newValue;
     }
     else if (colIdx == ReferenceListColumns::INCLUDE_BRO)
     {
+        const bool newValue = (imgIdx == 1);
+        changedSettings = m_controller->m_references[rowIdx].m_includeInMinor != newValue;
         m_controller->m_references[rowIdx].m_includeInMinor = (imgIdx == 1);
     }
     else if (colIdx == ReferenceListColumns::AUTOCALCULATE && m_controller->m_references[rowIdx].CanBeAutomaticallyCalculated())
     {
+        const bool newValue = (imgIdx == 1);
+        changedSettings = m_controller->m_references[rowIdx].m_automaticallyCalculate != newValue;
         m_controller->m_references[rowIdx].m_automaticallyCalculate = (imgIdx == 1);
+    }
+
+    if (changedSettings)
+    {
+        m_controller->ResetResults();
     }
 
     UpdateDisplayedListOfReferencesPerWindow();
@@ -266,7 +286,14 @@ void CRatioSetupDialog::BrowseForReference(int referenceIdx)
     }
 
     // Update the model
-    m_controller->m_references[referenceIdx].m_path = std::string((LPCSTR)crossSectionFile);
+    const std::string newValue = std::string((LPCSTR)crossSectionFile);
+    const bool changedSettings = m_controller->m_references[referenceIdx].m_path != newValue;
+    m_controller->m_references[referenceIdx].m_path = newValue;
+
+    if (changedSettings)
+    {
+        m_controller->ResetResults();
+    }
 
     // Update the UI
     m_referencesList.SetItemText(referenceIdx, colIdx, m_controller->m_references[referenceIdx].m_path.c_str());
@@ -291,15 +318,41 @@ void CRatioSetupDialog::OnKillfocusEditBox()
     // Get the values from the UI
     UpdateData(TRUE);
 
-    // Update the controller
-    m_controller->m_so2FitRange = ParseWavelengthRange((LPCSTR)m_fitLowSO2, (LPCSTR)m_fitHighSO2);
-    m_controller->m_broFitRange = ParseWavelengthRange((LPCSTR)m_fitLowBrO, (LPCSTR)m_fitHighBrO);
-    m_controller->m_so2PolynomialOrder = std::atoi((LPCSTR)m_polyOrderSO2);
-    m_controller->m_broPolynomialOrder = std::atoi((LPCSTR)m_polyOrderBrO);
+    bool changedSettings = false;
 
-    m_controller->m_ratioEvaluationSettings.minNumberOfSpectraInPlume = std::max(1, std::atoi((LPCSTR)m_minInPlumeSpectrumNumber));
-    m_controller->m_ratioEvaluationSettings.numberOfSpectraOutsideOfPlume = std::max(1, std::atoi((LPCSTR)m_minOutOfPlumeSpectrumNumber));
-    m_controller->m_ratioEvaluationSettings.minimumPlumeCompleteness = std::max(0.5, std::min(1.0, std::atof((LPCSTR)m_minPlumeCompleteness)));
+    // Get the new values from the UI and save to the controller.
+    const auto newSO2Range = ParseWavelengthRange((LPCSTR)m_fitLowSO2, (LPCSTR)m_fitHighSO2);
+    changedSettings = changedSettings || !newSO2Range.Equals(m_controller->m_so2FitRange, 0.05);
+    m_controller->m_so2FitRange = newSO2Range;
+
+    const auto newBroRange = ParseWavelengthRange((LPCSTR)m_fitLowBrO, (LPCSTR)m_fitHighBrO);
+    changedSettings = changedSettings || !newBroRange.Equals(m_controller->m_broFitRange, 0.05);
+    m_controller->m_broFitRange = newBroRange;
+
+    const auto newPolyOrderSO2 = std::atoi((LPCSTR)m_polyOrderSO2);
+    changedSettings = changedSettings || newPolyOrderSO2 != m_controller->m_so2PolynomialOrder;
+    m_controller->m_so2PolynomialOrder = newPolyOrderSO2;
+
+    const auto newPolyOrderBrO = std::atoi((LPCSTR)m_polyOrderBrO);
+    changedSettings = changedSettings || newPolyOrderBrO != m_controller->m_broPolynomialOrder;
+    m_controller->m_broPolynomialOrder = newPolyOrderBrO;
+
+    const auto newMinNumberOfSpectraInPlume = std::max(1, std::atoi((LPCSTR)m_minInPlumeSpectrumNumber));
+    changedSettings = changedSettings || newMinNumberOfSpectraInPlume != m_controller->m_ratioEvaluationSettings.minNumberOfSpectraInPlume;
+    m_controller->m_ratioEvaluationSettings.minNumberOfSpectraInPlume = newMinNumberOfSpectraInPlume;
+
+    const auto newNumberOfSpectraOutsideOfPlume = std::max(1, std::atoi((LPCSTR)m_minOutOfPlumeSpectrumNumber));
+    changedSettings = changedSettings || newNumberOfSpectraOutsideOfPlume != m_controller->m_ratioEvaluationSettings.numberOfSpectraOutsideOfPlume;
+    m_controller->m_ratioEvaluationSettings.numberOfSpectraOutsideOfPlume = newNumberOfSpectraOutsideOfPlume;
+
+    const auto newMinPlumeCompleteness = std::max(0.5, std::min(1.0, std::atof((LPCSTR)m_minPlumeCompleteness)));
+    changedSettings = changedSettings || newMinPlumeCompleteness != m_controller->m_ratioEvaluationSettings.minimumPlumeCompleteness;
+    m_controller->m_ratioEvaluationSettings.minimumPlumeCompleteness = newMinPlumeCompleteness;
+
+    if (changedSettings)
+    {
+        m_controller->ResetResults();
+    }
 
     UpdateFitParametersFromController();
 }
@@ -366,21 +419,30 @@ void CRatioSetupDialog::UpdateDisplayedListOfReferencesPerWindow()
 void CRatioSetupDialog::OnSelchangeComboFitType()
 {
     const int selection = m_fitTypeCombo.GetCurSel();
+    bool changedSettings = false;
 
     switch (selection)
     {
     case 1:
+        changedSettings = m_controller->m_doasFitType != novac::FIT_TYPE::FIT_HP_DIV;
         m_controller->m_doasFitType = novac::FIT_TYPE::FIT_HP_DIV;
         m_unitCombo.SetCurSel(0);
         break;
     case 2:
+        changedSettings = m_controller->m_doasFitType != novac::FIT_TYPE::FIT_HP_SUB;
         m_controller->m_doasFitType = novac::FIT_TYPE::FIT_HP_SUB;
         m_unitCombo.SetCurSel(0);
         break;
     default:
+        changedSettings = m_controller->m_doasFitType != novac::FIT_TYPE::FIT_POLY;
         m_controller->m_doasFitType = novac::FIT_TYPE::FIT_POLY;
         m_unitCombo.SetCurSel(1);
         break;
+    }
+
+    if (changedSettings)
+    {
+        m_controller->ResetResults();
     }
 }
 
@@ -398,6 +460,8 @@ void CRatioSetupDialog::OnSelchangeComboReferenceUnit()
         // User selected ppmm
         m_controller->m_crossSectionUnit = novac::CrossSectionUnit::ppmm;
     }
+
+    // This does not reset the results of the controller as this is basically just for display and doesn't affect the results.
 
     UpdateFitParametersFromController();
 }
@@ -417,7 +481,14 @@ void CRatioSetupDialog::OnCheckChangeRatioRequireTwoPlumeEdges()
     // Update data from the UI
     UpdateData(TRUE);
 
-    m_controller->m_ratioEvaluationSettings.requireVisiblePlumeEdges = (TRUE == m_requireVisiblePlumeEdges);
+    const bool newValue = (TRUE == m_requireVisiblePlumeEdges);
+    const bool changedSettings = m_controller->m_ratioEvaluationSettings.requireVisiblePlumeEdges != newValue;
+    m_controller->m_ratioEvaluationSettings.requireVisiblePlumeEdges = newValue;
+
+    if (changedSettings)
+    {
+        m_controller->ResetResults();
+    }
 
     // Update the UI
     UpdateFitParametersFromController();

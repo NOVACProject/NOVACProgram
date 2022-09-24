@@ -88,6 +88,7 @@ void CRatioScanFilesDialog::OnBnClickedBtnBrowsescanfile()
     TCHAR filter[] = _T("Pak Files|*.pak|All Files|*.*||");
 
     // Reset all data
+    m_controller->m_results.clear();
     m_controller->SetupPakFileList(std::vector<std::string>{});
     m_currentlyDisplayedSpectrumIdx = 0;
 
