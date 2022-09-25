@@ -308,8 +308,14 @@ void CRatioScanFilesDialog::OnSelchangeSpectrometerModel()
 
     if (novac::CSpectrometerDatabase::GetInstance().Exists(modelName))
     {
-        auto model = novac::CSpectrometerDatabase::GetInstance().GetModel(modelName);
-        m_controller->m_spectrometerModel = std::make_unique<novac::SpectrometerModel>(model);
+        auto newModel = novac::CSpectrometerDatabase::GetInstance().GetModel(modelName);
+        const bool settingsChanged = (m_controller->m_spectrometerModel == nullptr || m_controller->m_spectrometerModel->modelName != newModel.modelName);
+        m_controller->m_spectrometerModel = std::make_unique<novac::SpectrometerModel>(newModel);
+
+        if (settingsChanged)
+        {
+            m_controller->ResetResults();
+        }
 
         UpdateUserInterfaceWithSelectedSpectrum();
     }

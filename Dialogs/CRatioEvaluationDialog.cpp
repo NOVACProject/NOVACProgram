@@ -529,7 +529,9 @@ void CRatioEvaluationDialog::UpdateScanGraph(RatioCalculationResult* result)
         scanAngles.push_back(spectrumInfo.m_scanAngle);
         columns.push_back(columnValue);
         columnErrors.push_back(initialEvaluation.m_referenceResult[0].m_columnError);
-        peakSaturation.push_back(100.0 * spectrumInfo.m_peakIntensity / (double)(spectrumInfo.m_numSpec * result->debugInfo.spectrometerFullDynamicRange));
+
+        const double saturation = std::max(0.0, std::min(100.0, 100.0 * spectrumInfo.m_peakIntensity / (double)(spectrumInfo.m_numSpec * result->debugInfo.spectrometerFullDynamicRange)));
+        peakSaturation.push_back(saturation);
     }
 
     // Set up the plot
