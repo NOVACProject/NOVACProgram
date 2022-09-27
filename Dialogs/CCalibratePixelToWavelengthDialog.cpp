@@ -1,6 +1,3 @@
-// CCalibratePixelToWavelengthDialog.cpp : implementation file
-//
-
 #include "StdAfx.h"
 #include "CCalibratePixelToWavelengthDialog.h"
 #include "afxdlgs.h"
@@ -725,6 +722,16 @@ void CCalibratePixelToWavelengthDialog::OnBnClickedSetupWavelengthCalibration()
 {
     CCalibratePixelToWavelengthSetupDialog setupDlg{ &m_setup, m_standardCrossSections };
     setupDlg.DoModal();
+
+    // See if the user has selected a spectrometer model...
+    if (!m_setup.m_spectrometerModelName.empty())
+    {
+        auto model = novac::CSpectrometerDatabase::GetInstance().GetModel(m_setup.m_spectrometerModelName);
+        if (!model.IsUnknown())
+        {
+            m_controller->m_spectrometerModel = std::make_unique<novac::SpectrometerModel>(model);
+        }
+    }
 }
 
 void CCalibratePixelToWavelengthDialog::OnBnClickedButtonViewLog()

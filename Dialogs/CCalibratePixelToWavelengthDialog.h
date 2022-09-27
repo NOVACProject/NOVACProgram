@@ -1,4 +1,5 @@
 #pragma once
+#include "afxdlgs.h"
 
 #include "../Graphs/GraphCtrl.h"
 
@@ -40,6 +41,7 @@ public:
     CString m_fitInstrumentLineShapeRegionStart;
     CString m_fitInstrumentLineShapeRegionStop;
     CString m_fitInstrumentLineShapeOzoneReference; //< an optional ozone reference file which can be included into the instrument line shape fit routine.
+    std::string m_spectrometerModelName; // A user-specified spectrometer model name. Empty if the user hasn't specified this.
 };
 
 class CCalibratePixelToWavelengthDialog : public CPropertyPage

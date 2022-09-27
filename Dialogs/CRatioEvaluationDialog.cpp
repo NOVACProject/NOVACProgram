@@ -252,6 +252,12 @@ BEGIN_MESSAGE_MAP(CRatioEvaluationDialog, CPropertyPage)
     ON_MESSAGE(WM_DONE, OnBackgroundProcessingDone)
     ON_MESSAGE(WM_PROGRESS, OnOneRatioEvaluationDone)
 
+    ON_COMMAND(ID_SAVE_SAVERESULTCSV, SaveSelectedSpectrumResultToCsv)
+    ON_COMMAND(ID_SAVE_SAVESPECTRA_PAK, SaveSelectedSpectraToPak)
+    ON_COMMAND(ID_SAVE_SAVESPECTRA_STD, SaveSelectedSpectraToStd)
+
+    ON_WM_CONTEXTMENU()
+
     ON_LBN_SELCHANGE(IDC_MAJOR_SPECIE_LIST, OnChangeSelectedSpecie)
     ON_LBN_SELCHANGE(IDC_RATIO_SHOW_SELECTION_LIST, &CRatioEvaluationDialog::OnChangeSelectedDoasSpecie)
     ON_LBN_SELCHANGE(IDC_RATIO_EVALUATED_SCANS_LIST, &CRatioEvaluationDialog::OnChangeEvaluatedScan)
@@ -303,11 +309,9 @@ RatioCalculationResult GetResultToDisplay(const RatioCalculationController* cont
             }
         }
     }
-    else
-    {
-        // Default option, show all the results. This means we can just just indexing.
-        return controller->m_results[index];
-    }
+
+    // Default option, show all the results. This means we can just just indexing.
+    return controller->m_results[index];
 }
 
 void CRatioEvaluationDialog::OnChangeSelectedSpecie()
@@ -623,7 +627,14 @@ void CRatioEvaluationDialog::UpdateCurrentResultTree(const RatioCalculationResul
     str.Format("Time: %04d.%02d.%02d %02d:%02d:%02d UTC", result->startTime.year, result->startTime.month, result->startTime.day, result->startTime.hour, result->startTime.minute, result->startTime.second);
     m_resultTree.InsertItem(str, TVI_ROOT);
 
-    str.Format("Plume completeness: %.1lf", result->plumeInScanProperties.completeness);
+    if (result->plumeInScanProperties.completeness < 0.49)
+    {
+        str.Format("Plume completeness: N/A");
+    }
+    else
+    {
+        str.Format("Plume completeness: %.1lf", result->plumeInScanProperties.completeness);
+    }
     m_resultTree.InsertItem(str, TVI_ROOT);
 
     if (!result->RatioCalculationSuccessful())
@@ -640,7 +651,10 @@ void CRatioEvaluationDialog::UpdateCurrentResultTree(const RatioCalculationResul
     str.Format("Plume center: %.1lf [deg]", result->plumeInScanProperties.plumeCenter);
     m_resultTree.InsertItem(str, TVI_ROOT);
 
-    str.Format("Plume range: %.1lf to %.1lf [deg]", result->plumeInScanProperties.plumeHalfLow, result->plumeInScanProperties.plumeHalfHigh);
+    // Format the plume ranges. Undetermined values are -9999.0 and should be formatted at either -90 or +90 depending on the edge.
+    const double plumeHalfLow = std::max(-90.0, result->plumeInScanProperties.plumeHalfLow);
+    const double plumeHalfHigh = (result->plumeInScanProperties.plumeHalfHigh < -100.0) ? +90 : result->plumeInScanProperties.plumeHalfHigh;
+    str.Format("Plume range: %.1lf to %.1lf [deg]", plumeHalfLow, plumeHalfHigh);
     m_resultTree.InsertItem(str, TVI_ROOT);
 
     str.Format("BrO/SO2 Ratio: %.2E ± %.2E", result->ratio.ratio, result->ratio.error);
@@ -933,12 +947,71 @@ void CRatioEvaluationDialog::OnBnClickedRunEvaluationOnAllScans()
 
 void CRatioEvaluationDialog::OnBnClickedSaveResults()
 {
+    if (m_controller->m_results.empty())
+    {
+        MessageBox("No results to save. Please run the evaluations first", "No result", MB_OK);
+        return;
+    }
+
     CString destinationFileName = "";
     if (Common::BrowseForFile_SaveAs("CSV Data Files\0*.csv\0", destinationFileName))
     {
         std::string dstFileName = novac::EnsureFilenameHasSuffix(std::string(destinationFileName), "csv");
         const std::string columnSeparatorChar = ";"; // TODO: Let the user choose this
-        m_controller->SaveResultsToCsvFile(dstFileName, columnSeparatorChar);
+        m_controller->SaveResultsToCsvFile(dstFileName, m_controller->m_results, true, columnSeparatorChar);
+    }
+}
+
+void CRatioEvaluationDialog::SaveSelectedSpectrumResultToCsv()
+{
+    if (m_controller->m_results.empty())
+    {
+        return;
+    }
+
+    std::vector<RatioCalculationResult> results;
+    results.push_back(GetResultToDisplay(m_controller, m_resultsList, m_resultFilterSelector));
+
+    CString destinationFileName = "";
+    if (Common::BrowseForFile_SaveAs("CSV Data Files\0*.csv\0", destinationFileName))
+    {
+        std::string dstFileName = novac::EnsureFilenameHasSuffix(std::string(destinationFileName), "csv");
+        const std::string columnSeparatorChar = ";"; // TODO: Let the user choose this
+        m_controller->SaveResultsToCsvFile(dstFileName, results, false, columnSeparatorChar);
+    }
+}
+
+void CRatioEvaluationDialog::SaveSelectedSpectraToPak()
+{
+    if (m_controller->m_results.empty())
+    {
+        return;
+    }
+
+    auto result = GetResultToDisplay(m_controller, m_resultsList, m_resultFilterSelector);
+
+    CString destinationDirectory = "";
+    if (Common::BrowseForDirectory(destinationDirectory))
+    {
+        std::string dstFileName = std::string(destinationDirectory);
+        m_controller->SaveSpectraToPakFile(dstFileName, result);
+    }
+}
+
+void CRatioEvaluationDialog::SaveSelectedSpectraToStd()
+{
+    if (m_controller->m_results.empty())
+    {
+        return;
+    }
+
+    auto result = GetResultToDisplay(m_controller, m_resultsList, m_resultFilterSelector);
+
+    CString destinationDirectory = "";
+    if (Common::BrowseForDirectory(destinationDirectory))
+    {
+        std::string dstFileName = std::string(destinationDirectory);
+        m_controller->SaveSpectraToStdFile(dstFileName, result);
     }
 }
 
@@ -1005,4 +1078,14 @@ void CRatioEvaluationDialog::OnBnClickedClearResults()
 void CRatioEvaluationDialog::OnSelchangeEvaluatedScansSelectorCombo()
 {
     UpdateListOfResults();
+}
+
+void CRatioEvaluationDialog::OnContextMenu(CWnd* pWnd, CPoint point) {
+
+    CMenu menu;
+    VERIFY(menu.LoadMenu(IDR_RATIO_RESULT_CONTEXTMENU));
+    CMenu* pPopup = menu.GetSubMenu(0);
+    ASSERT(pPopup != NULL);
+
+    pPopup->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
 }

@@ -77,6 +77,9 @@ private:
     CString m_minOutOfPlumeSpectrumNumber;
     CString m_minInPlumeSpectrumColumnDifference;
     CString m_minPlumeCompleteness;
+    CString m_minScanAngle;
+    CString m_maxScanAngle;
+
     BOOL m_requireVisiblePlumeEdges;
 
     CListBox m_selectedReferencesSO2;

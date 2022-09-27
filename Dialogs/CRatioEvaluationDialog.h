@@ -46,6 +46,9 @@ public:
 
     afx_msg void OnChangeSelectedDoasSpecie();
 
+    afx_msg void OnSelchangeEvaluatedScansSelectorCombo();
+    afx_msg void OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/);
+
 protected:
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
@@ -100,6 +103,10 @@ private:
 
     void UpdateStateWhileBackgroundProcessingIsRunning();
 
+    void SaveSelectedSpectrumResultToCsv();
+    void SaveSelectedSpectraToPak();
+    void SaveSelectedSpectraToStd();
+
     // returns the last result for the major window. returns nullptr if none exists.
     const novac::DoasResult* GetMajorWindowResult(const RatioCalculationResult* result);
 
@@ -111,6 +118,4 @@ private:
 
     // Adds one element to the list of results, does not clear previously added results.
     void AddToListOfResults(const RatioCalculationResult* result);
-public:
-    afx_msg void OnSelchangeEvaluatedScansSelectorCombo();
 };

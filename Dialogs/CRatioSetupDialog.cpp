@@ -30,6 +30,8 @@ CRatioSetupDialog::CRatioSetupDialog(RatioCalculationController* controller, CWn
     , m_fitHighBrO(_T(""))
     , m_polyOrderSO2(_T(""))
     , m_polyOrderBrO(_T(""))
+    , m_minScanAngle(_T(""))
+    , m_maxScanAngle(_T(""))
 {
 }
 
@@ -194,6 +196,8 @@ void CRatioSetupDialog::DoDataExchange(CDataExchange* pDX)
     DDX_Text(pDX, IDC_EDIT_MIN_OUT_OF_PLUME_SPECTRA, m_minOutOfPlumeSpectrumNumber);
     DDX_Text(pDX, IDC_EDIT_MIN_PLUME_COMPLETENESS, m_minPlumeCompleteness);
     DDX_Text(pDX, IDC_EDIT_MIN_PLUME_COLUMN_DIFFERENCE, m_minInPlumeSpectrumColumnDifference);
+    DDX_Text(pDX, IDC_EDIT_MIN_SCAN_ANGLE, m_minScanAngle);
+    DDX_Text(pDX, IDC_EDIT_MAX_SCAN_ANGLE, m_maxScanAngle);
 
     DDX_Check(pDX, IDC_CHECK_RATIO_REQUIRE_TWO_PLUME_EDGES, m_requireVisiblePlumeEdges);
 
@@ -208,6 +212,8 @@ BEGIN_MESSAGE_MAP(CRatioSetupDialog, CPropertyPage)
     ON_EN_KILLFOCUS(IDC_EDIT_FITLOW_SO2, &CRatioSetupDialog::OnKillfocusEditBox)
     ON_EN_KILLFOCUS(IDC_EDIT_FITHIGH_SO2, &CRatioSetupDialog::OnKillfocusEditBox)
     ON_EN_KILLFOCUS(IDC_EDIT_POLYNOM, &CRatioSetupDialog::OnKillfocusEditBox)
+    ON_EN_KILLFOCUS(IDC_EDIT_MIN_SCAN_ANGLE, &CRatioSetupDialog::OnKillfocusEditBox)
+    ON_EN_KILLFOCUS(IDC_EDIT_MAX_SCAN_ANGLE, &CRatioSetupDialog::OnKillfocusEditBox)
 
     ON_EN_KILLFOCUS(IDC_EDIT_FITLOW_BRO, &CRatioSetupDialog::OnKillfocusEditBox)
     ON_EN_KILLFOCUS(IDC_EDIT_FITHIGH_BRO, &CRatioSetupDialog::OnKillfocusEditBox)
@@ -354,6 +360,15 @@ void CRatioSetupDialog::OnKillfocusEditBox()
     changedSettings = changedSettings || newMinimumInPlumeColumnDifference != m_controller->m_ratioEvaluationSettings.minimumInPlumeColumnDifference;
     m_controller->m_ratioEvaluationSettings.minimumInPlumeColumnDifference = newMinimumInPlumeColumnDifference;
 
+    const auto newMinScanAngle = std::atof((LPCSTR)m_minScanAngle);
+    changedSettings = changedSettings || newMinScanAngle != m_controller->m_ratioEvaluationSettings.minimumScanAngle;
+    m_controller->m_ratioEvaluationSettings.minimumScanAngle = newMinScanAngle;
+
+    const auto newMaxScanAngle = std::atof((LPCSTR)m_maxScanAngle);
+    changedSettings = changedSettings || newMaxScanAngle != m_controller->m_ratioEvaluationSettings.maximumScanAngle;
+    m_controller->m_ratioEvaluationSettings.maximumScanAngle = newMaxScanAngle;
+
+
     if (changedSettings)
     {
         m_controller->ResetResults();
@@ -371,6 +386,9 @@ void CRatioSetupDialog::UpdateFitParametersFromController()
     m_fitLowBrO.Format("%.1lf", m_controller->m_broFitRange.low);
     m_fitHighBrO.Format("%.1lf", m_controller->m_broFitRange.high);
     m_polyOrderBrO.Format("%d", m_controller->m_broPolynomialOrder);
+
+    m_minScanAngle.Format("%.1lf", m_controller->m_ratioEvaluationSettings.minimumScanAngle);
+    m_maxScanAngle.Format("%.1lf", m_controller->m_ratioEvaluationSettings.maximumScanAngle);
 
     m_minInPlumeSpectrumNumber.Format("%d", m_controller->m_ratioEvaluationSettings.minNumberOfSpectraInPlume);
     m_minOutOfPlumeSpectrumNumber.Format("%d", m_controller->m_ratioEvaluationSettings.numberOfSpectraOutsideOfPlume);

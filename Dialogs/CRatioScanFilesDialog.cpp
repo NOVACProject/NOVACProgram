@@ -54,7 +54,7 @@ BOOL CRatioScanFilesDialog::OnInitDialog() {
     // List all the spectrometer models
     const auto& models = novac::CSpectrometerDatabase::GetInstance();
     const auto allSpectrometerModels = models.ListModels();
-    for (const auto modelName : allSpectrometerModels)
+    for (const auto& modelName : allSpectrometerModels)
     {
         m_spectrometerModelCombo.AddString(modelName.c_str());
     }

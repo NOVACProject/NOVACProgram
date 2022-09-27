@@ -1,7 +1,4 @@
-// CCalibratePixelToWavelengthSetupDialog.cpp : implementation file
-//
-
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "CCalibratePixelToWavelengthSetupDialog.h"
 #include "CCalibratePixelToWavelengthDialog.h"
 #include "OpenInstrumentCalibrationDialog.h"
@@ -9,6 +6,7 @@
 #include "afxdlgs.h"
 #include "../resource.h"
 #include <SpectralEvaluation/Calibration/StandardCrossSectionSetup.h>
+#include <SpectralEvaluation/Spectra/SpectrometerModel.h>
 
 // CCalibratePixelToWavelengthSetupDialog dialog
 
@@ -71,6 +69,14 @@ BOOL CCalibratePixelToWavelengthSetupDialog::OnInitDialog() {
         }
     }
 
+    // List all the spectrometer models
+    const auto& models = novac::CSpectrometerDatabase::GetInstance();
+    const auto allSpectrometerModels = models.ListModels();
+    for (const auto& modelName : allSpectrometerModels)
+    {
+        m_spectrometerModelCombo.AddString(modelName.c_str());
+    }
+
     return TRUE;  // return TRUE unless you set the focus to a control
 }
 
@@ -86,6 +92,7 @@ void CCalibratePixelToWavelengthSetupDialog::DoDataExchange(CDataExchange* pDX)
     DDX_Text(pDX, IDC_EDIT_INSTRUMENT_LINE_SHAPE_FIT_REGION_HIGH, m_setup->m_fitInstrumentLineShapeRegionStop);
     DDX_Radio(pDX, IDC_RADIO_INSTRUMENT_LINE_SHAPE_FIT_NOTHING, m_setup->m_fitInstrumentLineShapeOption);
     DDX_Control(pDX, IDC_COMBO_STANDARD_REFERENCES, m_crossSectionsCombo);
+    DDX_Control(pDX, IDC_COMBO_RATIO_SPECTROMETER_MODEL, m_spectrometerModelCombo);
 }
 
 BEGIN_MESSAGE_MAP(CCalibratePixelToWavelengthSetupDialog, CDialog)
@@ -97,6 +104,7 @@ BEGIN_MESSAGE_MAP(CCalibratePixelToWavelengthSetupDialog, CDialog)
 
     ON_BN_CLICKED(IDOK, &CCalibratePixelToWavelengthSetupDialog::OnBnClickedOk)
     ON_BN_CLICKED(IDC_CHECK_INCLUDE_OZONE_ILS_FIT, &CCalibratePixelToWavelengthSetupDialog::OnToggleCheckIncludeOzone)
+    ON_CBN_SELCHANGE(IDC_COMBO_RATIO_SPECTROMETER_MODEL, &CCalibratePixelToWavelengthSetupDialog::OnSelchangeSpectrometerModel)
 END_MESSAGE_MAP()
 
 // CCalibratePixelToWavelengthSetupDialog message handlers
@@ -193,5 +201,23 @@ void CCalibratePixelToWavelengthSetupDialog::OnToggleCheckIncludeOzone()
     else
     {
         m_setup->m_fitInstrumentLineShapeOzoneReference = "";
+    }
+}
+
+void CCalibratePixelToWavelengthSetupDialog::OnSelchangeSpectrometerModel()
+{
+    int selectedIndex = m_spectrometerModelCombo.GetCurSel();
+    if (selectedIndex < 0)
+    {
+        return;
+    }
+
+    CString listBoxItemText;
+    m_spectrometerModelCombo.GetLBText(selectedIndex, listBoxItemText);
+    const std::string modelName{ listBoxItemText };
+
+    if (novac::CSpectrometerDatabase::GetInstance().Exists(modelName))
+    {
+        m_setup->m_spectrometerModelName = modelName;
     }
 }
