@@ -436,7 +436,7 @@ void CRatioEvaluationDialog::UpdateUserInterfaceWithResult(RatioCalculationResul
     }
 
     UpdateGraph(result);
-    UpdateCurrentResultTree(result);
+    UpdateResultTree(result);
     UpdateListOfReferences(result);
 
     {
@@ -606,7 +606,17 @@ void CRatioEvaluationDialog::UpdateScanGraph(RatioCalculationResult* result)
     }
 }
 
-void CRatioEvaluationDialog::UpdateCurrentResultTree(const RatioCalculationResult* result)
+// @return RED if the error is larger than the absolute of the value, otherwise BLACK
+COLORREF GetColorForValue(double value, double error)
+{
+    if (std::abs(error) > std::abs(value))
+    {
+        return RGB(255, 0, 0);
+    }
+    return RGB(0, 0, 0);
+}
+
+void CRatioEvaluationDialog::UpdateResultTree(const RatioCalculationResult* result)
 {
     m_resultTree.DisableRedraw();
 
@@ -630,12 +640,22 @@ void CRatioEvaluationDialog::UpdateCurrentResultTree(const RatioCalculationResul
     if (result->plumeInScanProperties.completeness < 0.49)
     {
         str.Format("Plume completeness: N/A");
+        m_resultTree.InsertItem(str, TVI_ROOT);
     }
     else
     {
         str.Format("Plume completeness: %.1lf", result->plumeInScanProperties.completeness);
+        m_resultTree.InsertItem(str, TVI_ROOT);
+
+        str.Format("Plume center: %.1lf [deg]", result->plumeInScanProperties.plumeCenter);
+        m_resultTree.InsertItem(str, TVI_ROOT);
+
+        // Format the plume ranges. Undetermined values are -9999.0 and should be formatted at either -90 or +90 depending on the edge.
+        const double plumeHalfLow = std::max(-90.0, result->plumeInScanProperties.plumeHalfLow);
+        const double plumeHalfHigh = (result->plumeInScanProperties.plumeHalfHigh < -100.0) ? +90 : result->plumeInScanProperties.plumeHalfHigh;
+        str.Format("Plume range: %.1lf to %.1lf [deg]", plumeHalfLow, plumeHalfHigh);
+        m_resultTree.InsertItem(str, TVI_ROOT);
     }
-    m_resultTree.InsertItem(str, TVI_ROOT);
 
     if (!result->RatioCalculationSuccessful())
     {
@@ -648,17 +668,9 @@ void CRatioEvaluationDialog::UpdateCurrentResultTree(const RatioCalculationResul
         return;
     }
 
-    str.Format("Plume center: %.1lf [deg]", result->plumeInScanProperties.plumeCenter);
-    m_resultTree.InsertItem(str, TVI_ROOT);
-
-    // Format the plume ranges. Undetermined values are -9999.0 and should be formatted at either -90 or +90 depending on the edge.
-    const double plumeHalfLow = std::max(-90.0, result->plumeInScanProperties.plumeHalfLow);
-    const double plumeHalfHigh = (result->plumeInScanProperties.plumeHalfHigh < -100.0) ? +90 : result->plumeInScanProperties.plumeHalfHigh;
-    str.Format("Plume range: %.1lf to %.1lf [deg]", plumeHalfLow, plumeHalfHigh);
-    m_resultTree.InsertItem(str, TVI_ROOT);
-
     str.Format("BrO/SO2 Ratio: %.2E ± %.2E", result->ratio.ratio, result->ratio.error);
-    m_resultTree.InsertItem(str, TVI_ROOT);
+    auto item = m_resultTree.InsertItem(str, TVI_ROOT);
+    m_resultTree.SetItemColor(item, GetColorForValue(result->ratio.ratio, result->ratio.error));
 
     {
         const novac::DoasResult* so2FitResult = GetMajorWindowResult(result);
@@ -671,7 +683,8 @@ void CRatioEvaluationDialog::UpdateCurrentResultTree(const RatioCalculationResul
             for (const auto& result : so2FitResult->referenceResult)
             {
                 str.Format("%s %.2E ± %.2E", result.name.c_str(), result.column, result.columnError);
-                m_resultTree.InsertItem(str, hTree);
+                item = m_resultTree.InsertItem(str, hTree);
+                m_resultTree.SetItemColor(item, GetColorForValue(result.column, result.columnError));
             }
 
             m_resultTree.Expand(hTree, TVE_EXPAND);

@@ -3,7 +3,7 @@
 
 #include "../Graphs/SpectrumGraph.h"
 #include "../Graphs/DOASFitGraph.h"
-#include "../DlgControls/NonFlickeringTreeControl.h"
+#include "../DlgControls/CustomDrawTreeCtrl.h"
 #include "../DlgControls/NonFlickeringListBoxControl.h"
 
 class RatioCalculationController;
@@ -82,7 +82,7 @@ private:
     CStatic m_referenceSqueezeLabel;
 
     // Displaying the results
-    CNonFlickeringTreeControl m_resultTree;
+    CCustomDrawTreeCtrl m_resultTree;
 
     // m_graph is the main graph in the window
     Graph::CDOASFitGraph m_graph;
@@ -96,7 +96,7 @@ private:
     void UpdateScanGraph(RatioCalculationResult* result);
     void UpdateMajorFitGraph(RatioCalculationResult* result);
     void UpdateMinorFitGraph(RatioCalculationResult* result);
-    void UpdateCurrentResultTree(const RatioCalculationResult* result);
+    void UpdateResultTree(const RatioCalculationResult* result);
     void UpdateListOfReferences(const RatioCalculationResult* result);
 
     void UpdateReferenceResultLabels(const novac::DoasResult* doasResult, int indexOfSelectedReference);

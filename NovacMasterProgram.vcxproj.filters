@@ -777,6 +777,9 @@
     <ClCompile Include="Dialogs\CMultiSelectOpenFileDialog.cpp">
       <Filter>Source Files\Dialogs</Filter>
     </ClCompile>
+    <ClCompile Include="DlgControls\CustomDrawTreeCtrl.cpp">
+      <Filter>Source Files\DlgControls</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Configuration\AdvancedFTPUploadSettings.h">
@@ -1527,6 +1530,9 @@
       <Filter>Header Files\Dialogs</Filter>
     </ClInclude>
     <ClInclude Include="DlgControls\NonFlickeringListBoxControl.h">
+      <Filter>Header Files\DlgControls</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgControls\CustomDrawTreeCtrl.h">
       <Filter>Header Files\DlgControls</Filter>
     </ClInclude>
   </ItemGroup>
