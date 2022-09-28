@@ -113,6 +113,6 @@ namespace Dialogs {
         virtual BOOL OnInitDialog();
 
         /** Called on timer-events */
-        afx_msg void OnTimer(UINT nIDEvent);
+        afx_msg void OnTimer(WPARAM nIDEvent);
     };
 }

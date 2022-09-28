@@ -10,7 +10,7 @@
 #include "ExportSpectraDlg.h"
 
 // Include the special multi-choice file-dialog
-#include "../Dialogs/FECFileDialog.h"
+#include "../Dialogs/CMultiSelectOpenFileDialog.h"
 
 using namespace Dialogs;
 using namespace novac;
@@ -54,7 +54,7 @@ void CExportSpectraDlg::OnBrowsePakFile()
     int nPakFiles = 0;
 
     // The file-dialog
-    Dialogs::CFECFileDialog fileDialog(TRUE, NULL, NULL, OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_ALLOWMULTISELECT | OFN_EXPLORER, filter);
+    Dialogs::CMultiSelectOpenFileDialog fileDialog(TRUE, NULL, NULL, OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_ALLOWMULTISELECT | OFN_EXPLORER, filter);
 
     if (fileDialog.DoModal() != IDOK)
         return;

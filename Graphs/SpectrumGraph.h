@@ -11,27 +11,17 @@ namespace Graph
         CSpectrumGraph(void);
         ~CSpectrumGraph(void);
 
-        /** the size of this graph */
-        CRect rect;
-
         /** handle to the parent window, for message handling */
-        CWnd* parentWnd;
+        CWnd* parentWnd = nullptr;
 
         /** Current wavelength */
-        double	m_curLambda;
+        double m_curLambda = 0.0;
 
         /** Current intensity */
-        double	m_curIntens;
-
-        /** The lambda and intensity where the left mouse button was pressed
-                down the last time. */
-        double	lbdLambda, lbdIntens;
-
-        /** true if the user is right now trying to zoom into the graph */
-        bool		m_zooming;
+        double m_curIntens = 0.0;
 
         /** True if the user should be able to zoom in the graph, otherwise false */
-        bool		m_userZoomableGraph;
+        bool m_userZoomableGraph = true;
 
         /** The coordinates (lat & long) into which the user wants to zoom. */
         struct plotRange {
@@ -40,17 +30,11 @@ namespace Graph
             double minIntens;
             double maxIntens;
         };
-        struct plotRange m_zoomRect;
-
-        /** A DC to draw something on... */
-        CDC     m_dcRoute;
-        CBitmap* m_pbitmapOldRoute;
-        CBitmap m_bitmapRoute;
 
         DECLARE_MESSAGE_MAP()
 
         /** Redraws the graph */
-        afx_msg	void OnPaint();
+        afx_msg void OnPaint();
 
         /** Draws a shaded rectangle between with the two given points
                 as corners */
@@ -82,5 +66,24 @@ namespace Graph
         /** Resets the range of the plot */
         void ResetZoomRect();
 
+    private:
+
+        /** A DC to draw something on... */
+        CDC     m_dcRoute;
+        CBitmap* m_pbitmapOldRoute;
+        CBitmap m_bitmapRoute;
+
+        /** the size of this graph */
+        CRect rect;
+
+        struct plotRange m_zoomRect;
+
+        /** The lambda and intensity where the left mouse button was pressed
+                down the last time. */
+        double lbdLambda = 0.0;
+        double lbdIntens = 0.0;
+
+        /** true if the user is right now trying to zoom into the graph */
+        bool m_zooming = false;
     };
 }

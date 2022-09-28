@@ -2,7 +2,10 @@
 
 #include "GridCtrl\GridCtrl.h"
 
-#include <SpectralEvaluation/Evaluation/FitWindow.h>
+namespace novac
+{
+    class CFitWindow;
+}
 
 namespace DlgControls
 {
@@ -26,9 +29,6 @@ namespace DlgControls
 
         /** Called to show a context menu */
         afx_msg void OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/);
-
-    private:
-        void ParseShiftOption(novac::SHIFT_TYPE& option, double& value, CString& str);
 
     };
 }

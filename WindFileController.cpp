@@ -35,7 +35,7 @@ void CWindFileController::OnQuit(WPARAM /*wp*/, LPARAM /*lp*/)
 {
 }
 
-void CWindFileController::OnTimer(UINT /*nIDEvent*/, LPARAM /*lp*/)
+void CWindFileController::OnTimer(WPARAM /*nIDEvent*/, LPARAM /*lp*/)
 {
     ReadWindFieldFile();
 }

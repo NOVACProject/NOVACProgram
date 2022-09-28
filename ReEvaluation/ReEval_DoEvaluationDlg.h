@@ -1,6 +1,5 @@
 #pragma once
 
-#include "ReEvaluator.h"
 #include "afxwin.h"
 #include <memory>
 #include "../Graphs/OScopeCtrl.h"
@@ -13,6 +12,7 @@ UINT DoEvaluation(LPVOID pParam);
 
 namespace ReEvaluation
 {
+    class CReEvaluator;
 
     class CReEval_DoEvaluationDlg : public CPropertyPage
     {
@@ -45,7 +45,7 @@ namespace ReEvaluation
         CListBox m_specieList;
 
         /** The currently selected specie in the specie list */
-        long    m_curSpecie;
+        long m_curSpecie;
 
         /** The frame for the total fit graph */
         CStatic m_frameTotalfit;
@@ -57,7 +57,7 @@ namespace ReEvaluation
         Graph::COScopeCtrl m_GraphTotal;
 
         /** The reference fit graph */
-        Graph::CDOASFitGraph m_GraphRef;
+        Graph::CDOASFitGraph m_referenceFitGraph;
 
 
         // --------------------------- PUBLIC METHODS --------------------------
@@ -86,6 +86,8 @@ namespace ReEvaluation
         /** The user has pressed the Cancel button */
         afx_msg void OnCancelEvaluation();
 
+        afx_msg void OnBnClickedReevalCheckPause();
+
         /** The 'do Evaluation' button */
         CButton m_btnDoEval;
 
@@ -99,10 +101,10 @@ namespace ReEvaluation
         CProgressCtrl m_progressBar2;
 
         /** Draws the fitted reference */
-        void  DrawReference();
+        void DrawReference();
 
         /** Draws the fitted spectrum */
-        void  DrawFit();
+        void DrawFit();
 
         /** Draws the residual */
         void DrawResidual();
@@ -143,8 +145,6 @@ namespace ReEvaluation
 
         /** A pointer to the result-set */
         std::unique_ptr<Evaluation::CScanResult> m_result;
-
-    public:
-        afx_msg void OnBnClickedReevalCheckPause();
+        
     };
 }

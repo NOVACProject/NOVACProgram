@@ -1,5 +1,6 @@
 /Release
 /Debug
+/x64
 *.aps
 /Data
 /*.aps

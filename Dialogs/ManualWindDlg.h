@@ -39,10 +39,10 @@ namespace Dialogs {
         CString m_spectrometer[MAX_NUMBER_OF_SCANNING_INSTRUMENTS];
 
         /** The number of spectrometers in the list */
-        long		m_specNum;
+        long m_specNum;
 
         /** The edit-boxes for the motor position(s) */
-        CEdit		m_editMotorPosition, m_editMotorPosition2;
+        CEdit m_editMotorPosition, m_editMotorPosition2;
 
         /** The edit-boxes for the number of steps per round */
         CEdit		m_editStepsPerRound, m_editStepsPerRound2;

@@ -1,4 +1,5 @@
 #pragma once
+#include "afxdlgs.h"
 
 struct CalibratePixelToWavelengthDialogSetup;
 
@@ -44,9 +45,11 @@ public:
 
     CButton m_checkIncludeOzone;
     CComboBox m_crossSectionsCombo;
+    CComboBox m_spectrometerModelCombo;
 
     afx_msg void OnBnClickedOk();
     afx_msg void OnClickedButtonBrowseSolarSpectrum();
     afx_msg void OnButtonSelectInitialCalibration();
     afx_msg void OnToggleCheckIncludeOzone();
+    afx_msg void OnSelchangeSpectrometerModel();
 };

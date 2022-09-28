@@ -15,9 +15,9 @@
 #pragma comment( lib, "PSAPI.LIB" )
 
 extern CFormView* pView;
-extern CConfigurationSetting g_settings;	// <-- the settings for the scanners
-extern CVolcanoInfo g_volcanoes;					// <-- the list of volcanoes
-extern CWinThread* g_ftp;									// <-- The Ftp-uploading thread.
+extern CConfigurationSetting g_settings;    // <-- the settings for the scanners
+extern CVolcanoInfo g_volcanoes;            // <-- the list of volcanoes
+extern CWinThread* g_ftp;                   // <-- The Ftp-uploading thread.
 
 long GetSleepTime(struct timeStruct& startTime, struct timeStruct& stopTime)
 {
@@ -288,8 +288,8 @@ void Common::CalculateDestination(double lat1, double lon1, double dist, double 
     lon2 = lon2 * RADTODEGREE;
 }
 
-// open a browser window and let the user search for a file
-bool Common::BrowseForFile(TCHAR* filter, CString& fileName) {
+bool Common::BrowseForFile(const TCHAR* filter, CString& fileName)
+{
     TCHAR szFile[4096];
     sprintf(szFile, "%s", (LPCSTR)fileName);
 
@@ -297,15 +297,15 @@ bool Common::BrowseForFile(TCHAR* filter, CString& fileName) {
     // Initialize OPENFILENAME
     ZeroMemory(&ofn, sizeof(OPENFILENAME));
     ofn.lStructSize = sizeof(OPENFILENAME);
-    ofn.hwndOwner = NULL;
+    ofn.hwndOwner = nullptr;
     ofn.hInstance = AfxGetInstanceHandle();
     ofn.lpstrFile = szFile;
     ofn.nMaxFile = sizeof(szFile);
     ofn.lpstrFilter = filter;
     ofn.nFilterIndex = 1;
-    ofn.lpstrFileTitle = NULL;
+    ofn.lpstrFileTitle = nullptr;
     ofn.nMaxFileTitle = 0;
-    ofn.lpstrInitialDir = NULL;
+    ofn.lpstrInitialDir = nullptr;
     ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_EXPLORER;
 
     if (GetOpenFileName(&ofn) == TRUE) {
@@ -316,13 +316,12 @@ bool Common::BrowseForFile(TCHAR* filter, CString& fileName) {
     return false;
 }
 
-// open a browser window and let the user search for a file
-bool Common::BrowseForFile_SaveAs(TCHAR* filter, CString& fileName)
+bool Common::BrowseForFile_SaveAs(const TCHAR* filter, CString& fileName)
 {
     return BrowseForFile_SaveAs(filter, fileName, nullptr);
 }
 
-bool Common::BrowseForFile_SaveAs(TCHAR* filter, CString& fileName, int* filterType)
+bool Common::BrowseForFile_SaveAs(const TCHAR* filter, CString& fileName, int* filterType)
 {
     static TCHAR szFile[4096];
     sprintf(szFile, "%s", (LPCTSTR)fileName);
@@ -1129,13 +1128,23 @@ BOOL WINAPI Common::KillProcess(IN DWORD dwProcessId)
     return TRUE;
 }
 
-/** Take out the exe name from a long path
-      @param fileName path of the exe file	*/
 void Common::GetFileName(CString& fileName)
 {
     int position = fileName.ReverseFind('\\');
     int length = CString::StringLength(fileName);
     fileName = fileName.Right(length - position - 1);
+}
+
+void Common::GetFileName(std::string& fullFileNameAndPath)
+{
+    auto position = fullFileNameAndPath.rfind('\\');
+    if (position == std::string::npos)
+    {
+        return;
+    }
+    auto length = fullFileNameAndPath.size();
+
+    fullFileNameAndPath = fullFileNameAndPath.substr(position + 1, length - position - 1);
 }
 
 /** Take out the directory from a long path name.

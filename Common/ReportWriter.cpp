@@ -89,7 +89,7 @@ END_MESSAGE_MAP()
 // CReportWriter message handlers
 
 
-void CReportWriter::OnTimer(UINT nIDEvent, LPARAM lp) {
+void CReportWriter::OnTimer(WPARAM nIDEvent, LPARAM lp) {
     pView->PostMessage(WM_WRITE_REPORT);
 
     // Set the timer for a new period

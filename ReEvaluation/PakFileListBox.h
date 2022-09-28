@@ -17,7 +17,7 @@ namespace ReEvaluation {
         CReEvaluator* m_reeval;
 
         /** Called to populate the fit window list */
-        void	PopulateList();
+        void PopulateList();
 
         /** The parent window */
         CWnd* m_parent;

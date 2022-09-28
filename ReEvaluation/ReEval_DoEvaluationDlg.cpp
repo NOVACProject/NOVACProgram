@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "../NovacMasterProgram.h"
+#include "ReEvaluator.h"
 #include "ReEval_DoEvaluationDlg.h"
 #include "../Evaluation/EvaluationResultView.h"
 
@@ -24,7 +25,7 @@ CReEval_DoEvaluationDlg::CReEval_DoEvaluationDlg()
     : CPropertyPage(CReEval_DoEvaluationDlg::IDD)
     , m_showFit(0)
 {
-    m_reeval = NULL;
+    m_reeval = nullptr;
     m_curSpecie = 0;
 
     pReEvalThread = NULL;
@@ -34,8 +35,8 @@ CReEval_DoEvaluationDlg::CReEval_DoEvaluationDlg()
 
 CReEval_DoEvaluationDlg::~CReEval_DoEvaluationDlg()
 {
-    m_reeval = NULL;
-    pReEvalThread = NULL;
+    m_reeval = nullptr;
+    pReEvalThread = nullptr;
 
     m_result = nullptr;
 }
@@ -107,13 +108,13 @@ void  CReEval_DoEvaluationDlg::InitializeGraphs() {
     rect.right -= rect.left + margin;
     rect.top = margin;
     rect.left = margin;
-    m_GraphRef.Create(WS_VISIBLE | WS_CHILD, rect, &m_frameRefFit);
-    m_GraphRef.SetRange(0, MAX_SPECTRUM_LENGTH, 0, 0.0, 4095.0, 2);
-    m_GraphRef.SetYUnits(common.GetString(AXIS_INTENSITY));
-    m_GraphRef.SetXUnits(common.GetString(AXIS_CHANNEL));
-    m_GraphRef.SetBackgroundColor(RGB(0, 0, 0));
-    m_GraphRef.SetGridColor(RGB(255, 255, 255));//(192, 192, 255)) ;
-    m_GraphRef.SetPlotColor(RGB(255, 0, 0));
+    m_referenceFitGraph.Create(WS_VISIBLE | WS_CHILD, rect, &m_frameRefFit);
+    m_referenceFitGraph.SetRange(0, MAX_SPECTRUM_LENGTH, 0, 0.0, 4095.0, 2);
+    m_referenceFitGraph.SetYUnits(common.GetString(AXIS_INTENSITY));
+    m_referenceFitGraph.SetXUnits(common.GetString(AXIS_CHANNEL));
+    m_referenceFitGraph.SetBackgroundColor(RGB(0, 0, 0));
+    m_referenceFitGraph.SetGridColor(RGB(255, 255, 255));//(192, 192, 255)) ;
+    m_referenceFitGraph.SetPlotColor(RGB(255, 0, 0));
 }
 
 void  CReEval_DoEvaluationDlg::PopulateRefList()
@@ -279,16 +280,16 @@ LRESULT CReEval_DoEvaluationDlg::OnEvaluatedSpectrum(WPARAM wp, LPARAM lp) {
         {
             for (int i = fitLow; i < fitHigh; ++i)
             {
-                m_GraphRef.m_fitResult[k][i] = resultview->scaledReference[k].m_data[i];    // fit result is the scaled cross section of the chosen specie
+                m_referenceFitGraph.m_fitResult[k][i] = resultview->scaledReference[k].m_data[i];    // fit result is the scaled cross section of the chosen specie
             }
-            m_GraphRef.m_specieName[k] = CString(m_result->GetSpecieName(0, k).c_str());
-            m_GraphRef.m_nReferences = m_result->GetSpecieNum(0);
+            m_referenceFitGraph.m_specieName[k] = CString(m_result->GetSpecieName(0, k).c_str());
+            m_referenceFitGraph.m_nReferences = m_result->GetSpecieNum(0);
         }
 
         // also copy the residual
         for (int i = fitLow; i < fitHigh; ++i)
         {
-            m_GraphRef.m_residual[i] = resultview->residual.m_data[i];
+            m_referenceFitGraph.m_residual[i] = resultview->residual.m_data[i];
         }
 
         DrawReference();
@@ -340,11 +341,11 @@ void CReEval_DoEvaluationDlg::DrawReference()
     }
 
     // the width of the fit region (fitHigh - fitLow)
-    m_GraphRef.m_fitLow = window.fitLow - window.startChannel;
-    m_GraphRef.m_fitHigh = window.fitHigh - window.startChannel;
+    m_referenceFitGraph.m_fitLow = window.fitLow - window.startChannel;
+    m_referenceFitGraph.m_fitHigh = window.fitHigh - window.startChannel;
 
     // Draw the fit
-    m_GraphRef.DrawFit(refIndex);
+    m_referenceFitGraph.DrawFit(refIndex);
 
     // update the labels
     if (m_result != nullptr)

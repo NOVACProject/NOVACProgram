@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "FTPSocket.h"
 #include "..\Common\Common.h"
+#include <iterator>
 
 #ifdef _MSC_VER
 #pragma warning (push, 4)

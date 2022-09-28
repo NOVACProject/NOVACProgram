@@ -12,14 +12,14 @@ using namespace ReEvaluation;
 IMPLEMENT_DYNAMIC(CPakFileListBox, CListBox)
 CPakFileListBox::CPakFileListBox()
 {
-    m_reeval = NULL;
-    m_parent = NULL;
+    m_reeval = nullptr;
+    m_parent = nullptr;
 }
 
 CPakFileListBox::~CPakFileListBox()
 {
-    m_reeval = NULL;
-    m_parent = NULL;
+    m_reeval = nullptr;
+    m_parent = nullptr;
 }
 
 
@@ -80,7 +80,7 @@ void CPakFileListBox::OnLButtonDown(UINT nFlags, CPoint point) {
 
 /** Called to show the context menu */
 void CPakFileListBox::OnContextMenu(CWnd* pWnd, CPoint pos) {
-    if (m_parent == NULL)
+    if (m_parent == nullptr)
         return;
 
     OnLButtonDown(MK_LBUTTON, pos); // make the current menu item marked
@@ -88,7 +88,7 @@ void CPakFileListBox::OnContextMenu(CWnd* pWnd, CPoint pos) {
     CMenu menu;
     VERIFY(menu.LoadMenu(IDR_REEVAL_SCAN_CONTEXTMENU));
     CMenu* pPopup = menu.GetSubMenu(0);
-    ASSERT(pPopup != NULL);
+    ASSERT(pPopup != nullptr);
 
     // If there are no files opened, then none can be removed...
     if (m_reeval->m_scanFileNum == 0) {

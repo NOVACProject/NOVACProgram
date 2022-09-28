@@ -4,8 +4,6 @@
 #include "stdafx.h"
 #include "../resource.h"
 #include "FluxHistoryDlg.h"
-#include "afxdialogex.h"
-#include <afxwin.h>
 #include <ctime>
 #include <fstream>
 #include "../Configuration/Configuration.h"
