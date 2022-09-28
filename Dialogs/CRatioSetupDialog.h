@@ -79,6 +79,8 @@ private:
     CString m_minPlumeCompleteness;
     CString m_minScanAngle;
     CString m_maxScanAngle;
+    CString m_minSaturationRatio;
+    CString m_maxSaturationRatio;
 
     BOOL m_requireVisiblePlumeEdges;
 

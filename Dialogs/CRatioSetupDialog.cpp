@@ -32,6 +32,8 @@ CRatioSetupDialog::CRatioSetupDialog(RatioCalculationController* controller, CWn
     , m_polyOrderBrO(_T(""))
     , m_minScanAngle(_T(""))
     , m_maxScanAngle(_T(""))
+    , m_minSaturationRatio(_T(""))
+    , m_maxSaturationRatio(_T(""))
 {
 }
 
@@ -54,7 +56,7 @@ BOOL CRatioSetupDialog::OnInitDialog() {
 
     UpdateDisplayedListOfReferencesPerWindow();
 
-    SetDlgItemText(IDC_STATIC_EXPLANATION, "In addition to this, all too dark and saturated spectra are rejected.");
+    SetDlgItemText(IDC_STATIC_EXPLANATION, "These settings sets boundaries for which spectra to select as in-plume or out-of-plume spectrum. ");
 
     if (!m_toolTip.Create(this)) {
         TRACE0("Failed to create tooltip control\n");
@@ -73,6 +75,11 @@ BOOL CRatioSetupDialog::OnInitDialog() {
     AddTooltipForControl(IDC_EDIT_MIN_IN_PLUME_SPECTRA, "The minimum required good spectra between the two edges of the plume for a BrO/SO2 ratio to be calculated, default 4");
     AddTooltipForControl(IDC_EDIT_MIN_OUT_OF_PLUME_SPECTRA, "The minimum required spectra out of the plume for a BrO/SO2 ratio to be calculated, default 10");
     AddTooltipForControl(IDC_EDIT_MIN_PLUME_COMPLETENESS, "The minimum completeness of the plume for a ratio to be calculated. Range 0.5 to 1.0, default 0.7");
+    AddTooltipForControl(IDC_EDIT_MIN_PLUME_COLUMN_DIFFERENCE, "Minimum required SO2 column difference between in-plume and out-of-plume spectra");
+    AddTooltipForControl(IDC_EDIT_MIN_SCAN_ANGLE, "The lowest scan angle for spectra to include. Range is -90 to +90. Default is -75");
+    AddTooltipForControl(IDC_EDIT_MAX_SCAN_ANGLE, "The highest scan angle for spectra to include. Range is -90 to +90. Default is +75");
+    AddTooltipForControl(IDC_EDIT_MIN_SATURATION_RATIO, "The lowest saturation ratio of spectra to include. Range is 0 to 1, default is 0.12");
+    AddTooltipForControl(IDC_EDIT_MAX_SATURATION_RATIO, "The highest saturation ratio of spectra to include. Range is 0 to 1, default is 0.88");
 
     m_toolTip.SetMaxTipWidth(SHRT_MAX);
     m_toolTip.Activate(TRUE);
@@ -198,6 +205,8 @@ void CRatioSetupDialog::DoDataExchange(CDataExchange* pDX)
     DDX_Text(pDX, IDC_EDIT_MIN_PLUME_COLUMN_DIFFERENCE, m_minInPlumeSpectrumColumnDifference);
     DDX_Text(pDX, IDC_EDIT_MIN_SCAN_ANGLE, m_minScanAngle);
     DDX_Text(pDX, IDC_EDIT_MAX_SCAN_ANGLE, m_maxScanAngle);
+    DDX_Text(pDX, IDC_EDIT_MIN_SATURATION_RATIO, m_minSaturationRatio);
+    DDX_Text(pDX, IDC_EDIT_MAX_SATURATION_RATIO, m_maxSaturationRatio);
 
     DDX_Check(pDX, IDC_CHECK_RATIO_REQUIRE_TWO_PLUME_EDGES, m_requireVisiblePlumeEdges);
 
@@ -212,15 +221,18 @@ BEGIN_MESSAGE_MAP(CRatioSetupDialog, CPropertyPage)
     ON_EN_KILLFOCUS(IDC_EDIT_FITLOW_SO2, &CRatioSetupDialog::OnKillfocusEditBox)
     ON_EN_KILLFOCUS(IDC_EDIT_FITHIGH_SO2, &CRatioSetupDialog::OnKillfocusEditBox)
     ON_EN_KILLFOCUS(IDC_EDIT_POLYNOM, &CRatioSetupDialog::OnKillfocusEditBox)
-    ON_EN_KILLFOCUS(IDC_EDIT_MIN_SCAN_ANGLE, &CRatioSetupDialog::OnKillfocusEditBox)
-    ON_EN_KILLFOCUS(IDC_EDIT_MAX_SCAN_ANGLE, &CRatioSetupDialog::OnKillfocusEditBox)
 
     ON_EN_KILLFOCUS(IDC_EDIT_FITLOW_BRO, &CRatioSetupDialog::OnKillfocusEditBox)
     ON_EN_KILLFOCUS(IDC_EDIT_FITHIGH_BRO, &CRatioSetupDialog::OnKillfocusEditBox)
     ON_EN_KILLFOCUS(IDC_EDIT_POLYNOM2, &CRatioSetupDialog::OnKillfocusEditBox)
+
     ON_EN_KILLFOCUS(IDC_EDIT_MIN_IN_PLUME_SPECTRA, &CRatioSetupDialog::OnKillfocusEditBox)
     ON_EN_KILLFOCUS(IDC_EDIT_MIN_OUT_OF_PLUME_SPECTRA, &CRatioSetupDialog::OnKillfocusEditBox)
     ON_EN_KILLFOCUS(IDC_EDIT_MIN_PLUME_COMPLETENESS, &CRatioSetupDialog::OnKillfocusEditBox)
+    ON_EN_KILLFOCUS(IDC_EDIT_MIN_SCAN_ANGLE, &CRatioSetupDialog::OnKillfocusEditBox)
+    ON_EN_KILLFOCUS(IDC_EDIT_MAX_SCAN_ANGLE, &CRatioSetupDialog::OnKillfocusEditBox)
+    ON_EN_KILLFOCUS(IDC_EDIT_MIN_SATURATION_RATIO, &CRatioSetupDialog::OnKillfocusEditBox)
+    ON_EN_KILLFOCUS(IDC_EDIT_MAX_SATURATION_RATIO, &CRatioSetupDialog::OnKillfocusEditBox)
 
     ON_CBN_SELCHANGE(IDC_COMBO_FIT_TYPE, &CRatioSetupDialog::OnSelchangeComboFitType)
     ON_CBN_SELCHANGE(IDC_COMBO_REFERENCE_UNIT, &CRatioSetupDialog::OnSelchangeComboReferenceUnit)
@@ -368,6 +380,13 @@ void CRatioSetupDialog::OnKillfocusEditBox()
     changedSettings = changedSettings || newMaxScanAngle != m_controller->m_ratioEvaluationSettings.maximumScanAngle;
     m_controller->m_ratioEvaluationSettings.maximumScanAngle = newMaxScanAngle;
 
+    const auto newMinSaturationRatio = std::atof((LPCSTR)m_minSaturationRatio);
+    changedSettings = changedSettings || newMinSaturationRatio != m_controller->m_ratioEvaluationSettings.minSaturationRatio;
+    m_controller->m_ratioEvaluationSettings.minSaturationRatio = newMinSaturationRatio;
+
+    const auto newMaxSaturationRatio = std::atof((LPCSTR)m_maxSaturationRatio);
+    changedSettings = changedSettings || newMaxSaturationRatio != m_controller->m_ratioEvaluationSettings.maxSaturationRatio;
+    m_controller->m_ratioEvaluationSettings.maxSaturationRatio = newMaxSaturationRatio;
 
     if (changedSettings)
     {
@@ -389,6 +408,9 @@ void CRatioSetupDialog::UpdateFitParametersFromController()
 
     m_minScanAngle.Format("%.1lf", m_controller->m_ratioEvaluationSettings.minimumScanAngle);
     m_maxScanAngle.Format("%.1lf", m_controller->m_ratioEvaluationSettings.maximumScanAngle);
+
+    m_minSaturationRatio.Format("%.2lf", m_controller->m_ratioEvaluationSettings.minSaturationRatio);
+    m_maxSaturationRatio.Format("%.2lf", m_controller->m_ratioEvaluationSettings.maxSaturationRatio);
 
     m_minInPlumeSpectrumNumber.Format("%d", m_controller->m_ratioEvaluationSettings.minNumberOfSpectraInPlume);
     m_minOutOfPlumeSpectrumNumber.Format("%d", m_controller->m_ratioEvaluationSettings.numberOfSpectraOutsideOfPlume);
