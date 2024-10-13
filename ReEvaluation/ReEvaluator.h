@@ -7,110 +7,114 @@
 #include <SpectralEvaluation/Spectra/Spectrum.h>
 #include <SpectralEvaluation/File/ScanFileHandler.h>
 #include "../Configuration/Configuration.h"
+#include "../NovacProgramLog.h"
 
 #define MAX_N_SCANFILES 64
 
 
 namespace ReEvaluation
 {
-    class CReEvaluator
-    {
-    public:
-        CReEvaluator();
 
-        /** The maximum number of fit windows that can be defined */
-        static const long MAX_N_WINDOWS = 10;
+class CReEvaluator
+{
+public:
+    CReEvaluator();
 
-        /** The minimum credible intensity, spectra with intensity below this
-            value will be treated as dark. */
-        static const long MINIMUM_CREDIBLE_INTENSITY = 600;
+    /** The maximum number of fit windows that can be defined */
+    static const long MAX_N_WINDOWS = 10;
 
-        /**  this is true if the reevaluation is running, else false */
-        bool  fRun;
+    /** The minimum credible intensity, spectra with intensity below this
+        value will be treated as dark. */
+    static const long MINIMUM_CREDIBLE_INTENSITY = 600;
 
-        /** If this is true then the reevaluator will sleep beteween each spectrum evaluation */
-        int   m_pause;
+    /**  this is true if the reevaluation is running, else false */
+    bool  fRun;
 
-        /** True if the thread is currently sleeping */
-        bool  m_sleeping;
+    /** If this is true then the reevaluator will sleep beteween each spectrum evaluation */
+    int   m_pause;
 
-        /** The pak-files to reevaluate */
-        CArray <CString, CString&> m_scanFile;
+    /** True if the thread is currently sleeping */
+    bool  m_sleeping;
 
-        /** The number of pak-files opened */
-        long    m_scanFileNum;
+    /** The pak-files to reevaluate */
+    CArray <CString, CString&> m_scanFile;
 
-        /** The fit windows */
-        novac::CFitWindow  m_window[MAX_N_WINDOWS];
+    /** The number of pak-files opened */
+    long    m_scanFileNum;
 
-        /** How many windows are defined? */
-        long        m_windowNum;
+    /** The fit windows */
+    novac::CFitWindow  m_window[MAX_N_WINDOWS];
 
-        /** Which is the current fit window? */
-        long        m_curWindow;
+    /** How many windows are defined? */
+    long        m_windowNum;
 
-        /** True if the spectra that we're treating are averaged, not summed */
-        bool        m_averagedSpectra;
+    /** Which is the current fit window? */
+    long        m_curWindow;
 
-        /** a string that is updated with information about progres in the calculations.
-            every time the string is changed a message is sent to 'pView' */
-        CString     m_statusMsg;
+    /** True if the spectra that we're treating are averaged, not summed */
+    bool        m_averagedSpectra;
 
-        /** The fit results */
-        novac::CEvaluationResult m_results;
+    /** a string that is updated with information about progres in the calculations.
+        every time the string is changed a message is sent to 'pView' */
+    CString     m_statusMsg;
 
-        /** when doing lengthy calculations the value of this double varies from 0 (in the beginning) to 1 (in the end)
-        every now and then a WM_PROGRESS message is sent to the window pView if pView != NULL
-        when the process is finished the window is sent the message WM_DONE */
-        double  m_progress;
-        CWnd* pView;
+    /** The fit results */
+    novac::CEvaluationResult m_results;
 
-        /** The directory in which the output is currently directed */
-        CString   m_outputDir;
+    /** when doing lengthy calculations the value of this double varies from 0 (in the beginning) to 1 (in the end)
+    every now and then a WM_PROGRESS message is sent to the window pView if pView != NULL
+    when the process is finished the window is sent the message WM_DONE */
+    double  m_progress;
+    CWnd* pView;
 
-        /** The file name of the current evaluation log, stored in the m_outputDir directory */
-        CString   m_evalLog[MAX_N_WINDOWS];
+    /** The directory in which the output is currently directed */
+    CString   m_outputDir;
 
-        /** The options for which spectra to ignore */
-        Evaluation::IgnoreOption  m_ignore_Lower;
-        Evaluation::IgnoreOption  m_ignore_Upper;
+    /** The file name of the current evaluation log, stored in the m_outputDir directory */
+    CString   m_evalLog[MAX_N_WINDOWS];
 
-        /** The options for how to get the sky spectrum */
-        Configuration::CSkySettings m_skySettings;
+    /** The options for which spectra to ignore */
+    Evaluation::IgnoreOption  m_ignore_Lower;
+    Evaluation::IgnoreOption  m_ignore_Upper;
 
-        /** The settings for how to handle the dark-measurements */
-        Configuration::CDarkSettings m_darkSettings;
+    /** The options for how to get the sky spectrum */
+    Configuration::CSkySettings m_skySettings;
 
-    public:
+    /** The settings for how to handle the dark-measurements */
+    Configuration::CDarkSettings m_darkSettings;
 
-        // ------------------------- METHODS ------------------------------
+public:
 
-        /** Halts the current operation */
-        bool Stop();
+    // ------------------------- METHODS ------------------------------
 
-        /** This function takes care of the actual evaluation */
-        bool DoEvaluation();
+    /** Halts the current operation */
+    bool Stop();
 
-        /** Checks the settings before the evaluation */
-        bool MakeInitialSanityCheck();
+    /** This function takes care of the actual evaluation */
+    bool DoEvaluation();
 
-        /** Creates the output directory for the current scan file */
-        bool CreateOutputDirectory();
+    /** Checks the settings before the evaluation */
+    bool MakeInitialSanityCheck();
 
-        /** Creates, and writes the header in the evaluation log for
-            the current scan file and the current fit window. */
-        bool  WriteEvaluationLogHeader(int fitWindowIndex);
+    /** Creates the output directory for the current scan file */
+    bool CreateOutputDirectory();
 
-        /** Appends the evaluation result to the evaluation log */
-        bool AppendResultToEvaluationLog(const Evaluation::CScanResult& result, const novac::CScanFileHandler& scan, int fitWindowIndex);
+    /** Creates, and writes the header in the evaluation log for
+        the current scan file and the current fit window. */
+    bool  WriteEvaluationLogHeader(int fitWindowIndex);
 
-        /** Sorts the scans in the array 'm_scanFile' in alphabetical order */
-        void SortScans();
+    /** Appends the evaluation result to the evaluation log */
+    bool AppendResultToEvaluationLog(const Evaluation::CScanResult& result, const novac::CScanFileHandler& scan, int fitWindowIndex);
 
-    private:
+    /** Sorts the scans in the array 'm_scanFile' in alphabetical order */
+    void SortScans();
 
-        /** Prepares for evaluation */
-        bool PrepareEvaluation();
+private:
 
-    };
+    NovacProgramLog m_log;
+
+    /** Prepares for evaluation */
+    bool PrepareEvaluation();
+
+};
 }

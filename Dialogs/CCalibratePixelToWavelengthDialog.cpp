@@ -31,7 +31,7 @@ CCalibratePixelToWavelengthDialog::CCalibratePixelToWavelengthDialog(CWnd* pPare
 {
     wavelengthCalibrationDialog = this;
 
-    m_controller = new NovacProgramWavelengthCalibrationController();
+    m_controller = new NovacProgramWavelengthCalibrationController(m_log);
 }
 
 CCalibratePixelToWavelengthDialog::~CCalibratePixelToWavelengthDialog()
@@ -599,7 +599,7 @@ LRESULT CCalibratePixelToWavelengthDialog::OnCalibrationDone(WPARAM wParam, LPAR
         m_runButton.SetWindowTextA(runButtonOriginalText);
     }
 
-    m_viewLogButton.EnableWindow(m_controller->m_log.size() > 0);
+    m_viewLogButton.EnableWindow(m_controller->m_logMessages.size() > 0);
 
     return 0;
 }
@@ -611,7 +611,7 @@ void CCalibratePixelToWavelengthDialog::HandleCalibrationFailure(const char* err
     m_saveCalibrationButton.EnableWindow(FALSE);
     m_saveReferencesButton.EnableWindow(FALSE);
     m_runButton.EnableWindow(TRUE);
-    m_viewLogButton.EnableWindow(m_controller->m_log.size() > 0);
+    m_viewLogButton.EnableWindow(m_controller->m_logMessages.size() > 0);
 
     SaveSetup();
     UpdateGraph();
@@ -736,7 +736,7 @@ void CCalibratePixelToWavelengthDialog::OnBnClickedSetupWavelengthCalibration()
 
 void CCalibratePixelToWavelengthDialog::OnBnClickedButtonViewLog()
 {
-    CLogDialog logDialog{ m_controller->m_log };
+    CLogDialog logDialog{ m_controller->m_logMessages };
     logDialog.DoModal();
 }
 

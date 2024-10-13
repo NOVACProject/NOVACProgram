@@ -65,6 +65,7 @@ int Equals(const CString& str1, const CString& str2, unsigned int nCharacters);
 void UploadToNOVACServer(const CString& fileName, int volcanoIndex, bool deleteFile = false);
 
 /** Shows a message in the message box list in the main window */
+void ShowMessage(const std::string& message);
 void ShowMessage(const CString& message);
 void ShowMessage(const TCHAR message[]);
 void ShowMessage(const CString& message, CString connectionID);

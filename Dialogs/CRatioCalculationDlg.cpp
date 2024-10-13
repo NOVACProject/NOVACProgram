@@ -13,7 +13,7 @@
 CRatioCalculationDlg::CRatioCalculationDlg()
     : CPropertySheet()
 {
-    m_controller = new RatioCalculationController();
+    m_controller = new RatioCalculationController(m_log);
     m_controller->LoadSetup(SetupFilePath());
 
     m_selectScanFilesPage = new CRatioScanFilesDialog(m_controller);

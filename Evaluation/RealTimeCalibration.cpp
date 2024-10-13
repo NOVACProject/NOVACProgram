@@ -3,6 +3,7 @@
 #include "../Common/Common.h"
 #include "../Evaluation/Spectrometer.h"
 #include "../Configuration/ConfigurationFileHandler.h"
+#include "../NovacProgramLog.h"
 #include <SpectralEvaluation/DialogControllers/NovacProgramWavelengthCalibrationController.h>
 #include <SpectralEvaluation/DialogControllers/ReferenceCreationController.h>
 #include <SpectralEvaluation/File/File.h>
@@ -316,12 +317,14 @@ bool CRealTimeCalibration::RunInstrumentCalibration(
 {
     try
     {
+        NovacProgramLog log;
+
         const auto& autoCalibrationSettings = spectrometer.m_scanner.spec[0].channel[0].autoCalibration;
 
         // Use the WavelengthCalibrationController, which is also used when the 
         //  user performs the instrument calibrations using the CCalibratePixelToWavelengthDialog.
         // This makes sure we get the same behavior in the dialog and here.
-        NovacProgramWavelengthCalibrationController calibrationController;
+        NovacProgramWavelengthCalibrationController calibrationController(log);
         RunCalibration(calibrationController, scanFile, autoCalibrationSettings);
 
         // Save new instrument calibration.

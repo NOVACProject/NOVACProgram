@@ -5,7 +5,7 @@
 #include "FTPHandler.h"
 #include "SerialControllerWithTx.h"
 #include "NodeControlInfo.h"
-//#include "../Common/Spectra/PakFileHandler.h"
+#include "../NovacProgramLog.h"
 
 #ifdef _MSC_VER
 // Make sure to use warning level 4
@@ -212,6 +212,8 @@ UINT PollDirectory(LPVOID pParam) {
     timeStruct wakeupTime = g_settings.scanner[mainIndex].comm.wakeupTime;
     CString serialId = g_settings.scanner[mainIndex].spec[0].serialNumber;
     
+    NovacProgramLog log;
+
     while (g_runFlag)
     {
         // --------------- CHECK IF WE SHOULD GO TO SLEEP OR WAKE UP ---------------
@@ -253,7 +255,7 @@ UINT PollDirectory(LPVOID pParam) {
                 pView->PostMessage(WM_SCANNER_RUN, (WPARAM) & (serialId), 0);
                 message.Format("%d pak files found for %s", pakFilesToEvaluate.GetSize(), serialId);
                 ShowMessage(message);
-                CPakFileHandler pakFileHandler;
+                CPakFileHandler pakFileHandler(log);
                 POSITION pos = pakFilesToEvaluate.GetHeadPosition();
                 while (pos != nullptr)
                 {

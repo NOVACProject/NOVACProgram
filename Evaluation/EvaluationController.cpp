@@ -3,6 +3,7 @@
 #include "ScanEvaluation.h"
 #include <SpectralEvaluation/File/SpectrumIO.h>
 #include "../Common/Version.h"
+#include "../NovacProgramLog.h"
 
 #ifdef _MSC_VER
 #pragma warning (push, 4)
@@ -218,7 +219,7 @@ RETURN_CODE CEvaluationController::EvaluateScan(const CString& fileName, int vol
 
     // The CScanFileHandler is a structure for reading the 
     //		spectral information from the scan-file
-    std::unique_ptr<CScanFileHandler> scan = std::make_unique<CScanFileHandler>();
+    std::unique_ptr<CScanFileHandler> scan = std::make_unique<CScanFileHandler>(m_log);
 
     // success is true if the evaluation is successful
     bool success = true;
@@ -239,7 +240,8 @@ RETURN_CODE CEvaluationController::EvaluateScan(const CString& fileName, int vol
 
     // 2. Read the scan file
     const std::string fileNameStr((LPCSTR)fileName);
-    if (!scan->CheckScanFile(fileNameStr)) {
+    novac::LogContext context("file", fileNameStr);
+    if (!scan->CheckScanFile(context, fileNameStr)) {
         m_logFileWriter.WriteErrorMessage(TEXT("Could not read recieved scan"));
         return FAIL;
     }
@@ -257,7 +259,8 @@ RETURN_CODE CEvaluationController::EvaluateScan(const CString& fileName, int vol
     GetSpectrumInformation(spectrometer, fileName);
 
     // 5. Evaluate the scan
-    std::unique_ptr<CScanEvaluation> ev = std::make_unique<CScanEvaluation>();
+    NovacProgramLog log;
+    std::unique_ptr<CScanEvaluation> ev = std::make_unique<CScanEvaluation>(log);
     ev->m_pause = nullptr;
     const Configuration::CDarkSettings* darkSettings = &spectrometer->m_settings.channel[0].darkSettings;
     const long numberOfEvaluatedSpectra = ev->EvaluateScan(fileName, spectrometer->m_fitWindows[0], nullptr, darkSettings);
@@ -1072,10 +1075,11 @@ void CEvaluationController::GetSpectrumInformation(CSpectrometer* spectrometer, 
     double lat, lon, alt;
 
     // 1. Open the file for reading
-    CScanFileHandler scan;
+    CScanFileHandler scan(m_log);
 
     const std::string fileNameStr((LPCSTR)fileName);
-    scan.CheckScanFile(fileNameStr);
+    novac::LogContext context("file", fileNameStr);
+    scan.CheckScanFile(context, fileNameStr);
     scan.GetDark(darkSpec);
     scan.GetSky(skySpec);
 

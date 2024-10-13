@@ -2,7 +2,7 @@
 #include "afxdlgs.h"
 
 #include "../Graphs/GraphCtrl.h"
-
+#include "../NovacProgramLog.h"
 #include <string>
 
 // CCalibratePixelToWavelengthDialog dialog
@@ -137,6 +137,8 @@ private:
     void UpdateRedLegend(bool show, const char* message = nullptr);
 
     void HandleCalibrationFailure(const char* errorMessage);
+
+    NovacProgramLog m_log;
 
     NovacProgramWavelengthCalibrationController* m_controller;
 

@@ -3,6 +3,7 @@
 #include <SpectralEvaluation/StringUtils.h>
 #include <SpectralEvaluation/File/ScanFileHandler.h>
 #include <SpectralEvaluation/File/SpectrumIO.h>
+#include "../../NovacProgramLog.h"
 
 #ifdef _MSC_VER
 #pragma warning (push, 4)
@@ -19,7 +20,8 @@ extern CWinThread *g_eval;               // <-- The evaluation thread
 extern CFormView *pView;                 // <-- The screen
 extern CConfigurationSetting g_settings; // <-- The settings
 
-CPakFileHandler::CPakFileHandler(void)
+CPakFileHandler::CPakFileHandler(novac::ILogger& log)
+    : m_log(log)
 {
     m_tempIndex = 0;
     m_initializedOutput = false;
@@ -554,9 +556,11 @@ int CPakFileHandler::GetSpectrometerIndex(const CString &serialNumber)
 MEASUREMENT_MODE CPakFileHandler::GetMeasurementMode(const CString &fileName)
 {
     const std::string fileNameStr((LPCSTR)fileName);
+    NovacProgramLog log;
 
-    CScanFileHandler scan;
-    scan.CheckScanFile(fileNameStr);
+    novac::LogContext context;
+    CScanFileHandler scan(log);
+    scan.CheckScanFile(context, fileNameStr);
 
     if (CPakFileHandler::IsStratosphericMeasurement(scan))
     {
@@ -591,6 +595,8 @@ MEASUREMENT_MODE CPakFileHandler::GetMeasurementMode(const CString &fileName)
 
 bool CPakFileHandler::IsFixedAngleMeasurement(CScanFileHandler& file)
 {
+    novac::LogContext context("file", file.GetFileName());
+
     // 1. Count the number of spectra
     const int numSpec = file.GetSpectrumNumInFile();
     if (numSpec <= 2)
@@ -602,7 +608,7 @@ bool CPakFileHandler::IsFixedAngleMeasurement(CScanFileHandler& file)
     //      If this is larger than 75, then the measurement is a stratospheric measurement
     //      and not a wind-speed measurement
     CSpectrum spectrum;
-    if (1 != file.GetSpectrum(spectrum, 0))
+    if (1 != file.GetSpectrum(context, spectrum, 0))
     {
         return false;
     }
@@ -635,7 +641,7 @@ bool CPakFileHandler::IsFixedAngleMeasurement(CScanFileHandler& file)
 
     // 3. Go through the file, starting at the last spectrum in the file.
     //      Skip the last few spectra since there might be a dark measurement in the end...
-    if (1 != file.GetSpectrum(spectrum, numSpec - 3))
+    if (1 != file.GetSpectrum(context, spectrum, numSpec - 3))
     {
         return false;
     }
@@ -645,7 +651,7 @@ bool CPakFileHandler::IsFixedAngleMeasurement(CScanFileHandler& file)
     int nRepetitions = 0; // <-- The number of repetitions at one specific scan angle
     for (int specIndex = numSpec - 4; specIndex > 0; --specIndex)
     {
-        if (1 != file.GetSpectrum(spectrum, specIndex))
+        if (1 != file.GetSpectrum(context, spectrum, specIndex))
         {
             // failed to read the spectrum
             break;
@@ -672,6 +678,8 @@ bool CPakFileHandler::IsFixedAngleMeasurement(CScanFileHandler& file)
 
 bool CPakFileHandler::IsWindSpeedMeasurement(CScanFileHandler& file)
 {
+    novac::LogContext context("file", file.GetFileName());
+
     // 1. Count the number of spectra
     const int numSpec = file.GetSpectrumNumInFile();
     if (numSpec <= 2)
@@ -683,7 +691,7 @@ bool CPakFileHandler::IsWindSpeedMeasurement(CScanFileHandler& file)
     //      If this is larger than 75, then the measurement is a stratospheric measurement
     //      and not a wind-speed measurement
     CSpectrum spectrum;
-    if (SUCCESS != file.GetSpectrum(spectrum, 0))
+    if (SUCCESS != file.GetSpectrum(context, spectrum, 0))
     {
         return false;
     }
@@ -715,7 +723,7 @@ bool CPakFileHandler::IsWindSpeedMeasurement(CScanFileHandler& file)
             repetitions at a single scan-angle.  */
 
             // 3. Go through the file, starting at the last spectrum in the file.
-    if (1 != file.GetSpectrum(spectrum, numSpec - 3))
+    if (1 != file.GetSpectrum(context, spectrum, numSpec - 3))
     {
         return false;
     }
@@ -725,7 +733,7 @@ bool CPakFileHandler::IsWindSpeedMeasurement(CScanFileHandler& file)
     int nRepetitions = 0; // <-- The number of repetitions at one specific scan angle
     for (int specIndex = numSpec - 4; specIndex > 0; --specIndex)
     {
-        if (1 != file.GetSpectrum(spectrum, specIndex))
+        if (1 != file.GetSpectrum(context, spectrum, specIndex))
         {
             // failed to read the spectrum
             break;
@@ -755,6 +763,8 @@ bool CPakFileHandler::IsWindSpeedMeasurement(CScanFileHandler& file)
 
 bool CPakFileHandler::IsStratosphericMeasurement(CScanFileHandler& scan)
 {
+    novac::LogContext context("file", scan.GetFileName());
+
     int nRepetitions = 0; // <-- The number of repetitions at one specific scan angle
 
     // 1. Count the number of spectra
@@ -768,7 +778,7 @@ bool CPakFileHandler::IsStratosphericMeasurement(CScanFileHandler& scan)
     //      If this is larger than 75, then the measurement is a stratospheric measurement
     //      and not a wind-speed measurement
     CSpectrum spectrum;
-    if (1 != scan.GetSpectrum(spectrum, 0))
+    if (1 != scan.GetSpectrum(context, spectrum, 0))
     {
         return false;
     }
@@ -795,7 +805,7 @@ bool CPakFileHandler::IsStratosphericMeasurement(CScanFileHandler& scan)
     // 3. Go through the file, starting at the second last spectrum in the file.
     for (int specIndex = numSpec - 2; specIndex > 0; --specIndex)
     {
-        if (1 != scan.GetSpectrum(spectrum, specIndex))
+        if (1 != scan.GetSpectrum(context, spectrum, specIndex))
         {
             // failed to read the spectrum
             break;
@@ -829,11 +839,12 @@ bool CPakFileHandler::IsDirectSunMeasurement(CScanFileHandler& file)
 {
     CSpectrum spec;
     int numberOfFoundDirectSunSpectra = 0;
+    novac::LogContext context("file", file.GetFileName());
 
     // It is here assumed that the measurement is a direct-sun measurment
     //  if there is at least 5 spectrum with the name 'direct_sun'
     file.ResetCounter();
-    while (file.GetNextSpectrum(spec))
+    while (file.GetNextSpectrum(context, spec))
     {
         if (EqualsIgnoringCase(spec.m_info.m_name, "direct_sun"))
         {
@@ -851,12 +862,14 @@ bool CPakFileHandler::IsDirectSunMeasurement(CScanFileHandler& file)
 bool CPakFileHandler::IsLunarMeasurement(CScanFileHandler& file)
 {
     int numberOfFoundLunarSpectra = 0;
+    novac::LogContext context("file", file.GetFileName());
+
 
     // It is here assumed that the measurement is a direct-sun measurment
     //   if there is at least 5 spectrum with the name 'lunar'
     file.ResetCounter();
     CSpectrum spec;
-    while (file.GetNextSpectrum(spec))
+    while (file.GetNextSpectrum(context, spec))
     {
         if (EqualsIgnoringCase(spec.m_info.m_name, "lunar"))
         {
@@ -873,6 +886,8 @@ bool CPakFileHandler::IsLunarMeasurement(CScanFileHandler& file)
 
 bool CPakFileHandler::IsCompositionMeasurement(CScanFileHandler& file)
 {
+    novac::LogContext context("file", file.GetFileName());
+
     // It is here assumed that the measurement is a composition measurment
     //  if there is 
     //      * at least 1 spectrum with the name 'offset'
@@ -881,7 +896,7 @@ bool CPakFileHandler::IsCompositionMeasurement(CScanFileHandler& file)
     file.ResetCounter();
 
     CSpectrum spec;
-    while (file.GetNextSpectrum(spec))
+    while (file.GetNextSpectrum(context, spec))
     {
         if (EqualsIgnoringCase(spec.m_info.m_name, "comp"))
         {

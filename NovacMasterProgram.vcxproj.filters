@@ -780,6 +780,12 @@
     <ClCompile Include="DlgControls\CustomDrawTreeCtrl.cpp">
       <Filter>Source Files\DlgControls</Filter>
     </ClCompile>
+    <ClCompile Include="NovacProgramLog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Log.cpp">
+      <Filter>Source Files\SpectralEvaluation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Configuration\AdvancedFTPUploadSettings.h">
@@ -1534,6 +1540,9 @@
     </ClInclude>
     <ClInclude Include="DlgControls\CustomDrawTreeCtrl.h">
       <Filter>Header Files\DlgControls</Filter>
+    </ClInclude>
+    <ClInclude Include="NovacProgramLog.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -182,6 +182,15 @@ void ShowMessage(const CString& message) {
     if (pView != NULL)
         pView->PostMessage(WM_SHOW_MESSAGE, (WPARAM)msg, NULL);
 }
+void ShowMessage(const std::string& message) {
+    CString* msg = new CString();
+    CString timeTxt;
+    Common commonObj;
+    commonObj.GetDateTimeText(timeTxt);
+    msg->Format("%s -- %s", message.c_str(), (LPCSTR)timeTxt);
+    if (pView != NULL)
+        pView->PostMessage(WM_SHOW_MESSAGE, (WPARAM)msg, NULL);
+}
 void ShowMessage(const CString& message, CString connectionID) {
     CString* msg = new CString();
     CString timeTxt;

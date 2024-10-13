@@ -177,7 +177,7 @@ UINT SplitPakFiles(LPVOID pParam) {
     Dialogs::CSplitPakFilesDlg* dialog = (Dialogs::CSplitPakFilesDlg*)pParam;
 
     // create a new pakfilehandler
-    FileHandler::CPakFileHandler* pakFileHandler = new FileHandler::CPakFileHandler();
+    FileHandler::CPakFileHandler* pakFileHandler = new FileHandler::CPakFileHandler(dialog->m_log);
 
     // loop through all .pak files in the list
     POSITION pos = dialog->m_pakFile.GetHeadPosition();

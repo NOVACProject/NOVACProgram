@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "MasterController.h"
 #include "Common/Common.h"
+#include "NovacProgramLog.h"
 
 #ifdef _MSC_VER
 #pragma warning (push, 4)
@@ -214,10 +215,12 @@ UINT CheckForOldSpectra(LPVOID /*pParam*/)
         Common::CheckForSpectraInDir(path, pakFilesToEvaluate);
     }
 
+    NovacProgramLog log;
+
     // 4. Go through all the spectrum files found and evaluate them
     if (!pakFilesToEvaluate.IsEmpty())
     {
-        CPakFileHandler pakFileHandler;
+        CPakFileHandler pakFileHandler(log);
         POSITION pos = pakFilesToEvaluate.GetHeadPosition();
         while (pos != nullptr)
         {

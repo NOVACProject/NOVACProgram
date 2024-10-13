@@ -2,6 +2,7 @@
 #include "afxdlgs.h"
 
 #include <string>
+#include "../NovacProgramLog.h"
 
 class RatioCalculationController;
 
@@ -23,6 +24,8 @@ private:
     CPropertyPage* m_selectScanFilesPage;
     CPropertyPage* m_setupEvaluationPage;
     CPropertyPage* m_runEvaluationPage;
+
+    NovacProgramLog m_log;
 
     // The controller which performs the ratio calculations.
     // Notice that this is the owning class for the pointer and will delete it when done. 

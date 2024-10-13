@@ -8,10 +8,13 @@
 #include <SpectralEvaluation/StringUtils.h>
 #include <SpectralEvaluation/Spectra/SpectrometerModel.h>
 
+#include <sstream>
+
 using namespace Evaluation;
 using namespace novac;
 
-CScanEvaluation::CScanEvaluation()
+CScanEvaluation::CScanEvaluation(novac::ILogger& log)
+    : novac::ScanEvaluationBase(log)
 {
     m_result = nullptr;
     m_skySettings.skyOption = Configuration::SKY_OPTION::MEASURED_IN_SCAN;
@@ -65,6 +68,8 @@ long CScanEvaluation::EvaluateScan(const CString& scanfile, const CFitWindow& wi
     double highestColumn = 0.0;	// the highest column-value in the evaluation
     bool success = true;
 
+    novac::LogContext context("file", std::string(scanfile));
+
     // variables for storing the sky, dark and the measured spectra
     CSpectrum sky, dark, current;
 
@@ -80,15 +85,22 @@ long CScanEvaluation::EvaluateScan(const CString& scanfile, const CFitWindow& wi
 
     // The CScanFileHandler is a structure for reading the spectral information 
     //  from the scan-file
-    CScanFileHandler scan;
+    CScanFileHandler scan(m_log);
 
     // Check the scan file, make sure it's correct and that the file
     //	actually contains spectra
     const std::string scanFileName((LPCSTR)scanfile);
-    if (!scan.CheckScanFile(scanFileName))
+    if (!scan.CheckScanFile(context, scanFileName))
     {
         return 0;
     }
+
+    if (SUCCESS != GetSky(&scan, sky))
+    {
+        return 0;
+    }
+    novac::SpectrometerModel spectrometerModel = novac::CSpectrometerDatabase::GetInstance().GuessModelFromSerial(sky.m_info.m_device);
+    context = context.With("model", spectrometerModel.modelName);
 
     // make a backup of the fit window (this function may make some changes to the
     //  fit window, and we should be able to restore the old values on return).
@@ -128,7 +140,7 @@ long CScanEvaluation::EvaluateScan(const CString& scanfile, const CFitWindow& wi
 
         copyOfWindow.fraunhoferRef.ReadCrossSectionDataFromFile();
 
-        CEvaluationBase* newEval = FindOptimumShiftAndSqueezeFromFraunhoferReference(copyOfWindow, *darkSettings, m_skySettings, scan);
+        CEvaluationBase* newEval = FindOptimumShiftAndSqueezeFromFraunhoferReference(context, copyOfWindow, spectrometerModel, *darkSettings, m_skySettings, scan);
 
         if (m_lastErrorMessage.size() > 0)
         {
@@ -143,12 +155,12 @@ long CScanEvaluation::EvaluateScan(const CString& scanfile, const CFitWindow& wi
         else
         {
             ShowMessage(m_lastErrorMessage.c_str());
-            eval = std::make_unique<CEvaluationBase>(copyOfWindow);
+            eval = std::make_unique<CEvaluationBase>(copyOfWindow, m_log);
         }
     }
     else
     {
-        eval = std::make_unique<CEvaluationBase>(copyOfWindow);
+        eval = std::make_unique<CEvaluationBase>(copyOfWindow, m_log);
     }
 
     // Get the sky and dark spectra and divide them by the number of 
@@ -211,7 +223,7 @@ long CScanEvaluation::EvaluateScan(const CString& scanfile, const CFitWindow& wi
             int	spectrumIndex = current.ScanIndex();
 
             // a. Read the next spectrum from the file
-            int ret = scan.GetNextSpectrum(current);
+            int ret = scan.GetNextSpectrum(context, current);
 
             if (ret == 0)
             {
@@ -371,7 +383,7 @@ long CScanEvaluation::EvaluateScan(const CString& scanfile, const CFitWindow& wi
                     newWindow.ref[k].m_squeezeValue = result.m_referenceResult[0].m_squeeze;
                 }
 
-                eval.reset(new CEvaluationBase{ newWindow });
+                eval.reset(new CEvaluationBase{ newWindow, m_log });
 
                 // tell the new evaluator which sky-spectrum to use
                 eval->SetSkySpectrum(sky);
@@ -465,6 +477,8 @@ RETURN_CODE CScanEvaluation::GetDark(CScanFileHandler* scan, const CSpectrum& sp
 RETURN_CODE CScanEvaluation::GetSky(CScanFileHandler* scan, CSpectrum& sky) {
     CString errorMsg;
 
+    novac::LogContext context("file", scan->GetFileName());
+
     // If the sky spectrum is the first spectrum in the scan
     if (m_skySettings.skyOption == Configuration::SKY_OPTION::MEASURED_IN_SCAN) {
         scan->GetSky(sky);
@@ -490,7 +504,7 @@ RETURN_CODE CScanEvaluation::GetSky(CScanFileHandler* scan, CSpectrum& sky) {
             sky = tmp;
         else
             sky.Clear();
-        while (scan->GetNextSpectrum(tmp)) {
+        while (scan->GetNextSpectrum(context, tmp)) {
             intens = tmp.MaxValue(fitLow, fitHigh);
             if (intens < 4095 * tmp.NumSpectra() && !tmp.IsDark())
                 sky.Add(tmp);
@@ -505,7 +519,7 @@ RETURN_CODE CScanEvaluation::GetSky(CScanFileHandler* scan, CSpectrum& sky) {
 
     // If the user wants to use another spectrum than 'sky' as reference-spectrum...
     if (m_skySettings.skyOption == Configuration::SKY_OPTION::SPECTRUM_INDEX_IN_SCAN) {
-        if (0 == scan->GetSpectrum(sky, m_skySettings.indexInScan))
+        if (0 == scan->GetSpectrum(context, sky, m_skySettings.indexInScan))
             return FAIL;
 
         if (sky.m_info.m_interlaceStep > 1)
@@ -589,6 +603,8 @@ CEvaluationResult CScanEvaluation::FindOptimumShiftAndSqueeze(const CEvaluationB
     int specieNum = 0;
     CString message;
 
+    novac::LogContext context("file", scan->GetFileName());
+
     // 1. Find the spectrum with the highest column value
 
     // 2. Make sure that this spectrum was ok and that the column-value is high enough
@@ -634,7 +650,7 @@ CEvaluationResult CScanEvaluation::FindOptimumShiftAndSqueeze(const CEvaluationB
     sky.Sub(dark);
 
     // Get the measured spectrum
-    scan->GetSpectrum(spec, 2 + m_indexOfMostAbsorbingSpectrum); // The two comes from the sky and the dark spectra in the beginning
+    scan->GetSpectrum(context, spec, 2 + m_indexOfMostAbsorbingSpectrum); // The two comes from the sky and the dark spectra in the beginning
     if (spec.m_info.m_interlaceStep > 1) {
         spec.InterpolateSpectrum();
     }
@@ -647,7 +663,7 @@ CEvaluationResult CScanEvaluation::FindOptimumShiftAndSqueeze(const CEvaluationB
     spec.Sub(dark);
 
     // Evaluate
-    CEvaluationBase newEval{ newFitWindow };
+    CEvaluationBase newEval{ newFitWindow, m_log };
     newEval.SetSkySpectrum(sky);
     newEval.Evaluate(spec, 5000);
 
@@ -666,7 +682,6 @@ CEvaluationResult CScanEvaluation::FindOptimumShiftAndSqueeze(const CEvaluationB
 CFitWindow* CScanEvaluation::FindOptimumShiftAndSqueeze_Fraunhofer(const CEvaluationBase* originalEvaluation, CScanFileHandler* scan)
 {
     CFitWindow newFitWindow = originalEvaluation->FitWindow(); // Create a local copy which we can modify
-    double shift, shiftError, squeeze, squeezeError;
     long fitLow = newFitWindow.fitLow;
     long fitHigh = newFitWindow.fitHigh;
     CSpectrum spectrum, dark;
@@ -676,6 +691,8 @@ CFitWindow* CScanEvaluation::FindOptimumShiftAndSqueeze_Fraunhofer(const CEvalua
     int curIndex = 0;
     const int INDEX_OF_SKYSPECTRUM = -1;
     const int NO_SPECTRUM_INDEX = -2;
+
+    novac::LogContext context("file", scan->GetFileName());
 
     // 1. Find the spectrum for which we should determine shift & squeeze
     //      This spectrum should have high enough intensity in the fit-region
@@ -699,7 +716,7 @@ CFitWindow* CScanEvaluation::FindOptimumShiftAndSqueeze_Fraunhofer(const CEvalua
 
     scan->ResetCounter(); // start from the beginning
 
-    while (scan->GetNextSpectrum(spectrum)) {
+    while (scan->GetNextSpectrum(context, spectrum)) {
         fitIntensity = spectrum.MaxValue(fitLow, fitHigh);
         maxInt = CSpectrometerDatabase::GetInstance().GetModel(spectrum.m_info.m_specModelName).FullDynamicRangeForSpectrum(spectrum.m_info);
 
@@ -733,7 +750,7 @@ CFitWindow* CScanEvaluation::FindOptimumShiftAndSqueeze_Fraunhofer(const CEvalua
         message.Format("Determining shift and squeeze from sky-spectrum");
     }
     else {
-        scan->GetSpectrum(spectrum, indexOfMostSuitableSpectrum);
+        scan->GetSpectrum(context, spectrum, indexOfMostSuitableSpectrum);
         message.Format("Determining shift and squeeze from spectrum %d", indexOfMostSuitableSpectrum);
     }
 
@@ -754,31 +771,38 @@ CFitWindow* CScanEvaluation::FindOptimumShiftAndSqueeze_Fraunhofer(const CEvalua
     ShowMessage(message);
 
     // 3. Do the evaluation.
-    CEvaluationBase shiftEvaluator{ newFitWindow };
+    CEvaluationBase shiftEvaluator{ newFitWindow, m_log };
 
-    if (shiftEvaluator.EvaluateShift(spectrum, shift, shiftError, squeeze, squeezeError)) {
+    novac::ShiftEvaluationResult shiftResult;
+    if (shiftEvaluator.EvaluateShift(context, spectrum, shiftResult)) {
         // We failed to make the fit, what shall we do now??
         ShowMessage("Failed to determine shift and squeeze. Will proceed with default parameters.");
         return nullptr;
     }
-    else {
-        if (fabs(shiftError) < 1 && fabs(squeezeError) < 0.01)
+    else
+    {
+        if (std::abs(shiftResult.shiftError) < 1 &&
+            std::abs(shiftResult.squeezeError) < 0.01 &&
+            std::abs(shiftResult.chi2) < 2.0)
         {
             CFitWindow* bestFitWindow = new CFitWindow{ originalEvaluation->FitWindow() };
             // The fit is good enough to use the values
             for (int it = 0; it < originalEvaluation->FitWindow().nRef; ++it) {
                 bestFitWindow->ref[it].m_shiftOption = SHIFT_TYPE::SHIFT_FIX;
                 bestFitWindow->ref[it].m_squeezeOption = SHIFT_TYPE::SHIFT_FIX;
-                bestFitWindow->ref[it].m_shiftValue = shift;
-                bestFitWindow->ref[it].m_squeezeValue = squeeze;
+                bestFitWindow->ref[it].m_shiftValue = shiftResult.shift;
+                bestFitWindow->ref[it].m_squeezeValue = shiftResult.squeeze;
             }
-            message.Format("Shift: %.2lf ± %.2lf; Squeeze: %.2lf ± %.2lf", shift, shiftError, squeeze, squeezeError);
-            ShowMessage(message);
+            message.Format("Shift: %.2lf ± %.2lf; Squeeze: %.2lf ± %.2lf", shiftResult.shift, shiftResult.shiftError, shiftResult.squeeze, shiftResult.squeezeError);
+            m_log.Information(std::string(message));
 
             return bestFitWindow;
         }
-        else {
-            ShowMessage("Fit not good enough. Will proceed with default parameters.");
+        else
+        {
+            std::stringstream msg;
+            msg << "Inadequate result from deciding shift, will proceed with default paramters. Output was, shift: " << shiftResult.shift << " +- " << shiftResult.shiftError << "; Squeeze: " << shiftResult.squeeze << " +- " << shiftResult.squeezeError << ". Doas ch2: " << shiftResult.chi2;
+            m_log.Information(context, msg.str());
 
             return nullptr;
         }

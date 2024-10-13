@@ -5,6 +5,7 @@
 #include "../Common/Version.h"
 #include "../Evaluation/ScanEvaluation.h"
 #include "../Dialogs/QueryStringDialog.h"
+#include "../NovacProgramLog.h"
 #include <SpectralEvaluation/StringUtils.h>
 #include <SpectralEvaluation/Spectra/SpectrometerModel.h>
 
@@ -77,8 +78,10 @@ bool CReEvaluator::DoEvaluation()
     /* evaluate the spectra */
     m_progress = 0;
 
+    NovacProgramLog log;
+
     // The CScanEvaluation-object handles the evaluation of one single scan.
-    CScanEvaluation ev;
+    CScanEvaluation ev(log);
     ev.pView = this->pView;
     ev.m_pause = &m_pause;
     ev.m_sleeping = &m_sleeping;
@@ -99,11 +102,12 @@ bool CReEvaluator::DoEvaluation()
         }
 
         // The CScanFileHandler is a structure for reading the spectral information from the scan-file
-        CScanFileHandler scan;
+        CScanFileHandler scan(m_log);
 
         // Check the scan file
         const std::string scanFileName((LPCSTR)m_scanFile[curScanFile]);
-        if (SUCCESS != scan.CheckScanFile(scanFileName))
+        novac::LogContext context("file", scanFileName);
+        if (SUCCESS != scan.CheckScanFile(context, scanFileName))
         {
             CString errStr;
             errStr.Format("Could not read scan-file %s", (LPCTSTR)m_scanFile[curScanFile]);
