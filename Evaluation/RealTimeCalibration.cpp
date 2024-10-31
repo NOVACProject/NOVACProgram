@@ -145,17 +145,12 @@ std::vector<novac::CReferenceFile> CreateStandardReferences(
     return referencesCreated;
 }
 
-void ReplaceReferences(std::vector<novac::CReferenceFile>& newReferences, CConfigurationSetting::SpectrometerSetting& spectrometer)
+static void ReplaceReferences(std::vector<novac::CReferenceFile>& newReferences, CConfigurationSetting::SpectrometerSetting& spectrometer)
 {
     // First make sure that all the cross sections could be read in before attempting to replace anything
     for (size_t idx = 0; idx < newReferences.size(); ++idx)
     {
-        if (newReferences[idx].ReadCrossSectionDataFromFile())
-        {
-            std::stringstream message;
-            message << "Failed to read cross section data from file: " << newReferences[idx].m_path << std::endl;
-            throw std::invalid_argument(message.str());
-        }
+        newReferences[idx].ReadCrossSectionDataFromFile();
 
         if (newReferences[idx].m_data == nullptr ||
             newReferences[idx].m_data->m_crossSection.size() == 0)

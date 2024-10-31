@@ -13,6 +13,7 @@
 
 #include <SpectralEvaluation/Spectra/SpectrometerModel.h>
 
+#include <cmath>
 
 extern CVolcanoInfo g_volcanoes;           // The global list of volcanoes in the NOVAC network
 extern CUserSettings g_userSettings;       // <-- The users preferences
@@ -389,12 +390,15 @@ void CPostFluxDlg::DrawScan()
     int numSpec = min(scan.GetEvaluatedNum(), MAX_SPEC_PER_SCAN);
 
     // Check the type of measurement
-    bool isTimeSeries = (scan.IsWindMeasurement() || scan.IsStratosphereMeasurement());
+    const novac::MeasurementMode measurementMode = novac::CheckMeasurementMode(scan);
+    const bool isTimeSeries = (measurementMode == novac::MeasurementMode::Windspeed || measurementMode == novac::MeasurementMode::Stratosphere);
 
     // The unit conversion
     double columnUnitConversionFactor = 1.0;
     if (g_userSettings.m_columnUnit == UNIT_MOLEC_CM2)
+    {
         columnUnitConversionFactor = 2.5e15;
+    }
 
     // The offset, calculate or use the users value
     switch (m_offsetOption)
@@ -451,7 +455,7 @@ void CPostFluxDlg::DrawScan()
     // Check if this scan is in the plume
     bool inplume = false;
     double plumeCentre1, plumeCentre2, plumeCompleteness, plumeEdge_low, plumeEdge_high;
-    if (!scan.IsWindMeasurement() && !scan.IsStratosphereMeasurement())
+    if (measurementMode != novac::MeasurementMode::Windspeed && measurementMode != novac::MeasurementMode::Stratosphere)
     {
         inplume = scan.CalculatePlumeCentre(scan.GetSpecieName(0, m_curSpecie), plumeCentre1, plumeCentre2, plumeCompleteness, plumeEdge_low, plumeEdge_high);
     }
@@ -463,22 +467,22 @@ void CPostFluxDlg::DrawScan()
     }
     else
     {
-        if (scan.IsFluxMeasurement())
+        if (measurementMode == novac::MeasurementMode::Flux)
         {
             message.Format("No Plume");
         }
-        else if (scan.IsWindMeasurement())
+        else if (measurementMode == novac::MeasurementMode::Windspeed)
         {
             if (scan.GetSkySpectrumInfo().m_channel == 0)
                 message.Format("Wind measurement - Master channel");
             else
                 message.Format("Wind measurement - Slave channel");
         }
-        else if (scan.IsCompositionMeasurement())
+        else if (measurementMode == novac::MeasurementMode::Composition)
         {
             message.Format("Composition measurement");
         }
-        else if (scan.IsStratosphereMeasurement())
+        else if (measurementMode == novac::MeasurementMode::Stratosphere)
         {
             message.Format("Stratosphere measurement");
         }
@@ -511,8 +515,10 @@ void CPostFluxDlg::DrawScan()
     const double spectrometerDynamicRange = FullDynamicRangeForSpectrum(m_calculator->m_specInfo);
 
     double divisor = 1.0;
-    if (maxPeakIntensity >= spectrometerDynamicRange) {
-        if (scan.GetSpecNum(0) == 0) {
+    if (maxPeakIntensity >= spectrometerDynamicRange)
+    {
+        if (scan.GetSpecNum(0) == 0)
+        {
             divisor = ceil(maxPeakIntensity / spectrometerDynamicRange);
         }
         else
@@ -556,8 +562,8 @@ void CPostFluxDlg::DrawScan()
         if (m_useSaturationRatio)
         {
             // Initialize the intensity slider
-            m_intensitySlider.SetRange(0, spectrometerDynamicRange);
-            m_intensitySlider.SetPos(0.9 * spectrometerDynamicRange);/* The intensity slider is upside down */
+            m_intensitySlider.SetRange(0, static_cast<int>(spectrometerDynamicRange));
+            m_intensitySlider.SetPos(static_cast<int>(std::floor(0.9 * spectrometerDynamicRange)));/* The intensity slider is upside down */
             m_intensitySlider.SetTicFreq(512);
         }
         m_useSaturationRatio = false;
@@ -673,14 +679,16 @@ void CPostFluxDlg::DrawScan()
     if (m_show.delta)
     {
         m_scanGraph.SetCircleColor(m_color.delta);
-        double maxDelta = Max(delta, numSpec);
-        float peakValue = (m_useSaturationRatio) ? 100.0f : spectrometerDynamicRange;
+        const double maxDelta = Max(delta, numSpec);
+        const double peakValue = (m_useSaturationRatio) ? 100.0 : spectrometerDynamicRange;
         for (int i = 0; i < numSpec; ++i)
-            delta[i] *= (peakValue / (float)maxDelta);
+        {
+            delta[i] *= (peakValue / maxDelta);
+        }
         m_scanGraph.DrawCircles(xAxisValues, delta, numSpec, Graph::CGraphCtrl::PLOT_SECOND_AXIS);
 
         // Show the scaling constant used...
-        scalingStr.Format("Delta(residual) × %.2g", (peakValue / (float)maxDelta));
+        scalingStr.Format("Delta(residual) × %.2g", (peakValue / maxDelta));
         SetDlgItemText(IDC_STATIC_DELTA, scalingStr);
     }
 
@@ -688,14 +696,16 @@ void CPostFluxDlg::DrawScan()
     if (m_show.chiSquare)
     {
         m_scanGraph.SetCircleColor(m_color.chiSquare);
-        double maxChi2 = Max(chiSquare, numSpec);
-        float peakValue = (m_useSaturationRatio) ? 100.0f : spectrometerDynamicRange;
+        const double maxChi2 = Max(chiSquare, numSpec);
+        const double peakValue = (m_useSaturationRatio) ? 100.0 : spectrometerDynamicRange;
         for (int i = 0; i < numSpec; ++i)
-            chiSquare[i] *= (peakValue / (float)maxChi2);
+        {
+            chiSquare[i] *= (peakValue / maxChi2);
+        }
         m_scanGraph.DrawCircles(xAxisValues, chiSquare, numSpec, Graph::CGraphCtrl::PLOT_SECOND_AXIS);
 
         // Show the scaling constant used...
-        scalingStr.Format("Chi² of Fit × %.2g", (peakValue / (float)maxChi2));
+        scalingStr.Format("Chi² of Fit × %.2g", (peakValue / maxChi2));
         SetDlgItemText(IDC_STATIC_CHISQUARE, scalingStr);
     }
 
@@ -709,7 +719,7 @@ void CPostFluxDlg::DrawScan()
     }
 
     // If this is not a normal scan then we cannot calculate any flux for it...
-    if (scan.IsFluxMeasurement())
+    if (novac::IsFluxMeasurement(scan))
     {
         m_calcFluxBtn.EnableWindow(TRUE);
     }

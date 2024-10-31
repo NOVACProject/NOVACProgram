@@ -31,14 +31,15 @@ END_MESSAGE_MAP()
 
 // CPakFileListBox message handlers
 
-/** Called to populate the list */
-void CPakFileListBox::PopulateList() {
+void CPakFileListBox::PopulateList()
+{
     // first remove everything that is already there
     this->ResetContent();
 
     // then add one string for every scan file selected
-    for (int i = 0; i < m_reeval->m_scanFileNum; ++i) {
-        this->AddString(m_reeval->m_scanFile[i]);
+    for (size_t i = 0; i < m_reeval->m_scanFile.size(); ++i)
+    {
+        this->AddString(m_reeval->m_scanFile[i].c_str());
     }
 
     // Find the longest string in the list box.
@@ -74,12 +75,14 @@ void CPakFileListBox::PopulateList() {
 }
 
 /** Called when the user presses down the left mouse button */
-void CPakFileListBox::OnLButtonDown(UINT nFlags, CPoint point) {
+void CPakFileListBox::OnLButtonDown(UINT nFlags, CPoint point)
+{
     CListBox::OnLButtonDown(nFlags, point);
 }
 
 /** Called to show the context menu */
-void CPakFileListBox::OnContextMenu(CWnd* pWnd, CPoint pos) {
+void CPakFileListBox::OnContextMenu(CWnd* pWnd, CPoint pos)
+{
     if (m_parent == nullptr)
         return;
 
@@ -91,7 +94,8 @@ void CPakFileListBox::OnContextMenu(CWnd* pWnd, CPoint pos) {
     ASSERT(pPopup != nullptr);
 
     // If there are no files opened, then none can be removed...
-    if (m_reeval->m_scanFileNum == 0) {
+    if (m_reeval->m_scanFile.size() == 0)
+    {
         pPopup->EnableMenuItem(ID__REMOVESELECTED, MF_DISABLED | MF_GRAYED);
     }
 

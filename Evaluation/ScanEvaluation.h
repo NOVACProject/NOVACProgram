@@ -45,7 +45,7 @@ public:
 
     /** Called to evaluate one scan.
             @return the number of spectra evaluated. */
-    long EvaluateScan(const CString& scanfile, const novac::CFitWindow& window, bool* fRun = NULL, const Configuration::CDarkSettings* darkSettings = NULL);
+    long EvaluateScan(novac::LogContext context, const std::string& scanfile, const novac::CFitWindow& window, bool* fRun = NULL, const Configuration::CDarkSettings* darkSettings = NULL);
 
     /** Setting the option for how to get the sky spectrum. */
     void SetOption_Sky(const Configuration::CSkySettings& settings);

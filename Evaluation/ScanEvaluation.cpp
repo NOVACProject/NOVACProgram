@@ -2,6 +2,7 @@
 #include "ScanEvaluation.h"
 #include "EvaluationResultView.h"
 #include <SpectralEvaluation/Evaluation/EvaluationBase.h>
+#include <SpectralEvaluation/File/File.h>
 #include <SpectralEvaluation/File/SpectrumIO.h>
 #include <SpectralEvaluation/File/ScanFileHandler.h>
 #include <SpectralEvaluation/File/STDFile.h>
@@ -61,14 +62,12 @@ std::unique_ptr<CScanResult> CScanEvaluation::GetResult()
 }
 
 /** Called to evaluate one scan */
-long CScanEvaluation::EvaluateScan(const CString& scanfile, const CFitWindow& window, bool* fRun, const Configuration::CDarkSettings* darkSettings)
+long CScanEvaluation::EvaluateScan(novac::LogContext context, const std::string& scanfile, const CFitWindow& window, bool* fRun, const Configuration::CDarkSettings* darkSettings)
 {
     CString message;	// used for ShowMessage messages
     int	index = 0;		// keeping track of the index of the current spectrum into the .pak-file
     double highestColumn = 0.0;	// the highest column-value in the evaluation
     bool success = true;
-
-    novac::LogContext context("file", std::string(scanfile));
 
     // variables for storing the sky, dark and the measured spectra
     CSpectrum sky, dark, current;
@@ -78,7 +77,7 @@ long CScanEvaluation::EvaluateScan(const CString& scanfile, const CFitWindow& wi
     m_fitHigh = window.fitHigh;
 
     // Check so that the file exists
-    if (!IsExistingFile(scanfile))
+    if (!novac::IsExistingFile(scanfile))
     {
         return 0;
     }
@@ -89,7 +88,7 @@ long CScanEvaluation::EvaluateScan(const CString& scanfile, const CFitWindow& wi
 
     // Check the scan file, make sure it's correct and that the file
     //	actually contains spectra
-    const std::string scanFileName((LPCSTR)scanfile);
+    const std::string scanFileName(scanfile);
     if (!scan.CheckScanFile(context, scanFileName))
     {
         return 0;
@@ -100,7 +99,7 @@ long CScanEvaluation::EvaluateScan(const CString& scanfile, const CFitWindow& wi
         return 0;
     }
     novac::SpectrometerModel spectrometerModel = novac::CSpectrometerDatabase::GetInstance().GuessModelFromSerial(sky.m_info.m_device);
-    context = context.With("model", spectrometerModel.modelName);
+    context = context.With(novac::LogContext::DeviceModel, spectrometerModel.modelName);
 
     // make a backup of the fit window (this function may make some changes to the
     //  fit window, and we should be able to restore the old values on return).
@@ -236,16 +235,16 @@ long CScanEvaluation::EvaluateScan(const CString& scanfile, const CFitWindow& wi
                 else
                 {
                     CString errMsg;
-                    errMsg.Format("Faulty spectrum found in %s", (LPCSTR)scanfile);
+                    errMsg.Format("Faulty spectrum found in %s", scanfile.c_str());
                     switch (scan.m_lastError) {
                     case novac::CSpectrumIO::ERROR_CHECKSUM_MISMATCH:
                         errMsg.AppendFormat(", Checksum mismatch. Spectrum ignored"); break;
                     case novac::CSpectrumIO::ERROR_DECOMPRESS:
                         errMsg.AppendFormat(", Decompression error. Spectrum ignored"); break;
                     default:
-                        ShowMessage(", Unknown error. Spectrum ignored");
+                        m_log.Error(context, ", Unknown error. Spectrum ignored");
                     }
-                    ShowMessage(errMsg);
+                    m_log.Error(context, std::string(errMsg));
                     // remember that this spectrum is corrupted
                     newResult->MarkAsCorrupted(spectrumIndex);
                     continue;

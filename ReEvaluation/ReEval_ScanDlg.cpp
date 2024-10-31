@@ -70,15 +70,15 @@ void CReEval_ScanDlg::OnBnClickedBtnBrowsescanfile()
         return;
 
     /** Reset the old values */
-    m_reeval->m_scanFileNum = 0;
+    m_reeval->m_scanFile.clear();
 
     /** Go through the filenames */
     POSITION pos = fileDialog.GetStartPosition();
 
-    while (pos) {
+    while (pos)
+    {
         CString str = fileDialog.GetNextPathName(pos);
-
-        m_reeval->m_scanFile.SetAtGrow(m_reeval->m_scanFileNum++, str);
+        m_reeval->m_scanFile.push_back(std::string(str));
     }
 
     // Sort the scans in the file-list
@@ -131,7 +131,8 @@ void CReEval_ScanDlg::OnLbnSelchangeScanfileList()
     m_curSpec = 0;
 
     // Check the scan file so that it is ok. 
-    if (CheckScanFile()) {
+    if (CheckScanFile())
+    {
         status.Format("Scan file is corrupt");
         SetDlgItemText(IDC_NUMSPEC_LABEL, status);
         return;
@@ -151,7 +152,8 @@ void CReEval_ScanDlg::OnLbnSelchangeScanfileList()
     UpdateInfo();
 }
 
-void CReEval_ScanDlg::DrawSpectrum() {
+void CReEval_ScanDlg::DrawSpectrum()
+{
     if (TryReadSpectrum())
         return;
 
@@ -165,16 +167,19 @@ void CReEval_ScanDlg::DrawSpectrum() {
     m_specGraph.XYPlot(nullptr, m_spectrum.m_data, m_spectrum.m_length, Graph::CGraphCtrl::PLOT_FIXED_AXIS | Graph::CGraphCtrl::PLOT_CONNECTED);
 }
 
-int CReEval_ScanDlg::TryReadSpectrum() {
+int CReEval_ScanDlg::TryReadSpectrum()
+{
     CSpectrumIO reader;
     CString message;
 
     // Read the spectrum
-    const std::string scanFileName((LPCSTR)m_reeval->m_scanFile[m_curSpecFile]);
+    const std::string scanFileName(m_reeval->m_scanFile[m_curSpecFile]);
     const bool success = reader.ReadSpectrum(scanFileName, m_curSpec, m_spectrum);
 
-    if (!success) {
-        switch (reader.m_lastError) {
+    if (!success)
+    {
+        switch (reader.m_lastError)
+        {
         case CSpectrumIO::ERROR_EOF:                   message.Format("Spectrum number %d is corrupt - EOF found", m_curSpec); break;
         case CSpectrumIO::ERROR_COULD_NOT_OPEN_FILE:   message.Format("Could not open spectrum file"); break;
         case CSpectrumIO::ERROR_CHECKSUM_MISMATCH:     message.Format("Spectrum number %d is corrupt - Checksum mismatch", m_curSpec); break;
@@ -184,7 +189,8 @@ int CReEval_ScanDlg::TryReadSpectrum() {
         }
         return 1;
     }
-    else {
+    else
+    {
         //CSpectrumInfo &info = m_spectrum.m_info;
         //CString dateStr, startTimeStr, stopTimeStr, expTimeStr, numSpecStr;
         //dateStr.Format("Date: %04d.%02d.%02d", info.m_date[0], info.m_date[1], info.m_date[2]);
@@ -203,7 +209,8 @@ int CReEval_ScanDlg::TryReadSpectrum() {
     }
 }
 
-int CReEval_ScanDlg::CheckScanFile() {
+int CReEval_ScanDlg::CheckScanFile()
+{
     m_specNum = 0;
 
     int ret = 0;
@@ -212,11 +219,12 @@ int CReEval_ScanDlg::CheckScanFile() {
     CSpectrum spec;
 
     // Read one spectrum to check the channel numbers
-    const std::string scanFileName((LPCSTR)m_reeval->m_scanFile[m_curSpecFile]);
+    const std::string scanFileName(m_reeval->m_scanFile[m_curSpecFile]);
     reader.ReadSpectrum(scanFileName, 0, spec);
     unsigned char chn = spec.Channel();
     int steps = 0;
-    if (-1 == Common::GetInterlaceSteps(chn, steps)) {
+    if (-1 == Common::GetInterlaceSteps(chn, steps))
+    {
         MessageBox("This scan-file contains interlaced spectra. The ReEvaluation can only evaluate one channel at a time. Please split this file into one pak-file for each channel using the 'Split/Merge Pak-file(s)'-function under the 'File' menu", "Cannot evaluate interlaced spectra", MB_OK);
         return 1;
     }
@@ -225,7 +233,8 @@ int CReEval_ScanDlg::CheckScanFile() {
     m_specNum = reader.CountSpectra(scanFileName);
 
     // check if the file was ok. 
-    if (reader.m_lastError == CSpectrumIO::ERROR_SPECTRUM_NOT_FOUND || reader.m_lastError == CSpectrumIO::ERROR_EOF) {
+    if (reader.m_lastError == CSpectrumIO::ERROR_SPECTRUM_NOT_FOUND || reader.m_lastError == CSpectrumIO::ERROR_EOF)
+    {
         return 0;
     }
 
@@ -263,7 +272,8 @@ void CReEval_ScanDlg::OnChangeSpectrum(NMHDR* pNMHDR, LRESULT* pResult)
     *pResult = 0;
 }
 
-void CReEval_ScanDlg::UpdateInfo() {
+void CReEval_ScanDlg::UpdateInfo()
+{
     CString status, dateStr, startStr, stopStr, expTimeStr;
     CString deviceStr, numSpecStr, motorStr, geomStr;
     CSpectrumInfo& info = m_spectrum.m_info;
@@ -310,7 +320,8 @@ void CReEval_ScanDlg::UpdateInfo() {
 }
 
 /** Called when the user wants to remove the currently selected scan */
-void CReEval_ScanDlg::OnRemoveSelected() {
+void CReEval_ScanDlg::OnRemoveSelected()
+{
     if (m_specNum <= 0)
         return;
 
@@ -320,8 +331,7 @@ void CReEval_ScanDlg::OnRemoveSelected() {
         return;
 
     // Remove the file
-    m_reeval->m_scanFile.RemoveAt(m_curSpecFile);
-    --m_reeval->m_scanFileNum;
+    m_reeval->m_scanFile.erase(begin(m_reeval->m_scanFile) + m_curSpecFile);
 
     m_curSpecFile = std::max(0L, m_curSpecFile - 1);
 

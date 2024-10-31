@@ -9,7 +9,8 @@ using namespace Evaluation;
 using namespace novac;
 
 
-UINT DoEvaluation(LPVOID pParam) {
+UINT DoEvaluation(LPVOID pParam)
+{
     CReEvaluator* m_reeval = (CReEvaluator*)pParam;
 
     m_reeval->fRun = true;
@@ -83,7 +84,8 @@ END_MESSAGE_MAP()
 // CReEval_DoEvaluationDlg message handlers
 
 /** Initializes the graphs */
-void  CReEval_DoEvaluationDlg::InitializeGraphs() {
+void  CReEval_DoEvaluationDlg::InitializeGraphs()
+{
     CRect rect;
     Common common;
     int margin = -4;
@@ -191,10 +193,12 @@ void CReEval_DoEvaluationDlg::OnDoEvaluation()
     // save the data in the dialog
     UpdateData(TRUE);
 
-    if (m_reeval->fRun && m_reeval->m_sleeping) {
+    if (m_reeval->fRun && m_reeval->m_sleeping)
+    {
         pReEvalThread->ResumeThread();
     }
-    else {
+    else
+    {
         m_reeval->pView = this;
 
         // start the reevaluation thread
@@ -212,7 +216,8 @@ void CReEval_DoEvaluationDlg::OnCancelEvaluation()
 
     // If the 'pause' - button is pressed and the thread is waiting for the 
     //	user to press 'next'...
-    if (m_reeval->fRun && m_reeval->m_sleeping) {
+    if (m_reeval->fRun && m_reeval->m_sleeping)
+    {
         pReEvalThread->ResumeThread();
     }
 
@@ -220,7 +225,8 @@ void CReEval_DoEvaluationDlg::OnCancelEvaluation()
     // Quit the re-evaluation thread
     DWORD dwExitCode;
     HANDLE hThread = this->pReEvalThread->m_hThread;
-    if (hThread != NULL && GetExitCodeThread(hThread, &dwExitCode) && dwExitCode == STILL_ACTIVE) {
+    if (hThread != NULL && GetExitCodeThread(hThread, &dwExitCode) && dwExitCode == STILL_ACTIVE)
+    {
         AfxGetApp()->BeginWaitCursor();
         this->m_reeval->Stop();
         this->m_reeval->m_pause = FALSE;
@@ -241,9 +247,11 @@ void CReEval_DoEvaluationDlg::OnCancelEvaluation()
     m_btnDoEval.SetWindowText("&Do Evaluation");
 }
 
-LRESULT CReEval_DoEvaluationDlg::OnEvaluatedSpectrum(WPARAM wp, LPARAM lp) {
+LRESULT CReEval_DoEvaluationDlg::OnEvaluatedSpectrum(WPARAM wp, LPARAM lp)
+{
     // if the reevaluator stopped, don't do anything
-    if (!m_reeval->fRun) {
+    if (!m_reeval->fRun)
+    {
         CEvaluationResultView* resultview = (CEvaluationResultView*)wp;
         CScanResult* result = (CScanResult*)lp;
 
@@ -268,7 +276,8 @@ LRESULT CReEval_DoEvaluationDlg::OnEvaluatedSpectrum(WPARAM wp, LPARAM lp) {
     int fitHigh = window.fitHigh - resultview->measuredSpectrum.m_info.m_startChannel;
 
     // If the fit-window has changed, then change the list of references
-    if (m_reeval->m_curWindow != lastWindowUsed) {
+    if (m_reeval->m_curWindow != lastWindowUsed)
+    {
         PopulateRefList();
     }
     lastWindowUsed = m_reeval->m_curWindow;
@@ -296,16 +305,20 @@ LRESULT CReEval_DoEvaluationDlg::OnEvaluatedSpectrum(WPARAM wp, LPARAM lp) {
     }
 
     // 2. Draws the whole fit
-    if (m_showFit == 0) {
+    if (m_showFit == 0)
+    {
         // copy the spectrum to the local variable
-        for (int i = 0; i < window.specLength; ++i) {
+        for (int i = 0; i < window.specLength; ++i)
+        {
             spectrum[i] = resultview->measuredSpectrum.m_data[i];
         }
         DrawFit();
     }
-    else {
+    else
+    {
         // copy the residual to the local variable
-        for (int i = fitLow; i < fitHigh; ++i) {
+        for (int i = fitLow; i < fitHigh; ++i)
+        {
             residual[i] = resultview->residual.m_data[i];
         }
 
@@ -318,7 +331,8 @@ LRESULT CReEval_DoEvaluationDlg::OnEvaluatedSpectrum(WPARAM wp, LPARAM lp) {
     return 0;
 }
 
-void CReEval_DoEvaluationDlg::RedrawTotalFitGraph() {
+void CReEval_DoEvaluationDlg::RedrawTotalFitGraph()
+{
 
     if (m_showFit == 0)
         DrawFit();
@@ -374,7 +388,8 @@ void CReEval_DoEvaluationDlg::DrawReference()
     }
 }
 
-void CReEval_DoEvaluationDlg::DrawFit() {
+void CReEval_DoEvaluationDlg::DrawFit()
+{
     double minV = 1e16, maxV = -1e16;
     static double oldMinV = 1e16, oldMaxV = -1e16;
 
@@ -389,18 +404,21 @@ void CReEval_DoEvaluationDlg::DrawFit() {
     /* show the fit */
 
     // find the minimum and maximum value
-    for (int i = fitLow + 3; i < fitHigh - 3; ++i) {
+    for (int i = fitLow + 3; i < fitHigh - 3; ++i)
+    {
         minV = std::min(minV, spectrum[i]);
         maxV = std::max(maxV, spectrum[i]);
     }
     if (maxV <= minV)
         maxV = minV + 1;
 
-    if ((maxV - minV) < 0.25 * (oldMaxV - oldMinV)) {
+    if ((maxV - minV) < 0.25 * (oldMaxV - oldMinV))
+    {
         oldMaxV = maxV;
         oldMinV = minV;
     }
-    else {
+    else
+    {
         if (minV < oldMinV)
             oldMinV = minV;
         else
@@ -422,7 +440,8 @@ void CReEval_DoEvaluationDlg::DrawFit() {
     return;
 }
 
-void CReEval_DoEvaluationDlg::DrawResidual() {
+void CReEval_DoEvaluationDlg::DrawResidual()
+{
     double minV = 1e16, maxV = -1e16;
     static double oldMinV = 1e16, oldMaxV = -1e16;
 
@@ -437,15 +456,18 @@ void CReEval_DoEvaluationDlg::DrawResidual() {
 
 
     // find the minimum and maximum value
-    for (int i = fitLow + 3; i < fitHigh - 3; ++i) {
+    for (int i = fitLow + 3; i < fitHigh - 3; ++i)
+    {
         minV = std::min(minV, residual[i]);
         maxV = std::max(maxV, residual[i]);
     }
-    if ((maxV - minV) < 0.25 * (oldMaxV - oldMinV)) {
+    if ((maxV - minV) < 0.25 * (oldMaxV - oldMinV))
+    {
         oldMaxV = maxV;
         oldMinV = minV;
     }
-    else {
+    else
+    {
         if (minV < oldMinV)
             oldMinV = minV;
         else
@@ -465,12 +487,14 @@ void CReEval_DoEvaluationDlg::DrawResidual() {
     m_GraphTotal.DrawPoint(residual, (int)fitWidth, fitLow);
 }
 
-LRESULT CReEval_DoEvaluationDlg::OnStatusUpdate(WPARAM wp, LPARAM lp) {
+LRESULT CReEval_DoEvaluationDlg::OnStatusUpdate(WPARAM wp, LPARAM lp)
+{
 
     return 0;
 }
 
-LRESULT CReEval_DoEvaluationDlg::OnDone(WPARAM wp, LPARAM lp) {
+LRESULT CReEval_DoEvaluationDlg::OnDone(WPARAM wp, LPARAM lp)
+{
     // update the window
     m_progressBar.SetRange(0, 1000);
     m_progressBar.SetPos(0);
@@ -485,7 +509,8 @@ LRESULT CReEval_DoEvaluationDlg::OnDone(WPARAM wp, LPARAM lp) {
     return 0;
 }
 
-LRESULT CReEval_DoEvaluationDlg::OnProgress(WPARAM wp, LPARAM lp) {
+LRESULT CReEval_DoEvaluationDlg::OnProgress(WPARAM wp, LPARAM lp)
+{
     if (m_reeval->fRun) // Check if the evaluation is still running
     {
         double progress = (double)wp;
@@ -495,7 +520,8 @@ LRESULT CReEval_DoEvaluationDlg::OnProgress(WPARAM wp, LPARAM lp) {
     return 0;
 }
 
-LRESULT CReEval_DoEvaluationDlg::OnProgress2(WPARAM wp, LPARAM lp) {
+LRESULT CReEval_DoEvaluationDlg::OnProgress2(WPARAM wp, LPARAM lp)
+{
     if (m_reeval->fRun) // Check if the evaluation is still running
     {
         long curFileIndex = (long)wp;
@@ -513,7 +539,8 @@ LRESULT CReEval_DoEvaluationDlg::OnProgress2(WPARAM wp, LPARAM lp) {
     return 0;
 }
 
-LRESULT CReEval_DoEvaluationDlg::OnEvaluationSleep(WPARAM wp, LPARAM lp) {
+LRESULT CReEval_DoEvaluationDlg::OnEvaluationSleep(WPARAM wp, LPARAM lp)
+{
     SetDlgItemText(IDC_REEVAL_STATUSBAR, "Waiting...");
     m_btnCancel.EnableWindow(TRUE);
     m_btnDoEval.EnableWindow(TRUE);

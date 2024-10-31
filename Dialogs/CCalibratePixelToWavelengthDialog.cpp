@@ -40,7 +40,8 @@ CCalibratePixelToWavelengthDialog::~CCalibratePixelToWavelengthDialog()
     delete m_standardCrossSections;
 }
 
-BOOL CCalibratePixelToWavelengthDialog::OnInitDialog() {
+BOOL CCalibratePixelToWavelengthDialog::OnInitDialog()
+{
     CPropertyPage::OnInitDialog();
 
     CRect rect;

@@ -17,7 +17,7 @@ using namespace Communication;
 // Global variables;
 extern CConfigurationSetting g_settings;   // <-- the settings
 extern CVolcanoInfo g_volcanoes;           // <-- the list of volcanoes
-extern CFormView *pView;                   // <-- the main window
+extern CFormView* pView;                   // <-- the main window
 extern CCriticalSection g_evalLogCritSect; // synchronization access to evaluation-log files
 
 IMPLEMENT_DYNCREATE(CFTPServerContacter, CWinThread)
@@ -59,9 +59,11 @@ void CFTPServerContacter::OnQuit(WPARAM /*wp*/, LPARAM /*lp*/)
 /**When the thread is started, copy the UploadFileList.txt's content into m_fileList*/
 void CFTPServerContacter::OnStartFTP(WPARAM /*wp*/, LPARAM /*lp*/)
 {
-    if (!IsExistingFile(m_listLogFile)) {
+    if (!IsExistingFile(m_listLogFile))
+    {
         // If we have a temporary-file, then parse that instead
-        if (IsExistingFile(m_listLogFile_Temp)) {
+        if (IsExistingFile(m_listLogFile_Temp))
+        {
             ParseAFile(m_listLogFile_Temp);
         }
         m_hasReadInFileList = true;
@@ -72,7 +74,8 @@ void CFTPServerContacter::OnStartFTP(WPARAM /*wp*/, LPARAM /*lp*/)
     m_hasReadInFileList = true;
 }
 
-void CFTPServerContacter::OnTimer(WPARAM /*nIDEvent*/, LPARAM /*lp*/) {
+void CFTPServerContacter::OnTimer(WPARAM /*nIDEvent*/, LPARAM /*lp*/)
+{
     // Call the uploading thing...
     OnIdle(0);
 }
@@ -82,28 +85,32 @@ and upload the earliest. */
 void CFTPServerContacter::OnArrivedFile(WPARAM wp, LPARAM lp)
 {
     // The filename of the newly arrived file is the first parameter 
-    CString *fileName = (CString *)wp;
+    CString* fileName = (CString*)wp;
 
     // This index tells us which volcano that the file belongs to 
-    FTPUploadOptions *options = (FTPUploadOptions *)lp;
+    FTPUploadOptions* options = (FTPUploadOptions*)lp;
     int volcanoIndex = options->volcanoIndex;
 
     // Check the inputs
-    if (fileName == nullptr || fileName->GetLength() <= 4) {
+    if (fileName == nullptr || fileName->GetLength() <= 4)
+    {
         ShowMessage("ERROR: Received command to upload file which does not exist");
         return; // quit, error in input-data
     }
-    if (volcanoIndex < 0 || volcanoIndex > g_volcanoes.m_volcanoNum) {
+    if (volcanoIndex < 0 || volcanoIndex > g_volcanoes.m_volcanoNum)
+    {
         ShowMessage("ERROR: Received command to upload file to non-existing volcano");
         return; // quit, error in input-data
     }
 
     // Check if the file already exists in the list, if so then don't add it
     POSITION listPos = m_fileList.GetHeadPosition();
-    while (listPos != nullptr) {
-        UploadFile &f = m_fileList.GetNext(listPos);
+    while (listPos != nullptr)
+    {
+        UploadFile& f = m_fileList.GetNext(listPos);
 
-        if (Equals(f.fileName, *fileName) && (f.volcanoIndex == volcanoIndex)) {
+        if (Equals(f.fileName, *fileName) && (f.volcanoIndex == volcanoIndex))
+        {
             delete fileName;
             delete options;
             return; // don't add the file to the list
@@ -127,7 +134,8 @@ void CFTPServerContacter::OnArrivedFile(WPARAM wp, LPARAM lp)
     delete options;
 }
 
-BOOL CFTPServerContacter::OnIdle(LONG /*lCount*/) {
+BOOL CFTPServerContacter::OnIdle(LONG /*lCount*/)
+{
     CString localFile, remoteFile, volcano, message;
     CString dateText, timeText;
     double linkSpeed;
@@ -142,11 +150,13 @@ BOOL CFTPServerContacter::OnIdle(LONG /*lCount*/) {
 
     if (m_fileList.GetCount() == 0)
     {
-        if (m_hasReadInFileList) {
+        if (m_hasReadInFileList)
+        {
             DeleteFile(m_listLogFile);
             return FALSE; // don't need more idle time
         }
-        else {
+        else
+        {
             OnStartFTP(NULL, NULL);
         }
     }
@@ -167,19 +177,23 @@ BOOL CFTPServerContacter::OnIdle(LONG /*lCount*/) {
     int now = currentTime.GetHour() * 3600 + currentTime.GetMinute() * 60 + currentTime.GetSecond();
     int startTime = g_settings.ftpSetting.ftpStartTime;
     int stopTime = g_settings.ftpSetting.ftpStopTime;
-    if (stopTime > startTime) {
-        if (now < startTime || now > stopTime) {
+    if (stopTime > startTime)
+    {
+        if (now < startTime || now > stopTime)
+        {
             return FALSE;	// no more idle-time needed
         }
     }
-    else {
-        if (now > stopTime && now < startTime) {
+    else
+    {
+        if (now > stopTime && now < startTime)
+        {
             return FALSE;	// no more idle-time needed
         }
     }
 
     // upload file since the latest
-    if(!m_ftp)
+    if (!m_ftp)
     {
         m_ftp = IFTPDataUpload::Create(g_settings.ftpSetting.protocol);
     }
@@ -189,22 +203,25 @@ BOOL CFTPServerContacter::OnIdle(LONG /*lCount*/) {
         while (m_fileList.GetCount() > 0)
         {
             // The file to upload
-            UploadFile &upload = m_fileList.GetTail();
+            UploadFile& upload = m_fileList.GetTail();
 
             // The name of the file to upload
             localFile.Format("%s", (LPCSTR)upload.fileName);
 
             // Make sure that the file does exist...
-            if (!IsExistingFile(localFile)) {
+            if (!IsExistingFile(localFile))
+            {
                 m_fileList.RemoveTail();
                 continue;
             }
 
             // The name of the volcano
-            if (upload.volcanoIndex >= 0 && upload.volcanoIndex < g_volcanoes.m_volcanoNum) {
+            if (upload.volcanoIndex >= 0 && (unsigned int)upload.volcanoIndex < g_volcanoes.m_volcanoNum)
+            {
                 volcano.Format("%s", (LPCSTR)g_volcanoes.m_simpleName[upload.volcanoIndex]);
             }
-            else {
+            else
+            {
                 volcano.Format("unknown");
             }
 
@@ -222,7 +239,8 @@ BOOL CFTPServerContacter::OnIdle(LONG /*lCount*/) {
             CSingleLock singleLock(&g_evalLogCritSect);
             singleLock.Lock();
 
-            if (singleLock.IsLocked()) {
+            if (singleLock.IsLocked())
+            {
                 // Upload the file!
                 timing_Start = clock(); // <-- timing...
                 useHighResolutionCounter = QueryPerformanceCounter(&timingStart);
@@ -249,7 +267,8 @@ BOOL CFTPServerContacter::OnIdle(LONG /*lCount*/) {
                 m_linkStatistics.AppendDownloadSpeed(linkSpeed);
 
                 // The file is uploaded!!
-                if (upload.deleteFile) {
+                if (upload.deleteFile)
+                {
                     ::DeleteFile(localFile);
                 }
                 // remove the file from the list
@@ -261,7 +280,8 @@ BOOL CFTPServerContacter::OnIdle(LONG /*lCount*/) {
 
                 pView->PostMessage(WM_FINISH_UPLOAD, (WPARAM)linkSpeed);
             }
-            else {
+            else
+            {
                 // Failed to upload the file...
                 ShowMessage(m_ftp->m_ErrorMsg);
                 m_linkStatistics.AppendFailedUpload();
@@ -282,7 +302,7 @@ BOOL CFTPServerContacter::OnIdle(LONG /*lCount*/) {
     return 0; // no more time is needed
 }
 
-void CFTPServerContacter::SetRemoteDirectory(const CString &volcanoName)
+void CFTPServerContacter::SetRemoteDirectory(const CString& volcanoName)
 {
     CString dateText;
     Common::GetDateText(dateText);
@@ -300,7 +320,8 @@ void CFTPServerContacter::SetRemoteDirectory(const CString &volcanoName)
     m_ftp->SetCurDirectory(dateText);
 }
 
-BOOL CFTPServerContacter::InitInstance() {
+BOOL CFTPServerContacter::InitInstance()
+{
     CWinThread::InitInstance();
 
     // Set a timer to wake up every 10 minutes
@@ -311,7 +332,8 @@ BOOL CFTPServerContacter::InitInstance() {
 
 int Communication::CFTPServerContacter::ExitInstance()
 {
-    if (0 != m_nTimerID) {
+    if (0 != m_nTimerID)
+    {
         KillTimer(nullptr, m_nTimerID);
     }
 
@@ -347,8 +369,9 @@ bool CFTPServerContacter::ParseAFile(const CString& fileName)
             int			volcanoIndex, deleteFile;
 
             // find the tab which separates the file-name and the volcano index
-            char *pt = strstr(szToken, "\t");
-            if (pt != 0) {
+            char* pt = strstr(szToken, "\t");
+            if (pt != 0)
+            {
                 volcanoIndex = -1; // reset
 
                 pt[0] = 0; // remove the tab
@@ -359,16 +382,21 @@ bool CFTPServerContacter::ParseAFile(const CString& fileName)
                 // 2) the 'deleteFlag'
                 volcanoName.Format("%s", pt + 1);
                 int tabIndex = volcanoName.Find("\t");
-                if (-1 != tabIndex) {
+                if (-1 != tabIndex)
+                {
                     volcanoName = volcanoName.Left(tabIndex);
 
                     // First compare with the last volcano-index, to save some time...
-                    if (lastVolcanoIndex >= 0 && Equals(g_volcanoes.m_simpleName[lastVolcanoIndex], volcanoName)) {
+                    if (lastVolcanoIndex >= 0 && Equals(g_volcanoes.m_simpleName[lastVolcanoIndex], volcanoName))
+                    {
                         volcanoIndex = lastVolcanoIndex;
                     }
-                    else {
-                        for (unsigned int k = 0; k < g_volcanoes.m_volcanoNum; ++k) {
-                            if (Equals(volcanoName, g_volcanoes.m_simpleName[k])) {
+                    else
+                    {
+                        for (unsigned int k = 0; k < g_volcanoes.m_volcanoNum; ++k)
+                        {
+                            if (Equals(volcanoName, g_volcanoes.m_simpleName[k]))
+                            {
                                 volcanoIndex = k;
                                 lastVolcanoIndex = k;
                                 break;
@@ -376,19 +404,23 @@ bool CFTPServerContacter::ParseAFile(const CString& fileName)
                         }
                     }
 
-                    if (0 == sscanf(pt + 1 + tabIndex, "%d", &deleteFile)) {
+                    if (0 == sscanf(pt + 1 + tabIndex, "%d", &deleteFile))
+                    {
                         deleteFile = 0;
                     }
                 }
 
-                if (volcanoIndex == -1) {
-                    if (0 == sscanf(pt + 1, "%d\t", &volcanoIndex)) {
+                if (volcanoIndex == -1)
+                {
+                    if (0 == sscanf(pt + 1, "%d\t", &volcanoIndex))
+                    {
                         volcanoIndex = -1;
                         deleteFile = 0;
                     }
                 }
             }
-            else {
+            else
+            {
                 fileName.Format(szToken);
                 volcanoIndex = -1;
                 deleteFile = 0;
@@ -397,9 +429,11 @@ bool CFTPServerContacter::ParseAFile(const CString& fileName)
             // Check if the file already exists in the list, if so then don't add it
             bool isAlreadyInList = false;
             POSITION listPos = m_fileList.GetHeadPosition();
-            while (listPos != nullptr) {
-                UploadFile &f = m_fileList.GetNext(listPos);
-                if (Equals(f.fileName, fileName)) {
+            while (listPos != nullptr)
+            {
+                UploadFile& f = m_fileList.GetNext(listPos);
+                if (Equals(f.fileName, fileName))
+                {
                     // don't add this to the list
                     isAlreadyInList = true;
                     duplicates = true;
@@ -408,7 +442,8 @@ bool CFTPServerContacter::ParseAFile(const CString& fileName)
             }
 
             // Add the file to the list of files, if not already there...
-            if (!isAlreadyInList) {
+            if (!isAlreadyInList)
+            {
                 UploadFile upload;
                 upload.fileName.Format(fileName);
                 upload.volcanoIndex = volcanoIndex;
@@ -423,7 +458,8 @@ bool CFTPServerContacter::ParseAFile(const CString& fileName)
     fileRef.Close();
 
     // If there were duplicates in the file, then write it again now without duplicated
-    if (duplicates) {
+    if (duplicates)
+    {
         ExportList();
     }
 
@@ -443,44 +479,52 @@ void CFTPServerContacter::ExportList()
     time(&now);
     double timeSinceLastExport = difftime(now, m_lastExportTime);
     m_lastExportTime = now;
-    if (timeSinceLastExport < 10) {
+    if (timeSinceLastExport < 10)
+    {
         return; // <-- no need to update the file within less than 10 seconds
     }
 
     if (m_fileList.GetCount() == 0)
     {
-        if (!m_hasReadInFileList) {
+        if (!m_hasReadInFileList)
+        {
             ParseAFile(m_listLogFile_Temp);
         }
-        else {
+        else
+        {
             DeleteFile(m_listLogFile);
         }
         return;
     }
 
     //write log file into output directory \\temp\\fileList_temp.txt
-    FILE *f = fopen(m_listLogFile_Temp, "w");
-    if (f != nullptr) {
+    FILE* f = fopen(m_listLogFile_Temp, "w");
+    if (f != nullptr)
+    {
         listPos = m_fileList.GetHeadPosition();
         while (listPos != nullptr)
         {
-            UploadFile &upload = m_fileList.GetNext(listPos);
+            UploadFile& upload = m_fileList.GetNext(listPos);
 
             // Write to file only every 50 lines, to create fewer writing events
-            if (nLines == 0) {
+            if (nLines == 0)
+            {
                 line.Format("%s\t%s\t%d\n", (LPCSTR)upload.fileName, (LPCSTR)g_volcanoes.m_simpleName[upload.volcanoIndex], upload.deleteFile);
                 ++nLines;
             }
-            else {
+            else
+            {
                 line.AppendFormat("%s\t%s\t%d\n", (LPCSTR)upload.fileName, (LPCSTR)g_volcanoes.m_simpleName[upload.volcanoIndex], upload.deleteFile);
                 ++nLines;
-                if (nLines == 50) {
+                if (nLines == 50)
+                {
                     fprintf(f, "%s", (LPCSTR)line);
                     nLines = 0;
                 }
             }
         }
-        if (nLines) {
+        if (nLines)
+        {
             fprintf(f, "%s", (LPCSTR)line); // <-- write the last portion of the file
         }
         fclose(f);

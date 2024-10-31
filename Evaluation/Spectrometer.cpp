@@ -7,8 +7,7 @@ using namespace novac;
 
 CSpectrometer::CSpectrometer()
     : m_history(nullptr), m_channel(0), m_gpsReadingsNum(0)
-{
-}
+{}
 
 CSpectrometer::~CSpectrometer(void)
 {
@@ -46,23 +45,29 @@ CSpectrometer::CSpectrometer(const CSpectrometer& spec2)
     this->m_gpsReadingsNum = spec2.m_gpsReadingsNum;
 }
 
-const CString& CSpectrometer::SerialNumber() const {
+const CString& CSpectrometer::SerialNumber() const
+{
     return this->m_settings.serialNumber;
 }
 
-double CSpectrometer::GetMaxIntensity() const {
+double CSpectrometer::GetMaxIntensity() const
+{
     return CSpectrometerDatabase::GetInstance().GetModel(m_settings.modelName).maximumIntensityForSingleReadout;
 }
 
-void CSpectrometer::RememberResult(CScanResult& lastResult) {
-    std::string specie = "SO2";
+void CSpectrometer::RememberResult(CScanResult& lastResult)
+{
+    static std::string specie = "SO2";
 
     // 0. Some checking of reasonability
     if (lastResult.GetEvaluatedNum() <= 1)
+    {
         return;
+    }
 
     // 1. Check the mode of the measurement
-    MEASUREMENT_MODE lastMode = lastResult.CheckMeasurementMode();
+    const novac::MeasurementMode lastMode = novac::CheckMeasurementMode(lastResult);
+    lastResult.m_measurementMode = lastMode;
 
     // 2. Get the position of the plume centre, if there is any plume
     double centre1, centre2, plumeCompleteness, plumeEdge_low, plumeEdge_high;
@@ -78,14 +83,18 @@ void CSpectrometer::RememberResult(CScanResult& lastResult) {
     double maxColumn = lastResult.GetMaxColumn(specie);
 
     // 5. Append the results to the history
-    if (m_history != nullptr) {
-        if (MODE_FLUX == lastMode) {
+    if (m_history != nullptr)
+    {
+        if (novac::MeasurementMode::Flux == lastMode)
+        {
             m_history->AppendScanResult(lastResult, specie);
         }
-        else if (MODE_COMPOSITION == lastMode) {
+        else if (novac::MeasurementMode::Composition == lastMode)
+        {
             m_history->AppendCompMeasurement(tid.year, tid.month, tid.day, tid.hour, tid.minute, tid.second);
         }
-        else if (MODE_WINDSPEED == lastMode) {
+        else if (novac::MeasurementMode::Windspeed == lastMode)
+        {
             m_history->AppendWindMeasurement(tid.year, tid.month, tid.day, tid.hour, tid.minute, tid.second);
         }
     }

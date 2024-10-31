@@ -786,6 +786,12 @@
     <ClCompile Include="SpectralEvaluation\src\Log.cpp">
       <Filter>Source Files\SpectralEvaluation</Filter>
     </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\NovacEnums.cpp">
+      <Filter>Source Files\SpectralEvaluation</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Geometry.cpp">
+      <Filter>Source Files\SpectralEvaluation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Configuration\AdvancedFTPUploadSettings.h">

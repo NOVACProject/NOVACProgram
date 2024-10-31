@@ -553,7 +553,7 @@ int CPakFileHandler::GetSpectrometerIndex(const CString &serialNumber)
     return spectrometerIndex;
 }
 
-MEASUREMENT_MODE CPakFileHandler::GetMeasurementMode(const CString &fileName)
+novac::MeasurementMode CPakFileHandler::GetMeasurementMode(const CString &fileName)
 {
     const std::string fileNameStr((LPCSTR)fileName);
     NovacProgramLog log;
@@ -564,38 +564,38 @@ MEASUREMENT_MODE CPakFileHandler::GetMeasurementMode(const CString &fileName)
 
     if (CPakFileHandler::IsStratosphericMeasurement(scan))
     {
-        return MODE_STRATOSPHERE;
+        return novac::MeasurementMode::Stratosphere;
     }
     else if (CPakFileHandler::IsDirectSunMeasurement(scan))
     {
-        return MODE_DIRECT_SUN;
+        return novac::MeasurementMode::DirectSun;
     }
     else if (CPakFileHandler::IsLunarMeasurement(scan))
     {
-        return MODE_LUNAR;
+        return novac::MeasurementMode::Lunar;
     }
     else if (CPakFileHandler::IsWindSpeedMeasurement(scan))
     {
-        return MODE_WINDSPEED;
+        return novac::MeasurementMode::Windspeed;
     }
     else if (CPakFileHandler::IsFixedAngleMeasurement(scan))
     {
-        return MODE_FIXED;
+        return novac::MeasurementMode::Composition;
     }
     else if (CPakFileHandler::IsCompositionMeasurement(scan))
     {
-        return MODE_COMPOSITION;
+        return novac::MeasurementMode::Composition;
     }
     else
     {
         // if nothing else then assume that this is a flux-measurement
-        return MODE_FLUX;
+        return novac::MeasurementMode::Flux;
     }
 }
 
 bool CPakFileHandler::IsFixedAngleMeasurement(CScanFileHandler& file)
 {
-    novac::LogContext context("file", file.GetFileName());
+    novac::LogContext context(novac::LogContext::FileName, file.GetFileName());
 
     // 1. Count the number of spectra
     const int numSpec = file.GetSpectrumNumInFile();
@@ -678,7 +678,7 @@ bool CPakFileHandler::IsFixedAngleMeasurement(CScanFileHandler& file)
 
 bool CPakFileHandler::IsWindSpeedMeasurement(CScanFileHandler& file)
 {
-    novac::LogContext context("file", file.GetFileName());
+    novac::LogContext context(novac::LogContext::FileName, file.GetFileName());
 
     // 1. Count the number of spectra
     const int numSpec = file.GetSpectrumNumInFile();
@@ -763,7 +763,7 @@ bool CPakFileHandler::IsWindSpeedMeasurement(CScanFileHandler& file)
 
 bool CPakFileHandler::IsStratosphericMeasurement(CScanFileHandler& scan)
 {
-    novac::LogContext context("file", scan.GetFileName());
+    novac::LogContext context(novac::LogContext::FileName, scan.GetFileName());
 
     int nRepetitions = 0; // <-- The number of repetitions at one specific scan angle
 
@@ -839,7 +839,7 @@ bool CPakFileHandler::IsDirectSunMeasurement(CScanFileHandler& file)
 {
     CSpectrum spec;
     int numberOfFoundDirectSunSpectra = 0;
-    novac::LogContext context("file", file.GetFileName());
+    novac::LogContext context(novac::LogContext::FileName, file.GetFileName());
 
     // It is here assumed that the measurement is a direct-sun measurment
     //  if there is at least 5 spectrum with the name 'direct_sun'
@@ -862,7 +862,7 @@ bool CPakFileHandler::IsDirectSunMeasurement(CScanFileHandler& file)
 bool CPakFileHandler::IsLunarMeasurement(CScanFileHandler& file)
 {
     int numberOfFoundLunarSpectra = 0;
-    novac::LogContext context("file", file.GetFileName());
+    novac::LogContext context(novac::LogContext::FileName, file.GetFileName());
 
 
     // It is here assumed that the measurement is a direct-sun measurment
@@ -886,7 +886,7 @@ bool CPakFileHandler::IsLunarMeasurement(CScanFileHandler& file)
 
 bool CPakFileHandler::IsCompositionMeasurement(CScanFileHandler& file)
 {
-    novac::LogContext context("file", file.GetFileName());
+    novac::LogContext context(novac::LogContext::FileName, file.GetFileName());
 
     // It is here assumed that the measurement is a composition measurment
     //  if there is 

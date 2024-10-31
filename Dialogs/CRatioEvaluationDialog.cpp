@@ -178,15 +178,15 @@ IMPLEMENT_DYNAMIC(CRatioEvaluationDialog, CPropertyPage)
 
 CRatioEvaluationDialog::CRatioEvaluationDialog(RatioCalculationController* controller, CWnd* pParent /*=nullptr*/)
     : CPropertyPage(IDD_RATIO_EVALUATE_DIALOG), m_controller(controller)
-{
-}
+{}
 
 CRatioEvaluationDialog::~CRatioEvaluationDialog()
 {
     m_controller = nullptr;
 }
 
-BOOL CRatioEvaluationDialog::OnInitDialog() {
+BOOL CRatioEvaluationDialog::OnInitDialog()
+{
     CPropertyPage::OnInitDialog();
 
     Common common;
@@ -599,10 +599,11 @@ void CRatioEvaluationDialog::UpdateScanGraph(RatioCalculationResult* result)
 
     // Draw the plume-centre position. TODO: Improve on this such that the user can
     // visualize which region is considered to be plume and hence which spectra are eligible for being in-plume spectrum...
-    if (result->plumeInScanProperties.plumeCenter > -200) {
-        m_graph.DrawLine(Graph::VERTICAL, result->plumeInScanProperties.plumeCenter, RGB(255, 255, 0), Graph::STYLE_DASHED);
-        m_graph.DrawLine(Graph::VERTICAL, result->plumeInScanProperties.plumeHalfLow, RGB(128, 128, 0), Graph::STYLE_DASHED);
-        m_graph.DrawLine(Graph::VERTICAL, result->plumeInScanProperties.plumeHalfHigh, RGB(128, 128, 0), Graph::STYLE_DASHED);
+    if (result->plumeInScanProperties.plumeCenter.HasValue())
+    {
+        m_graph.DrawLine(Graph::VERTICAL, result->plumeInScanProperties.plumeCenter.Value(), RGB(255, 255, 0), Graph::STYLE_DASHED);
+        m_graph.DrawLine(Graph::VERTICAL, result->plumeInScanProperties.plumeHalfLow.ValueOrDefault(-90.0), RGB(128, 128, 0), Graph::STYLE_DASHED);
+        m_graph.DrawLine(Graph::VERTICAL, result->plumeInScanProperties.plumeHalfHigh.ValueOrDefault(+90.0), RGB(128, 128, 0), Graph::STYLE_DASHED);
     }
 }
 
@@ -650,9 +651,9 @@ void CRatioEvaluationDialog::UpdateResultTree(const RatioCalculationResult* resu
         str.Format("Plume center: %.1lf [deg]", result->plumeInScanProperties.plumeCenter);
         m_resultTree.InsertItem(str, TVI_ROOT);
 
-        // Format the plume ranges. Undetermined values are -9999.0 and should be formatted at either -90 or +90 depending on the edge.
-        const double plumeHalfLow = std::max(-90.0, result->plumeInScanProperties.plumeHalfLow);
-        const double plumeHalfHigh = (result->plumeInScanProperties.plumeHalfHigh < -100.0) ? +90 : result->plumeInScanProperties.plumeHalfHigh;
+        // Format the plume ranges. Undetermined values are formatted at either -90 or +90 depending on the edge.
+        const double plumeHalfLow = result->plumeInScanProperties.plumeHalfLow.ValueOrDefault(-90.0);
+        const double plumeHalfHigh = result->plumeInScanProperties.plumeHalfHigh.ValueOrDefault(+90.0);
         str.Format("Plume range: %.1lf to %.1lf [deg]", plumeHalfLow, plumeHalfHigh);
         m_resultTree.InsertItem(str, TVI_ROOT);
     }
@@ -872,7 +873,8 @@ struct BackgroundEvaluationInterface
 };
 
 // Background thread for doing the evaluations
-UINT EvaluateAllScans(void* pParam) {
+UINT EvaluateAllScans(void* pParam)
+{
     BackgroundEvaluationInterface* evaluationInterface = (BackgroundEvaluationInterface*)pParam;
 
     try
@@ -1078,7 +1080,8 @@ void CRatioEvaluationDialog::UpdateListOfResults()
 void CRatioEvaluationDialog::OnBnClickedClearResults()
 {
     const int answer = MessageBox("This will remove all results evaluated so far. Are you sure you want to continue?", NULL, MB_YESNO);
-    if (IDNO == answer) {
+    if (IDNO == answer)
+    {
         return;
     }
 
@@ -1093,7 +1096,8 @@ void CRatioEvaluationDialog::OnSelchangeEvaluatedScansSelectorCombo()
     UpdateListOfResults();
 }
 
-void CRatioEvaluationDialog::OnContextMenu(CWnd* pWnd, CPoint point) {
+void CRatioEvaluationDialog::OnContextMenu(CWnd* pWnd, CPoint point)
+{
 
     CMenu menu;
     VERIFY(menu.LoadMenu(IDR_RATIO_RESULT_CONTEXTMENU));

@@ -95,9 +95,6 @@ const enum COLUMN_UNIT { UNIT_PPMM, UNIT_MOLEC_CM2 };
 // The list of languages that we can manage
 const enum LANGUAGES { LANGUAGE_ENGLISH, LANGUAGE_SPANISH };
 
-// The various kinds of measurement modes that we have
-const enum MEASUREMENT_MODE { MODE_UNKNOWN, MODE_FLUX, MODE_FIXED, MODE_WINDSPEED, MODE_STRATOSPHERE, MODE_DIRECT_SUN, MODE_COMPOSITION, MODE_LUNAR, MODE_TROPOSPHERE, MODE_MAXDOAS };
-
 // The maximum number of references that can be fitted to a single spectrum
 #define MAX_N_REFERENCES 10
 

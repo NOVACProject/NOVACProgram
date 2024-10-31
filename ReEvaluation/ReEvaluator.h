@@ -2,10 +2,10 @@
 
 #include <SpectralEvaluation/Configuration/SkySettings.h>
 #include <SpectralEvaluation/Evaluation/EvaluationBase.h>
-#include "../Evaluation/ScanResult.h"
 #include <SpectralEvaluation/Evaluation/ReferenceFile.h>
 #include <SpectralEvaluation/Spectra/Spectrum.h>
 #include <SpectralEvaluation/File/ScanFileHandler.h>
+#include "../Evaluation/ScanResult.h"
 #include "../Configuration/Configuration.h"
 #include "../NovacProgramLog.h"
 
@@ -23,40 +23,34 @@ public:
     /** The maximum number of fit windows that can be defined */
     static const long MAX_N_WINDOWS = 10;
 
-    /** The minimum credible intensity, spectra with intensity below this
-        value will be treated as dark. */
-    static const long MINIMUM_CREDIBLE_INTENSITY = 600;
-
     /**  this is true if the reevaluation is running, else false */
-    bool  fRun;
+    bool fRun = false;
 
-    /** If this is true then the reevaluator will sleep beteween each spectrum evaluation */
-    int   m_pause;
+    /** If this is true (non-zero) then the reevaluator will sleep beteween each spectrum evaluation */
+    int m_pause = 0;
 
     /** True if the thread is currently sleeping */
-    bool  m_sleeping;
+    bool m_sleeping = false;
 
     /** The pak-files to reevaluate */
-    CArray <CString, CString&> m_scanFile;
-
-    /** The number of pak-files opened */
-    long    m_scanFileNum;
+    std::vector<std::string> m_scanFile;
 
     /** The fit windows */
     novac::CFitWindow  m_window[MAX_N_WINDOWS];
 
     /** How many windows are defined? */
-    long        m_windowNum;
+    long m_windowNum = 1;
 
     /** Which is the current fit window? */
-    long        m_curWindow;
+    long m_curWindow = 0;
 
-    /** True if the spectra that we're treating are averaged, not summed */
-    bool        m_averagedSpectra;
+    /** True if the spectra that we're treating are averaged, not summed.
+        The default is that the spectra are summed, not averaged. */
+    bool m_averagedSpectra = false;
 
     /** a string that is updated with information about progres in the calculations.
         every time the string is changed a message is sent to 'pView' */
-    CString     m_statusMsg;
+    CString m_statusMsg;
 
     /** The fit results */
     novac::CEvaluationResult m_results;
@@ -64,14 +58,14 @@ public:
     /** when doing lengthy calculations the value of this double varies from 0 (in the beginning) to 1 (in the end)
     every now and then a WM_PROGRESS message is sent to the window pView if pView != NULL
     when the process is finished the window is sent the message WM_DONE */
-    double  m_progress;
-    CWnd* pView;
+    double m_progress = 0.0;
+    CWnd* pView = nullptr;
 
     /** The directory in which the output is currently directed */
-    CString   m_outputDir;
+    CString m_outputDir;
 
     /** The file name of the current evaluation log, stored in the m_outputDir directory */
-    CString   m_evalLog[MAX_N_WINDOWS];
+    CString m_evalLog[MAX_N_WINDOWS];
 
     /** The options for which spectra to ignore */
     Evaluation::IgnoreOption  m_ignore_Lower;

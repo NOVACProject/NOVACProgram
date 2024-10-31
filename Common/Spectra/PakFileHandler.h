@@ -4,6 +4,7 @@
 #include <vector>
 #include "../../Common/Common.h"
 #include <SpectralEvaluation/Log.h>
+#include <SpectralEvaluation/NovacEnums.h>
 
 namespace novac
 {
@@ -43,7 +44,7 @@ public:
 
     /** This function checks the contents of the .pak-file 'fileName'
             and returns the type of measurement which is inside the file */
-    static MEASUREMENT_MODE GetMeasurementMode(const CString& fileName);
+    static novac::MeasurementMode GetMeasurementMode(const CString& fileName);
 
     /** Adjusts the channel number to be in the range 0 - MAX_CHANNEL_NUM
             @return true if the spectrum is a multichannel spectrum and should be split. */

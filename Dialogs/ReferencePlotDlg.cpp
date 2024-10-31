@@ -10,12 +10,10 @@ using namespace Dialogs;
 IMPLEMENT_DYNAMIC(CReferencePlotDlg, CDialog)
 CReferencePlotDlg::CReferencePlotDlg(CWnd* pParent /*=NULL*/)
     : CDialog(CReferencePlotDlg::IDD, pParent)
-{
-}
+{}
 
 CReferencePlotDlg::~CReferencePlotDlg()
-{
-}
+{}
 
 void CReferencePlotDlg::DoDataExchange(CDataExchange* pDX)
 {
@@ -47,11 +45,11 @@ BOOL CReferencePlotDlg::OnInitDialog()
     int titleBarHeight = 30; // the height of the title bar...
     CString specieName; // the name of the species
 
-                        // Get the height of this window
+    // Get the height of this window
     GetWindowRect(thisWindowRect);
 
     // Make sure that all references fit into the window
-    thisWindowRect.bottom = thisWindowRect.top + nReferences * plotHeight + (nReferences + 1)* margin + titleBarHeight;
+    thisWindowRect.bottom = thisWindowRect.top + nReferences * plotHeight + (nReferences + 1) * margin + titleBarHeight;
     MoveWindow(thisWindowRect);
 
     // rect is the size and location of each graph
@@ -59,14 +57,17 @@ BOOL CReferencePlotDlg::OnInitDialog()
     rect.right = thisWindowRect.Width() - labelWidth - margin;
 
     // Create each of the graphs
-    for (unsigned int k = 0; k < nReferences; ++k) {
+    for (unsigned int k = 0; k < nReferences; ++k)
+    {
         rect.top = k * (plotHeight + margin) + margin;
         rect.bottom = rect.top + plotHeight;
 
-        if (k == nReferences - 1) {
+        if (k == nReferences - 1)
+        {
             m_graphs[k].SetXUnits("Pixel");
         }
-        else {
+        else
+        {
             m_graphs[k].HideXScale();
         }
 
@@ -81,8 +82,8 @@ BOOL CReferencePlotDlg::OnInitDialog()
     }
 
     // Create the labels also...
-    CFont *font = new CFont();
-    font->CreateFont((int)(14 - 0.2*nReferences), 0, 0, 0, FW_BOLD,
+    CFont* font = new CFont();
+    font->CreateFont((int)(14 - 0.2 * nReferences), 0, 0, 0, FW_BOLD,
         FALSE, FALSE, 0, ANSI_CHARSET,
         OUT_DEFAULT_PRECIS,
         CLIP_DEFAULT_PRECIS,
@@ -90,7 +91,8 @@ BOOL CReferencePlotDlg::OnInitDialog()
         DEFAULT_PITCH | FF_SWISS, "Arial");
     rect.left = 0;
     rect.right = leftMargin;
-    for (unsigned int k = 0; k < nReferences; ++k) {
+    for (unsigned int k = 0; k < nReferences; ++k)
+    {
         rect.top = k * (plotHeight + margin) + margin + plotHeight / 2;
         rect.bottom = rect.top + plotHeight / 3;
 
@@ -121,18 +123,20 @@ void CReferencePlotDlg::ReadReferences()
     for (int i = 0; i < m_window->nRef; ++i)
     {
         // Read the file
-        if (0 != m_window->ref[i].ReadCrossSectionDataFromFile())
+        try
+        {
+            m_window->ref[i].ReadCrossSectionDataFromFile();
+        }
+        catch (std::exception&)
         {
             // ERROR... Tell the user ?
             std::vector<double> thisReference(8192, 0.0); // create a reference with all zeros.
             m_data.push_back(thisReference);
             continue;
         }
-        else
-        {
-            std::vector<double> thisReference = m_window->ref[i].m_data->m_crossSection;
-            m_data.push_back(thisReference);
-        }
+
+        std::vector<double> thisReference = m_window->ref[i].m_data->m_crossSection;
+        m_data.push_back(thisReference);
     }
 }
 
@@ -162,7 +166,7 @@ void Dialogs::CReferencePlotDlg::OnSize(UINT nType, int cx, int cy)
     int titleBarHeight = 30;	// the height of the title bar...
     int plotHeight = (cy - nReferences * margin) / nReferences; // the height of each graph
 
-                                                                // The width of each graph
+    // The width of each graph
     graphRect.left = leftMargin;
     graphRect.right = cx - labelWidth - margin;
 
@@ -171,7 +175,8 @@ void Dialogs::CReferencePlotDlg::OnSize(UINT nType, int cx, int cy)
     specieRect.right = leftMargin;
 
     // Move the graphs to their right positions
-    for (k = 0; k < nReferences; ++k) {
+    for (k = 0; k < nReferences; ++k)
+    {
         // The location of each graph
         graphRect.top = k * (plotHeight + margin) + margin;
         graphRect.bottom = graphRect.top + plotHeight;
