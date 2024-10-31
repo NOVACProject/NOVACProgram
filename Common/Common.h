@@ -125,9 +125,6 @@ const enum LANGUAGES { LANGUAGE_ENGLISH, LANGUAGE_SPANISH };
 // conversion from ppmm to mg/m^2 for NO2
 #define GASFACTOR_NO2 1.93
 
-//size of buffer to receive data
-#define SIZEOFBUFFER 2048
-
 //size  of max buffer
 #define MAXBUFFER 65536
 

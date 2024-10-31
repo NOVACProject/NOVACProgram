@@ -8,14 +8,12 @@
 namespace FileHandler
 {
 
-//#define MAX_N_SCANS 800
-
 class CEvaluationLogFileHandler
 {
     static const int ORIGINAL_ARRAY_LENGTH = 50;
 public:
-    CEvaluationLogFileHandler(void);
-    ~CEvaluationLogFileHandler(void);
+    CEvaluationLogFileHandler();
+    ~CEvaluationLogFileHandler();
 
     /** The evaluation log */
     CString m_evaluationLog;

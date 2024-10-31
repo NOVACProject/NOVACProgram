@@ -142,6 +142,9 @@ void CSerialControllerWithTx::SendCommand(char* commandLine)
     InitCommandLine();
 }
 
+//size of buffer to receive data
+#define SIZEOFBUFFER 2048
+
 bool CSerialControllerWithTx::StartTx()
 {
     char recBuf[SIZEOFBUFFER];
