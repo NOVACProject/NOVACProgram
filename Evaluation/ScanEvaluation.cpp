@@ -227,7 +227,7 @@ long CScanEvaluation::EvaluateScan(novac::LogContext context, const std::string&
             if (ret == 0)
             {
                 // if something went wrong when reading the spectrum
-                if (scan.m_lastError == CSpectrumIO::ERROR_SPECTRUM_NOT_FOUND || scan.m_lastError == novac::CSpectrumIO::ERROR_EOF)
+                if (scan.m_lastError == novac::FileError::SpectrumNotFound || scan.m_lastError == novac::FileError::EndOfFile)
                 {
                     // at the end of the file, quit the 'while' loop
                     break;
@@ -237,9 +237,9 @@ long CScanEvaluation::EvaluateScan(novac::LogContext context, const std::string&
                     CString errMsg;
                     errMsg.Format("Faulty spectrum found in %s", scanfile.c_str());
                     switch (scan.m_lastError) {
-                    case novac::CSpectrumIO::ERROR_CHECKSUM_MISMATCH:
+                    case novac::FileError::ChecksumMismatch:
                         errMsg.AppendFormat(", Checksum mismatch. Spectrum ignored"); break;
-                    case novac::CSpectrumIO::ERROR_DECOMPRESS:
+                    case novac::FileError::DecompressionError:
                         errMsg.AppendFormat(", Decompression error. Spectrum ignored"); break;
                     default:
                         m_log.Error(context, ", Unknown error. Spectrum ignored");

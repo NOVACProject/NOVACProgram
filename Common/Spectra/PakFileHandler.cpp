@@ -16,8 +16,8 @@
 using namespace FileHandler;
 using namespace novac;
 
-extern CWinThread *g_eval;               // <-- The evaluation thread
-extern CFormView *pView;                 // <-- The screen
+extern CWinThread* g_eval;               // <-- The evaluation thread
+extern CFormView* pView;                 // <-- The screen
 extern CConfigurationSetting g_settings; // <-- The settings
 
 CPakFileHandler::CPakFileHandler(novac::ILogger& log)
@@ -31,29 +31,36 @@ CPakFileHandler::CPakFileHandler(novac::ILogger& log)
     m_lastLostIndex.resize(3);
 }
 
-void CPakFileHandler::InitializeDirectories(const CString &serialNumber, const CString *outputDir) {
+void CPakFileHandler::InitializeDirectories(const CString& serialNumber, const CString* outputDir)
+{
     CString message;
-    if (!m_initializedOutput) {
-        if (outputDir == 0 || 0 != CreateDirectoryStructure(*outputDir)) {
+    if (!m_initializedOutput)
+    {
+        if (outputDir == 0 || 0 != CreateDirectoryStructure(*outputDir))
+        {
             m_tempDir.Format("%sTemp\\%s\\", (LPCSTR)g_settings.outputDirectory, (LPCSTR)serialNumber);
             m_incompleteDir.Format("%s\\IncompleteScans\\", (LPCSTR)m_tempDir);
             m_lostDir.Format("%sLost\\%s", (LPCSTR)g_settings.outputDirectory, (LPCSTR)serialNumber);
         }
-        else {
+        else
+        {
             m_tempDir.Format("%s\\%s\\", (LPCSTR)*outputDir, (LPCSTR)serialNumber);
             m_incompleteDir.Format("%s\\IncompleteScans\\", (LPCSTR)m_tempDir);
             m_lostDir.Format("%s", (LPCSTR)m_incompleteDir);
         }
 
-        if (CreateDirectoryStructure(m_tempDir)) {        // create the temporary directory
+        if (CreateDirectoryStructure(m_tempDir))
+        {        // create the temporary directory
             message.Format("Could not create temp-directory; %s", (LPCSTR)m_tempDir);
             ShowMessage(message);
         }
-        if (CreateDirectoryStructure(m_lostDir)) {				// create the lost directory
+        if (CreateDirectoryStructure(m_lostDir))
+        {				// create the lost directory
             message.Format("Could not create lost-directory; %s", (LPCSTR)m_lostDir);
             ShowMessage(message);
         }
-        if (CreateDirectoryStructure(m_incompleteDir)) {  // create the incomplete-scans directory
+        if (CreateDirectoryStructure(m_incompleteDir))
+        {  // create the incomplete-scans directory
             message.Format("Could not create incomplete-directory; %s", (LPCSTR)m_incompleteDir);
             ShowMessage(message);
         }
@@ -62,7 +69,8 @@ void CPakFileHandler::InitializeDirectories(const CString &serialNumber, const C
     }
 }
 
-int CPakFileHandler::FindFirstScanStart(const CString &fileName, const CString &fileForLost) {
+int CPakFileHandler::FindFirstScanStart(const CString& fileName, const CString& fileForLost)
+{
     int specNum = 0;
     CSpectrum spec;
     CString message;
@@ -99,11 +107,12 @@ int CPakFileHandler::FindFirstScanStart(const CString &fileName, const CString &
         spectrum 'curSpec' will be the next first spectrum of a scan.
         If there is no more scan-start spectrum in the file, this function will
         return FAIL. */
-RETURN_CODE CPakFileHandler::FindNextScanStart(FILE *pakFile, CSpectrum &curSpec) {
+RETURN_CODE CPakFileHandler::FindNextScanStart(FILE* pakFile, CSpectrum& curSpec)
+{
     CSpectrumIO reader;
     CSpectrumIO writer;
     CString incompleteFileName, serialNumber, message;
-    char *spectrumHeader = (char*)calloc(HEADER_BUF_SIZE, sizeof(char)); // <-- the spectrum header, in binary format
+    char* spectrumHeader = (char*)calloc(HEADER_BUF_SIZE, sizeof(char)); // <-- the spectrum header, in binary format
     int specHeaderSize = 0;
     int originalSpectrumNumber = m_spectrumNumber;
 
@@ -115,11 +124,12 @@ RETURN_CODE CPakFileHandler::FindNextScanStart(FILE *pakFile, CSpectrum &curSpec
     int originalScanIndex = scanIndex;
 
     // Save this spectrum in a file in the 'incomplete' - folder
-    CDateTime *starttid = &curSpec.m_info.m_startTime;
+    CDateTime* starttid = &curSpec.m_info.m_startTime;
     incompleteFileName.Format("%s\\%s_%02d.%02d.%02d.pak", (LPCSTR)m_incompleteDir, (LPCSTR)serialNumber, starttid->hour, starttid->minute, starttid->second);
 
     // Continue reading spectra until we find one which has scan-index = 0
-    while (scanIndex > 0) {
+    while (scanIndex > 0)
+    {
         // write the spectrum to an incomplete-file and store it...
         const std::string incompleteFileNameStr((LPCSTR)incompleteFileName);
         writer.AddSpectrumToFile(incompleteFileNameStr, curSpec, spectrumHeader, specHeaderSize);
@@ -127,13 +137,16 @@ RETURN_CODE CPakFileHandler::FindNextScanStart(FILE *pakFile, CSpectrum &curSpec
         // Read the next spectrum from the file and see if this is the beginning
         //	of a scan...
         const bool success = reader.ReadNextSpectrum(pakFile, curSpec, specHeaderSize, spectrumHeader, HEADER_BUF_SIZE);
-        if (!success) {
-            if (SUCCESS != HandleCorruptSpectrum(reader, pakFile)) {
+        if (!success)
+        {
+            if (SUCCESS != HandleCorruptSpectrum(reader, pakFile))
+            {
                 free(spectrumHeader);
                 return FAIL;
             }
         }
-        else {
+        else
+        {
             ++m_spectrumNumber;
         }
 
@@ -159,7 +172,7 @@ RETURN_CODE CPakFileHandler::FindNextScanStart(FILE *pakFile, CSpectrum &curSpec
     return SUCCESS;
 }
 
-RETURN_CODE CPakFileHandler::EvaluateScan(const CString &fileName, const CString &serialNumber)
+RETURN_CODE CPakFileHandler::EvaluateScan(const CString& fileName, const CString& serialNumber)
 {
     if (g_eval == nullptr)
     {
@@ -188,7 +201,7 @@ RETURN_CODE CPakFileHandler::EvaluateScan(const CString &fileName, const CString
         return FAIL;
     }
 
-    CString *spectrumFile = new CString(outputFile);
+    CString* spectrumFile = new CString(outputFile);
     g_eval->PostThreadMessage(WM_ARRIVED_SPECTRA, (WPARAM)spectrumFile, NULL);
 
     if (pView != nullptr)
@@ -203,7 +216,7 @@ RETURN_CODE CPakFileHandler::EvaluateScan(const CString &fileName, const CString
     return SUCCESS;
 }
 
-int CPakFileHandler::ReadDownloadedFile(const CString &fileName, bool deletePakFile, bool evaluate, const CString *outputDir)
+int CPakFileHandler::ReadDownloadedFile(const CString& fileName, bool deletePakFile, bool evaluate, const CString* outputDir)
 {
     CString message;
     CSpectrumIO reader;
@@ -224,7 +237,7 @@ int CPakFileHandler::ReadDownloadedFile(const CString &fileName, bool deletePakF
 
     // An array of spectra, needed if an multichannel spectrum is coming in.
     std::vector<CSpectrum> spectrumFromChannel{ MAX_CHANNEL_NUM };
-    CSpectrum *mSpec[MAX_CHANNEL_NUM]; // This is a temp handle for backwards compatibility. TODO: Remove when CSpectrum::Split supports vectors
+    CSpectrum* mSpec[MAX_CHANNEL_NUM]; // This is a temp handle for backwards compatibility. TODO: Remove when CSpectrum::Split supports vectors
 
     // 0. Reset 
     m_spectrumNumber = 0;
@@ -299,7 +312,7 @@ int CPakFileHandler::ReadDownloadedFile(const CString &fileName, bool deletePakF
     //		we've read a full scan, evaluate it.
     memset(old_scanIndex, -1, MAX_CHANNEL_NUM * sizeof(int));
     memset(repetitions, 0, MAX_CHANNEL_NUM * sizeof(int));
-    FILE *pakFile = fopen(fileName, "rb");
+    FILE* pakFile = fopen(fileName, "rb");
     if (pakFile == nullptr)
     {
         message.Format("CPakFileHandler: Could not open .pak-file %s", (LPCSTR)fileName);
@@ -313,7 +326,7 @@ int CPakFileHandler::ReadDownloadedFile(const CString &fileName, bool deletePakF
             if (!success)
             {
                 // If the spectrum is corrupt, save it to the 'corrupted' - folder
-                if (reader.m_lastError == CSpectrumIO::ERROR_CHECKSUM_MISMATCH)
+                if (reader.m_lastError == novac::FileError::ChecksumMismatch)
                 {
                     SaveCorruptSpectrum(curSpec, specHeaderSize, spectrumHeader.data());
                 }
@@ -428,12 +441,16 @@ int CPakFileHandler::ReadDownloadedFile(const CString &fileName, bool deletePakF
 
     // 7. If we've read equally many spectra as measurement-lines in the 
     //		cfg.txt-file, then assume that this is a full scan
-    if (isMultiChannelSpec) {
+    if (isMultiChannelSpec)
+    {
         // 7a. The last spectrum was a multichannel spectrum
         int nChannels = curSpec.Split(mSpec);
-        if (nChannels <= MAX_CHANNEL_NUM) {
-            for (int k = 0; k < nChannels; ++k) {
-                if (numSpecRead[k] == mSpec[k]->SpectraPerScan()) {
+        if (nChannels <= MAX_CHANNEL_NUM)
+        {
+            for (int k = 0; k < nChannels; ++k)
+            {
+                if (numSpecRead[k] == mSpec[k]->SpectraPerScan())
+                {
                     if (evaluate)
                         EvaluateScan(m_scanFile[k], serialNumber);
                     else
@@ -444,10 +461,13 @@ int CPakFileHandler::ReadDownloadedFile(const CString &fileName, bool deletePakF
             }
         } // endif(nChannels...
     }
-    else {
+    else
+    {
         // 7b. The last spectrum was a normal spectrum
-        if (channel >= 0 && channel < MAX_CHANNEL_NUM) {
-            if (numSpecRead[channel] == curSpec.SpectraPerScan()) {
+        if (channel >= 0 && channel < MAX_CHANNEL_NUM)
+        {
+            if (numSpecRead[channel] == curSpec.SpectraPerScan())
+            {
                 if (evaluate)
                     EvaluateScan(m_scanFile[channel], serialNumber);
                 else
@@ -459,9 +479,11 @@ int CPakFileHandler::ReadDownloadedFile(const CString &fileName, bool deletePakF
     }
 
     // 8. If no scans were evaluated, tell the user...
-    if (nEvaluatedScans == 0) {
+    if (nEvaluatedScans == 0)
+    {
         ShowMessage("Downloaded file does not contain a complete scan.");
-        for (i = 0; i < MAX_CHANNEL_NUM; ++i) {
+        for (i = 0; i < MAX_CHANNEL_NUM; ++i)
+        {
             if (nSpecPerScan[i] == 0)
                 continue;
             message.Format("Channel %d: File contains %d spectra, expected %d.",
@@ -472,26 +494,31 @@ int CPakFileHandler::ReadDownloadedFile(const CString &fileName, bool deletePakF
 
     // 9. We have read all the scans in the file. If the scan is not complete 
     //		save it in the 'incomplete' folder
-    for (i = 0; i < MAX_CHANNEL_NUM; ++i) {
+    for (i = 0; i < MAX_CHANNEL_NUM; ++i)
+    {
         CString incompleteFileName;
-        if (numSpecRead[i] != 0) {
+        if (numSpecRead[i] != 0)
+        {
             // 9a. Find a good name for the incomplete-file
             incompleteFileName.Format("%s\\%s_%1d.pak", (LPCSTR)m_incompleteDir, (LPCSTR)serialNumber, i);
 
             // 9b. If there's already an incomplete-file with this filename
             //      then move it to the 'lost' folder.
-            if (IsExistingFile(incompleteFileName)) {
+            if (IsExistingFile(incompleteFileName))
+            {
                 int index = GetSpectrometerIndex(serialNumber);
                 int it = 1 + m_lastLostIndex[index];
                 while (IsExistingFile(lostFile[i]))
                     lostFile[i].Format("%s\\Incomplete_%s_%1d_%d.pak", (LPCSTR)m_lostDir, (LPCSTR)serialNumber, i, it++);
 
                 m_lastLostIndex[index] = it;
-                if (0 == MoveFile(incompleteFileName, lostFile[i])) {
+                if (0 == MoveFile(incompleteFileName, lostFile[i]))
+                {
                     // TODO!!!
                     ShowMessage("Error, could not move incomplete file!!");
                 }
-                else {
+                else
+                {
                     ShowMessage("Moved incomplete scan file to folder for lost scans");
                     int volcanoIndex = Common::GetMonitoredVolcano(serialNumber);
                     UploadToNOVACServer(lostFile[i], volcanoIndex);
@@ -499,7 +526,8 @@ int CPakFileHandler::ReadDownloadedFile(const CString &fileName, bool deletePakF
             }
 
             // 9c. Move the spectra to the incomplete-file
-            if (0 == MoveFile(m_scanFile[i], incompleteFileName)) {
+            if (0 == MoveFile(m_scanFile[i], incompleteFileName))
+            {
                 // TODO!!!
                 ShowMessage("Error, could not move file");
             }
@@ -521,7 +549,7 @@ int CPakFileHandler::ReadDownloadedFile(const CString &fileName, bool deletePakF
     return 0;
 }
 
-int CPakFileHandler::GetSpectrometerIndex(const CString &serialNumber)
+int CPakFileHandler::GetSpectrometerIndex(const CString& serialNumber)
 {
     const std::string serialtoSearchFor((LPCSTR)serialNumber);
     int spectrometerIndex = 0;
@@ -553,7 +581,7 @@ int CPakFileHandler::GetSpectrometerIndex(const CString &serialNumber)
     return spectrometerIndex;
 }
 
-novac::MeasurementMode CPakFileHandler::GetMeasurementMode(const CString &fileName)
+novac::MeasurementMode CPakFileHandler::GetMeasurementMode(const CString& fileName)
 {
     const std::string fileNameStr((LPCSTR)fileName);
     NovacProgramLog log;
@@ -639,8 +667,8 @@ bool CPakFileHandler::IsFixedAngleMeasurement(CScanFileHandler& file)
             to be a wind-speed measurement if there are more than 50
             repetitions at a single scan-angle.  */
 
-    // 3. Go through the file, starting at the last spectrum in the file.
-    //      Skip the last few spectra since there might be a dark measurement in the end...
+            // 3. Go through the file, starting at the last spectrum in the file.
+            //      Skip the last few spectra since there might be a dark measurement in the end...
     if (1 != file.GetSpectrum(context, spectrum, numSpec - 3))
     {
         return false;
@@ -908,7 +936,8 @@ bool CPakFileHandler::IsCompositionMeasurement(CScanFileHandler& file)
 }
 
 /** Takes a scan file and renames it to an approprate name */
-RETURN_CODE	CPakFileHandler::ArchiveScan(const CString &scanFileName) {
+RETURN_CODE	CPakFileHandler::ArchiveScan(const CString& scanFileName)
+{
     CSpectrumIO reader;
 
     CSpectrum tmpSpec;
@@ -917,11 +946,14 @@ RETURN_CODE	CPakFileHandler::ArchiveScan(const CString &scanFileName) {
     // 1. Read one spectrum in the scan
     int specIndex = 0;
     const std::string fileNameStr((LPCSTR)scanFileName);
-    while (SUCCESS != reader.ReadSpectrum(fileNameStr, specIndex++, tmpSpec)) {
-        if (reader.m_lastError == CSpectrumIO::ERROR_SPECTRUM_NOT_FOUND)
+    while (SUCCESS != reader.ReadSpectrum(fileNameStr, specIndex++, tmpSpec))
+    {
+        if (reader.m_lastError == novac::FileError::SpectrumNotFound)
+        {
             return FAIL;
+        }
     }
-    CSpectrumInfo &info = tmpSpec.m_info;
+    CSpectrumInfo& info = tmpSpec.m_info;
     int channel = info.m_channel;
 
     // 2. Get the serialNumber of the spectrometer
@@ -933,18 +965,23 @@ RETURN_CODE	CPakFileHandler::ArchiveScan(const CString &scanFileName) {
 
     // 5. Write the archiving name of the spectrum file
     if (channel < 128 && channel > MAX_CHANNEL_NUM)
+    {
         channel = channel % 16;
+    }
+
     pakFile.Format("%s%s_%s_%s_%1d.pak", (LPCSTR)m_tempDir, (LPCSTR)serialNumber, (LPCSTR)dateStr, (LPCSTR)timeStr, channel);
 
     if (strlen(pakFile) > MAX_PATH)
+    {
         return FAIL;
+    }
 
     MoveFile(scanFileName, pakFile);
 
     return SUCCESS;
 }
 
-bool CPakFileHandler::CorrectChannelNumber(unsigned char &channel)
+bool CPakFileHandler::CorrectChannelNumber(unsigned char& channel)
 {
     // If the channel number is >= 129 then the spectra are interlaced
     if (channel > 128)
@@ -975,16 +1012,20 @@ bool CPakFileHandler::CorrectChannelNumber(unsigned char &channel)
 }
 
 /** Takes appropriate action when a corrupt spectrum has been found */
-RETURN_CODE CPakFileHandler::HandleCorruptSpectrum(CSpectrumIO &reader, FILE *pakFile)
+RETURN_CODE CPakFileHandler::HandleCorruptSpectrum(CSpectrumIO& reader, FILE* pakFile)
 {
     CString str;
-    if (reader.m_lastError == CSpectrumIO::ERROR_EOF || reader.m_lastError == CSpectrumIO::ERROR_COULD_NOT_OPEN_FILE || reader.m_lastError == CSpectrumIO::ERROR_SPECTRUM_NOT_FOUND)
+    if (reader.m_lastError == novac::FileError::EndOfFile || reader.m_lastError == novac::FileError::CouldNotOpenfile || reader.m_lastError == novac::FileError::SpectrumNotFound)
+    {
         return FAIL;
-    switch (reader.m_lastError) {
-    case CSpectrumIO::ERROR_CHECKSUM_MISMATCH:
+    }
+
+    switch (reader.m_lastError)
+    {
+    case novac::FileError::ChecksumMismatch:
         str.Format("Spectrum %d in pak file is corrupt, checksum mismatch", m_spectrumNumber);
         ShowMessage(str); break;
-    case CSpectrumIO::ERROR_DECOMPRESS:
+    case novac::FileError::DecompressionError:
         str.Format("Spectrum %d in pak file is corrupt, spectrum could not be decompressed", m_spectrumNumber);
         ShowMessage(str); break;
     }
@@ -998,7 +1039,7 @@ RETURN_CODE CPakFileHandler::HandleCorruptSpectrum(CSpectrumIO &reader, FILE *pa
     return SUCCESS;
 }
 
-RETURN_CODE CPakFileHandler::SaveCorruptSpectrum(const CSpectrum &curSpec, int /*specHeaderSize*/, const char* /*spectrumHeader*/)
+RETURN_CODE CPakFileHandler::SaveCorruptSpectrum(const CSpectrum& curSpec, int /*specHeaderSize*/, const char* /*spectrumHeader*/)
 {
     CString fileName, serial, date, time;
 

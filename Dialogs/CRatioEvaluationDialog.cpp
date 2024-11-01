@@ -504,7 +504,7 @@ void CRatioEvaluationDialog::UpdateScanGraph(RatioCalculationResult* result)
         return;
     }
 
-    const double columnOffset = result->plumeInScanProperties.offset;
+    const double columnOffset = result->plumeInScanProperties.offset.ValueOrDefault(0.0);
 
     std::vector<double> scanAngles;
     std::vector<double> columns;
@@ -638,7 +638,7 @@ void CRatioEvaluationDialog::UpdateResultTree(const RatioCalculationResult* resu
     str.Format("Time: %04d.%02d.%02d %02d:%02d:%02d UTC", result->startTime.year, result->startTime.month, result->startTime.day, result->startTime.hour, result->startTime.minute, result->startTime.second);
     m_resultTree.InsertItem(str, TVI_ROOT);
 
-    if (result->plumeInScanProperties.completeness < 0.49)
+    if (!result->plumeInScanProperties.completeness.HasValue())
     {
         str.Format("Plume completeness: N/A");
         m_resultTree.InsertItem(str, TVI_ROOT);

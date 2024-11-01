@@ -26,8 +26,7 @@ CExportSpectraDlg::CExportSpectraDlg()
 }
 
 CExportSpectraDlg::~CExportSpectraDlg()
-{
-}
+{}
 
 void CExportSpectraDlg::DoDataExchange(CDataExchange* pDX)
 {
@@ -65,7 +64,8 @@ void CExportSpectraDlg::OnBrowsePakFile()
     /** Go through the filenames */
     POSITION pos = fileDialog.GetStartPosition();
 
-    while (pos) {
+    while (pos)
+    {
         str = fileDialog.GetNextPathName(pos);
 
         m_pakFile.AddTail(str);
@@ -122,7 +122,8 @@ void CExportSpectraDlg::OnExportSpectra()
     int curSpec = 0;
     int ret = 0;
     POSITION pos = m_pakFile.GetHeadPosition();
-    while (pos != NULL) {
+    while (pos != NULL)
+    {
         CString pakFile = m_pakFile.GetNext(pos);
         curSpec = 0;
 
@@ -137,23 +138,28 @@ void CExportSpectraDlg::OnExportSpectra()
         if (CreateDirectoryStructure(path))
             continue; // could not create output directory.
 
-          // Loop through all the spectra in the pak-file
+        // Loop through all the spectra in the pak-file
         FILE* sFile = fopen(pakFile, "rb");
-        if (sFile != NULL) {
+        if (sFile != NULL)
+        {
 
             int spectrumNumber = 0; // <-- the number of spectra in the pak-file
 
-            while (1) {
-
-                //			while(SUCCESS == reader.ReadNextSpectrum(sFile, spec)){
+            while (1)
+            {
                 const bool success = reader.ReadNextSpectrum(sFile, spec);
-                if (!success) {
-                    if (reader.m_lastError == CSpectrumIO::ERROR_EOF || reader.m_lastError == CSpectrumIO::ERROR_COULD_NOT_OPEN_FILE || reader.m_lastError == CSpectrumIO::ERROR_SPECTRUM_NOT_FOUND)
+                if (!success)
+                {
+                    if (reader.m_lastError == novac::FileError::EndOfFile || reader.m_lastError == novac::FileError::CouldNotOpenfile || reader.m_lastError == novac::FileError::SpectrumNotFound)
+                    {
                         break;
-                    switch (reader.m_lastError) {
-                    case CSpectrumIO::ERROR_CHECKSUM_MISMATCH:
+                    }
+
+                    switch (reader.m_lastError)
+                    {
+                    case novac::FileError::ChecksumMismatch:
                         ShowMessage("Pak file contains a corrupt spectrum, checksum mismatch"); break;
-                    case CSpectrumIO::ERROR_DECOMPRESS:
+                    case novac::FileError::DecompressionError:
                         ShowMessage("Pak file contains a corrupt spectrum, could not decompress spectrum"); break;
                     }
                     //else
@@ -162,7 +168,9 @@ void CExportSpectraDlg::OnExportSpectra()
                         break;
                 }
                 else
+                {
                     ++spectrumNumber;
+                }
 
                 // Save the spectrum in a correct filename and correct fileformat
                 SaveSpectrum(spec, path);
@@ -176,23 +184,27 @@ void CExportSpectraDlg::OnExportSpectra()
             fclose(sFile);
         }
 
-        if (ret != 0 && reader.m_lastError == CSpectrumIO::ERROR_SPECTRUM_NOT_FOUND) {
+        if (ret != 0 && reader.m_lastError == novac::FileError::SpectrumNotFound)
+        {
             continue; // end of file - continue with the next pak-file
         }
 
-        if (ret != 0) {
-            switch (reader.m_lastError) {
-            case CSpectrumIO::ERROR_COULD_NOT_OPEN_FILE:   message.Format("Could not open spectrum file %s", (LPCSTR)pakFileName); break;
-            case CSpectrumIO::ERROR_CHECKSUM_MISMATCH:     message.Format("Spectrum number %d in %s is corrupt - Checksum mismatch", curSpec, (LPCSTR)pakFileName); break;
-            case CSpectrumIO::ERROR_SPECTRUM_TOO_LARGE:    message.Format("Spectrum number %d in %s is corrupt - Spectrum too large", curSpec, (LPCSTR)pakFileName); break;
-            case CSpectrumIO::ERROR_DECOMPRESS:            message.Format("Spectrum number %d in %s is corrupt - Decompression error", curSpec, (LPCSTR)pakFileName); break;
+        if (ret != 0)
+        {
+            switch (reader.m_lastError)
+            {
+            case novac::FileError::CouldNotOpenfile:    message.Format("Could not open spectrum file %s", (LPCSTR)pakFileName); break;
+            case novac::FileError::ChecksumMismatch:    message.Format("Spectrum number %d in %s is corrupt - Checksum mismatch", curSpec, (LPCSTR)pakFileName); break;
+            case novac::FileError::SpectrumTooLarge:    message.Format("Spectrum number %d in %s is corrupt - Spectrum too large", curSpec, (LPCSTR)pakFileName); break;
+            case novac::FileError::DecompressionError:  message.Format("Spectrum number %d in %s is corrupt - Decompression error", curSpec, (LPCSTR)pakFileName); break;
             }
             MessageBox(message, "Error", MB_OK);
             return;
         }
     } // end of while(pos != NULL)
 
-    if (m_specIndex > 0) {
+    if (m_specIndex > 0)
+    {
         message.Format("Successfully exported %d Spectrum files", m_specIndex);
         MessageBox(message);
     }
@@ -209,7 +221,8 @@ BOOL CExportSpectraDlg::OnInitDialog()
     // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CExportSpectraDlg::OnChangeExportDir() {
+void CExportSpectraDlg::OnChangeExportDir()
+{
     CString exportDir;
     GetDlgItemText(IDC_EDIT_EXPORTDIR, exportDir);
 
@@ -219,14 +232,16 @@ void CExportSpectraDlg::OnChangeExportDir() {
         m_exportBtn.EnableWindow(FALSE);
 }
 
-void CExportSpectraDlg::SaveSpectrum(const CSpectrum& spec, const CString& path) {
+void CExportSpectraDlg::SaveSpectrum(const CSpectrum& spec, const CString& path)
+{
     CString filename;
 
     // Get the channel number of the spectrum
     unsigned char channel = spec.Channel();
     bool isMultiChannelSpec = FileHandler::CPakFileHandler::CorrectChannelNumber(channel);
 
-    if (!isMultiChannelSpec) {
+    if (!isMultiChannelSpec)
+    {
         // Create a filename that describes the spectrum properly
         filename.Format("%s\\%05d_%d.STD", (LPCSTR)path, m_specIndex, channel);
 
@@ -240,13 +255,15 @@ void CExportSpectraDlg::SaveSpectrum(const CSpectrum& spec, const CString& path)
     // --------------- MULTICHANNEL SPECTRA ------------------
     // Split the interlaced spectrum into it's components
     CSpectrum* mSpec[MAX_CHANNEL_NUM];
-    for (int k = 0; k < MAX_CHANNEL_NUM; ++k) {
+    for (int k = 0; k < MAX_CHANNEL_NUM; ++k)
+    {
         mSpec[k] = new CSpectrum();
     }
 
     int nChn = spec.Split(mSpec);
 
-    for (int k = 0; k < nChn; ++k) {
+    for (int k = 0; k < nChn; ++k)
+    {
         filename.Format("%s\\%05d_%d.STD", (LPCSTR)path, m_specIndex, k);
 
         // Write the spectrum to file
@@ -254,7 +271,8 @@ void CExportSpectraDlg::SaveSpectrum(const CSpectrum& spec, const CString& path)
         CSTDFile::WriteSpectrum(mSpec[k], filenameStr, 1);
     }
 
-    for (int k = 0; k < MAX_CHANNEL_NUM; ++k) {
+    for (int k = 0; k < MAX_CHANNEL_NUM; ++k)
+    {
         delete(mSpec[k]);
     }
 }

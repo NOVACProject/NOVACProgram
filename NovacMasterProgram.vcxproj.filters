@@ -792,6 +792,9 @@
     <ClCompile Include="SpectralEvaluation\src\Geometry.cpp">
       <Filter>Source Files\SpectralEvaluation</Filter>
     </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\NullableValue.cpp">
+      <Filter>Source Files\SpectralEvaluation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Configuration\AdvancedFTPUploadSettings.h">

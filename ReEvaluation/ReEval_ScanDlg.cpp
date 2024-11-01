@@ -178,15 +178,7 @@ int CReEval_ScanDlg::TryReadSpectrum()
 
     if (!success)
     {
-        switch (reader.m_lastError)
-        {
-        case CSpectrumIO::ERROR_EOF:                   message.Format("Spectrum number %d is corrupt - EOF found", m_curSpec); break;
-        case CSpectrumIO::ERROR_COULD_NOT_OPEN_FILE:   message.Format("Could not open spectrum file"); break;
-        case CSpectrumIO::ERROR_CHECKSUM_MISMATCH:     message.Format("Spectrum number %d is corrupt - Checksum mismatch", m_curSpec); break;
-        case CSpectrumIO::ERROR_SPECTRUM_TOO_LARGE:    message.Format("Spectrum number %d is corrupt - Spectrum too large", m_curSpec); break;
-        case CSpectrumIO::ERROR_SPECTRUM_NOT_FOUND:    message.Format("Spectrum number %d not found. End of file.", m_curSpec); break; // m_BtnNextSpec.EnableWindow(FALSE); break;
-        case CSpectrumIO::ERROR_DECOMPRESS:            message.Format("Spectrum number %d is corrupt - Decompression error", m_curSpec); break;
-        }
+        message.Format("Error reading spectrum %d. Error: %s", m_curSpec, novac::ToString(reader.m_lastError).c_str());
         return 1;
     }
     else
@@ -233,7 +225,7 @@ int CReEval_ScanDlg::CheckScanFile()
     m_specNum = reader.CountSpectra(scanFileName);
 
     // check if the file was ok. 
-    if (reader.m_lastError == CSpectrumIO::ERROR_SPECTRUM_NOT_FOUND || reader.m_lastError == CSpectrumIO::ERROR_EOF)
+    if (reader.m_lastError == novac::FileError::SpectrumNotFound || reader.m_lastError == novac::FileError::EndOfFile)
     {
         return 0;
     }

@@ -165,7 +165,7 @@ int CScanResult::CalculateOffset(const std::string& specie)
     }
 
     // Calculate the offset
-    this->m_offset = novac::CalculatePlumeOffset(columns, badEval, m_specNum);
+    this->m_offset = novac::CalculatePlumeOffset(columns, badEval, m_specNum).ValueOrDefault(NOT_A_NUMBER);
 
     return 0;
 }
@@ -349,8 +349,8 @@ bool CScanResult::CalculatePlumeCentre(const std::string& specie, double& plumeC
         }
     }
 
-    // calculate the offset of the plume first
-    const double plumeOffset = novac::CalculatePlumeOffset(column, badEval, m_specNum);
+    // calculate the offset of the plume first, if this is not possible then use zero.
+    const double plumeOffset = novac::CalculatePlumeOffset(column, badEval, m_specNum).ValueOrDefault(0.0);
 
     // Calculate the centre of the plume
     novac::CPlumeInScanProperty plumeProperties;
@@ -371,8 +371,8 @@ bool CScanResult::CalculatePlumeCentre(const std::string& specie, double& plumeC
 
         // Estimate the completeness of the plume
         novac::CalculatePlumeCompleteness(scanAngle, phi, column, columnError, badEval, plumeOffset, m_specNum, plumeProperties);
-        m_plumeCompleteness = plumeProperties.completeness;
-        plumeCompleteness = plumeProperties.completeness;
+        m_plumeCompleteness = plumeProperties.completeness.ValueOrDefault(NOT_A_NUMBER);
+        plumeCompleteness = m_plumeCompleteness;
 
         // Also calculate the wind-direction
         CalculateWindDirection(plumeCentre_alpha);
