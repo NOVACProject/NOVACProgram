@@ -163,14 +163,13 @@ static void ReplaceReferences(std::vector<novac::CReferenceFile>& newReferences,
 
     // Now replace the references. Notice that this only supports replacing the references of the first channel.
     auto& fitWindow = spectrometer.channel[0].fitWindow;
-    fitWindow.nRef = 0;
+    fitWindow.reference.clear();
     for (const auto& reference : newReferences)
     {
         if (!EqualsIgnoringCase(reference.m_specieName, "Fraunhofer"))
         {
             // The NovacProgram doesn't use the Fraunhofer reference for determining shift in the real-time evaluations (only in ReEvaluation)
-            fitWindow.ref[fitWindow.nRef] = reference;
-            ++fitWindow.nRef;
+            fitWindow.reference.push_back(reference);
         }
     }
 }

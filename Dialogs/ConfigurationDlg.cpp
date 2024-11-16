@@ -11,12 +11,10 @@ using namespace FileHandler;
 IMPLEMENT_DYNAMIC(CConfigurationDlg, CDialog)
 CConfigurationDlg::CConfigurationDlg(CWnd* pParent /*=NULL*/)
     : CDialog(CConfigurationDlg::IDD, pParent)
-{
-}
+{}
 
 CConfigurationDlg::~CConfigurationDlg()
-{
-}
+{}
 
 void CConfigurationDlg::DoDataExchange(CDataExchange* pDX)
 {
@@ -75,7 +73,8 @@ BOOL CConfigurationDlg::OnInitDialog()
 void ConfigurationDialog::CConfigurationDlg::OnOK()
 {
     // First check the settings
-    if (SUCCESS != CheckSettings()) {
+    if (SUCCESS != CheckSettings())
+    {
         return;
     }
 
@@ -92,51 +91,63 @@ void ConfigurationDialog::CConfigurationDlg::OnOK()
 }
 
 
-RETURN_CODE ConfigurationDialog::CConfigurationDlg::CheckSettings() {
+RETURN_CODE ConfigurationDialog::CConfigurationDlg::CheckSettings()
+{
 
     CString message;
 
-    for (unsigned int i = 0; i < m_configuration.scannerNum; ++i) {
-        for (unsigned int j = 0; j < m_configuration.scanner[i].specNum; ++j) {
+    for (unsigned int i = 0; i < m_configuration.scannerNum; ++i)
+    {
+        for (unsigned int j = 0; j < m_configuration.scanner[i].specNum; ++j)
+        {
             bool pass = true;
 
             // Check the names
-            if (strlen(m_configuration.scanner[i].observatory) == 0) {
+            if (strlen(m_configuration.scanner[i].observatory) == 0)
+            {
                 message.Format("Please supply a name for the observatory");
                 pass = false;
             }
-            if (strlen(m_configuration.scanner[i].volcano) == 0) {
+            if (strlen(m_configuration.scanner[i].volcano) == 0)
+            {
                 message.Format("Please supply a name for the volcano");
                 pass = false;
             }
-            if (strlen(m_configuration.scanner[i].site) == 0) {
+            if (strlen(m_configuration.scanner[i].site) == 0)
+            {
                 message.Format("Please supply a name for the site of the scanner");
                 pass = false;
             }
 
-            for (unsigned int c = 0; c < m_configuration.scanner[i].spec[j].channelNum; ++c) {
+            for (unsigned int c = 0; c < m_configuration.scanner[i].spec[j].channelNum; ++c)
+            {
                 // Check the fit window
                 novac::CFitWindow& window = m_configuration.scanner[i].spec[j].channel[c].fitWindow;
 
-                if (window.fitHigh <= window.fitLow) {
+                if (window.fitHigh <= window.fitLow)
+                {
                     message.Format("FitLow must be lower than FitHigh");
                     pass = false;
                 }
 
-                if (window.polyOrder <= 0 || window.polyOrder > 5) {
+                if (window.polyOrder <= 0 || window.polyOrder > 5)
+                {
                     message.Format("The order of the fitted polynomial must be an integer between 0 and 5.");
                     pass = false;
                 }
 
-                if (window.nRef == 0) {
+                if (window.NumberOfReferences() == 0)
+                {
                     message.Format("No reference files are defined for the evaluation.");
                     pass = false;
                 }
 
-                for (int k = 0; k < window.nRef; ++k) {
-                    FILE* f = fopen(window.ref[k].m_path.c_str(), "r");
-                    if (f == NULL) {
-                        message.Format("Cannot read reference file %s", window.ref[k].m_path.c_str());
+                for (int k = 0; k < window.NumberOfReferences(); ++k)
+                {
+                    FILE* f = fopen(window.reference[k].m_path.c_str(), "r");
+                    if (f == nullptr)
+                    {
+                        message.Format("Cannot read reference file %s", window.reference[k].m_path.c_str());
                         pass = false;
                         break;
                     }
@@ -144,7 +155,8 @@ RETURN_CODE ConfigurationDialog::CConfigurationDlg::CheckSettings() {
                 }
             }
 
-            if (!pass) {
+            if (!pass)
+            {
                 CString str;
                 str.Format("Please check settings for spectrometer %s. ", (LPCSTR)m_configuration.scanner[i].spec[j].serialNumber);
                 str.AppendFormat(message);
@@ -156,8 +168,10 @@ RETURN_CODE ConfigurationDialog::CConfigurationDlg::CheckSettings() {
     }
 
     // Check if the user has specified a script to excecute at the arrival of each scan
-    if (strlen(m_configuration.externalSetting.fullScanScript) > 1) {
-        if (!IsExistingFile(m_configuration.externalSetting.fullScanScript)) {
+    if (strlen(m_configuration.externalSetting.fullScanScript) > 1)
+    {
+        if (!IsExistingFile(m_configuration.externalSetting.fullScanScript))
+        {
             MessageBox("Specified script to excecute at receival of scans cannot be found.");
             return FAIL;
         }

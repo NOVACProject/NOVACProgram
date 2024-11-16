@@ -8,21 +8,20 @@
 #include "../Dialogs/ReferencePlotDlg.h"
 #include <SpectralEvaluation/StringUtils.h>
 
-using namespace ReEvaluation;
 using namespace Evaluation;
 using namespace novac;
 
 // CReEval_WindowDlg dialog
+namespace ReEvaluation
+{
 
 IMPLEMENT_DYNAMIC(CReEval_WindowDlg, CPropertyPage)
 CReEval_WindowDlg::CReEval_WindowDlg()
     : CPropertyPage(CReEval_WindowDlg::IDD)
-{
-}
+{}
 
 CReEval_WindowDlg::~CReEval_WindowDlg()
-{
-}
+{}
 
 void CReEval_WindowDlg::DoDataExchange(CDataExchange* pDX)
 {
@@ -42,7 +41,7 @@ void CReEval_WindowDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Radio(pDX, IDC_FIT_HP_DIV, (int&)window.fitType);
 
     // The extra options
-    DDX_Check(pDX, IDC_CHECK_UV, window.UV);
+    DDX_Check(pDX, IDC_CHECK_UV, m_useUVOffsetRemovalRange); // TODO: Remember to save this in the fit window!
     DDX_Check(pDX, IDC_CHECK_FIND_OPTIMAL, window.findOptimalShift);
     DDX_Check(pDX, IDC_CHECK_SHIFT_SKY, window.shiftSky);
 
@@ -126,7 +125,8 @@ BOOL CReEval_WindowDlg::OnInitDialog()
     // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CReEval_WindowDlg::InitReferenceFileControl() {
+void CReEval_WindowDlg::InitReferenceFileControl()
+{
 
     // Get the dimensions of the reference frame
     CRect rect;
@@ -182,21 +182,33 @@ void CReEval_WindowDlg::OnChangeFitWindow()
     // update the solar spec and controls
     m_fraunhoferReferenceName = m_reeval->m_window[curWindow].fraunhoferRef.m_path.c_str();
     //SetDlgItemText(IDC_EDIT_SOLARSPECTRUMPATH, );
-    if (m_reeval->m_window[curWindow].fraunhoferRef.m_path != "") {
+    if (m_reeval->m_window[curWindow].fraunhoferRef.m_path != "")
+    {
         m_checkFindOptimalShift.EnableWindow(FALSE);
         m_checkFindOptimalShift.SetCheck(FALSE);
     }
-    else {
+    else
+    {
         m_checkFindOptimalShift.EnableWindow(TRUE);
         m_checkFindOptimalShift.SetCheck(m_reeval->m_window[m_reeval->m_curWindow].findOptimalShift);
     }
-    m_checkUV.SetCheck(m_reeval->m_window[m_reeval->m_curWindow].UV);
+
+    if (m_reeval->m_window[m_reeval->m_curWindow].offsetRemovalRange == novac::CFitWindow::StandardUvOffsetRemovalRange())
+    {
+        m_checkUV.SetCheck(TRUE);
+    }
+    else
+    {
+        m_checkUV.SetCheck(FALSE);
+    }
+
 
     // Update the rest of the controls on the screen
     UpdateData(FALSE);
 }
 
-void CReEval_WindowDlg::PopulateReferenceFileControl() {
+void CReEval_WindowDlg::PopulateReferenceFileControl()
+{
     int curWindow = m_windowList.GetCurSel();
 
     if (curWindow == -1)
@@ -209,21 +221,23 @@ void CReEval_WindowDlg::PopulateReferenceFileControl() {
     m_referenceGrid.m_window = &window;
 
     // make sure that there's always one empty line at the end
-    m_referenceGrid.SetRowCount(window.nRef + 2);
+    m_referenceGrid.SetRowCount(window.NumberOfReferences() + 2);
 
     // if there's no references defined
-    if (window.nRef == 0) {
+    if (window.NumberOfReferences() == 0)
+    {
         m_btnRefProp.EnableWindow(FALSE);
         m_btnRemoveRef.EnableWindow(FALSE);
     }
-    else {
+    else
+    {
         m_btnRefProp.EnableWindow(TRUE);
         m_btnRemoveRef.EnableWindow(TRUE);
     }
 
-    for (int i = 0; i < window.nRef; ++i) {
-
-        CReferenceFile& ref = window.ref[i];
+    for (int i = 0; i < static_cast<int>(window.NumberOfReferences()); ++i)
+    {
+        CReferenceFile& ref = window.reference[i];
 
         CString specieName(ref.m_specieName.c_str());
         CString path(ref.m_path.c_str());
@@ -257,22 +271,14 @@ void CReEval_WindowDlg::PopulateReferenceFileControl() {
     }
 
     // make sure that the last line is clear
-    m_referenceGrid.SetItemTextFmt(window.nRef + 1, 0, "");
-    m_referenceGrid.SetItemTextFmt(window.nRef + 1, 1, "");
-    m_referenceGrid.SetItemTextFmt(window.nRef + 1, 2, "");
-    m_referenceGrid.SetItemTextFmt(window.nRef + 1, 3, "");
+    m_referenceGrid.SetItemTextFmt(window.NumberOfReferences() + 1, 0, "");
+    m_referenceGrid.SetItemTextFmt(window.NumberOfReferences() + 1, 1, "");
+    m_referenceGrid.SetItemTextFmt(window.NumberOfReferences() + 1, 2, "");
+    m_referenceGrid.SetItemTextFmt(window.NumberOfReferences() + 1, 3, "");
 }
 
-/** Called when the user wants to insert a new reference file */
-void CReEval_WindowDlg::OnInsertReference() {
-    CString fileName;
-    Common common;
-    TCHAR filter[512];
-    int n = _stprintf(filter, "Reference files\0");
-    n += _stprintf(filter + n + 1, "*.txt;*.xs\0");
-    filter[n + 2] = 0;
-    fileName.Format("");
-
+void CReEval_WindowDlg::OnInsertReference()
+{
     // save the data in the dialog
     UpdateData(TRUE);
 
@@ -280,42 +286,47 @@ void CReEval_WindowDlg::OnInsertReference() {
     int curSel = m_windowList.GetCurSel();
     if (curSel < 0)
         curSel = 0;
-    CFitWindow& window = m_reeval->m_window[curSel];
+    CFitWindow& currentWindow = m_reeval->m_window[curSel];
 
     // Let the user browse for the reference file
-    if (!common.BrowseForFile(filter, fileName))
+    CString fileName = "";
+    if (!Common::BrowseForReferenceFile(fileName))
+    {
         return;
+    }
 
     // The user has selected a new reference file, insert it into the list
+    novac::CReferenceFile newReference;
 
-    // 1. Set the path
-    window.ref[window.nRef].m_path = std::string((LPCTSTR)fileName);
+    newReference.m_path = std::string((LPCTSTR)fileName);
 
     // 2. make a guess of the specie name
     CString specie;
     Common::GuessSpecieName(fileName, specie);
-    if (strlen(specie) != 0) {
-        window.ref[window.nRef].m_specieName = std::string((LPCTSTR)specie);
+    if (strlen(specie) != 0)
+    {
+        newReference.m_specieName = std::string((LPCTSTR)specie);
     }
 
     // 3. update the number of references
-    window.nRef += 1;
+    currentWindow.reference.push_back(newReference);
 
     // If this is the first reference inserted, also make a guess for the window name
     //	 (if the user has not already given the window a name)
-    if (window.nRef == 1 && strlen(specie) != 0 && EqualsIgnoringCase(window.name, "SO2")) {
-        window.name = std::string((LPCTSTR)specie);
+    if (currentWindow.NumberOfReferences() == 1 && strlen(specie) != 0 && EqualsIgnoringCase(currentWindow.name, "SO2"))
+    {
+        currentWindow.name = std::string((LPCTSTR)specie);
         m_windowList.PopulateList();
         m_windowList.SetCurSel(0);
     }
 
     // Update the grid
     PopulateReferenceFileControl();
-
 }
 
 /** Called when the user wants to remove a reference file */
-void CReEval_WindowDlg::OnRemoveReference() {
+void CReEval_WindowDlg::OnRemoveReference()
+{
 
     // save the data in the dialog
     UpdateData(TRUE);
@@ -324,11 +335,14 @@ void CReEval_WindowDlg::OnRemoveReference() {
     int curSel = m_windowList.GetCurSel();
     if (curSel < 0)
         curSel = 0;
-    CFitWindow& window = m_reeval->m_window[curSel];
+
+    CFitWindow& currentWindow = m_reeval->m_window[curSel];
 
     // if there's no reference file, then there's nothing to remove
-    if (window.nRef <= 0)
+    if (currentWindow.NumberOfReferences() == 0)
+    {
         return;
+    }
 
     // Get the selected reference file
     CCellRange cellRange = m_referenceGrid.GetSelectedCellRange();
@@ -336,15 +350,12 @@ void CReEval_WindowDlg::OnRemoveReference() {
     int nRows = cellRange.GetRowSpan();
 
     if (nRows <= 0 || nRows > 1) /* nothing selected or several lines selected */
+    {
         return;
-
-    // move every reference file in the list down one step
-    for (int i = minRow; i < window.nRef - 1; ++i) {
-        window.ref[i] = window.ref[i + 1];
     }
 
-    // reduce the number of references by one
-    window.nRef -= 1;
+    // Remove the reference
+    currentWindow.reference.erase(currentWindow.reference.begin() + minRow);
 
     // Update the reference grid
     PopulateReferenceFileControl();
@@ -357,13 +368,21 @@ void CReEval_WindowDlg::SaveData()
     CFitWindow& window = m_reeval->m_window[m_reeval->m_curWindow];
     window.fraunhoferRef.m_path = std::string((LPCSTR)m_fraunhoferReferenceName);
 
-    // Update the controls
+    if (m_useUVOffsetRemovalRange)
+    {
+        window.offsetRemovalRange = novac::CFitWindow::StandardUvOffsetRemovalRange();
+    }
+    else
+    {
+        window.offsetRemovalRange = novac::CFitWindow::StandardUSB2000OffsetRemovalRange();
+    }
+
     UpdateControls();
 }
 
 /** Called when the user wants to inspect the properties of a reference file */
-void CReEval_WindowDlg::OnShowPropertiesWindow() {
-    Dialogs::CReferencePropertiesDlg refDlg;
+void CReEval_WindowDlg::OnShowPropertiesWindow()
+{
     int minRow, nRows;
 
     // save the data in the dialog
@@ -373,38 +392,44 @@ void CReEval_WindowDlg::OnShowPropertiesWindow() {
     int curSel = m_windowList.GetCurSel();
     if (curSel < 0)
         curSel = 0;
+
     CFitWindow& window = m_reeval->m_window[curSel];
 
     // if there's no reference file, then there's nothing to remove
-    if (window.nRef <= 0)
+    if (window.NumberOfReferences() == 0)
         return;
 
-    if (window.nRef == 1) {
+    if (window.NumberOfReferences() == 1)
+    {
         minRow = 0;
     }
-    else {
+    else
+    {
         // Get the selected reference file
         CCellRange cellRange = m_referenceGrid.GetSelectedCellRange();
         minRow = cellRange.GetMinRow() - 1;
         nRows = cellRange.GetRowSpan();
 
-        if (nRows <= 0 || nRows > 1) { /* nothing selected or several lines selected */
+        if (nRows <= 0 || nRows > 1)
+        {
+            /* nothing selected or several lines selected */
             MessageBox("Please select a single reference file.", "Properties");
             return;
         }
     }
 
-    // The selected referencefile
-    CReferenceFile* ref = new CReferenceFile(window.ref[minRow]);
-    refDlg.m_ref = ref;
+    // Show the dialog, but only let it modify a copy of the current reference file.
+    // In case the uses presses 'cancel' we don't want any changes to have been made to the real setup.
+    CReferenceFile copyOfReference(window.reference[minRow]);
+
+    Dialogs::CReferencePropertiesDlg refDlg(copyOfReference);
     INT_PTR ret = refDlg.DoModal();
 
-    if (ret == IDOK) {
-        window.ref[minRow] = *ref;
+    if (ret == IDOK)
+    {
+        window.reference[minRow] = copyOfReference;
         PopulateReferenceFileControl();
     }
-
-    delete ref;
 }
 
 void ReEvaluation::CReEval_WindowDlg::OnShowReferenceGraph()
@@ -419,43 +444,41 @@ void ReEvaluation::CReEval_WindowDlg::OnShowReferenceGraph()
     CFitWindow& window = m_reeval->m_window[curSel];
 
     // if there's no reference file, then there's nothing to remove
-    if (window.nRef <= 0)
+    if (window.NumberOfReferences() == 0)
         return;
 
     // Open the dialog
-    Dialogs::CReferencePlotDlg dlg;
-    dlg.m_window = m_reeval->m_window;
+    Dialogs::CReferencePlotDlg dlg(window);
     dlg.DoModal();
 }
 
 /** Updates the controls */
-void CReEval_WindowDlg::UpdateControls() {
+void CReEval_WindowDlg::UpdateControls()
+{
 
     // Update the shift-sky check-box
     CFitWindow window = m_reeval->m_window[m_reeval->m_curWindow];
-    if (window.fitType == novac::FIT_TYPE::FIT_HP_DIV) {
+    if (window.fitType == novac::FIT_TYPE::FIT_HP_DIV)
+    {
         m_checkShiftSky.EnableWindow(FALSE);
     }
-    else {
+    else
+    {
         m_checkShiftSky.EnableWindow(TRUE);
     }
 }
 
-void CReEval_WindowDlg::OnBrowseSolarSpectrum() {
-    CString fileName;
-    Common common;
-    TCHAR filter[512];
-    int n = _stprintf(filter, "Reference files\0");
-    n += _stprintf(filter + n + 1, "*.txt;*.xs\0");
-    filter[n + 2] = 0;
-    fileName.Format("");
-
+void CReEval_WindowDlg::OnBrowseSolarSpectrum()
+{
     // Find the values of the screen
     UpdateData(TRUE);
 
     // Let the user browse for the solar spectrum file
-    if (!common.BrowseForFile(filter, fileName))
+    CString fileName = "";
+    if (!Common::BrowseForReferenceFile(fileName))
+    {
         return;
+    }
 
     // The user has selected a solar-spectrum file
     m_reeval->m_window[m_reeval->m_curWindow].fraunhoferRef.m_path = std::string((LPCTSTR)fileName);
@@ -466,4 +489,5 @@ void CReEval_WindowDlg::OnBrowseSolarSpectrum() {
     m_checkFindOptimalShift.EnableWindow(FALSE);
 }
 
+} // namespace ReEvaluation
 

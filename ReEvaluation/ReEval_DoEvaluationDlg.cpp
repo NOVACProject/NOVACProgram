@@ -139,9 +139,9 @@ void  CReEval_DoEvaluationDlg::PopulateRefList()
     {
         const CFitWindow& window = m_reeval->m_window[m_reeval->m_curWindow];
 
-        for (int ii = 0; ii < window.nRef; ++ii)
+        for (const auto& reference : window.reference)
         {
-            CString name(window.ref[ii].m_specieName.c_str());
+            CString name(reference.m_specieName.c_str());
             m_specieList.AddString(name);
         }
     }

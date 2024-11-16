@@ -8,8 +8,9 @@
 using namespace Dialogs;
 
 IMPLEMENT_DYNAMIC(CReferencePlotDlg, CDialog)
-CReferencePlotDlg::CReferencePlotDlg(CWnd* pParent /*=NULL*/)
-    : CDialog(CReferencePlotDlg::IDD, pParent)
+
+CReferencePlotDlg::CReferencePlotDlg(novac::CFitWindow& window, CWnd* pParent /*=NULL*/)
+    : CDialog(CReferencePlotDlg::IDD, pParent), m_window(window)
 {}
 
 CReferencePlotDlg::~CReferencePlotDlg()
@@ -32,10 +33,12 @@ BOOL CReferencePlotDlg::OnInitDialog()
 {
     CDialog::OnInitDialog();
 
-    if (m_window == NULL || m_window->nRef == 0)
+    if (m_window.NumberOfReferences() == 0)
+    {
         return TRUE; // if there's no window then don't do anything...
+    }
 
-    unsigned int nReferences = m_window->nRef;
+    const size_t nReferences = m_window.NumberOfReferences();
 
     CRect thisWindowRect, rect;
     int margin = 5; // the space between each plot
@@ -78,7 +81,7 @@ BOOL CReferencePlotDlg::OnInitDialog()
         m_graphs[k].SetPlotColor(RGB(255, 0, 0));
         m_graphs[k].SetGridColor(RGB(255, 255, 255));
         m_graphs[k].SetBackgroundColor(RGB(0, 0, 0));
-        m_graphs[k].SetRange(m_window->fitLow, m_window->fitHigh, 0, 0, 100, 0);
+        m_graphs[k].SetRange(m_window.fitLow, m_window.fitHigh, 0, 0, 100, 0);
     }
 
     // Create the labels also...
@@ -91,12 +94,13 @@ BOOL CReferencePlotDlg::OnInitDialog()
         DEFAULT_PITCH | FF_SWISS, "Arial");
     rect.left = 0;
     rect.right = leftMargin;
+
     for (unsigned int k = 0; k < nReferences; ++k)
     {
         rect.top = k * (plotHeight + margin) + margin + plotHeight / 2;
         rect.bottom = rect.top + plotHeight / 3;
 
-        specieName.Format("%s", m_window->ref[k].m_specieName.c_str());
+        specieName.Format("%s", m_window.reference[k].m_specieName.c_str());
         m_label[k].Create(specieName, WS_VISIBLE | WS_CHILD, rect, this);
         m_label[k].SetFont(font);
     }
@@ -105,7 +109,7 @@ BOOL CReferencePlotDlg::OnInitDialog()
     ReadReferences();
 
     // fill in the X-array
-    for (int k = m_window->fitLow; k <= m_window->fitHigh; ++k)
+    for (int k = m_window.fitLow; k <= m_window.fitHigh; ++k)
     {
         this->m_number[k] = k;
     }
@@ -116,16 +120,15 @@ BOOL CReferencePlotDlg::OnInitDialog()
     return TRUE;
 }
 
-/** Called to read in the references */
 void CReferencePlotDlg::ReadReferences()
 {
     // test reading data from reference files
-    for (int i = 0; i < m_window->nRef; ++i)
+    for (auto& reference : m_window.reference)
     {
         // Read the file
         try
         {
-            m_window->ref[i].ReadCrossSectionDataFromFile();
+            reference.ReadCrossSectionDataFromFile();
         }
         catch (std::exception&)
         {
@@ -135,16 +138,16 @@ void CReferencePlotDlg::ReadReferences()
             continue;
         }
 
-        std::vector<double> thisReference = m_window->ref[i].m_data->m_crossSection;
+        std::vector<double> thisReference = reference.m_data->m_crossSection;
         m_data.push_back(thisReference);
     }
 }
 
 void CReferencePlotDlg::DrawGraph()
 {
-    for (int k = 0; k < m_window->nRef; ++k)
+    for (size_t k = 0; k < m_window.NumberOfReferences(); ++k)
     {
-        m_graphs[k].XYPlot(m_number + m_window->fitLow, m_data[k].data() + m_window->fitLow, m_window->fitHigh - m_window->fitLow);
+        m_graphs[k].XYPlot(m_number + m_window.fitLow, m_data[k].data() + m_window.fitLow, m_window.fitHigh - m_window.fitLow);
     }
 
 }
@@ -152,13 +155,10 @@ void Dialogs::CReferencePlotDlg::OnSize(UINT nType, int cx, int cy)
 {
     CDialog::OnSize(nType, cx, cy);
 
-    unsigned int k;
-    CRect graphRect, specieRect;
-
     if (!IsWindow(m_graphs[0].m_hWnd))
         return;
 
-    unsigned int nReferences = m_window->nRef;
+    unsigned int nReferences = m_window.NumberOfReferences();
 
     int margin = 5;				// the space between each plot
     int leftMargin = 25;		// the space to the left, for specie names
@@ -167,15 +167,17 @@ void Dialogs::CReferencePlotDlg::OnSize(UINT nType, int cx, int cy)
     int plotHeight = (cy - nReferences * margin) / nReferences; // the height of each graph
 
     // The width of each graph
+    CRect graphRect;
     graphRect.left = leftMargin;
     graphRect.right = cx - labelWidth - margin;
 
     // The width of each label
+    CRect specieRect;
     specieRect.left = 0;
     specieRect.right = leftMargin;
 
     // Move the graphs to their right positions
-    for (k = 0; k < nReferences; ++k)
+    for (size_t k = 0; k < nReferences; ++k)
     {
         // The location of each graph
         graphRect.top = k * (plotHeight + margin) + margin;

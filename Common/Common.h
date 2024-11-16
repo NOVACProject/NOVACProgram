@@ -335,6 +335,10 @@ public:
     /** Opens a dialog window and lets the user browse for a file */
     static bool BrowseForFile(const TCHAR* filter, CString& fileName);
 
+    /** Opens a dialog window and lets the user browse for a reference file.
+        This differs from 'BrowseForFile' that the standard filter for reference files is applied. */
+    static bool BrowseForReferenceFile(CString& fileName);
+
     /** Opens a dialog window and lets the user browse for a filename to save to */
     static bool BrowseForFile_SaveAs(const TCHAR* filter, CString& fileName);
 

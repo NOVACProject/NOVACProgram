@@ -11,8 +11,7 @@ extern CVolcanoInfo g_volcanoes;
 
 CConfigurationFileHandler::CConfigurationFileHandler()
     : conf(nullptr), curScanner(nullptr)
-{
-}
+{}
 
 CConfigurationFileHandler::~CConfigurationFileHandler(void)
 {
@@ -20,7 +19,8 @@ CConfigurationFileHandler::~CConfigurationFileHandler(void)
     conf = nullptr;
 }
 
-int CConfigurationFileHandler::ReadConfigurationFile(CConfigurationSetting& configuration, const CString* fileName) {
+int CConfigurationFileHandler::ReadConfigurationFile(CConfigurationSetting& configuration, const CString* fileName)
+{
     CString tmp_fileName;
     CFileException exceFile;
     CStdioFile file;
@@ -28,12 +28,14 @@ int CConfigurationFileHandler::ReadConfigurationFile(CConfigurationSetting& conf
     this->conf = &configuration;
 
     // 1. Get the filename
-    if (fileName == nullptr) {
+    if (fileName == nullptr)
+    {
         Common common;
         common.GetExePath();
         tmp_fileName.Format("%sconfiguration.xml", (LPCSTR)common.m_exePath);
     }
-    else {
+    else
+    {
         tmp_fileName.Format("%s", (LPCSTR)*fileName);
     }
 
@@ -49,14 +51,16 @@ int CConfigurationFileHandler::ReadConfigurationFile(CConfigurationSetting& conf
     conf->scannerNum = 0;
 
     // 3. Parse the file
-    if (Parse()) {
+    if (Parse())
+    {
         // error in parsing
         conf = nullptr;
         curScanner = nullptr;
         Close();
         return 1;
     }
-    else {
+    else
+    {
         // parsing was ok
         Close();
         conf = nullptr;
@@ -66,33 +70,40 @@ int CConfigurationFileHandler::ReadConfigurationFile(CConfigurationSetting& conf
     }
 }
 
-int CConfigurationFileHandler::ReadFtpLoginConfigurationFile(CConfigurationSetting& configuration, const CString* fileName) {
+int CConfigurationFileHandler::ReadFtpLoginConfigurationFile(CConfigurationSetting& configuration, const CString* fileName)
+{
     CString tmp_fileName;
     CFileException exceFile;
     CStdioFile file;
 
     // 1. Get the filename
-    if (fileName == nullptr) {
+    if (fileName == nullptr)
+    {
         Common common;
         common.GetExePath();
         tmp_fileName.Format("%sftplogin.xml", (LPCSTR)common.m_exePath);
     }
-    else {
+    else
+    {
         tmp_fileName.Format("%s", (LPCSTR)*fileName);
     }
 
     // 2. Open the file
-    if (!file.Open(tmp_fileName, CFile::modeRead | CFile::typeText, &exceFile)) {
+    if (!file.Open(tmp_fileName, CFile::modeRead | CFile::typeText, &exceFile))
+    {
         return 1;
     }
     this->SetFile(&file);
 
-    while (szToken = NextToken()) {
-        if (Equals(szToken, "ftpUserName")) {
+    while (szToken = NextToken())
+    {
+        if (Equals(szToken, "ftpUserName"))
+        {
             Parse_StringItem(TEXT("/ftpUserName"), configuration.ftpSetting.userName);
             continue;
         }
-        if (Equals(szToken, "ftpPassword")) {
+        if (Equals(szToken, "ftpPassword"))
+        {
             Parse_StringItem(TEXT("/ftpPassword"), configuration.ftpSetting.password);
             continue;
         }
@@ -103,23 +114,27 @@ int CConfigurationFileHandler::ReadFtpLoginConfigurationFile(CConfigurationSetti
 
 }
 
-int CConfigurationFileHandler::WriteFtpLoginConfigurationFile(const CConfigurationSetting& configuration, const CString* fileName) const {
+int CConfigurationFileHandler::WriteFtpLoginConfigurationFile(const CConfigurationSetting& configuration, const CString* fileName) const
+{
     CString indent, str, tmp_fileName;
     Common common;
     std::string modelStr;
 
     // 1. Get the filename
-    if (fileName == nullptr) {
+    if (fileName == nullptr)
+    {
         common.GetExePath();
         tmp_fileName.Format("%sftplogin.xml", (LPCSTR)common.m_exePath);
     }
-    else {
+    else
+    {
         tmp_fileName.Format("%s", (LPCSTR)*fileName);
     }
 
     // 2. Open the file
     FILE* f = fopen(tmp_fileName, "w");
-    if (nullptr == f) {
+    if (nullptr == f)
+    {
         MessageBox(nullptr, TEXT(common.GetString(ERROR_COULD_NOT_OPEN_EVALCONFIG)) + "." + common.GetString(MSG_NO_CHANGES_WILL_BE_SAVED), common.GetString(MSG_ERROR), MB_OK);
         return 1;
     }
@@ -143,23 +158,27 @@ int CConfigurationFileHandler::WriteFtpLoginConfigurationFile(const CConfigurati
     return 0;
 }
 
-int CConfigurationFileHandler::WriteConfigurationFile(const CConfigurationSetting& configuration, const CString* fileName) const {
+int CConfigurationFileHandler::WriteConfigurationFile(const CConfigurationSetting& configuration, const CString* fileName) const
+{
     CString str, tmp_fileName;
     Common common;
     std::string modelStr;
 
     // 1. Get the filename
-    if (fileName == nullptr) {
+    if (fileName == nullptr)
+    {
         common.GetExePath();
         tmp_fileName.Format("%sconfiguration.xml", (LPCSTR)common.m_exePath);
     }
-    else {
+    else
+    {
         tmp_fileName.Format("%s", (LPCSTR)*fileName);
     }
 
     // 2. Open the file
     FILE* f = fopen(tmp_fileName, "w");
-    if (nullptr == f) {
+    if (nullptr == f)
+    {
         MessageBox(nullptr, TEXT(common.GetString(ERROR_COULD_NOT_OPEN_EVALCONFIG)) + "." + common.GetString(MSG_NO_CHANGES_WILL_BE_SAVED), common.GetString(MSG_ERROR), MB_OK);
         return 1;
     }
@@ -197,8 +216,10 @@ int CConfigurationFileHandler::WriteConfigurationFile(const CConfigurationSettin
 
 
     // 4f. Write if we should publish results
-    if (configuration.webSettings.publish) {
-        if (strlen(configuration.webSettings.localDirectory) > 0) {
+    if (configuration.webSettings.publish)
+    {
+        if (strlen(configuration.webSettings.localDirectory) > 0)
+        {
             str.Format("\t<publish>1</publish>\n");
             str.AppendFormat("\t<localPublishDirectory>%s</localPublishDirectory>\n", (LPCSTR)configuration.webSettings.localDirectory);
             fprintf(f, str);
@@ -208,17 +229,20 @@ int CConfigurationFileHandler::WriteConfigurationFile(const CConfigurationSettin
     }
 
     // 4g. Write if we should call external softwares
-    if (strlen(configuration.externalSetting.fullScanScript) > 1) {
+    if (strlen(configuration.externalSetting.fullScanScript) > 1)
+    {
         str.Format("\t<fullScanExecute>%s</fullScanExecute>\n", (LPCSTR)configuration.externalSetting.fullScanScript);
         fprintf(f, str);
     }
-    if (strlen(configuration.externalSetting.imageScript) > 1) {
+    if (strlen(configuration.externalSetting.imageScript) > 1)
+    {
         str.Format("\t<imageExecute>%s</imageExecute>\n", (LPCSTR)configuration.externalSetting.imageScript);
         fprintf(f, str);
     }
 
     // 4h. If there is a wind-field file which should be re-read every now and then
-    if (configuration.windSourceSettings.windFieldFile.GetLength() > 3) {
+    if (configuration.windSourceSettings.windFieldFile.GetLength() > 3)
+    {
         str.Format("\t<windImport>\n");
         str.AppendFormat("\t\t<path>%s</path>\n", (LPCSTR)configuration.windSourceSettings.windFieldFile);
         str.AppendFormat("\t\t<reloadInterval>%d</reloadInterval>\n", configuration.windSourceSettings.windFileReloadInterval);
@@ -233,7 +257,8 @@ int CConfigurationFileHandler::WriteConfigurationFile(const CConfigurationSettin
     // 6. Write the information about the scanning Instruments
 
     bool hasDoubleSpectrometer = false;
-    for (unsigned int scannerIdx = 0; scannerIdx < configuration.scannerNum; ++scannerIdx) {
+    for (unsigned int scannerIdx = 0; scannerIdx < configuration.scannerNum; ++scannerIdx)
+    {
         fprintf(f, "\t\t<scanningInstrument>\n");
 
         CString indent = "\t\t\t";
@@ -245,8 +270,10 @@ int CConfigurationFileHandler::WriteConfigurationFile(const CConfigurationSettin
 
         // If the user has configured a volcano, then also write its additional information
         bool ownerConfiguredSource = false;
-        for (unsigned int k = g_volcanoes.m_preConfiguredVolcanoNum; k < g_volcanoes.m_volcanoNum; ++k) {
-            if (Equals(g_volcanoes.m_name[k], currentScanner.volcano)) {
+        for (unsigned int k = g_volcanoes.m_preConfiguredVolcanoNum; k < g_volcanoes.m_volcanoNum; ++k)
+        {
+            if (Equals(g_volcanoes.m_name[k], currentScanner.volcano))
+            {
                 fprintf(f, TEXT("\t\t\t<sourceInfo>\n"));
                 str.Format("\t\t\t\t<name>%s</name>\n", (LPCSTR)g_volcanoes.m_name[k]);
                 str.AppendFormat("\t\t\t\t<latitude>%lf</latitude>\n", g_volcanoes.m_peakLatitude[k]);
@@ -258,7 +285,8 @@ int CConfigurationFileHandler::WriteConfigurationFile(const CConfigurationSettin
                 break;
             }
         }
-        if (!ownerConfiguredSource) {
+        if (!ownerConfiguredSource)
+        {
             // volcano
             fprintf(f, indent + "<volcano>" + currentScanner.volcano + "</volcano>\n");
         }
@@ -325,15 +353,15 @@ int CConfigurationFileHandler::WriteConfigurationFile(const CConfigurationSettin
                 hasDoubleSpectrometer = true;
 
             // The channels
-            for (unsigned int channelIdx = 0; channelIdx < currentScanner.spec[spectrometerIdx].channelNum; ++channelIdx) {
+            for (unsigned int channelIdx = 0; channelIdx < currentScanner.spec[spectrometerIdx].channelNum; ++channelIdx)
+            {
                 str.Format("%s<channel number=\"%d\">\n", (LPCSTR)indent, channelIdx);
                 fprintf(f, str);
 
                 // The species
                 const novac::CFitWindow& window = spec.channel[channelIdx].fitWindow;
-                for (int referenceIdx = 0; referenceIdx < window.nRef; ++referenceIdx) {
-                    const auto& reference = window.ref[referenceIdx];
-
+                for (const auto& reference : window.reference)
+                {
                     fprintf(f, TEXT(indent + "\t<Reference>\n"));
                     fprintf(f, "%s\t\t<name>%s</name>\n", (LPCSTR)indent, reference.m_specieName.c_str());
                     fprintf(f, "%s\t\t<path>%s</path>\n", (LPCSTR)indent, reference.m_path.c_str());
@@ -386,7 +414,8 @@ int CConfigurationFileHandler::WriteConfigurationFile(const CConfigurationSettin
                     fprintf(f, str);
 
                     // The path of the offset-spectrum
-                    if (darkSettings.m_offsetSpec.size() > 1) {
+                    if (darkSettings.m_offsetSpec.size() > 1)
+                    {
                         str.Format("\t%s<offsetPath>%s</offsetPath>\n", (LPCSTR)indent, darkSettings.m_offsetSpec.c_str());
                         fprintf(f, str);
                     }
@@ -396,7 +425,8 @@ int CConfigurationFileHandler::WriteConfigurationFile(const CConfigurationSettin
                     fprintf(f, str);
 
                     // The path of the dark-current spectrum
-                    if (darkSettings.m_darkCurrentSpec.size() > 1) {
+                    if (darkSettings.m_darkCurrentSpec.size() > 1)
+                    {
                         str.Format("\t%s<darkCurrentPath>%s</darkCurrentPath>\n", (LPCSTR)indent, darkSettings.m_darkCurrentSpec.c_str());
                         fprintf(f, str);
                     }
@@ -459,7 +489,8 @@ int CConfigurationFileHandler::WriteConfigurationFile(const CConfigurationSettin
             str.Format("%s<connection>%d</connection>\n", (LPCSTR)indent, comm.connectionType);
             fprintf(f, str);
 
-            if (comm.connectionType == SERIAL_CONNECTION) {
+            if (comm.connectionType == SERIAL_CONNECTION)
+            {
                 // port
                 str.Format("%s<port>%d</port>\n", (LPCSTR)indent, comm.port);
                 fprintf(f, str);
@@ -474,7 +505,8 @@ int CConfigurationFileHandler::WriteConfigurationFile(const CConfigurationSettin
 
                 // The communication medium
                 str.Format("%s<medium>", (LPCSTR)indent);
-                switch (comm.medium) {
+                switch (comm.medium)
+                {
                 case MEDIUM_CABLE: str.AppendFormat("Cable"); break;
                 case MEDIUM_FREEWAVE_SERIAL_MODEM: str.AppendFormat("Freewave"); break;
                 case MEDIUM_SATTELINE_SERIAL_MODEM: str.AppendFormat("Satteline"); break;
@@ -496,7 +528,8 @@ int CConfigurationFileHandler::WriteConfigurationFile(const CConfigurationSettin
                 fprintf(f, str);
 
                 // ftp port, if not default (21)
-                if (comm.ftpPort != 21) {
+                if (comm.ftpPort != 21)
+                {
                     str.Format("%s<ftpPort>%d</ftpPort>\n", (LPCSTR)indent, comm.ftpPort);
                     fprintf(f, str);
                 }
@@ -510,7 +543,8 @@ int CConfigurationFileHandler::WriteConfigurationFile(const CConfigurationSettin
                 fprintf(f, str);
             }
 
-            if (comm.connectionType == DIRECTORY_POLLING) {
+            if (comm.connectionType == DIRECTORY_POLLING)
+            {
                 str.Format("%s<directory>%s</directory>\n", (LPCSTR)indent, (LPCSTR)comm.directory);
                 fprintf(f, str);
             }
@@ -536,7 +570,8 @@ int CConfigurationFileHandler::WriteConfigurationFile(const CConfigurationSettin
 
         // .. Third: write the wind measurement settings, if applicable
         bool doWindMeasurements = (hasDoubleSpectrometer && currentScanner.windSettings.automaticWindMeasurements);
-        if (doWindMeasurements) {
+        if (doWindMeasurements)
+        {
             indent.Format("\t\t\t\t");
             fprintf(f, TEXT("\t\t\t<windmeasurement>\n"));
 
@@ -580,86 +615,104 @@ int CConfigurationFileHandler::WriteConfigurationFile(const CConfigurationSettin
     return 0;
 }
 
-int CConfigurationFileHandler::Parse() {
+int CConfigurationFileHandler::Parse()
+{
 
     // the actual reading loop
-    while (szToken = NextToken()) {
+    while (szToken = NextToken())
+    {
 
         // no use to parse empty lines
         if (strlen(szToken) < 3)
             continue;
 
         // ignore comments
-        if (Equals(szToken, "!--", 3)) {
+        if (Equals(szToken, "!--", 3))
+        {
             continue;
         }
 
         // this can safely be ignored
-        if (Equals(szToken, "deviceList")) {
+        if (Equals(szToken, "deviceList"))
+        {
             continue;
         }
-        if (Equals(szToken, "Configuration")) {
+        if (Equals(szToken, "Configuration"))
+        {
             continue;
         }
 
         // ----------------------------------------------------
         // ---------------- Global Settings -------------------
         // ----------------------------------------------------
-        if (Equals(szToken, "outputDir")) {
+        if (Equals(szToken, "outputDir"))
+        {
             Parse_OutputDir();
             continue;
         }
 
-        if (Equals(szToken, "startup")) {
+        if (Equals(szToken, "startup"))
+        {
             Parse_IntItem(TEXT("/startup"), conf->startup);
             continue;
         }
 
-        if (Equals(szToken, "ftpAddress")) {
+        if (Equals(szToken, "ftpAddress"))
+        {
             Parse_StringItem(TEXT("/ftpAddress"), conf->ftpSetting.ftpAddress);
             continue;
         }
-        if (Equals(szToken, "ftpProtocol")) {
+        if (Equals(szToken, "ftpProtocol"))
+        {
             CString protocol;
             Parse_StringItem(TEXT("/ftpProtocol"), protocol);
             conf->ftpSetting.protocol = (Equals(protocol, "FTP")) ? "FTP" : "SFTP";
             continue;
         }
-        if (Equals(szToken, "ftpStartTime")) {
+        if (Equals(szToken, "ftpStartTime"))
+        {
             Parse_IntItem(TEXT("/ftpStartTime"), conf->ftpSetting.ftpStartTime);
             conf->ftpSetting.ftpStartTime = abs(conf->ftpSetting.ftpStartTime);
             continue;
         }
-        if (Equals(szToken, "ftpStopTime")) {
+        if (Equals(szToken, "ftpStopTime"))
+        {
             Parse_IntItem(TEXT("/ftpStopTime"), conf->ftpSetting.ftpStopTime);
             conf->ftpSetting.ftpStopTime = abs(conf->ftpSetting.ftpStopTime);
             continue;
         }
 
-        if (Equals(szToken, "publishFormat")) {
+        if (Equals(szToken, "publishFormat"))
+        {
             Parse_StringItem(TEXT("/publishFormat"), conf->webSettings.imageFormat);
-            if (!Equals(conf->webSettings.imageFormat, ".png") && !Equals(conf->webSettings.imageFormat, ".bmp") && !Equals(conf->webSettings.imageFormat, ".gif") && !Equals(conf->webSettings.imageFormat, ".jpg")) {
+            if (!Equals(conf->webSettings.imageFormat, ".png") && !Equals(conf->webSettings.imageFormat, ".bmp") && !Equals(conf->webSettings.imageFormat, ".gif") && !Equals(conf->webSettings.imageFormat, ".jpg"))
+            {
                 conf->webSettings.imageFormat.Format(".png");
             }
             continue;
         }
-        if (Equals(szToken, "publish")) {
+        if (Equals(szToken, "publish"))
+        {
             Parse_IntItem(TEXT("/publish"), conf->webSettings.publish);
             continue;
         }
-        if (Equals(szToken, "localPublishDirectory")) {
+        if (Equals(szToken, "localPublishDirectory"))
+        {
             this->Parse_LocalPublishDir();
             continue;
         }
 
-        if (Equals(szToken, "fullScanExecute")) {
+        if (Equals(szToken, "fullScanExecute"))
+        {
             this->Parse_StringItem(TEXT("/fullScanExecute"), conf->externalSetting.fullScanScript);
         }
-        if (Equals(szToken, "imageExecute")) {
+        if (Equals(szToken, "imageExecute"))
+        {
             this->Parse_StringItem(TEXT("/imageExecute"), conf->externalSetting.imageScript);
         }
 
-        if (Equals(szToken, "windImport")) {
+        if (Equals(szToken, "windImport"))
+        {
             this->Parse_WindImport();
         }
 
@@ -668,7 +721,8 @@ int CConfigurationFileHandler::Parse() {
         // -----------------------------------------------------
 
         // starting a new 'scanningInstrument' section
-        if (Equals(szToken, "scanningInstrument")) {
+        if (Equals(szToken, "scanningInstrument"))
+        {
             this->curScanner = &(conf->scanner[conf->scannerNum]);
             Parse_ScanningInstrument();
         }
@@ -678,94 +732,111 @@ int CConfigurationFileHandler::Parse() {
     return 0;
 }
 
-int CConfigurationFileHandler::Parse_ScanningInstrument() {
+int CConfigurationFileHandler::Parse_ScanningInstrument()
+{
     int tmpInt;
 
     // the actual reading loop
-    while (szToken = NextToken()) {
+    while (szToken = NextToken())
+    {
 
         // no use to parse empty lines
         if (strlen(szToken) < 3)
             continue;
 
         // ignore comments
-        if (Equals(szToken, "!--", 3)) {
+        if (Equals(szToken, "!--", 3))
+        {
             continue;
         }
 
         // the end of the scanningInstrument section
-        if (Equals(szToken, "/scanningInstrument")) {
+        if (Equals(szToken, "/scanningInstrument"))
+        {
             ++conf->scannerNum;
             return 0;
         }
 
         // a communication section
-        if (Equals(szToken, "communication")) {
+        if (Equals(szToken, "communication"))
+        {
             Parse_Communication();
         }
 
         // a spectrometer section
-        if (Equals(szToken, "spectrometer")) {
+        if (Equals(szToken, "spectrometer"))
+        {
             Parse_Spectrometer();
         }
 
         // a windmeasurement section
-        if (Equals(szToken, "windmeasurement")) {
+        if (Equals(szToken, "windmeasurement"))
+        {
             Parse_WindMeasurement();
         }
 
         // a real-time changing of cfg.txt section
-        if (Equals(szToken, "realtimesetup")) {
+        if (Equals(szToken, "realtimesetup"))
+        {
             this->Parse_RealTimeSetup();
         }
 
         // an observatory name for the scanning instrument
-        if (Equals(szToken, "observatory")) {
+        if (Equals(szToken, "observatory"))
+        {
             Parse_StringItem(TEXT("/observatory"), curScanner->observatory);
             continue;
         }
 
         // a volcano name for the scanning instrument
-        if (Equals(szToken, "volcano")) {
+        if (Equals(szToken, "volcano"))
+        {
             Parse_StringItem(TEXT("/volcano"), curScanner->volcano);
             continue;
         }
 
         // Additional information about the source
-        if (Equals(szToken, "sourceInfo")) {
+        if (Equals(szToken, "sourceInfo"))
+        {
             Parse_SourceInfo();
             continue;
         }
 
         // a site name for the scanning instrument
-        if (Equals(szToken, "site")) {
+        if (Equals(szToken, "site"))
+        {
             Parse_StringItem(TEXT("/site"), curScanner->site);
             continue;
         }
 
         // the latitude for the scanning instrument
-        if (Equals(szToken, "instr_latitude")) {
+        if (Equals(szToken, "instr_latitude"))
+        {
             Parse_FloatItem(TEXT("/instr_latitude"), curScanner->gps.m_latitude);
             continue;
         }
         // the longitude for the scanning instrument
-        if (Equals(szToken, "instr_longitude")) {
+        if (Equals(szToken, "instr_longitude"))
+        {
             Parse_FloatItem(TEXT("/instr_longitude"), curScanner->gps.m_longitude);
             continue;
         }
         // the altitude for the scanning instrument
-        if (Equals(szToken, "instr_altitude")) {
+        if (Equals(szToken, "instr_altitude"))
+        {
             Parse_FloatItem(TEXT("/instr_altitude"), curScanner->gps.m_altitude);
             continue;
         }
         // the compass-direction for the scanning instrument
-        if (Equals(szToken, "instr_compass")) {
+        if (Equals(szToken, "instr_compass"))
+        {
             Parse_FloatItem(TEXT("/instr_compass"), curScanner->compass);
             continue;
         }
 
         // the type of the electronics box
-        if (Equals(szToken, "electronics")) {
+        if (Equals(szToken, "electronics"))
+        {
             Parse_IntItem(TEXT("/electronics"), tmpInt);
             switch (tmpInt)
             {
@@ -777,31 +848,38 @@ int CConfigurationFileHandler::Parse_ScanningInstrument() {
         }
 
         // plot options
-        if (Equals(szToken, "plotColumn")) {
+        if (Equals(szToken, "plotColumn"))
+        {
             Parse_IntItem(TEXT("/plotColumn"), curScanner->plotColumn);
             continue;
         }
-        if (Equals(szToken, "plotColumnHistory")) {
+        if (Equals(szToken, "plotColumnHistory"))
+        {
             Parse_IntItem(TEXT("/plotColumnHistory"), curScanner->plotColumnHistory);
             continue;
         }
-        if (Equals(szToken, "minColumn")) {
+        if (Equals(szToken, "minColumn"))
+        {
             Parse_IntItem(TEXT("/minColumn"), curScanner->minColumn);
             continue;
         }
-        if (Equals(szToken, "maxColumn")) {
+        if (Equals(szToken, "maxColumn"))
+        {
             Parse_IntItem(TEXT("/maxColumn"), curScanner->maxColumn);
             continue;
         }
-        if (Equals(szToken, "plotFluxHistory")) {
+        if (Equals(szToken, "plotFluxHistory"))
+        {
             Parse_IntItem(TEXT("/plotFluxHistory"), curScanner->plotFluxHistory);
             continue;
         }
-        if (Equals(szToken, "minFlux")) {
+        if (Equals(szToken, "minFlux"))
+        {
             Parse_IntItem(TEXT("/minFlux"), curScanner->minFlux);
             continue;
         }
-        if (Equals(szToken, "maxFlux")) {
+        if (Equals(szToken, "maxFlux"))
+        {
             Parse_IntItem(TEXT("/maxFlux"), curScanner->maxFlux);
             continue;
         }
@@ -809,97 +887,116 @@ int CConfigurationFileHandler::Parse_ScanningInstrument() {
     return 0;
 }
 
-int CConfigurationFileHandler::Parse_Communication() {
+int CConfigurationFileHandler::Parse_Communication()
+{
     CConfigurationSetting::CommunicationSetting* curComm = &(curScanner->comm);
 
     // the actual reading loop
-    while (szToken = NextToken()) {
+    while (szToken = NextToken())
+    {
 
         // no use to parse empty lines
         if (strlen(szToken) < 2)
             continue;
 
         // ignore comments
-        if (Equals(szToken, "!--", 3)) {
+        if (Equals(szToken, "!--", 3))
+        {
             continue;
         }
 
         // the end of the communication section
-        if (Equals(szToken, "/communication")) {
+        if (Equals(szToken, "/communication"))
+        {
             return 0;
         }
 
-        if (Equals(szToken, "connection")) {
+        if (Equals(szToken, "connection"))
+        {
             Parse_IntItem(TEXT("/connection"), curComm->connectionType);
             continue;
         }
 
-        if (Equals(szToken, "port")) {
+        if (Equals(szToken, "port"))
+        {
             Parse_LongItem(TEXT("/port"), curComm->port);
             continue;
         }
 
-        if (Equals(szToken, "baudrate")) {
+        if (Equals(szToken, "baudrate"))
+        {
             Parse_LongItem(TEXT("/baudrate"), curComm->baudrate);
             continue;
         }
 
-        if (Equals(szToken, "medium")) {
+        if (Equals(szToken, "medium"))
+        {
             Parse_Medium(curComm);
             continue;
         }
 
-        if (Equals(szToken, "radioID")) {
+        if (Equals(szToken, "radioID"))
+        {
             Parse_StringItem(TEXT("/radioID"), curComm->radioID);
             continue;
         }
 
-        if (Equals(szToken, "IP")) {
+        if (Equals(szToken, "IP"))
+        {
             // Parse_IPNumber(TEXT("/IP"), curComm->ftpIP[0], curComm->ftpIP[1], curComm->ftpIP[2], curComm->ftpIP[3]);
             Parse_StringItem(TEXT("/IP"), curComm->ftpHostName); // Parsing the old 'IP' configuration makes sure that the transit from using IP to using host-names is smooth
             continue;
         }
 
-        if (Equals(szToken, "host")) {
+        if (Equals(szToken, "host"))
+        {
             Parse_StringItem(TEXT("/host"), curComm->ftpHostName); // Parsing the old 'IP' configuration makes sure that the transit from using IP to using host-names is smooth
             continue;
         }
 
-        if (Equals(szToken, "ftpPort")) {
+        if (Equals(szToken, "ftpPort"))
+        {
             Parse_IntItem(TEXT("/ftpPort"), curComm->ftpPort);
             continue;
         }
 
-        if (Equals(szToken, "username")) {
+        if (Equals(szToken, "username"))
+        {
             Parse_StringItem(TEXT("/username"), curComm->ftpUserName);
             continue;
         }
 
-        if (Equals(szToken, "password")) {
+        if (Equals(szToken, "password"))
+        {
             Parse_StringItem(TEXT("/password"), curComm->ftpPassword);
             continue;
         }
 
-        if (Equals(szToken, "directory")) {
+        if (Equals(szToken, "directory"))
+        {
             Parse_StringItem(TEXT("/directory"), curComm->directory);
             continue;
         }
 
-        if (Equals(szToken, "flowControl")) {
+        if (Equals(szToken, "flowControl"))
+        {
             Parse_IntItem(TEXT("/flowControl"), curComm->flowControl);
             continue;
         }
 
-        if (Equals(szToken, "timeout")) {
+        if (Equals(szToken, "timeout"))
+        {
             Parse_LongItem(TEXT("/timeout"), curComm->timeout);
             continue;
         }
 
-        if (Equals(szToken, "queryPeriod")) {
+        if (Equals(szToken, "queryPeriod"))
+        {
             Parse_LongItem(TEXT("/queryPeriod"), curComm->queryPeriod);
             continue;
         }
-        if (Equals(szToken, "sleepTime")) {
+        if (Equals(szToken, "sleepTime"))
+        {
             long sleepT;
             Parse_LongItem(TEXT("/sleepTime"), sleepT);
             curComm->sleepTime.hour = sleepT / 3600;
@@ -911,7 +1008,8 @@ int CConfigurationFileHandler::Parse_Communication() {
             curComm->sleepTime.second = max(min(curComm->sleepTime.second, 59), 0);
             continue;
         }
-        if (Equals(szToken, "wakeupTime")) {
+        if (Equals(szToken, "wakeupTime"))
+        {
             long wakeupT;
             Parse_LongItem(TEXT("/wakeupTime"), wakeupT);
             curComm->wakeupTime.hour = wakeupT / 3600;
@@ -933,25 +1031,29 @@ int CConfigurationFileHandler::Parse_Spectrometer()
     CConfigurationSetting::SpectrometerSetting* curSpec = &(curScanner->spec[curScanner->specNum]);
 
     // the actual reading loop
-    while (szToken = NextToken()) {
+    while (szToken = NextToken())
+    {
 
         // no use to parse empty lines
         if (strlen(szToken) < 3)
             continue;
 
         // ignore comments
-        if (Equals(szToken, "!--", 3)) {
+        if (Equals(szToken, "!--", 3))
+        {
             continue;
         }
 
         // the end of the spectrometer section
-        if (Equals(szToken, "/spectrometer")) {
+        if (Equals(szToken, "/spectrometer"))
+        {
             ++curScanner->specNum;
             return 0;
         }
 
         // found the serial number 
-        if (Equals(szToken, "serialNumber")) {
+        if (Equals(szToken, "serialNumber"))
+        {
             if (curSpec != nullptr)
                 Parse_StringItem(TEXT("/serialNumber"), curSpec->serialNumber);
             continue;
@@ -965,40 +1067,52 @@ int CConfigurationFileHandler::Parse_Spectrometer()
         }
 
         // found the model number 
-        if (Equals(szToken, "model")) {
+        if (Equals(szToken, "model"))
+        {
             std::string tmpStr2;
-            if (curSpec != nullptr) {
+            if (curSpec != nullptr)
+            {
                 Parse_StringItem(TEXT("/model"), tmpStr2);
                 curSpec->modelName = tmpStr2;
             }
             continue;
         }
 
-        if (Equals(szToken, "channel", 7)) {
+        if (Equals(szToken, "channel", 7))
+        {
             if (curSpec != nullptr)
                 Parse_Channel();
             continue;
         }
 
         // ---- This section is here for backward compatibility only ----------
-        if (Equals(szToken, "specie", 6)) {
+        if (Equals(szToken, "specie", 6))
+        {
             if (curSpec != nullptr)
+            {
                 Parse_Specie(&curSpec->channel[curSpec->channelNum]);
+            }
             continue;
         }
 
         // ---- This section is here for backward compatibility only ----------
-        if (Equals(szToken, "fitLow")) {
+        if (Equals(szToken, "fitLow"))
+        {
             if (curSpec != nullptr)
-                Parse_IntItem(TEXT("/fitLow"), curSpec->channel[curSpec->channelNum].fitWindow.fitLow);
+            {
+                Parse_IntItem("/fitLow", curSpec->channel[curSpec->channelNum].fitWindow.fitLow);
+            }
             ++curSpec->channelNum;
             continue;
         }
 
         // ---- This section is here for backward compatibility only ----------
-        if (Equals(szToken, "fitHigh")) {
+        if (Equals(szToken, "fitHigh"))
+        {
             if (curSpec != nullptr)
-                Parse_IntItem(TEXT("/fitHigh"), curSpec->channel[curSpec->channelNum].fitWindow.fitHigh);
+            {
+                Parse_IntItem("/fitHigh", curSpec->channel[curSpec->channelNum].fitWindow.fitHigh);
+            }
             continue;
         }
     }
@@ -1089,91 +1203,107 @@ int CConfigurationFileHandler::Parse_Channel()
     int tmpInt;
 
     // find the number for this channel.
-    if (char* pt = strstr(szToken, "number")) {
-        if (pt = strstr(pt, "\"")) {
+    if (char* pt = strstr(szToken, "number"))
+    {
+        if (pt = strstr(pt, "\""))
+        {
             if (char* pt2 = strstr(pt + 1, "\""))
                 pt2[0] = 0; // remove the second quote
-            if (sscanf(pt + 1, "%d", &tmpInt)) {
+            if (sscanf(pt + 1, "%d", &tmpInt))
+            {
                 curChannel = &curSpec->channel[tmpInt];
             }
         }
     }
 
     // the actual reading loop
-    while (szToken = NextToken()) {
+    while (szToken = NextToken())
+    {
 
         // no use to parse empty lines
         if (strlen(szToken) < 3)
             continue;
 
         // ignore comments
-        if (Equals(szToken, "!--", 3)) {
+        if (Equals(szToken, "!--", 3))
+        {
             continue;
         }
 
-        if (Equals(szToken, "/channel")) {
+        if (Equals(szToken, "/channel"))
+        {
             ++curSpec->channelNum;
             return 0;
         }
 
-        if (Equals(szToken, "calibration", strlen("calibration"))) {
+        if (Equals(szToken, "calibration", strlen("calibration")))
+        {
             if (curSpec != nullptr)
                 Parse_Calibration(curChannel);
             continue;
         }
 
-        if (Equals(szToken, "Reference", 9)) {
+        if (Equals(szToken, "Reference", 9))
+        {
             if (curSpec != nullptr)
                 Parse_Reference(curChannel);
             continue;
         }
 
-        if (Equals(szToken, "specie", 6)) {
+        if (Equals(szToken, "specie", 6))
+        {
             if (curSpec != nullptr)
                 Parse_Specie(curChannel);
             continue;
         }
 
-        if (Equals(szToken, "fitLow")) {
+        if (Equals(szToken, "fitLow"))
+        {
             if (curSpec != nullptr)
                 Parse_IntItem(TEXT("/fitLow"), curChannel->fitWindow.fitLow);
             continue;
         }
 
-        if (Equals(szToken, "fitHigh")) {
+        if (Equals(szToken, "fitHigh"))
+        {
             if (curSpec != nullptr)
                 Parse_IntItem(TEXT("/fitHigh"), curChannel->fitWindow.fitHigh);
             continue;
         }
 
-        if (Equals(szToken, "dark")) {
+        if (Equals(szToken, "dark"))
+        {
             if (curSpec != nullptr)
                 Parse_IntItem(TEXT("/dark"), tmpInt);
             curChannel->darkSettings.m_darkSpecOption = (Configuration::DARK_SPEC_OPTION)tmpInt;
             continue;
         }
 
-        if (Equals(szToken, "offsetOption")) {
+        if (Equals(szToken, "offsetOption"))
+        {
             if (curSpec != nullptr)
                 Parse_IntItem(TEXT("/offsetOption"), tmpInt);
             curChannel->darkSettings.m_offsetOption = (Configuration::DARK_MODEL_OPTION)tmpInt;
             continue;
         }
 
-        if (Equals(szToken, "darkcurrentOption")) {
+        if (Equals(szToken, "darkcurrentOption"))
+        {
             if (curSpec != nullptr)
                 Parse_IntItem(TEXT("/darkcurrentOption"), tmpInt);
             curChannel->darkSettings.m_darkCurrentOption = (Configuration::DARK_MODEL_OPTION)tmpInt;
             continue;
         }
 
-        if (Equals(szToken, "offsetPath")) {
+        if (Equals(szToken, "offsetPath"))
+        {
             if (curSpec != nullptr)
                 this->Parse_StringItem(TEXT("/offsetPath"), curChannel->darkSettings.m_offsetSpec);
             continue;
         }
 
-        if (Equals(szToken, "darkCurrentPath")) {
+        if (Equals(szToken, "darkCurrentPath"))
+        {
             if (curSpec != nullptr)
                 this->Parse_StringItem(TEXT("/darkCurrentPath"), curChannel->darkSettings.m_darkCurrentSpec);
             continue;
@@ -1187,85 +1317,101 @@ int CConfigurationFileHandler::Parse_Calibration(CConfigurationSetting::Spectrom
     auto& calibrationSettings = curSpec->autoCalibration;
 
     // the actual reading loop
-    while (szToken = NextToken()) {
+    while (szToken = NextToken())
+    {
 
         // no use to parse empty lines
         if (strlen(szToken) < 3)
             continue;
 
         // ignore comments
-        if (Equals(szToken, "!--", 3)) {
+        if (Equals(szToken, "!--", 3))
+        {
             continue;
         }
 
-        if (Equals(szToken, "/calibration")) {
+        if (Equals(szToken, "/calibration"))
+        {
             return 0;
         }
 
-        if (Equals(szToken, "enable", strlen("enable"))) {
+        if (Equals(szToken, "enable", strlen("enable")))
+        {
             Parse_IntItem(TEXT("/enable"), calibrationSettings.enable);
             continue;
         }
 
-        if (Equals(szToken, "generateReferences", strlen("generateReferences"))) {
+        if (Equals(szToken, "generateReferences", strlen("generateReferences")))
+        {
             Parse_IntItem(TEXT("/generateReferences"), calibrationSettings.generateReferences);
             continue;
         }
 
-        if (Equals(szToken, "filterReferences", strlen("filterReferences"))) {
+        if (Equals(szToken, "filterReferences", strlen("filterReferences")))
+        {
             Parse_IntItem(TEXT("/filterReferences"), calibrationSettings.filterReferences);
             continue;
         }
 
-        if (Equals(szToken, "intervalHours", strlen("intervalHours"))) {
+        if (Equals(szToken, "intervalHours", strlen("intervalHours")))
+        {
             Parse_IntItem(TEXT("/intervalHours"), calibrationSettings.intervalHours);
             calibrationSettings.intervalHours = max(calibrationSettings.intervalHours, 0);
             continue;
         }
 
-        if (Equals(szToken, "intervalTimeOfDayLow", strlen("intervalTimeOfDayLow"))) {
+        if (Equals(szToken, "intervalTimeOfDayLow", strlen("intervalTimeOfDayLow")))
+        {
             Parse_IntItem(TEXT("/intervalTimeOfDayLow"), calibrationSettings.intervalTimeOfDayLow);
             calibrationSettings.intervalTimeOfDayLow = max(0, min(86399, calibrationSettings.intervalTimeOfDayLow));
             continue;
         }
 
-        if (Equals(szToken, "intervalTimeOfDayHigh", strlen("intervalTimeOfDayHigh"))) {
+        if (Equals(szToken, "intervalTimeOfDayHigh", strlen("intervalTimeOfDayHigh")))
+        {
             Parse_IntItem(TEXT("/intervalTimeOfDayHigh"), calibrationSettings.intervalTimeOfDayHigh);
             calibrationSettings.intervalTimeOfDayHigh = max(0, min(86399, calibrationSettings.intervalTimeOfDayHigh));
             continue;
         }
 
-        if (Equals(szToken, "solarSpectrumFile", strlen("solarSpectrumFile"))) {
+        if (Equals(szToken, "solarSpectrumFile", strlen("solarSpectrumFile")))
+        {
             Parse_StringItem(TEXT("/solarSpectrumFile"), calibrationSettings.solarSpectrumFile);
             continue;
         }
 
-        if (Equals(szToken, "initialCalibrationFile", strlen("initialCalibrationFile"))) {
+        if (Equals(szToken, "initialCalibrationFile", strlen("initialCalibrationFile")))
+        {
             Parse_StringItem(TEXT("/initialCalibrationFile"), calibrationSettings.initialCalibrationFile);
             continue;
         }
 
-        if (Equals(szToken, "instrumentLineshapeFile", strlen("instrumentLineshapeFile"))) {
+        if (Equals(szToken, "instrumentLineshapeFile", strlen("instrumentLineshapeFile")))
+        {
             Parse_StringItem(TEXT("/instrumentLineshapeFile"), calibrationSettings.instrumentLineshapeFile);
             continue;
         }
 
-        if (Equals(szToken, "initialCalibrationType", strlen("initialCalibrationType"))) {
+        if (Equals(szToken, "initialCalibrationType", strlen("initialCalibrationType")))
+        {
             Parse_IntItem(TEXT("/initialCalibrationType"), calibrationSettings.initialCalibrationType);
             continue;
         }
 
-        if (Equals(szToken, "instrumentLineShapeFitRegionLow", strlen("instrumentLineShapeFitRegionLow"))) {
+        if (Equals(szToken, "instrumentLineShapeFitRegionLow", strlen("instrumentLineShapeFitRegionLow")))
+        {
             Parse_FloatItem(TEXT("/instrumentLineShapeFitRegionLow"), calibrationSettings.instrumentLineShapeFitRegion.low);
             continue;
         }
 
-        if (Equals(szToken, "instrumentLineShapeFitRegionHigh", strlen("instrumentLineShapeFitRegionHigh"))) {
+        if (Equals(szToken, "instrumentLineShapeFitRegionHigh", strlen("instrumentLineShapeFitRegionHigh")))
+        {
             Parse_FloatItem(TEXT("/instrumentLineShapeFitRegionHigh"), calibrationSettings.instrumentLineShapeFitRegion.high);
             continue;
         }
 
-        if (Equals(szToken, "instrumentLineShapeFitOption", strlen("instrumentLineShapeFitOption"))) {
+        if (Equals(szToken, "instrumentLineShapeFitOption", strlen("instrumentLineShapeFitOption")))
+        {
             Parse_IntItem(TEXT("/instrumentLineShapeFitOption"), calibrationSettings.instrumentLineShapeFitOption);
             continue;
         }
@@ -1273,80 +1419,100 @@ int CConfigurationFileHandler::Parse_Calibration(CConfigurationSetting::Spectrom
     return 0;
 }
 
-int CConfigurationFileHandler::Parse_Specie(CConfigurationSetting::SpectrometerChannelSetting* curChannel) {
+int CConfigurationFileHandler::Parse_Specie(CConfigurationSetting::SpectrometerChannelSetting* curChannel)
+{
+    novac::CReferenceFile reference;
+
     // find if there is a name for this specie
-    if (char* pt = strstr(szToken, "name")) {
-        if (pt = strstr(pt, "\"")) {
+    if (char* pt = strstr(szToken, "name"))
+    {
+        if (pt = strstr(pt, "\""))
+        {
             if (char* pt2 = strstr(pt + 1, "\""))
-                pt2[0] = 0;		 //remove the second quote
-            curChannel->fitWindow.ref[curChannel->fitWindow.nRef].m_specieName = std::string(pt + 1);
+            {
+                pt2[0] = 0; //remove the second quote
+            }
+            reference.m_specieName = std::string(pt + 1);
         }
     }
 
-    while (szToken = NextToken()) {
+    while (szToken = NextToken())
+    {
 
-        if (Equals(szToken, "/specie")) {
-            ++curChannel->fitWindow.nRef;
+        if (Equals(szToken, "/specie"))
+        {
+            curChannel->fitWindow.reference.push_back(reference);
             return 0;
         }
 
-        // Read the path of the reference file.
-        curChannel->fitWindow.ref[curChannel->fitWindow.nRef].m_path = std::string(szToken);
-
+        reference.m_path = std::string(szToken);
     }
 
     return 0;
 }
 
-int CConfigurationFileHandler::Parse_Reference(CConfigurationSetting::SpectrometerChannelSetting* curChannel) {
-    int refIndex = curChannel->fitWindow.nRef;
+int CConfigurationFileHandler::Parse_Reference(CConfigurationSetting::SpectrometerChannelSetting* curChannel)
+{
+    novac::CReferenceFile reference;
+
+    // TODO: Verify that this still works!!
 
     // the actual reading loop
-    while (szToken = NextToken()) {
-
+    while (szToken = NextToken())
+    {
         // no use to parse empty lines
         if (strlen(szToken) < 3)
+        {
             continue;
+        }
 
         // ignore comments
-        if (Equals(szToken, "!--", 3)) {
+        if (Equals(szToken, "!--", 3))
+        {
             continue;
         }
 
         // the end of the Reference section
-        if (Equals(szToken, "/Reference")) {
-            ++curChannel->fitWindow.nRef;
+        if (Equals(szToken, "/Reference"))
+        {
+            curChannel->fitWindow.reference.push_back(reference);
             return 0;
         }
 
         // found the specie name 
-        if (Equals(szToken, "name")) {
+        if (Equals(szToken, "name"))
+        {
             if (curChannel != nullptr)
-                Parse_StringItem(TEXT("/name"), curChannel->fitWindow.ref[refIndex].m_specieName);
+            {
+                Parse_StringItem("/name", reference.m_specieName);
+            }
             continue;
         }
 
         // found the path to the reference file 
-        if (Equals(szToken, "path")) {
+        if (Equals(szToken, "path"))
+        {
             if (curChannel != nullptr)
-                Parse_StringItem(TEXT("/path"), curChannel->fitWindow.ref[refIndex].m_path);
+                Parse_StringItem("/path", reference.m_path);
             continue;
         }
 
         // found the shift
-        if (Equals(szToken, "shift")) {
-            if (curChannel != nullptr) {
-                CReferenceFile& ref = curChannel->fitWindow.ref[refIndex];
-                Parse_ShiftOrSqueeze(TEXT("/shift"), ref.m_shiftOption, ref.m_shiftValue, ref.m_shiftMaxValue);
+        if (Equals(szToken, "shift"))
+        {
+            if (curChannel != nullptr)
+            {
+                Parse_ShiftOrSqueeze("/shift", reference.m_shiftOption, reference.m_shiftValue, reference.m_shiftMaxValue);
             }
             continue;
         }
 
         // found the squeeze
-        if (Equals(szToken, "squeeze")) {
-            if (curChannel != nullptr) {
-                CReferenceFile& ref = curChannel->fitWindow.ref[refIndex];
-                Parse_ShiftOrSqueeze(TEXT("/squeeze"), ref.m_squeezeOption, ref.m_squeezeValue, ref.m_squeezeMaxValue);
+        if (Equals(szToken, "squeeze"))
+        {
+            if (curChannel != nullptr)
+            {
+                Parse_ShiftOrSqueeze("/squeeze", reference.m_squeezeOption, reference.m_squeezeValue, reference.m_squeezeMaxValue);
             }
             continue;
         }
@@ -1355,40 +1521,48 @@ int CConfigurationFileHandler::Parse_Reference(CConfigurationSetting::Spectromet
     return 0;
 }
 
-int CConfigurationFileHandler::Parse_ShiftOrSqueeze(const CString& label, novac::SHIFT_TYPE& option, double& lowValue, double& highValue) {
+int CConfigurationFileHandler::Parse_ShiftOrSqueeze(const CString& label, novac::SHIFT_TYPE& option, double& lowValue, double& highValue)
+{
     char* pt = nullptr;
 
     // the actual reading loop
-    while (szToken = NextToken()) {
+    while (szToken = NextToken())
+    {
 
         // no use to parse empty lines
         if (strlen(szToken) < 3)
             continue;
 
         // ignore comments
-        if (Equals(szToken, "!--", 3)) {
+        if (Equals(szToken, "!--", 3))
+        {
             continue;
         }
 
         // the end of this section
-        if (Equals(szToken, label)) {
+        if (Equals(szToken, label))
+        {
             return 0;
         }
         // convert the string to lowercase
         _strlwr(szToken);
 
-        if (pt = strstr(szToken, "fix to")) {
+        if (pt = strstr(szToken, "fix to"))
+        {
             int ret = sscanf(szToken, "fix to %lf", &lowValue);
             option = novac::SHIFT_TYPE::SHIFT_FIX;
         }
-        else if (pt = strstr(szToken, "free")) {
+        else if (pt = strstr(szToken, "free"))
+        {
             option = novac::SHIFT_TYPE::SHIFT_FREE;
         }
-        else if (pt = strstr(szToken, "limit")) {
+        else if (pt = strstr(szToken, "limit"))
+        {
             int ret = sscanf(szToken, "limit from %lf to %lf", &lowValue, &highValue);
             option = novac::SHIFT_TYPE::SHIFT_LIMIT;
         }
-        else if (pt = strstr(szToken, "link")) {
+        else if (pt = strstr(szToken, "link"))
+        {
             int ret = sscanf(szToken, "link %lf", &lowValue);
             option = novac::SHIFT_TYPE::SHIFT_LINK;
         }
@@ -1396,32 +1570,38 @@ int CConfigurationFileHandler::Parse_ShiftOrSqueeze(const CString& label, novac:
     return 0;
 }
 
-int CConfigurationFileHandler::Parse_OutputDir() {
+int CConfigurationFileHandler::Parse_OutputDir()
+{
     int ret = Parse_StringItem(TEXT("/outputDir"), conf->outputDirectory);
     if (conf->outputDirectory.GetAt(max(0, (int)strlen(conf->outputDirectory) - 1)) != '\\')
         conf->outputDirectory.AppendFormat("\\");
     return ret;
 }
 
-int CConfigurationFileHandler::Parse_LocalPublishDir() {
+int CConfigurationFileHandler::Parse_LocalPublishDir()
+{
     int ret = Parse_StringItem(TEXT("/localPublishDirectory"), conf->webSettings.localDirectory);
     if (conf->webSettings.localDirectory.GetAt(max(0, (int)strlen(conf->webSettings.localDirectory) - 1)) != '\\')
         conf->webSettings.localDirectory.AppendFormat("\\");
     return ret;
 }
 
-int CConfigurationFileHandler::Parse_Medium(CConfigurationSetting::CommunicationSetting* curComm) {
+int CConfigurationFileHandler::Parse_Medium(CConfigurationSetting::CommunicationSetting* curComm)
+{
     CString tmpStr;
     int ret = Parse_StringItem(TEXT("/medium"), tmpStr);
-    if (Equals(tmpStr, "Cable")) {
+    if (Equals(tmpStr, "Cable"))
+    {
         curComm->medium = MEDIUM_CABLE;
         return ret;
     }
-    if (Equals(tmpStr, "Freewave")) {
+    if (Equals(tmpStr, "Freewave"))
+    {
         curComm->medium = MEDIUM_FREEWAVE_SERIAL_MODEM;
         return ret;
     }
-    if (Equals(tmpStr, "Satteline")) {
+    if (Equals(tmpStr, "Satteline"))
+    {
         curComm->medium = MEDIUM_SATTELINE_SERIAL_MODEM;
         return ret;
     }
@@ -1430,7 +1610,8 @@ int CConfigurationFileHandler::Parse_Medium(CConfigurationSetting::Communication
 }
 
 /** Parses one 'windmeasurement' section */
-int	CConfigurationFileHandler::Parse_WindMeasurement() {
+int	CConfigurationFileHandler::Parse_WindMeasurement()
+{
     CConfigurationSetting::WindSpeedMeasurementSetting* wind = &(curScanner->windSettings);
 
     // the fact that there is a windmeasurement section
@@ -1439,66 +1620,77 @@ int	CConfigurationFileHandler::Parse_WindMeasurement() {
     wind->automaticWindMeasurements = true;
 
     // the actual reading loop
-    while (szToken = NextToken()) {
+    while (szToken = NextToken())
+    {
 
         // no use to parse empty lines
         if (strlen(szToken) < 3)
             continue;
 
         // ignore comments
-        if (Equals(szToken, "!--", 3)) {
+        if (Equals(szToken, "!--", 3))
+        {
             continue;
         }
 
         // the end of the spectrometer section
-        if (Equals(szToken, "/windmeasurement")) {
+        if (Equals(szToken, "/windmeasurement"))
+        {
             return 0;
         }
 
         // found the interval between the measurements
-        if (Equals(szToken, "interval")) {
+        if (Equals(szToken, "interval"))
+        {
             Parse_IntItem("/interval", wind->interval);
             continue;
         }
 
         // found the duration of each measurement
-        if (Equals(szToken, "duration")) {
+        if (Equals(szToken, "duration"))
+        {
             Parse_IntItem("/duration", wind->duration);
             continue;
         }
 
         // found the maxangle of each measurement
-        if (Equals(szToken, "maxangle")) {
+        if (Equals(szToken, "maxangle"))
+        {
             Parse_FloatItem("/maxangle", wind->maxAngle);
             continue;
         }
 
         // found the time of required stability before performing a measurement
-        if (Equals(szToken, "stableperiod")) {
+        if (Equals(szToken, "stableperiod"))
+        {
             Parse_IntItem("/stableperiod", wind->stablePeriod);
             continue;
         }
 
         // found the minimum required column 
-        if (Equals(szToken, "minpeakcolumn")) {
+        if (Equals(szToken, "minpeakcolumn"))
+        {
             Parse_FloatItem("/minpeakcolumn", wind->minPeakColumn);
             continue;
         }
 
         // found the desired angle
-        if (Equals(szToken, "desiredAngle")) {
+        if (Equals(szToken, "desiredAngle"))
+        {
             Parse_FloatItem("/desiredAngle", wind->desiredAngle);
             continue;
         }
 
         // found the settings for using calculated wind-fields...
-        if (Equals(szToken, "useCalcWind")) {
+        if (Equals(szToken, "useCalcWind"))
+        {
             Parse_IntItem("/useCalcWind", wind->useCalculatedPlumeParameters);
             continue;
         }
 
         // found the desired angle
-        if (Equals(szToken, "switchRange")) {
+        if (Equals(szToken, "switchRange"))
+        {
             Parse_FloatItem("/switchRange", wind->SwitchRange);
             continue;
         }
@@ -1508,7 +1700,8 @@ int	CConfigurationFileHandler::Parse_WindMeasurement() {
 }
 
 /** Parses one 'realtimesetup' section */
-int CConfigurationFileHandler::Parse_RealTimeSetup() {
+int CConfigurationFileHandler::Parse_RealTimeSetup()
+{
     CConfigurationSetting::SetupChangeSetting* scs = &(curScanner->scSettings);
 
     // the fact that there is a real-time setup-section
@@ -1517,36 +1710,42 @@ int CConfigurationFileHandler::Parse_RealTimeSetup() {
     scs->automaticSetupChange = 1;
 
     // the actual reading loop
-    while (szToken = NextToken()) {
+    while (szToken = NextToken())
+    {
 
         // no use to parse empty lines
         if (strlen(szToken) < 3)
             continue;
 
         // ignore comments
-        if (Equals(szToken, "!--", 3)) {
+        if (Equals(szToken, "!--", 3))
+        {
             continue;
         }
 
         // the end of the spectrometer section
-        if (Equals(szToken, "/realtimesetup")) {
+        if (Equals(szToken, "/realtimesetup"))
+        {
             return 0;
         }
 
         // should we use the calculated plume-heights and plume-directions?
-        if (Equals(szToken, "usecalculatedplumeparam")) {
+        if (Equals(szToken, "usecalculatedplumeparam"))
+        {
             Parse_IntItem("/usecalculatedplumeparam", scs->useCalculatedPlumeParameters);
             continue;
         }
 
         // the measurement mode
-        if (Equals(szToken, "mode")) {
+        if (Equals(szToken, "mode"))
+        {
             Parse_IntItem("/mode", scs->mode);
             continue;
         }
 
         // the tolerance for changes in wind-direction
-        if (Equals(szToken, "winddirtol")) {
+        if (Equals(szToken, "winddirtol"))
+        {
             Parse_FloatItem("/winddirtol", scs->windDirectionTolerance);
             continue;
         }
@@ -1555,7 +1754,8 @@ int CConfigurationFileHandler::Parse_RealTimeSetup() {
 }
 
 /** Parses the 'sourceInfo' section */
-int	CConfigurationFileHandler::Parse_SourceInfo() {
+int	CConfigurationFileHandler::Parse_SourceInfo()
+{
     bool correct = false; // this is only true if the source is correctly configured
     int replace = -1; // this is non-negative if we should replace the already existing information with the one just read in
     Common common;
@@ -1563,22 +1763,27 @@ int	CConfigurationFileHandler::Parse_SourceInfo() {
     double latitude, longitude, altitude;
 
     // the actual reading loop
-    while (szToken = NextToken()) {
+    while (szToken = NextToken())
+    {
 
         // no use to parse empty lines
         if (strlen(szToken) < 3)
             continue;
 
         // ignore comments
-        if (Equals(szToken, "!--", 3)) {
+        if (Equals(szToken, "!--", 3))
+        {
             continue;
         }
 
         // the end of the volcano-info section
-        if (Equals(szToken, "/sourceInfo")) {
-            if (correct) {
+        if (Equals(szToken, "/sourceInfo"))
+        {
+            if (correct)
+            {
                 curScanner->volcano.Format(name);
-                if (replace == -1) {
+                if (replace == -1)
+                {
                     g_volcanoes.m_name[g_volcanoes.m_volcanoNum].Format(name);
                     g_volcanoes.m_simpleName[g_volcanoes.m_volcanoNum].Format(common.SimplifyString(name));
                     g_volcanoes.m_peakHeight[g_volcanoes.m_volcanoNum] = altitude;
@@ -1586,7 +1791,8 @@ int	CConfigurationFileHandler::Parse_SourceInfo() {
                     g_volcanoes.m_peakLongitude[g_volcanoes.m_volcanoNum] = longitude;
                     g_volcanoes.m_volcanoNum++;
                 }
-                else {
+                else
+                {
                     g_volcanoes.m_name[replace].Format(name);
                     g_volcanoes.m_simpleName[replace].Format(common.SimplifyString(name));
                     g_volcanoes.m_peakHeight[replace] = altitude;
@@ -1598,13 +1804,16 @@ int	CConfigurationFileHandler::Parse_SourceInfo() {
         }
 
         // found the name of the source
-        if (Equals(szToken, "name")) {
+        if (Equals(szToken, "name"))
+        {
             Parse_StringItem("/name", name);
             correct = true;
             // Check if this source already exists in our list, if so then just replace that information
             //	otherwise add it as a new source
-            for (unsigned int k = 0; k < g_volcanoes.m_volcanoNum; ++k) {
-                if (Equals(name, g_volcanoes.m_name[k])) {
+            for (unsigned int k = 0; k < g_volcanoes.m_volcanoNum; ++k)
+            {
+                if (Equals(name, g_volcanoes.m_name[k]))
+                {
                     replace = k;
                     break;
                 }
@@ -1613,21 +1822,24 @@ int	CConfigurationFileHandler::Parse_SourceInfo() {
         }
 
         // found the latitude of the source
-        if (Equals(szToken, "latitude")) {
+        if (Equals(szToken, "latitude"))
+        {
             Parse_FloatItem("/latitude", latitude);
             correct = true;
             continue;
         }
 
         // found the longitude of the source
-        if (Equals(szToken, "longitude")) {
+        if (Equals(szToken, "longitude"))
+        {
             Parse_FloatItem("/longitude", longitude);
             correct = true;
             continue;
         }
 
         // found the altitude of the source
-        if (Equals(szToken, "altitude")) {
+        if (Equals(szToken, "altitude"))
+        {
             Parse_FloatItem("/altitude", altitude);
             continue;
         }
@@ -1636,38 +1848,45 @@ int	CConfigurationFileHandler::Parse_SourceInfo() {
 }
 
 /** Parses the 'windImport' - section */
-int CConfigurationFileHandler::Parse_WindImport() {
+int CConfigurationFileHandler::Parse_WindImport()
+{
     // the actual reading loop
-    while (szToken = NextToken()) {
+    while (szToken = NextToken())
+    {
 
         // no use to parse empty lines
         if (strlen(szToken) < 3)
             continue;
 
         // ignore comments
-        if (Equals(szToken, "!--", 3)) {
+        if (Equals(szToken, "!--", 3))
+        {
             continue;
         }
 
         // the end of the windImport section
-        if (Equals(szToken, "/windImport")) {
+        if (Equals(szToken, "/windImport"))
+        {
             return 0;
         }
 
         // found the name of the wind-field file
-        if (Equals(szToken, "path")) {
+        if (Equals(szToken, "path"))
+        {
             Parse_StringItem("/path", conf->windSourceSettings.windFieldFile);
             continue;
         }
 
         // found the reload interval of the wind-field file
-        if (Equals(szToken, "reloadInterval")) {
+        if (Equals(szToken, "reloadInterval"))
+        {
             Parse_LongItem("/reloadInterval", conf->windSourceSettings.windFileReloadInterval);
             continue;
         }
 
         // found the enabled flag wind-field file
-        if (Equals(szToken, "enabled")) {
+        if (Equals(szToken, "enabled"))
+        {
             Parse_IntItem("/enabled", conf->windSourceSettings.enabled);
             continue;
         }
@@ -1675,29 +1894,37 @@ int CConfigurationFileHandler::Parse_WindImport() {
     return 0;
 }
 
-void CConfigurationFileHandler::CheckSettings(CConfigurationSetting& configuration) {
+void CConfigurationFileHandler::CheckSettings(CConfigurationSetting& configuration)
+{
 
     // -------- FTP - SETTINGS -------------------
     // upload times
-    if (configuration.ftpSetting.ftpStopTime == configuration.ftpSetting.ftpStartTime) {
+    if (configuration.ftpSetting.ftpStopTime == configuration.ftpSetting.ftpStartTime)
+    {
         // start-time is same as stoptime, change to have at least 3 hours uploading-time
-        if (configuration.ftpSetting.ftpStopTime > 86400 / 2) {
+        if (configuration.ftpSetting.ftpStopTime > 86400 / 2)
+        {
             configuration.ftpSetting.ftpStopTime += 3 * 3600;
         }
-        else {
+        else
+        {
             configuration.ftpSetting.ftpStartTime -= 3 * 3600;
         }
     }
-    else if (configuration.ftpSetting.ftpStopTime > configuration.ftpSetting.ftpStartTime) {
+    else if (configuration.ftpSetting.ftpStopTime > configuration.ftpSetting.ftpStartTime)
+    {
         // stopTime > startTime
-        if (configuration.ftpSetting.ftpStopTime - configuration.ftpSetting.ftpStartTime < 3 * 3600) {
+        if (configuration.ftpSetting.ftpStopTime - configuration.ftpSetting.ftpStartTime < 3 * 3600)
+        {
             // less than 3 hours uploading time! change!
             configuration.ftpSetting.ftpStopTime = (configuration.ftpSetting.ftpStartTime + 3 * 3600) % 86400;
         }
     }
-    else {
+    else
+    {
         // stopTime < starTime
-        if ((86400 - configuration.ftpSetting.ftpStartTime) + configuration.ftpSetting.ftpStopTime < 3 * 3600) {
+        if ((86400 - configuration.ftpSetting.ftpStartTime) + configuration.ftpSetting.ftpStopTime < 3 * 3600)
+        {
             // less than 3 hours uploading time! change!
             configuration.ftpSetting.ftpStopTime = (configuration.ftpSetting.ftpStartTime + 3 * 3600) % 86400;
         }

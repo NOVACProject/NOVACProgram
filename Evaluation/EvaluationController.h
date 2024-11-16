@@ -28,11 +28,8 @@ namespace Evaluation
 class CEvaluationController : CWinThread
 {
 public:
-    /** Default constructor */
-    CEvaluationController(void);
-
-    /** Default destructor */
-    ~CEvaluationController(void);
+    CEvaluationController();
+    ~CEvaluationController();
 
     DECLARE_DYNCREATE(CEvaluationController);
     DECLARE_MESSAGE_MAP()

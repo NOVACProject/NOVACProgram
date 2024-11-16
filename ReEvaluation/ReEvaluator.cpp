@@ -21,16 +21,6 @@ CReEvaluator::CReEvaluator(void)
     // initialize the scan file list
     m_scanFile.reserve(64); // <-- The initial guess of the number of pak-files
 
-    // initialize the list of references 
-    for (int i = 0; i < MAX_N_WINDOWS; ++i)
-    {
-        for (int j = 1; j < MAX_N_REFERENCES; ++j)
-        {
-            m_window[i].ref[j].SetShift(SHIFT_TYPE::SHIFT_FIX, 0.0);
-            m_window[i].ref[j].SetSqueeze(SHIFT_TYPE::SHIFT_FIX, 1.0);
-        }
-    }
-
     // ignoring
     m_ignore_Lower.m_channel = 1144;
     m_ignore_Lower.m_intensity = 1000.0;
@@ -310,45 +300,43 @@ bool CReEvaluator::WriteEvaluationLogHeader(int fitWindowIndex)
     }
 
     // Write the region used:
-    if (window.UV)
-        fprintf(f, "#Region: UV\n");
-    else
-        fprintf(f, "#Region: Visible\n");
+    fprintf(f, "#OffsetRemovedFrom: %zd\n", window.offsetRemovalRange.from);
+    fprintf(f, "#OffsetRemovedTo: %zd\n", window.offsetRemovalRange.to);
 
     // If the spectra are averaged or not
     if (m_averagedSpectra)
         fprintf(f, "#Spectra are averaged, not summed\n");
 
     // The reference-files
-    fprintf(f, "#nSpecies=%d\n", window.nRef);
+    fprintf(f, "#nSpecies=%d\n", window.NumberOfReferences());
     fprintf(f, "#Specie\tShift\tSqueeze\tReferenceFile\n");
-    for (int i = 0; i < window.nRef; ++i)
+    for (const auto& reference : window.reference)
     {
-        fprintf(f, "#%s\t", window.ref[i].m_specieName.c_str());
-        switch (window.ref[i].m_shiftOption)
+        fprintf(f, "#%s\t", reference.m_specieName.c_str());
+        switch (reference.m_shiftOption)
         {
         case SHIFT_TYPE::SHIFT_FIX:
-            fprintf(f, "%0.3lf\t", window.ref[i].m_shiftValue); break;
+            fprintf(f, "%0.3lf\t", reference.m_shiftValue); break;
         case SHIFT_TYPE::SHIFT_LINK:
-            fprintf(f, "linked to %s\t", window.ref[(int)window.ref[i].m_shiftValue].m_specieName.c_str()); break;
+            fprintf(f, "linked to %s\t", window.reference[static_cast<size_t>(reference.m_shiftValue)].m_specieName.c_str()); break;
         case SHIFT_TYPE::SHIFT_LIMIT:
-            fprintf(f, "limited to +-%0.3lf\t", window.ref[i].m_shiftValue);
+            fprintf(f, "limited to +-%0.3lf\t", reference.m_shiftValue);
         default:
             fprintf(f, "free\t"); break;
         }
 
-        switch (window.ref[i].m_squeezeOption)
+        switch (reference.m_squeezeOption)
         {
         case SHIFT_TYPE::SHIFT_FIX:
-            fprintf(f, "%0.3lf\t", window.ref[i].m_squeezeValue); break;
+            fprintf(f, "%0.3lf\t", reference.m_squeezeValue); break;
         case SHIFT_TYPE::SHIFT_LINK:
-            fprintf(f, "linked to %s\t", window.ref[(int)window.ref[i].m_squeezeValue].m_specieName.c_str()); break;
+            fprintf(f, "linked to %s\t", window.reference[static_cast<size_t>(reference.m_squeezeValue)].m_specieName.c_str()); break;
         case SHIFT_TYPE::SHIFT_LIMIT:
-            fprintf(f, "limited to +-%0.3lf\t", window.ref[i].m_squeezeValue);
+            fprintf(f, "limited to +-%0.3lf\t", reference.m_squeezeValue);
         default:
             fprintf(f, "free\t"); break;
         }
-        fprintf(f, "%s\n", window.ref[i].m_path.c_str());
+        fprintf(f, "%s\n", reference.m_path.c_str());
     }
     fprintf(f, "\n");
 
@@ -406,23 +394,20 @@ bool CReEvaluator::AppendResultToEvaluationLog(const Evaluation::CScanResult& re
 
     // Write the header
     fprintf(f, "#scanangle\tstarttime\tstoptime\tname\tdelta\tchisquare\texposuretime\tnumspec\tintensity\tfitintensity\tisgoodpoint\toffset\tflag\t");
-    for (int i = 0; i < window.nRef; ++i)
+    for (const auto& reference : window.reference)
     {
-        CString name;
-        name.Format("%s", window.ref[i].m_specieName.c_str());
-
-        fprintf(f, "column(%s)\tcolumnerror(%s)\t", (LPCTSTR)name, (LPCTSTR)name);
-        fprintf(f, "shift(%s)\tshifterror(%s)\t", (LPCTSTR)name, (LPCTSTR)name);
-        fprintf(f, "squeeze(%s)\tsqueezeerror(%s)\t", (LPCTSTR)name, (LPCTSTR)name);
+        fprintf(f, "column(%s)\tcolumnerror(%s)\t", reference.m_specieName.c_str(), reference.m_specieName.c_str());
+        fprintf(f, "shift(%s)\tshifterror(%s)\t", reference.m_specieName.c_str(), reference.m_specieName.c_str());
+        fprintf(f, "squeeze(%s)\tsqueezeerror(%s)\t", reference.m_specieName.c_str(), reference.m_specieName.c_str());
     }
 
     if (window.fitType == novac::FIT_TYPE::FIT_HP_SUB || window.fitType == novac::FIT_TYPE::FIT_POLY)
     {
-        CString name = "fraunhoferref";
+        const char* name = "fraunhoferref";
 
-        fprintf(f, "column(%s)\tcolumnerror(%s)\t", (LPCTSTR)name, (LPCTSTR)name);
-        fprintf(f, "shift(%s)\tshifterror(%s)\t", (LPCTSTR)name, (LPCTSTR)name);
-        fprintf(f, "squeeze(%s)\tsqueezeerror(%s)", (LPCTSTR)name, (LPCTSTR)name);
+        fprintf(f, "column(%s)\tcolumnerror(%s)\t", name, name);
+        fprintf(f, "shift(%s)\tshifterror(%s)\t", name, name);
+        fprintf(f, "squeeze(%s)\tsqueezeerror(%s)", name, name);
     }
 
     fprintf(f, "\n<spectraldata>\n");
@@ -474,7 +459,7 @@ bool CReEvaluator::AppendResultToEvaluationLog(const Evaluation::CScanResult& re
         //		fprintf(f, "%.0lf\t", spec.MaxValue(m_window[m_curWindow].fitLow, m_window[m_curWindow].fitHigh));
 
         // the number of references
-        int nRef = window.nRef;
+        int nRef = window.NumberOfReferences();
         if (window.fitType == novac::FIT_TYPE::FIT_HP_SUB || window.fitType == novac::FIT_TYPE::FIT_POLY)
         {
             ++nRef;

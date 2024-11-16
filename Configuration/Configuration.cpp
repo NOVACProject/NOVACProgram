@@ -116,7 +116,7 @@ void CConfigurationSetting::AutomaticCalibrationSetting::Clear()
 void CConfigurationSetting::SpectrometerChannelSetting::Clear()
 {
     fitWindow.name = "";
-    fitWindow.nRef = 0;
+    fitWindow.reference.clear();
     fitWindow.polyOrder = 5;
     fitWindow.specLength = 2048;
 

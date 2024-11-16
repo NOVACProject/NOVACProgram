@@ -670,9 +670,8 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult* resu
     {
         string.AppendFormat("\t<channel number='%d'>\n", i);
         const novac::CFitWindow& fitWindow = settings.channel[i].fitWindow;
-        for (int k = 0; k < fitWindow.nRef; k++)
+        for (const novac::CReferenceFile& ref : fitWindow.reference)
         {
-            const CReferenceFile& ref = fitWindow.ref[k];
             string.AppendFormat("\t\t<Reference>\n");
             string.AppendFormat("\t\t\t<name>%s</name>\n", ref.m_specieName.c_str());
             string.AppendFormat("\t\t\t<path>%s</path>\n", ref.m_path.c_str());
@@ -713,11 +712,11 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult* resu
     const novac::CFitWindow& window = settings.channel[0].fitWindow;
     string.AppendFormat("#scanangle\tstarttime\tstoptime\tname\tspecsaturation\tfitsaturation\tcounts_ms\tdelta\tchisquare\texposuretime\tnumspec\t");
 
-    for (int itSpecie = 0; itSpecie < spectrometer.m_fitWindows[0].nRef; ++itSpecie)
+    for (const novac::CReferenceFile& ref : spectrometer.m_fitWindows[0].reference)
     {
-        string.AppendFormat("column(%s)\tcolumnerror(%s)\t", window.ref[itSpecie].m_specieName.c_str(), window.ref[itSpecie].m_specieName.c_str());
-        string.AppendFormat("shift(%s)\tshifterror(%s)\t", window.ref[itSpecie].m_specieName.c_str(), window.ref[itSpecie].m_specieName.c_str());
-        string.AppendFormat("squeeze(%s)\tsqueezeerror(%s)\t", window.ref[itSpecie].m_specieName.c_str(), window.ref[itSpecie].m_specieName.c_str());
+        string.AppendFormat("column(%s)\tcolumnerror(%s)\t", ref.m_specieName.c_str(), ref.m_specieName.c_str());
+        string.AppendFormat("shift(%s)\tshifterror(%s)\t", ref.m_specieName.c_str(), ref.m_specieName.c_str());
+        string.AppendFormat("squeeze(%s)\tsqueezeerror(%s)\t", ref.m_specieName.c_str(), ref.m_specieName.c_str());
     }
     string.AppendFormat("isgoodpoint\toffset\tflag");
     string.AppendFormat("\n<spectraldata>\n");
@@ -735,7 +734,7 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult* resu
         sky.m_info.m_fitIntensity = (float)(sky.MaxValue(window.fitLow, window.fitHigh));
         if (sky.NumSpectra() > 0)
             sky.Div(sky.NumSpectra());
-        CEvaluationLogFileHandler::FormatEvaluationResult(&sky.m_info, nullptr, maxIntensity * sky.NumSpectra(), spectrometer.m_fitWindows[0].nRef, string1);
+        CEvaluationLogFileHandler::FormatEvaluationResult(&sky.m_info, nullptr, maxIntensity * sky.NumSpectra(), spectrometer.m_fitWindows[0].NumberOfReferences(), string1);
     }
     scan.GetDark(dark);
     if (dark.m_info.m_interlaceStep > 1)
@@ -745,7 +744,7 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult* resu
         dark.m_info.m_fitIntensity = (float)(dark.MaxValue(window.fitLow, window.fitHigh));
         if (dark.NumSpectra() > 0)
             dark.Div(dark.NumSpectra());
-        CEvaluationLogFileHandler::FormatEvaluationResult(&dark.m_info, nullptr, maxIntensity * dark.NumSpectra(), spectrometer.m_fitWindows[0].nRef, string2);
+        CEvaluationLogFileHandler::FormatEvaluationResult(&dark.m_info, nullptr, maxIntensity * dark.NumSpectra(), spectrometer.m_fitWindows[0].NumberOfReferences(), string2);
     }
     scan.GetOffset(offset);
     if (offset.m_info.m_interlaceStep > 1)
@@ -754,7 +753,7 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult* resu
     {
         offset.m_info.m_fitIntensity = (float)(offset.MaxValue(window.fitLow, window.fitHigh));
         offset.Div(offset.NumSpectra());
-        CEvaluationLogFileHandler::FormatEvaluationResult(&offset.m_info, nullptr, maxIntensity * offset.NumSpectra(), spectrometer.m_fitWindows[0].nRef, string3);
+        CEvaluationLogFileHandler::FormatEvaluationResult(&offset.m_info, nullptr, maxIntensity * offset.NumSpectra(), spectrometer.m_fitWindows[0].NumberOfReferences(), string3);
     }
     scan.GetDarkCurrent(darkCurrent);
     if (darkCurrent.m_info.m_interlaceStep > 1)
@@ -763,7 +762,7 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult* resu
     {
         darkCurrent.m_info.m_fitIntensity = (float)(darkCurrent.MaxValue(window.fitLow, window.fitHigh));
         darkCurrent.Div(darkCurrent.NumSpectra());
-        CEvaluationLogFileHandler::FormatEvaluationResult(&darkCurrent.m_info, nullptr, maxIntensity * darkCurrent.NumSpectra(), spectrometer.m_fitWindows[0].nRef, string4);
+        CEvaluationLogFileHandler::FormatEvaluationResult(&darkCurrent.m_info, nullptr, maxIntensity * darkCurrent.NumSpectra(), spectrometer.m_fitWindows[0].NumberOfReferences(), string4);
     }
 
     string.AppendFormat("%s", (LPCSTR)string1);
@@ -782,7 +781,7 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult* resu
         CEvaluationResult evResult;
         result->GetResult(itSpectrum, evResult);
 
-        CEvaluationLogFileHandler::FormatEvaluationResult(&result->GetSpectrumInfo(itSpectrum), &evResult, maxIntensity * nSpectra, spectrometer.m_fitWindows[0].nRef, string1);
+        CEvaluationLogFileHandler::FormatEvaluationResult(&result->GetSpectrumInfo(itSpectrum), &evResult, maxIntensity * nSpectra, spectrometer.m_fitWindows[0].NumberOfReferences(), string1);
 
         string.AppendFormat("%s", (LPCSTR)string1);
     }
@@ -1149,7 +1148,7 @@ void CEvaluationController::GetSpectrumInformation(CSpectrometer* spectrometer, 
     CScanFileHandler scan(m_log);
 
     const std::string fileNameStr((LPCSTR)fileName);
-    novac::LogContext context("file", fileNameStr);
+    novac::LogContext context(novac::LogContext::FileName, fileNameStr);
     scan.CheckScanFile(context, fileNameStr);
     scan.GetDark(darkSpec);
     scan.GetSky(skySpec);

@@ -73,7 +73,7 @@ private:
     // ----------------------- PRIVATE METHODS ---------------------------
 
     /** This returns the sky spectrum that is to be used in the fitting. */
-    RETURN_CODE GetSky(novac::CScanFileHandler* scan, novac::CSpectrum& sky);
+    RETURN_CODE GetSky(novac::CScanFileHandler* scan, novac::CSpectrum& sky) const;
 
     /** This returns the dark spectrum that is to be used in the fitting.
         @param scan - the scan-file handler from which to get the dark spectrum

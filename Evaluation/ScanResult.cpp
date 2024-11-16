@@ -165,7 +165,7 @@ int CScanResult::CalculateOffset(const std::string& specie)
     }
 
     // Calculate the offset
-    this->m_offset = novac::CalculatePlumeOffset(columns, badEval, m_specNum).ValueOrDefault(NOT_A_NUMBER);
+    this->m_offset = novac::CalculatePlumeOffset(columns, badEval).ValueOrDefault(NOT_A_NUMBER);
 
     return 0;
 }
@@ -350,7 +350,7 @@ bool CScanResult::CalculatePlumeCentre(const std::string& specie, double& plumeC
     }
 
     // calculate the offset of the plume first, if this is not possible then use zero.
-    const double plumeOffset = novac::CalculatePlumeOffset(column, badEval, m_specNum).ValueOrDefault(0.0);
+    const double plumeOffset = novac::CalculatePlumeOffset(column, badEval).ValueOrDefault(0.0);
 
     // Calculate the centre of the plume
     novac::CPlumeInScanProperty plumeProperties;

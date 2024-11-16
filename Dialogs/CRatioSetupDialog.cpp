@@ -242,9 +242,6 @@ END_MESSAGE_MAP()
 
 // CRatioSetupDialog message handlers
 
-// This could be a common filter in the entire program, a commonly used filter.
-static const TCHAR* referenceFileFilter = "Reference files\0*.txt;*.xs\0";
-
 void CRatioSetupDialog::OnClickInReferenceList(NMHDR* pNMHDR, LRESULT* pResult)
 {
     LV_DISPINFO* listViewInfo = reinterpret_cast<LV_DISPINFO*>(pNMHDR);
@@ -299,7 +296,7 @@ void CRatioSetupDialog::BrowseForReference(int referenceIdx)
 
     // Let the user browse for a reference file
     CString crossSectionFile;
-    if (!Common::BrowseForFile(referenceFileFilter, crossSectionFile))
+    if (!Common::BrowseForReferenceFile(crossSectionFile))
     {
         return;
     }
@@ -323,7 +320,7 @@ void CRatioSetupDialog::BrowseForReference(int referenceIdx)
     UpdateDisplayedListOfReferencesPerWindow();
 }
 
-novac::WavelengthRange ParseWavelengthRange(const char* low, const char* high)
+static novac::WavelengthRange ParseWavelengthRange(const char* low, const char* high)
 {
     // Attempt to parse in the current locale
     double fitLow = std::atof(low);
