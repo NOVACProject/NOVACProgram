@@ -14,91 +14,87 @@
 namespace ReEvaluation
 {
 
-    class CReEval_ScanDlg : public CPropertyPage
-    {
-        DECLARE_DYNAMIC(CReEval_ScanDlg)
+class CReEval_ScanDlg : public CPropertyPage
+{
+    DECLARE_DYNAMIC(CReEval_ScanDlg)
 
-    public:
-        CReEval_ScanDlg();
-        virtual ~CReEval_ScanDlg();
+public:
+    CReEval_ScanDlg(CReEvaluator& reeval);
+    virtual ~CReEval_ScanDlg();
 
-        // Dialog Data
-        enum { IDD = IDD_REEVAL_SCANFILES };
+    // Dialog Data
+    enum { IDD = IDD_REEVAL_SCANFILES };
 
-    protected:
-        virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+protected:
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
-        DECLARE_MESSAGE_MAP()
-    public:
+    DECLARE_MESSAGE_MAP()
 
-        // --------------------------- PUBLIC DATA -------------------------- 
+private:
 
-        /** The scan file list */
-        CPakFileListBox m_scanfileList;
+    /** The scan file list */
+    CPakFileListBox m_scanfileList;
 
-        /** A handle to the reevaluator */
-        CReEvaluator* m_reeval;
+    /** A handle to the reevaluator */
+    CReEvaluator& m_reeval;
 
-        /** The frame for the spectrum graph */
-        CStatic m_graphFrame;
+    /** The frame for the spectrum graph */
+    CStatic m_graphFrame;
 
-        /** The spectrum graph */
-        Graph::CSpectrumGraph m_specGraph;
+    /** The spectrum graph */
+    Graph::CSpectrumGraph m_specGraph;
 
-        /** The spin button, controlls which spectrum to show */
-        CSpinButtonCtrl m_specSpin;
+    /** The spin button, controlls which spectrum to show */
+    CSpinButtonCtrl m_specSpin;
 
-        /** The currently selected spectrum-file */
-        long    m_curSpecFile;
+    /** The currently selected spectrum-file */
+    long    m_curSpecFile;
 
-        /** The currently selected spectrum inside the selected spectrum-file */
-        long    m_curSpec;
+    /** The currently selected spectrum inside the selected spectrum-file */
+    long    m_curSpec;
 
-        /** The number of spectra inside the selected spectrum file */
-        long    m_specNum;
+    /** The number of spectra inside the selected spectrum file */
+    long    m_specNum;
 
-        /** The currently selected spectrum */
-        novac::CSpectrum m_spectrum;
+    /** The currently selected spectrum */
+    novac::CSpectrum m_spectrum;
 
-        // --------------------------- PUBLIC METHODS --------------------------
+    // --------------------------- PUBLIC METHODS --------------------------
 
-        /** Initializes the dialog and its controls */
-        virtual BOOL OnInitDialog();
+    /** Initializes the dialog and its controls */
+    virtual BOOL OnInitDialog();
 
-        /** When the user presses the 'browse' button. Opens a dialog and lets the user
-            select one or more spectrum files that will be loaded into the program. */
-        afx_msg void OnBnClickedBtnBrowsescanfile();
+    /** When the user presses the 'browse' button. Opens a dialog and lets the user
+        select one or more spectrum files that will be loaded into the program. */
+    afx_msg void OnBnClickedBtnBrowsescanfile();
 
-        /** Called when the user selects a new spectrum file to look at. */
-        afx_msg void OnLbnSelchangeScanfileList();
+    /** Called when the user selects a new spectrum file to look at. */
+    afx_msg void OnLbnSelchangeScanfileList();
 
-        /** Called when the user wants to remove the currently selected scan */
-        afx_msg void OnRemoveSelected();
+    /** Called when the user wants to remove the currently selected scan */
+    afx_msg void OnRemoveSelected();
 
-        /** Called when the user has pressed the spin control and wants
-            to see the next or the previous spectrum */
-        afx_msg void OnChangeSpectrum(NMHDR* pNMHDR, LRESULT* pResult);
+    /** Called when the user has pressed the spin control and wants
+        to see the next or the previous spectrum */
+    afx_msg void OnChangeSpectrum(NMHDR* pNMHDR, LRESULT* pResult);
 
-        /** Draws the currently selected spectrum from the currently selected spectrum-file
-            into the spectrum graph. */
-        afx_msg void  DrawSpectrum();
+    /** Draws the currently selected spectrum from the currently selected spectrum-file
+        into the spectrum graph. */
+    afx_msg void  DrawSpectrum();
 
-        /** Tries to read the desired spectrum from the spectrum file */
-        int TryReadSpectrum();
+    /** Tries to read the desired spectrum from the spectrum file */
+    int TryReadSpectrum();
 
-        /** Scans through the selected scan-file to check how many spectra there are */
-        int CheckScanFile();
+    /** Scans through the selected scan-file to check how many spectra there are */
+    int CheckScanFile();
 
-        /** Update the information labels */
-        void  UpdateInfo();
+    /** Update the information labels */
+    void  UpdateInfo();
 
-    protected:
-        // --------------------------- PROTECTED METHODS --------------------------
+    /** Gets the range of the plot */
+    void GetPlotRange(Graph::CSpectrumGraph::plotRange& range);
 
-        /** Gets the range of the plot */
-        void GetPlotRange(Graph::CSpectrumGraph::plotRange& range);
-
-        /** Zooming in the graph */
-        LRESULT OnZoomGraph(WPARAM wParam, LPARAM lParam);
-    };
+    /** Zooming in the graph */
+    LRESULT OnZoomGraph(WPARAM wParam, LPARAM lParam);
+};
 }

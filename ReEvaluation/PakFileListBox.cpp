@@ -5,20 +5,19 @@
 #include "../Evaluation/FitWindowFileHandler.h"
 #include "PakFileListBox.h"
 
-using namespace ReEvaluation;
-
-// CPakFileListBox
+namespace ReEvaluation
+{
 
 IMPLEMENT_DYNAMIC(CPakFileListBox, CListBox)
-CPakFileListBox::CPakFileListBox()
+
+CPakFileListBox::CPakFileListBox(CReEvaluator& reeval)
+    : m_reeval(reeval)
 {
-    m_reeval = nullptr;
     m_parent = nullptr;
 }
 
 CPakFileListBox::~CPakFileListBox()
 {
-    m_reeval = nullptr;
     m_parent = nullptr;
 }
 
@@ -37,9 +36,9 @@ void CPakFileListBox::PopulateList()
     this->ResetContent();
 
     // then add one string for every scan file selected
-    for (size_t i = 0; i < m_reeval->m_scanFile.size(); ++i)
+    for (size_t i = 0; i < m_reeval.m_scanFile.size(); ++i)
     {
-        this->AddString(m_reeval->m_scanFile[i].c_str());
+        this->AddString(m_reeval.m_scanFile[i].c_str());
     }
 
     // Find the longest string in the list box.
@@ -94,7 +93,7 @@ void CPakFileListBox::OnContextMenu(CWnd* pWnd, CPoint pos)
     ASSERT(pPopup != nullptr);
 
     // If there are no files opened, then none can be removed...
-    if (m_reeval->m_scanFile.size() == 0)
+    if (m_reeval.m_scanFile.size() == 0)
     {
         pPopup->EnableMenuItem(ID__REMOVESELECTED, MF_DISABLED | MF_GRAYED);
     }
@@ -103,3 +102,5 @@ void CPakFileListBox::OnContextMenu(CWnd* pWnd, CPoint pos)
     pPopup->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, pos.x, pos.y, m_parent);
 
 }
+
+} // namespace ReEvaluation

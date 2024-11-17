@@ -1177,30 +1177,26 @@ void CNovacMasterProgramView::OnMenuAnalysisBrowseData()
 
 void CNovacMasterProgramView::OnMenuAnalysisReevaluate()
 {
-    ReEvaluation::CReEvaluator* reeval = new ReEvaluation::CReEvaluator();
+    std::unique_ptr<ReEvaluation::CReEvaluator> reeval = std::make_unique<ReEvaluation::CReEvaluator>();
 
     ReEvaluation::CReEvaluationDlg dlg;
     dlg.Construct("ReEvaluation", this, 0);
 
     // the scan file page
-    ReEvaluation::CReEval_ScanDlg page1;
+    ReEvaluation::CReEval_ScanDlg page1(*reeval);
     page1.Construct(IDD_REEVAL_SCANFILES);
-    page1.m_reeval = reeval;
 
     // the fit windows page
-    ReEvaluation::CReEval_WindowDlg page2;
+    ReEvaluation::CReEval_WindowDlg page2(*reeval);
     page2.Construct(IDD_REEVAL_WINDOW);
-    page2.m_reeval = reeval;
 
     // the 'misc settings' page
-    ReEvaluation::CReEval_MiscSettingsDlg page3;
+    ReEvaluation::CReEval_MiscSettingsDlg page3(*reeval);
     page3.Construct(IDD_REEVAL_MISC);
-    page3.m_reeval = reeval;
 
     // the 'do evaluation' page
-    ReEvaluation::CReEval_DoEvaluationDlg page4;
+    ReEvaluation::CReEval_DoEvaluationDlg page4(*reeval);
     page4.Construct(IDD_REEVAL_FINAL);
-    page4.m_reeval = reeval;
 
     // add the pages
     dlg.AddPage(&page1);
@@ -1210,8 +1206,6 @@ void CNovacMasterProgramView::OnMenuAnalysisReevaluate()
 
     // show the window
     dlg.DoModal();
-
-    delete reeval;
 }
 
 void CNovacMasterProgramView::OnMenuFileExport()

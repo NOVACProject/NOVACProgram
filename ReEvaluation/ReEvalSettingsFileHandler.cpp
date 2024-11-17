@@ -1,23 +1,20 @@
 #include "StdAfx.h"
-#include "reevalsettingsfilehandler.h"
+#include "ReEvalSettingsFileHandler.h"
 
-using namespace FileHandler;
+namespace FileHandler
+{
 
 CReEvalSettingsFileHandler::CReEvalSettingsFileHandler(void)
-{
-}
+{}
 
 CReEvalSettingsFileHandler::~CReEvalSettingsFileHandler(void)
-{
-}
+{}
 
-/** Writes the supplied re-evaluation settings to a file.
-        @param reeval - the settings to be written to file
-        @param fileName - the name and path of the file to which to write
-        @param overWrite - if true the file will be overwritten, if false, the file will be appended */
-RETURN_CODE CReEvalSettingsFileHandler::WriteSettings(const ReEvaluation::CReEvaluator& reeval, const CString& fileName, bool overWrite) {
+RETURN_CODE CReEvalSettingsFileHandler::WriteSettings(const ReEvaluation::CReEvaluator& reeval, const CString& fileName, bool overWrite)
+{
     FILE* f = fopen(fileName, "w");
-    if (f == NULL) {
+    if (f == NULL)
+    {
         MessageBox(NULL, "Cannot open file for writing. No settings saved", "Error", MB_OK);
         return FAIL;
     }
@@ -44,7 +41,8 @@ RETURN_CODE CReEvalSettingsFileHandler::WriteSettings(const ReEvaluation::CReEva
     fprintf(f, "\t<SkySpectrum>\n");
     fprintf(f, "\t\t<Option>%d</Option>\n", (int)reeval.m_skySettings.skyOption);
     fprintf(f, "\t\t<Index>%d</Index>\n", (int)reeval.m_skySettings.indexInScan);
-    if (reeval.m_skySettings.skySpectrumFile.size() > 1) {
+    if (reeval.m_skySettings.skySpectrumFile.size() > 1)
+    {
         fprintf(f, "\t\t<Path>%s</Path>\n", reeval.m_skySettings.skySpectrumFile.c_str());
     }
     fprintf(f, "\t</SkySpectrum>\n");
@@ -55,10 +53,12 @@ RETURN_CODE CReEvalSettingsFileHandler::WriteSettings(const ReEvaluation::CReEva
     fprintf(f, "\t\t<OffsetOption>%d</OffsetOption>\n", (int)reeval.m_darkSettings.m_offsetOption);
     fprintf(f, "\t\t<DCOption>%d</DCOption>\n", (int)reeval.m_darkSettings.m_darkCurrentOption);
     fprintf(f, "\t\t<Index>%d</Index>\n", (int)reeval.m_skySettings.indexInScan);
-    if (reeval.m_darkSettings.m_offsetSpec.size() > 1) {
+    if (reeval.m_darkSettings.m_offsetSpec.size() > 1)
+    {
         fprintf(f, "\t\t<Offset_Path>%s</Offset_Path>\n", reeval.m_darkSettings.m_offsetSpec.c_str());
     }
-    if (reeval.m_darkSettings.m_darkCurrentSpec.size() > 1) {
+    if (reeval.m_darkSettings.m_darkCurrentSpec.size() > 1)
+    {
         fprintf(f, "\t\t<DC_Path>%s</DC_Path>\n", reeval.m_darkSettings.m_darkCurrentSpec.c_str());
     }
     fprintf(f, "\t</DarkSpectrum>\n");
@@ -73,12 +73,8 @@ RETURN_CODE CReEvalSettingsFileHandler::WriteSettings(const ReEvaluation::CReEva
     return SUCCESS;
 }
 
-
-/** Reads the desired re-evaluation settings from the file.
-        @param reeval - will be filled with the read settings if successfull
-        @param fileName - the name and path of the file to read from
-        @return SUCCESS on success */
-RETURN_CODE CReEvalSettingsFileHandler::ReadSettings(ReEvaluation::CReEvaluator& reeval, const CString& fileName) {
+RETURN_CODE CReEvalSettingsFileHandler::ReadSettings(ReEvaluation::CReEvaluator& reeval, const CString& fileName)
+{
     char  lowIntensStr[] = _T("LowIntensity");
     char  highIntensStr[] = _T("HighIntensity");
     char  skySpecStr[] = _T("SkySpectrum");
@@ -89,62 +85,77 @@ RETURN_CODE CReEvalSettingsFileHandler::ReadSettings(ReEvaluation::CReEvaluator&
     CStdioFile file;
 
     // 1. Open the file
-    if (!file.Open(fileName, CFile::modeRead | CFile::typeText, &exceFile)) {
+    if (!file.Open(fileName, CFile::modeRead | CFile::typeText, &exceFile))
+    {
         return FAIL;
     }
     this->SetFile(&file);
 
     // parse the file
-    while (szToken = NextToken()) {
+    while (szToken = NextToken())
+    {
         // no use to parse empty lines
         if (strlen(szToken) < 3)
             continue;
 
-        if (Equals(szToken, lowIntensStr, strlen(lowIntensStr))) {
-            if (SUCCESS == Parse_IntensitySection(reeval, 0)) {
+        if (Equals(szToken, lowIntensStr, strlen(lowIntensStr)))
+        {
+            if (SUCCESS == Parse_IntensitySection(reeval, 0))
+            {
                 continue;
             }
-            else {
+            else
+            {
                 // parsing has failed!
                 file.Close();
                 return FAIL;
             }
         }
 
-        if (Equals(szToken, highIntensStr, strlen(highIntensStr))) {
-            if (SUCCESS == Parse_IntensitySection(reeval, 1)) {
+        if (Equals(szToken, highIntensStr, strlen(highIntensStr)))
+        {
+            if (SUCCESS == Parse_IntensitySection(reeval, 1))
+            {
                 continue;
             }
-            else {
+            else
+            {
                 // parsing has failed!
                 file.Close();
                 return FAIL;
             }
         }
 
-        if (Equals(szToken, skySpecStr, strlen(skySpecStr))) {
-            if (SUCCESS == Parse_SkySpecSection(reeval)) {
+        if (Equals(szToken, skySpecStr, strlen(skySpecStr)))
+        {
+            if (SUCCESS == Parse_SkySpecSection(reeval))
+            {
                 continue;
             }
-            else {
+            else
+            {
                 // parsing has failed!
                 file.Close();
                 return FAIL;
             }
         }
 
-        if (Equals(szToken, darkSpecStr, strlen(darkSpecStr))) {
-            if (SUCCESS == Parse_DarkSpecSection(reeval)) {
+        if (Equals(szToken, darkSpecStr, strlen(darkSpecStr)))
+        {
+            if (SUCCESS == Parse_DarkSpecSection(reeval))
+            {
                 continue;
             }
-            else {
+            else
+            {
                 // parsing has failed!
                 file.Close();
                 return FAIL;
             }
         }
 
-        if (Equals(szToken, averageStr, strlen(averageStr))) {
+        if (Equals(szToken, averageStr, strlen(averageStr)))
+        {
             int tmpInt;
             Parse_IntItem("/Average", tmpInt);
             reeval.m_averagedSpectra = (tmpInt == 1) ? true : false;
@@ -157,26 +168,31 @@ RETURN_CODE CReEvalSettingsFileHandler::ReadSettings(ReEvaluation::CReEvaluator&
 }
 
 
-RETURN_CODE CReEvalSettingsFileHandler::Parse_IntensitySection(ReEvaluation::CReEvaluator& reeval, int type) {
+RETURN_CODE CReEvalSettingsFileHandler::Parse_IntensitySection(ReEvaluation::CReEvaluator& reeval, int type)
+{
     int tmpInt;
 
     // the actual reading loop
-    while (szToken = NextToken()) {
+    while (szToken = NextToken())
+    {
 
         // no use to parse empty lines
         if (strlen(szToken) < 3)
             continue;
 
         // ignore comments
-        if (Equals(szToken, "!--", 3)) {
+        if (Equals(szToken, "!--", 3))
+        {
             continue;
         }
 
-        if (Equals(szToken, "/LowIntensity") || Equals(szToken, "/HighIntensity")) {
+        if (Equals(szToken, "/LowIntensity") || Equals(szToken, "/HighIntensity"))
+        {
             return SUCCESS;
         }
 
-        if (Equals(szToken, "Type")) {
+        if (Equals(szToken, "Type"))
+        {
             Parse_IntItem(TEXT("/Type"), tmpInt);
             if (type == 0)
                 reeval.m_ignore_Lower.m_type = (Evaluation::IgnoreType)tmpInt;
@@ -185,7 +201,8 @@ RETURN_CODE CReEvalSettingsFileHandler::Parse_IntensitySection(ReEvaluation::CRe
             continue;
         }
 
-        if (Equals(szToken, "Intensity")) {
+        if (Equals(szToken, "Intensity"))
+        {
             if (type == 0)
                 Parse_FloatItem(TEXT("/Intensity"), reeval.m_ignore_Lower.m_intensity);
             else
@@ -193,7 +210,8 @@ RETURN_CODE CReEvalSettingsFileHandler::Parse_IntensitySection(ReEvaluation::CRe
             continue;
         }
 
-        if (Equals(szToken, "Channel")) {
+        if (Equals(szToken, "Channel"))
+        {
             if (type == 0)
                 Parse_LongItem(TEXT("/Channel"), reeval.m_ignore_Lower.m_channel);
             else
@@ -206,37 +224,44 @@ RETURN_CODE CReEvalSettingsFileHandler::Parse_IntensitySection(ReEvaluation::CRe
 }
 
 
-RETURN_CODE CReEvalSettingsFileHandler::Parse_SkySpecSection(ReEvaluation::CReEvaluator& reeval) {
+RETURN_CODE CReEvalSettingsFileHandler::Parse_SkySpecSection(ReEvaluation::CReEvaluator& reeval)
+{
     int tmpInt;
 
     // the actual reading loop
-    while (szToken = NextToken()) {
+    while (szToken = NextToken())
+    {
 
         // no use to parse empty lines
         if (strlen(szToken) < 3)
             continue;
 
         // ignore comments
-        if (Equals(szToken, "!--", 3)) {
+        if (Equals(szToken, "!--", 3))
+        {
             continue;
         }
 
-        if (Equals(szToken, "/SkySpectrum")) {
+        if (Equals(szToken, "/SkySpectrum"))
+        {
             return SUCCESS;
         }
 
-        if (Equals(szToken, "Option")) {
+        if (Equals(szToken, "Option"))
+        {
             Parse_IntItem(TEXT("/Option"), tmpInt);
             reeval.m_skySettings.skyOption = (Configuration::SKY_OPTION)tmpInt;
             continue;
         }
 
-        if (Equals(szToken, "Index")) {
+        if (Equals(szToken, "Index"))
+        {
             Parse_IntItem(TEXT("/Index"), reeval.m_skySettings.indexInScan);
             continue;
         }
 
-        if (Equals(szToken, "Path")) {
+        if (Equals(szToken, "Path"))
+        {
             Parse_StringItem(TEXT("/Path"), reeval.m_skySettings.skySpectrumFile);
             continue;
         }
@@ -245,49 +270,58 @@ RETURN_CODE CReEvalSettingsFileHandler::Parse_SkySpecSection(ReEvaluation::CReEv
     return FAIL;
 }
 
-RETURN_CODE CReEvalSettingsFileHandler::Parse_DarkSpecSection(ReEvaluation::CReEvaluator& reeval) {
+RETURN_CODE CReEvalSettingsFileHandler::Parse_DarkSpecSection(ReEvaluation::CReEvaluator& reeval)
+{
     int tmpInt;
 
     // the actual reading loop
-    while (szToken = NextToken()) {
+    while (szToken = NextToken())
+    {
 
         // no use to parse empty lines
         if (strlen(szToken) < 3)
             continue;
 
         // ignore comments
-        if (Equals(szToken, "!--", 3)) {
+        if (Equals(szToken, "!--", 3))
+        {
             continue;
         }
 
-        if (Equals(szToken, "/DarkSpectrum")) {
+        if (Equals(szToken, "/DarkSpectrum"))
+        {
             return SUCCESS;
         }
 
-        if (Equals(szToken, "Option")) {
+        if (Equals(szToken, "Option"))
+        {
             Parse_IntItem(TEXT("/Option"), tmpInt);
             reeval.m_darkSettings.m_darkSpecOption = (Configuration::DARK_SPEC_OPTION)tmpInt;
             continue;
         }
 
-        if (Equals(szToken, "OffsetOption")) {
+        if (Equals(szToken, "OffsetOption"))
+        {
             Parse_IntItem(TEXT("/OffsetOption"), tmpInt);
             reeval.m_darkSettings.m_offsetOption = (Configuration::DARK_MODEL_OPTION)tmpInt;
             continue;
         }
 
-        if (Equals(szToken, "DCOption")) {
+        if (Equals(szToken, "DCOption"))
+        {
             Parse_IntItem(TEXT("/DCOption"), tmpInt);
             reeval.m_darkSettings.m_darkCurrentOption = (Configuration::DARK_MODEL_OPTION)tmpInt;
             continue;
         }
 
-        if (Equals(szToken, "Offset_Path")) {
+        if (Equals(szToken, "Offset_Path"))
+        {
             Parse_StringItem(TEXT("/Offset_Path"), reeval.m_darkSettings.m_offsetSpec);
             continue;
         }
 
-        if (Equals(szToken, "DC_Path")) {
+        if (Equals(szToken, "DC_Path"))
+        {
             Parse_StringItem(TEXT("/DC_Path"), reeval.m_darkSettings.m_darkCurrentSpec);
             continue;
         }
@@ -295,3 +329,5 @@ RETURN_CODE CReEvalSettingsFileHandler::Parse_DarkSpecSection(ReEvaluation::CReE
 
     return FAIL;
 }
+
+}  // namespace FileHandler

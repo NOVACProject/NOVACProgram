@@ -5,39 +5,35 @@
 #include "../NovacMasterProgram.h"
 #include "ReEval_MiscSettingsDlg.h"
 #include "../Dialogs/DarkSettingsDialog.h"
-#include "reevalsettingsfilehandler.h"
+#include "ReEvalSettingsFileHandler.h"
 
-using namespace ReEvaluation;
-
-// CReEval_MiscSettingsDlg dialog
+namespace ReEvaluation
+{
 
 IMPLEMENT_DYNAMIC(CReEval_MiscSettingsDlg, CPropertyPage)
-CReEval_MiscSettingsDlg::CReEval_MiscSettingsDlg()
-    : CPropertyPage(CReEval_MiscSettingsDlg::IDD)
-{
-    m_reeval = NULL;
-}
+
+CReEval_MiscSettingsDlg::CReEval_MiscSettingsDlg(CReEvaluator& reeval)
+    : CPropertyPage(CReEval_MiscSettingsDlg::IDD), m_reeval(reeval)
+{}
 
 CReEval_MiscSettingsDlg::~CReEval_MiscSettingsDlg()
-{
-    m_reeval = NULL;
-}
+{}
 
 void CReEval_MiscSettingsDlg::DoDataExchange(CDataExchange* pDX)
 {
     CPropertyPage::DoDataExchange(pDX);
-    DDX_Radio(pDX, IDC_IGNORE_DARK, (int&)m_reeval->m_ignore_Lower.m_type);
-    DDX_Text(pDX, IDC_EDIT_IGNORE_INTENSITY, (double&)m_reeval->m_ignore_Lower.m_intensity);
-    DDX_Text(pDX, IDC_EDIT_IGNORE_CHANNEL, (int&)m_reeval->m_ignore_Lower.m_channel);
+    DDX_Radio(pDX, IDC_IGNORE_DARK, (int&)m_reeval.m_ignore_Lower.m_type);
+    DDX_Text(pDX, IDC_EDIT_IGNORE_INTENSITY, (double&)m_reeval.m_ignore_Lower.m_intensity);
+    DDX_Text(pDX, IDC_EDIT_IGNORE_CHANNEL, (int&)m_reeval.m_ignore_Lower.m_channel);
 
-    DDX_Radio(pDX, IDC_IGNORE_SATURATED, (int&)m_reeval->m_ignore_Upper.m_type);
-    DDX_Text(pDX, IDC_EDIT_UPPER_IGNORE_INTENSITY, (double&)m_reeval->m_ignore_Upper.m_intensity);
-    DDX_Text(pDX, IDC_EDIT_UPPER_IGNORE_CHANNEL, (int&)m_reeval->m_ignore_Upper.m_channel);
+    DDX_Radio(pDX, IDC_IGNORE_SATURATED, (int&)m_reeval.m_ignore_Upper.m_type);
+    DDX_Text(pDX, IDC_EDIT_UPPER_IGNORE_INTENSITY, (double&)m_reeval.m_ignore_Upper.m_intensity);
+    DDX_Text(pDX, IDC_EDIT_UPPER_IGNORE_CHANNEL, (int&)m_reeval.m_ignore_Upper.m_channel);
 
-    DDX_Radio(pDX, IDC_RADIO_SKYSPECTRUM_FIRST, (int&)m_reeval->m_skySettings.skyOption);
-    DDX_Text(pDX, IDC_EDIT_SKYINDEX, (long&)m_reeval->m_skySettings.indexInScan);
+    DDX_Radio(pDX, IDC_RADIO_SKYSPECTRUM_FIRST, (int&)m_reeval.m_skySettings.skyOption);
+    DDX_Text(pDX, IDC_EDIT_SKYINDEX, (long&)m_reeval.m_skySettings.indexInScan);
 
-    DDX_Check(pDX, IDC_CHECK_AVERAGEDSPECTRA, (int&)m_reeval->m_averagedSpectra);
+    DDX_Check(pDX, IDC_CHECK_AVERAGEDSPECTRA, (int&)m_reeval.m_averagedSpectra);
 
     // The buttons
     DDX_Control(pDX, ID_FILE_LOADMISC, m_loadBtn);
@@ -45,7 +41,7 @@ void CReEval_MiscSettingsDlg::DoDataExchange(CDataExchange* pDX)
 
     // The user supplied sky-spectrum
     // TODO: Fix this.
-    //DDX_Text(pDX,	IDC_EDIT_USER_SKY,								m_reeval->m_skySettings.skySpectrumFile);
+    //DDX_Text(pDX,	IDC_EDIT_USER_SKY,								m_reeval.m_skySettings.skySpectrumFile);
 }
 
 
@@ -62,7 +58,8 @@ END_MESSAGE_MAP()
 
 
 // CReEval_MiscSettingsDlg message handlers
-void CReEval_MiscSettingsDlg::OnBrowseSkySpectrum() {
+void CReEval_MiscSettingsDlg::OnBrowseSkySpectrum()
+{
     CString skySpec;
     skySpec.Format("");
     TCHAR filter[512];
@@ -72,11 +69,12 @@ void CReEval_MiscSettingsDlg::OnBrowseSkySpectrum() {
     Common common;
 
     // let the user browse for a spectrum-file
-    if (common.BrowseForFile(filter, skySpec)) {
-        m_reeval->m_skySettings.skySpectrumFile = std::string((LPCTSTR)skySpec);
+    if (common.BrowseForFile(filter, skySpec))
+    {
+        m_reeval.m_skySettings.skySpectrumFile = std::string((LPCTSTR)skySpec);
         SetDlgItemText(IDC_EDIT_USER_SKY, skySpec);
 
-        m_reeval->m_skySettings.skyOption = Configuration::SKY_OPTION::USER_SUPPLIED;
+        m_reeval.m_skySettings.skyOption = Configuration::SKY_OPTION::USER_SUPPLIED;
     }
 
     // Update the screen
@@ -84,17 +82,20 @@ void CReEval_MiscSettingsDlg::OnBrowseSkySpectrum() {
 }
 
 /** Lets the user see the possible options for how to remove the dark */
-void CReEval_MiscSettingsDlg::OnShowDarkSettings() {
+void CReEval_MiscSettingsDlg::OnShowDarkSettings()
+{
     Dialogs::CDarkSettingsDialog darkDlg;
-    darkDlg.m_darkSettings = &m_reeval->m_darkSettings;
+    darkDlg.m_darkSettings = &m_reeval.m_darkSettings;
     darkDlg.DoModal();
 }
 
-void CReEval_MiscSettingsDlg::OnChangeSkySpectrum() {
+void CReEval_MiscSettingsDlg::OnChangeSkySpectrum()
+{
     UpdateData(TRUE); // <-- save the data in the dialog
 }
 
-void CReEval_MiscSettingsDlg::SaveData() {
+void CReEval_MiscSettingsDlg::SaveData()
+{
     CString str;
 
     if (m_hWnd == NULL)
@@ -124,7 +125,8 @@ BOOL ReEvaluation::CReEval_MiscSettingsDlg::OnInitDialog()
 
 
 /** Called when the user wants to save the current settings into a file */
-void ReEvaluation::CReEval_MiscSettingsDlg::OnSaveMiscSettings() {
+void ReEvaluation::CReEval_MiscSettingsDlg::OnSaveMiscSettings()
+{
     CString fileName;
     fileName.Format("");
     TCHAR filter[512];
@@ -138,19 +140,22 @@ void ReEvaluation::CReEval_MiscSettingsDlg::OnSaveMiscSettings() {
         return;
 
     // let the user browse for an evaluation log file and if one is selected, read it
-    if (common.BrowseForFile_SaveAs(filter, fileName)) {
+    if (common.BrowseForFile_SaveAs(filter, fileName))
+    {
         // if there's not a .xml-ending on the file, append it!
-        if (!Equals(".xml", fileName.Right(4))) {
+        if (!Equals(".xml", fileName.Right(4)))
+        {
             fileName.AppendFormat(".xml");
         }
 
         FileHandler::CReEvalSettingsFileHandler fileHandler;
-        fileHandler.WriteSettings(*m_reeval, fileName, true);
+        fileHandler.WriteSettings(m_reeval, fileName, true);
     }
 }
 
 /** Called when the user wants to load the settings from file */
-void ReEvaluation::CReEval_MiscSettingsDlg::OnLoadMiscSettings() {
+void ReEvaluation::CReEval_MiscSettingsDlg::OnLoadMiscSettings()
+{
     CString fileName;
     fileName.Format("");
     TCHAR filter[512];
@@ -160,11 +165,14 @@ void ReEvaluation::CReEval_MiscSettingsDlg::OnLoadMiscSettings() {
     Common common;
 
     // let the user browse for an evaluation log file and if one is selected, read it
-    if (common.BrowseForFile(filter, fileName)) {
+    if (common.BrowseForFile(filter, fileName))
+    {
         FileHandler::CReEvalSettingsFileHandler fileHandler;
-        fileHandler.ReadSettings(*m_reeval, fileName);
+        fileHandler.ReadSettings(m_reeval, fileName);
 
         // Update the dialog
         UpdateData(FALSE);
     }
 }
+
+}  // namespace ReEvaluation

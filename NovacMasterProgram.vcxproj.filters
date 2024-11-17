@@ -189,9 +189,6 @@
     <ClCompile Include="FileTreeCtrl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ReEvaluation\FitWindowListBox.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Dialogs\FluxErrorDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -795,6 +792,9 @@
     <ClCompile Include="SpectralEvaluation\src\NullableValue.cpp">
       <Filter>Source Files\SpectralEvaluation</Filter>
     </ClCompile>
+    <ClCompile Include="ReEvaluation\FitWindowListBox.cpp">
+      <Filter>Source Files\ReEvaluation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Configuration\AdvancedFTPUploadSettings.h">
@@ -825,9 +825,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FileTreeCtrl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ReEvaluation\FitWindowListBox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Dialogs\FluxErrorDlg.h">
@@ -882,9 +879,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="WindMeasurement\PostWindDlg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ReEvaluation\ReEvalSettingsFileHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="WindMeasurement\RealTimeWind.h">
@@ -1552,6 +1546,12 @@
     </ClInclude>
     <ClInclude Include="NovacProgramLog.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ReEvaluation\FitWindowListBox.h">
+      <Filter>Header Files\ReEvaluation</Filter>
+    </ClInclude>
+    <ClInclude Include="ReEvaluation\ReEvalSettingsFileHandler.h">
+      <Filter>Header Files\ReEvaluation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

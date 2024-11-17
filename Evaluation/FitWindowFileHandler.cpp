@@ -57,7 +57,8 @@ std::vector<novac::CFitWindow> CFitWindowFileHandler::ReadFitWindowFile(const CS
         }
     }
 
-    file.Close();
+    Close();
+
     return allWindowsRead;
 }
 

@@ -4,43 +4,47 @@
 
 // CFitWindowListBox
 
-namespace ReEvaluation {
-    class CFitWindowListBox : public CListBox
-    {
-        DECLARE_DYNAMIC(CFitWindowListBox)
+namespace ReEvaluation
+{
 
-    public:
-        CFitWindowListBox();
-        virtual ~CFitWindowListBox();
+class CFitWindowListBox : public CListBox
+{
+    DECLARE_DYNAMIC(CFitWindowListBox)
 
-        /** A pointer to the reevaluator that this object modifies */
-        CReEvaluator* m_reeval;
+public:
+    CFitWindowListBox(CReEvaluator& reeval);
+    virtual ~CFitWindowListBox();
 
-        /** Called to populate the fit window list */
-        void	PopulateList();
+    /** Called to populate the fit window list */
+    void	PopulateList();
 
-    protected:
-        DECLARE_MESSAGE_MAP()
+protected:
+    DECLARE_MESSAGE_MAP()
 
-        /** Called when the user presses down the left mouse button */
-        afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+private:
 
-        /** Called to show the context menu */
-        afx_msg void OnContextMenu(CWnd* pWnd, CPoint pos);
+    /** A handle to the reevaluator that this object modifies */
+    CReEvaluator& m_reeval;
 
-        /** Called to insert a new fit window into the list */
-        afx_msg void OnInsertFitWindow();
+    /** Called when the user presses down the left mouse button */
+    afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 
-        /** Called to load a set of fit window from a file */
-        afx_msg void OnLoadFitWindows();
+    /** Called to show the context menu */
+    afx_msg void OnContextMenu(CWnd* pWnd, CPoint pos);
 
-        /** Called to save a set of fit windows to file */
-        afx_msg void OnSaveFitWindows();
+    /** Called to insert a new fit window into the list */
+    afx_msg void OnInsertFitWindow();
 
-        /** Called to rename a fit window */
-        afx_msg void OnRenameWindow();
+    /** Called to load a set of fit window from a file */
+    afx_msg void OnLoadFitWindows();
 
-        /** Called to remove a fit window from the list */
-        afx_msg void OnRemoveFitWindow();
-    };
+    /** Called to save a set of fit windows to file */
+    afx_msg void OnSaveFitWindows();
+
+    /** Called to rename a fit window */
+    afx_msg void OnRenameWindow();
+
+    /** Called to remove a fit window from the list */
+    afx_msg void OnRemoveFitWindow();
+};
 }

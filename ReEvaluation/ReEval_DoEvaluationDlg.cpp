@@ -4,17 +4,18 @@
 #include "ReEval_DoEvaluationDlg.h"
 #include "../Evaluation/EvaluationResultView.h"
 
-using namespace ReEvaluation;
 using namespace Evaluation;
 using namespace novac;
 
-
-UINT DoEvaluation(LPVOID pParam)
+namespace ReEvaluation
 {
-    CReEvaluator* m_reeval = (CReEvaluator*)pParam;
 
-    m_reeval->fRun = true;
-    m_reeval->DoEvaluation();
+static UINT DoEvaluation(LPVOID pParam)
+{
+    CReEvaluator* reeval = (CReEvaluator*)pParam;
+
+    reeval->fRun = true;
+    reeval->DoEvaluation();
     return 0;
 }
 
@@ -22,23 +23,22 @@ UINT DoEvaluation(LPVOID pParam)
 // CReEval_DoEvaluationDlg dialog
 
 IMPLEMENT_DYNAMIC(CReEval_DoEvaluationDlg, CPropertyPage)
-CReEval_DoEvaluationDlg::CReEval_DoEvaluationDlg()
+
+CReEval_DoEvaluationDlg::CReEval_DoEvaluationDlg(CReEvaluator& reeval)
     : CPropertyPage(CReEval_DoEvaluationDlg::IDD)
+    , m_reeval(reeval)
     , m_showFit(0)
 {
-    m_reeval = nullptr;
     m_curSpecie = 0;
 
-    pReEvalThread = NULL;
+    pReEvalThread = nullptr;
 
     m_result = nullptr;
 }
 
 CReEval_DoEvaluationDlg::~CReEval_DoEvaluationDlg()
 {
-    m_reeval = nullptr;
     pReEvalThread = nullptr;
-
     m_result = nullptr;
 }
 
@@ -53,7 +53,7 @@ void CReEval_DoEvaluationDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_REEVAL_CANCEL, m_btnCancel);
     DDX_Control(pDX, IDC_PROGRESSBAR, m_progressBar);
     DDX_Control(pDX, IDC_PROGRESSBAR2, m_progressBar2);
-    DDX_Check(pDX, IDC_REEVAL_CHECK_PAUSE, m_reeval->m_pause);
+    DDX_Check(pDX, IDC_REEVAL_CHECK_PAUSE, m_reeval.m_pause);
 }
 
 
@@ -137,7 +137,7 @@ void  CReEval_DoEvaluationDlg::PopulateRefList()
     }
     else
     {
-        const CFitWindow& window = m_reeval->m_window[m_reeval->m_curWindow];
+        const CFitWindow& window = m_reeval.m_window[m_reeval.m_curWindow];
 
         for (const auto& reference : window.reference)
         {
@@ -193,16 +193,16 @@ void CReEval_DoEvaluationDlg::OnDoEvaluation()
     // save the data in the dialog
     UpdateData(TRUE);
 
-    if (m_reeval->fRun && m_reeval->m_sleeping)
+    if (m_reeval.fRun && m_reeval.m_sleeping)
     {
         pReEvalThread->ResumeThread();
     }
     else
     {
-        m_reeval->pView = this;
+        m_reeval.pView = this;
 
         // start the reevaluation thread
-        pReEvalThread = AfxBeginThread(DoEvaluation, (LPVOID)(m_reeval), THREAD_PRIORITY_BELOW_NORMAL, 0, 0, NULL);
+        pReEvalThread = AfxBeginThread(DoEvaluation, (LPVOID)(&m_reeval), THREAD_PRIORITY_BELOW_NORMAL, 0, 0, nullptr);
     }
 
     // update the window
@@ -216,7 +216,7 @@ void CReEval_DoEvaluationDlg::OnCancelEvaluation()
 
     // If the 'pause' - button is pressed and the thread is waiting for the 
     //	user to press 'next'...
-    if (m_reeval->fRun && m_reeval->m_sleeping)
+    if (m_reeval.fRun && m_reeval.m_sleeping)
     {
         pReEvalThread->ResumeThread();
     }
@@ -225,11 +225,11 @@ void CReEval_DoEvaluationDlg::OnCancelEvaluation()
     // Quit the re-evaluation thread
     DWORD dwExitCode;
     HANDLE hThread = this->pReEvalThread->m_hThread;
-    if (hThread != NULL && GetExitCodeThread(hThread, &dwExitCode) && dwExitCode == STILL_ACTIVE)
+    if (hThread != nullptr && GetExitCodeThread(hThread, &dwExitCode) && dwExitCode == STILL_ACTIVE)
     {
         AfxGetApp()->BeginWaitCursor();
-        this->m_reeval->Stop();
-        this->m_reeval->m_pause = FALSE;
+        this->m_reeval.Stop();
+        this->m_reeval.m_pause = FALSE;
 
         WaitForSingleObject(hThread, INFINITE);
         AfxGetApp()->EndWaitCursor();
@@ -250,7 +250,7 @@ void CReEval_DoEvaluationDlg::OnCancelEvaluation()
 LRESULT CReEval_DoEvaluationDlg::OnEvaluatedSpectrum(WPARAM wp, LPARAM lp)
 {
     // if the reevaluator stopped, don't do anything
-    if (!m_reeval->fRun)
+    if (!m_reeval.fRun)
     {
         CEvaluationResultView* resultview = (CEvaluationResultView*)wp;
         CScanResult* result = (CScanResult*)lp;
@@ -271,16 +271,16 @@ LRESULT CReEval_DoEvaluationDlg::OnEvaluatedSpectrum(WPARAM wp, LPARAM lp)
     m_result.reset((CScanResult*)lp);
 
     // a handle to the fit window
-    CFitWindow& window = m_reeval->m_window[m_reeval->m_curWindow];
+    CFitWindow& window = m_reeval.m_window[m_reeval.m_curWindow];
     int fitLow = window.fitLow - resultview->measuredSpectrum.m_info.m_startChannel;
     int fitHigh = window.fitHigh - resultview->measuredSpectrum.m_info.m_startChannel;
 
     // If the fit-window has changed, then change the list of references
-    if (m_reeval->m_curWindow != lastWindowUsed)
+    if (m_reeval.m_curWindow != lastWindowUsed)
     {
         PopulateRefList();
     }
-    lastWindowUsed = m_reeval->m_curWindow;
+    lastWindowUsed = m_reeval.m_curWindow;
 
     // 1. Draw the resulting fit for one of the references
     {
@@ -344,7 +344,7 @@ void CReEval_DoEvaluationDlg::RedrawTotalFitGraph()
 void CReEval_DoEvaluationDlg::DrawReference()
 {
     // a handle to the fit window
-    CFitWindow& window = m_reeval->m_window[m_reeval->m_curWindow];
+    CFitWindow& window = m_reeval.m_window[m_reeval.m_curWindow];
 
     // The reference that we shall draw
     int refIndex = m_specieList.GetCurSel();
@@ -394,7 +394,7 @@ void CReEval_DoEvaluationDlg::DrawFit()
     static double oldMinV = 1e16, oldMaxV = -1e16;
 
     // a handle to the fit window
-    CFitWindow& window = m_reeval->m_window[m_reeval->m_curWindow];
+    CFitWindow& window = m_reeval.m_window[m_reeval.m_curWindow];
 
     // the width of the fit region (fitHigh - fitLow)
     int fitLow = window.fitLow;
@@ -447,7 +447,7 @@ void CReEval_DoEvaluationDlg::DrawResidual()
 
     /* show the residual */
 
-    CFitWindow& window = m_reeval->m_window[m_reeval->m_curWindow];
+    CFitWindow& window = m_reeval.m_window[m_reeval.m_curWindow];
 
     // the width of the fit region (fitHigh - fitLow)
     int fitLow = window.fitLow;
@@ -511,7 +511,7 @@ LRESULT CReEval_DoEvaluationDlg::OnDone(WPARAM wp, LPARAM lp)
 
 LRESULT CReEval_DoEvaluationDlg::OnProgress(WPARAM wp, LPARAM lp)
 {
-    if (m_reeval->fRun) // Check if the evaluation is still running
+    if (m_reeval.fRun) // Check if the evaluation is still running
     {
         double progress = (double)wp;
         m_progressBar.SetPos((int)(progress));
@@ -522,7 +522,7 @@ LRESULT CReEval_DoEvaluationDlg::OnProgress(WPARAM wp, LPARAM lp)
 
 LRESULT CReEval_DoEvaluationDlg::OnProgress2(WPARAM wp, LPARAM lp)
 {
-    if (m_reeval->fRun) // Check if the evaluation is still running
+    if (m_reeval.fRun) // Check if the evaluation is still running
     {
         long curFileIndex = (long)wp;
         long fileNum = (long)lp;
@@ -552,3 +552,5 @@ void CReEval_DoEvaluationDlg::OnBnClickedReevalCheckPause()
 {
     UpdateData(TRUE);
 }
+
+}  // namespace ReEvaluation

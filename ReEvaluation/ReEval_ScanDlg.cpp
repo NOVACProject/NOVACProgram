@@ -14,24 +14,23 @@
 #include "../Dialogs/CMultiSelectOpenFileDialog.h"
 
 // CReEval_ScanDlg dialog
-using namespace ReEvaluation;
 using namespace novac;
 
+namespace ReEvaluation
+{
 
 IMPLEMENT_DYNAMIC(CReEval_ScanDlg, CPropertyPage)
-CReEval_ScanDlg::CReEval_ScanDlg()
-    : CPropertyPage(CReEval_ScanDlg::IDD)
+
+CReEval_ScanDlg::CReEval_ScanDlg(CReEvaluator& reeval)
+    : CPropertyPage(CReEval_ScanDlg::IDD), m_reeval(reeval), m_scanfileList(reeval)
 {
-    m_reeval = nullptr;
     m_curSpecFile = 0;
     m_curSpec = 0;
     m_specNum = 0;
 }
 
 CReEval_ScanDlg::~CReEval_ScanDlg()
-{
-    m_reeval = nullptr;
-}
+{}
 
 void CReEval_ScanDlg::DoDataExchange(CDataExchange* pDX)
 {
@@ -70,7 +69,7 @@ void CReEval_ScanDlg::OnBnClickedBtnBrowsescanfile()
         return;
 
     /** Reset the old values */
-    m_reeval->m_scanFile.clear();
+    m_reeval.m_scanFile.clear();
 
     /** Go through the filenames */
     POSITION pos = fileDialog.GetStartPosition();
@@ -78,11 +77,11 @@ void CReEval_ScanDlg::OnBnClickedBtnBrowsescanfile()
     while (pos)
     {
         CString str = fileDialog.GetNextPathName(pos);
-        m_reeval->m_scanFile.push_back(std::string(str));
+        m_reeval.m_scanFile.push_back(std::string(str));
     }
 
     // Sort the scans in the file-list
-    m_reeval->SortScans();
+    m_reeval.SortScans();
 
     // update the list
     m_scanfileList.PopulateList();
@@ -116,8 +115,6 @@ BOOL CReEval_ScanDlg::OnInitDialog()
 
     // Set the parent of the list-box
     m_scanfileList.m_parent = this;
-    m_scanfileList.m_reeval = this->m_reeval;
-
 
     return TRUE;  // return TRUE unless you set the focus to a control
     // EXCEPTION: OCX Property Pages should return FALSE
@@ -173,7 +170,7 @@ int CReEval_ScanDlg::TryReadSpectrum()
     CString message;
 
     // Read the spectrum
-    const std::string scanFileName(m_reeval->m_scanFile[m_curSpecFile]);
+    const std::string scanFileName(m_reeval.m_scanFile[m_curSpecFile]);
     const bool success = reader.ReadSpectrum(scanFileName, m_curSpec, m_spectrum);
 
     if (!success)
@@ -211,7 +208,7 @@ int CReEval_ScanDlg::CheckScanFile()
     CSpectrum spec;
 
     // Read one spectrum to check the channel numbers
-    const std::string scanFileName(m_reeval->m_scanFile[m_curSpecFile]);
+    const std::string scanFileName(m_reeval.m_scanFile[m_curSpecFile]);
     reader.ReadSpectrum(scanFileName, 0, spec);
     unsigned char chn = spec.Channel();
     int steps = 0;
@@ -323,7 +320,7 @@ void CReEval_ScanDlg::OnRemoveSelected()
         return;
 
     // Remove the file
-    m_reeval->m_scanFile.erase(begin(m_reeval->m_scanFile) + m_curSpecFile);
+    m_reeval.m_scanFile.erase(begin(m_reeval.m_scanFile) + m_curSpecFile);
 
     m_curSpecFile = std::max(0L, m_curSpecFile - 1);
 
@@ -367,3 +364,5 @@ LRESULT CReEval_ScanDlg::OnZoomGraph(WPARAM wParam, LPARAM lParam)
     this->DrawSpectrum();
     return 0;
 }
+
+}  // namespace ReEvaluation

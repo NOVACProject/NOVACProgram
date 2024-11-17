@@ -14,7 +14,7 @@ class CReEval_WindowDlg : public CPropertyPage
     DECLARE_DYNAMIC(CReEval_WindowDlg)
 
 public:
-    CReEval_WindowDlg();
+    CReEval_WindowDlg(CReEvaluator& reeval);
     virtual ~CReEval_WindowDlg();
 
     // Dialog Data
@@ -28,9 +28,6 @@ protected:
 public:
 
     // --------------------------- PUBLIC DATA -------------------------- 
-
-    /** A handle to the reevaluator */
-    CReEvaluator* m_reeval;
 
     /** The reference grid, enables the user to select reference files */
     DlgControls::CReferenceFileControl m_referenceGrid;
@@ -97,6 +94,10 @@ public:
     afx_msg void OnBrowseSolarSpectrum();
 
 private:
+
+    /** A handle to the reevaluator */
+    CReEvaluator& m_reeval;
+
     CString m_fraunhoferReferenceName;
 
     // This is a compatibility thing, where the FitWindow used to have a 'bool UV' flag

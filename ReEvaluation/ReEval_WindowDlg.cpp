@@ -16,8 +16,9 @@ namespace ReEvaluation
 {
 
 IMPLEMENT_DYNAMIC(CReEval_WindowDlg, CPropertyPage)
-CReEval_WindowDlg::CReEval_WindowDlg()
-    : CPropertyPage(CReEval_WindowDlg::IDD)
+
+CReEval_WindowDlg::CReEval_WindowDlg(CReEvaluator& reeval)
+    : CPropertyPage(CReEval_WindowDlg::IDD), m_reeval(reeval), m_windowList(reeval)
 {}
 
 CReEval_WindowDlg::~CReEval_WindowDlg()
@@ -29,7 +30,7 @@ void CReEval_WindowDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_REF_STATIC, m_referenceFrame);
 
     // the fit range and polynomial order
-    CFitWindow& window = m_reeval->m_window[m_reeval->m_curWindow];
+    CFitWindow& window = m_reeval.m_window[m_reeval.m_curWindow];
     DDX_Text(pDX, IDC_EDIT_FITLOW, window.fitLow);
     DDX_Text(pDX, IDC_EDIT_FITHIGH, window.fitHigh);
     DDX_Text(pDX, IDC_EDIT_POLYNOM, window.polyOrder);
@@ -101,9 +102,7 @@ BOOL CReEval_WindowDlg::OnInitDialog()
 {
     CPropertyPage::OnInitDialog();
 
-
     // Initialize the fit window-list
-    m_windowList.m_reeval = this->m_reeval;
     m_windowList.PopulateList();
     m_windowList.SetCurSel(0);
 
@@ -173,16 +172,16 @@ void CReEval_WindowDlg::OnChangeFitWindow()
         curWindow = 0;
 
     // set the currently selected fit window
-    m_reeval->m_curWindow = curWindow;
+    m_reeval.m_curWindow = curWindow;
 
     // update the reference grid
-    m_referenceGrid.m_window = &m_reeval->m_window[curWindow];
+    m_referenceGrid.m_window = &m_reeval.m_window[curWindow];
     PopulateReferenceFileControl();
 
     // update the solar spec and controls
-    m_fraunhoferReferenceName = m_reeval->m_window[curWindow].fraunhoferRef.m_path.c_str();
+    m_fraunhoferReferenceName = m_reeval.m_window[curWindow].fraunhoferRef.m_path.c_str();
     //SetDlgItemText(IDC_EDIT_SOLARSPECTRUMPATH, );
-    if (m_reeval->m_window[curWindow].fraunhoferRef.m_path != "")
+    if (m_reeval.m_window[curWindow].fraunhoferRef.m_path != "")
     {
         m_checkFindOptimalShift.EnableWindow(FALSE);
         m_checkFindOptimalShift.SetCheck(FALSE);
@@ -190,10 +189,10 @@ void CReEval_WindowDlg::OnChangeFitWindow()
     else
     {
         m_checkFindOptimalShift.EnableWindow(TRUE);
-        m_checkFindOptimalShift.SetCheck(m_reeval->m_window[m_reeval->m_curWindow].findOptimalShift);
+        m_checkFindOptimalShift.SetCheck(m_reeval.m_window[m_reeval.m_curWindow].findOptimalShift);
     }
 
-    if (m_reeval->m_window[m_reeval->m_curWindow].offsetRemovalRange == novac::CFitWindow::StandardUvOffsetRemovalRange())
+    if (m_reeval.m_window[m_reeval.m_curWindow].offsetRemovalRange == novac::CFitWindow::StandardUvOffsetRemovalRange())
     {
         m_checkUV.SetCheck(TRUE);
     }
@@ -217,7 +216,7 @@ void CReEval_WindowDlg::PopulateReferenceFileControl()
     // Clear the control
     m_referenceGrid.DeleteNonFixedRows();
 
-    CFitWindow& window = m_reeval->m_window[curWindow];
+    CFitWindow& window = m_reeval.m_window[curWindow];
     m_referenceGrid.m_window = &window;
 
     // make sure that there's always one empty line at the end
@@ -286,7 +285,7 @@ void CReEval_WindowDlg::OnInsertReference()
     int curSel = m_windowList.GetCurSel();
     if (curSel < 0)
         curSel = 0;
-    CFitWindow& currentWindow = m_reeval->m_window[curSel];
+    CFitWindow& currentWindow = m_reeval.m_window[curSel];
 
     // Let the user browse for the reference file
     CString fileName = "";
@@ -336,7 +335,7 @@ void CReEval_WindowDlg::OnRemoveReference()
     if (curSel < 0)
         curSel = 0;
 
-    CFitWindow& currentWindow = m_reeval->m_window[curSel];
+    CFitWindow& currentWindow = m_reeval.m_window[curSel];
 
     // if there's no reference file, then there's nothing to remove
     if (currentWindow.NumberOfReferences() == 0)
@@ -365,7 +364,7 @@ void CReEval_WindowDlg::SaveData()
 {
     UpdateData(TRUE);
 
-    CFitWindow& window = m_reeval->m_window[m_reeval->m_curWindow];
+    CFitWindow& window = m_reeval.m_window[m_reeval.m_curWindow];
     window.fraunhoferRef.m_path = std::string((LPCSTR)m_fraunhoferReferenceName);
 
     if (m_useUVOffsetRemovalRange)
@@ -393,7 +392,7 @@ void CReEval_WindowDlg::OnShowPropertiesWindow()
     if (curSel < 0)
         curSel = 0;
 
-    CFitWindow& window = m_reeval->m_window[curSel];
+    CFitWindow& window = m_reeval.m_window[curSel];
 
     // if there's no reference file, then there's nothing to remove
     if (window.NumberOfReferences() == 0)
@@ -441,7 +440,7 @@ void ReEvaluation::CReEval_WindowDlg::OnShowReferenceGraph()
     int curSel = m_windowList.GetCurSel();
     if (curSel < 0)
         curSel = 0;
-    CFitWindow& window = m_reeval->m_window[curSel];
+    CFitWindow& window = m_reeval.m_window[curSel];
 
     // if there's no reference file, then there's nothing to remove
     if (window.NumberOfReferences() == 0)
@@ -457,7 +456,7 @@ void CReEval_WindowDlg::UpdateControls()
 {
 
     // Update the shift-sky check-box
-    CFitWindow window = m_reeval->m_window[m_reeval->m_curWindow];
+    CFitWindow window = m_reeval.m_window[m_reeval.m_curWindow];
     if (window.fitType == novac::FIT_TYPE::FIT_HP_DIV)
     {
         m_checkShiftSky.EnableWindow(FALSE);
@@ -481,7 +480,7 @@ void CReEval_WindowDlg::OnBrowseSolarSpectrum()
     }
 
     // The user has selected a solar-spectrum file
-    m_reeval->m_window[m_reeval->m_curWindow].fraunhoferRef.m_path = std::string((LPCTSTR)fileName);
+    m_reeval.m_window[m_reeval.m_curWindow].fraunhoferRef.m_path = std::string((LPCTSTR)fileName);
     SetDlgItemText(IDC_EDIT_SOLARSPECTRUMPATH, (LPCTSTR)fileName);
 
     // Disable the 'Find Optimal Shift' check-box
