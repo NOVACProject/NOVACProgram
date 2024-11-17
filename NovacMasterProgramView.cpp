@@ -214,12 +214,41 @@ void CNovacMasterProgramView::OnInitialUpdate()
     m_sheet.Construct("", this);
 
     // Read the configuration file
-    CString fileName;
-    fileName.Format("%sconfiguration.xml", (LPCTSTR)m_common.m_exePath);
-    FileHandler::CConfigurationFileHandler reader;
-    reader.ReadConfigurationFile(g_settings, &fileName);
-    fileName.Format("%sftplogin.xml", (LPCTSTR)m_common.m_exePath);
-    reader.ReadFtpLoginConfigurationFile(g_settings, &fileName);
+    try
+    {
+        CString fileName;
+        fileName.Format("%sconfiguration.xml", (LPCTSTR)m_common.m_exePath);
+        FileHandler::CConfigurationFileHandler reader;
+        reader.ReadConfigurationFile(g_settings, &fileName);
+    }
+    catch (novac::FileIoException& ex)
+    {
+        // The file could not be opened, this is expected at first startup.
+        ShowMessage(ex.what());
+    }
+    catch (FileHandler::ConfigurationFileException& ex)
+    {
+        Common common;
+        MessageBox(ex.what(), common.GetString(MSG_ERROR), MB_OK);
+    }
+
+    try
+    {
+        CString fileName;
+        FileHandler::CConfigurationFileHandler reader;
+        fileName.Format("%sftplogin.xml", (LPCTSTR)m_common.m_exePath);
+        reader.ReadFtpLoginConfigurationFile(g_settings, &fileName);
+    }
+    catch (novac::FileIoException& ex)
+    {
+        // The file could not be opened, this is expected at first startup.
+        ShowMessage(ex.what());
+    }
+    catch (FileHandler::ConfigurationFileException& ex)
+    {
+        Common common;
+        MessageBox(ex.what(), common.GetString(MSG_ERROR), MB_OK);
+    }
 
     // Read the user settings
     CString userSettingsFile;
@@ -1592,9 +1621,6 @@ void CNovacMasterProgramView::ScanStatusLogFile()
 
 LRESULT CNovacMasterProgramView::OnRewriteConfigurationXml(WPARAM wParam, LPARAM lParam)
 {
-    FileHandler::CConfigurationFileHandler writer;
-    CString fileName, oldConfigurationFile, backupFile;
-
     // Lock this object to make sure that now one else tries to read
     //	data from this object while we are reading
     CSingleLock singleLock(&m_critSect);
@@ -1602,14 +1628,17 @@ LRESULT CNovacMasterProgramView::OnRewriteConfigurationXml(WPARAM wParam, LPARAM
 
     if (singleLock.IsLocked())
     {
+        CString fileName, oldConfigurationFile, backupFile;
 
         // Write to a temporary file
         fileName.Format("%stemp_configuration.xml", (LPCTSTR)m_common.m_exePath);
         oldConfigurationFile.Format("%sconfiguration.xml", (LPCTSTR)m_common.m_exePath);
         backupFile.Format("%sconfiguration.bak", (LPCTSTR)m_common.m_exePath);
 
-        if (0 == writer.WriteConfigurationFile(g_settings, &fileName))
+        try
         {
+            FileHandler::CConfigurationFileHandler writer;
+            writer.WriteConfigurationFile(g_settings, &fileName);
             // Make a backup of the old configuration-file
             if (CopyFile(oldConfigurationFile, backupFile, FALSE))
             {
@@ -1620,6 +1649,11 @@ LRESULT CNovacMasterProgramView::OnRewriteConfigurationXml(WPARAM wParam, LPARAM
                     MoveFile(fileName, oldConfigurationFile);
                 }
             }
+        }
+        catch (FileHandler::ConfigurationFileException& ex)
+        {
+            Common common;
+            MessageBox(ex.what(), common.GetString(MSG_ERROR), MB_OK);
         }
 
         // Remember to open up this object again

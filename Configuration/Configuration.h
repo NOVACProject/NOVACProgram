@@ -152,7 +152,8 @@ public:
         AutomaticCalibrationSetting& operator=(const AutomaticCalibrationSetting& other) = default;
     };
 
-    class SpectrometerChannelSetting {
+    class SpectrometerChannelSetting
+    {
     public:
         SpectrometerChannelSetting() { Clear(); }
 
@@ -197,7 +198,8 @@ public:
         SpectrometerSetting(const SpectrometerSetting& other) = default;
     };
 
-    class WindSpeedMeasurementSetting {
+    class WindSpeedMeasurementSetting
+    {
     public:
         WindSpeedMeasurementSetting() { Clear(); }
 
@@ -243,7 +245,8 @@ public:
         WindSpeedMeasurementSetting(const WindSpeedMeasurementSetting& other) = default;
     };
 
-    class SetupChangeSetting {
+    class SetupChangeSetting
+    {
     public:
         SetupChangeSetting() { Clear(); }
 
@@ -309,11 +312,11 @@ public:
         CString site;
 
         /** The direction in which the instrument points (in degrees from north) */
-        double  compass;
+        double compass;
 
         /** The opening angle of the cone that the scanner measures in (in degrees).
-            This is 90 degrees for the flat scanner, and typically 30 or 45 degrees for the conical. */
-        double  coneAngle;
+            This is 90 degrees for the flat scanner, and typically 60 degrees for the conical. */
+        double coneAngle;
 
         /** The tilt of the system, in the direction of the scanner. */
         double tilt;
@@ -324,7 +327,8 @@ public:
         /** The communication settings for the scanning instrument */
         CommunicationSetting comm;
 
-        /** The spectrometer inside the scanning instrument */
+        /** The spectrometer inside the scanning instrument.
+            TODO: This could benefit from being a std::vector instead */
         SpectrometerSetting spec[MAX_SPECTROMETERS_PER_SCANNER];
 
         /** The number of spectrometers configured */
@@ -394,7 +398,8 @@ public:
     };
 
     /** Settings for retrieval of the wind-field from external sources */
-    class CWindFieldDataSettings {
+    class CWindFieldDataSettings
+    {
     public:
         CWindFieldDataSettings();
         CString windFieldFile; // the path and file-name of the file which is the source of the wind-field data
@@ -457,7 +462,7 @@ std::vector<std::string> ListMonitoredVolcanoes(const CConfigurationSetting& set
         I.e., settings.scanner[scannerIdx].spec[spectrometerIdx].serialNumber will equal the requested serial.
     @return true if the spectrometer could be found, otherwise false.
     @param settings The current software settings
-    @param serial The serial number of the spectrometer to locate. Will return the first one if duplicates exist. 
+    @param serial The serial number of the spectrometer to locate. Will return the first one if duplicates exist.
     @param scannerIdx The index of the scanner.
     @param spectrometerIdx The index of the spectrometer */
 bool IdentifySpectrometer(const CConfigurationSetting& settings, const std::string& serial, int& scannerIdx, int& spectrometerIdx);

@@ -4,10 +4,12 @@
 #include "../VolcanoInfo.h"
 #include "../resource.h"
 
-using namespace FileHandler;
 using namespace novac;
 
 extern CVolcanoInfo g_volcanoes;
+
+namespace FileHandler
+{
 
 CConfigurationFileHandler::CConfigurationFileHandler()
     : conf(nullptr), curScanner(nullptr)
@@ -19,32 +21,61 @@ CConfigurationFileHandler::~CConfigurationFileHandler(void)
     conf = nullptr;
 }
 
-int CConfigurationFileHandler::ReadConfigurationFile(CConfigurationSetting& configuration, const CString* fileName)
+static CString GetConfigurationFileName(const CString* optionalFilename)
 {
-    CString tmp_fileName;
-    CFileException exceFile;
-    CStdioFile file;
+    CString filename;
 
-    this->conf = &configuration;
-
-    // 1. Get the filename
-    if (fileName == nullptr)
+    if (optionalFilename == nullptr)
     {
         Common common;
         common.GetExePath();
-        tmp_fileName.Format("%sconfiguration.xml", (LPCSTR)common.m_exePath);
+
+        filename.Format("%sconfiguration.xml", (LPCSTR)common.m_exePath);
     }
     else
     {
-        tmp_fileName.Format("%s", (LPCSTR)*fileName);
+        filename.Format("%s", (LPCSTR)*optionalFilename);
     }
 
+    return filename;
+}
+
+static CString GetFtpLoginFilename(const CString* optionalFilename)
+{
+    CString filename;
+
+    if (optionalFilename == nullptr)
+    {
+        Common common;
+        common.GetExePath();
+
+        filename.Format("%sftplogin.xml", (LPCSTR)common.m_exePath);
+    }
+    else
+    {
+        filename.Format("%s", (LPCSTR)*optionalFilename);
+    }
+
+    return filename;
+
+}
+
+void CConfigurationFileHandler::ReadConfigurationFile(CConfigurationSetting& configuration, const CString* fileName)
+{
+    this->conf = &configuration;
+
+    // 1. Get the filename
+    const CString tmp_fileName = GetConfigurationFileName(fileName);
+
     // 2. Open the file
+    CStdioFile file;
+    CFileException exceFile;
     if (!file.Open(tmp_fileName, CFile::modeRead | CFile::typeText, &exceFile))
     {
         this->conf = nullptr;
-        return 1;
+        throw novac::FileIoException("Could not open configuration file '" + std::string((LPCSTR)tmp_fileName) + "' for reading.");
     }
+
     this->SetFile(&file);
 
     // 2b. Reset the current configuration
@@ -57,7 +88,6 @@ int CConfigurationFileHandler::ReadConfigurationFile(CConfigurationSetting& conf
         conf = nullptr;
         curScanner = nullptr;
         Close();
-        return 1;
     }
     else
     {
@@ -66,32 +96,24 @@ int CConfigurationFileHandler::ReadConfigurationFile(CConfigurationSetting& conf
         conf = nullptr;
         curScanner = nullptr;
         CheckSettings(configuration);
-        return 0;
     }
+
+    return;
 }
 
-int CConfigurationFileHandler::ReadFtpLoginConfigurationFile(CConfigurationSetting& configuration, const CString* fileName)
+void CConfigurationFileHandler::ReadFtpLoginConfigurationFile(CConfigurationSetting& configuration, const CString* fileName)
 {
-    CString tmp_fileName;
     CFileException exceFile;
     CStdioFile file;
 
     // 1. Get the filename
-    if (fileName == nullptr)
-    {
-        Common common;
-        common.GetExePath();
-        tmp_fileName.Format("%sftplogin.xml", (LPCSTR)common.m_exePath);
-    }
-    else
-    {
-        tmp_fileName.Format("%s", (LPCSTR)*fileName);
-    }
+    const CString tmp_fileName = GetFtpLoginFilename(fileName);
 
     // 2. Open the file
     if (!file.Open(tmp_fileName, CFile::modeRead | CFile::typeText, &exceFile))
     {
-        return 1;
+        // File not found, this is normal at first startup
+        return;
     }
     this->SetFile(&file);
 
@@ -110,36 +132,25 @@ int CConfigurationFileHandler::ReadFtpLoginConfigurationFile(CConfigurationSetti
     }
 
     Close();
-    return 0;
-
 }
 
-int CConfigurationFileHandler::WriteFtpLoginConfigurationFile(const CConfigurationSetting& configuration, const CString* fileName) const
+void CConfigurationFileHandler::WriteFtpLoginConfigurationFile(const CConfigurationSetting& configuration, const CString* fileName) const
 {
-    CString indent, str, tmp_fileName;
+    CString indent, str;
     Common common;
-    std::string modelStr;
 
     // 1. Get the filename
-    if (fileName == nullptr)
-    {
-        common.GetExePath();
-        tmp_fileName.Format("%sftplogin.xml", (LPCSTR)common.m_exePath);
-    }
-    else
-    {
-        tmp_fileName.Format("%s", (LPCSTR)*fileName);
-    }
+    const CString tmp_fileName = GetFtpLoginFilename(fileName);
 
     // 2. Open the file
     FILE* f = fopen(tmp_fileName, "w");
     if (nullptr == f)
     {
-        MessageBox(nullptr, TEXT(common.GetString(ERROR_COULD_NOT_OPEN_EVALCONFIG)) + "." + common.GetString(MSG_NO_CHANGES_WILL_BE_SAVED), common.GetString(MSG_ERROR), MB_OK);
-        return 1;
+        throw ConfigurationFileException(common.GetString(ERROR_COULD_NOT_OPEN_EVALCONFIG) + "." + common.GetString(MSG_NO_CHANGES_WILL_BE_SAVED));
     }
-
-    // 3. Write the header information 
+    // , common.GetString(MSG_ERROR), MB_OK
+    // 
+        // 3. Write the header information 
     fprintf(f, TEXT("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n"));
     fprintf(f, TEXT("<!-- This is the configuration file for the FTP login to the NOVAC server.\n Keep this file in a secure location and do not share with others. -->\n\n"));
     fprintf(f, TEXT("<FtpLogin>\n"));
@@ -154,33 +165,20 @@ int CConfigurationFileHandler::WriteFtpLoginConfigurationFile(const CConfigurati
     fprintf(f, TEXT("</FtpLogin>"));
 
     fclose(f);
-
-    return 0;
 }
 
-int CConfigurationFileHandler::WriteConfigurationFile(const CConfigurationSetting& configuration, const CString* fileName) const
+void CConfigurationFileHandler::WriteConfigurationFile(const CConfigurationSetting& configuration, const CString* fileName) const
 {
-    CString str, tmp_fileName;
     Common common;
-    std::string modelStr;
 
     // 1. Get the filename
-    if (fileName == nullptr)
-    {
-        common.GetExePath();
-        tmp_fileName.Format("%sconfiguration.xml", (LPCSTR)common.m_exePath);
-    }
-    else
-    {
-        tmp_fileName.Format("%s", (LPCSTR)*fileName);
-    }
+    const CString tmp_fileName = GetConfigurationFileName(fileName);
 
     // 2. Open the file
     FILE* f = fopen(tmp_fileName, "w");
     if (nullptr == f)
     {
-        MessageBox(nullptr, TEXT(common.GetString(ERROR_COULD_NOT_OPEN_EVALCONFIG)) + "." + common.GetString(MSG_NO_CHANGES_WILL_BE_SAVED), common.GetString(MSG_ERROR), MB_OK);
-        return 1;
+        throw ConfigurationFileException(common.GetString(ERROR_COULD_NOT_OPEN_EVALCONFIG) + "." + common.GetString(MSG_NO_CHANGES_WILL_BE_SAVED));
     }
 
     // 3. Write the header information 
@@ -197,6 +195,7 @@ int CConfigurationFileHandler::WriteConfigurationFile(const CConfigurationSettin
     }
 
     // 4b. The startup method
+    CString str;
     str.Format("\t<startup>%d</startup>\n", configuration.startup);
     fprintf(f, str);
     // 4c. The data-upload server setting - address
@@ -205,10 +204,7 @@ int CConfigurationFileHandler::WriteConfigurationFile(const CConfigurationSettin
     // 4d. The data-upload setting - protocol
     str.Format("\t<ftpProtocol>%s</ftpProtocol>\n", (LPCSTR)configuration.ftpSetting.protocol);
     fprintf(f, str);
-    //// 4e. The ftp server setting - password
-    //str.Format("\t<ftpPassword>%s</ftpPassword>\n", (LPCSTR)configuration.ftpSetting.password);
-    //fprintf(f, str);
-    // 4e2. The settings for when to upload to the FTP-server...
+    // 4e. The settings for when to upload to the FTP-server...
     str.Format("\t<ftpStartTime>%d</ftpStartTime>\n", configuration.ftpSetting.ftpStartTime);
     fprintf(f, str);
     str.Format("\t<ftpStopTime>%d</ftpStopTime>\n", configuration.ftpSetting.ftpStopTime);
@@ -611,8 +607,6 @@ int CConfigurationFileHandler::WriteConfigurationFile(const CConfigurationSettin
     fprintf(f, TEXT("</Configuration>"));
 
     fclose(f);
-
-    return 0;
 }
 
 int CConfigurationFileHandler::Parse()
@@ -1156,8 +1150,7 @@ int CConfigurationFileHandler::Parse_CustomSpectrometerModel(CConfigurationSetti
                 {
                     CString errorMessage;
                     errorMessage.Format("Could not configure new custom spectrometer model with name %s, such a model already exists with a different maximum intensity.", thisModel.modelName);
-                    MessageBox(nullptr, errorMessage, "Error", MB_OK);
-                    return 1;
+                    throw ConfigurationFileException(errorMessage);
                 }
 
                 // The model already exists in the database, but with the same properties, don't insert again into database.
@@ -1198,6 +1191,7 @@ int CConfigurationFileHandler::Parse_CustomSpectrometerModel(CConfigurationSetti
 
 int CConfigurationFileHandler::Parse_Channel()
 {
+    // TODO: this should really be cleaned up.
     CConfigurationSetting::SpectrometerSetting* curSpec = &(curScanner->spec[curScanner->specNum]);
     CConfigurationSetting::SpectrometerChannelSetting* curChannel = &curSpec->channel[curSpec->channelNum];
     int tmpInt;
@@ -1208,7 +1202,9 @@ int CConfigurationFileHandler::Parse_Channel()
         if (pt = strstr(pt, "\""))
         {
             if (char* pt2 = strstr(pt + 1, "\""))
+            {
                 pt2[0] = 0; // remove the second quote
+            }
             if (sscanf(pt + 1, "%d", &tmpInt))
             {
                 curChannel = &curSpec->channel[tmpInt];
@@ -1219,13 +1215,8 @@ int CConfigurationFileHandler::Parse_Channel()
     // the actual reading loop
     while (szToken = NextToken())
     {
-
-        // no use to parse empty lines
-        if (strlen(szToken) < 3)
-            continue;
-
-        // ignore comments
-        if (Equals(szToken, "!--", 3))
+        // no use to parse empty lines or comments, 
+        if (strlen(szToken) < 3 || Equals(szToken, "!--", 3))
         {
             continue;
         }
@@ -1239,42 +1230,54 @@ int CConfigurationFileHandler::Parse_Channel()
         if (Equals(szToken, "calibration", strlen("calibration")))
         {
             if (curSpec != nullptr)
+            {
                 Parse_Calibration(curChannel);
+            }
             continue;
         }
 
         if (Equals(szToken, "Reference", 9))
         {
             if (curSpec != nullptr)
+            {
                 Parse_Reference(curChannel);
+            }
             continue;
         }
 
         if (Equals(szToken, "specie", 6))
         {
             if (curSpec != nullptr)
+            {
                 Parse_Specie(curChannel);
+            }
             continue;
         }
 
         if (Equals(szToken, "fitLow"))
         {
             if (curSpec != nullptr)
+            {
                 Parse_IntItem(TEXT("/fitLow"), curChannel->fitWindow.fitLow);
+            }
             continue;
         }
 
         if (Equals(szToken, "fitHigh"))
         {
             if (curSpec != nullptr)
+            {
                 Parse_IntItem(TEXT("/fitHigh"), curChannel->fitWindow.fitHigh);
+            }
             continue;
         }
 
         if (Equals(szToken, "dark"))
         {
             if (curSpec != nullptr)
+            {
                 Parse_IntItem(TEXT("/dark"), tmpInt);
+            }
             curChannel->darkSettings.m_darkSpecOption = (Configuration::DARK_SPEC_OPTION)tmpInt;
             continue;
         }
@@ -1282,7 +1285,9 @@ int CConfigurationFileHandler::Parse_Channel()
         if (Equals(szToken, "offsetOption"))
         {
             if (curSpec != nullptr)
+            {
                 Parse_IntItem(TEXT("/offsetOption"), tmpInt);
+            }
             curChannel->darkSettings.m_offsetOption = (Configuration::DARK_MODEL_OPTION)tmpInt;
             continue;
         }
@@ -1290,7 +1295,9 @@ int CConfigurationFileHandler::Parse_Channel()
         if (Equals(szToken, "darkcurrentOption"))
         {
             if (curSpec != nullptr)
+            {
                 Parse_IntItem(TEXT("/darkcurrentOption"), tmpInt);
+            }
             curChannel->darkSettings.m_darkCurrentOption = (Configuration::DARK_MODEL_OPTION)tmpInt;
             continue;
         }
@@ -1298,14 +1305,18 @@ int CConfigurationFileHandler::Parse_Channel()
         if (Equals(szToken, "offsetPath"))
         {
             if (curSpec != nullptr)
+            {
                 this->Parse_StringItem(TEXT("/offsetPath"), curChannel->darkSettings.m_offsetSpec);
+            }
             continue;
         }
 
         if (Equals(szToken, "darkCurrentPath"))
         {
             if (curSpec != nullptr)
+            {
                 this->Parse_StringItem(TEXT("/darkCurrentPath"), curChannel->darkSettings.m_darkCurrentSpec);
+            }
             continue;
         }
     }
@@ -1455,8 +1466,6 @@ int CConfigurationFileHandler::Parse_Reference(CConfigurationSetting::Spectromet
 {
     novac::CReferenceFile reference;
 
-    // TODO: Verify that this still works!!
-
     // the actual reading loop
     while (szToken = NextToken())
     {
@@ -1493,7 +1502,9 @@ int CConfigurationFileHandler::Parse_Reference(CConfigurationSetting::Spectromet
         if (Equals(szToken, "path"))
         {
             if (curChannel != nullptr)
+            {
                 Parse_StringItem("/path", reference.m_path);
+            }
             continue;
         }
 
@@ -1572,18 +1583,12 @@ int CConfigurationFileHandler::Parse_ShiftOrSqueeze(const CString& label, novac:
 
 int CConfigurationFileHandler::Parse_OutputDir()
 {
-    int ret = Parse_StringItem(TEXT("/outputDir"), conf->outputDirectory);
-    if (conf->outputDirectory.GetAt(max(0, (int)strlen(conf->outputDirectory) - 1)) != '\\')
-        conf->outputDirectory.AppendFormat("\\");
-    return ret;
+    return Parse_Directory(TEXT("/outputDir"), conf->outputDirectory);
 }
 
 int CConfigurationFileHandler::Parse_LocalPublishDir()
 {
-    int ret = Parse_StringItem(TEXT("/localPublishDirectory"), conf->webSettings.localDirectory);
-    if (conf->webSettings.localDirectory.GetAt(max(0, (int)strlen(conf->webSettings.localDirectory) - 1)) != '\\')
-        conf->webSettings.localDirectory.AppendFormat("\\");
-    return ret;
+    return Parse_Directory(TEXT("/localPublishDirectory"), conf->webSettings.localDirectory);
 }
 
 int CConfigurationFileHandler::Parse_Medium(CConfigurationSetting::CommunicationSetting* curComm)
@@ -1930,3 +1935,5 @@ void CConfigurationFileHandler::CheckSettings(CConfigurationSetting& configurati
         }
     }
 }
+
+} // namespace FileHandler

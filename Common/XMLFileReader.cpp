@@ -7,12 +7,12 @@
 
 #include <algorithm>
 
-using namespace FileHandler;
+namespace FileHandler
+{
 
 CXMLFileReader::CXMLFileReader()
     : m_File(nullptr), nLinesRead(0), szToken(nullptr)
-{
-}
+{}
 
 CXMLFileReader::~CXMLFileReader()
 {
@@ -73,7 +73,8 @@ char* CXMLFileReader::NextToken()
 
 int CXMLFileReader::Parse_StringItem(const CString& label, CString& str)
 {
-    while (szToken = NextToken()) {
+    while (szToken = NextToken())
+    {
 
         if (Equals(szToken, label))
             return 1;
@@ -86,10 +87,12 @@ int CXMLFileReader::Parse_StringItem(const CString& label, CString& str)
 
 int CXMLFileReader::Parse_StringItem(const CString& label, std::string& str)
 {
-    while (szToken = NextToken()) {
-
+    while (szToken = NextToken())
+    {
         if (Equals(szToken, label))
+        {
             return 1;
+        }
 
         str = std::string(szToken);
     }
@@ -97,6 +100,19 @@ int CXMLFileReader::Parse_StringItem(const CString& label, std::string& str)
     return 0;
 }
 
+int CXMLFileReader::Parse_Directory(const CString& label, CString& str)
+{
+    if (Parse_StringItem(label, str))
+    {
+        if (str.GetAt(std::max(0, (int)strlen(str) - 1)) != '\\')
+        {
+            str.AppendFormat("\\");
+        }
+        return 1;
+    }
+
+    return 0;
+}
 
 int CXMLFileReader::Parse_LongItem(const CString& label, long& number)
 {
@@ -147,16 +163,20 @@ int CXMLFileReader::Parse_IPNumber(const CString& label, BYTE& ip0, BYTE& ip1, B
         if (Equals(szToken, label))
             return 1;
 
-        if (sscanf(szToken, "%d.%d.%d.%d", &i0, &i1, &i2, &i3) == 4) {
+        if (sscanf(szToken, "%d.%d.%d.%d", &i0, &i1, &i2, &i3) == 4)
+        {
             ip0 = BYTE(std::max(0, std::min(255, i0)));
             ip1 = BYTE(std::max(0, std::min(255, i1)));
             ip2 = BYTE(std::max(0, std::min(255, i2)));
             ip3 = BYTE(std::max(0, std::min(255, i3)));
         }
-        else {
+        else
+        {
             return 1;
         }
     }
 
     return 0;
 }
+
+} // namespace FileHandler

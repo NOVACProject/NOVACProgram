@@ -2,50 +2,65 @@
 
 #include "Configuration.h"
 #include "../Common/XMLFileReader.h"
-
+#include <SpectralEvaluation/Exceptions.h>
 
 /** A <b>CConfigurationFileHandler</b> object is capable of reading
     and writing to the configuration file. */
 namespace FileHandler
 {
 
+class ConfigurationFileException : public std::exception
+{
+private:
+    const std::string m_msg = "";
+
+public:
+    ConfigurationFileException(const char* msg) :
+        m_msg(msg)
+    {}
+
+    ConfigurationFileException(std::string msg) :
+        m_msg(msg.c_str())
+    {}
+
+    const char* what() const noexcept override final { return m_msg.c_str(); }
+};
+
 class CConfigurationFileHandler : public CXMLFileReader
 {
 public:
-    CConfigurationFileHandler(void);
-    ~CConfigurationFileHandler(void);
+    CConfigurationFileHandler();
+    ~CConfigurationFileHandler();
 
     /** Reads the configuration file and stores the found values in the
         supplied reference 'configuration'. If fileName is not-null the reader will
         read from that file, otherwise it will read from 'configuration.xml'
         in the same directory as the executable.
-        @return 0 on sucess.
-        @return 1 if any error occurs */
-    int ReadConfigurationFile(CConfigurationSetting& configuration, const CString* fileName = nullptr);
+        @throws novac::FileIoException if the file could not be opened (e.g. if it doesn't exist)
+        @throws ConfigurationFileException if the reading fails for some reason */
+    void ReadConfigurationFile(CConfigurationSetting& configuration, const CString* fileName = nullptr);
 
     /** Reads the FTP login configuration file and stores the found values in the
         supplied reference 'conf'. If fileName is not-null the reader will
         read from that file, otherwise it will read from 'ftplogin.xml'
         in the same directory as the executable.
-        @return 0 on sucess.
-        @return 1 if any error occurs */
-    int ReadFtpLoginConfigurationFile(CConfigurationSetting& configuration, const CString* fileName = nullptr);
+        @throws novac::FileIoException if the file could not be opened (e.g. if it doesn't exist)
+        @throws ConfigurationFileException if the reading fails for some reason */
+    void ReadFtpLoginConfigurationFile(CConfigurationSetting& configuration, const CString* fileName = nullptr);
 
     /** Writes the configuration file using the values stored in the
         supplied reference 'conf'. If fileName is not-null the reader will
         write to that file, otherwise it will write to 'configuration.xml'
         in the same directory as the executable.
-        @return 0 on sucess.
-        @return 1 if any error occurs */
-    int WriteConfigurationFile(const CConfigurationSetting& configuration, const CString* fileName = nullptr) const;
+        @throws ConfigurationFileException if the writing fails for some reason */
+    void WriteConfigurationFile(const CConfigurationSetting& configuration, const CString* fileName = nullptr) const;
 
     /** Writes the FTP login configuration file using the values stored in the
         supplied reference 'conf'. If fileName is not-null the reader will
         write to that file, otherwise it will write to 'ftplogin.xml'
         in the same directory as the executable.
-        @return 0 on sucess.
-        @return 1 if any error occurs */
-    int WriteFtpLoginConfigurationFile(const CConfigurationSetting& configuration, const CString* fileName = nullptr) const;
+        @throws ConfigurationFileException if the writing fails for some reason */
+    void WriteFtpLoginConfigurationFile(const CConfigurationSetting& configuration, const CString* fileName = nullptr) const;
 
 private:
     // ---------------------- PRIVATE DATA ----------------------------

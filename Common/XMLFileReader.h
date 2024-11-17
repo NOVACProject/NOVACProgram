@@ -4,49 +4,56 @@
 
 namespace FileHandler
 {
-    class CXMLFileReader
-    {
-    public:
-        CXMLFileReader();
-        virtual ~CXMLFileReader();
 
-        /**retrieve the next token from the xml file*/
-        char* NextToken();
+class CXMLFileReader
+{
+public:
+    CXMLFileReader();
+    virtual ~CXMLFileReader();
 
-        /** General parsing of a single, simple string item */
-        int Parse_StringItem(const CString& label, CString& str);
-        int Parse_StringItem(const CString& label, std::string& str);
+protected:
 
-        /** General parsing of a single, simple float item */
-        int Parse_FloatItem(const CString& label, double& number);
+    /**retrieve the next token from the xml file*/
+    char* NextToken();
 
-        /** General parsing of a single, simple integer item */
-        int Parse_IntItem(const CString& label, int& number);
+    /** General parsing of a single, simple string item */
+    int Parse_StringItem(const CString& label, CString& str);
+    int Parse_StringItem(const CString& label, std::string& str);
 
-        /** General parsing of a single, simple long integer item */
-        int Parse_LongItem(const CString& label, long& number);
+    // Parsing of a path to a directory.
+    // The output directory will contain a trailing backslash.
+    int Parse_Directory(const CString& label, CString& str);
 
-        /** General parsing of a single, simple long integer item */
-        int Parse_IPNumber(const CString& label, BYTE& ip0, BYTE& ip1, BYTE& ip2, BYTE& ip3);
+    /** General parsing of a single, simple float item */
+    int Parse_FloatItem(const CString& label, double& number);
 
-        /** The tokenizer */
-        char* szToken;
+    /** General parsing of a single, simple integer item */
+    int Parse_IntItem(const CString& label, int& number);
 
-        void Close();
+    /** General parsing of a single, simple long integer item */
+    int Parse_LongItem(const CString& label, long& number);
 
-        /** Set the opened file pointer */
-        void SetFile(CStdioFile* file);
+    /** General parsing of a single, simple long integer item */
+    int Parse_IPNumber(const CString& label, BYTE& ip0, BYTE& ip1, BYTE& ip2, BYTE& ip3);
 
-    private:
+    /** The tokenizer */
+    char* szToken;
 
-        /** A handle to the file to read from. */
-        CStdioFile* m_File;
+    void Close();
 
-        /** The number of lines that has been read from the file */
-        long nLinesRead;
+    /** Set the opened file pointer */
+    void SetFile(CStdioFile* file);
 
-        /** The string that was read from the file */
-        char szLine[4096];
+private:
 
-    };
+    /** A handle to the file to read from. */
+    CStdioFile* m_File;
+
+    /** The number of lines that has been read from the file */
+    long nLinesRead;
+
+    /** The string that was read from the file */
+    char szLine[4096];
+
+};
 }

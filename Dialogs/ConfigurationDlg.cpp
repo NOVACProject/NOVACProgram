@@ -3,10 +3,9 @@
 #include "ConfigurationDlg.h"
 #include "../Configuration/ConfigurationFileHandler.h"
 
-using namespace ConfigurationDialog;
 using namespace FileHandler;
-
-// CConfigurationDlg dialog
+namespace ConfigurationDialog
+{
 
 IMPLEMENT_DYNAMIC(CConfigurationDlg, CDialog)
 CConfigurationDlg::CConfigurationDlg(CWnd* pParent /*=NULL*/)
@@ -34,9 +33,22 @@ BOOL CConfigurationDlg::OnInitDialog()
     CDialog::OnInitDialog();
 
     // read the configuration files
-    CConfigurationFileHandler reader;
-    reader.ReadConfigurationFile(m_configuration);
-    reader.ReadFtpLoginConfigurationFile(m_configuration);
+    try
+    {
+        CConfigurationFileHandler reader;
+        reader.ReadConfigurationFile(m_configuration);
+        reader.ReadFtpLoginConfigurationFile(m_configuration);
+    }
+    catch (novac::FileIoException& ex)
+    {
+        // The file could not be opened, this is expected at first startup.
+        ShowMessage(ex.what());
+    }
+    catch (FileHandler::ConfigurationFileException& ex)
+    {
+        Common common;
+        MessageBox(ex.what(), common.GetString(MSG_ERROR), MB_OK);
+    }
 
     // now show the main page
     CRect rect;
@@ -79,17 +91,24 @@ void ConfigurationDialog::CConfigurationDlg::OnOK()
     }
 
     // Write the configuration file
-    CConfigurationFileHandler writer;
-    writer.WriteConfigurationFile(m_configuration);
-    writer.WriteFtpLoginConfigurationFile(m_configuration);
+    try
+    {
+        CConfigurationFileHandler writer;
+        writer.WriteConfigurationFile(m_configuration);
+        writer.WriteFtpLoginConfigurationFile(m_configuration);
 
-    // Tell the user that the program needs to be restarted
-    MessageBox("Settings saved. You need to restart the program for settings to come into effect", "RESTART!", MB_OK);
+        // Tell the user that the program needs to be restarted
+        MessageBox("Settings saved. You need to restart the program for settings to come into effect", "RESTART!", MB_OK);
+    }
+    catch (FileHandler::ConfigurationFileException& ex)
+    {
+        Common common;
+        MessageBox(ex.what(), common.GetString(MSG_ERROR), MB_OK);
+    }
 
     // exit the dialog
     CDialog::OnOK();
 }
-
 
 RETURN_CODE ConfigurationDialog::CConfigurationDlg::CheckSettings()
 {
@@ -180,3 +199,5 @@ RETURN_CODE ConfigurationDialog::CConfigurationDlg::CheckSettings()
     // nothing to complain about
     return SUCCESS;
 }
+
+} // namespace ConfigurationDialog
