@@ -1,8 +1,5 @@
-// ReEval_WindowDlg.cpp : implementation file
-//
-
 #include "stdafx.h"
-#include "../NovacMasterProgram.h"
+#include "../resource.h"
 #include "ReEval_WindowDlg.h"
 #include "../Dialogs/ReferencePropertiesDlg.h"
 #include "../Dialogs/ReferencePlotDlg.h"
@@ -18,7 +15,7 @@ namespace ReEvaluation
 IMPLEMENT_DYNAMIC(CReEval_WindowDlg, CPropertyPage)
 
 CReEval_WindowDlg::CReEval_WindowDlg(CReEvaluator& reeval)
-    : CPropertyPage(CReEval_WindowDlg::IDD), m_reeval(reeval), m_windowList(reeval)
+    : CPropertyPage(CReEval_WindowDlg::IDD), m_reeval(reeval), m_windowList(reeval), m_referenceGrid(this)
 {}
 
 CReEval_WindowDlg::~CReEval_WindowDlg()
@@ -140,7 +137,6 @@ void CReEval_WindowDlg::InitReferenceFileControl()
 
     // Create the grid
     m_referenceGrid.Create(rect, &m_referenceFrame, 0);
-    m_referenceGrid.parent = this;
 
     // Set the columns of the grid
     m_referenceGrid.InsertColumn("Name");
@@ -167,9 +163,7 @@ void CReEval_WindowDlg::InitReferenceFileControl()
 
 void CReEval_WindowDlg::OnChangeFitWindow()
 {
-    int curWindow = m_windowList.GetCurSel();
-    if (curWindow < 0)
-        curWindow = 0;
+    const int curWindow = std::max(0, m_windowList.GetCurSel());
 
     // set the currently selected fit window
     m_reeval.m_curWindow = curWindow;
@@ -208,22 +202,19 @@ void CReEval_WindowDlg::OnChangeFitWindow()
 
 void CReEval_WindowDlg::PopulateReferenceFileControl()
 {
-    int curWindow = m_windowList.GetCurSel();
-
-    if (curWindow == -1)
-        curWindow = 0;
+    const int curWindow = std::max(0, m_windowList.GetCurSel());
 
     // Clear the control
     m_referenceGrid.DeleteNonFixedRows();
 
-    CFitWindow& window = m_reeval.m_window[curWindow];
-    m_referenceGrid.m_window = &window;
+    CFitWindow& currentWindow = m_reeval.m_window[curWindow];
+    m_referenceGrid.m_window = &currentWindow;
 
     // make sure that there's always one empty line at the end
-    m_referenceGrid.SetRowCount(window.NumberOfReferences() + 2);
+    m_referenceGrid.SetRowCount(currentWindow.NumberOfReferences() + 2);
 
     // if there's no references defined
-    if (window.NumberOfReferences() == 0)
+    if (currentWindow.NumberOfReferences() == 0)
     {
         m_btnRefProp.EnableWindow(FALSE);
         m_btnRemoveRef.EnableWindow(FALSE);
@@ -234,9 +225,9 @@ void CReEval_WindowDlg::PopulateReferenceFileControl()
         m_btnRemoveRef.EnableWindow(TRUE);
     }
 
-    for (int i = 0; i < static_cast<int>(window.NumberOfReferences()); ++i)
+    for (int i = 0; i < static_cast<int>(currentWindow.NumberOfReferences()); ++i)
     {
-        CReferenceFile& ref = window.reference[i];
+        CReferenceFile& ref = currentWindow.reference[i];
 
         CString specieName(ref.m_specieName.c_str());
         CString path(ref.m_path.c_str());
@@ -270,10 +261,10 @@ void CReEval_WindowDlg::PopulateReferenceFileControl()
     }
 
     // make sure that the last line is clear
-    m_referenceGrid.SetItemTextFmt(window.NumberOfReferences() + 1, 0, "");
-    m_referenceGrid.SetItemTextFmt(window.NumberOfReferences() + 1, 1, "");
-    m_referenceGrid.SetItemTextFmt(window.NumberOfReferences() + 1, 2, "");
-    m_referenceGrid.SetItemTextFmt(window.NumberOfReferences() + 1, 3, "");
+    m_referenceGrid.SetItemTextFmt(currentWindow.NumberOfReferences() + 1, 0, "");
+    m_referenceGrid.SetItemTextFmt(currentWindow.NumberOfReferences() + 1, 1, "");
+    m_referenceGrid.SetItemTextFmt(currentWindow.NumberOfReferences() + 1, 2, "");
+    m_referenceGrid.SetItemTextFmt(currentWindow.NumberOfReferences() + 1, 3, "");
 }
 
 void CReEval_WindowDlg::OnInsertReference()
@@ -282,10 +273,9 @@ void CReEval_WindowDlg::OnInsertReference()
     UpdateData(TRUE);
 
     // Get the currently selected fit window
-    int curSel = m_windowList.GetCurSel();
-    if (curSel < 0)
-        curSel = 0;
-    CFitWindow& currentWindow = m_reeval.m_window[curSel];
+    const int curWindow = std::max(0, m_windowList.GetCurSel());
+
+    CFitWindow& currentWindow = m_reeval.m_window[curWindow];
 
     // Let the user browse for the reference file
     CString fileName = "";
@@ -331,11 +321,8 @@ void CReEval_WindowDlg::OnRemoveReference()
     UpdateData(TRUE);
 
     // Get the currently selected fit window
-    int curSel = m_windowList.GetCurSel();
-    if (curSel < 0)
-        curSel = 0;
-
-    CFitWindow& currentWindow = m_reeval.m_window[curSel];
+    const int curWindow = std::max(0, m_windowList.GetCurSel());
+    CFitWindow& currentWindow = m_reeval.m_window[curWindow];
 
     // if there's no reference file, then there's nothing to remove
     if (currentWindow.NumberOfReferences() == 0)
@@ -388,17 +375,14 @@ void CReEval_WindowDlg::OnShowPropertiesWindow()
     UpdateData(TRUE);
 
     // Get the currently selected fit window
-    int curSel = m_windowList.GetCurSel();
-    if (curSel < 0)
-        curSel = 0;
-
-    CFitWindow& window = m_reeval.m_window[curSel];
+    const int curWindow = std::max(0, m_windowList.GetCurSel());
+    CFitWindow& currentWindow = m_reeval.m_window[curWindow];
 
     // if there's no reference file, then there's nothing to remove
-    if (window.NumberOfReferences() == 0)
+    if (currentWindow.NumberOfReferences() == 0)
         return;
 
-    if (window.NumberOfReferences() == 1)
+    if (currentWindow.NumberOfReferences() == 1)
     {
         minRow = 0;
     }
@@ -419,14 +403,14 @@ void CReEval_WindowDlg::OnShowPropertiesWindow()
 
     // Show the dialog, but only let it modify a copy of the current reference file.
     // In case the uses presses 'cancel' we don't want any changes to have been made to the real setup.
-    CReferenceFile copyOfReference(window.reference[minRow]);
+    CReferenceFile copyOfReference(currentWindow.reference[minRow]);
 
     Dialogs::CReferencePropertiesDlg refDlg(copyOfReference);
     INT_PTR ret = refDlg.DoModal();
 
     if (ret == IDOK)
     {
-        window.reference[minRow] = copyOfReference;
+        currentWindow.reference[minRow] = copyOfReference;
         PopulateReferenceFileControl();
     }
 }
@@ -437,17 +421,15 @@ void ReEvaluation::CReEval_WindowDlg::OnShowReferenceGraph()
     UpdateData(TRUE);
 
     // Get the currently selected fit window
-    int curSel = m_windowList.GetCurSel();
-    if (curSel < 0)
-        curSel = 0;
-    CFitWindow& window = m_reeval.m_window[curSel];
+    const int curWindow = std::max(0, m_windowList.GetCurSel());
+    CFitWindow& currentWindow = m_reeval.m_window[curWindow];
 
     // if there's no reference file, then there's nothing to remove
-    if (window.NumberOfReferences() == 0)
+    if (currentWindow.NumberOfReferences() == 0)
         return;
 
     // Open the dialog
-    Dialogs::CReferencePlotDlg dlg(window);
+    Dialogs::CReferencePlotDlg dlg(currentWindow);
     dlg.DoModal();
 }
 

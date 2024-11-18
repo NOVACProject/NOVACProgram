@@ -557,7 +557,7 @@ RETURN_CODE CScanEvaluation::GetSky(CScanFileHandler* scan, CSpectrum& sky) cons
             // If we don't recognize the sky-spectrum format
             errorMsg.Format("Unknown format for sky spectrum. Please use .pak or .std");
             ShowMessage(errorMsg);
-            MessageBox(NULL, errorMsg, "Error", MB_OK);
+            MessageBox(nullptr, errorMsg, "Error", MB_OK);
             return FAIL;
         }
     }

@@ -1,19 +1,14 @@
-// ReEval_ScanDlg.cpp : implementation file
-//
-
 #include "stdafx.h"
-#include "../NovacMasterProgram.h"
-
+#include "../resource.h"
 #include "ReEval_ScanDlg.h"
+#include "ReEvaluator.h"
 
 #include <SpectralEvaluation/File/SpectrumIO.h>
 #include <SpectralEvaluation/Spectra/SpectrometerModel.h>
 
-
 // Include the special multi-choice file-dialog
 #include "../Dialogs/CMultiSelectOpenFileDialog.h"
 
-// CReEval_ScanDlg dialog
 using namespace novac;
 
 namespace ReEvaluation
@@ -22,11 +17,8 @@ namespace ReEvaluation
 IMPLEMENT_DYNAMIC(CReEval_ScanDlg, CPropertyPage)
 
 CReEval_ScanDlg::CReEval_ScanDlg(CReEvaluator& reeval)
-    : CPropertyPage(CReEval_ScanDlg::IDD), m_reeval(reeval), m_scanfileList(reeval)
+    : CPropertyPage(CReEval_ScanDlg::IDD), m_reeval(reeval), m_scanfileList(reeval, this)
 {
-    m_curSpecFile = 0;
-    m_curSpec = 0;
-    m_specNum = 0;
 }
 
 CReEval_ScanDlg::~CReEval_ScanDlg()
@@ -113,25 +105,19 @@ BOOL CReEval_ScanDlg::OnInitDialog()
     m_specGraph.SetPlotColor(RGB(0, 255, 0));
     m_specGraph.parentWnd = this;
 
-    // Set the parent of the list-box
-    m_scanfileList.m_parent = this;
-
     return TRUE;  // return TRUE unless you set the focus to a control
     // EXCEPTION: OCX Property Pages should return FALSE
 }
 
 void CReEval_ScanDlg::OnLbnSelchangeScanfileList()
 {
-    CString status;
 
     m_curSpecFile = m_scanfileList.GetCurSel();
     m_curSpec = 0;
 
-    // Check the scan file so that it is ok. 
     if (CheckScanFile())
     {
-        status.Format("Scan file is corrupt");
-        SetDlgItemText(IDC_NUMSPEC_LABEL, status);
+        SetDlgItemText(IDC_NUMSPEC_LABEL, "Scan file is corrupt");
         return;
     }
 
@@ -167,7 +153,6 @@ void CReEval_ScanDlg::DrawSpectrum()
 int CReEval_ScanDlg::TryReadSpectrum()
 {
     CSpectrumIO reader;
-    CString message;
 
     // Read the spectrum
     const std::string scanFileName(m_reeval.m_scanFile[m_curSpecFile]);
@@ -175,6 +160,7 @@ int CReEval_ScanDlg::TryReadSpectrum()
 
     if (!success)
     {
+        CString message;
         message.Format("Error reading spectrum %d. Error: %s", m_curSpec, novac::ToString(reader.m_lastError).c_str());
         return 1;
     }
@@ -202,14 +188,13 @@ int CReEval_ScanDlg::CheckScanFile()
 {
     m_specNum = 0;
 
-    int ret = 0;
-    CSpectrumIO reader;
-    CString message;
-    CSpectrum spec;
-
     // Read one spectrum to check the channel numbers
     const std::string scanFileName(m_reeval.m_scanFile[m_curSpecFile]);
+
+    CSpectrumIO reader;
+    CSpectrum spec;
     reader.ReadSpectrum(scanFileName, 0, spec);
+
     unsigned char chn = spec.Channel();
     int steps = 0;
     if (-1 == Common::GetInterlaceSteps(chn, steps))

@@ -1,8 +1,4 @@
 #pragma once
-#include "afxwin.h"
-
-#include "ReEvaluator.h"
-#include "afxcmn.h"
 
 #include "../Graphs/SpectrumGraph.h"
 #include "PakFileListBox.h"
@@ -13,6 +9,8 @@
 
 namespace ReEvaluation
 {
+class CReEvaluator;
+
 
 class CReEval_ScanDlg : public CPropertyPage
 {
@@ -48,13 +46,13 @@ private:
     CSpinButtonCtrl m_specSpin;
 
     /** The currently selected spectrum-file */
-    long    m_curSpecFile;
+    long m_curSpecFile = 0;
 
     /** The currently selected spectrum inside the selected spectrum-file */
-    long    m_curSpec;
+    long m_curSpec = 0;
 
     /** The number of spectra inside the selected spectrum file */
-    long    m_specNum;
+    long m_specNum = 0;
 
     /** The currently selected spectrum */
     novac::CSpectrum m_spectrum;

@@ -12,11 +12,13 @@
 
 #include <sstream>
 
-using namespace ReEvaluation;
 using namespace Evaluation;
 using namespace novac;
 
-CReEvaluator::CReEvaluator(void)
+namespace ReEvaluation
+{
+
+CReEvaluator::CReEvaluator()
 {
     // initialize the scan file list
     m_scanFile.reserve(64); // <-- The initial guess of the number of pak-files
@@ -44,11 +46,7 @@ bool CReEvaluator::Stop()
 
 bool CReEvaluator::DoEvaluation()
 {
-    /* Check the settings before we start */
-    if (!MakeInitialSanityCheck())
-    {
-        return false;
-    }
+    MakeInitialSanityCheck();
 
     /** Prepare everything for evaluating */
     if (!PrepareEvaluation())
@@ -92,7 +90,7 @@ bool CReEvaluator::DoEvaluation()
         {
             CString errStr;
             errStr.Format("Could not read scan-file %s", m_scanFile[curScanFile]);
-            MessageBox(NULL, errStr, "Error", MB_OK);
+            MessageBox(nullptr, errStr, "Error", MB_OK);
             continue;
         }
 
@@ -144,7 +142,7 @@ bool CReEvaluator::DoEvaluation()
                 {
                     CString message;
                     message.Format("It seems like the sky-spectrum is saturated in the fit-region. Continue?");
-                    if (IDNO == MessageBox(NULL, message, "Saturated sky spectrum?", MB_YESNO))
+                    if (IDNO == MessageBox(nullptr, message, "Saturated sky spectrum?", MB_YESNO))
                     {
                         break; // continue with the next scan-file
                     }
@@ -182,22 +180,22 @@ bool CReEvaluator::DoEvaluation()
     return true;
 }
 
-/* Check the settings before we start */
-bool CReEvaluator::MakeInitialSanityCheck()
+void CReEvaluator::MakeInitialSanityCheck() const
 {
-    // 1. Check so that there are any fit windows defined
     if (this->m_windowNum <= 0)
-        return false;
+    {
+        throw std::invalid_argument("Cannot run re-evaluation, no fit windows have been defined.");
+    }
 
-    // 2. Check so that there are not too many fit windows defined
     if (m_windowNum > MAX_N_WINDOWS)
-        return false;
+    {
+        throw std::invalid_argument("Cannot run re-evaluation, too many fit windows have been defined.");
+    }
 
-    // 3. Check so that there are any spectrum files to evaluate
     if (this->m_scanFile.size() == 0)
-        return false;
-
-    return true;
+    {
+        throw std::invalid_argument("Cannot run re-evaluation, no scan files have been added.");
+    }
 }
 
 bool CReEvaluator::CreateOutputDirectory()
@@ -218,16 +216,19 @@ bool CReEvaluator::CreateOutputDirectory()
     m_outputDir.Format("%s\\ReEvaluation_%s_%s", (LPCTSTR)path, (LPCTSTR)fileName, (LPCTSTR)cDateTime);
 
     // Create the directory
-    if (0 == CreateDirectory(m_outputDir, NULL))
+    if (0 == CreateDirectory(m_outputDir, nullptr))
     {
         DWORD errorCode = GetLastError();
         if (errorCode != ERROR_ALREADY_EXISTS)
-        { /* We shouldn't quit just because the directory that we want to create already exists. */
+        {
+            /* We shouldn't quit just because the directory that we want to create already exists. */
             CString tmpStr;
             tmpStr.Format("Could not create output directory. Error code returned %ld. Do you want to create an output directory elsewhere?", errorCode);
-            int ret = MessageBox(NULL, tmpStr, "Could not create output directory", MB_YESNO);
+            int ret = MessageBox(nullptr, tmpStr, "Could not create output directory", MB_YESNO);
             if (ret == IDNO)
+            {
                 return false;
+            }
             else
             {
                 // Create the output-directory somewhere else
@@ -236,12 +237,14 @@ bool CReEvaluator::CreateOutputDirectory()
                 pathDialog.m_inputString = &path;
                 INT_PTR ret = pathDialog.DoModal();
                 if (IDCANCEL == ret)
+                {
                     return false;
+                }
                 m_outputDir.Format("%s\\ReEvaluation_%s_%s", (LPCTSTR)path, (LPCTSTR)fileName, (LPCTSTR)cDateTime);
-                if (0 == CreateDirectory(m_outputDir, NULL))
+                if (0 == CreateDirectory(m_outputDir, nullptr))
                 {
                     tmpStr.Format("Could not create output directory. ReEvaluation aborted.");
-                    MessageBox(NULL, tmpStr, "ERROR", MB_OK);
+                    MessageBox(nullptr, tmpStr, "ERROR", MB_OK);
                     return false;
                 }
             }
@@ -250,7 +253,7 @@ bool CReEvaluator::CreateOutputDirectory()
     return true;
 }
 
-bool CReEvaluator::WriteEvaluationLogHeader(int fitWindowIndex)
+void CReEvaluator::WriteEvaluationLogHeader(int fitWindowIndex)
 {
     CString time, date, name;
     Common::GetDateText(date);
@@ -266,8 +269,7 @@ bool CReEvaluator::WriteEvaluationLogHeader(int fitWindowIndex)
     FILE* f = fopen(m_evalLog[fitWindowIndex], "w");
     if (f == nullptr)
     {
-        MessageBox(NULL, "Could not create evaluation-log file, evaluation aborted", "FileError", MB_OK);
-        return false; // failed to open the file, quit it
+        throw std::invalid_argument("Could not create evaluation-log file, evaluation aborted");
     }
 
     // The common header
@@ -341,8 +343,6 @@ bool CReEvaluator::WriteEvaluationLogHeader(int fitWindowIndex)
     fprintf(f, "\n");
 
     fclose(f);
-
-    return true;
 }
 
 bool CReEvaluator::AppendResultToEvaluationLog(const Evaluation::CScanResult& result, const CScanFileHandler& scan, int fitWindowIndex)
@@ -500,19 +500,14 @@ bool CReEvaluator::PrepareEvaluation()
 
             ReadReferences(m_window[curWindow]);
 
-            /* then create the evaluation log and write its header */
-            if (!WriteEvaluationLogHeader(curWindow))
-            {
-                return false;
-            }
+            WriteEvaluationLogHeader(curWindow);
         }
     }
     catch (novac::InvalidReferenceException& ex)
     {
         std::stringstream msg;
         msg << ex.what() << ". Please check settings and start again.";
-        MessageBox(NULL, msg.str().c_str(), "Error in settings", MB_OK);
-        return false;
+        throw std::invalid_argument(msg.str());
     }
 
     return true;
@@ -520,28 +515,7 @@ bool CReEvaluator::PrepareEvaluation()
 
 void CReEvaluator::SortScans()
 {
-    bool change;
-
-    // TODO: Change this. Use std::sort?
-    do
-    {
-        change = false;
-        for (size_t k = 0; k < m_scanFile.size() - 1; ++k)
-        {
-            CString str1(m_scanFile[k].c_str());
-            CString str2(m_scanFile[k + 1].c_str());
-
-            if (str1.Compare(str2) > 0)
-            {
-                std::string copy = m_scanFile[k];
-                m_scanFile[k] = m_scanFile[k + 1];
-                m_scanFile[k + 1] = copy;
-                change = true;
-            }
-            else
-            {
-                continue;
-            }
-        }
-    } while (change);
+    std::sort(begin(m_scanFile), end(m_scanFile));
 }
+
+}  // namespace ReEvaluation

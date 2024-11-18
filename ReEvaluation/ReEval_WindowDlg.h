@@ -8,6 +8,7 @@
 
 namespace ReEvaluation
 {
+class CReEvaluator;
 
 class CReEval_WindowDlg : public CPropertyPage
 {
@@ -25,7 +26,7 @@ protected:
 
     DECLARE_MESSAGE_MAP()
 
-public:
+private:
 
     // --------------------------- PUBLIC DATA -------------------------- 
 
@@ -58,7 +59,19 @@ public:
 
     /** The 'shift-sky' checkbox */
     CButton m_checkShiftSky;
-    // --------------------------- PUBLIC METHODS --------------------------
+
+    /** A handle to the reevaluator */
+    CReEvaluator& m_reeval;
+
+    CString m_fraunhoferReferenceName;
+
+    // This is a compatibility thing, where the FitWindow used to have a 'bool UV' flag
+    // indicating the range of pixels used for offset removal.
+    // This is now replaced with the 'offsetRange' which are explicitly setting the range of pixels.
+    // Until the UI has been updated here, we need to keep this boolean...
+    BOOL m_useUVOffsetRemovalRange = TRUE;
+
+    // --------------------------- PRIVATE METHODS --------------------------
 
     /** Initialize the dialog and its controls */
     virtual BOOL OnInitDialog();
@@ -92,19 +105,6 @@ public:
 
     /** Lets the user browse for a solar-spectrum */
     afx_msg void OnBrowseSolarSpectrum();
-
-private:
-
-    /** A handle to the reevaluator */
-    CReEvaluator& m_reeval;
-
-    CString m_fraunhoferReferenceName;
-
-    // This is a compatibility thing, where the FitWindow used to have a 'bool UV' flag
-    // indicating the range of pixels used for offset removal.
-    // This is now replaced with the 'offsetRange' which are explicitly setting the range of pixels.
-    // Until the UI has been updated here, we need to keep this boolean...
-    BOOL m_useUVOffsetRemovalRange = TRUE;
 
 };
 }

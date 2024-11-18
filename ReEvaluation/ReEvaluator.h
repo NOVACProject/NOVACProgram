@@ -9,9 +9,6 @@
 #include "../Configuration/Configuration.h"
 #include "../NovacProgramLog.h"
 
-#define MAX_N_SCANFILES 64
-
-
 namespace ReEvaluation
 {
 
@@ -42,6 +39,7 @@ public:
     long m_windowNum = 1;
 
     /** Which is the current fit window? */
+    // TODO: There is a race condition in reading this from the UI..
     long m_curWindow = 0;
 
     /** True if the spectra that we're treating are averaged, not summed.
@@ -61,9 +59,6 @@ public:
     double m_progress = 0.0;
     CWnd* pView = nullptr;
 
-    /** The directory in which the output is currently directed */
-    CString m_outputDir;
-
     /** The file name of the current evaluation log, stored in the m_outputDir directory */
     CString m_evalLog[MAX_N_WINDOWS];
 
@@ -77,8 +72,6 @@ public:
     /** The settings for how to handle the dark-measurements */
     Configuration::CDarkSettings m_darkSettings;
 
-public:
-
     // ------------------------- METHODS ------------------------------
 
     /** Halts the current operation */
@@ -87,18 +80,8 @@ public:
     /** This function takes care of the actual evaluation */
     bool DoEvaluation();
 
-    /** Checks the settings before the evaluation */
-    bool MakeInitialSanityCheck();
-
     /** Creates the output directory for the current scan file */
     bool CreateOutputDirectory();
-
-    /** Creates, and writes the header in the evaluation log for
-        the current scan file and the current fit window. */
-    bool  WriteEvaluationLogHeader(int fitWindowIndex);
-
-    /** Appends the evaluation result to the evaluation log */
-    bool AppendResultToEvaluationLog(const Evaluation::CScanResult& result, const novac::CScanFileHandler& scan, int fitWindowIndex);
 
     /** Sorts the scans in the array 'm_scanFile' in alphabetical order */
     void SortScans();
@@ -107,8 +90,21 @@ private:
 
     NovacProgramLog m_log;
 
-    /** Prepares for evaluation */
+    CString m_outputDir;
+
+    // Reads all the references and creates the necessary output directory.
+    // @throws std::invalid_argument if any of the references could not be read.
     bool PrepareEvaluation();
+
+    // Makes an initial sanity check of the settings before starting the evaluation.
+    // @throws std::invalid_argument if the evaluation cannot start.
+    void MakeInitialSanityCheck() const;
+
+    // Creates, and writes the header in the evaluation log for the current scan file and the current fit window.
+    // @throws std::invalid_argument if the file could not be opened for writing.
+    void WriteEvaluationLogHeader(int fitWindowIndex);
+
+    bool AppendResultToEvaluationLog(const Evaluation::CScanResult& result, const novac::CScanFileHandler& scan, int fitWindowIndex);
 
 };
 }

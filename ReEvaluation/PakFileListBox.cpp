@@ -1,20 +1,16 @@
-
 #include "stdafx.h"
-#include "../NovacMasterProgram.h"
-#include "../Dialogs/QueryStringDialog.h"
-#include "../Evaluation/FitWindowFileHandler.h"
+#include "../resource.h"
 #include "PakFileListBox.h"
+#include "ReEvaluator.h"
 
 namespace ReEvaluation
 {
 
 IMPLEMENT_DYNAMIC(CPakFileListBox, CListBox)
 
-CPakFileListBox::CPakFileListBox(CReEvaluator& reeval)
-    : m_reeval(reeval)
-{
-    m_parent = nullptr;
-}
+CPakFileListBox::CPakFileListBox(CReEvaluator& reeval, CWnd* parent)
+    : m_reeval(reeval), m_parent(parent)
+{}
 
 CPakFileListBox::~CPakFileListBox()
 {
@@ -79,11 +75,12 @@ void CPakFileListBox::OnLButtonDown(UINT nFlags, CPoint point)
     CListBox::OnLButtonDown(nFlags, point);
 }
 
-/** Called to show the context menu */
 void CPakFileListBox::OnContextMenu(CWnd* pWnd, CPoint pos)
 {
     if (m_parent == nullptr)
+    {
         return;
+    }
 
     OnLButtonDown(MK_LBUTTON, pos); // make the current menu item marked
 

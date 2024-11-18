@@ -53,8 +53,33 @@ private:
     /** The reference fit graph */
     Graph::CDOASFitGraph m_referenceFitGraph;
 
+    /** The 'do Evaluation' button */
+    CButton m_btnDoEval;
 
-    // --------------------------- PUBLIC METHODS --------------------------
+    /** The 'cancel' button */
+    CButton m_btnCancel;
+
+    /** The progress bar indicating which scan-file we're at */
+    CProgressCtrl m_progressBar;
+
+    /** The progress bar indicating which spectrum inside the .pak-file we're at */
+    CProgressCtrl m_progressBar2;
+
+    /** The reevaluation is run as a separate thread */
+    CWinThread* pReEvalThread = nullptr;
+
+    /** A local copy of the residual of the last fit */
+    double residual[MAX_SPECTRUM_LENGTH];
+
+    /** A local copy of the last fit result */
+    double fitResult[MAX_N_REFERENCES][MAX_SPECTRUM_LENGTH];
+
+    /** A local copy of the last read spectrum */
+    double spectrum[MAX_SPECTRUM_LENGTH];
+
+    /** A pointer to the result-set */
+    std::unique_ptr<Evaluation::CScanResult> m_result;
+    // --------------------------- PRIVATE METHODS --------------------------
 
     /** Initializes the graphs */
     void  InitializeGraphs();
@@ -81,18 +106,6 @@ private:
     afx_msg void OnCancelEvaluation();
 
     afx_msg void OnBnClickedReevalCheckPause();
-
-    /** The 'do Evaluation' button */
-    CButton m_btnDoEval;
-
-    /** The 'cancel' button */
-    CButton m_btnCancel;
-
-    /** The progress bar indicating which scan-file we're at */
-    CProgressCtrl m_progressBar;
-
-    /** The progress bar indicating which spectrum inside the .pak-file we're at */
-    CProgressCtrl m_progressBar2;
 
     /** Draws the fitted reference */
     void DrawReference();
@@ -123,21 +136,6 @@ private:
     /** Called when the reevaluator has made some progress in the evaluation
             of the current scan-file */
     LRESULT OnProgress2(WPARAM wp, LPARAM lp);
-
-    /** The reevaluation is run as a separate thread */
-    CWinThread* pReEvalThread;
-
-    /** A local copy of the residual of the last fit */
-    double residual[MAX_SPECTRUM_LENGTH];
-
-    /** A local copy of the last fit result */
-    double fitResult[MAX_N_REFERENCES][MAX_SPECTRUM_LENGTH];
-
-    /** A local copy of the last read spectrum */
-    double spectrum[MAX_SPECTRUM_LENGTH];
-
-    /** A pointer to the result-set */
-    std::unique_ptr<Evaluation::CScanResult> m_result;
 
 };
 }

@@ -1,9 +1,8 @@
 #pragma once
 
-#include "ReEvaluator.h"
-
 namespace ReEvaluation
 {
+class CReEvaluator;
 
 // CReEval_MiscSettingsDlg dialog
 

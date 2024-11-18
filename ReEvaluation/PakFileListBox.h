@@ -1,25 +1,19 @@
 #pragma once
 
-#include "ReEvaluator.h"
-
-// CPakFileListBox
-
 namespace ReEvaluation
 {
+class CReEvaluator;
 
 class CPakFileListBox : public CListBox
 {
     DECLARE_DYNAMIC(CPakFileListBox)
 
 public:
-    CPakFileListBox(CReEvaluator& reeval);
+    CPakFileListBox(CReEvaluator& reeval, CWnd* parent);
     virtual ~CPakFileListBox();
 
     /** Called to populate the fit window list */
     void PopulateList();
-
-    /** The parent window */
-    CWnd* m_parent;
 
 protected:
     DECLARE_MESSAGE_MAP()
@@ -28,6 +22,9 @@ private:
 
     /** A handle to the reevaluator that this object modifies */
     CReEvaluator& m_reeval;
+
+    /** The parent window */
+    CWnd* m_parent;
 
     /** Called when the user presses down the left mouse button */
     afx_msg void OnLButtonDown(UINT nFlags, CPoint point);

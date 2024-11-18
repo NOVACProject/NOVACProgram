@@ -1,8 +1,6 @@
-// ReEval_MiscSettingsDlg.cpp : implementation file
-//
-
 #include "stdafx.h"
-#include "../NovacMasterProgram.h"
+#include "../resource.h"
+#include "ReEvaluator.h"
 #include "ReEval_MiscSettingsDlg.h"
 #include "../Dialogs/DarkSettingsDialog.h"
 #include "ReEvalSettingsFileHandler.h"

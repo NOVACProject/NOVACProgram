@@ -4,7 +4,8 @@
 
 #include <SpectralEvaluation/Evaluation/FitWindow.h>
 
-using namespace DlgControls;
+namespace DlgControls
+{
 
 static void ParseShiftOption(novac::SHIFT_TYPE& option, double& value, CString& str)
 {
@@ -38,16 +39,16 @@ static void ParseShiftOption(novac::SHIFT_TYPE& option, double& value, CString& 
 }
 
 
-CReferenceFileControl::CReferenceFileControl(void)
+CReferenceFileControl::CReferenceFileControl(CWnd* parentWindow)
+    : parent(parentWindow)
 {
-    m_window = NULL;
-    parent = NULL;
+    m_window = nullptr;
 }
 
 CReferenceFileControl::~CReferenceFileControl(void)
 {
-    m_window = NULL;
-    parent = NULL;
+    m_window = nullptr;
+    parent = nullptr;
 }
 
 BEGIN_MESSAGE_MAP(CReferenceFileControl, CGridCtrl)
@@ -57,6 +58,11 @@ END_MESSAGE_MAP()
 /* Called when the user has edited one cell */
 void CReferenceFileControl::OnEndEditCell(int nRow, int nCol, CString str)
 {
+    if (m_window == nullptr)
+    {
+        return; // this should never be the case, but just to check.
+    }
+
     CGridCtrl::OnEndEditCell(nRow, nCol, str);
 
     int index = nRow - 1;
@@ -132,14 +138,15 @@ void CReferenceFileControl::OnEndEditCell(int nRow, int nCol, CString str)
 
 void CReferenceFileControl::OnContextMenu(CWnd* pWnd, CPoint point)
 {
-
-    if (this->parent == NULL)
+    if (this->parent == nullptr || m_window == nullptr)
+    {
         return;
+    }
 
     CMenu menu;
     VERIFY(menu.LoadMenu(IDR_REEVAL_CONTEXTMENU));
     CMenu* pPopup = menu.GetSubMenu(0);
-    ASSERT(pPopup != NULL);
+    ASSERT(pPopup != nullptr);
 
     CCellRange cellRange = GetSelectedCellRange();
     int minRow = cellRange.GetMinRow() - 1;
@@ -159,3 +166,5 @@ void CReferenceFileControl::OnContextMenu(CWnd* pWnd, CPoint point)
 
     pPopup->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, parent);
 }
+
+}  // namespace DlgControls

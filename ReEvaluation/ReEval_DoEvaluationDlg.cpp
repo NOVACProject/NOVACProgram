@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "../NovacMasterProgram.h"
+#include "../resource.h"
 #include "ReEvaluator.h"
 #include "ReEval_DoEvaluationDlg.h"
 #include "../Evaluation/EvaluationResultView.h"
@@ -12,15 +12,25 @@ namespace ReEvaluation
 
 static UINT DoEvaluation(LPVOID pParam)
 {
-    CReEvaluator* reeval = (CReEvaluator*)pParam;
+    try
+    {
+        CReEvaluator* reeval = (CReEvaluator*)pParam;
 
-    reeval->fRun = true;
-    reeval->DoEvaluation();
-    return 0;
+        reeval->fRun = true;
+        reeval->DoEvaluation();
+        return 0;
+    }
+    catch (std::invalid_argument& ex)
+    {
+        MessageBox(NULL, ex.what(), "Error in setup", MB_OK);
+        return 1;
+    }
+    catch (std::exception& ex)
+    {
+        MessageBox(NULL, ex.what(), "Error", MB_OK);
+        return 1;
+    }
 }
-
-
-// CReEval_DoEvaluationDlg dialog
 
 IMPLEMENT_DYNAMIC(CReEval_DoEvaluationDlg, CPropertyPage)
 
@@ -88,7 +98,7 @@ void  CReEval_DoEvaluationDlg::InitializeGraphs()
 {
     CRect rect;
     Common common;
-    int margin = -4;
+    const int margin = -4;
 
     // The total fit graph
     m_frameTotalfit.GetWindowRect(&rect);
@@ -184,7 +194,6 @@ void CReEval_DoEvaluationDlg::OnChangeSpecie()
 {
     m_curSpecie = (long)m_specieList.GetCurSel();
 
-    // Redraw the reference-screen
     DrawReference();
 }
 

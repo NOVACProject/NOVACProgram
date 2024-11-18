@@ -18,7 +18,7 @@ using namespace novac;
 IMPLEMENT_DYNAMIC(CEvaluationConfigurationDlg, CSystemConfigurationPage)
 
 CEvaluationConfigurationDlg::CEvaluationConfigurationDlg()
-    : CSystemConfigurationPage(CEvaluationConfigurationDlg::IDD)
+    : CSystemConfigurationPage(CEvaluationConfigurationDlg::IDD), m_referenceFileCtrl(this)
 {
     m_configuration = nullptr;
     m_scannerTree = nullptr;
@@ -169,7 +169,6 @@ void CEvaluationConfigurationDlg::InitReferenceFileControl()
     m_referenceFileCtrl.SetEditable(TRUE); /* make sure the user can edit the positions */
     m_referenceFileCtrl.SetRowCount(3);
     m_referenceFileCtrl.EnableTitleTips(FALSE);	// <-- Disable the small title tips
-    m_referenceFileCtrl.parent = this;
 }
 
 void CEvaluationConfigurationDlg::PopulateReferenceFileControl()
