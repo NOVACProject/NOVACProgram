@@ -615,13 +615,7 @@ int CConfigurationFileHandler::Parse()
     // the actual reading loop
     while (szToken = NextToken())
     {
-
-        // no use to parse empty lines
-        if (strlen(szToken) < 3)
-            continue;
-
-        // ignore comments
-        if (Equals(szToken, "!--", 3))
+        if (IsEmptyLineOrStartOfComment(szToken))
         {
             continue;
         }
@@ -733,13 +727,7 @@ int CConfigurationFileHandler::Parse_ScanningInstrument()
     // the actual reading loop
     while (szToken = NextToken())
     {
-
-        // no use to parse empty lines
-        if (strlen(szToken) < 3)
-            continue;
-
-        // ignore comments
-        if (Equals(szToken, "!--", 3))
+        if (IsEmptyLineOrStartOfComment(szToken))
         {
             continue;
         }
@@ -888,13 +876,7 @@ int CConfigurationFileHandler::Parse_Communication()
     // the actual reading loop
     while (szToken = NextToken())
     {
-
-        // no use to parse empty lines
-        if (strlen(szToken) < 2)
-            continue;
-
-        // ignore comments
-        if (Equals(szToken, "!--", 3))
+        if (IsEmptyLineOrStartOfComment(szToken))
         {
             continue;
         }
@@ -1027,13 +1009,7 @@ int CConfigurationFileHandler::Parse_Spectrometer()
     // the actual reading loop
     while (szToken = NextToken())
     {
-
-        // no use to parse empty lines
-        if (strlen(szToken) < 3)
-            continue;
-
-        // ignore comments
-        if (Equals(szToken, "!--", 3))
+        if (IsEmptyLineOrStartOfComment(szToken))
         {
             continue;
         }
@@ -1124,12 +1100,7 @@ int CConfigurationFileHandler::Parse_CustomSpectrometerModel(CConfigurationSetti
 
     while (szToken = NextToken())
     {
-        if (strlen(szToken) < 3)
-        {
-            continue;
-        }
-
-        if (Equals(szToken, "!--", 3))
+        if (IsEmptyLineOrStartOfComment(szToken))
         {
             continue;
         }
@@ -1215,8 +1186,7 @@ int CConfigurationFileHandler::Parse_Channel()
     // the actual reading loop
     while (szToken = NextToken())
     {
-        // no use to parse empty lines or comments, 
-        if (strlen(szToken) < 3 || Equals(szToken, "!--", 3))
+        if (IsEmptyLineOrStartOfComment(szToken))
         {
             continue;
         }
@@ -1330,13 +1300,7 @@ int CConfigurationFileHandler::Parse_Calibration(CConfigurationSetting::Spectrom
     // the actual reading loop
     while (szToken = NextToken())
     {
-
-        // no use to parse empty lines
-        if (strlen(szToken) < 3)
-            continue;
-
-        // ignore comments
-        if (Equals(szToken, "!--", 3))
+        if (IsEmptyLineOrStartOfComment(szToken))
         {
             continue;
         }
@@ -1435,17 +1399,7 @@ int CConfigurationFileHandler::Parse_Specie(CConfigurationSetting::SpectrometerC
     novac::CReferenceFile reference;
 
     // find if there is a name for this specie
-    if (char* pt = strstr(szToken, "name"))
-    {
-        if (pt = strstr(pt, "\""))
-        {
-            if (char* pt2 = strstr(pt + 1, "\""))
-            {
-                pt2[0] = 0; //remove the second quote
-            }
-            reference.m_specieName = std::string(pt + 1);
-        }
-    }
+    reference.m_specieName = ParseAttribute(szToken, "name");
 
     while (szToken = NextToken())
     {
@@ -1469,14 +1423,7 @@ int CConfigurationFileHandler::Parse_Reference(CConfigurationSetting::Spectromet
     // the actual reading loop
     while (szToken = NextToken())
     {
-        // no use to parse empty lines
-        if (strlen(szToken) < 3)
-        {
-            continue;
-        }
-
-        // ignore comments
-        if (Equals(szToken, "!--", 3))
+        if (IsEmptyLineOrStartOfComment(szToken))
         {
             continue;
         }
@@ -1539,13 +1486,7 @@ int CConfigurationFileHandler::Parse_ShiftOrSqueeze(const CString& label, novac:
     // the actual reading loop
     while (szToken = NextToken())
     {
-
-        // no use to parse empty lines
-        if (strlen(szToken) < 3)
-            continue;
-
-        // ignore comments
-        if (Equals(szToken, "!--", 3))
+        if (IsEmptyLineOrStartOfComment(szToken))
         {
             continue;
         }
@@ -1627,13 +1568,7 @@ int	CConfigurationFileHandler::Parse_WindMeasurement()
     // the actual reading loop
     while (szToken = NextToken())
     {
-
-        // no use to parse empty lines
-        if (strlen(szToken) < 3)
-            continue;
-
-        // ignore comments
-        if (Equals(szToken, "!--", 3))
+        if (IsEmptyLineOrStartOfComment(szToken))
         {
             continue;
         }
@@ -1717,13 +1652,7 @@ int CConfigurationFileHandler::Parse_RealTimeSetup()
     // the actual reading loop
     while (szToken = NextToken())
     {
-
-        // no use to parse empty lines
-        if (strlen(szToken) < 3)
-            continue;
-
-        // ignore comments
-        if (Equals(szToken, "!--", 3))
+        if (IsEmptyLineOrStartOfComment(szToken))
         {
             continue;
         }
@@ -1770,13 +1699,7 @@ int	CConfigurationFileHandler::Parse_SourceInfo()
     // the actual reading loop
     while (szToken = NextToken())
     {
-
-        // no use to parse empty lines
-        if (strlen(szToken) < 3)
-            continue;
-
-        // ignore comments
-        if (Equals(szToken, "!--", 3))
+        if (IsEmptyLineOrStartOfComment(szToken))
         {
             continue;
         }
@@ -1858,13 +1781,7 @@ int CConfigurationFileHandler::Parse_WindImport()
     // the actual reading loop
     while (szToken = NextToken())
     {
-
-        // no use to parse empty lines
-        if (strlen(szToken) < 3)
-            continue;
-
-        // ignore comments
-        if (Equals(szToken, "!--", 3))
+        if (IsEmptyLineOrStartOfComment(szToken))
         {
             continue;
         }

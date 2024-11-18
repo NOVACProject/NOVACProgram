@@ -39,8 +39,10 @@ std::vector<novac::CFitWindow> CFitWindowFileHandler::ReadFitWindowFile(const CS
     while (szToken = NextToken())
     {
         // no use to parse empty lines
-        if (strlen(szToken) < 3)
+        if (IsEmptyLineOrStartOfComment(szToken))
+        {
             continue;
+        }
 
         if (Equals(szToken, "fitWindow", 9))
         {
@@ -67,29 +69,12 @@ RETURN_CODE CFitWindowFileHandler::Parse_FitWindow(novac::CFitWindow& window)
     window.Clear(); // <-- Reset the data before we start reading from the file.
 
     // find the name for this fit window
-    if (char* pt = strstr(szToken, "name"))
-    {
-        if (pt = strstr(pt, "\""))
-        {
-            if (char* pt2 = strstr(pt + 1, "\""))
-                pt2[0] = 0; // remove the second quote
-            char tmpStr[512];
-            if (sscanf(pt + 1, "%s", &tmpStr))
-            {
-                window.name = std::string(tmpStr);
-            }
-        }
-    }
+    window.name = ParseAttribute(szToken, "name");
 
     // parse the file
     while (szToken = NextToken())
     {
-        // no use to parse empty lines
-        if (strlen(szToken) < 2)
-            continue;
-
-        // ignore comments
-        if (Equals(szToken, "!--", 3))
+        if (IsEmptyLineOrStartOfComment(szToken))
         {
             continue;
         }
@@ -240,32 +225,12 @@ RETURN_CODE CFitWindowFileHandler::Parse_Reference(novac::CFitWindow& window)
     novac::CReferenceFile newReference; // the reference that we're parsing and trying to insert
 
     // find the name for this reference.
-    if (char* pt = strstr(szToken, "name"))
-    {
-        if (pt = strstr(pt, "\""))
-        {
-            if (char* pt2 = strstr(pt + 1, "\""))
-            {
-                pt2[0] = 0; // remove the second quote
-            }
-            char tmpStr[512];
-            if (sscanf(pt + 1, "%s", &tmpStr))
-            {
-                newReference.m_specieName = std::string(tmpStr);
-            }
-        }
-    }
+    newReference.m_specieName = ParseAttribute(szToken, "name");
 
     // the actual reading loop
     while (szToken = NextToken())
     {
-
-        // no use to parse empty lines
-        if (strlen(szToken) < 3)
-            continue;
-
-        // ignore comments
-        if (Equals(szToken, "!--", 3))
+        if (IsEmptyLineOrStartOfComment(szToken))
         {
             continue;
         }

@@ -179,4 +179,44 @@ int CXMLFileReader::Parse_IPNumber(const CString& label, BYTE& ip0, BYTE& ip1, B
     return 0;
 }
 
+std::string CXMLFileReader::ParseAttribute(std::string token, std::string attributeName)
+{
+    const size_t attributeStartPosition = token.find(attributeName);
+    if (attributeStartPosition == token.npos)
+    {
+        return "";
+    }
+    size_t attributeEndPositition = token.find("=\"", attributeStartPosition + 1);
+    if (attributeEndPositition == token.npos)
+    {
+        return "";
+    }
+    attributeEndPositition += 2;
+
+    const size_t valueEndPositition = token.find("\"", attributeEndPositition);
+    if (valueEndPositition == token.npos)
+    {
+        return "";
+    }
+
+    return token.substr(attributeEndPositition, valueEndPositition - attributeEndPositition);
+}
+
+bool CXMLFileReader::IsEmptyLineOrStartOfComment(const char* token)
+{
+    // no use to parse empty lines
+    if (strlen(token) < 3)
+    {
+        return true;
+    }
+
+    // ignore comments
+    if (Equals(token, "!--", 3))
+    {
+        return true;
+    }
+
+    return false;
+}
+
 } // namespace FileHandler
