@@ -3,6 +3,8 @@
 #include <atlimage.h>
 
 #include "GraphCtrl.h"
+#include "../Common/Common.h"
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -14,9 +16,9 @@ static char THIS_FILE[] = __FILE__;
 
 using namespace Graph;
 
-CGraphCtrl::CFontOption::CFontOption() {
-    this->height = 14;
-    this->width = FW_NORMAL;
+CGraphCtrl::FontOption::FontOption()
+    :height(14), width(FW_NORMAL)
+{
 }
 
 /////////////////////////////////////////////////////////////////////////////

@@ -25,11 +25,12 @@ using namespace Communication;
 
 extern CFormView* pView;
 extern CConfigurationSetting g_settings;
+
 CSerialControllerWithTx::CSerialControllerWithTx(void)
 {
     CString errorMsg;
 
-    pakFileHandler = new FileHandler::CPakFileHandler();
+    pakFileHandler = new FileHandler::CPakFileHandler(m_log);
     m_storageDirectory.Format("%sTemp\\", (LPCSTR)g_settings.outputDirectory);
     if (CreateDirectoryStructure(m_storageDirectory)) { // Make sure that the storage directory exists
         GetSysTempFolder(m_storageDirectory);
@@ -46,9 +47,10 @@ CSerialControllerWithTx::CSerialControllerWithTx(void)
 
 
 CSerialControllerWithTx::CSerialControllerWithTx(ELECTRONICS_BOX box) {
+
     CString errorMsg;
 
-    pakFileHandler = new FileHandler::CPakFileHandler();
+    pakFileHandler = new FileHandler::CPakFileHandler(m_log);
     m_storageDirectory.Format("%sTemp\\", (LPCSTR)g_settings.outputDirectory);
     if (CreateDirectoryStructure(m_storageDirectory)) { // Make sure that the storage directory exists
         errorMsg.Format("Could not create storage-directory for serial-data!! Please check settings and restart");
@@ -139,6 +141,9 @@ void CSerialControllerWithTx::SendCommand(char* commandLine)
     WriteSerial(commandLine, commandLength);
     InitCommandLine();
 }
+
+//size of buffer to receive data
+#define SIZEOFBUFFER 2048
 
 bool CSerialControllerWithTx::StartTx()
 {

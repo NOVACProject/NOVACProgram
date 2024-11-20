@@ -5,6 +5,7 @@
 #include "../resource.h"
 #include "EvaluationConfigurationDlg.h"
 #include <SpectralEvaluation/Evaluation/ReferenceFile.h>
+#include <SpectralEvaluation/StringUtils.h>
 #include "../Dialogs/SelectionDialog.h"
 #include "../Dialogs/ReferencePropertiesDlg.h"
 #include "../Dialogs/ReferencePlotDlg.h"
@@ -17,7 +18,7 @@ using namespace novac;
 IMPLEMENT_DYNAMIC(CEvaluationConfigurationDlg, CSystemConfigurationPage)
 
 CEvaluationConfigurationDlg::CEvaluationConfigurationDlg()
-    : CSystemConfigurationPage(CEvaluationConfigurationDlg::IDD)
+    : CSystemConfigurationPage(CEvaluationConfigurationDlg::IDD), m_referenceFileCtrl(this)
 {
     m_configuration = nullptr;
     m_scannerTree = nullptr;
@@ -48,7 +49,8 @@ void CEvaluationConfigurationDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_EDIT_FITLOW, m_editFitFrom);
     DDX_Control(pDX, IDC_EDIT_FITHIGH, m_editFitTo);
 
-    if (m_curSpec != nullptr) {
+    if (m_curSpec != nullptr)
+    {
         DDX_Text(pDX, IDC_EDIT_FITLOW, m_curSpec->channel[m_channel].fitWindow.fitLow);
         DDX_Text(pDX, IDC_EDIT_FITHIGH, m_curSpec->channel[m_channel].fitWindow.fitHigh);
     }
@@ -94,12 +96,14 @@ BOOL CEvaluationConfigurationDlg::OnInitDialog()
 }
 
 /** Setup the tool tips */
-void CEvaluationConfigurationDlg::InitToolTips() {
+void CEvaluationConfigurationDlg::InitToolTips()
+{
     if (m_toolTip.m_hWnd != nullptr)
         return;
 
     // Enable the tool tips
-    if (!m_toolTip.Create(this)) {
+    if (!m_toolTip.Create(this))
+    {
         TRACE0("Failed to create tooltip control\n");
     }
     m_toolTip.AddTool(&m_addReferenceBtn, IDC_BUTTON_ADDREFERENCE);
@@ -113,7 +117,8 @@ void CEvaluationConfigurationDlg::InitToolTips() {
     m_toolTip.Activate(TRUE);
 }
 
-BOOL CEvaluationConfigurationDlg::OnKillActive() {
+BOOL CEvaluationConfigurationDlg::OnKillActive()
+{
     //if((currentSpec >= 0) && (currentSpec < MAX_NUMBER_OF_SCANNING_INSTRUMENTS)){
     //  CConfigurationSetting::SpectrometerSetting *spec = &m_configuration->scanner[currentScanner].spec[currentSpec];
     //  
@@ -130,8 +135,10 @@ BOOL CEvaluationConfigurationDlg::OnKillActive() {
     return CSystemConfigurationPage::OnKillActive();
 }
 
-void CEvaluationConfigurationDlg::InitReferenceFileControl() {
-    if (m_configuration != nullptr && m_curSpec != nullptr) {
+void CEvaluationConfigurationDlg::InitReferenceFileControl()
+{
+    if (m_configuration != nullptr && m_curSpec != nullptr)
+    {
         m_referenceFileCtrl.m_window = &m_curSpec->channel[m_channel].fitWindow;
     }
 
@@ -162,26 +169,27 @@ void CEvaluationConfigurationDlg::InitReferenceFileControl() {
     m_referenceFileCtrl.SetEditable(TRUE); /* make sure the user can edit the positions */
     m_referenceFileCtrl.SetRowCount(3);
     m_referenceFileCtrl.EnableTitleTips(FALSE);	// <-- Disable the small title tips
-    m_referenceFileCtrl.parent = this;
 }
 
-/** Fills in the reference file control */
-void CEvaluationConfigurationDlg::PopulateReferenceFileControl() {
-    long i;
+void CEvaluationConfigurationDlg::PopulateReferenceFileControl()
+{
 
     if (m_configuration == nullptr || m_curSpec == nullptr)
+    {
         return;
+    }
 
     // Clear the control
     m_referenceFileCtrl.DeleteNonFixedRows();
 
     m_referenceFileCtrl.m_window = &m_curSpec->channel[m_channel].fitWindow;
 
-    long numberOfReferences = m_curSpec->channel[m_channel].fitWindow.nRef;
-    m_referenceFileCtrl.SetRowCount(2 + numberOfReferences);
+    const size_t numberOfReferences = m_curSpec->channel[m_channel].fitWindow.NumberOfReferences();
+    m_referenceFileCtrl.SetRowCount(2 + static_cast<int>(numberOfReferences));
 
-    for (i = 0; i < numberOfReferences; ++i) {
-        CReferenceFile& ref = m_curSpec->channel[m_channel].fitWindow.ref[i];
+    for (size_t i = 0; i < numberOfReferences; ++i)
+    {
+        CReferenceFile& ref = m_curSpec->channel[m_channel].fitWindow.reference[i];
 
         m_referenceFileCtrl.SetItemTextFmt(i + 1, 0, CString(ref.m_specieName.c_str()));
         m_referenceFileCtrl.SetItemTextFmt(i + 1, 1, CString(ref.m_path.c_str()));
@@ -210,61 +218,65 @@ void CEvaluationConfigurationDlg::PopulateReferenceFileControl() {
         if (ref.m_squeezeOption == SHIFT_TYPE::SHIFT_LIMIT)
             m_referenceFileCtrl.SetItemTextFmt(1 + i, 3, "limit to %.2lf", ref.m_squeezeValue);
     }
+
     // the last line should be cleared
-    m_referenceFileCtrl.SetItemTextFmt(i + 1, 0, "");
-    m_referenceFileCtrl.SetItemTextFmt(i + 1, 1, "");
-    m_referenceFileCtrl.SetItemTextFmt(i + 1, 2, "");
-    m_referenceFileCtrl.SetItemTextFmt(i + 1, 3, "");
+    m_referenceFileCtrl.SetItemTextFmt(static_cast<int>(numberOfReferences) + 1, 0, "");
+    m_referenceFileCtrl.SetItemTextFmt(static_cast<int>(numberOfReferences) + 1, 1, "");
+    m_referenceFileCtrl.SetItemTextFmt(static_cast<int>(numberOfReferences) + 1, 2, "");
+    m_referenceFileCtrl.SetItemTextFmt(static_cast<int>(numberOfReferences) + 1, 3, "");
 
     // Update the grid
     m_referenceFileCtrl.UpdateData(FALSE);
 }
 
 /** Adding a reference file */
-void CEvaluationConfigurationDlg::OnAddReferenceFile() {
-    CString fileName;
-    TCHAR filter[512];
-    int n = _stprintf(filter, "Reference files\0");
-    n += _stprintf(filter + n + 1, "*.txt;*.xs\0");
-    filter[n + 2] = 0;
-    Common common;
-
+void CEvaluationConfigurationDlg::OnAddReferenceFile()
+{
     if (m_curSpec == nullptr)
+    {
         return;
+    }
+
+    novac::CFitWindow& window = m_curSpec->channel[m_channel].fitWindow;
+    novac::CReferenceFile newReference;
 
     // 1. Check if the reference-file-list is full
-    if (m_curSpec->channel[m_channel].fitWindow.nRef == MAX_N_REFERENCES) {
+    if (window.NumberOfReferences() == MAX_N_REFERENCES)
+    {
         MessageBox("Cannot add more reference files to this scanning instrument");
         return;
     }
 
     // 2. Let the user browse for the file
-    fileName.Format("");
-    if (!common.BrowseForFile(filter, fileName)) {
+    CString fileName = "";
+    if (!Common::BrowseForReferenceFile(fileName))
+    {
         return;
     }
-    m_curSpec->channel[m_channel].fitWindow.ref[m_curSpec->channel[m_channel].fitWindow.nRef].m_path = std::string(fileName);
+    newReference.m_path = std::string(fileName);
 
     // 3. Make a guess for the specie name
     CString specie;
     Common::GuessSpecieName(fileName, specie);
-    if (strlen(specie) != 0) {
-        m_curSpec->channel[m_channel].fitWindow.ref[m_curSpec->channel[m_channel].fitWindow.nRef].m_specieName = std::string((LPCSTR)specie);
+    if (strlen(specie) != 0)
+    {
+        newReference.m_specieName = std::string((LPCSTR)specie);
     }
-    else {
+    else
+    {
         // Could not guess for a specie name. Let the user select one.
         Dialogs::CSelectionDialog selectionDlg;
         CString selection;
-        std::string species[] = { "SO2", "O3", "NO2", "Ring", "BrO" };
-        int nSpecies = 5;
+        const std::vector<std::string> species{ "SO2", "O3", "NO2", "Ring", "BrO" };
         int index = 0;
-        for (int i = 0; i < nSpecies; ++i) {
+        for (size_t i = 0; i < species.size(); ++i)
+        {
             bool insert = true;
 
-            /** Check if there's already specie with the specified name inserted
-                If so */
-            for (int j = 0; j < m_curSpec->channel[m_channel].fitWindow.nRef; ++j) {
-                if (m_curSpec->channel[m_channel].fitWindow.ref[j].m_specieName.compare(species[i]) == 0)
+            /** Check if there's already specie with the specified name inserted */
+            for (size_t j = 0; j < window.NumberOfReferences(); ++j)
+            {
+                if (EqualsIgnoringCase(window.reference[j].m_specieName, species[i]))
                 {
                     insert = false;
                     break;
@@ -280,16 +292,20 @@ void CEvaluationConfigurationDlg::OnAddReferenceFile() {
         INT_PTR ret = selectionDlg.DoModal();
 
         if (IDCANCEL == ret)
+        {
             return;
+        }
 
-        m_curSpec->channel[m_channel].fitWindow.ref[m_curSpec->channel[m_channel].fitWindow.nRef].m_specieName = std::string((LPCSTR)selection);
+        newReference.m_specieName = std::string((LPCSTR)selection);
     }
-    m_curSpec->channel[m_channel].fitWindow.nRef += 1;
+
+    window.reference.push_back(newReference);
 
     PopulateReferenceFileControl();
 }
 
-void CEvaluationConfigurationDlg::OnRemoveReferenceFile() {
+void CEvaluationConfigurationDlg::OnRemoveReferenceFile()
+{
     /** Get the range of selected cells */
     CCellRange cellRange = m_referenceFileCtrl.GetSelectedCellRange();
     int minRow = cellRange.GetMinRow() - 1;
@@ -298,8 +314,9 @@ void CEvaluationConfigurationDlg::OnRemoveReferenceFile() {
     if (m_curSpec == nullptr)
         return;
 
-    if (nRows <= 0) {
-        if (m_curSpec->channel[m_channel].fitWindow.nRef > 1)
+    if (nRows <= 0)
+    {
+        if (m_curSpec->channel[m_channel].fitWindow.NumberOfReferences() > 1)
             return;   /* nothing selected*/
         else
             minRow = 0; /* if there's only one reference file, assume that the user want's to remove it, even though it's not marked*/
@@ -308,37 +325,38 @@ void CEvaluationConfigurationDlg::OnRemoveReferenceFile() {
     if (nRows > 1)
         return; /** Several lines selected */
 
-    if (minRow >= m_curSpec->channel[m_channel].fitWindow.nRef)
+    if (minRow >= m_curSpec->channel[m_channel].fitWindow.NumberOfReferences())
         return; // The last, empty, line is selected for removal
 
+    novac::CFitWindow& window = m_curSpec->channel[m_channel].fitWindow;
 
     // the 'are you sure?' - message
     CString message;
-    message.Format("Are you sure you want to delete the reference for specie %s ?", m_curSpec->channel[m_channel].fitWindow.ref[minRow].m_specieName.c_str());
+    message.Format("Are you sure you want to delete the reference for specie %s ?", window.reference[minRow].m_specieName.c_str());
     int answer = MessageBox(message, "Delete Reference File", MB_YESNO);
     if (IDNO == answer)
         return;
 
     // remove the reference file
-    for (int i = minRow; i < m_curSpec->channel[m_channel].fitWindow.nRef; ++i) {
-        m_curSpec->channel[m_channel].fitWindow.ref[i] = m_curSpec->channel[m_channel].fitWindow.ref[i + 1];
-    }
-    m_curSpec->channel[m_channel].fitWindow.nRef -= 1;
+    window.reference.erase(window.reference.begin() + minRow);
 
     PopulateReferenceFileControl();
-
 }
 
-void CEvaluationConfigurationDlg::SaveData() {
+void CEvaluationConfigurationDlg::SaveData()
+{
     UpdateData(TRUE);
 }
 
-void CEvaluationConfigurationDlg::UpdateDlg() {
+void CEvaluationConfigurationDlg::UpdateDlg()
+{
     UpdateData(FALSE);
 }
 
-void CEvaluationConfigurationDlg::OnChangeScanner() {
-    if (UpdateData(TRUE)) {
+void CEvaluationConfigurationDlg::OnChangeScanner()
+{
+    if (UpdateData(TRUE))
+    {
         CSystemConfigurationPage::OnChangeScanner();
         UpdateData(FALSE);
 
@@ -346,7 +364,8 @@ void CEvaluationConfigurationDlg::OnChangeScanner() {
     }
 }
 
-BOOL ConfigurationDialog::CEvaluationConfigurationDlg::PreTranslateMessage(MSG* pMsg) {
+BOOL ConfigurationDialog::CEvaluationConfigurationDlg::PreTranslateMessage(MSG* pMsg)
+{
     m_toolTip.RelayEvent(pMsg);
 
     return CSystemConfigurationPage::PreTranslateMessage(pMsg);
@@ -359,8 +378,8 @@ BOOL ConfigurationDialog::CEvaluationConfigurationDlg::OnSetActive()
     return CSystemConfigurationPage::OnSetActive();
 }
 
-void CEvaluationConfigurationDlg::OnShowPropertiesWindow() {
-    Dialogs::CReferencePropertiesDlg refDlg;
+void CEvaluationConfigurationDlg::OnShowPropertiesWindow()
+{
     int minRow, nRows;
 
     if (m_curSpec == nullptr)
@@ -373,20 +392,24 @@ void CEvaluationConfigurationDlg::OnShowPropertiesWindow() {
     CFitWindow& window = m_curSpec->channel[m_channel].fitWindow;
 
     // if there's no reference file, then there's nothing to show the properties for
-    if (window.nRef <= 0)
+    if (window.NumberOfReferences() == 0)
         return;
 
-    if (window.nRef == 1) {
+    if (window.NumberOfReferences() == 1)
+    {
         minRow = 0;
     }
-    else {
+    else
+    {
         // Get the selected reference file
         CCellRange cellRange = m_referenceFileCtrl.GetSelectedCellRange();
         minRow = cellRange.GetMinRow() - 1;
         nRows = cellRange.GetRowSpan();
 
-        if (nRows <= 0) {
-            if (m_curSpec->channel[m_channel].fitWindow.nRef > 1) {
+        if (nRows <= 0)
+        {
+            if (m_curSpec->channel[m_channel].fitWindow.NumberOfReferences() > 1)
+            {
                 MessageBox("Please select a reference file.", "Properties");
                 return;   /* nothing selected*/
 
@@ -395,23 +418,25 @@ void CEvaluationConfigurationDlg::OnShowPropertiesWindow() {
                 minRow = 0; /* if there's only one reference file, assume that the user want's to remove it, even though it's not marked*/
         }
 
-        if (nRows > 1) {
+        if (nRows > 1)
+        {
             MessageBox("Please select a single reference file.", "Properties");
             return; // <-- Several lines selected
         }
     }
 
-    // The selected referencefile
-    CReferenceFile* ref = new CReferenceFile(window.ref[minRow]);
-    refDlg.m_ref = ref;
+    // Show the dialog, but only let it modify a copy of the current reference file.
+    // In case the uses presses 'cancel' we don't want any changes to have been made to the real setup.
+    CReferenceFile copyOfReference(window.reference[minRow]);
+
+    Dialogs::CReferencePropertiesDlg refDlg(copyOfReference);
     INT_PTR ret = refDlg.DoModal();
 
-    if (ret == IDOK) {
-        window.ref[minRow] = *ref;
+    if (ret == IDOK)
+    {
+        window.reference[minRow] = copyOfReference;
         PopulateReferenceFileControl();
     }
-
-    delete ref;
 }
 
 void ConfigurationDialog::CEvaluationConfigurationDlg::OnShowReferenceGraph()
@@ -427,12 +452,12 @@ void ConfigurationDialog::CEvaluationConfigurationDlg::OnShowReferenceGraph()
     CFitWindow& window = m_curSpec->channel[m_channel].fitWindow;
 
     // if there's no reference file, then there's nothing to show
-    if (window.nRef <= 0) {
+    if (window.NumberOfReferences() == 0)
+    {
         return;
     }
 
     // Open the dialog
-    Dialogs::CReferencePlotDlg dlg;
-    dlg.m_window = &m_curSpec->channel[m_channel].fitWindow;
+    Dialogs::CReferencePlotDlg dlg(m_curSpec->channel[m_channel].fitWindow);
     dlg.DoModal();
 }

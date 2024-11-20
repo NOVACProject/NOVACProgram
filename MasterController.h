@@ -5,11 +5,10 @@
 class CMasterController
 {
 public:
-    CMasterController(void);
-    ~CMasterController(void);
+    CMasterController();
 
     /** The running state of the master controller */
-    bool  m_fRunning;
+    bool m_fRunning = false;
 
     /** Starts the program */
     void  Start();

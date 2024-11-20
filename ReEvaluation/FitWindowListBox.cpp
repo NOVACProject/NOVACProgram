@@ -1,25 +1,23 @@
 
 #include "stdafx.h"
-#include "../NovacMasterProgram.h"
+#include "../resource.h"
 #include "../Dialogs/QueryStringDialog.h"
 #include "../Evaluation/FitWindowFileHandler.h"
 #include "FitWindowListBox.h"
 
-using namespace ReEvaluation;
+namespace ReEvaluation
+{
 
-// CFitWindowListBox
+static const char* novacFitWindowFilesFilter = "Novac Fit Window Files\0*.nfw\0";
 
 IMPLEMENT_DYNAMIC(CFitWindowListBox, CListBox)
-CFitWindowListBox::CFitWindowListBox()
-{
-    m_reeval = nullptr;
-}
+
+CFitWindowListBox::CFitWindowListBox(CReEvaluator& reeval)
+    : m_reeval(reeval)
+{}
 
 CFitWindowListBox::~CFitWindowListBox()
-{
-    m_reeval = nullptr;
-}
-
+{}
 
 BEGIN_MESSAGE_MAP(CFitWindowListBox, CListBox)
     ON_WM_CONTEXTMENU()
@@ -40,25 +38,26 @@ END_MESSAGE_MAP()
 // CFitWindowListBox message handlers
 
 /** Called to populate the list */
-void CFitWindowListBox::PopulateList() {
-    if (m_reeval == nullptr)
-        return;
-
+void CFitWindowListBox::PopulateList()
+{
     this->ResetContent(); // clear the list
 
-    for (int i = 0; i < m_reeval->m_windowNum; ++i) {
-        CString name(m_reeval->m_window[i].name.c_str());
+    for (int i = 0; i < m_reeval.m_windowNum; ++i)
+    {
+        CString name(m_reeval.m_window[i].name.c_str());
         this->AddString(name);
     }
 }
 
 /** Called when the user presses down the left mouse button */
-void CFitWindowListBox::OnLButtonDown(UINT nFlags, CPoint point) {
+void CFitWindowListBox::OnLButtonDown(UINT nFlags, CPoint point)
+{
     CListBox::OnLButtonDown(nFlags, point);
 }
 
 /** Called to show the context menu */
-void CFitWindowListBox::OnContextMenu(CWnd* pWnd, CPoint pos) {
+void CFitWindowListBox::OnContextMenu(CWnd* pWnd, CPoint pos)
+{
     OnLButtonDown(MK_LBUTTON, pos); // make the current menu item marked
 
     CMenu menu;
@@ -68,13 +67,15 @@ void CFitWindowListBox::OnContextMenu(CWnd* pWnd, CPoint pos) {
 
     // There has to be at least one fit window defined at all times
     //	if there are to few, don't allow the user to remove any
-    if (m_reeval->m_windowNum <= 1) {
+    if (m_reeval.m_windowNum <= 1)
+    {
         pPopup->EnableMenuItem(ID__REMOVEWINDOW, MF_DISABLED | MF_GRAYED);
     }
 
     // If the list of fit windows is full, don't let the user
     //	add any more fit windows
-    if (m_reeval->m_windowNum == CReEvaluator::MAX_N_WINDOWS - 1) {
+    if (m_reeval.m_windowNum == CReEvaluator::MAX_N_WINDOWS - 1)
+    {
         pPopup->EnableMenuItem(ID__INSERTFITWINDOW, MF_DISABLED | MF_GRAYED);
         pPopup->EnableMenuItem(ID__LOADWINDOWFROMFILE, MF_DISABLED | MF_GRAYED);
     }
@@ -85,15 +86,12 @@ void CFitWindowListBox::OnContextMenu(CWnd* pWnd, CPoint pos) {
 }
 
 /** Called to insert a fit window into the list */
-void CFitWindowListBox::OnInsertFitWindow() {
+void CFitWindowListBox::OnInsertFitWindow()
+{
     CString name;
 
-    // Make sure the list box is initialized ok.
-    if (m_reeval == nullptr)
-        return;
-
     // Make sure that there's enough space to store one more window 
-    if (m_reeval->m_windowNum == CReEvaluator::MAX_N_WINDOWS - 1)
+    if (m_reeval.m_windowNum == CReEvaluator::MAX_N_WINDOWS - 1)
         return;
 
     // Ask the user for the name of the window
@@ -106,44 +104,38 @@ void CFitWindowListBox::OnInsertFitWindow() {
         return;
 
     // insert an empty fit window.
-    m_reeval->m_window[m_reeval->m_windowNum].name = std::string((LPCTSTR)name);
-    m_reeval->m_windowNum += 1;
+    m_reeval.m_window[m_reeval.m_windowNum].name = std::string((LPCTSTR)name);
+    m_reeval.m_windowNum += 1;
 
     // Update the list
     PopulateList();
 
     // Select the fit window
-    SetCurSel(m_reeval->m_windowNum - 1);
+    SetCurSel(m_reeval.m_windowNum - 1);
 }
 
 /** Called to load a set of fit window from a file */
-void CFitWindowListBox::OnLoadFitWindows() {
-    FileHandler::CFitWindowFileHandler fitWindowReader;
-    if (nullptr == m_reeval)
+void CFitWindowListBox::OnLoadFitWindows()
+{
+    if (m_reeval.m_windowNum == m_reeval.MAX_N_WINDOWS - 1)
+    {
         return;
-
-    if (m_reeval->m_windowNum == m_reeval->MAX_N_WINDOWS - 1)
-        return;
+    }
 
     // Ask for a file to read from
-    CString fileName;
-    fileName.Format("");
-    TCHAR filter[512];
-    int n = _stprintf(filter, "Novac Fit Window Files\0");
-    n += _stprintf(filter + n + 1, "*.nfw;\0");
-    filter[n + 2] = 0;
-    Common common;
+    CString fileName = "";
 
     // let the user browse for an evaluation log file and if one is selected, read it
-    if (common.BrowseForFile(filter, fileName))
+    if (Common::BrowseForFile(novacFitWindowFilesFilter, fileName))
     {
+        FileHandler::CFitWindowFileHandler fitWindowReader;
         std::vector<novac::CFitWindow> windowsInFile = fitWindowReader.ReadFitWindowFile(fileName);
 
         // Set the windows of the evaluator
-        m_reeval->m_windowNum = windowsInFile.size();
+        m_reeval.m_windowNum = windowsInFile.size();
         for (size_t ii = 0; ii < windowsInFile.size(); ++ii)
         {
-            m_reeval->m_window[ii] = windowsInFile[ii];
+            m_reeval.m_window[ii] = windowsInFile[ii];
         }
     }
 
@@ -154,30 +146,24 @@ void CFitWindowListBox::OnLoadFitWindows() {
     // Need to tell the parent window to update
     CWnd* pWnd = GetParent();
     if (nullptr != pWnd)
+    {
         pWnd->SendMessage(WM_COMMAND, MAKEWPARAM(GetDlgCtrlID(), LBN_SELCHANGE), (LPARAM)m_hWnd);
+    }
 }
 
 /** Called to save a set of fit windows to file */
 void CFitWindowListBox::OnSaveFitWindows()
 {
     FileHandler::CFitWindowFileHandler fitWindowWriter;
-    if (nullptr == m_reeval)
-        return;
 
-    if (0 == m_reeval->m_windowNum)
+    if (0 == m_reeval.m_windowNum)
         return;
 
     // Ask for a file to save the data to
-    CString fileName;
-    fileName.Format("");
-    TCHAR filter[512];
-    int n = _stprintf(filter, "Novac Fit Window Files\0");
-    n += _stprintf(filter + n + 1, "*.nfw;\0");
-    filter[n + 2] = 0;
-    Common common;
+    CString fileName = "";
 
     // let the user browse for an evaluation log file and if one is selected, read it
-    if (common.BrowseForFile_SaveAs(filter, fileName))
+    if (Common::BrowseForFile_SaveAs(novacFitWindowFilesFilter, fileName))
     {
         // if there's not a .nfw-ending on the file, append it!
         if (!Equals(".nfw", fileName.Right(4)))
@@ -187,27 +173,25 @@ void CFitWindowListBox::OnSaveFitWindows()
 
         bool overWrite = true;	// the first window to be saved overwrites the file, the others appends the file
 
-        for (int i = 0; i < m_reeval->m_windowNum; ++i)
+        for (int i = 0; i < m_reeval.m_windowNum; ++i)
         {
-            fitWindowWriter.WriteFitWindow(m_reeval->m_window[i], fileName, overWrite);
+            fitWindowWriter.WriteFitWindow(m_reeval.m_window[i], fileName, overWrite);
             overWrite = false;
         }
     }
 }
 
 /** Called to rename a fit window */
-void CFitWindowListBox::OnRenameWindow() {
+void CFitWindowListBox::OnRenameWindow()
+{
     CString name;
 
-    if (m_reeval == nullptr)
-        return;
-
     int curSel = GetCurSel();
-    if (curSel < 0 || curSel > m_reeval->MAX_N_WINDOWS)
+    if (curSel < 0 || curSel > m_reeval.MAX_N_WINDOWS)
         return;
 
     // Let the initial guess for the name be the old name of the window
-    name = CString(m_reeval->m_window[curSel].name.c_str());
+    name = CString(m_reeval.m_window[curSel].name.c_str());
 
     // Ask the user for the name of the window
     Dialogs::CQueryStringDialog nameDialog;
@@ -219,23 +203,21 @@ void CFitWindowListBox::OnRenameWindow() {
         return;
 
     // Change the name 
-    m_reeval->m_window[curSel].name = std::string((LPCTSTR)name);
+    m_reeval.m_window[curSel].name = std::string((LPCTSTR)name);
 
     // Update hte list
     PopulateList();
 }
 
 /** Called to remove a fit window from the list */
-void CFitWindowListBox::OnRemoveFitWindow() {
-    if (nullptr == m_reeval)
-        return;
-
+void CFitWindowListBox::OnRemoveFitWindow()
+{
     // make sure that there's always at least one window defined
-    if (m_reeval->m_windowNum <= 1)
+    if (m_reeval.m_windowNum <= 1)
         return;
 
     int curSel = this->GetCurSel();
-    if (curSel < 0 || curSel > m_reeval->MAX_N_WINDOWS)
+    if (curSel < 0 || curSel > m_reeval.MAX_N_WINDOWS)
         return;
 
     // Are you sure?
@@ -247,12 +229,15 @@ void CFitWindowListBox::OnRemoveFitWindow() {
 
     // Shift down all the other windows.
     int i;
-    for (i = curSel; i < m_reeval->MAX_N_WINDOWS - 2; ++i) {
-        m_reeval->m_window[i] = m_reeval->m_window[i + 1];
+    for (i = curSel; i < m_reeval.MAX_N_WINDOWS - 2; ++i)
+    {
+        m_reeval.m_window[i] = m_reeval.m_window[i + 1];
     }
-    m_reeval->m_window[i].Clear();
-    m_reeval->m_windowNum -= 1;
+    m_reeval.m_window[i].Clear();
+    m_reeval.m_windowNum -= 1;
 
     // Update the window and the list
     PopulateList();
 }
+
+} // namespace ReEvaluation

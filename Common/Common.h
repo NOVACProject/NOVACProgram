@@ -65,6 +65,7 @@ int Equals(const CString& str1, const CString& str2, unsigned int nCharacters);
 void UploadToNOVACServer(const CString& fileName, int volcanoIndex, bool deleteFile = false);
 
 /** Shows a message in the message box list in the main window */
+void ShowMessage(const std::string& message);
 void ShowMessage(const CString& message);
 void ShowMessage(const TCHAR message[]);
 void ShowMessage(const CString& message, CString connectionID);
@@ -93,9 +94,6 @@ const enum COLUMN_UNIT { UNIT_PPMM, UNIT_MOLEC_CM2 };
 
 // The list of languages that we can manage
 const enum LANGUAGES { LANGUAGE_ENGLISH, LANGUAGE_SPANISH };
-
-// The various kinds of measurement modes that we have
-const enum MEASUREMENT_MODE { MODE_UNKNOWN, MODE_FLUX, MODE_FIXED, MODE_WINDSPEED, MODE_STRATOSPHERE, MODE_DIRECT_SUN, MODE_COMPOSITION, MODE_LUNAR, MODE_TROPOSPHERE, MODE_MAXDOAS };
 
 // The maximum number of references that can be fitted to a single spectrum
 #define MAX_N_REFERENCES 10
@@ -126,9 +124,6 @@ const enum MEASUREMENT_MODE { MODE_UNKNOWN, MODE_FLUX, MODE_FIXED, MODE_WINDSPEE
 
 // conversion from ppmm to mg/m^2 for NO2
 #define GASFACTOR_NO2 1.93
-
-//size of buffer to receive data
-#define SIZEOFBUFFER 2048
 
 //size  of max buffer
 #define MAXBUFFER 65536
@@ -178,95 +173,95 @@ const enum MEASUREMENT_MODE { MODE_UNKNOWN, MODE_FLUX, MODE_FIXED, MODE_WINDSPEE
 // -----------------------------------------------------------------
 
 // signals to 'CEvaluationController' that a new spectrum file has been downloaded and that it should be evaluated
-#define WM_ARRIVED_SPECTRA        WM_USER + 8
+#define WM_ARRIVED_SPECTRA WM_USER + 8
 
 // signals to the 'NovacMasterProgramView' -class that a the status bar should be updated
-#define WM_STATUSMSG		          WM_USER + 9
+#define WM_STATUSMSG WM_USER + 9
 
 // signals to the 'NovacMasterProgramView' - class that a string should be added to the message list
-#define WM_SHOW_MESSAGE           WM_USER + 10
+#define WM_SHOW_MESSAGE WM_USER + 10
 
 //signals to the 'NovacMasterProgramView' - class that a string should be updated to the message list's top string
-#define WM_UPDATE_MESSAGE					WM_USER + 11
+#define WM_UPDATE_MESSAGE WM_USER + 11
 
 // signals to the 'NovacMasterProgramView' -class that a scan has been sucessfully evaluated
 //  also signals to the reevaluation dialog that a spectrum has been sucessfully evaluated
-#define WM_EVAL_SUCCESS		        WM_USER + 12
+#define WM_EVAL_SUCCESS WM_USER + 12
 
 // signals to the 'NovacMasterProgramView' -class that a scan has falied to evaluate
-#define WM_EVAL_FAILURE		        WM_USER + 13
+#define WM_EVAL_FAILURE WM_USER + 13
 
 // signals that something has been done
-#define WM_DONE                   WM_USER + 14
+#define WM_DONE WM_USER + 14
 
 // Signals that a 'cancel' button has been pressed
-#define WM_CANCEL                 WM_USER + 15
+#define WM_CANCEL WM_USER + 15
 
 // Signals that progress has been made
-#define WM_PROGRESS               WM_USER + 16
+#define WM_PROGRESS WM_USER + 16
 
 // Signals that a thread has gone to sleep
-#define WM_GOTO_SLEEP             WM_USER + 17
+#define WM_GOTO_SLEEP WM_USER + 17
 
 // Signals to the WindEvaluator that a new Evaluation-log file has been evaluated
-#define WM_NEW_WIND_EVALLOG         WM_USER + 18
+#define WM_NEW_WIND_EVALLOG WM_USER + 18
 
 // signal to show that scanner is connected and running
-#define WM_SCANNER_RUN              WM_USER + 19
+#define WM_SCANNER_RUN WM_USER + 19
 
 //signal to show that scanner is sleeping
-#define WM_SCANNER_SLEEP            WM_USER + 20
+#define WM_SCANNER_SLEEP WM_USER + 20
 
 //signal to show that scanner is not connected
-#define WM_SCANNER_NOT_CONNECT      WM_USER + 21
+#define WM_SCANNER_NOT_CONNECT WM_USER + 21
 
 //signal to upload a file to FTP server
-#define WM_UPLOAD_NEW_FILE          WM_USER + 22
+#define WM_UPLOAD_NEW_FILE WM_USER + 22
 
 //signal to begin a ftp uploading. 
-#define  WM_START_FTP               WM_USER + 23
+#define  WM_START_FTP WM_USER + 23
 
 //signal to update remote file tree
-#define	 WM_UPDATE_FILE_TREE        WM_USER + 24
+#define	 WM_UPDATE_FILE_TREE WM_USER + 24
 
 // Signals to the GeometryEvaluator that a new Evaluation-log file has been evaluated
-#define WM_NEW_SCAN_EVALLOG         WM_USER + 25
+#define WM_NEW_SCAN_EVALLOG WM_USER + 25
 
 //signal to upload cfgonce file
-#define  WM_UPLOAD_CFGONCE          WM_USER + 26
+#define  WM_UPLOAD_CFGONCE WM_USER + 26
 
 //signal from one thread which is going to download pak file
-#define WM_START_DOWNLOAD           WM_USER + 27
+#define WM_START_DOWNLOAD WM_USER + 27
 
 //signal from one thread which just finished downloading pak file
-#define WM_FINISH_DOWNLOAD          WM_USER + 28
+#define WM_FINISH_DOWNLOAD WM_USER + 28
 
 //signal from one thread which got error from downloading pak file
-#define WM_DOWNLOAD_ERROR           WM_USER + 29
+#define WM_DOWNLOAD_ERROR WM_USER + 29
 
 // Signals that progress has been made, different from WM_PROGRESS
-#define WM_PROGRESS2                WM_USER + 30
+#define WM_PROGRESS2 WM_USER + 30
 
 // Signals that the wind-speed measurements thread has succcessfully correlated two time-series
-#define WM_CORR_SUCCESS             WM_USER + 31
+#define WM_CORR_SUCCESS WM_USER + 31
 
 // Signals that the plume-height measurement thread has succcessfully calculated one plume height
-#define WM_PH_SUCCESS               WM_USER + 32
+#define WM_PH_SUCCESS WM_USER + 32
 
 // Signals a zooming event
-#define WM_ZOOM                     WM_USER + 33
+#define WM_ZOOM WM_USER + 33
 
 // signal from one thread which just finished uploading
-#define WM_FINISH_UPLOAD            WM_USER + 34
+#define WM_FINISH_UPLOAD WM_USER + 34
 
 // signal that it is time to write the daily report
-#define WM_WRITE_REPORT             WM_USER + 35
+#define WM_WRITE_REPORT WM_USER + 35
 
 // Signal that the wind-field has changed
-#define WM_NEW_WINDFIELD            WM_USER + 36
+#define WM_NEW_WINDFIELD WM_USER + 36
 
 // Signal that the configuration-file should be re-written...
-#define WM_REWRITE_CONFIGURATION    WM_USER + 37
+#define WM_REWRITE_CONFIGURATION WM_USER + 37
 
 // -------------------------------------------------------
 // ---------------- CLASS COMMON.H -----------------------
@@ -299,6 +294,10 @@ public:
             @param fileName path of the file	*/
     static void GetFileName(CString& fileName);
 
+    /** Take out the file name from a long path
+            @param fileName path of the file	*/
+    static void GetFileName(std::string& fullFileNameAndPath);
+
     /** Take out the directory from a long path name.
         @param fileName - the complete path of the file */
     static void GetDirectory(CString& fileName);
@@ -328,20 +327,24 @@ public:
     void GetExePath();
 
     /** m_exePath will be set to the current path after a call to 'GetExePath()' */
-    CString   m_exePath;
+    CString m_exePath;
 
     /** m_exeFileName will be set to the filename of the program after a call to 'GetExeFileName()' */
-    CString   m_exeFileName;
+    CString m_exeFileName;
 
     /** Opens a dialog window and lets the user browse for a file */
-    static bool BrowseForFile(TCHAR* filter, CString& fileName);
+    static bool BrowseForFile(const TCHAR* filter, CString& fileName);
+
+    /** Opens a dialog window and lets the user browse for a reference file.
+        This differs from 'BrowseForFile' that the standard filter for reference files is applied. */
+    static bool BrowseForReferenceFile(CString& fileName);
 
     /** Opens a dialog window and lets the user browse for a filename to save to */
-    static bool BrowseForFile_SaveAs(TCHAR* filter, CString& fileName);
+    static bool BrowseForFile_SaveAs(const TCHAR* filter, CString& fileName);
 
     /** Opens a dialog window and lets the user browse for a filename to save to.
         If filterType is not nullptr then it will be filled with the selected filter. */
-    static bool BrowseForFile_SaveAs(TCHAR* filter, CString& fileName, int* filterType);
+    static bool BrowseForFile_SaveAs(const TCHAR* filter, CString& fileName, int* filterType);
 
     /** Opens a dialog window and lets the user browse for a directory.
             @return true if all is ok,

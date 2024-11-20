@@ -43,7 +43,7 @@ namespace Communication
         afx_msg void OnStartFTP(WPARAM wp, LPARAM lp);
 
         /** */
-        afx_msg void OnTimer(UINT nIDEvent, LPARAM lp);
+        afx_msg void OnTimer(WPARAM nIDEvent, LPARAM lp);
 
         /** Called when the thread is starting */
         virtual BOOL InitInstance();

@@ -1,25 +1,20 @@
-
 #include "stdafx.h"
-#include "../NovacMasterProgram.h"
-#include "../Dialogs/QueryStringDialog.h"
-#include "../Evaluation/FitWindowFileHandler.h"
+#include "../resource.h"
 #include "PakFileListBox.h"
+#include "ReEvaluator.h"
 
-using namespace ReEvaluation;
-
-// CPakFileListBox
+namespace ReEvaluation
+{
 
 IMPLEMENT_DYNAMIC(CPakFileListBox, CListBox)
-CPakFileListBox::CPakFileListBox()
-{
-    m_reeval = NULL;
-    m_parent = NULL;
-}
+
+CPakFileListBox::CPakFileListBox(CReEvaluator& reeval, CWnd* parent)
+    : m_reeval(reeval), m_parent(parent)
+{}
 
 CPakFileListBox::~CPakFileListBox()
 {
-    m_reeval = NULL;
-    m_parent = NULL;
+    m_parent = nullptr;
 }
 
 
@@ -31,14 +26,15 @@ END_MESSAGE_MAP()
 
 // CPakFileListBox message handlers
 
-/** Called to populate the list */
-void CPakFileListBox::PopulateList() {
+void CPakFileListBox::PopulateList()
+{
     // first remove everything that is already there
     this->ResetContent();
 
     // then add one string for every scan file selected
-    for (int i = 0; i < m_reeval->m_scanFileNum; ++i) {
-        this->AddString(m_reeval->m_scanFile[i]);
+    for (size_t i = 0; i < m_reeval.m_scanFile.size(); ++i)
+    {
+        this->AddString(m_reeval.m_scanFile[i].c_str());
     }
 
     // Find the longest string in the list box.
@@ -74,24 +70,28 @@ void CPakFileListBox::PopulateList() {
 }
 
 /** Called when the user presses down the left mouse button */
-void CPakFileListBox::OnLButtonDown(UINT nFlags, CPoint point) {
+void CPakFileListBox::OnLButtonDown(UINT nFlags, CPoint point)
+{
     CListBox::OnLButtonDown(nFlags, point);
 }
 
-/** Called to show the context menu */
-void CPakFileListBox::OnContextMenu(CWnd* pWnd, CPoint pos) {
-    if (m_parent == NULL)
+void CPakFileListBox::OnContextMenu(CWnd* pWnd, CPoint pos)
+{
+    if (m_parent == nullptr)
+    {
         return;
+    }
 
     OnLButtonDown(MK_LBUTTON, pos); // make the current menu item marked
 
     CMenu menu;
     VERIFY(menu.LoadMenu(IDR_REEVAL_SCAN_CONTEXTMENU));
     CMenu* pPopup = menu.GetSubMenu(0);
-    ASSERT(pPopup != NULL);
+    ASSERT(pPopup != nullptr);
 
     // If there are no files opened, then none can be removed...
-    if (m_reeval->m_scanFileNum == 0) {
+    if (m_reeval.m_scanFile.size() == 0)
+    {
         pPopup->EnableMenuItem(ID__REMOVESELECTED, MF_DISABLED | MF_GRAYED);
     }
 
@@ -99,3 +99,5 @@ void CPakFileListBox::OnContextMenu(CWnd* pWnd, CPoint pos) {
     pPopup->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, pos.x, pos.y, m_parent);
 
 }
+
+} // namespace ReEvaluation

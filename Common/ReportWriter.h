@@ -35,7 +35,7 @@ namespace FileHandler {
         void SetTimer();
 
         /** */
-        afx_msg void OnTimer(UINT nIDEvent, LPARAM lp);
+        afx_msg void OnTimer(WPARAM nIDEvent, LPARAM lp);
 
         /** Called to write the report */
         static void		WriteReport(CEvaluatedDataStorage* evalDataStorage, CCommunicationDataStorage* commDataStorage);

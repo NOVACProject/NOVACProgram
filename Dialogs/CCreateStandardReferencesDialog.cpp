@@ -3,7 +3,7 @@
 
 #include "StdAfx.h"
 #include "CCreateStandardReferencesDialog.h"
-#include "afxdialogex.h"
+#include "afxdlgs.h"
 #include "../resource.h"
 #include "../Common/Common.h"
 #include <SpectralEvaluation/Calibration/StandardCrossSectionSetup.h>

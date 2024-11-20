@@ -23,8 +23,7 @@ CPakFileInspector::CPakFileInspector(CWnd* pParent /*=nullptr*/)
 }
 
 CPakFileInspector::~CPakFileInspector()
-{
-}
+{}
 
 void CPakFileInspector::DoDataExchange(CDataExchange* pDX)
 {
@@ -68,7 +67,8 @@ BOOL CPakFileInspector::OnInitDialog()
     // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CPakFileInspector::InitPropertiesList() {
+void CPakFileInspector::InitPropertiesList()
+{
     // Put out the list of properties...
     CRect rect;
     this->m_propertiesFrame.GetWindowRect(rect);
@@ -89,7 +89,8 @@ void CPakFileInspector::InitPropertiesList() {
     m_propertyList.InsertItem(index++, "Stopped at:");
 }
 
-void CPakFileInspector::InitHeaderList() {
+void CPakFileInspector::InitHeaderList()
+{
     // Put out the list of properties...
     CRect rect;
     this->m_headerFrame.GetWindowRect(rect);
@@ -142,7 +143,8 @@ void CPakFileInspector::InitHeaderList() {
 
 }
 
-void CPakFileInspector::InitGraph() {
+void CPakFileInspector::InitGraph()
+{
     Common common;
 
     // Initialize the scan graph
@@ -180,7 +182,8 @@ void CPakFileInspector::OnOpenPakFile()
     m_graph.m_userZoomableGraph = false;
 
     // 1. Let the user browse for the reference file
-    if (!common.BrowseForFile(filter, fileName)) {
+    if (!common.BrowseForFile(filter, fileName))
+    {
         m_graph.m_userZoomableGraph = true; // <-- Turn on the zoom again
         return;
     }
@@ -196,7 +199,8 @@ void CPakFileInspector::OnOpenPakFile()
     m_timer = this->SetTimer(0, 500, nullptr);
 }
 
-void CPakFileInspector::CheckPakFile() {
+void CPakFileInspector::CheckPakFile()
+{
     CSpectrumIO reader;
     CSpectrum spec;
     ULONGLONG fileSize = 0;
@@ -208,12 +212,14 @@ void CPakFileInspector::CheckPakFile() {
         return;
 
     // Get the size of the file
-    try {
+    try
+    {
         CFile pFile(m_fileName, CFile::modeRead | CFile::shareDenyNone);
         fileSize = pFile.GetLength();
         fileSize /= 1024; // we want the size in kB.
     }
-    catch (CFileException* /*pEx*/) {
+    catch (CFileException* /*pEx*/)
+    {
         // Here I don't know what to do...
     }
 
@@ -249,6 +255,7 @@ void CPakFileInspector::CheckPakFile() {
     // Reset the scale of the graph
     m_graph.ResetZoomRect();
 
+    TryReadSpectrum();
     DrawSpectrum();
     UpdateFileInfo();
     UpdateHeaderList();
@@ -275,6 +282,8 @@ void CPakFileInspector::OnChangeSpectrum(NMHDR* pNMHDR, LRESULT* pResult)
     // Reset the scale of the graph
     m_graph.ResetZoomRect();
 
+    TryReadSpectrum();
+
     // redraw the graph
     DrawSpectrum();
 
@@ -287,10 +296,8 @@ void CPakFileInspector::OnChangeSpectrum(NMHDR* pNMHDR, LRESULT* pResult)
     *pResult = 0;
 }
 
-void CPakFileInspector::DrawSpectrum() {
-    if (TryReadSpectrum())
-        return;
-
+void CPakFileInspector::DrawSpectrum()
+{
     Graph::CSpectrumGraph::plotRange range;
     GetPlotRange(range);
 
@@ -301,7 +308,8 @@ void CPakFileInspector::DrawSpectrum() {
     m_graph.XYPlot(nullptr, m_spectrum.m_data, m_spectrum.m_length, Graph::CGraphCtrl::PLOT_FIXED_AXIS | Graph::CGraphCtrl::PLOT_CONNECTED);
 }
 
-void CPakFileInspector::UpdateHeaderList() {
+void CPakFileInspector::UpdateHeaderList()
+{
     int index = 0;
     CString str;
 
@@ -386,22 +394,31 @@ void CPakFileInspector::UpdateHeaderList() {
     str.Format("%d", m_spectrumHeader.coneangle);
     m_headerList.SetItemText(index++, 1, str);
 
-    for (int i = 0; i < 8; ++i) {
+    for (int i = 0; i < 8; ++i)
+    {
         str.Format("%d", m_spectrumHeader.ADC[i]);
         m_headerList.SetItemText(index++, 1, str);
     }
 }
 
-/** Update the file information */
-void CPakFileInspector::UpdateFileInfo() {
+void CPakFileInspector::UpdateFileInfo()
+{
     CString str;
 
-    str.Format("Showing spectrum number %d (%s)", 1 + m_curSpectrum, m_spectrumHeader.name);
-    SetDlgItemText(IDC_LABEL_FILEINFO, str);
+    if (m_errorMessage.empty())
+    {
+        str.Format("Showing spectrum number %d (%s)", 1 + m_curSpectrum, m_spectrumHeader.name);
+    }
+    else
+    {
+        str.Format("Spectrum number %d had an issue: %s", 1 + m_curSpectrum, m_errorMessage.c_str());
+    }
 
+    SetDlgItemText(IDC_LABEL_FILEINFO, str);
 }
 
-int CPakFileInspector::TryReadSpectrum() {
+int CPakFileInspector::TryReadSpectrum()
+{
     CSpectrumIO reader;
     CString message;
     char headerBuffer[16384];
@@ -409,28 +426,25 @@ int CPakFileInspector::TryReadSpectrum() {
 
     // Read the spectrum
     const std::string fName((LPCSTR)m_fileName);
-    const bool ret = reader.ReadSpectrum(fName, m_curSpectrum, m_spectrum, headerBuffer, 16384, &headerSize);
+    const bool success = reader.ReadSpectrum(fName, m_curSpectrum, m_spectrum, headerBuffer, 16384, &headerSize);
 
-    if (!ret) {
-        //    switch(reader.m_lastError){
-              //case CSpectrumIO::ERROR_EOF:                   message.Format("Spectrum number %d is corrupt - EOF found", m_curSpec); break;
-              //case CSpectrumIO::ERROR_COULD_NOT_OPEN_FILE:   message.Format("Could not open spectrum file"); break;
-              //case CSpectrumIO::ERROR_CHECKSUM_MISMATCH:     message.Format("Spectrum number %d is corrupt - Checksum mismatch", m_curSpec); break;
-              //case CSpectrumIO::ERROR_SPECTRUM_TOO_LARGE:    message.Format("Spectrum number %d is corrupt - Spectrum too large", m_curSpec); break;
-              //case CSpectrumIO::ERROR_SPECTRUM_NOT_FOUND:    message.Format("Spectrum number %d not found. End of file.", m_curSpec); break; // m_BtnNextSpec.EnableWindow(FALSE); break;
-              //case CSpectrumIO::ERROR_DECOMPRESS:            message.Format("Spectrum number %d is corrupt - Decompression error", m_curSpec); break;
-        //    }
-        return 1;
+    if (success)
+    {
+        // copy the header to the 'm_spectrumHeader'
+        memcpy(&m_spectrumHeader, headerBuffer, headerSize * sizeof(char));
+        m_errorMessage = "";
+        return 0;
     }
 
-    // copy the header to the 'm_spectrumHeader'
-    memcpy(&m_spectrumHeader, headerBuffer, headerSize * sizeof(char));
+    // clear the header
+    memset(&m_spectrumHeader, 0, sizeof(m_spectrumHeader));
+    memset(m_spectrum.m_data, 0, sizeof(m_spectrum.m_data));
 
-    return 0;
+    m_errorMessage = novac::ToString(reader.m_lastError);
+
+    return 1;
 }
 
-
-/** Gets the range of the plot */
 void CPakFileInspector::GetPlotRange(Graph::CSpectrumGraph::plotRange& range)
 {
     Graph::CSpectrumGraph::plotRange rect;
@@ -446,14 +460,14 @@ void CPakFileInspector::GetPlotRange(Graph::CSpectrumGraph::plotRange& range)
     return;
 }
 
-/** Zooming in the graph */
-LRESULT CPakFileInspector::OnZoomGraph(WPARAM wParam, LPARAM lParam) {
-    this->DrawSpectrum();
+LRESULT CPakFileInspector::OnZoomGraph(WPARAM wParam, LPARAM lParam)
+{
+    DrawSpectrum();
 
     return 0;
 }
 
-void Dialogs::CPakFileInspector::OnTimer(UINT nIDEvent)
+void Dialogs::CPakFileInspector::OnTimer(WPARAM nIDEvent)
 {
     m_graph.m_userZoomableGraph = true;
 

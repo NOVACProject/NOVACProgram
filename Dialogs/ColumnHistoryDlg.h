@@ -1,5 +1,6 @@
 #pragma once
 #include "afxwin.h"
+#include "afxdlgs.h"
 #include "../Graphs/GraphCtrl.h"
 
 
@@ -45,8 +46,6 @@ public:
     void DrawHistoryPlots();
     void RedrawAll();
 private:
-
-    Common common;
 
     // min and max column (Y-axis range)
     int m_minColumn;

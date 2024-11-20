@@ -4,14 +4,9 @@
 #include "afxwin.h"
 
 #include "MasterController.h"
-#include "Configuration/Configuration.h"
-#include "Configuration/EvaluationConfigurationDlg.h"
 #include "Dialogs/ConfigurationDlg.h"
 #include "Dialogs/ColumnHistoryDlg.h"
 #include "Dialogs/FluxHistoryDlg.h"
-#include "EvaluatedDataStorage.h"
-#include "CommunicationDataStorage.h"
-#include "Meteorology/MeteorologicalData.h"
 #include "View_OverView.h"
 #include "View_WindMeasOverView.h"
 #include "View_Instrument.h"
@@ -21,6 +16,8 @@
 
 #pragma once
 
+class CCommunicationDataStorage;
+class CEvaluatedDataStorage;
 
 class CNovacMasterProgramView : public CFormView
 {
@@ -120,6 +117,10 @@ public:
     afx_msg void OnUpdateChangeUnitOfColumnToPPMM(CCmdUI* pCmdUI);
     afx_msg void OnUpdateChangeUnitOfColumnToMolecCm2(CCmdUI* pCmdUI);
     afx_msg void OnUpdateMenuSummarizeFluxData(CCmdUI* pCmdUI);
+    afx_msg void OnUpdateMenuViewInstrumenttab(CCmdUI* pCmdUI);
+    afx_msg void OnSize(UINT nType, int cx, int cy);
+    afx_msg void OnAnalysisCalibrateSpectrometer();
+    afx_msg void OnAnalysisCalculateRatio();
 
 
     virtual BOOL PreTranslateMessage(MSG* pMsg); // for handling the tool tips
@@ -127,7 +128,7 @@ public:
     // --------------- DIALOG COMPONENTS ------------------------------
     // the status messages
     CListBox m_statusListBox;
-    CStatic	 m_statusFrame;
+    CStatic  m_statusFrame;
 
     // the tool tips
     CToolTipCtrl  m_toolTip;
@@ -146,17 +147,18 @@ public:
 
     // The wind-measurements overview page
     CView_WindMeasOverView* m_windOverView;
-    bool										m_showWindOverView;
+    bool m_showWindOverView;
 
     // The instrument page
     CView_Instrument* m_instrumentView;
-    bool										m_instrumentViewVisible; // true if the Instrument-page is shown
+    bool m_instrumentViewVisible; // true if the Instrument-page is shown
 
     // The property sheet, holds the property pages
-    CPropertySheet	m_sheet;
+    CPropertySheet m_sheet;
 
     /** */
     CStatic m_masterFrame;
+
 private:
     // --------------- DATA STRUCTURES FOR SHOWING THE EVALUATION RESULT -------------
 
@@ -181,16 +183,10 @@ private:
     void ForwardMessage(int message, WPARAM wParam, LPARAM lParam);
 
     /** Uploads auxiliary data to the FTP-Server */
-    void	UploadAuxData();
+    void UploadAuxData();
 
     /** Scan the last status-log file for interesting data */
-    void	ScanStatusLogFile();
-
-
-public:
-    afx_msg void OnUpdateMenuViewInstrumenttab(CCmdUI* pCmdUI);
-    afx_msg void OnSize(UINT nType, int cx, int cy);
-    afx_msg void OnAnalysisCalibratesSectrometer();
+    void ScanStatusLogFile();
 };
 
 #ifndef _DEBUG  // debug version in NovacMasterProgramView.cpp

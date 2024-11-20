@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "MasterController.h"
 #include "Common/Common.h"
+#include "NovacProgramLog.h"
 
 #ifdef _MSC_VER
 #pragma warning (push, 4)
@@ -67,16 +68,16 @@ UINT CheckForOldSpectra(LPVOID pParam);
 void SetThreadName(DWORD dwThreadID, LPCTSTR szThreadName);
 
 #define MS_VC_EXCEPTION 0x406d1388 
-typedef struct tagTHREADNAME_INFO {
+typedef struct tagTHREADNAME_INFO
+{
     DWORD dwType; // must be 0x1000 
     LPCSTR szName; // pointer to name (in same addr space) 
     DWORD dwThreadID; // thread ID (-1 caller thread) 
     DWORD dwFlags; // reserved for future use, most be zero 
 } THREADNAME_INFO;
 
-CMasterController::CMasterController(void)
+CMasterController::CMasterController()
 {
-    m_fRunning = false;
     g_comm = nullptr;
     g_eval = nullptr;
     g_windMeas = nullptr;
@@ -85,15 +86,13 @@ CMasterController::CMasterController(void)
     g_report = nullptr;
 }
 
-CMasterController::~CMasterController(void)
+void CMasterController::Start()
 {
-}
-
-void CMasterController::Start() {
     CString message;
 
     // Start by checking the settings in the program
-    if (CheckSettings()) {
+    if (CheckSettings())
+    {
         ShowMessage("Fail to start program. Please check settings and restart");
         return;
     }
@@ -151,7 +150,8 @@ void CMasterController::Start() {
 void CMasterController::Stop()
 {
     /** Stop the evaluation and wind-speed correlation thread */
-    if (m_fRunning) {
+    if (m_fRunning)
+    {
         g_eval->PostThreadMessage(WM_QUIT, NULL, NULL);
         ::WaitForSingleObject(g_eval, INFINITE);
 
@@ -214,10 +214,12 @@ UINT CheckForOldSpectra(LPVOID /*pParam*/)
         Common::CheckForSpectraInDir(path, pakFilesToEvaluate);
     }
 
+    NovacProgramLog log;
+
     // 4. Go through all the spectrum files found and evaluate them
     if (!pakFilesToEvaluate.IsEmpty())
     {
-        CPakFileHandler pakFileHandler;
+        CPakFileHandler pakFileHandler(log);
         POSITION pos = pakFilesToEvaluate.GetHeadPosition();
         while (pos != nullptr)
         {
@@ -250,13 +252,13 @@ bool CMasterController::CheckSettings()
             for (int k = 0; k < g_settings.scanner[i].spec[j].channelNum; ++k)
             {
                 const novac::CFitWindow* window = &g_settings.scanner[i].spec[j].channel[k].fitWindow;
-                for (int n = 0; n < window->nRef; ++n)
+                for(const auto& reference : window->reference)
                 {
-                    FILE* f = fopen(window->ref[n].m_path.c_str(), "r");
+                    FILE* f = fopen(reference.m_path.c_str(), "r");
                     if (nullptr == f)
                     {
                         CString message;
-                        message.Format("Cannot read reference file: %s", window->ref[n].m_path.c_str());
+                        message.Format("Cannot read reference file: %s", reference.m_path.c_str());
                         MessageBox(NULL, message, "Error in settings", MB_OK);
                         return true;
                     }
@@ -276,10 +278,12 @@ void SetThreadName(DWORD dwThreadID, LPCTSTR szThreadName)
     info.szName = szThreadName;
     info.dwThreadID = dwThreadID;
     info.dwFlags = 0;
-    __try {
-        RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(DWORD), (DWORD*)&info);
+    __try
+    {
+        RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(DWORD), (ULONG_PTR*)&info);
     }
-    __except (EXCEPTION_CONTINUE_EXECUTION) {
+    __except (EXCEPTION_CONTINUE_EXECUTION)
+    {
     }
 }
 

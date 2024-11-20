@@ -15,7 +15,8 @@ IMPLEMENT_DYNAMIC(CPostWindDlg, CDialog)
 CPostWindDlg::CPostWindDlg(CWnd* pParent /*=NULL*/)
     : CDialog(CPostWindDlg::IDD, pParent)
 {
-    for (int k = 0; k < MAX_N_SERIES; ++k) {
+    for (int k = 0; k < MAX_N_SERIES; ++k)
+    {
         m_OriginalSeries[k] = NULL;
         m_PreparedSeries[k] = NULL;
         m_logFileHandler[k] = NULL;
@@ -27,7 +28,8 @@ CPostWindDlg::CPostWindDlg(CWnd* pParent /*=NULL*/)
 
 CPostWindDlg::~CPostWindDlg()
 {
-    for (int k = 0; k < MAX_N_SERIES; ++k) {
+    for (int k = 0; k < MAX_N_SERIES; ++k)
+    {
         delete m_OriginalSeries[k];
         delete m_PreparedSeries[k];
         delete m_logFileHandler[k];
@@ -80,12 +82,10 @@ END_MESSAGE_MAP()
 // CPostWindDlg message handlers
 
 void CPostWindDlg::OnChangeEvallog1()
-{
-}
+{}
 
 void CPostWindDlg::OnChangeEvallog2()
-{
-}
+{}
 
 void CPostWindDlg::OnBrowseSeries1()
 {
@@ -107,7 +107,8 @@ void CPostWindDlg::OnBrowseSeries2()
     DrawColumn();
 }
 
-int CPostWindDlg::BrowseForEvalLog(int seriesNumber) {
+int CPostWindDlg::BrowseForEvalLog(int seriesNumber)
+{
     CString evLog;
     evLog.Format("");
     TCHAR filter[512];
@@ -120,7 +121,8 @@ int CPostWindDlg::BrowseForEvalLog(int seriesNumber) {
         return 0;
 
     // let the user browse for an evaluation log file and if one is selected, read it
-    if (common.BrowseForFile(filter, evLog)) {
+    if (common.BrowseForFile(filter, evLog))
+    {
 
         // completely reset any old data
         if (m_logFileHandler[seriesNumber] != NULL)
@@ -128,18 +130,23 @@ int CPostWindDlg::BrowseForEvalLog(int seriesNumber) {
         m_logFileHandler[seriesNumber] = new FileHandler::CEvaluationLogFileHandler();
 
         m_logFileHandler[seriesNumber]->m_evaluationLog.Format(evLog);
-        if (SUCCESS != m_logFileHandler[seriesNumber]->ReadEvaluationLog()) {
+        if (SUCCESS != m_logFileHandler[seriesNumber]->ReadEvaluationLog())
+        {
             m_logFileHandler[seriesNumber]->m_evaluationLog.Format("");
             return 0;
         }
 
         // find the wind-speed measurement series in the log file
         int k;
-        for (k = 0; k < m_logFileHandler[seriesNumber]->m_scanNum; ++k) {
+        for (k = 0; k < m_logFileHandler[seriesNumber]->m_scanNum; ++k)
+        {
             if (m_logFileHandler[seriesNumber]->IsWindSpeedMeasurement(k))
+            {
                 break;
+            }
         }
-        if (k == m_logFileHandler[seriesNumber]->m_scanNum) {
+        if (k == m_logFileHandler[seriesNumber]->m_scanNum)
+        {
             // no wind speed measurment found
             MessageBox("That evaluation log does not contain a wind speed measurement");
             return 0;
@@ -148,15 +155,21 @@ int CPostWindDlg::BrowseForEvalLog(int seriesNumber) {
         Evaluation::CScanResult& scan = m_logFileHandler[seriesNumber]->m_scan[k];
         long length = scan.GetEvaluatedNum();
         if (length <= 0)
+        {
             return 0; // <-- something's wrong here!!
+        }
 
-        if (scan.IsWindMeasurement()) {
+        if (novac::IsWindMeasurement(scan))
+        {
             m_OriginalSeries[seriesNumber] = new WindSpeedMeasurement::CWindSpeedCalculator::CMeasurementSeries(length);
             if (m_OriginalSeries[seriesNumber] == NULL)
+            {
                 return 0; // <-- failed to allocate enough memory
+            }
 
             const CDateTime* startTime = scan.GetStartTime(0);
-            for (int k = 0; k < length; ++k) {
+            for (int k = 0; k < length; ++k)
+            {
                 const CDateTime* time = scan.GetStartTime(k);
                 m_OriginalSeries[seriesNumber]->column[k] = scan.GetColumn(k, 0);
 
@@ -231,9 +244,11 @@ BOOL CPostWindDlg::OnInitDialog()
 }
 
 /** Draws the result */
-void	CPostWindDlg::DrawResult() {
+void	CPostWindDlg::DrawResult()
+{
     static const int BUFFER_SIZE = 1024;
-    if (corr == NULL) {
+    if (corr == NULL)
+    {
         corr = new double[BUFFER_SIZE];
         delay = new double[BUFFER_SIZE];
         ws = new double[BUFFER_SIZE];
@@ -246,11 +261,13 @@ void	CPostWindDlg::DrawResult() {
 
     /** Calculate the distance */
     double distance;
-    if (fabs(m_coneAngle - 90.0) < 1.0) {
+    if (fabs(m_coneAngle - 90.0) < 1.0)
+    {
         // Flat scanner
         distance = m_settings.plumeHeight * tan(DEGREETORAD * m_settings.angleSeparation);
     }
-    else {
+    else
+    {
         // Cone scanner
         double angle = DEGREETORAD * (90.0 - (m_coneAngle - fabs(m_pitch)));
         distance = m_settings.plumeHeight * fabs(tan(angle) - tan(angle - DEGREETORAD * m_settings.angleSeparation));
@@ -261,10 +278,12 @@ void	CPostWindDlg::DrawResult() {
 
     /** Copy the values to the local buffers */
     int length = 0;
-    for (int k = 0; k < m_calc.m_length; ++k) {
+    for (int k = 0; k < m_calc.m_length; ++k)
+    {
         if (length > BUFFER_SIZE)
             break;
-        if (m_calc.used[k]) {
+        if (m_calc.used[k])
+        {
             corr[length] = m_calc.corr[k];
             delay[length] = m_calc.delays[k];
             if (fabs(delay[length]) > 0.01)
@@ -275,17 +294,20 @@ void	CPostWindDlg::DrawResult() {
         }
     }
 
-    if (m_showOption == 0) {
+    if (m_showOption == 0)
+    {
         /** Draw the correlation */
         m_resultGraph.SetYUnits("Correlation [-]");
         m_resultGraph.XYPlot(NULL, corr, length);
     }
-    else if (m_showOption == 1) {
+    else if (m_showOption == 1)
+    {
         /** Draw the delay */
         m_resultGraph.SetYUnits("Temporal delay [s]");
         m_resultGraph.XYPlot(NULL, delay, length);
     }
-    else if (m_showOption == 2) {
+    else if (m_showOption == 2)
+    {
         /** Draw the resulting wind speed */
         m_resultGraph.SetYUnits("Wind speed [m/s]");
         m_resultGraph.XYPlot(NULL, ws, length);
@@ -293,14 +315,17 @@ void	CPostWindDlg::DrawResult() {
 }
 
 /** Draws the column plot */
-void	CPostWindDlg::DrawColumn() {
+void	CPostWindDlg::DrawColumn()
+{
 
     double minT = 1e16, maxT = -1e16, minC = 1e16, maxC = -1e16;
     int nSeries = 0;
 
     // get the range for the plot
-    for (int k = 0; k < MAX_N_SERIES; ++k) {
-        if (m_OriginalSeries[k] != NULL) {
+    for (int k = 0; k < MAX_N_SERIES; ++k)
+    {
+        if (m_OriginalSeries[k] != NULL)
+        {
             minT = min(minT, m_OriginalSeries[k]->time[0]);
             maxT = max(maxT, m_OriginalSeries[k]->time[m_OriginalSeries[k]->length - 1]);
 
@@ -318,8 +343,10 @@ void	CPostWindDlg::DrawColumn() {
     m_columnGraph.SetRange(minT, maxT, 0, minC, maxC, 1);
 
     // Draw the time series
-    for (int k = 0; k < MAX_N_SERIES; ++k) {
-        if (m_OriginalSeries[k] != NULL) {
+    for (int k = 0; k < MAX_N_SERIES; ++k)
+    {
+        if (m_OriginalSeries[k] != NULL)
+        {
 
             // ---------- Draw the original time series -----------
             // set the color
@@ -333,7 +360,8 @@ void	CPostWindDlg::DrawColumn() {
                 Graph::CGraphCtrl::PLOT_FIXED_AXIS | Graph::CGraphCtrl::PLOT_CONNECTED);
 
             // ---------- Draw the filtered time series -----------
-            if (m_settings.lowPassFilterAverage > 0) {
+            if (m_settings.lowPassFilterAverage > 0)
+            {
                 m_columnGraph.SetLineWidth(2);
                 m_columnGraph.SetPlotColor(RGB(255, 255, 255));
                 // perform the low pass filtering
@@ -358,7 +386,8 @@ void	CPostWindDlg::DrawColumn() {
         The number of iterations is taken from 'm_settings.lowPassFilterAverage'
         The treated series is m_OriginalSeries[seriesNo]
         The result is saved as m_PreparedSeries[seriesNo]	*/
-int	CPostWindDlg::LowPassFilter(int seriesNo) {
+int	CPostWindDlg::LowPassFilter(int seriesNo)
+{
     if (m_settings.lowPassFilterAverage <= 0)
         return 0;
 
@@ -407,7 +436,8 @@ void CPostWindDlg::OnCalculateWindspeed()
     double	avgCorr2 = Average(m_calc.corr, m_calc.m_length);
 
     // 5. Use the results which gave the highest average correlation
-    if (avgCorr1 > avgCorr2) {
+    if (avgCorr1 > avgCorr2)
+    {
         m_calc.CalculateDelay(delay, m_OriginalSeries[0], m_OriginalSeries[1], m_settings);
     }
 
@@ -427,7 +457,8 @@ void CPostWindDlg::OnChangePlumeHeight()
 
 }
 
-void CPostWindDlg::InitLegends() {
+void CPostWindDlg::InitLegends()
+{
     // The legend for series 1
     m_legendSeries1.ShowWindow(SW_SHOW);
     m_legendSeries1.SetBackgroundColor(m_colorSeries[0]);

@@ -5,7 +5,7 @@
 #include "FTPHandler.h"
 #include "SerialControllerWithTx.h"
 #include "NodeControlInfo.h"
-//#include "../Common/Spectra/PakFileHandler.h"
+#include "../NovacProgramLog.h"
 
 #ifdef _MSC_VER
 // Make sure to use warning level 4
@@ -212,6 +212,8 @@ UINT PollDirectory(LPVOID pParam) {
     timeStruct wakeupTime = g_settings.scanner[mainIndex].comm.wakeupTime;
     CString serialId = g_settings.scanner[mainIndex].spec[0].serialNumber;
     
+    NovacProgramLog log;
+
     while (g_runFlag)
     {
         // --------------- CHECK IF WE SHOULD GO TO SLEEP OR WAKE UP ---------------
@@ -234,13 +236,13 @@ UINT PollDirectory(LPVOID pParam) {
         }
 
         // Check directory for data 
-        message.Format("Checking for pak files in %s", directory);
+        message.Format("Checking for pak files in %s", (LPCSTR)directory);
         ShowMessage(message);
         CList <CString, CString&> pakFilesToEvaluate;
         int rcode = common.CheckForSpectraInDir(directory, pakFilesToEvaluate);
         if (rcode == INVALID_FILE_ATTRIBUTES) {
             pView->PostMessage(WM_SCANNER_NOT_CONNECT, (WPARAM) & (serialId), 0);
-            message.Format("Error reading directory: %s", directory);
+            message.Format("Error reading directory: %s", (LPCSTR)directory);
             ShowMessage(message);
         }
         else {
@@ -251,9 +253,9 @@ UINT PollDirectory(LPVOID pParam) {
             if (!pakFilesToEvaluate.IsEmpty())
             {
                 pView->PostMessage(WM_SCANNER_RUN, (WPARAM) & (serialId), 0);
-                message.Format("%d pak files found for %s", pakFilesToEvaluate.GetSize(), serialId);
+                message.Format("%d pak files found for %s", pakFilesToEvaluate.GetSize(), (LPCSTR)serialId);
                 ShowMessage(message);
-                CPakFileHandler pakFileHandler;
+                CPakFileHandler pakFileHandler(log);
                 POSITION pos = pakFilesToEvaluate.GetHeadPosition();
                 while (pos != nullptr)
                 {
@@ -267,12 +269,12 @@ UINT PollDirectory(LPVOID pParam) {
             }
             else {
                 pView->PostMessage(WM_SCANNER_SLEEP, (WPARAM) & (serialId), 0);
-                message.Format("0 pak files found for %s", serialId);
+                message.Format("0 pak files found for %s", (LPCSTR)serialId);
                 ShowMessage(message);
             }
 
         }
-        message.Format("%s directory polling sleeping for %d seconds", serialId, queryPeriod);
+        message.Format("%s directory polling sleeping for %d seconds", (LPCSTR)serialId, queryPeriod);
         ShowMessage(message);
         Sleep(queryPeriod * 1000);
         nRoundsAfterWakeUp++;

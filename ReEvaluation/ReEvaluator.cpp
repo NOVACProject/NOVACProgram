@@ -5,37 +5,23 @@
 #include "../Common/Version.h"
 #include "../Evaluation/ScanEvaluation.h"
 #include "../Dialogs/QueryStringDialog.h"
+#include "../NovacProgramLog.h"
 #include <SpectralEvaluation/StringUtils.h>
+#include <SpectralEvaluation/File/File.h>
 #include <SpectralEvaluation/Spectra/SpectrometerModel.h>
 
-using namespace ReEvaluation;
+#include <sstream>
+
 using namespace Evaluation;
 using namespace novac;
 
-CReEvaluator::CReEvaluator(void)
+namespace ReEvaluation
 {
-    fRun = false;
-    m_pause = 0;
-    m_sleeping = false;
 
+CReEvaluator::CReEvaluator()
+{
     // initialize the scan file list
-    m_scanFileNum = 0;
-    m_scanFile.SetSize(64); // <-- The initial guess of the number of pak-files
-
-    // initialize the list of references 
-    for (int i = 0; i < MAX_N_WINDOWS; ++i) {
-        for (int j = 1; j < MAX_N_REFERENCES; ++j) {
-            m_window[i].ref[j].SetShift(SHIFT_TYPE::SHIFT_FIX, 0.0);
-            m_window[i].ref[j].SetSqueeze(SHIFT_TYPE::SHIFT_FIX, 1.0);
-        }
-    }
-    m_windowNum = 1;
-    m_curWindow = 0;
-
-    pView = nullptr;
-    m_progress = 0;
-
-    m_statusMsg.Format("");
+    m_scanFile.reserve(64); // <-- The initial guess of the number of pak-files
 
     // ignoring
     m_ignore_Lower.m_channel = 1144;
@@ -49,24 +35,18 @@ CReEvaluator::CReEvaluator(void)
     // The sky spectrum 
     m_skySettings.skyOption = Configuration::SKY_OPTION::MEASURED_IN_SCAN;
     m_skySettings.indexInScan = 0;
-
-    // The default is that the spectra are summed, not averaged
-    m_averagedSpectra = false;
 }
 
 /** Halts the current operation */
-bool CReEvaluator::Stop() {
+bool CReEvaluator::Stop()
+{
     fRun = false;
     return true;
 }
 
 bool CReEvaluator::DoEvaluation()
 {
-    /* Check the settings before we start */
-    if (!MakeInitialSanityCheck())
-    {
-        return false;
-    }
+    MakeInitialSanityCheck();
 
     /** Prepare everything for evaluating */
     if (!PrepareEvaluation())
@@ -77,8 +57,10 @@ bool CReEvaluator::DoEvaluation()
     /* evaluate the spectra */
     m_progress = 0;
 
+    NovacProgramLog log;
+
     // The CScanEvaluation-object handles the evaluation of one single scan.
-    CScanEvaluation ev;
+    CScanEvaluation ev(log);
     ev.pView = this->pView;
     ev.m_pause = &m_pause;
     ev.m_sleeping = &m_sleeping;
@@ -89,9 +71,9 @@ bool CReEvaluator::DoEvaluation()
     ev.SetOption_AveragedSpectra(m_averagedSpectra);
 
     // loop through all the scan files
-    for (int curScanFile = 0; curScanFile < m_scanFileNum; ++curScanFile)
+    for (size_t curScanFile = 0; curScanFile < m_scanFile.size(); ++curScanFile)
     {
-        m_progress = curScanFile / (double)m_scanFileNum;
+        m_progress = curScanFile / (double)m_scanFile.size();
         m_progress *= 1000.0;
         if (pView != nullptr)
         {
@@ -99,21 +81,22 @@ bool CReEvaluator::DoEvaluation()
         }
 
         // The CScanFileHandler is a structure for reading the spectral information from the scan-file
-        CScanFileHandler scan;
+        CScanFileHandler scan(m_log);
 
         // Check the scan file
-        const std::string scanFileName((LPCSTR)m_scanFile[curScanFile]);
-        if (SUCCESS != scan.CheckScanFile(scanFileName))
+        const std::string scanFileName(m_scanFile[curScanFile]);
+        novac::LogContext context(novac::LogContext::FileName, novac::GetFileName(scanFileName));
+        if (SUCCESS != scan.CheckScanFile(context, scanFileName))
         {
             CString errStr;
-            errStr.Format("Could not read scan-file %s", (LPCTSTR)m_scanFile[curScanFile]);
-            MessageBox(NULL, errStr, "Error", MB_OK);
+            errStr.Format("Could not read scan-file %s", m_scanFile[curScanFile]);
+            MessageBox(nullptr, errStr, "Error", MB_OK);
             continue;
         }
 
         // update the status window
         m_statusMsg.Format("Evaluating scan number %d", curScanFile);
-        ShowMessage(m_statusMsg);
+        m_log.Information(context, std::string(m_statusMsg));
 
         // For each scanfile: loop through the fit windows
         for (m_curWindow = 0; m_curWindow < m_windowNum; ++m_curWindow)
@@ -159,7 +142,7 @@ bool CReEvaluator::DoEvaluation()
                 {
                     CString message;
                     message.Format("It seems like the sky-spectrum is saturated in the fit-region. Continue?");
-                    if (IDNO == MessageBox(NULL, message, "Saturated sky spectrum?", MB_YESNO))
+                    if (IDNO == MessageBox(nullptr, message, "Saturated sky spectrum?", MB_YESNO))
                     {
                         break; // continue with the next scan-file
                     }
@@ -167,7 +150,7 @@ bool CReEvaluator::DoEvaluation()
             }
 
             // Evaluate the scan-file
-            int success = ev.EvaluateScan(m_scanFile[curScanFile], m_window[m_curWindow], &fRun, &m_darkSettings);
+            int success = ev.EvaluateScan(context, m_scanFile[curScanFile], m_window[m_curWindow], &fRun, &m_darkSettings);
 
             // Check if the user wants to stop
             if (!fRun)
@@ -197,61 +180,71 @@ bool CReEvaluator::DoEvaluation()
     return true;
 }
 
-/* Check the settings before we start */
-bool CReEvaluator::MakeInitialSanityCheck() {
-    // 1. Check so that there are any fit windows defined
+void CReEvaluator::MakeInitialSanityCheck() const
+{
     if (this->m_windowNum <= 0)
-        return false;
+    {
+        throw std::invalid_argument("Cannot run re-evaluation, no fit windows have been defined.");
+    }
 
-    // 2. Check so that there are not too many fit windows defined
     if (m_windowNum > MAX_N_WINDOWS)
-        return false;
+    {
+        throw std::invalid_argument("Cannot run re-evaluation, too many fit windows have been defined.");
+    }
 
-    // 3. Check so that there are any spectrum files to evaluate
-    if (this->m_scanFileNum <= 0)
-        return false;
-
-    return true;
+    if (this->m_scanFile.size() == 0)
+    {
+        throw std::invalid_argument("Cannot run re-evaluation, no scan files have been added.");
+    }
 }
 
 bool CReEvaluator::CreateOutputDirectory()
 {
-    CString cDateTime, path, fileName;
     struct tm* tim;
     time_t t;
-
     time(&t);
     tim = localtime(&t);
+
+    CString cDateTime;
     cDateTime.Format("%04d%02d%02d_%02d%02d", tim->tm_year + 1900, tim->tm_mon + 1, tim->tm_mday, tim->tm_hour, tim->tm_min);
 
     // Get the directory name
-    path.Format("%s", (LPCTSTR)m_scanFile[0]);
-    fileName.Format("%s", (LPCTSTR)m_scanFile[0]);
-    Common::GetDirectory(path); // gets the directory of the scan-file
+    CString fileName(m_scanFile[0].c_str());
     Common::GetFileName(fileName);
+    CString path(m_scanFile[0].c_str());
+    Common::GetDirectory(path); // gets the directory of the scan-file
     m_outputDir.Format("%s\\ReEvaluation_%s_%s", (LPCTSTR)path, (LPCTSTR)fileName, (LPCTSTR)cDateTime);
 
     // Create the directory
-    if (0 == CreateDirectory(m_outputDir, NULL)) {
+    if (0 == CreateDirectory(m_outputDir, nullptr))
+    {
         DWORD errorCode = GetLastError();
-        if (errorCode != ERROR_ALREADY_EXISTS) { /* We shouldn't quit just because the directory that we want to create already exists. */
+        if (errorCode != ERROR_ALREADY_EXISTS)
+        {
+            /* We shouldn't quit just because the directory that we want to create already exists. */
             CString tmpStr;
             tmpStr.Format("Could not create output directory. Error code returned %ld. Do you want to create an output directory elsewhere?", errorCode);
-            int ret = MessageBox(NULL, tmpStr, "Could not create output directory", MB_YESNO);
+            int ret = MessageBox(nullptr, tmpStr, "Could not create output directory", MB_YESNO);
             if (ret == IDNO)
+            {
                 return false;
-            else {
+            }
+            else
+            {
                 // Create the output-directory somewhere else
                 Dialogs::CQueryStringDialog pathDialog;
                 pathDialog.m_windowText.Format("The path to the output directory?");
                 pathDialog.m_inputString = &path;
                 INT_PTR ret = pathDialog.DoModal();
                 if (IDCANCEL == ret)
+                {
                     return false;
+                }
                 m_outputDir.Format("%s\\ReEvaluation_%s_%s", (LPCTSTR)path, (LPCTSTR)fileName, (LPCTSTR)cDateTime);
-                if (0 == CreateDirectory(m_outputDir, NULL)) {
+                if (0 == CreateDirectory(m_outputDir, nullptr))
+                {
                     tmpStr.Format("Could not create output directory. ReEvaluation aborted.");
-                    MessageBox(NULL, tmpStr, "ERROR", MB_OK);
+                    MessageBox(nullptr, tmpStr, "ERROR", MB_OK);
                     return false;
                 }
             }
@@ -260,7 +253,7 @@ bool CReEvaluator::CreateOutputDirectory()
     return true;
 }
 
-bool CReEvaluator::WriteEvaluationLogHeader(int fitWindowIndex)
+void CReEvaluator::WriteEvaluationLogHeader(int fitWindowIndex)
 {
     CString time, date, name;
     Common::GetDateText(date);
@@ -276,8 +269,7 @@ bool CReEvaluator::WriteEvaluationLogHeader(int fitWindowIndex)
     FILE* f = fopen(m_evalLog[fitWindowIndex], "w");
     if (f == nullptr)
     {
-        MessageBox(NULL, "Could not create evaluation-log file, evaluation aborted", "FileError", MB_OK);
-        return false; // failed to open the file, quit it
+        throw std::invalid_argument("Could not create evaluation-log file, evaluation aborted");
     }
 
     // The common header
@@ -301,7 +293,8 @@ bool CReEvaluator::WriteEvaluationLogHeader(int fitWindowIndex)
         fprintf(f, "#Ignore Saturated Spectra\n");
 
     // The sky-spectrum used
-    switch (m_skySettings.skyOption) {
+    switch (m_skySettings.skyOption)
+    {
     case Configuration::SKY_OPTION::MEASURED_IN_SCAN:                   fprintf(f, "#Sky: First spectrum in scanFile\n");	break;
     case Configuration::SKY_OPTION::USER_SUPPLIED:                      fprintf(f, "#Sky: %s\n", m_skySettings.skySpectrumFile.c_str()); break;
     case Configuration::SKY_OPTION::SPECTRUM_INDEX_IN_SCAN:             fprintf(f, "#Sky: Spectrum number %d", m_skySettings.indexInScan); break;
@@ -309,48 +302,47 @@ bool CReEvaluator::WriteEvaluationLogHeader(int fitWindowIndex)
     }
 
     // Write the region used:
-    if (window.UV)
-        fprintf(f, "#Region: UV\n");
-    else
-        fprintf(f, "#Region: Visible\n");
+    fprintf(f, "#OffsetRemovedFrom: %zd\n", window.offsetRemovalRange.from);
+    fprintf(f, "#OffsetRemovedTo: %zd\n", window.offsetRemovalRange.to);
 
     // If the spectra are averaged or not
     if (m_averagedSpectra)
         fprintf(f, "#Spectra are averaged, not summed\n");
 
     // The reference-files
-    fprintf(f, "#nSpecies=%d\n", window.nRef);
+    fprintf(f, "#nSpecies=%d\n", window.NumberOfReferences());
     fprintf(f, "#Specie\tShift\tSqueeze\tReferenceFile\n");
-    for (int i = 0; i < window.nRef; ++i) {
-        fprintf(f, "#%s\t", window.ref[i].m_specieName.c_str());
-        switch (window.ref[i].m_shiftOption) {
+    for (const auto& reference : window.reference)
+    {
+        fprintf(f, "#%s\t", reference.m_specieName.c_str());
+        switch (reference.m_shiftOption)
+        {
         case SHIFT_TYPE::SHIFT_FIX:
-            fprintf(f, "%0.3lf\t", window.ref[i].m_shiftValue); break;
+            fprintf(f, "%0.3lf\t", reference.m_shiftValue); break;
         case SHIFT_TYPE::SHIFT_LINK:
-            fprintf(f, "linked to %s\t", window.ref[(int)window.ref[i].m_shiftValue].m_specieName.c_str()); break;
+            fprintf(f, "linked to %s\t", window.reference[static_cast<size_t>(reference.m_shiftValue)].m_specieName.c_str()); break;
         case SHIFT_TYPE::SHIFT_LIMIT:
-            fprintf(f, "limited to +-%0.3lf\t", window.ref[i].m_shiftValue);
+            fprintf(f, "limited to +-%0.3lf\t", reference.m_shiftValue);
         default:
             fprintf(f, "free\t"); break;
         }
 
-        switch (window.ref[i].m_squeezeOption) {
+        switch (reference.m_squeezeOption)
+        {
         case SHIFT_TYPE::SHIFT_FIX:
-            fprintf(f, "%0.3lf\t", window.ref[i].m_squeezeValue); break;
+            fprintf(f, "%0.3lf\t", reference.m_squeezeValue); break;
         case SHIFT_TYPE::SHIFT_LINK:
-            fprintf(f, "linked to %s\t", window.ref[(int)window.ref[i].m_squeezeValue].m_specieName.c_str()); break;
+            fprintf(f, "linked to %s\t", window.reference[static_cast<size_t>(reference.m_squeezeValue)].m_specieName.c_str()); break;
         case SHIFT_TYPE::SHIFT_LIMIT:
-            fprintf(f, "limited to +-%0.3lf\t", window.ref[i].m_squeezeValue);
+            fprintf(f, "limited to +-%0.3lf\t", reference.m_squeezeValue);
         default:
             fprintf(f, "free\t"); break;
         }
-        fprintf(f, "%s\n", window.ref[i].m_path.c_str());
+        fprintf(f, "%s\n", reference.m_path.c_str());
     }
     fprintf(f, "\n");
 
     fclose(f);
-
-    return true;
 }
 
 bool CReEvaluator::AppendResultToEvaluationLog(const Evaluation::CScanResult& result, const CScanFileHandler& scan, int fitWindowIndex)
@@ -391,18 +383,8 @@ bool CReEvaluator::AppendResultToEvaluationLog(const Evaluation::CScanResult& re
     fprintf(f, "\ttemperature=%.2f\n", skySpec.m_info.m_temperature);
 
     // The mode
-    if (result.IsDirectSunMeasurement())
-        fprintf(f, "\tmode=direct_sun\n");
-    if (result.IsLunarMeasurement())
-        fprintf(f, "\tmode=lunar\n");
-    else if (result.IsWindMeasurement())
-        fprintf(f, "\tmode=wind\n");
-    else if (result.IsStratosphereMeasurement())
-        fprintf(f, "\tmode=stratospheric\n");
-    else if (result.IsCompositionMeasurement())
-        fprintf(f, "\tmode=composition\n");
-    else
-        fprintf(f, "\tmode=plume\n");
+    const novac::MeasurementMode mode = novac::CheckMeasurementMode(result);
+    fprintf(f, "\tmode=%s\n", novac::ToString(mode).c_str());
 
     // Finally, the version of the file and the version of the program
     fprintf(f, "\tsoftwareversion=%d.%d\n", CVersion::majorNumber, CVersion::minorNumber);
@@ -412,23 +394,20 @@ bool CReEvaluator::AppendResultToEvaluationLog(const Evaluation::CScanResult& re
 
     // Write the header
     fprintf(f, "#scanangle\tstarttime\tstoptime\tname\tdelta\tchisquare\texposuretime\tnumspec\tintensity\tfitintensity\tisgoodpoint\toffset\tflag\t");
-    for (int i = 0; i < window.nRef; ++i)
+    for (const auto& reference : window.reference)
     {
-        CString name;
-        name.Format("%s", window.ref[i].m_specieName.c_str());
-
-        fprintf(f, "column(%s)\tcolumnerror(%s)\t", (LPCTSTR)name, (LPCTSTR)name);
-        fprintf(f, "shift(%s)\tshifterror(%s)\t", (LPCTSTR)name, (LPCTSTR)name);
-        fprintf(f, "squeeze(%s)\tsqueezeerror(%s)\t", (LPCTSTR)name, (LPCTSTR)name);
+        fprintf(f, "column(%s)\tcolumnerror(%s)\t", reference.m_specieName.c_str(), reference.m_specieName.c_str());
+        fprintf(f, "shift(%s)\tshifterror(%s)\t", reference.m_specieName.c_str(), reference.m_specieName.c_str());
+        fprintf(f, "squeeze(%s)\tsqueezeerror(%s)\t", reference.m_specieName.c_str(), reference.m_specieName.c_str());
     }
 
     if (window.fitType == novac::FIT_TYPE::FIT_HP_SUB || window.fitType == novac::FIT_TYPE::FIT_POLY)
     {
-        CString name = "fraunhoferref";
+        const char* name = "fraunhoferref";
 
-        fprintf(f, "column(%s)\tcolumnerror(%s)\t", (LPCTSTR)name, (LPCTSTR)name);
-        fprintf(f, "shift(%s)\tshifterror(%s)\t", (LPCTSTR)name, (LPCTSTR)name);
-        fprintf(f, "squeeze(%s)\tsqueezeerror(%s)", (LPCTSTR)name, (LPCTSTR)name);
+        fprintf(f, "column(%s)\tcolumnerror(%s)\t", name, name);
+        fprintf(f, "shift(%s)\tshifterror(%s)\t", name, name);
+        fprintf(f, "squeeze(%s)\tsqueezeerror(%s)", name, name);
     }
 
     fprintf(f, "\n<spectraldata>\n");
@@ -480,14 +459,15 @@ bool CReEvaluator::AppendResultToEvaluationLog(const Evaluation::CScanResult& re
         //		fprintf(f, "%.0lf\t", spec.MaxValue(m_window[m_curWindow].fitLow, m_window[m_curWindow].fitHigh));
 
         // the number of references
-        int nRef = window.nRef;
+        int nRef = window.NumberOfReferences();
         if (window.fitType == novac::FIT_TYPE::FIT_HP_SUB || window.fitType == novac::FIT_TYPE::FIT_POLY)
         {
             ++nRef;
         }
 
         // The Result
-        for (int j = 0; j < nRef; ++j) {
+        for (int j = 0; j < nRef; ++j)
+        {
 
             fprintf(f, "%.2e\t", result.GetColumn(i, j));
             fprintf(f, "%.2e\t", result.GetColumnError(i, j));
@@ -509,49 +489,33 @@ bool CReEvaluator::AppendResultToEvaluationLog(const Evaluation::CScanResult& re
 
 bool CReEvaluator::PrepareEvaluation()
 {
-    for (int curWindow = 0; curWindow < m_windowNum; ++curWindow)
+    try
     {
-        if (!CreateOutputDirectory())
+        for (int curWindow = 0; curWindow < m_windowNum; ++curWindow)
         {
-            return false;
-        }
+            if (!CreateOutputDirectory())
+            {
+                return false;
+            }
 
-        if (!ReadReferences(m_window[curWindow]))
-        {
-            MessageBox(NULL, "Not all references could be read. Please check settings and start again", "Error in settings", MB_OK);
-            return false;
-        }
+            ReadReferences(m_window[curWindow]);
 
-        /* then create the evaluation log and write its header */
-        if (!WriteEvaluationLogHeader(curWindow))
-        {
-            return false;
+            WriteEvaluationLogHeader(curWindow);
         }
+    }
+    catch (novac::InvalidReferenceException& ex)
+    {
+        std::stringstream msg;
+        msg << ex.what() << ". Please check settings and start again.";
+        throw std::invalid_argument(msg.str());
     }
 
     return true;
 }
 
-void CReEvaluator::SortScans() {
-    CString	tmp;
-    bool change;
-
-    // TODO: Change this. Use std::sort?
-    do {
-        change = false;
-        for (int k = 0; k < m_scanFileNum - 1; ++k) {
-            CString& str1 = m_scanFile.GetAt(k);
-            CString& str2 = m_scanFile.GetAt(k + 1);
-
-            if (str1.Compare(str2) > 0) {
-                tmp = m_scanFile.GetAt(k); //copy
-                m_scanFile.SetAt(k, m_scanFile.GetAt(k + 1));
-                m_scanFile.SetAt(k + 1, tmp);
-                change = true;
-            }
-            else {
-                continue;
-            }
-        }
-    } while (change);
+void CReEvaluator::SortScans()
+{
+    std::sort(begin(m_scanFile), end(m_scanFile));
 }
+
+}  // namespace ReEvaluation

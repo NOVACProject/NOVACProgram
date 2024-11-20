@@ -1,18 +1,15 @@
 #include "StdAfx.h"
-#include "spectrumgraph.h"
+#include "SpectrumGraph.h"
+#include "../Common/Common.h"
 
 using namespace Graph;
 
 CSpectrumGraph::CSpectrumGraph(void)
 {
-    parentWnd = nullptr;
-    m_zooming = false;
     m_zoomRect.minLambda = 0.0;
     m_zoomRect.maxLambda = 0.0;
     m_zoomRect.minIntens = 0.0;
     m_zoomRect.maxIntens = 0.0;
-
-    m_userZoomableGraph = true;
 }
 
 CSpectrumGraph::~CSpectrumGraph(void)
@@ -98,7 +95,7 @@ void CSpectrumGraph::OnLButtonUp(UINT nFlags, CPoint point)
         parentWnd->PostMessage(WM_ZOOM);
     }
     else {
-        //	  parentWnd->PostMessage(WM_LBU_IN_GPSPLOT);
+        //   parentWnd->PostMessage(WM_LBU_IN_GPSPLOT);
     }
 
 }

@@ -101,31 +101,6 @@ namespace Evaluation
                 wind-field for this volcano.*/
         bool CalculateWindDirection(double plumeCentre, double plumeHeight = -1);
 
-        /** Checks the kind of measurement that we have here and sets the
-            flag 'm_measurementMode' to the appropriate value... */
-        MEASUREMENT_MODE CheckMeasurementMode();
-
-        /** Returns true if this is a flux measurement */
-        bool IsFluxMeasurement();
-
-        /** Returns true if this is a fixed angle measurement */
-        bool IsFixedAngleMeasurement() const;
-
-        /** Returns true if this is a wind-speed measurement */
-        bool IsWindMeasurement() const;
-
-        /** Returns true if this is a stratospheric mode measurement */
-        bool IsStratosphereMeasurement() const;
-
-        /** Returns true if this is a direct-sun mode measurement */
-        bool IsDirectSunMeasurement() const;
-
-        /** Returns true if this is a lunar mode measurement */
-        bool IsLunarMeasurement() const;
-
-        /** Returns true if this is a composition mode measurement */
-        bool IsCompositionMeasurement() const;
-
         /** Calculates the maximum good column value in the scan,
             corrected for the offset.
             NB!! The function 'CalculateOffset' must have been called
@@ -386,6 +361,7 @@ namespace Evaluation
         // ----------------------------------------------------------------------
 
         /** The offset in the measurement */
+        // NOTICE that this is duplicated between here and m_plumeProperties...
         double m_offset;
 
         /** The calculated flux and the parameters used to
@@ -394,15 +370,15 @@ namespace Evaluation
 
         /** The estimated error (in percent) in the geometrical setup for
             this flux-calculation. */
-        double m_geomError;
+        double m_geomError = 30.0;  // best-case guess, 30%
 
         /** The estimated error (in percent) due to scattering inside or below the
             plume for this flux-calculation */
-        double m_scatteringError;
+        double m_scatteringError = 30.0;    // best-case guess, 30%
 
         /** The estimated error (in percent) of the spectral results due
             to incertainties in cross-sections, slit-functions, stray-light etc. */
-        double m_spectroscopyError;
+        double m_spectroscopyError = 15.0; // best-case guess, 15%
 
         /** The calculated wind-direction. This is set to -999 if unknown */
         double m_windDirection;
@@ -415,9 +391,6 @@ namespace Evaluation
 
         /** The calculated completness of the plume. Set to -999 if unknown */
         double m_plumeCompleteness;
-
-        /** Flag to signal if this is a wind measurement, a scan, or something else. */
-        MEASUREMENT_MODE m_measurementMode;
 
         // ----------------------------------------------------------------------
         // -------------------- PRIVATE METHODS ---------------------------------

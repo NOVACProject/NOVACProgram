@@ -3,7 +3,6 @@
 
 #include "stdafx.h"
 #include "OpenInstrumentCalibrationDialog.h"
-#include "afxdialogex.h"
 #include "../Common/Common.h"
 #include "../resource.h"
 

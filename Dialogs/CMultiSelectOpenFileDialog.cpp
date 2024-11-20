@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "FECFileDialog.h"
+#include "CMultiSelectOpenFileDialog.h"
 
 #ifndef _INC_CDERR
 #include <cderr.h>     // for FNERR_BUFFERTOSMALL
@@ -13,12 +13,12 @@ static char THIS_FILE[] = __FILE__;
 
 using namespace Dialogs;
 /////////////////////////////////////////////////////////////////////////////
-// CFECFileDialog
+// CMultiSelectOpenFileDialog
 
-IMPLEMENT_DYNAMIC(CFECFileDialog, CFileDialog)
+IMPLEMENT_DYNAMIC(CMultiSelectOpenFileDialog, CFileDialog)
 /////////////////////////////////////////////////////////////////////////////
 //
-//  CFECFileDialog constructor  (public member function)
+//  CMultiSelectOpenFileDialog constructor  (public member function)
 //    Initializes the class variables
 //
 //  Parameters :
@@ -30,7 +30,7 @@ IMPLEMENT_DYNAMIC(CFECFileDialog, CFileDialog)
 /////////////////////////////////////////////////////////////////////////////
 
 
-CFECFileDialog::CFECFileDialog(BOOL bOpenFileDialog, LPCTSTR lpszDefExt, LPCTSTR lpszFileName,
+CMultiSelectOpenFileDialog::CMultiSelectOpenFileDialog(BOOL bOpenFileDialog, LPCTSTR lpszDefExt, LPCTSTR lpszFileName,
                                DWORD dwFlags, LPCTSTR lpszFilter, CWnd* pParentWnd) :
     CFileDialog(bOpenFileDialog, lpszDefExt, lpszFileName, dwFlags, lpszFilter, pParentWnd)
 {
@@ -40,7 +40,7 @@ CFECFileDialog::CFECFileDialog(BOOL bOpenFileDialog, LPCTSTR lpszDefExt, LPCTSTR
 }
 /////////////////////////////////////////////////////////////////////////////
 //
-//  CFECFileDialog destructor  (public member function)
+//  CMultiSelectOpenFileDialog destructor  (public member function)
 //    Cleans up the class variables
 //
 //  Parameters :
@@ -52,7 +52,7 @@ CFECFileDialog::CFECFileDialog(BOOL bOpenFileDialog, LPCTSTR lpszDefExt, LPCTSTR
 /////////////////////////////////////////////////////////////////////////////
 
 
-CFECFileDialog::~CFECFileDialog()
+CMultiSelectOpenFileDialog::~CMultiSelectOpenFileDialog()
 {
     if (Files)
     {
@@ -61,14 +61,14 @@ CFECFileDialog::~CFECFileDialog()
     }
 }
 
-BEGIN_MESSAGE_MAP(CFECFileDialog, CFileDialog)
-    //{{AFX_MSG_MAP(CFECFileDialog)
+BEGIN_MESSAGE_MAP(CMultiSelectOpenFileDialog, CFileDialog)
+    //{{AFX_MSG_MAP(CMultiSelectOpenFileDialog)
     //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 //
-//  CFECFileDialog::DoModal  (public member function)
+//  CMultiSelectOpenFileDialog::DoModal  (public member function)
 //    Starts the CFileDialog and properly handles the return code
 //
 //  Parameters :
@@ -80,7 +80,7 @@ END_MESSAGE_MAP()
 //
 /////////////////////////////////////////////////////////////////////////////
 
-int CFECFileDialog::DoModal()
+INT_PTR CMultiSelectOpenFileDialog::DoModal()
 {
     if (Files)
     {
@@ -90,7 +90,7 @@ int CFECFileDialog::DoModal()
         Folder = NULL;
     }
 
-    int ret = CFileDialog::DoModal();
+    auto ret = CFileDialog::DoModal();
 
     if (ret == IDCANCEL)
     {
@@ -103,7 +103,7 @@ int CFECFileDialog::DoModal()
 
 /////////////////////////////////////////////////////////////////////////////
 //
-//  CFECFileDialog::GetNextPathName  (public member function)
+//  CMultiSelectOpenFileDialog::GetNextPathName  (public member function)
 //    Call this function to retrieve the next file name from the group
 //    selected in the dialog box.
 //
@@ -117,7 +117,7 @@ int CFECFileDialog::DoModal()
 //
 /////////////////////////////////////////////////////////////////////////////
 
-CString CFECFileDialog::GetNextPathName(POSITION& pos) const
+CString CMultiSelectOpenFileDialog::GetNextPathName(POSITION& pos) const
 {
     if (!Files)
         return CFileDialog::GetNextPathName(pos);
@@ -140,7 +140,7 @@ CString CFECFileDialog::GetNextPathName(POSITION& pos) const
 
 /////////////////////////////////////////////////////////////////////////////
 //
-//  CFECFileDialog::GetStartPosition  (public member function)
+//  CMultiSelectOpenFileDialog::GetStartPosition  (public member function)
 //    Call this member function to retrieve the POSITION of the first file
 //    in a list of multiple selected files.
 //
@@ -152,7 +152,7 @@ CString CFECFileDialog::GetNextPathName(POSITION& pos) const
 //
 /////////////////////////////////////////////////////////////////////////////
 
-POSITION CFECFileDialog::GetStartPosition()
+POSITION CMultiSelectOpenFileDialog::GetStartPosition()
 {
     if (!Files)
         return CFileDialog::GetStartPosition();
@@ -181,7 +181,7 @@ POSITION CFECFileDialog::GetStartPosition()
 
 /////////////////////////////////////////////////////////////////////////////
 //
-//  CFECFileDialog::OnFileNameChange  (protected member function)
+//  CMultiSelectOpenFileDialog::OnFileNameChange  (protected member function)
 //    If the lpstrFile and nMaxFile variables in the OPENFILENAME structure
 //    are not large enough to handle the users selection, we handle the
 //    selection ourselves.
@@ -197,7 +197,7 @@ POSITION CFECFileDialog::GetStartPosition()
 //
 /////////////////////////////////////////////////////////////////////////////
 
-void CFECFileDialog::OnFileNameChange()
+void CMultiSelectOpenFileDialog::OnFileNameChange()
 {
     DWORD dwReqBuffSize = _CalcRequiredBuffSize();
     if (dwReqBuffSize > GetOFN().nMaxFile)
@@ -208,7 +208,7 @@ void CFECFileDialog::OnFileNameChange()
     CFileDialog::OnFileNameChange();
 }
 
-void CFECFileDialog::_SetExtBuffer(DWORD dwReqBuffSize)
+void CMultiSelectOpenFileDialog::_SetExtBuffer(DWORD dwReqBuffSize)
 {
     try
     {
@@ -224,7 +224,7 @@ void CFECFileDialog::_SetExtBuffer(DWORD dwReqBuffSize)
     }
 }
 
-DWORD CFECFileDialog::_CalcRequiredBuffSize()
+DWORD CMultiSelectOpenFileDialog::_CalcRequiredBuffSize()
 {
     DWORD dwRet = 0;
     IFileOpenDialog* pFileOpen = GetIFileOpenDialog();
@@ -265,7 +265,7 @@ DWORD CFECFileDialog::_CalcRequiredBuffSize()
         }
     }
     dwRet += 1; // add an extra character
-                // release the IFileOpenDialog pointer
+    // release the IFileOpenDialog pointer
     pFileOpen->Release();
     return dwRet;
 }

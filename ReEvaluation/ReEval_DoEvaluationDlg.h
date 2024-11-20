@@ -1,150 +1,141 @@
 #pragma once
 
-#include "ReEvaluator.h"
 #include "afxwin.h"
 #include <memory>
 #include "../Graphs/OScopeCtrl.h"
 #include "../Graphs/DoasFitGraph.h"
-#include "afxcmn.h"
-
-// CReEval_DoEvaluationDlg dialog
-
-UINT DoEvaluation(LPVOID pParam);
 
 namespace ReEvaluation
 {
+class CReEvaluator;
 
-    class CReEval_DoEvaluationDlg : public CPropertyPage
-    {
-        DECLARE_DYNAMIC(CReEval_DoEvaluationDlg)
+class CReEval_DoEvaluationDlg : public CPropertyPage
+{
+    DECLARE_DYNAMIC(CReEval_DoEvaluationDlg)
 
-    public:
-        CReEval_DoEvaluationDlg();
-        virtual ~CReEval_DoEvaluationDlg();
+public:
+    CReEval_DoEvaluationDlg(CReEvaluator& reeval);
+    virtual ~CReEval_DoEvaluationDlg();
 
-        // Dialog Data
-        enum { IDD = IDD_REEVAL_FINAL };
+    // Dialog Data
+    enum { IDD = IDD_REEVAL_FINAL };
 
-    protected:
-        virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+protected:
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
-        DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
 
-    public:
-        // --------------------------- PUBLIC DATA -------------------------- 
+private:
 
-        /** A handle to the reevaluator */
-        CReEvaluator* m_reeval;
+    /** A handle to the reevaluator */
+    CReEvaluator& m_reeval;
 
-        /** Controlls wheather the total fit window should show the
-            total fit or the residual */
-        int m_showFit;
+    /** Controlls wheather the total fit window should show the
+        total fit or the residual */
+    int m_showFit;
 
-        /** The listbox with the species which are used in the fit. Lets the user
-            choose which reference to show */
-        CListBox m_specieList;
+    /** The listbox with the species which are used in the fit. Lets the user
+        choose which reference to show */
+    CListBox m_specieList;
 
-        /** The currently selected specie in the specie list */
-        long    m_curSpecie;
+    /** The currently selected specie in the specie list */
+    long m_curSpecie;
 
-        /** The frame for the total fit graph */
-        CStatic m_frameTotalfit;
+    /** The frame for the total fit graph */
+    CStatic m_frameTotalfit;
 
-        /** The frame for the reference fit graph */
-        CStatic m_frameRefFit;
+    /** The frame for the reference fit graph */
+    CStatic m_frameRefFit;
 
-        /** The total fit graph */
-        Graph::COScopeCtrl m_GraphTotal;
+    /** The total fit graph */
+    Graph::COScopeCtrl m_GraphTotal;
 
-        /** The reference fit graph */
-        Graph::CDOASFitGraph m_GraphRef;
+    /** The reference fit graph */
+    Graph::CDOASFitGraph m_referenceFitGraph;
 
+    /** The 'do Evaluation' button */
+    CButton m_btnDoEval;
 
-        // --------------------------- PUBLIC METHODS --------------------------
+    /** The 'cancel' button */
+    CButton m_btnCancel;
 
-        /** Initializes the graphs */
-        void  InitializeGraphs();
+    /** The progress bar indicating which scan-file we're at */
+    CProgressCtrl m_progressBar;
 
-        /** Populates the reference list */
-        void  PopulateRefList();
+    /** The progress bar indicating which spectrum inside the .pak-file we're at */
+    CProgressCtrl m_progressBar2;
 
-        /** Called to initialize the dialog */
-        virtual BOOL OnInitDialog();
+    /** The reevaluation is run as a separate thread */
+    CWinThread* pReEvalThread = nullptr;
 
-        /** Called when the dialog has been hidden and is shown again */
-        virtual BOOL OnSetActive();
+    /** A local copy of the residual of the last fit */
+    double residual[MAX_SPECTRUM_LENGTH];
 
-        /** Called when the user changes the selected specie in the species list */
-        afx_msg void OnChangeSpecie();
+    /** A local copy of the last fit result */
+    double fitResult[MAX_N_REFERENCES][MAX_SPECTRUM_LENGTH];
 
-        /** Called to redraw the 'total' graph */
-        afx_msg void RedrawTotalFitGraph();
+    /** A local copy of the last read spectrum */
+    double spectrum[MAX_SPECTRUM_LENGTH];
 
-        /** The user has pressed the 'do Evaluation' button */
-        afx_msg void OnDoEvaluation();
+    /** A pointer to the result-set */
+    std::unique_ptr<Evaluation::CScanResult> m_result;
+    // --------------------------- PRIVATE METHODS --------------------------
 
-        /** The user has pressed the Cancel button */
-        afx_msg void OnCancelEvaluation();
+    /** Initializes the graphs */
+    void  InitializeGraphs();
 
-        /** The 'do Evaluation' button */
-        CButton m_btnDoEval;
+    /** Populates the reference list */
+    void  PopulateRefList();
 
-        /** The 'cancel' button */
-        CButton m_btnCancel;
+    /** Called to initialize the dialog */
+    virtual BOOL OnInitDialog();
 
-        /** The progress bar indicating which scan-file we're at */
-        CProgressCtrl m_progressBar;
+    /** Called when the dialog has been hidden and is shown again */
+    virtual BOOL OnSetActive();
 
-        /** The progress bar indicating which spectrum inside the .pak-file we're at */
-        CProgressCtrl m_progressBar2;
+    /** Called when the user changes the selected specie in the species list */
+    afx_msg void OnChangeSpecie();
 
-        /** Draws the fitted reference */
-        void  DrawReference();
+    /** Called to redraw the 'total' graph */
+    afx_msg void RedrawTotalFitGraph();
 
-        /** Draws the fitted spectrum */
-        void  DrawFit();
+    /** The user has pressed the 'do Evaluation' button */
+    afx_msg void OnDoEvaluation();
 
-        /** Draws the residual */
-        void DrawResidual();
+    /** The user has pressed the Cancel button */
+    afx_msg void OnCancelEvaluation();
 
-        /** Called when a spectrum has been evaluated */
-        LRESULT OnEvaluatedSpectrum(WPARAM, LPARAM);
+    afx_msg void OnBnClickedReevalCheckPause();
 
-        /** Called when the reevaluator has something to say */
-        LRESULT OnStatusUpdate(WPARAM, LPARAM);
+    /** Draws the fitted reference */
+    void DrawReference();
 
-        /** Called when the reevaluator is done with evaluating all the spectra */
-        LRESULT OnDone(WPARAM wp, LPARAM lp);
+    /** Draws the fitted spectrum */
+    void DrawFit();
 
-        /** Called when the reevaluator has gone to sleep and is waiting for the user
-            to continue. */
-        LRESULT OnEvaluationSleep(WPARAM wp, LPARAM lp);
+    /** Draws the residual */
+    void DrawResidual();
 
-        /** Called when the reevaluator has made some progress in the evaluation
-                of the scan-files */
-        LRESULT OnProgress(WPARAM wp, LPARAM lp);
+    /** Called when a spectrum has been evaluated */
+    LRESULT OnEvaluatedSpectrum(WPARAM, LPARAM);
 
-        /** Called when the reevaluator has made some progress in the evaluation
-                of the current scan-file */
-        LRESULT OnProgress2(WPARAM wp, LPARAM lp);
-    private:
+    /** Called when the reevaluator has something to say */
+    LRESULT OnStatusUpdate(WPARAM, LPARAM);
 
-        /** The reevaluation is run as a separate thread */
-        CWinThread* pReEvalThread;
+    /** Called when the reevaluator is done with evaluating all the spectra */
+    LRESULT OnDone(WPARAM wp, LPARAM lp);
 
-        /** A local copy of the residual of the last fit */
-        double residual[MAX_SPECTRUM_LENGTH];
+    /** Called when the reevaluator has gone to sleep and is waiting for the user
+        to continue. */
+    LRESULT OnEvaluationSleep(WPARAM wp, LPARAM lp);
 
-        /** A local copy of the last fit result */
-        double fitResult[MAX_N_REFERENCES][MAX_SPECTRUM_LENGTH];
+    /** Called when the reevaluator has made some progress in the evaluation
+            of the scan-files */
+    LRESULT OnProgress(WPARAM wp, LPARAM lp);
 
-        /** A local copy of the last read spectrum */
-        double spectrum[MAX_SPECTRUM_LENGTH];
+    /** Called when the reevaluator has made some progress in the evaluation
+            of the current scan-file */
+    LRESULT OnProgress2(WPARAM wp, LPARAM lp);
 
-        /** A pointer to the result-set */
-        std::unique_ptr<Evaluation::CScanResult> m_result;
-
-    public:
-        afx_msg void OnBnClickedReevalCheckPause();
-    };
+};
 }

@@ -1,9 +1,6 @@
-// CCalibratePixelToWavelengthDialog.cpp : implementation file
-//
-
 #include "StdAfx.h"
 #include "CCalibratePixelToWavelengthDialog.h"
-#include "afxdialogex.h"
+#include "afxdlgs.h"
 #include "../resource.h"
 #include "../Common/Common.h"
 #include <SpectralEvaluation/DialogControllers/NovacProgramWavelengthCalibrationController.h>
@@ -34,7 +31,7 @@ CCalibratePixelToWavelengthDialog::CCalibratePixelToWavelengthDialog(CWnd* pPare
 {
     wavelengthCalibrationDialog = this;
 
-    m_controller = new NovacProgramWavelengthCalibrationController();
+    m_controller = new NovacProgramWavelengthCalibrationController(m_log);
 }
 
 CCalibratePixelToWavelengthDialog::~CCalibratePixelToWavelengthDialog()
@@ -43,7 +40,8 @@ CCalibratePixelToWavelengthDialog::~CCalibratePixelToWavelengthDialog()
     delete m_standardCrossSections;
 }
 
-BOOL CCalibratePixelToWavelengthDialog::OnInitDialog() {
+BOOL CCalibratePixelToWavelengthDialog::OnInitDialog()
+{
     CPropertyPage::OnInitDialog();
 
     CRect rect;
@@ -135,31 +133,6 @@ void CCalibratePixelToWavelengthDialog::SaveSetup()
     catch (std::exception&)
     {
     }
-}
-
-CString ParseXmlString(const char* startTag, const char* stopTag, const std::string& line)
-{
-    const size_t firstIdx = line.find(startTag);
-    const size_t start = firstIdx + strlen(startTag);
-    const size_t stop = line.find(stopTag);
-    if (stop > start && firstIdx != line.npos && stop != line.npos)
-    {
-        return CString(line.c_str() + start, static_cast<int>(stop - start));
-    }
-    return CString(); // parse failure, return empty string.
-}
-
-int ParseXmlInteger(const char* startTag, const char* stopTag, const std::string& line)
-{
-    const size_t firstIdx = line.find(startTag);
-    const size_t start = firstIdx + strlen(startTag);
-    const size_t stop = line.find(stopTag);
-    if (stop > start && firstIdx != line.npos && stop != line.npos)
-    {
-        std::string valueStr = line.substr(start, stop - start);
-        return std::atoi(valueStr.c_str());
-    }
-    return 0; // parse failure, return zero
 }
 
 void CCalibratePixelToWavelengthDialog::LoadDefaultSetup()
@@ -627,7 +600,7 @@ LRESULT CCalibratePixelToWavelengthDialog::OnCalibrationDone(WPARAM wParam, LPAR
         m_runButton.SetWindowTextA(runButtonOriginalText);
     }
 
-    m_viewLogButton.EnableWindow(m_controller->m_log.size() > 0);
+    m_viewLogButton.EnableWindow(m_controller->m_logMessages.size() > 0);
 
     return 0;
 }
@@ -639,7 +612,7 @@ void CCalibratePixelToWavelengthDialog::HandleCalibrationFailure(const char* err
     m_saveCalibrationButton.EnableWindow(FALSE);
     m_saveReferencesButton.EnableWindow(FALSE);
     m_runButton.EnableWindow(TRUE);
-    m_viewLogButton.EnableWindow(m_controller->m_log.size() > 0);
+    m_viewLogButton.EnableWindow(m_controller->m_logMessages.size() > 0);
 
     SaveSetup();
     UpdateGraph();
@@ -750,11 +723,21 @@ void CCalibratePixelToWavelengthDialog::OnBnClickedSetupWavelengthCalibration()
 {
     CCalibratePixelToWavelengthSetupDialog setupDlg{ &m_setup, m_standardCrossSections };
     setupDlg.DoModal();
+
+    // See if the user has selected a spectrometer model...
+    if (!m_setup.m_spectrometerModelName.empty())
+    {
+        auto model = novac::CSpectrometerDatabase::GetInstance().GetModel(m_setup.m_spectrometerModelName);
+        if (!model.IsUnknown())
+        {
+            m_controller->m_spectrometerModel = std::make_unique<novac::SpectrometerModel>(model);
+        }
+    }
 }
 
 void CCalibratePixelToWavelengthDialog::OnBnClickedButtonViewLog()
 {
-    CLogDialog logDialog{ m_controller->m_log };
+    CLogDialog logDialog{ m_controller->m_logMessages };
     logDialog.DoModal();
 }
 

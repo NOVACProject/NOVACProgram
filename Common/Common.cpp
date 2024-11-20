@@ -15,9 +15,9 @@
 #pragma comment( lib, "PSAPI.LIB" )
 
 extern CFormView* pView;
-extern CConfigurationSetting g_settings;	// <-- the settings for the scanners
-extern CVolcanoInfo g_volcanoes;					// <-- the list of volcanoes
-extern CWinThread* g_ftp;									// <-- The Ftp-uploading thread.
+extern CConfigurationSetting g_settings;    // <-- the settings for the scanners
+extern CVolcanoInfo g_volcanoes;            // <-- the list of volcanoes
+extern CWinThread* g_ftp;                   // <-- The Ftp-uploading thread.
 
 long GetSleepTime(struct timeStruct& startTime, struct timeStruct& stopTime)
 {
@@ -58,7 +58,8 @@ void GetSysTempFolder(CString& folderPath)
     folderPath.Format("%s", buffer);
 }
 
-int IsExistingFile(const CString& fileName) {
+int IsExistingFile(const CString& fileName)
+{
     WIN32_FIND_DATA FindFileData;
     char fileToFind[MAX_PATH];
 
@@ -99,16 +100,21 @@ int CreateDirectoryStructure(const CString& path)
 
     char* pt = strchr(buffer, pathSeparator);
 
-    while (pt != NULL) {
+    while (pt != NULL)
+    {
         pt[0] = 0;
-        if ((strlen(buffer) == 2) && (':' == buffer[1])) {
+        if ((strlen(buffer) == 2) && (':' == buffer[1]))
+        {
             // do nothing, don't create C: !!
         }
-        else {
+        else
+        {
             ret = CreateDirectory(buffer, NULL);
-            if (!ret) {
+            if (!ret)
+            {
                 int error = GetLastError();
-                if (error != ERROR_FILE_EXISTS && error != ERROR_ALREADY_EXISTS) {
+                if (error != ERROR_FILE_EXISTS && error != ERROR_ALREADY_EXISTS)
+                {
                     CString message;
                     message.Format("Debug: Could not create output directory: %s", buffer);
                     ShowMessage(message); // tell the user about our problems...
@@ -126,23 +132,27 @@ int CreateDirectoryStructure(const CString& path)
     return 0;
 }
 
-int Equals(const CString& str1, const CString& str2) {
+int Equals(const CString& str1, const CString& str2)
+{
     return (0 == _tcsnicmp(str1, str2, max(strlen(str1), strlen(str2))));
 }
 
-int Equals(const CString& str1, const CString& str2, unsigned int nCharacters) {
+int Equals(const CString& str1, const CString& str2, unsigned int nCharacters)
+{
     return (0 == _tcsnicmp(str1, str2, min(nCharacters, max(strlen(str1), strlen(str2)))));
 }
 
 /** Sends a message that the given file should be uploaded to the NOVAC-Server
         as soon as possible */
-void UploadToNOVACServer(const CString& fileName, int volcanoIndex, bool deleteFile) {
+void UploadToNOVACServer(const CString& fileName, int volcanoIndex, bool deleteFile)
+{
     CString* fileNameBuffer = NULL;
     Communication::FTPUploadOptions* options;
     CString message;
 
     // The uploading thread is not running, quit it...
-    if (g_ftp == NULL) {
+    if (g_ftp == NULL)
+    {
         return;
     }
 
@@ -165,7 +175,8 @@ void UploadToNOVACServer(const CString& fileName, int volcanoIndex, bool deleteF
     return;
 }
 
-void UpdateMessage(const CString& message) {
+void UpdateMessage(const CString& message)
+{
     CString* msg = new CString();
 
     msg->Format("%s", (LPCSTR)message);
@@ -173,7 +184,8 @@ void UpdateMessage(const CString& message) {
         pView->PostMessage(WM_UPDATE_MESSAGE, (WPARAM)msg, NULL);
 }
 
-void ShowMessage(const CString& message) {
+void ShowMessage(const CString& message)
+{
     CString* msg = new CString();
     CString timeTxt;
     Common commonObj;
@@ -182,7 +194,18 @@ void ShowMessage(const CString& message) {
     if (pView != NULL)
         pView->PostMessage(WM_SHOW_MESSAGE, (WPARAM)msg, NULL);
 }
-void ShowMessage(const CString& message, CString connectionID) {
+void ShowMessage(const std::string& message)
+{
+    CString* msg = new CString();
+    CString timeTxt;
+    Common commonObj;
+    commonObj.GetDateTimeText(timeTxt);
+    msg->Format("%s -- %s", message.c_str(), (LPCSTR)timeTxt);
+    if (pView != NULL)
+        pView->PostMessage(WM_SHOW_MESSAGE, (WPARAM)msg, NULL);
+}
+void ShowMessage(const CString& message, CString connectionID)
+{
     CString* msg = new CString();
     CString timeTxt;
     Common commonObj;
@@ -192,13 +215,15 @@ void ShowMessage(const CString& message, CString connectionID) {
         pView->PostMessage(WM_SHOW_MESSAGE, (WPARAM)msg, NULL);
 }
 
-void ShowMessage(const TCHAR message[]) {
+void ShowMessage(const TCHAR message[])
+{
     CString msg;
     msg.Format("%s", message);
     ShowMessage(msg);
 }
 
-void Common::GetExePath() {
+void Common::GetExePath()
+{
     TCHAR exeFullPath[MAX_PATH];
     GetModuleFileName(NULL, exeFullPath, MAX_PATH);
     m_exePath = (CString)exeFullPath;
@@ -211,7 +236,8 @@ void Common::GetExePath() {
 
 /** Calculate the distance (in meters) between the two points (lat1, lon1) and
     (lat2, lon2). All latitudes and longitudes should be in degrees. */
-double Common::GPSDistance(double lat1, double lon1, double lat2, double lon2) {
+double Common::GPSDistance(double lat1, double lon1, double lat2, double lon2)
+{
     const double R_Earth = 6367000; // radius of the earth
     double distance, a, c;
     lat1 = lat1 * DEGREETORAD;
@@ -268,7 +294,8 @@ double Common::GPSBearing(double lat1, double lon1, double lat2, double lon2)
 /** This function calculates the latitude and longitude for a point
         which is the distance 'dist' m and bearing 'az' degrees from
         the point defied by 'lat1' and 'lon1' */
-void Common::CalculateDestination(double lat1, double lon1, double dist, double az, double& lat2, double& lon2) {
+void Common::CalculateDestination(double lat1, double lon1, double dist, double az, double& lat2, double& lon2)
+{
     const double R_Earth = 6367000; // radius of the earth
 
     double dR = dist / R_Earth;
@@ -288,8 +315,13 @@ void Common::CalculateDestination(double lat1, double lon1, double dist, double 
     lon2 = lon2 * RADTODEGREE;
 }
 
-// open a browser window and let the user search for a file
-bool Common::BrowseForFile(TCHAR* filter, CString& fileName) {
+bool Common::BrowseForReferenceFile(CString& fileName)
+{
+    return BrowseForFile("Reference files\0*.txt;*.xs\0", fileName);
+}
+
+bool Common::BrowseForFile(const TCHAR* filter, CString& fileName)
+{
     TCHAR szFile[4096];
     sprintf(szFile, "%s", (LPCSTR)fileName);
 
@@ -297,18 +329,19 @@ bool Common::BrowseForFile(TCHAR* filter, CString& fileName) {
     // Initialize OPENFILENAME
     ZeroMemory(&ofn, sizeof(OPENFILENAME));
     ofn.lStructSize = sizeof(OPENFILENAME);
-    ofn.hwndOwner = NULL;
+    ofn.hwndOwner = nullptr;
     ofn.hInstance = AfxGetInstanceHandle();
     ofn.lpstrFile = szFile;
     ofn.nMaxFile = sizeof(szFile);
     ofn.lpstrFilter = filter;
     ofn.nFilterIndex = 1;
-    ofn.lpstrFileTitle = NULL;
+    ofn.lpstrFileTitle = nullptr;
     ofn.nMaxFileTitle = 0;
-    ofn.lpstrInitialDir = NULL;
+    ofn.lpstrInitialDir = nullptr;
     ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_EXPLORER;
 
-    if (GetOpenFileName(&ofn) == TRUE) {
+    if (GetOpenFileName(&ofn) == TRUE)
+    {
         fileName.Format(szFile);
         return true;
     }
@@ -316,13 +349,12 @@ bool Common::BrowseForFile(TCHAR* filter, CString& fileName) {
     return false;
 }
 
-// open a browser window and let the user search for a file
-bool Common::BrowseForFile_SaveAs(TCHAR* filter, CString& fileName)
+bool Common::BrowseForFile_SaveAs(const TCHAR* filter, CString& fileName)
 {
     return BrowseForFile_SaveAs(filter, fileName, nullptr);
 }
 
-bool Common::BrowseForFile_SaveAs(TCHAR* filter, CString& fileName, int* filterType)
+bool Common::BrowseForFile_SaveAs(const TCHAR* filter, CString& fileName, int* filterType)
 {
     static TCHAR szFile[4096];
     sprintf(szFile, "%s", (LPCTSTR)fileName);
@@ -357,7 +389,8 @@ bool Common::BrowseForFile_SaveAs(TCHAR* filter, CString& fileName, int* filterT
     return false;
 }
 
-bool Common::BrowseForDirectory(CString& folderName) {
+bool Common::BrowseForDirectory(CString& folderName)
+{
     BROWSEINFO bi;
     char tmp_FolderName[MAX_PATH];       // temporary buffer for folder name
     char title[] = "Select Directory";
@@ -371,7 +404,8 @@ bool Common::BrowseForDirectory(CString& folderName) {
     bi.ulFlags = BIF_USENEWUI | BIF_VALIDATE | BIF_RETURNONLYFSDIRS;
 
     LPITEMIDLIST pidl = SHBrowseForFolder(&bi);
-    if (NULL != pidl) {
+    if (NULL != pidl)
+    {
         // get the name of the folder
         TCHAR path[MAX_PATH];
         if (SHGetPathFromIDList(pidl, path))
@@ -388,7 +422,8 @@ bool Common::BrowseForDirectory(CString& folderName) {
         }
         return true;
     }
-    else {
+    else
+    {
         /* Error */
         return false;
     }
@@ -416,7 +451,8 @@ std::vector<std::string> Common::ListFilesInDirectory(const char* directory, con
         return result; // no files found
     }
 
-    do {
+    do
+    {
         if (Equals(FindFileData.cFileName, ".") || Equals(FindFileData.cFileName, ".."))
         {
             continue;
@@ -534,7 +570,8 @@ int Common::GetDay()
 }
 
 /** Takes a given year and month and returns the number of days in that month. */
-int	Common::DaysInMonth(int year, int month) {
+int	Common::DaysInMonth(int year, int month)
+{
     static int nDays[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
     // detect non-existing months.
@@ -559,7 +596,8 @@ int	Common::DaysInMonth(int year, int month) {
 }
 
 /** Takes a given date and calculates the day of the year. */
-int	Common::DayNr(const unsigned short day[3]) {
+int	Common::DayNr(const unsigned short day[3])
+{
     novac::CDateTime d;
     d.year = day[2];
     d.month = (unsigned char)day[1];
@@ -568,7 +606,8 @@ int	Common::DayNr(const unsigned short day[3]) {
 }
 
 /** Takes a given date and calculates the day of the year. */
-int	Common::DayNr(const novac::CDateTime& day) {
+int	Common::DayNr(const novac::CDateTime& day)
+{
     // Check errors in input
     if (day.month <= 0 || day.month > 12 || day.day < 1 || day.day > DaysInMonth(day.year, day.month))
         return 0;
@@ -576,7 +615,8 @@ int	Common::DayNr(const novac::CDateTime& day) {
     int dayNr = day.day; // the daynumber
 
     int m = day.month;
-    while (m > 1) {
+    while (m > 1)
+    {
         dayNr += DaysInMonth(day.year, m - 1);
         --m;
     }
@@ -585,7 +625,8 @@ int	Common::DayNr(const novac::CDateTime& day) {
 }
 
 /** Returns the Julian Day. */
-double Common::JulianDay(const novac::CDateTime& utcTime) {
+double Common::JulianDay(const novac::CDateTime& utcTime)
+{
     int N, J, b;
     double Hd, H, JD;
 
@@ -627,7 +668,8 @@ double Common::JulianDay(const novac::CDateTime& utcTime) {
     return JD;
 }
 
-__int64 Common::Epoch() {
+__int64 Common::Epoch()
+{
     time_t rawtime;
     struct tm* utc;
     time(&rawtime);
@@ -635,13 +677,15 @@ __int64 Common::Epoch() {
     return rawtime;
 }
 
-__int64 Common::Epoch(const novac::CDateTime& utcTime) {
+__int64 Common::Epoch(const novac::CDateTime& utcTime)
+{
     time_t rawtime;
     struct tm* utc;
     time(&rawtime);
     utc = gmtime(&rawtime);
     time_t offset = mktime(utc) - rawtime;
-    if (utc->tm_isdst) {
+    if (utc->tm_isdst)
+    {
         offset -= 3600;
     }
     utc->tm_year = utcTime.year - 1900;
@@ -658,7 +702,8 @@ __int64 Common::Epoch(const novac::CDateTime& utcTime) {
         for the site specified by (lat, lon) and for the time given in gmtTime.
         Note that the returned angles are in degrees and that the specified
         time _must_ be GMT-time. */
-RETURN_CODE Common::GetSunPosition(const novac::CDateTime& gmtTime, double lat, double lon, double& SZA, double& SAZ) {
+RETURN_CODE Common::GetSunPosition(const novac::CDateTime& gmtTime, double lat, double lon, double& SZA, double& SAZ)
+{
     SZA = SAZ = 0; // reset the numbers
 
     // Get the julian day
@@ -687,7 +732,8 @@ RETURN_CODE Common::GetSunPosition(const novac::CDateTime& gmtTime, double lat, 
     return SUCCESS;
 }
 
-const CString& Common::GetString(const UINT uID) {
+const CString& Common::GetString(const UINT uID)
+{
     static int index = 0;
 
     index += 1;
@@ -697,7 +743,8 @@ const CString& Common::GetString(const UINT uID) {
     return m_string[index];
 }
 
-CString& Common::SimplifyString(const CString& in) {
+CString& Common::SimplifyString(const CString& in)
+{
     static CString str;
 
     // Clean the string for non-printable characters
@@ -709,9 +756,11 @@ CString& Common::SimplifyString(const CString& in) {
     sprintf(buffer, "%s", (LPCSTR)str);
 
     // Check all characters in the string
-    for (unsigned long i = 0; i < L; ++i) {
+    for (unsigned long i = 0; i < L; ++i)
+    {
         // 1. Replace spaces with underscores
-        if (buffer[i] == ' ') {
+        if (buffer[i] == ' ')
+        {
             buffer[i] = '_';
             continue;
         }
@@ -720,8 +769,10 @@ CString& Common::SimplifyString(const CString& in) {
         buffer[i] = tolower(buffer[i]);
 
         // 3. Remove paranthesis...
-        if (buffer[i] == '(' || buffer[i] == '[' || buffer[i] == '{' || buffer[i] == ')' || buffer[i] == ']' || buffer[i] == '}') {
-            for (unsigned long j = i; j < L - 1; ++j) {
+        if (buffer[i] == '(' || buffer[i] == '[' || buffer[i] == '{' || buffer[i] == ')' || buffer[i] == ']' || buffer[i] == '}')
+        {
+            for (unsigned long j = i; j < L - 1; ++j)
+            {
                 buffer[j] = buffer[j + 1];
             }
             i = i - 1;
@@ -757,7 +808,8 @@ CString& Common::SimplifyString(const CString& in) {
     return str;
 }
 
-void Common::CleanString(const CString& in, CString& out) {
+void Common::CleanString(const CString& in, CString& out)
+{
     char* buffer = new char[strlen(in) + 2];
     sprintf(buffer, "%s", (LPCSTR)in); // make a local copy of the input string
 
@@ -765,33 +817,40 @@ void Common::CleanString(const CString& in, CString& out) {
     delete[] buffer; // clean up after us
 }
 
-void Common::CleanString(const char* in, CString& out) {
+void Common::CleanString(const char* in, CString& out)
+{
     out.Format("");
-    for (unsigned int it = 0; it < strlen(in); ++it) {
+    for (unsigned int it = 0; it < strlen(in); ++it)
+    {
         if ((unsigned char)in[it] >= 32)
             out.AppendFormat("%c", in[it]);
     }
 }
 
 /** Sorts a list of strings in either ascending or descending order */
-void Common::Sort(CList <CString, CString&>& strings, bool files, bool ascending) {
+void Common::Sort(CList <CString, CString&>& strings, bool files, bool ascending)
+{
     unsigned long nStrings = (unsigned long)strings.GetCount(); // number of elements
     unsigned long it = 0; // <-- iterator
 
-    if (nStrings <= 1) {
+    if (nStrings <= 1)
+    {
         return; // <-- We're actually already done
     }
-    else {
+    else
+    {
         CList <CString, CString&> left;
         CList <CString, CString&> right;
 
         // Make two copies of the list, one of the first half and one of the second half
         POSITION pos = strings.GetHeadPosition();
-        while (it < nStrings / 2) {
+        while (it < nStrings / 2)
+        {
             left.AddTail(strings.GetNext(pos));
             ++it;
         }
-        while (pos != NULL) {
+        while (pos != NULL)
+        {
             right.AddTail(strings.GetNext(pos));
         }
 
@@ -806,7 +865,8 @@ void Common::Sort(CList <CString, CString&>& strings, bool files, bool ascending
 
 /** Merges the two lists 'list1' and 'list2' in a sorted way and stores
         the result in the output-list 'result' */
-void Common::MergeLists(const CList <CString, CString&>& list1, const CList <CString, CString&>& list2, CList <CString, CString&>& result, bool files, bool ascending) {
+void Common::MergeLists(const CList <CString, CString&>& list1, const CList <CString, CString&>& list2, CList <CString, CString&>& result, bool files, bool ascending)
+{
     CString	name1, name2, fullName1, fullName2;
     int comparison;
 
@@ -817,12 +877,14 @@ void Common::MergeLists(const CList <CString, CString&>& list1, const CList <CSt
     result.RemoveAll();
 
     // 1. As long as there are elements in both lists, do this
-    while (pos_1 != NULL && pos_2 != NULL) {
+    while (pos_1 != NULL && pos_2 != NULL)
+    {
         // Get the file-names of the first and the second 
         fullName1.Format(list1.GetAt(pos_1));	// position k
         fullName2.Format(list2.GetAt(pos_2));	// position k+1
 
-        if (files) {
+        if (files)
+        {
             // Extract the file-names only
             name1.Format(fullName1);
             name2.Format(fullName2);
@@ -832,38 +894,46 @@ void Common::MergeLists(const CList <CString, CString&>& list1, const CList <CSt
             // Compare the two names
             comparison = name1.Compare(name2);
         }
-        else {
+        else
+        {
             // Compare the two names
             comparison = fullName1.Compare(fullName2);
         }
 
-        if (comparison == 0) {
+        if (comparison == 0)
+        {
             // if equal
             result.AddTail(fullName1);
             list1.GetNext(pos_1);
             continue;
         }
-        else if (comparison < 0) {
+        else if (comparison < 0)
+        {
             // fullName1 < fullName2
-            if (ascending) {
+            if (ascending)
+            {
                 result.AddTail(fullName1);
                 list1.GetNext(pos_1);
                 continue;
             }
-            else {
+            else
+            {
                 result.AddTail(fullName2);
                 list2.GetNext(pos_2);
                 continue;
             }
         }
-        else {
+        else
+        {
             // fullName1 > fullName2
-            if (ascending) {
+            if (ascending)
+            {
                 result.AddTail(fullName2);
                 list2.GetNext(pos_2);
                 continue;
             }
-            else {
+            else
+            {
                 result.AddTail(fullName1);
                 list1.GetNext(pos_1);
                 continue;
@@ -873,13 +943,15 @@ void Common::MergeLists(const CList <CString, CString&>& list1, const CList <CSt
     }
 
     // 2. If we're out of elements in list 2 but not in list 1, do this
-    while (pos_1 != NULL) {
+    while (pos_1 != NULL)
+    {
         fullName1.Format(list1.GetNext(pos_1));
         result.AddTail(fullName1);
     }
 
     // 3. If we're out of elements in list 1 but not in list 2, do this
-    while (pos_2 != NULL) {
+    while (pos_2 != NULL)
+    {
         fullName2.Format(list2.GetNext(pos_2));
         result.AddTail(fullName2);
     }
@@ -889,13 +961,16 @@ void Common::MergeLists(const CList <CString, CString&>& list1, const CList <CSt
 // get the gas factor for the supplied specie
 double Common::GetGasFactor(const CString& specie)
 {
-    if (0 == _tcsncicmp(specie, "SO2", 3)) {
+    if (0 == _tcsncicmp(specie, "SO2", 3))
+    {
         return GASFACTOR_SO2;
     }
-    if (0 == _tcsncicmp(specie, "O3", 2)) {
+    if (0 == _tcsncicmp(specie, "O3", 2))
+    {
         return GASFACTOR_O3;
     }
-    if (0 == _tcsncicmp(specie, "NO2", 3)) {
+    if (0 == _tcsncicmp(specie, "NO2", 3))
+    {
         return GASFACTOR_NO2;
     }
 
@@ -915,7 +990,8 @@ double Common::CalculateFlux(const double* scanAngle, const double* scanAngle2, 
 }
 
 
-void Common::GuessSpecieName(const CString& fileName, CString& specie) {
+void Common::GuessSpecieName(const CString& fileName, CString& specie)
+{
     specie.Format("");
     CString spc[] = { "SO2", "NO2", "O3", "O4", "HCHO", "RING", "H2O", "CLO", "BRO", "CHOCHO", "Glyoxal", "Formaldehyde", "HONO", "NO3" };
     int nSpecies = 12;
@@ -928,8 +1004,10 @@ void Common::GuessSpecieName(const CString& fileName, CString& specie) {
     fil.Format("%s", (LPCSTR)fileName.Right((int)strlen(fileName) - index - 1));
     fil.MakeUpper();
 
-    for (int i = 0; i < nSpecies; ++i) {
-        if (strstr(fil, spc[i])) {
+    for (int i = 0; i < nSpecies; ++i)
+    {
+        if (strstr(fil, spc[i]))
+        {
             specie.Format("%s", (LPCSTR)spc[i]);
             return;
         }
@@ -994,20 +1072,23 @@ int Common::CheckProcessExistance(CString& exeName, int pid)
     @param pIDs[1024] - will on successful return be filled with
         all pID's found (first empty item will be -1)
     @return - number of processID found , -1 if no process is found */
-int Common::GetAllProcessIDs(CString& exeName, int pIDs[1024], int startPid) {
+int Common::GetAllProcessIDs(CString& exeName, int pIDs[1024], int startPid)
+{
     int nPIDsFound = 0;
     DWORD processid[1024];
     DWORD needed;
     HMODULE hModule;
     memset(pIDs, -1, 1024 * sizeof(int)); // set all values to -1
 
-    if (!EnumProcesses(processid, sizeof(processid), &needed)) {
+    if (!EnumProcesses(processid, sizeof(processid), &needed))
+    {
         return 0;
     }
     DWORD processcount = needed / sizeof(DWORD);
     for (unsigned int i = 0; i < processcount; i++)
     {
-        if (processid[i] == 0) {
+        if (processid[i] == 0)
+        {
             continue;
         }
         CString processPath;
@@ -1022,7 +1103,8 @@ int Common::GetAllProcessIDs(CString& exeName, int pIDs[1024], int startPid) {
             int ret = processPath.Compare(exeName); //compare exe name and the process name
             if (ret == 0) // names are same
             {
-                if ((int)processid[i] >= startPid) {
+                if ((int)processid[i] >= startPid)
+                {
                     pIDs[nPIDsFound++] = processid[i];
                 }
             }
@@ -1054,7 +1136,8 @@ BOOL WINAPI Common::KillProcess(IN DWORD dwProcessId)
 
         // we cannot do anything else if this is not Windows NT
         //if (osvi.dwPlatformId != VER_PLATFORM_WIN32_NT)
-        if (!IsWindowsXPOrGreater()) {
+        if (!IsWindowsXPOrGreater())
+        {
             MessageBox(NULL, "You need at least Windows XP", "Version Not Supported", MB_OK);
             return SetLastError(ERROR_ACCESS_DENIED), FALSE;
         }
@@ -1129,8 +1212,6 @@ BOOL WINAPI Common::KillProcess(IN DWORD dwProcessId)
     return TRUE;
 }
 
-/** Take out the exe name from a long path
-      @param fileName path of the exe file	*/
 void Common::GetFileName(CString& fileName)
 {
     int position = fileName.ReverseFind('\\');
@@ -1138,9 +1219,22 @@ void Common::GetFileName(CString& fileName)
     fileName = fileName.Right(length - position - 1);
 }
 
+void Common::GetFileName(std::string& fullFileNameAndPath)
+{
+    auto position = fullFileNameAndPath.rfind('\\');
+    if (position == std::string::npos)
+    {
+        return;
+    }
+    auto length = fullFileNameAndPath.size();
+
+    fullFileNameAndPath = fullFileNameAndPath.substr(position + 1, length - position - 1);
+}
+
 /** Take out the directory from a long path name.
     @param fileName - the complete path of the file */
-void Common::GetDirectory(CString& fileName) {
+void Common::GetDirectory(CString& fileName)
+{
     int position = fileName.ReverseFind('\\');
     if (position >= 0)
         fileName = fileName.Left(position + 1);
@@ -1162,9 +1256,11 @@ long Common::RetrieveFileSize(CString& fileName)
     END_CATCH;
 }
 
-bool Common::FormatErrorCode(DWORD error, CString& string) {
+bool Common::FormatErrorCode(DWORD error, CString& string)
+{
     /* from System Error Codes */
-    switch (error) {
+    switch (error)
+    {
     case ERROR_FILE_NOT_FOUND:
         string.Format("File not found"); return true;
     case ERROR_PATH_NOT_FOUND:
@@ -1210,9 +1306,11 @@ bool Common::FormatErrorCode(DWORD error, CString& string) {
     return false;
 }
 
-int Common::GetInterlaceSteps(int channel, int& interlaceSteps) {
+int Common::GetInterlaceSteps(int channel, int& interlaceSteps)
+{
     // if the spectrum is a mix of several spectra
-    if (channel >= 129) {
+    if (channel >= 129)
+    {
         interlaceSteps = channel - 127;
         return -1;
     }
@@ -1228,13 +1326,17 @@ int Common::GetInterlaceSteps(int channel, int& interlaceSteps) {
 
 /** Find the volcano-index that the spectrometer with the supplied
         serial-number monitors. If none is found then -1 is returned */
-int	Common::GetMonitoredVolcano(const CString& serialNumber) {
+int	Common::GetMonitoredVolcano(const CString& serialNumber)
+{
 
     // find the name of the volcano that is monitored
     CString volcanoName;
-    for (unsigned int k = 0; k < g_settings.scannerNum; ++k) {
-        for (unsigned int j = 0; j < g_settings.scanner[k].specNum; ++j) {
-            if (Equals(serialNumber, g_settings.scanner[k].spec[j].serialNumber)) {
+    for (unsigned int k = 0; k < g_settings.scannerNum; ++k)
+    {
+        for (unsigned int j = 0; j < g_settings.scanner[k].specNum; ++j)
+        {
+            if (Equals(serialNumber, g_settings.scanner[k].spec[j].serialNumber))
+            {
                 volcanoName.Format(g_settings.scanner[k].volcano);
                 break;
             }
@@ -1245,8 +1347,10 @@ int	Common::GetMonitoredVolcano(const CString& serialNumber) {
     if (strlen(volcanoName) == 0)
         return -1; // <-- nothing found
 
-    for (unsigned int k = 0; k < g_volcanoes.m_volcanoNum; ++k) {
-        if (Equals(volcanoName, g_volcanoes.m_name[k])) {
+    for (unsigned int k = 0; k < g_volcanoes.m_volcanoNum; ++k)
+    {
+        if (Equals(volcanoName, g_volcanoes.m_name[k]))
+        {
             return k;
         }
     }
@@ -1296,7 +1400,8 @@ void Common::EquatorialCoordinates(double D, double& RA, double& dec, double& EQ
     EQT = q_deg / 15.0 - RA / 15.0;
 }
 
-void Common::HorizontalCoordinates(double lat, double H, double dec, double& elev, double& azim) {
+void Common::HorizontalCoordinates(double lat, double H, double dec, double& elev, double& azim)
+{
     double H_rad = H * DEGREETORAD;
     double lat_rad = lat * DEGREETORAD;
     double dec_rad = dec * DEGREETORAD;
@@ -1327,7 +1432,8 @@ void Common::HorizontalCoordinates(double lat, double H, double dec, double& ele
 }
 
 /** Returns the hour angle given the longitude and equation of time. */
-double Common::GetHourAngle(double hr, double lon, double EqT) {
+double Common::GetHourAngle(double hr, double lon, double EqT)
+{
     double H = 15.0 * (hr + lon / 15 + EqT - 12);
     //    printf("HOUR ANGLE (from noon,increasing with time): %f\n",H);
     return(H);
@@ -1349,7 +1455,8 @@ bool Common::FillBuffer(char* srcBuf, char* destBuf, long destStart, long moveLe
 
 int Common::CheckForSpectraInDir(const CString& path, CList <CString, CString&>& fileList)
 {
-    if (GetFileAttributes(path) == INVALID_FILE_ATTRIBUTES) {
+    if (GetFileAttributes(path) == INVALID_FILE_ATTRIBUTES)
+    {
         return INVALID_FILE_ATTRIBUTES;
     }
 
@@ -1367,11 +1474,13 @@ int Common::CheckForSpectraInDir(const CString& path, CList <CString, CString&>&
         return 0; // no files found
     }
 
-    do {
+    do
+    {
         CString fileName;
         fileName.Format("%s\\%s", (LPCTSTR)path, FindFileData.cFileName);
 
-        if (!Equals(FindFileData.cFileName, "Upload.pak")) {
+        if (!Equals(FindFileData.cFileName, "Upload.pak"))
+        {
             // Tell the user that we've found one scan which hasn't been evaluated
             CString msg;
             msg.Format("Spectra in %s not yet evaluated.  Will evalute now.", FindFileData.cFileName);
@@ -1408,10 +1517,12 @@ void Common::CheckForSpectraInHexDir(const CString& path, CList <CString, CStrin
         return; // no directories found
     }
 
-    do {
+    do
+    {
         pathName.Format("%s\\%s", (LPCTSTR)path, (LPCTSTR)FindFileData.cFileName);
 
-        if (FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+        if (FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+        {
             // This is a directory, add it to the list of directories to check...
 
             pathList.AddTail(pathName);

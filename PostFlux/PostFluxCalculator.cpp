@@ -4,11 +4,9 @@
 #include "../Common/Version.h"
 
 using namespace PostFlux;
-using namespace novac;
 
 CPostFluxCalculator::CPostFluxCalculator(void)
 {
-
     m_scanNum = 0;
     m_gasFactor = GASFACTOR_SO2;
 
@@ -133,7 +131,7 @@ void  CPostFluxCalculator::AppendToFluxLog(int scanNr) {
 
     FILE* f = fopen(m_logFile, "a+");
     if (f != NULL) {
-        CDateTime dateNTime, stopTime;
+        novac::CDateTime dateNTime, stopTime;
         m_scan[scanNr].GetStartTime(0, dateNTime);
         m_scan[scanNr].GetStopTime(m_scan[scanNr].GetEvaluatedNum() - 1, stopTime);
 

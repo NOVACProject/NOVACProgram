@@ -154,6 +154,9 @@
     <Filter Include="Header Files\SpectralEvaluation\DialogControllers">
       <UniqueIdentifier>{ec32462a-478a-4108-83c0-21c45c716393}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\DlgControls\CGridListCtrlEx">
+      <UniqueIdentifier>{60298a56-d291-41a2-8395-5da8560434ab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Configuration\AdvancedFTPUploadSettings.cpp">
@@ -184,9 +187,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FileTreeCtrl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ReEvaluation\FitWindowListBox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Dialogs\FluxErrorDlg.cpp">
@@ -345,9 +345,6 @@
     <ClCompile Include="DlgControls\Label.cpp">
       <Filter>Source Files\DlgControls</Filter>
     </ClCompile>
-    <ClCompile Include="DlgControls\MeasGrid.cpp">
-      <Filter>Source Files\DlgControls</Filter>
-    </ClCompile>
     <ClCompile Include="DlgControls\ReferenceFileControl.cpp">
       <Filter>Source Files\DlgControls</Filter>
     </ClCompile>
@@ -403,9 +400,6 @@
       <Filter>Source Files\Dialogs</Filter>
     </ClCompile>
     <ClCompile Include="Dialogs\ExportSpectraDlg.cpp">
-      <Filter>Source Files\Dialogs</Filter>
-    </ClCompile>
-    <ClCompile Include="Dialogs\FECFileDialog.cpp">
       <Filter>Source Files\Dialogs</Filter>
     </ClCompile>
     <ClCompile Include="Dialogs\FileTransferDlg.cpp">
@@ -714,6 +708,93 @@
     <ClCompile Include="SpectralEvaluation\src\DialogControllers\NovacProgramWavelengthCalibrationController.cpp">
       <Filter>Source Files\SpectralEvaluation\DialogControllers</Filter>
     </ClCompile>
+    <ClCompile Include="Dialogs\CRatioCalculationDlg.cpp">
+      <Filter>Source Files\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="Dialogs\CRatioScanFilesDialog.cpp">
+      <Filter>Source Files\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="Dialogs\CRatioSetupDialog.cpp">
+      <Filter>Source Files\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="Dialogs\CRatioEvaluationDialog.cpp">
+      <Filter>Source Files\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\DialogControllers\RatioCalculationController.cpp">
+      <Filter>Source Files\SpectralEvaluation\DialogControllers</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgControls\CGridListCtrlEx\CGridColumnTraitCombo.cpp">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgControls\CGridListCtrlEx\CGridColumnTraitDateTime.cpp">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgControls\CGridListCtrlEx\CGridColumnTraitEdit.cpp">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgControls\CGridListCtrlEx\CGridColumnTraitHyperLink.cpp">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgControls\CGridListCtrlEx\CGridColumnTraitImage.cpp">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgControls\CGridListCtrlEx\CGridColumnTraitMultilineEdit.cpp">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgControls\CGridListCtrlEx\CGridColumnTraitText.cpp">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgControls\CGridListCtrlEx\CGridListCtrlEx.cpp">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgControls\CGridListCtrlEx\CGridListCtrlGroups.cpp">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgControls\CGridListCtrlEx\CGridRowTraitText.cpp">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgControls\CGridListCtrlEx\CGridRowTraitXP.cpp">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgControls\CGridListCtrlEx\ViewConfigSection.cpp">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Evaluation\RatioEvaluation.cpp">
+      <Filter>Source Files\SpectralEvaluation\Evaluation</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Evaluation\DoasFitPreparation.cpp">
+      <Filter>Source Files\SpectralEvaluation\Evaluation</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Math\SpectrumMath.cpp">
+      <Filter>Source Files\SpectralEvaluation\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Evaluation\PlumeSpectrumSelector.cpp">
+      <Filter>Source Files\SpectralEvaluation\Evaluation</Filter>
+    </ClCompile>
+    <ClCompile Include="Dialogs\CMultiSelectOpenFileDialog.cpp">
+      <Filter>Source Files\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgControls\CustomDrawTreeCtrl.cpp">
+      <Filter>Source Files\DlgControls</Filter>
+    </ClCompile>
+    <ClCompile Include="NovacProgramLog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Log.cpp">
+      <Filter>Source Files\SpectralEvaluation</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\NovacEnums.cpp">
+      <Filter>Source Files\SpectralEvaluation</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\Geometry.cpp">
+      <Filter>Source Files\SpectralEvaluation</Filter>
+    </ClCompile>
+    <ClCompile Include="SpectralEvaluation\src\NullableValue.cpp">
+      <Filter>Source Files\SpectralEvaluation</Filter>
+    </ClCompile>
+    <ClCompile Include="ReEvaluation\FitWindowListBox.cpp">
+      <Filter>Source Files\ReEvaluation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Configuration\AdvancedFTPUploadSettings.h">
@@ -744,9 +825,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FileTreeCtrl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ReEvaluation\FitWindowListBox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Dialogs\FluxErrorDlg.h">
@@ -801,9 +879,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="WindMeasurement\PostWindDlg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ReEvaluation\ReEvalSettingsFileHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="WindMeasurement\RealTimeWind.h">
@@ -923,9 +998,6 @@
     <ClInclude Include="DlgControls\Label.h">
       <Filter>Header Files\DlgControls</Filter>
     </ClInclude>
-    <ClInclude Include="DlgControls\MeasGrid.h">
-      <Filter>Header Files\DlgControls</Filter>
-    </ClInclude>
     <ClInclude Include="DlgControls\ReferenceFileControl.h">
       <Filter>Header Files\DlgControls</Filter>
     </ClInclude>
@@ -987,9 +1059,6 @@
       <Filter>Header Files\Dialogs</Filter>
     </ClInclude>
     <ClInclude Include="Dialogs\ExportSpectraDlg.h">
-      <Filter>Header Files\Dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="Dialogs\FECFileDialog.h">
       <Filter>Header Files\Dialogs</Filter>
     </ClInclude>
     <ClInclude Include="Dialogs\FileTransferDlg.h">
@@ -1391,6 +1460,99 @@
     <ClInclude Include="Configuration\CCalibrationConfigurationDlg.h">
       <Filter>Header Files\Configuration</Filter>
     </ClInclude>
+    <ClInclude Include="Dialogs\CRatioCalculationDlg.h">
+      <Filter>Header Files\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialogs\CRatioScanFilesDialog.h">
+      <Filter>Header Files\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialogs\CRatioSetupDialog.h">
+      <Filter>Header Files\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialogs\CRatioEvaluationDialog.h">
+      <Filter>Header Files\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\DialogControllers\RatioCalculationController.h">
+      <Filter>Header Files\SpectralEvaluation\DialogControllers</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridColumnTrait.h">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridColumnTraitCombo.h">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridColumnTraitDateTime.h">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridColumnTraitEdit.h">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridColumnTraitHyperLink.h">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridColumnTraitImage.h">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridColumnTraitMultilineEdit.h">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridColumnTraitText.h">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridColumnTraitVisitor.h">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridListCtrlEx.h">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridListCtrlGroups.h">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridRowTrait.h">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridRowTraitText.h">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridRowTraitVisitor.h">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgControls\CGridListCtrlEx\CGridRowTraitXP.h">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgControls\CGridListCtrlEx\ViewConfigSection.h">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Evaluation\Ratio.h">
+      <Filter>Header Files\SpectralEvaluation\Evaluation</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Evaluation\RatioEvaluation.h">
+      <Filter>Header Files\SpectralEvaluation\Evaluation</Filter>
+    </ClInclude>
+    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Evaluation\PlumeSpectrumSelector.h">
+      <Filter>Header Files\SpectralEvaluation\Evaluation</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgControls\NonFlickeringTreeControl.h">
+      <Filter>Header Files\DlgControls</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialogs\CMultiSelectOpenFileDialog.h">
+      <Filter>Header Files\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgControls\NonFlickeringListBoxControl.h">
+      <Filter>Header Files\DlgControls</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgControls\CustomDrawTreeCtrl.h">
+      <Filter>Header Files\DlgControls</Filter>
+    </ClInclude>
+    <ClInclude Include="NovacProgramLog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ReEvaluation\FitWindowListBox.h">
+      <Filter>Header Files\ReEvaluation</Filter>
+    </ClInclude>
+    <ClInclude Include="ReEvaluation\ReEvalSettingsFileHandler.h">
+      <Filter>Header Files\ReEvaluation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\NOVAClogo2.ico">
@@ -1465,6 +1627,12 @@
     <Image Include="res\yellow_light.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="res\red_ligh.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bmp00002.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="res\NovacMasterProgram.manifest">
@@ -1479,6 +1647,9 @@
   <ItemGroup>
     <None Include="res\NovacMasterProgram.rc2">
       <Filter>Resource Files</Filter>
+    </None>
+    <None Include="DlgControls\CGridListCtrlEx\ReadMe.md">
+      <Filter>Header Files\DlgControls\CGridListCtrlEx</Filter>
     </None>
   </ItemGroup>
 </Project>

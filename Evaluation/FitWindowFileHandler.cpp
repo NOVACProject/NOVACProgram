@@ -6,12 +6,12 @@ using namespace FileHandler;
 using namespace novac;
 
 // TODO: Move
-std::string FormatBoolean(bool value)
+static std::string FormatBoolean(bool value)
 {
     return value ? "true" : "false";
 }
 
-std::string FormatEnum(novac::RING_CALCULATION_OPTION value)
+static std::string FormatEnum(novac::RING_CALCULATION_OPTION value)
 {
     switch (value)
     {
@@ -19,14 +19,6 @@ std::string FormatEnum(novac::RING_CALCULATION_OPTION value)
     case novac::RING_CALCULATION_OPTION::CALCULATE_RING_X2: return "calculatex2";
     default: return "none";
     }
-}
-
-CFitWindowFileHandler::CFitWindowFileHandler()
-{
-}
-
-CFitWindowFileHandler::~CFitWindowFileHandler()
-{
 }
 
 std::vector<novac::CFitWindow> CFitWindowFileHandler::ReadFitWindowFile(const CString& fileName)
@@ -47,8 +39,10 @@ std::vector<novac::CFitWindow> CFitWindowFileHandler::ReadFitWindowFile(const CS
     while (szToken = NextToken())
     {
         // no use to parse empty lines
-        if (strlen(szToken) < 3)
+        if (IsEmptyLineOrStartOfComment(szToken))
+        {
             continue;
+        }
 
         if (Equals(szToken, "fitWindow", 9))
         {
@@ -65,7 +59,8 @@ std::vector<novac::CFitWindow> CFitWindowFileHandler::ReadFitWindowFile(const CS
         }
     }
 
-    file.Close();
+    Close();
+
     return allWindowsRead;
 }
 
@@ -74,45 +69,34 @@ RETURN_CODE CFitWindowFileHandler::Parse_FitWindow(novac::CFitWindow& window)
     window.Clear(); // <-- Reset the data before we start reading from the file.
 
     // find the name for this fit window
-    if (char* pt = strstr(szToken, "name"))
-    {
-        if (pt = strstr(pt, "\""))
-        {
-            if (char* pt2 = strstr(pt + 1, "\""))
-                pt2[0] = 0; // remove the second quote
-            char tmpStr[512];
-            if (sscanf(pt + 1, "%s", &tmpStr))
-            {
-                window.name = std::string(tmpStr);
-            }
-        }
-    }
+    window.name = ParseAttribute(szToken, "name");
 
     // parse the file
-    while (szToken = NextToken()) {
-        // no use to parse empty lines
-        if (strlen(szToken) < 2)
-            continue;
-
-        // ignore comments
-        if (Equals(szToken, "!--", 3)) {
+    while (szToken = NextToken())
+    {
+        if (IsEmptyLineOrStartOfComment(szToken))
+        {
             continue;
         }
 
         // end of fit-window section
-        if (Equals(szToken, "/fitWindow")) {
+        if (Equals(szToken, "/fitWindow"))
+        {
             return SUCCESS;
         }
 
-        if (Equals(szToken, "fitLow")) {
+        if (Equals(szToken, "fitLow"))
+        {
             Parse_IntItem(TEXT("/fitLow"), window.fitLow);
             continue;
         }
-        if (Equals(szToken, "fitHigh")) {
+        if (Equals(szToken, "fitHigh"))
+        {
             Parse_IntItem(TEXT("/fitHigh"), window.fitHigh);
             continue;
         }
-        if (Equals(szToken, "polyOrder")) {
+        if (Equals(szToken, "polyOrder"))
+        {
             Parse_IntItem(TEXT("/polyOrder"), window.polyOrder);
             continue;
         }
@@ -146,42 +130,77 @@ RETURN_CODE CFitWindowFileHandler::Parse_FitWindow(novac::CFitWindow& window)
             Parse_IntItem(TEXT("/fitType"), (int&)window.fitType); // TODO: Will this be ok????
             continue;
         }
-        if (Equals(szToken, "channel")) {
+        if (Equals(szToken, "channel"))
+        {
             Parse_IntItem(TEXT("/channel"), window.channel);
             continue;
         }
-        if (Equals(szToken, "specLength")) {
+        if (Equals(szToken, "specLength"))
+        {
             Parse_IntItem(TEXT("/specLength"), window.specLength);
             continue;
         }
-        if (Equals(szToken, "fOptShift")) {
+        if (Equals(szToken, "fOptShift"))
+        {
             int parsedFlag = 0;
             Parse_IntItem(TEXT("/fOptShift"), parsedFlag);
             window.findOptimalShift = (parsedFlag > 0);
             continue;
         }
-        if (Equals(szToken, "UV")) {
-            int parsedFlag = 0;
-            Parse_IntItem(TEXT("/UV"), parsedFlag);
-            window.UV = (parsedFlag > 0);
+        if (Equals(szToken, "offsetFrom"))
+        {
+            int parsedValue = 0;
+            Parse_IntItem(TEXT("/offsetFrom"), parsedValue);
+            if (parsedValue >= 0)
+            {
+                window.offsetRemovalRange.from = static_cast<size_t>(parsedValue);
+            }
             continue;
         }
-        if (Equals(szToken, "shiftSky")) {
+        if (Equals(szToken, "offsetTo"))
+        {
+            int parsedValue = 0;
+            Parse_IntItem(TEXT("/offsetTo"), parsedValue);
+            if (parsedValue >= 0)
+            {
+                window.offsetRemovalRange.to = static_cast<size_t>(parsedValue);
+            }
+            continue;
+        }
+        if (Equals(szToken, "UV"))
+        {
+            int parsedFlag = 0;
+            Parse_IntItem(TEXT("/UV"), parsedFlag);
+            if (parsedFlag > 0)
+            {
+                window.offsetRemovalRange = novac::CFitWindow::StandardUvOffsetRemovalRange();
+            }
+            else
+            {
+                window.offsetRemovalRange = novac::CFitWindow::StandardUSB2000OffsetRemovalRange();
+            }
+            continue;
+        }
+        if (Equals(szToken, "shiftSky"))
+        {
             int parsedFlag = 0;
             Parse_IntItem(TEXT("/shiftSky"), parsedFlag);
             window.shiftSky = (parsedFlag > 0);
             continue;
         }
-        if (Equals(szToken, "interlaceStep")) {
+        if (Equals(szToken, "interlaceStep"))
+        {
             Parse_IntItem(TEXT("/interlaceStep"), window.interlaceStep);
             continue;
         }
-        if (Equals(szToken, "interlaced")) {
+        if (Equals(szToken, "interlaced"))
+        {
             Parse_IntItem(TEXT("/interlaced"), window.interlaceStep);
             window.interlaceStep += 1;
             continue;
         }
-        if (Equals(szToken, "solarSpectrum")) {
+        if (Equals(szToken, "solarSpectrum"))
+        {
             Parse_StringItem(TEXT("/solarSpectrum"), window.fraunhoferRef.m_path);
             window.fraunhoferRef.m_specieName = "SolarSpec";
             continue;
@@ -191,7 +210,8 @@ RETURN_CODE CFitWindowFileHandler::Parse_FitWindow(novac::CFitWindow& window)
     //		continue;
     //	}
 
-        if (Equals(szToken, "ref", 3)) {
+        if (Equals(szToken, "ref", 3))
+        {
             Parse_Reference(window);
             continue;
         }
@@ -200,91 +220,90 @@ RETURN_CODE CFitWindowFileHandler::Parse_FitWindow(novac::CFitWindow& window)
     return FAIL;
 }
 
-RETURN_CODE CFitWindowFileHandler::Parse_Reference(novac::CFitWindow& window) {
-    int nRef = window.nRef;
+RETURN_CODE CFitWindowFileHandler::Parse_Reference(novac::CFitWindow& window)
+{
+    novac::CReferenceFile newReference; // the reference that we're parsing and trying to insert
 
     // find the name for this reference.
-    if (char* pt = strstr(szToken, "name")) {
-        if (pt = strstr(pt, "\"")) {
-            if (char* pt2 = strstr(pt + 1, "\""))
-                pt2[0] = 0; // remove the second quote
-            char tmpStr[512];
-            if (sscanf(pt + 1, "%s", &tmpStr)) {
-                window.ref[nRef].m_specieName = std::string(tmpStr);
-            }
-        }
-    }
+    newReference.m_specieName = ParseAttribute(szToken, "name");
 
     // the actual reading loop
-    while (szToken = NextToken()) {
-
-        // no use to parse empty lines
-        if (strlen(szToken) < 3)
-            continue;
-
-        // ignore comments
-        if (Equals(szToken, "!--", 3)) {
+    while (szToken = NextToken())
+    {
+        if (IsEmptyLineOrStartOfComment(szToken))
+        {
             continue;
         }
 
-        if (Equals(szToken, "/ref")) {
-            ++window.nRef;
+        if (Equals(szToken, "/ref"))
+        {
+            window.reference.push_back(newReference);
             return SUCCESS;
         }
 
-        if (Equals(szToken, "path")) {
-            Parse_StringItem(TEXT("/path"), window.ref[nRef].m_path);
+        if (Equals(szToken, "path"))
+        {
+            Parse_StringItem("/path", newReference.m_path);
             continue;
         }
 
-        if (Equals(szToken, "shiftOption")) {
+        if (Equals(szToken, "shiftOption"))
+        {
             int tmpInt;
-            Parse_IntItem(TEXT("/shiftOption"), tmpInt);
-            switch (tmpInt) {
-            case 0: window.ref[nRef].m_shiftOption = novac::SHIFT_TYPE::SHIFT_FREE; break;
-            case 1: window.ref[nRef].m_shiftOption = novac::SHIFT_TYPE::SHIFT_FIX; break;
-            case 2: window.ref[nRef].m_shiftOption = novac::SHIFT_TYPE::SHIFT_LINK; break;
-            case 3: window.ref[nRef].m_shiftOption = novac::SHIFT_TYPE::SHIFT_LIMIT; break;
+            Parse_IntItem("/shiftOption", tmpInt);
+            switch (tmpInt)
+            {
+            case 0: newReference.m_shiftOption = novac::SHIFT_TYPE::SHIFT_FREE; break;
+            case 1: newReference.m_shiftOption = novac::SHIFT_TYPE::SHIFT_FIX; break;
+            case 2: newReference.m_shiftOption = novac::SHIFT_TYPE::SHIFT_LINK; break;
+            case 3: newReference.m_shiftOption = novac::SHIFT_TYPE::SHIFT_LIMIT; break;
             }
             continue;
         }
 
-        if (Equals(szToken, "shiftValue")) {
-            Parse_FloatItem(TEXT("/shiftValue"), window.ref[nRef].m_shiftValue);
+        if (Equals(szToken, "shiftValue"))
+        {
+            Parse_FloatItem(TEXT("/shiftValue"), newReference.m_shiftValue);
             continue;
         }
 
-        if (Equals(szToken, "squeezeOption")) {
+        if (Equals(szToken, "squeezeOption"))
+        {
             int tmpInt;
             Parse_IntItem(TEXT("/squeezeOption"), tmpInt);
-            switch (tmpInt) {
-            case 0: window.ref[nRef].m_squeezeOption = novac::SHIFT_TYPE::SHIFT_FREE; break;
-            case 1: window.ref[nRef].m_squeezeOption = novac::SHIFT_TYPE::SHIFT_FIX; break;
-            case 2: window.ref[nRef].m_squeezeOption = novac::SHIFT_TYPE::SHIFT_LINK; break;
-            case 3: window.ref[nRef].m_squeezeOption = novac::SHIFT_TYPE::SHIFT_LIMIT; break;
+            switch (tmpInt)
+            {
+            case 0: newReference.m_squeezeOption = novac::SHIFT_TYPE::SHIFT_FREE; break;
+            case 1: newReference.m_squeezeOption = novac::SHIFT_TYPE::SHIFT_FIX; break;
+            case 2: newReference.m_squeezeOption = novac::SHIFT_TYPE::SHIFT_LINK; break;
+            case 3: newReference.m_squeezeOption = novac::SHIFT_TYPE::SHIFT_LIMIT; break;
             }
             continue;
         }
 
-        if (Equals(szToken, "squeezeValue")) {
-            Parse_FloatItem(TEXT("/squeezeValue"), window.ref[nRef].m_squeezeValue);
+        if (Equals(szToken, "squeezeValue"))
+        {
+            Parse_FloatItem(TEXT("/squeezeValue"), newReference.m_squeezeValue);
             continue;
         }
 
-        if (Equals(szToken, "columnOption")) {
+        if (Equals(szToken, "columnOption"))
+        {
             int tmpInt;
             Parse_IntItem(TEXT("/columnOption"), tmpInt);
-            switch (tmpInt) {
-            case 0: window.ref[nRef].m_columnOption = novac::SHIFT_TYPE::SHIFT_FREE; break;
-            case 1: window.ref[nRef].m_columnOption = novac::SHIFT_TYPE::SHIFT_FIX; break;
-            case 2: window.ref[nRef].m_columnOption = novac::SHIFT_TYPE::SHIFT_LINK; break;
-            case 3: window.ref[nRef].m_columnOption = novac::SHIFT_TYPE::SHIFT_LIMIT; break;
+            switch (tmpInt)
+            {
+            case 0: newReference.m_columnOption = novac::SHIFT_TYPE::SHIFT_FREE; break;
+            case 1: newReference.m_columnOption = novac::SHIFT_TYPE::SHIFT_FIX; break;
+            case 2: newReference.m_columnOption = novac::SHIFT_TYPE::SHIFT_LINK; break;
+            case 3: newReference.m_columnOption = novac::SHIFT_TYPE::SHIFT_LIMIT; break;
             }
             continue;
         }
 
-        if (Equals(szToken, "columnValue")) {
-            Parse_FloatItem(TEXT("/columnValue"), window.ref[nRef].m_columnValue);
+        if (Equals(szToken, "columnValue"))
+        {
+            Parse_FloatItem(TEXT("/columnValue"), newReference.m_columnValue);
             continue;
         }
     }
@@ -326,7 +345,11 @@ RETURN_CODE CFitWindowFileHandler::WriteFitWindow(const novac::CFitWindow& windo
     fprintf(f, "%s<specLength>%d</specLength>\n", (LPCSTR)indent, window.specLength);
 
     fprintf(f, "%s<fOptShift>%d</fOptShift>\n", (LPCSTR)indent, window.findOptimalShift);
-    fprintf(f, "%s<UV>%d</UV>\n", (LPCSTR)indent, window.UV);
+    // WAS: fprintf(f, "%s<UV>%d</UV>\n", (LPCSTR)indent, window);
+
+    fprintf(f, "%s<offsetFrom>%d</offsetFrom>\n", (LPCSTR)indent, window.offsetRemovalRange.from);
+    fprintf(f, "%s<offsetTo>%d</offsetTo>\n", (LPCSTR)indent, window.offsetRemovalRange.to);
+
     fprintf(f, "%s<shiftSky>%d</shiftSky>\n", (LPCSTR)indent, window.shiftSky);
     fprintf(f, "%s<interlaceStep>%d</interlaceStep>\n", (LPCSTR)indent, window.interlaceStep);
 
@@ -335,29 +358,29 @@ RETURN_CODE CFitWindowFileHandler::WriteFitWindow(const novac::CFitWindow& windo
         fprintf(f, "%s<solarSpectrum>%s</solarSpectrum>\n", (LPCSTR)indent, window.fraunhoferRef.m_path.c_str());
     }
 
-    fprintf(f, "%s<nRef>%d</nRef>\n", (LPCSTR)indent, window.nRef);
+    fprintf(f, "%s<nRef>%zd</nRef>\n", (LPCSTR)indent, window.NumberOfReferences());
 
-    for (int i = 0; i < window.nRef; ++i)
+    for (const novac::CReferenceFile& reference : window.reference)
     {
-        fprintf(f, "%s<ref name=\"%s\">\n", (LPCSTR)indent, window.ref[i].m_specieName.c_str());
-        fprintf(f, "%s\t<path>%s</path>\n", (LPCSTR)indent, window.ref[i].m_path.c_str());
+        fprintf(f, "%s<ref name=\"%s\">\n", (LPCSTR)indent, reference.m_specieName.c_str());
+        fprintf(f, "%s\t<path>%s</path>\n", (LPCSTR)indent, reference.m_path.c_str());
 
-        fprintf(f, "%s\t<shiftOption>%d</shiftOption>\n", (LPCSTR)indent, window.ref[i].m_shiftOption);
-        if (window.ref[i].m_shiftOption != novac::SHIFT_TYPE::SHIFT_FREE)
+        fprintf(f, "%s\t<shiftOption>%d</shiftOption>\n", (LPCSTR)indent, reference.m_shiftOption);
+        if (reference.m_shiftOption != novac::SHIFT_TYPE::SHIFT_FREE)
         {
-            fprintf(f, "%s\t<shiftValue>%lf</shiftValue>\n", (LPCSTR)indent, window.ref[i].m_shiftValue);
+            fprintf(f, "%s\t<shiftValue>%lf</shiftValue>\n", (LPCSTR)indent, reference.m_shiftValue);
         }
 
-        fprintf(f, "%s\t<squeezeOption>%d</squeezeOption>\n", (LPCSTR)indent, window.ref[i].m_squeezeOption);
-        if (window.ref[i].m_squeezeOption != novac::SHIFT_TYPE::SHIFT_FREE)
+        fprintf(f, "%s\t<squeezeOption>%d</squeezeOption>\n", (LPCSTR)indent, reference.m_squeezeOption);
+        if (reference.m_squeezeOption != novac::SHIFT_TYPE::SHIFT_FREE)
         {
-            fprintf(f, "%s\t<squeezeValue>%lf</squeezeValue>\n", (LPCSTR)indent, window.ref[i].m_squeezeValue);
+            fprintf(f, "%s\t<squeezeValue>%lf</squeezeValue>\n", (LPCSTR)indent, reference.m_squeezeValue);
         }
 
-        fprintf(f, "%s\t<columnOption>%d</columnOption>\n", (LPCSTR)indent, window.ref[i].m_columnOption);
-        if (window.ref[i].m_columnOption != novac::SHIFT_TYPE::SHIFT_FREE)
+        fprintf(f, "%s\t<columnOption>%d</columnOption>\n", (LPCSTR)indent, reference.m_columnOption);
+        if (reference.m_columnOption != novac::SHIFT_TYPE::SHIFT_FREE)
         {
-            fprintf(f, "%s\t<columnValue>%lf</columnValue>\n", (LPCSTR)indent, window.ref[i].m_columnValue);
+            fprintf(f, "%s\t<columnValue>%lf</columnValue>\n", (LPCSTR)indent, reference.m_columnValue);
         }
 
         fprintf(f, "%s</ref>\n", (LPCSTR)indent);

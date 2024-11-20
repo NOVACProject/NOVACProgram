@@ -18,8 +18,7 @@ CGlobalConfiguration::CGlobalConfiguration()
 }
 
 CGlobalConfiguration::~CGlobalConfiguration()
-{
-}
+{}
 
 void CGlobalConfiguration::DoDataExchange(CDataExchange* pDX)
 {
@@ -94,7 +93,8 @@ END_MESSAGE_MAP()
 
 // CGlobalConfiguration message handlers
 
-void CGlobalConfiguration::OnBrowseOutputPath() {
+void CGlobalConfiguration::OnBrowseOutputPath()
+{
     Common common;
     CString folderName;
 
@@ -104,7 +104,8 @@ void CGlobalConfiguration::OnBrowseOutputPath() {
     UpdateData(FALSE);
 }
 
-void CGlobalConfiguration::OnBrowseWindFieldFile() {
+void CGlobalConfiguration::OnBrowseWindFieldFile()
+{
     TCHAR filter[512];
     CString fileName;
     Common common;
@@ -115,7 +116,8 @@ void CGlobalConfiguration::OnBrowseWindFieldFile() {
     filter[n + 2] = 0;
 
     // let the user browse for an wind-field file
-    if (!common.BrowseForFile(filter, fileName)) {
+    if (!common.BrowseForFile(filter, fileName))
+    {
         return; // cancelled
     }
 
@@ -124,7 +126,8 @@ void CGlobalConfiguration::OnBrowseWindFieldFile() {
     UpdateData(FALSE);
 }
 
-void CGlobalConfiguration::SaveData() {
+void CGlobalConfiguration::SaveData()
+{
     UpdateData(TRUE);
 
     // Save the image-format for the web - publishing
@@ -166,8 +169,10 @@ BOOL ConfigurationDialog::CGlobalConfiguration::OnInitDialog()
     // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CGlobalConfiguration::InitToolTips() {
-    if (!m_toolTip.Create(this)) {
+void CGlobalConfiguration::InitToolTips()
+{
+    if (!m_toolTip.Create(this))
+    {
         TRACE0("Failed to create tooltip control\n");
     }
     // add tools here...
@@ -185,22 +190,26 @@ void CGlobalConfiguration::InitToolTips() {
     m_toolTip.Activate(TRUE);
 }
 
-BOOL ConfigurationDialog::CGlobalConfiguration::PreTranslateMessage(MSG* pMsg) {
+BOOL ConfigurationDialog::CGlobalConfiguration::PreTranslateMessage(MSG* pMsg)
+{
     m_toolTip.RelayEvent(pMsg);
 
     return CPropertyPage::PreTranslateMessage(pMsg);
 }
 
 /** Called when the user changes whether we should publish the data or not */
-void ConfigurationDialog::CGlobalConfiguration::OnChangePublish() {
+void ConfigurationDialog::CGlobalConfiguration::OnChangePublish()
+{
     SaveData();
-    if (m_configuration->webSettings.publish) {
+    if (m_configuration->webSettings.publish)
+    {
         m_imageFormatCombo.EnableWindow(true);
         m_localDir.EnableWindow(true);
         //m_localDirRadio.EnableWindow(true);
         //m_ftpDirRadio.EnableWindow(false);
     }
-    else {
+    else
+    {
         m_imageFormatCombo.EnableWindow(false);
         m_localDir.EnableWindow(false);
         //m_localDirRadio.EnableWindow(false);
@@ -208,7 +217,8 @@ void ConfigurationDialog::CGlobalConfiguration::OnChangePublish() {
     }
 }
 
-void ConfigurationDialog::CGlobalConfiguration::OnAdvancedFTPSettings() {
+void ConfigurationDialog::CGlobalConfiguration::OnAdvancedFTPSettings()
+{
     CAdvancedFTPUploadSettings advDialog;
     advDialog.m_configuration = m_configuration;
     advDialog.DoModal();
@@ -218,12 +228,14 @@ void ConfigurationDialog::CGlobalConfiguration::OnChangeWindFileUpdate()
 {
     CButton* m_ctlCheck = (CButton*)GetDlgItem(IDC_CHECK_WINDFIELDFILE_ENABLED);
     m_configuration->windSourceSettings.enabled = m_ctlCheck->GetCheck();
-    if (m_configuration->windSourceSettings.enabled == 0) {
+    if (m_configuration->windSourceSettings.enabled == 0)
+    {
         GetDlgItem(IDC_BUTTON_BROWSE_WINDFIELDFILE)->EnableWindow(FALSE);
         GetDlgItem(IDC_EDIT_WINDFIELDFILE)->EnableWindow(FALSE);
         GetDlgItem(IDC_EDIT_RELOADWINDFIELDFILE)->EnableWindow(FALSE);
     }
-    else {
+    else
+    {
         GetDlgItem(IDC_BUTTON_BROWSE_WINDFIELDFILE)->EnableWindow(TRUE);
         GetDlgItem(IDC_EDIT_WINDFIELDFILE)->EnableWindow(TRUE);
         GetDlgItem(IDC_EDIT_RELOADWINDFIELDFILE)->EnableWindow(TRUE);

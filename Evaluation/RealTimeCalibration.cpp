@@ -3,6 +3,7 @@
 #include "../Common/Common.h"
 #include "../Evaluation/Spectrometer.h"
 #include "../Configuration/ConfigurationFileHandler.h"
+#include "../NovacProgramLog.h"
 #include <SpectralEvaluation/DialogControllers/NovacProgramWavelengthCalibrationController.h>
 #include <SpectralEvaluation/DialogControllers/ReferenceCreationController.h>
 #include <SpectralEvaluation/File/File.h>
@@ -144,17 +145,12 @@ std::vector<novac::CReferenceFile> CreateStandardReferences(
     return referencesCreated;
 }
 
-void ReplaceReferences(std::vector<novac::CReferenceFile>& newReferences, CConfigurationSetting::SpectrometerSetting& spectrometer)
+static void ReplaceReferences(std::vector<novac::CReferenceFile>& newReferences, CConfigurationSetting::SpectrometerSetting& spectrometer)
 {
     // First make sure that all the cross sections could be read in before attempting to replace anything
     for (size_t idx = 0; idx < newReferences.size(); ++idx)
     {
-        if (newReferences[idx].ReadCrossSectionDataFromFile())
-        {
-            std::stringstream message;
-            message << "Failed to read cross section data from file: " << newReferences[idx].m_path << std::endl;
-            throw std::invalid_argument(message.str());
-        }
+        newReferences[idx].ReadCrossSectionDataFromFile();
 
         if (newReferences[idx].m_data == nullptr ||
             newReferences[idx].m_data->m_crossSection.size() == 0)
@@ -167,14 +163,13 @@ void ReplaceReferences(std::vector<novac::CReferenceFile>& newReferences, CConfi
 
     // Now replace the references. Notice that this only supports replacing the references of the first channel.
     auto& fitWindow = spectrometer.channel[0].fitWindow;
-    fitWindow.nRef = 0;
+    fitWindow.reference.clear();
     for (const auto& reference : newReferences)
     {
         if (!EqualsIgnoringCase(reference.m_specieName, "Fraunhofer"))
         {
             // The NovacProgram doesn't use the Fraunhofer reference for determining shift in the real-time evaluations (only in ReEvaluation)
-            fitWindow.ref[fitWindow.nRef] = reference;
-            ++fitWindow.nRef;
+            fitWindow.reference.push_back(reference);
         }
     }
 }
@@ -316,12 +311,14 @@ bool CRealTimeCalibration::RunInstrumentCalibration(
 {
     try
     {
+        NovacProgramLog log;
+
         const auto& autoCalibrationSettings = spectrometer.m_scanner.spec[0].channel[0].autoCalibration;
 
         // Use the WavelengthCalibrationController, which is also used when the 
         //  user performs the instrument calibrations using the CCalibratePixelToWavelengthDialog.
         // This makes sure we get the same behavior in the dialog and here.
-        NovacProgramWavelengthCalibrationController calibrationController;
+        NovacProgramWavelengthCalibrationController calibrationController(log);
         RunCalibration(calibrationController, scanFile, autoCalibrationSettings);
 
         // Save new instrument calibration.

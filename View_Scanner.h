@@ -51,7 +51,7 @@ public:
     // ----------------- PUBLIC DATA ------------------------------
 
     /** A common object for doing common things */
-    Common										m_common;
+    Common m_common;
 
     /** A pointer to a shared instance of 'CEvaluatedDataStorage' */
     CEvaluatedDataStorage* m_evalDataStorage;
@@ -61,13 +61,13 @@ public:
 
     /** The index into g_settings for the scanner that
                 is connected to this view. */
-    unsigned int							m_scannerIndex;
+    unsigned int m_scannerIndex;
 
     /** The serial number of 'this' spectrometer */
-    CString										m_serial;
+    CString m_serial;
 
     /** The name of the site where this spectrometer is siturated */
-    CString										m_siteName;
+    CString m_siteName;
 
     // ----------- PUBLIC METHODS ---------------
     /** Set time range for current day plot */
@@ -110,8 +110,8 @@ protected:
     CStatic m_statusScanner;
 
     // the meteorology
-    CEdit		m_windDirection, m_windSpeed, m_plumeHeight;
-    double	windDirection, windSpeed, plumeHeight;
+    CEdit m_windDirection, m_windSpeed, m_plumeHeight;
+    double windDirection, windSpeed, plumeHeight;
     CButton m_setButton;
     CStatic m_labelWindDirection, m_labelWindSpeed, m_labelPlumeHeight;
 
@@ -136,18 +136,18 @@ protected:
     DlgControls::CLabel m_legend_FitIntensity;
 
     /** The bitmaps for the red, yellow and green lights */
-    CBitmap	m_greenLight, m_yellowLight, m_redLight;
+    CBitmap m_greenLight, m_yellowLight, m_redLight;
 
     // ----------------- PROTECTED DATA ------------------------------
 
     /** The date and time the last received scan started */
-    novac::CDateTime	m_lastScanStart;
+    novac::CDateTime m_lastScanStart;
 
     /** The date and time of the most recent scan received */
-    novac::CDateTime	m_mostRecentScanStart;
+    novac::CDateTime m_mostRecentScanStart;
 
     /** The channel that the last scan used */
-    int				m_lastScanChannel;
+    int m_lastScanChannel;
 
     // ----------------- PROTECTED METHODS ------------------------------
 

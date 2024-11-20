@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "FTPHandler.h"
 #include "../Common/CfgTxtFileHandler.h"
+#include "../NovacProgramLog.h"
 
 #ifdef _MSC_VER
 #pragma warning (push, 4)
@@ -535,7 +536,8 @@ bool CFTPHandler::DownloadSpectrumFile(const CString& remoteFile, const CString&
     }
 
     /** The .pak-file-handler, used to check the downloaded .pak-files */
-    FileHandler::CPakFileHandler pakFileHandler;
+    NovacProgramLog log;
+    FileHandler::CPakFileHandler pakFileHandler(log);
 
     // Check the contents of the file and make sure it's an ok file
     if (1 == pakFileHandler.ReadDownloadedFile(localFileFullPath))
