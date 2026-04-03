@@ -27,13 +27,13 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <UseOfMfc>Static</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <UseOfMfc>Static</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -41,13 +41,13 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>Static</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>Static</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -101,7 +101,7 @@
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>$(SolutionDir)\External\curl-7.74.0-win32-mingw\include\;$(SolutionDir)\SpectralEvaluation\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\External\curl-7.74.0-win32-mingw\include\;$(SolutionDir)\SpectralEvaluation\include\;$(SolutionDir)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions> /Zc:twoPhase- %(AdditionalOptions)</AdditionalOptions>
       <OpenMPSupport>true</OpenMPSupport>
@@ -145,9 +145,9 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
       <BufferSecurityCheck>true</BufferSecurityCheck>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>$(SolutionDir)\External\curl-7.74.0-win32-mingw\include\;$(SolutionDir)\SpectralEvaluation\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\External\curl-7.74.0-win32-mingw\include\;$(SolutionDir)\SpectralEvaluation\include\;$(SolutionDir)\;$(SolutionDir)\Common;$(SolutionDir)\Common\Spectra;$(SolutionDir)\communication;$(SolutionDir)\Configuration;$(SolutionDir)\Dialogs;$(SolutionDir)\DlgControls;$(SolutionDir)\DlgControls\CGridListCtrlEx;$(SolutionDir)\DlgControls\GridCtrl;$(SolutionDir)\Evaluation;$(SolutionDir)\External\NetCdf_4_7_2\include;$(SolutionDir)\File;$(SolutionDir)\Geometry;$(SolutionDir)\Graphs;$(SolutionDir)\Meteorology;$(SolutionDir)\PostFlux;$(SolutionDir)\ReEvaluation;$(SolutionDir)\WindMeasurement;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/Zc:twoPhase- %(AdditionalOptions)</AdditionalOptions>
       <OpenMPSupport>true</OpenMPSupport>
@@ -195,7 +195,7 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>$(SolutionDir)\External\curl-7.74.0-win32-mingw\include\;$(SolutionDir)\SpectralEvaluation\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\External\curl-7.74.0-win32-mingw\include\;$(SolutionDir)\SpectralEvaluation\include\;$(SolutionDir)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <OpenMPSupport>true</OpenMPSupport>
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
@@ -242,9 +242,9 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
       <BufferSecurityCheck>true</BufferSecurityCheck>
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>$(SolutionDir)\External\curl-7.74.0-win32-mingw\include\;$(SolutionDir)\SpectralEvaluation\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\External\curl-7.74.0-win32-mingw\include\;$(SolutionDir)\SpectralEvaluation\include\;$(SolutionDir)\;$(SolutionDir)\Common;$(SolutionDir)\Common\Spectra;$(SolutionDir)\communication;$(SolutionDir)\Configuration;$(SolutionDir)\Dialogs;$(SolutionDir)\DlgControls;$(SolutionDir)\DlgControls\CGridListCtrlEx;$(SolutionDir)\DlgControls\GridCtrl;$(SolutionDir)\Evaluation;$(SolutionDir)\External\NetCdf_4_7_2\include;$(SolutionDir)\File;$(SolutionDir)\Geometry;$(SolutionDir)\Graphs;$(SolutionDir)\Meteorology;$(SolutionDir)\PostFlux;$(SolutionDir)\ReEvaluation;$(SolutionDir)\WindMeasurement;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <OpenMPSupport>true</OpenMPSupport>
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>

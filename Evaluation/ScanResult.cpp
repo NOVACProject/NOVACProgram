@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "ScanResult.h"
 #include "../VolcanoInfo.h"
 #include <SpectralEvaluation/StringUtils.h>
