@@ -43,3 +43,6 @@
 #include <afxdlgs.h>
 #include <afxcontrolbars.h>
 
+// TODO: Remove once SpectralEvaluation/Fit/ParameterVector.h includes <cassert> itself.
+#include <cassert>
+

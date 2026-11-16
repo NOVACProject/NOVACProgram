@@ -55,7 +55,7 @@ CScanResult::CScanResult(const CScanResult& other)
 
     this->m_spec = std::vector<novac::CEvaluationResult>(begin(other.m_spec), end(other.m_spec));
     this->m_specInfo = std::vector<novac::CSpectrumInfo>(begin(other.m_specInfo), end(other.m_specInfo));
-    this->m_corruptedSpectra = std::vector<unsigned int>(begin(other.m_corruptedSpectra), end(other.m_corruptedSpectra));
+    this->m_corruptedSpectra = std::vector<size_t>(begin(other.m_corruptedSpectra), end(other.m_corruptedSpectra));
     this->m_specNum = other.m_specNum;
 
     this->m_skySpecInfo = other.m_skySpecInfo;
@@ -588,7 +588,7 @@ CScanResult& CScanResult::operator=(const CScanResult& s2)
 
     this->m_spec = std::vector<novac::CEvaluationResult>(begin(s2.m_spec), end(s2.m_spec));
     this->m_specInfo = std::vector<novac::CSpectrumInfo>(begin(s2.m_specInfo), end(s2.m_specInfo));
-    this->m_corruptedSpectra = std::vector<unsigned int>(begin(s2.m_corruptedSpectra), end(s2.m_corruptedSpectra));
+    this->m_corruptedSpectra = std::vector<size_t>(begin(s2.m_corruptedSpectra), end(s2.m_corruptedSpectra));
     this->m_specNum = s2.m_specNum;
 
     this->m_skySpecInfo = s2.m_skySpecInfo;

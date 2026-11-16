@@ -16,14 +16,14 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         submodules: recursive
 
     - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v1.1
+      uses: microsoft/setup-msbuild@v2
       with:
-        vs-version: '[17.0,17.1)'
+        vs-version: '[18.0,19.0)'
 
     - name: Build
       working-directory: ${{env.GITHUB_WORKSPACE}}
