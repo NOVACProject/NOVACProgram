@@ -1,0 +1,21 @@
+# Line endings: LF in the repository, native line endings in the working tree.
+# .editorconfig intentionally does not set end_of_line and relies on this file.
+* text=auto
+
+# Visual Studio solution files are always CRLF
+*.sln text eol=crlf
+
+# Binary files: never convert or diff as text
+*.a binary
+*.aps binary
+*.bmp binary
+*.db binary
+*.dll binary
+*.docx binary
+*.exe binary
+*.ico binary
+*.jpg binary
+*.lib binary
+*.ncb binary
+*.pdf binary
+*.png binary

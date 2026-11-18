@@ -10,3 +10,5 @@
 /*.cppcheck
 *.log
 /UpgradeLog.htm
+*.ncb
+/NovacProgram
