@@ -37,7 +37,9 @@ int CStatusFileReader::IsStart()
     exitIndex = CheckStatus(STOPPROGRAM);
     startIndex = CheckStatus(STARTPROGRAM);
     if (startIndex > exitIndex)
+    {
         status = 1;
+    }
     return status;
 }
 
@@ -51,7 +53,9 @@ int CStatusFileReader::IsExit()
     exitIndex = CheckStatus(STOPPROGRAM);
     startIndex = CheckStatus(STARTPROGRAM);
     if (startIndex < exitIndex)
+    {
         status = 1;
+    }
     return status;
 }
 
@@ -65,7 +69,9 @@ int CStatusFileReader::IsPoweroff()
     exitIndex = CheckStatus(POWEROFF);
     startIndex = CheckStatus(POWERON);
     if (startIndex < exitIndex)
+    {
         status = 1;
+    }
     return status;
 }
 
@@ -75,7 +81,9 @@ int CStatusFileReader::CheckStatus(unsigned char status)
     for (i = 1023; i >= 4; i--)
     {
         if (m_statusList[i] == status)
+        {
             return i;
+        }
     }
     return 0;
 }
@@ -85,71 +93,101 @@ void CStatusFileReader::StatusPrint(unsigned char s)
     switch (s)
     {
     case STARTPROGRAM:
-        RecordStatus("Started Program"); break;
+        RecordStatus("Started Program");
+        break;
     case STOPPROGRAM:
-        RecordStatus("Exiting program"); break;
+        RecordStatus("Exiting program");
+        break;
     case WAIT4S:
-        RecordStatus("Waiting 4 seconds"); break;
+        RecordStatus("Waiting 4 seconds");
+        break;
     case HOMEMOTOR:
-        RecordStatus("Homing motor"); break;
+        RecordStatus("Homing motor");
+        break;
     case MEMERR:
-        RecordStatus("Not enough memory"); break;
+        RecordStatus("Not enough memory");
+        break;
     case USERINT:
-        RecordStatus("Interrupted by user"); break;
+        RecordStatus("Interrupted by user");
+        break;
     case EXECUTE:
-        RecordStatus("Executing"); break;
+        RecordStatus("Executing");
+        break;
     case DELETING:
-        RecordStatus("Deleting"); break;
+        RecordStatus("Deleting");
+        break;
     case OPENCOMERR:
-        RecordStatus("Could not open COM port"); break;
+        RecordStatus("Could not open COM port");
+        break;
     case GPSTIMEOUT:
-        RecordStatus("GPS timeout"); break;
+        RecordStatus("GPS timeout");
+        break;
     case SETCPUTIME:
-        RecordStatus("Setting CPU time&date from GPS time&date"); break;
+        RecordStatus("Setting CPU time&date from GPS time&date");
+        break;
     case USEDCPUTIME:
-        RecordStatus("Used time from CPU"); break;
+        RecordStatus("Used time from CPU");
+        break;
     case POWERON:
-        RecordStatus("Power ON"); break;
+        RecordStatus("Power ON");
+        break;
     case POWEROFF:
-        RecordStatus("Power OFF"); break;
+        RecordStatus("Power OFF");
+        break;
     case MOVEMOTOROK:
-        RecordStatus("MoveMotor Successful"); break;
+        RecordStatus("MoveMotor Successful");
+        break;
     case MOTORDONE:
-        RecordStatus("Motor done"); break;
+        RecordStatus("Motor done");
+        break;
     case ALREADYHOME:
-        RecordStatus("Motor already at home. Will make one round to reset.\n"); break;
+        RecordStatus("Motor already at home. Will make one round to reset.\n");
+        break;
     case MOVEMOTOR:
-        RecordStatus("MoveMotor"); break;
+        RecordStatus("MoveMotor");
+        break;
     case DOSCANDONE:
-        RecordStatus("doscan DONE"); break;
+        RecordStatus("doscan DONE");
+        break;
     case DOSCANTIMEOUT:
-        RecordStatus("Timeout in doscan"); break;
+        RecordStatus("Timeout in doscan");
+        break;
     case SPECREFUSE:
         RecordStatus("Spectrometer refuses to scan. Reinitializing");
     case DONEINITSPEC:
-        RecordStatus("InitSpectrometer done"); break;
+        RecordStatus("InitSpectrometer done");
+        break;
     case INITSPEC:
-        RecordStatus("InitSpectrometer"); break;
+        RecordStatus("InitSpectrometer");
+        break;
     case WRITEOK:
-        RecordStatus("Writing OK"); break;
+        RecordStatus("Writing OK");
+        break;
     case NOTOK:
-        RecordStatus("Not successful"); break;
+        RecordStatus("Not successful");
+        break;
     case CONTACTSPEC:
-        RecordStatus("Got contact with spectrometer"); break;
+        RecordStatus("Got contact with spectrometer");
+        break;
     case NOCONTACTSPEC:
-        RecordStatus("No contact with spectrometer"); break;
+        RecordStatus("No contact with spectrometer");
+        break;
     case SERIALOPEN:
-        RecordStatus("Opened serial port"); break;
+        RecordStatus("Opened serial port");
+        break;
     case SERIALOPENERR:
-        RecordStatus("Could not open serial port"); break;
+        RecordStatus("Could not open serial port");
+        break;
     case COMMAND:
-        RecordStatus("Command"); break;
+        RecordStatus("Command");
+        break;
     case PAUSE:
-        RecordStatus("Pause"); break;
+        RecordStatus("Pause");
+        break;
     case RESUME:
-        RecordStatus("Resume"); break;
+        RecordStatus("Resume");
+        break;
     }
-
 }
 void CStatusFileReader::RecordStatus(char* txt)
 {
@@ -157,7 +195,8 @@ void CStatusFileReader::RecordStatus(char* txt)
     CString filePath;
     filePath.Format("%sstatusDAT.txt", (LPCTSTR)m_workingPath);
     FILE* f = fopen(filePath, "a+");
-    if (f != NULL) {
+    if (f != NULL)
+    {
         fprintf(f, "%s\n", txt);
         fclose(f);
     }
@@ -178,7 +217,7 @@ void CStatusFileReader::Reorder()
         fread(p, 1024, 1, f);
         fclose(f);
         first = p[0];
-        last = p[1];	//last is the latest status
+        last = p[1]; //last is the latest status
     }
     printf("first = %d,last = %d\n", first, last);
     int count = 4;

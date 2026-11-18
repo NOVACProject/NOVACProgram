@@ -11,6 +11,7 @@ namespace FileHandler
 class CEvaluationLogFileHandler
 {
     static const int ORIGINAL_ARRAY_LENGTH = 50;
+
 public:
     CEvaluationLogFileHandler();
     ~CEvaluationLogFileHandler();
@@ -46,21 +47,22 @@ public:
     CArray<CWindField, CWindField&> m_windField;
 
     /** How many scans that have been read from the evaluation log */
-    long  m_scanNum;
+    long m_scanNum;
 
     /** The species that were found in this evaluation log */
     CString m_specie[20];
 
     /** The number of species found in the evaluation log */
-    long    m_specieNum;
+    long m_specieNum;
 
     /** The currently selected specie */
-    long    m_curSpecie;;
+    long m_curSpecie;
+    ;
 
     /** The additional spectrum information of one spectrum. */
     novac::CSpectrumInfo m_specInfo;
-protected:
 
+protected:
     typedef struct LogColumns
     {
         int column[MAX_N_REFERENCES];
@@ -84,7 +86,7 @@ protected:
         int starttime;
         int stoptime;
         int name;
-    }LogColumns;
+    } LogColumns;
 
     /** Data structure to remember what column corresponds to which value in the evaluation log */
     LogColumns m_col;

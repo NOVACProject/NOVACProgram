@@ -4,7 +4,7 @@
 #include "../Configuration/Configuration.h"
 
 
-extern CConfigurationSetting	g_settings;
+extern CConfigurationSetting g_settings;
 
 // CSummarizeFluxDataDlg dialog
 
@@ -49,8 +49,10 @@ BOOL CSummarizeFluxDataDlg::OnInitDialog()
     m_graphFrame.GetWindowRect(rect);
     int height = rect.bottom - rect.top;
     int width = rect.right - rect.left;
-    rect.top = 20; rect.bottom = height - 10;
-    rect.left = 10; rect.right = width - 10;
+    rect.top = 20;
+    rect.bottom = height - 10;
+    rect.left = 10;
+    rect.right = width - 10;
 
     m_graph.Create(WS_VISIBLE | WS_CHILD, rect, &m_graphFrame);
     m_graph.SetXUnits(common.GetString(AXIS_TIMEOFDAY));
@@ -79,7 +81,8 @@ void CSummarizeFluxDataDlg::OnSearchForFluxLogFiles()
     GetDlgItemText(IDC_EDIT_DIRECTORY, directory);
 
     // If the directory is empty, then search in the output-directory
-    if (directory.GetLength() < 4) {
+    if (directory.GetLength() < 4)
+    {
         directory.Format("%sOutput", (LPCSTR)g_settings.outputDirectory);
     }
 
@@ -96,42 +99,58 @@ void CSummarizeFluxDataDlg::OnSearchForFluxLogFiles()
 
 /** Searches for flux-log files in the given sub-directory.
         Results are appended to the 'm_fluxLogfiles' list */
-void CSummarizeFluxDataDlg::SearchForFluxLogFiles(const CString& directory) {
+void CSummarizeFluxDataDlg::SearchForFluxLogFiles(const CString& directory)
+{
     WIN32_FIND_DATA FindFileData;
     char fileToFind[MAX_PATH];
     CString fileName, fullFileName;
 
     /** Go through the filenames */
     if (m_includeSubDirectories)
+    {
         sprintf(fileToFind, "%s\\*", (LPCSTR)directory);
-    else {
+    }
+    else
+    {
         if (m_lookForPostFluxLogs)
+        {
             sprintf(fileToFind, "%s\\PostFluxLog*.txt", (LPCSTR)directory);
+        }
         else
+        {
             sprintf(fileToFind, "%s\\FluxLog*.txt", (LPCSTR)directory);
+        }
     }
 
     // Search for files
     HANDLE hFile = FindFirstFile(fileToFind, &FindFileData);
 
-    if (hFile == INVALID_HANDLE_VALUE) {
+    if (hFile == INVALID_HANDLE_VALUE)
+    {
         return; // no files found
     }
 
-    do {
+    do
+    {
         fullFileName.Format("%s\\%s", (LPCSTR)directory, (LPCSTR)FindFileData.cFileName);
         fileName.Format("%s", FindFileData.cFileName);
 
         // don't include the current and the parent directories
         if (fileName.GetLength() == 2 && Equals(fileName, ".."))
+        {
             continue;
+        }
         if (fileName.GetLength() == 1 && Equals(fileName, "."))
+        {
             continue;
+        }
 
         // 1. Is this a directory?
-        if (FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+        if (FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+        {
             // This is a directory. If we are to search sub-directories then go into the directory
-            if (m_includeSubDirectories) {
+            if (m_includeSubDirectories)
+            {
                 SearchForFluxLogFiles(fullFileName);
                 continue;
             }
@@ -139,13 +158,17 @@ void CSummarizeFluxDataDlg::SearchForFluxLogFiles(const CString& directory) {
 
         // 2. Is this what we're looking for?
         if (!Equals(fileName.Right(4), ".txt"))
+        {
             continue; // <-- filename has to end in '.txt'
+        }
 
         // 3. Ok, the file-name ends in .txt, but does it start with what we want it to do?
-        if (m_lookForPostFluxLogs && Equals(fileName.Left(11), "PostFluxLog")) {
+        if (m_lookForPostFluxLogs && Equals(fileName.Left(11), "PostFluxLog"))
+        {
             m_fluxLogFiles.AddTail(fullFileName);
         }
-        else if (Equals(fileName.Left(7), "FluxLog")) {
+        else if (Equals(fileName.Left(7), "FluxLog"))
+        {
             m_fluxLogFiles.AddTail(fullFileName);
         }
 
@@ -155,11 +178,13 @@ void CSummarizeFluxDataDlg::SearchForFluxLogFiles(const CString& directory) {
 }
 
 /** Reads in the data in the files 'm_fluxLogFiles' into the data-list 'm_fluxResults' */
-void CSummarizeFluxDataDlg::ReadFluxLogFiles() {
+void CSummarizeFluxDataDlg::ReadFluxLogFiles()
+{
     FileHandler::CFluxLogFileHandler* reader = NULL;
 
     POSITION pos = m_fluxLogFiles.GetHeadPosition();
-    while (pos != NULL) {
+    while (pos != NULL)
+    {
         // get the next file-name in the list
         CString& fileName = m_fluxLogFiles.GetNext(pos);
 
@@ -169,14 +194,14 @@ void CSummarizeFluxDataDlg::ReadFluxLogFiles() {
 
         // Parse the file
         if (SUCCESS != reader->ReadFluxLog())
+        {
             continue; // <-- could not parse the file
+        }
 
         // Import the data from the reader
-        for (int k = 0; k < reader->m_fluxesNum; ++k) {
+        for (int k = 0; k < reader->m_fluxesNum; ++k)
+        {
             m_fluxResults.AddTail(reader->m_fluxes.GetAt(k));
         }
     }
-
 }
-
-

@@ -25,7 +25,8 @@ CEvaluatedDataStorage::CScanData::CScanData()
 }
 
 CEvaluatedDataStorage::CScanData::~CScanData()
-{}
+{
+}
 
 CEvaluatedDataStorage::CScanData& CEvaluatedDataStorage::CScanData::operator=(const CEvaluatedDataStorage::CScanData& sd)
 {
@@ -54,7 +55,8 @@ CEvaluatedDataStorage::CSpectrumData::CSpectrumData()
 }
 
 CEvaluatedDataStorage::CSpectrumData::~CSpectrumData()
-{}
+{
+}
 
 CEvaluatedDataStorage::CSpectrumData& CEvaluatedDataStorage::CSpectrumData::operator=(const CEvaluatedDataStorage::CSpectrumData& sd)
 {
@@ -82,7 +84,8 @@ CEvaluatedDataStorage::CWindMeasData::CWindMeasData()
 }
 
 CEvaluatedDataStorage::CWindMeasData::~CWindMeasData()
-{}
+{
+}
 
 CEvaluatedDataStorage::CWindMeasData& CEvaluatedDataStorage::CWindMeasData::operator=(const CEvaluatedDataStorage::CWindMeasData& wd)
 {
@@ -110,7 +113,9 @@ CEvaluatedDataStorage::CEvaluatedDataStorage(void)
     memset(m_specIndex, 0, MAX_NUMBER_OF_SCANNING_INSTRUMENTS * sizeof(int));
 
     for (int i = 0; i < MAX_NUMBER_OF_SCANNING_INSTRUMENTS; ++i)
+    {
         this->m_serials[i].Format("");
+    }
 
     m_serialNum = 0;
 }
@@ -140,7 +145,10 @@ int CEvaluatedDataStorage::AddData(const CString& serial, Evaluation::CScanResul
             bool found = false;
             for (unsigned int k = 0; k < g_settings.scannerNum; ++k)
             {
-                if (found)	break;
+                if (found)
+                {
+                    break;
+                }
 
                 for (unsigned int j = 0; j < g_settings.scanner[k].specNum; ++j)
                 {
@@ -166,7 +174,9 @@ int CEvaluatedDataStorage::AddData(const CString& serial, Evaluation::CScanResul
                 }
             }
             if (!found)
+            {
                 m_models[m_serialNum] = "";
+            }
 
             ++m_serialNum;
         }
@@ -311,7 +321,10 @@ int CEvaluatedDataStorage::AddWindData(const CString& serial, WindSpeedMeasureme
             bool found = false;
             for (unsigned int k = 0; k < g_settings.scannerNum; ++k)
             {
-                if (found)	break;
+                if (found)
+                {
+                    break;
+                }
 
                 for (unsigned int j = 0; j < g_settings.scanner[k].specNum; ++j)
                 {
@@ -337,7 +350,9 @@ int CEvaluatedDataStorage::AddWindData(const CString& serial, WindSpeedMeasureme
                 }
             }
             if (!found)
+            {
                 m_models[m_serialNum] = "";
+            }
 
             ++m_serialNum;
         }
@@ -349,7 +364,9 @@ int CEvaluatedDataStorage::AddWindData(const CString& serial, WindSpeedMeasureme
     }
 
     if (result == NULL)
+    {
         return 0;
+    }
 
     // Add the wind-speed result, if the measurement was made today...
     if (common.GetDay() == result->m_date)
@@ -383,9 +400,13 @@ void CEvaluatedDataStorage::GetFluxRange(const CString& serial, double& minFlux,
     // The unit conversion
     double unitConversionFactor = 1.0;
     if (g_userSettings.m_fluxUnit == UNIT_KGS)
+    {
         unitConversionFactor = 1.0;
+    }
     else if (g_userSettings.m_fluxUnit == UNIT_TONDAY)
+    {
         unitConversionFactor = 3.6 * 24.0;
+    }
 
     // find the maximum flux
     maxFlux = m_data[scannerIndex][0].m_flux;
@@ -442,9 +463,13 @@ void CEvaluatedDataStorage::GetColumnRange(const CString& serial, double& minCol
     // The unit conversion
     double unitConversionFactor = 1.0;
     if (g_userSettings.m_columnUnit == UNIT_PPMM)
+    {
         unitConversionFactor = 1.0;
+    }
     else if (g_userSettings.m_columnUnit == UNIT_MOLEC_CM2)
+    {
         unitConversionFactor = 2.5e15;
+    }
 
     // convert to the correct unit
     minColumn *= unitConversionFactor;
@@ -495,7 +520,7 @@ void CEvaluatedDataStorage::AppendSpecDataHistory(int scannerIndex, int time, do
     }
 }
 /** Removes old spec data */
-void  CEvaluatedDataStorage::RemoveOldSpec(int scannerIndex)
+void CEvaluatedDataStorage::RemoveOldSpec(int scannerIndex)
 {
     Common common;
     for (unsigned int scannerIndex = 0; scannerIndex < m_serialNum; ++scannerIndex)
@@ -545,7 +570,7 @@ void CEvaluatedDataStorage::AppendFluxResult(int scannerIndex, const CDateTime& 
 }
 
 /** Removes old flux results */
-void  CEvaluatedDataStorage::RemoveOldFluxResults()
+void CEvaluatedDataStorage::RemoveOldFluxResults()
 {
     Common common;
     for (unsigned int scannerIndex = 0; scannerIndex < m_serialNum; ++scannerIndex)
@@ -578,7 +603,9 @@ void  CEvaluatedDataStorage::RemoveOldFluxResults()
 
     // don't check this several times every day
     if (lastDate == today)
+    {
         return;
+    }
 
     // clear the minimum and maximum temperatures
     for (unsigned int scannerIndex = 0; scannerIndex < m_serialNum; ++scannerIndex)
@@ -600,7 +627,6 @@ void  CEvaluatedDataStorage::RemoveOldFluxResults()
             m_windData.RemoveAt(oldPos);
             pos = m_windData.GetHeadPosition(); // restart the search - not very efficient but easy and safe
         }
-
     }
 
     lastDate = today;
@@ -619,14 +645,20 @@ long CEvaluatedDataStorage::GetColumnData(const CString& serial, double* dataBuf
     int scannerIndex = GetScannerIndex(serial);
 
     if ((scannerIndex < 0) || (scannerIndex > MAX_NUMBER_OF_SCANNING_INSTRUMENTS))
+    {
         return 0;
+    }
 
     // The unit conversion
     double unitConversionFactor = 0;
     if (g_userSettings.m_columnUnit == UNIT_PPMM)
+    {
         unitConversionFactor = 1.0;
+    }
     else if (g_userSettings.m_columnUnit == UNIT_MOLEC_CM2)
+    {
         unitConversionFactor = 2.5e15;
+    }
 
     int nCopy;
     if (fullDay)
@@ -648,7 +680,6 @@ long CEvaluatedDataStorage::GetColumnData(const CString& serial, double* dataBuf
             dataBuffer[i] = m_specData[scannerIndex][i].m_column * unitConversionFactor;
             dataErrorBuffer[i] = m_specData[scannerIndex][i].m_columnError * unitConversionFactor;
         }
-
     }
 
     return nCopy;
@@ -666,7 +697,9 @@ long CEvaluatedDataStorage::GetTimeData(const CString& serial, double* dataBuffe
     int scannerIndex = GetScannerIndex(serial);
 
     if ((scannerIndex < 0) || (scannerIndex > MAX_NUMBER_OF_SCANNING_INSTRUMENTS))
+    {
         return 0;
+    }
 
     int nCopy;
     if (fullDay)
@@ -701,14 +734,20 @@ long CEvaluatedDataStorage::GetBadColumnData(const CString& serial, double* data
     int scannerIndex = GetScannerIndex(serial);
 
     if ((scannerIndex < 0) || (scannerIndex > MAX_NUMBER_OF_SCANNING_INSTRUMENTS))
+    {
         return 0;
+    }
 
     // The unit conversion
     double unitConversionFactor = 0.0;
     if (g_userSettings.m_columnUnit == UNIT_PPMM)
+    {
         unitConversionFactor = 1.0;
+    }
     else if (g_userSettings.m_columnUnit == UNIT_MOLEC_CM2)
+    {
         unitConversionFactor = 2.5e15;
+    }
 
     int nCopy;
     if (fullDay)
@@ -717,9 +756,13 @@ long CEvaluatedDataStorage::GetBadColumnData(const CString& serial, double* data
         for (int k = 0; k < nCopy; ++k)
         {
             if (m_specDataDay[scannerIndex][k].m_isBadFit)
+            {
                 dataBuffer[k] = m_specDataDay[scannerIndex][k].m_column * unitConversionFactor;
+            }
             else
+            {
                 dataBuffer[k] = 0;
+            }
         }
     }
     else
@@ -728,9 +771,13 @@ long CEvaluatedDataStorage::GetBadColumnData(const CString& serial, double* data
         for (int k = 0; k < nCopy; ++k)
         {
             if (m_specData[scannerIndex][k].m_isBadFit)
+            {
                 dataBuffer[k] = m_specData[scannerIndex][k].m_column * unitConversionFactor;
+            }
             else
+            {
                 dataBuffer[k] = 0;
+            }
         }
     }
 
@@ -749,14 +796,20 @@ long CEvaluatedDataStorage::GetGoodColumnData(const CString& serial, double* dat
     int scannerIndex = GetScannerIndex(serial);
 
     if ((scannerIndex < 0) || (scannerIndex > MAX_NUMBER_OF_SCANNING_INSTRUMENTS))
+    {
         return 0;
+    }
 
     // The unit conversion
     double unitConversionFactor = 0.0;
     if (g_userSettings.m_columnUnit == UNIT_PPMM)
+    {
         unitConversionFactor = 1.0;
+    }
     else if (g_userSettings.m_columnUnit == UNIT_MOLEC_CM2)
+    {
         unitConversionFactor = 2.5e15;
+    }
 
     int nCopy;
     if (fullDay)
@@ -765,9 +818,13 @@ long CEvaluatedDataStorage::GetGoodColumnData(const CString& serial, double* dat
         for (int k = 0; k < nCopy; ++k)
         {
             if (!m_specDataDay[scannerIndex][k].m_isBadFit)
+            {
                 dataBuffer[k] = m_specDataDay[scannerIndex][k].m_column * unitConversionFactor;
+            }
             else
+            {
                 dataBuffer[k] = 0;
+            }
         }
     }
     else
@@ -776,9 +833,13 @@ long CEvaluatedDataStorage::GetGoodColumnData(const CString& serial, double* dat
         for (int k = 0; k < nCopy; ++k)
         {
             if (!m_specData[scannerIndex][k].m_isBadFit)
+            {
                 dataBuffer[k] = m_specData[scannerIndex][k].m_column * unitConversionFactor;
+            }
             else
+            {
                 dataBuffer[k] = 0;
+            }
         }
     }
 
@@ -798,7 +859,9 @@ long CEvaluatedDataStorage::GetIntensityData(const CString& serial, double* peak
     int scannerIndex = GetScannerIndex(serial);
 
     if ((scannerIndex < 0) || (scannerIndex > MAX_NUMBER_OF_SCANNING_INSTRUMENTS))
+    {
         return 0;
+    }
 
     int nCopy;
     if (fullDay)
@@ -834,7 +897,9 @@ long CEvaluatedDataStorage::GetAngleData(const CString& serial, double* dataBuff
     int scannerIndex = GetScannerIndex(serial);
 
     if ((scannerIndex < 0) || (scannerIndex > MAX_NUMBER_OF_SCANNING_INSTRUMENTS))
+    {
         return 0;
+    }
 
     int nCopy = min(bufferSize, m_positionsNum[scannerIndex]);
     for (int i = 0; i < nCopy; ++i)
@@ -859,7 +924,9 @@ long CEvaluatedDataStorage::GetFluxData(const CString& serial, double* timeBuffe
     int scannerIndex = GetScannerIndex(serial);
 
     if ((scannerIndex < 0) || (scannerIndex > MAX_NUMBER_OF_SCANNING_INSTRUMENTS))
+    {
         return 0;
+    }
 
     // The unit conversion
     double unitConversionFactor = 0;
@@ -895,7 +962,7 @@ long CEvaluatedDataStorage::GetFluxStat(const CString& serial, double& average, 
     const int BUFFER_SIZE = 16384;
     double timeBuffer[BUFFER_SIZE];
     double fluxBuffer[BUFFER_SIZE];
-    int    fluxOkBuffer[BUFFER_SIZE];
+    int fluxOkBuffer[BUFFER_SIZE];
 
     // Get the flux-data
     int nDataPoints = GetFluxData(serial, timeBuffer, fluxBuffer, fluxOkBuffer, BUFFER_SIZE);
@@ -953,13 +1020,15 @@ long CEvaluatedDataStorage::GetFluxStat(const CString& serial, double& average, 
         @param wseBuffer - the estimated errors in the calculated wind-speed will be copied into this buffer.
         @param bufferSize - the maximum number of data points that the buffers can handle.
         @return the number of datapoints copied into the buffers. */
-long	CEvaluatedDataStorage::GetWindMeasurementData(const CString& serial, double* timeBuffer, double* wsBuffer, double* wseBuffer, long bufferSize)
+long CEvaluatedDataStorage::GetWindMeasurementData(const CString& serial, double* timeBuffer, double* wsBuffer, double* wseBuffer, long bufferSize)
 {
     // get the scanner index
     int scannerIndex = GetScannerIndex(serial);
 
     if ((scannerIndex < 0) || (scannerIndex > MAX_NUMBER_OF_SCANNING_INSTRUMENTS))
+    {
         return 0;
+    }
 
     long nCopy = 0; // the number of data-points copied
 
@@ -999,14 +1068,20 @@ double CEvaluatedDataStorage::GetOffset(const CString& serial)
     int scannerIndex = GetScannerIndex(serial);
 
     if ((scannerIndex < 0) || (scannerIndex > MAX_NUMBER_OF_SCANNING_INSTRUMENTS))
+    {
         return 0;
+    }
 
     // The unit conversion
     double unitConversionFactor = 1.0;
     if (g_userSettings.m_columnUnit == UNIT_PPMM)
+    {
         unitConversionFactor = 1.0;
+    }
     else if (g_userSettings.m_columnUnit == UNIT_MOLEC_CM2)
+    {
         unitConversionFactor = 2.5e15;
+    }
 
     return (m_offset[scannerIndex] * unitConversionFactor);
 }
@@ -1018,7 +1093,9 @@ double CEvaluatedDataStorage::GetPlumeCentre(const CString& serial)
     int scannerIndex = GetScannerIndex(serial);
 
     if ((scannerIndex < 0) || (scannerIndex > MAX_NUMBER_OF_SCANNING_INSTRUMENTS))
+    {
         return 0;
+    }
 
     return m_plumeCentre[scannerIndex];
 }
@@ -1029,7 +1106,9 @@ int CEvaluatedDataStorage::SetStatus(const CString& serial, SPECTROMETER_STATUS 
 {
     int scannerIndex = GetScannerIndex(serial);
     if (scannerIndex < 0)
+    {
         return 1;
+    }
 
     this->m_spectrometerStatus[scannerIndex] = status;
 
@@ -1042,7 +1121,9 @@ int CEvaluatedDataStorage::GetStatus(const CString& serial, SPECTROMETER_STATUS&
 {
     int scannerIndex = GetScannerIndex(serial);
     if (scannerIndex < 0)
+    {
         return -1;
+    }
 
     status = m_spectrometerStatus[scannerIndex];
 
@@ -1054,7 +1135,9 @@ double CEvaluatedDataStorage::GetDynamicRange(const CString& serial)
 {
     int scannerIndex = GetScannerIndex(serial);
     if (scannerIndex < 0)
+    {
         return -1;
+    }
     return CSpectrometerDatabase::GetInstance().GetModel(m_models[scannerIndex]).maximumIntensityForSingleReadout;
 }
 
@@ -1063,12 +1146,18 @@ double CEvaluatedDataStorage::GetTemperature(const CString& serial)
 {
     int scannerIndex = GetScannerIndex(serial);
     if (scannerIndex < 0)
+    {
         return -1;
+    }
 
     if (m_fluxIndex[scannerIndex] == 0)
+    {
         return 0.0;
+    }
     else
+    {
         return m_data[scannerIndex][m_fluxIndex[scannerIndex] - 1].m_temp;
+    }
 }
 
 /** Gets the temperature of saved scans.
@@ -1081,7 +1170,9 @@ long CEvaluatedDataStorage::GetTemperatureData(const CString& serial, double* ti
 {
     int scannerIndex = GetScannerIndex(serial);
     if (scannerIndex < 0)
+    {
         return -1;
+    }
 
     long nCopy = min(m_fluxIndex[scannerIndex], bufferSize);
     for (int i = 0; i < nCopy; ++i)
@@ -1098,12 +1189,18 @@ double CEvaluatedDataStorage::GetBatteryVoltage(const CString& serial)
 {
     int scannerIndex = GetScannerIndex(serial);
     if (scannerIndex < 0)
+    {
         return -1;
+    }
 
     if (m_fluxIndex[scannerIndex] <= 0)
+    {
         return 0.0;
+    }
     else
+    {
         return m_data[scannerIndex][m_fluxIndex[scannerIndex] - 1].m_battery;
+    }
 }
 
 /** Gets the battery-voltage of saved scans.
@@ -1116,7 +1213,9 @@ long CEvaluatedDataStorage::GetBatteryVoltageData(const CString& serial, double*
 {
     int scannerIndex = GetScannerIndex(serial);
     if (scannerIndex < 0)
+    {
         return -1;
+    }
 
     long nCopy = min(m_fluxIndex[scannerIndex], bufferSize);
     for (int i = 0; i < nCopy; ++i)
@@ -1138,7 +1237,9 @@ long CEvaluatedDataStorage::GetExposureTimeData(const CString& serial, double* t
 {
     int scannerIndex = GetScannerIndex(serial);
     if (scannerIndex < 0)
+    {
         return -1;
+    }
 
     long nCopy = min(m_fluxIndex[scannerIndex], bufferSize);
     for (int i = 0; i < nCopy; ++i)
@@ -1152,54 +1253,66 @@ long CEvaluatedDataStorage::GetExposureTimeData(const CString& serial, double* t
 
 
 /** Gets the lowest recorded temperature for the given spectrometer */
-double	CEvaluatedDataStorage::GetMinTemperature(const CString& serial)
+double CEvaluatedDataStorage::GetMinTemperature(const CString& serial)
 {
     int scannerIndex = GetScannerIndex(serial);
     if (scannerIndex < 0)
+    {
         return -1;
+    }
 
     return m_temperatureRange[0][scannerIndex];
 }
 
 /** Gets the highest recorded temperature for the given spectrometer */
-double	CEvaluatedDataStorage::GetMaxTemperature(const CString& serial)
+double CEvaluatedDataStorage::GetMaxTemperature(const CString& serial)
 {
     int scannerIndex = GetScannerIndex(serial);
     if (scannerIndex < 0)
+    {
         return -1;
+    }
 
     return m_temperatureRange[1][scannerIndex];
 }
 
 
 /** Gets the lowest recorded battery voltage for the given spectrometer */
-double	CEvaluatedDataStorage::GetMinBatteryVoltage(const CString& serial)
+double CEvaluatedDataStorage::GetMinBatteryVoltage(const CString& serial)
 {
     int scannerIndex = GetScannerIndex(serial);
     if (scannerIndex < 0)
+    {
         return -1;
+    }
 
     double minVoltage = 999;
     for (int i = 0; i < m_fluxIndex[scannerIndex]; ++i)
     {
         if (m_data[scannerIndex][i].m_battery > -990)
+        {
             minVoltage = min(minVoltage, m_data[scannerIndex][i].m_battery);
+        }
     }
     return minVoltage;
 }
 
 /** Gets the highest recorded battery voltage for the given spectrometer */
-double	CEvaluatedDataStorage::GetMaxBatteryVoltage(const CString& serial)
+double CEvaluatedDataStorage::GetMaxBatteryVoltage(const CString& serial)
 {
     int scannerIndex = GetScannerIndex(serial);
     if (scannerIndex < 0)
+    {
         return -1;
+    }
 
     double maxVoltage = -999;
     for (int i = 0; i < m_fluxIndex[scannerIndex]; ++i)
     {
         if (m_data[scannerIndex][i].m_battery < 1000)
+        {
             maxVoltage = max(maxVoltage, m_data[scannerIndex][i].m_battery);
+        }
     }
     return maxVoltage;
 }

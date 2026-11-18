@@ -21,7 +21,10 @@ public:
     virtual ~CReEval_ScanDlg();
 
     // Dialog Data
-    enum { IDD = IDD_REEVAL_SCANFILES };
+    enum
+    {
+        IDD = IDD_REEVAL_SCANFILES
+    };
 
 protected:
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -29,7 +32,6 @@ protected:
     DECLARE_MESSAGE_MAP()
 
 private:
-
     /** The scan file list */
     CPakFileListBox m_scanfileList;
 
@@ -78,7 +80,7 @@ private:
 
     /** Draws the currently selected spectrum from the currently selected spectrum-file
         into the spectrum graph. */
-    afx_msg void  DrawSpectrum();
+    afx_msg void DrawSpectrum();
 
     /** Tries to read the desired spectrum from the spectrum file */
     int TryReadSpectrum();
@@ -87,7 +89,7 @@ private:
     int CheckScanFile();
 
     /** Update the information labels */
-    void  UpdateInfo();
+    void UpdateInfo();
 
     /** Gets the range of the plot */
     void GetPlotRange(Graph::CSpectrumGraph::plotRange& range);

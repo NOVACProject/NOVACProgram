@@ -12,7 +12,6 @@ public:
     virtual ~CXMLFileReader();
 
 protected:
-
     /**retrieve the next token from the xml file*/
     char* NextToken();
 
@@ -52,7 +51,6 @@ protected:
     void SetFile(CStdioFile* file);
 
 private:
-
     /** A handle to the file to read from. */
     CStdioFile* m_File;
 
@@ -61,6 +59,5 @@ private:
 
     /** The string that was read from the file */
     char szLine[4096];
-
 };
 }

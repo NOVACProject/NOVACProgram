@@ -15,12 +15,14 @@ static void ParseShiftOption(novac::SHIFT_TYPE& option, double& value, CString& 
     sprintf(txt, "%s", (LPCSTR)str);
     char* pt = 0;
 
-    // 1. Shift Fixed 
+    // 1. Shift Fixed
     if ((pt = strstr(txt, "fix to")) || (pt = strstr(txt, "fixed to")) || (pt = strstr(txt, "set to")))
     {
         option = novac::SHIFT_TYPE::SHIFT_FIX;
         if (0 == sscanf(pt, "%s to %lf", &tmpStr, &value))
+        {
             value = 0;
+        }
     }
 
     // 2. Shift Linked
@@ -28,7 +30,9 @@ static void ParseShiftOption(novac::SHIFT_TYPE& option, double& value, CString& 
     {
         option = novac::SHIFT_TYPE::SHIFT_LINK;
         if (0 == sscanf(pt, "%s to %lf", &tmpStr, &value))
+        {
             value = 0;
+        }
     }
 
     // 3. Shift free
@@ -67,7 +71,9 @@ void CReferenceFileControl::OnEndEditCell(int nRow, int nCol, CString str)
 
     int index = nRow - 1;
     if (index < 0 || index > MAX_N_REFERENCES)
+    {
         return; // TODO - add a message
+    }
 
     // A handle to the reference file
     novac::CReferenceFile& ref = m_window->reference[index];
@@ -100,7 +106,9 @@ void CReferenceFileControl::OnEndEditCell(int nRow, int nCol, CString str)
 
     // If we're editing the shift and squeeze of an unknown reference, quit
     if (ref.m_specieName.size() == 0 && ref.m_path.size() == 0)
+    {
         return;
+    }
 
     // If the shift was changed
     if (nCol == 2)
@@ -108,9 +116,9 @@ void CReferenceFileControl::OnEndEditCell(int nRow, int nCol, CString str)
         ParseShiftOption(ref.m_shiftOption, ref.m_shiftValue, str);
         switch (ref.m_shiftOption)
         {
-        case novac::SHIFT_TYPE::SHIFT_FREE:  SetItemTextFmt(nRow, 2, "free"); break;
-        case novac::SHIFT_TYPE::SHIFT_FIX:   SetItemTextFmt(nRow, 2, "fix to %.4lf", ref.m_shiftValue); break;
-        case novac::SHIFT_TYPE::SHIFT_LINK:  SetItemTextFmt(nRow, 2, "link to %.4lf", ref.m_shiftValue); break;
+        case novac::SHIFT_TYPE::SHIFT_FREE: SetItemTextFmt(nRow, 2, "free"); break;
+        case novac::SHIFT_TYPE::SHIFT_FIX: SetItemTextFmt(nRow, 2, "fix to %.4lf", ref.m_shiftValue); break;
+        case novac::SHIFT_TYPE::SHIFT_LINK: SetItemTextFmt(nRow, 2, "link to %.4lf", ref.m_shiftValue); break;
         }
     }
 
@@ -120,9 +128,9 @@ void CReferenceFileControl::OnEndEditCell(int nRow, int nCol, CString str)
         ParseShiftOption(ref.m_squeezeOption, ref.m_squeezeValue, str);
         switch (ref.m_squeezeOption)
         {
-        case novac::SHIFT_TYPE::SHIFT_FREE:  SetItemTextFmt(nRow, 2, "free"); break;
-        case novac::SHIFT_TYPE::SHIFT_FIX:   SetItemTextFmt(nRow, 2, "fix to %.4lf", ref.m_squeezeValue); break;
-        case novac::SHIFT_TYPE::SHIFT_LINK:  SetItemTextFmt(nRow, 2, "link to %.4lf", ref.m_squeezeValue); break;
+        case novac::SHIFT_TYPE::SHIFT_FREE: SetItemTextFmt(nRow, 2, "free"); break;
+        case novac::SHIFT_TYPE::SHIFT_FIX: SetItemTextFmt(nRow, 2, "fix to %.4lf", ref.m_squeezeValue); break;
+        case novac::SHIFT_TYPE::SHIFT_LINK: SetItemTextFmt(nRow, 2, "link to %.4lf", ref.m_squeezeValue); break;
         }
     }
 
@@ -130,7 +138,9 @@ void CReferenceFileControl::OnEndEditCell(int nRow, int nCol, CString str)
     if (nRow == GetRowCount() - 1 && GetRowCount() < MAX_N_REFERENCES + 1)
     {
         if (strlen(str) > 0)
+        {
             SetRowCount(GetRowCount() + 1);
+        }
     }
 
     return;

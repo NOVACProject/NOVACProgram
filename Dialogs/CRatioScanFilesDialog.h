@@ -12,7 +12,7 @@ class RatioCalculationController;
 
 namespace novac
 {
-    class CSpectrum;
+class CSpectrum;
 }
 
 class CRatioScanFilesDialog : public CPropertyPage
@@ -28,7 +28,10 @@ public:
 
     // Dialog Data
 #ifdef AFX_DESIGN_TIME
-    enum { IDD = IDD_RATIO_SCANFILES_DIALOG };
+    enum
+    {
+        IDD = IDD_RATIO_SCANFILES_DIALOG
+    };
 #endif
 
     /** When the user presses the 'browse' button. Opens a dialog and lets the user
@@ -37,7 +40,7 @@ public:
 
     /** Called when the user selects a new spectrum file to look at. */
     afx_msg void OnChangeSelectedSpectrumFile();
-    
+
     /** Called when the user has pressed the spin control and wants
         to see the next or the previous spectrum in the current file */
     afx_msg void OnChangeSpectrumInFile(NMHDR* pNMHDR, LRESULT* pResult);
@@ -48,7 +51,6 @@ protected:
     DECLARE_MESSAGE_MAP()
 
 private:
-
     // The controller which this dialog helps to setup. Notice that this dialog does not own the pointer and will not delete it.
     RatioCalculationController* m_controller;
 
@@ -85,6 +87,7 @@ private:
 
     /** Updates the m_spectrometerModelCombo by selecting the model with the provided name */
     void SelectSpectrometerModelWithName(const std::string& modelName);
+
 public:
     afx_msg void OnSelchangeSpectrometerModel();
 };

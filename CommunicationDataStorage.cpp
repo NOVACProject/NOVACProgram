@@ -5,12 +5,15 @@
 using namespace novac;
 
 // ----------------- CLinkInfo - class ------------------------
-CCommunicationDataStorage::CLinkInfo::CLinkInfo() {
+CCommunicationDataStorage::CLinkInfo::CLinkInfo()
+{
     m_downloadSpeed = 0.0;
 }
-CCommunicationDataStorage::CLinkInfo::~CLinkInfo() {
+CCommunicationDataStorage::CLinkInfo::~CLinkInfo()
+{
 }
-CCommunicationDataStorage::CLinkInfo& CCommunicationDataStorage::CLinkInfo::operator=(const CCommunicationDataStorage::CLinkInfo& info) {
+CCommunicationDataStorage::CLinkInfo& CCommunicationDataStorage::CLinkInfo::operator=(const CCommunicationDataStorage::CLinkInfo& info)
+{
     this->m_downloadSpeed = info.m_downloadSpeed;
     this->m_time = info.m_time;
 
@@ -22,7 +25,9 @@ CCommunicationDataStorage::CLinkInfo& CCommunicationDataStorage::CLinkInfo::oper
 CCommunicationDataStorage::CCommunicationDataStorage(void)
 {
     for (int i = 0; i < MAX_NUMBER_OF_SCANNING_INSTRUMENTS; ++i)
+    {
         this->m_serials[i].Format("");
+    }
     memset(m_communicationStatus, -1, sizeof(int) * MAX_NUMBER_OF_SCANNING_INSTRUMENTS);
     memset(m_dataLinkIndex, 0, sizeof(int) * MAX_NUMBER_OF_SCANNING_INSTRUMENTS);
 
@@ -64,7 +69,9 @@ void CCommunicationDataStorage::SetStatus(const CString& serialID, COMMUNICATION
     AddData(serialID);
     int scannerIndex = GetScannerIndex(serialID);
     if (scannerIndex > -1)
+    {
         this->m_communicationStatus[scannerIndex] = status;
+    }
 }
 
 /** Get the status of the communication
@@ -74,25 +81,31 @@ int CCommunicationDataStorage::GetStatus(const CString& serialID)
     int status = -1;
     int scannerIndex = GetScannerIndex(serialID);
     if (scannerIndex > -1)
+    {
         status = this->m_communicationStatus[scannerIndex];
+    }
     return status;
 }
 
 /** Returns the spectrometer index given a serial number */
-int  CCommunicationDataStorage::GetScannerIndex(const CString& serial) {
+int CCommunicationDataStorage::GetScannerIndex(const CString& serial)
+{
     static CString lastSerial = CString();
     static int lastIndex = 0;
 
     unsigned int i;
 
     // Check if this is the same serial number as last time this function was called
-    if (Equals(serial, lastSerial)) {
+    if (Equals(serial, lastSerial))
+    {
         return lastIndex;
     }
 
     // If the serial number is different from last time, search for it
-    for (i = 0; i < m_serialNum; ++i) {
-        if (Equals(serial, m_serials[i])) {
+    for (i = 0; i < m_serialNum; ++i)
+    {
+        if (Equals(serial, m_serials[i]))
+        {
             lastSerial.Format("%s", (LPCSTR)serial);
             lastIndex = i;
             return (int)i;
@@ -104,16 +117,20 @@ int  CCommunicationDataStorage::GetScannerIndex(const CString& serial) {
 }
 
 /** Adds one bit of communication information to the list */
-void	CCommunicationDataStorage::AddDownloadData(const CString& serial, double linkSpeed, const CDateTime* timeOfDownload) {
+void CCommunicationDataStorage::AddDownloadData(const CString& serial, double linkSpeed, const CDateTime* timeOfDownload)
+{
     RemoveOldLinkInformation(); // First of all, clear out all old data
 
-    if (Equals(serial, "FTP")) {
+    if (Equals(serial, "FTP"))
+    {
         // The data comes from the FTP-uploading link
 
         // First check if the data-buffer is full
-        if (m_nFTPServerLinkInformation == MAX_HISTORY) {
+        if (m_nFTPServerLinkInformation == MAX_HISTORY)
+        {
             // shift all data-bits down one step
-            for (int i = 0; i < MAX_HISTORY - 1; ++i) {
+            for (int i = 0; i < MAX_HISTORY - 1; ++i)
+            {
                 m_ftpServerLinkInformation[i] = m_ftpServerLinkInformation[i + 1];
             }
             --m_nFTPServerLinkInformation;
@@ -122,27 +139,33 @@ void	CCommunicationDataStorage::AddDownloadData(const CString& serial, double li
         // replace the information
         CLinkInfo& thisInfo = m_ftpServerLinkInformation[m_nFTPServerLinkInformation];
         thisInfo.m_downloadSpeed = linkSpeed;
-        if (timeOfDownload == NULL) {
+        if (timeOfDownload == NULL)
+        {
             thisInfo.m_time.SetToNowUTC();
         }
-        else {
+        else
+        {
             thisInfo.m_time = *timeOfDownload;
         }
 
         ++m_nFTPServerLinkInformation;
     }
-    else {
+    else
+    {
         // The data comes from one of the scanners
         AddData(serial);
         int scannerIndex = GetScannerIndex(serial);
-        if (scannerIndex <= -1) {
+        if (scannerIndex <= -1)
+        {
             return;
         }
 
         // First check if the data-buffer is full
-        if (m_dataLinkIndex[scannerIndex] == MAX_HISTORY) {
+        if (m_dataLinkIndex[scannerIndex] == MAX_HISTORY)
+        {
             // shift all data-bits down one step
-            for (int i = 0; i < MAX_HISTORY; ++i) {
+            for (int i = 0; i < MAX_HISTORY; ++i)
+            {
                 m_dataLinkInformation[scannerIndex][i] = m_dataLinkInformation[scannerIndex][i + 1];
             }
             --m_dataLinkIndex[scannerIndex];
@@ -151,10 +174,12 @@ void	CCommunicationDataStorage::AddDownloadData(const CString& serial, double li
         // replace the information
         CLinkInfo& thisInfo = m_dataLinkInformation[scannerIndex][m_dataLinkIndex[scannerIndex]];
         thisInfo.m_downloadSpeed = linkSpeed;
-        if (timeOfDownload == NULL) {
+        if (timeOfDownload == NULL)
+        {
             thisInfo.m_time.SetToNowUTC();
         }
-        else {
+        else
+        {
             thisInfo.m_time = *timeOfDownload;
         }
 
@@ -168,30 +193,37 @@ void	CCommunicationDataStorage::AddDownloadData(const CString& serial, double li
     @param dataBuffer - the link-speed data will be copied into this buffer.
     @param bufferSize - the maximum number of data points that the buffer can handle.
     @return the number of data points copied into the dataBuffer*/
-long CCommunicationDataStorage::GetLinkSpeedData(const CString& serial, double* timeBuffer, double* dataBuffer, long bufferSize) {
+long CCommunicationDataStorage::GetLinkSpeedData(const CString& serial, double* timeBuffer, double* dataBuffer, long bufferSize)
+{
     int nCopy;
     Common common;
 
-    if (Equals(serial, "FTP")) {
+    if (Equals(serial, "FTP"))
+    {
         // Copy the link-speed data
         nCopy = min(bufferSize, m_nFTPServerLinkInformation);
-        for (int i = 0; i < nCopy; ++i) {
+        for (int i = 0; i < nCopy; ++i)
+        {
             CLinkInfo& info = m_ftpServerLinkInformation[i];
             dataBuffer[i] = info.m_downloadSpeed;
             timeBuffer[i] = common.Epoch(info.m_time);
             //timeBuffer[i]			= info.m_time.hour * 3600.0 + info.m_time.minute * 60.0 + info.m_time.second;
         }
     }
-    else {
+    else
+    {
         // get the scanner index
         int scannerIndex = GetScannerIndex(serial);
 
         if ((scannerIndex < 0) || (scannerIndex > MAX_NUMBER_OF_SCANNING_INSTRUMENTS))
+        {
             return 0;
+        }
 
         // Copy the link-speed data
         nCopy = min(bufferSize, m_dataLinkIndex[scannerIndex]);
-        for (int i = 0; i < nCopy; ++i) {
+        for (int i = 0; i < nCopy; ++i)
+        {
             CLinkInfo& info = m_dataLinkInformation[scannerIndex][i];
             dataBuffer[i] = info.m_downloadSpeed;
             timeBuffer[i] = common.Epoch(info.m_time);
@@ -203,18 +235,24 @@ long CCommunicationDataStorage::GetLinkSpeedData(const CString& serial, double* 
 }
 
 /** Clear out old data from the 'm_dataLinkInformation' buffers */
-void CCommunicationDataStorage::RemoveOldLinkInformation() {
+void CCommunicationDataStorage::RemoveOldLinkInformation()
+{
     Common common;
-    for (unsigned int scannerIndex = 0; scannerIndex < m_serialNum; ++scannerIndex) {
+    for (unsigned int scannerIndex = 0; scannerIndex < m_serialNum; ++scannerIndex)
+    {
         int k = 0;
         // count how many records to remove
-        while (k < m_dataLinkIndex[scannerIndex]) {
-            if (common.Epoch() - common.Epoch(m_dataLinkInformation[scannerIndex][k].m_time) <= 86400) {
+        while (k < m_dataLinkIndex[scannerIndex])
+        {
+            if (common.Epoch() - common.Epoch(m_dataLinkInformation[scannerIndex][k].m_time) <= 86400)
+            {
                 ++k;
             }
-            else {
+            else
+            {
                 // if this measurement is not from today, then remove it
-                for (int j = k; j < m_dataLinkIndex[scannerIndex] - 1; ++j) {
+                for (int j = k; j < m_dataLinkIndex[scannerIndex] - 1; ++j)
+                {
                     m_dataLinkInformation[scannerIndex][j] = m_dataLinkInformation[scannerIndex][j + 1];
                 }
                 --m_dataLinkIndex[scannerIndex];

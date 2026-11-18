@@ -61,7 +61,7 @@ private:
     static const int HEADER_BUF_SIZE = 16384;
 
     /** The filename of the last temporary scan-file created. */
-    long    m_tempIndex;
+    long m_tempIndex;
 
     /** The temporary directory */
     CString m_tempDir;
@@ -81,7 +81,7 @@ private:
     long m_spectrumNumber;
 
     /** True if the output directories have been initialized */
-    bool  m_initializedOutput;
+    bool m_initializedOutput;
 
     /** An array with all the serial numbers that have passed through
             this instance of CPakFileHandler*/
@@ -121,10 +121,10 @@ private:
     /** Looks up the index for the supplied serialNumber into the array of
             serialNumbers. If the serialNumber does not exist in the array, it will be
             inserted and it's index will be returned */
-    int	GetSpectrometerIndex(const CString& serialNumber);
+    int GetSpectrometerIndex(const CString& serialNumber);
 
     /** Takes a scan file and renames it to an approprate name */
-    RETURN_CODE	ArchiveScan(const CString& scanFileName);
+    RETURN_CODE ArchiveScan(const CString& scanFileName);
 
     /** Takes appropriate action when a corrupt spectrum has been found */
     RETURN_CODE HandleCorruptSpectrum(novac::CSpectrumIO& reader, FILE* pakFile);
@@ -167,7 +167,6 @@ private:
             @return false - if the file does not contain readable spectra,
                     or contains spectra which are not collected in a composition measurment - mode.*/
     static bool IsCompositionMeasurement(novac::CScanFileHandler& file);
-
 };
 
 }

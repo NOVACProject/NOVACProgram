@@ -71,7 +71,8 @@ void CConfigurationSetting::MotorSetting::Clear()
     stepsPerRound = 200;
 }
 
-void CConfigurationSetting::ScanningInstrumentSetting::Clear() {
+void CConfigurationSetting::ScanningInstrumentSetting::Clear()
+{
     tilt = 0.0;
     coneAngle = 90.0;
     compass = 0;
@@ -157,12 +158,12 @@ CConfigurationSetting::CWindFieldDataSettings::CWindFieldDataSettings()
 void CConfigurationSetting::WindSpeedMeasurementSetting::Clear()
 {
     automaticWindMeasurements = true;
-    duration = 20 * 60;		// 20 minutes duration
-    interval = 60 * 60;		// measurement once every hour
-    maxAngle = 30;			// only make wind measurements if the plume centre is within 30 degrees from zenith
-    stablePeriod = 3;		// only measure if the plume is stable over the last three scans.
-    minPeakColumn = 50;		// only measure if the peak column is at least 50 ppmm (over the offset-level)
-    desiredAngle = 5;		// the inital desired angle
+    duration = 20 * 60;  // 20 minutes duration
+    interval = 60 * 60;  // measurement once every hour
+    maxAngle = 30;   // only make wind measurements if the plume centre is within 30 degrees from zenith
+    stablePeriod = 3;  // only measure if the plume is stable over the last three scans.
+    minPeakColumn = 50;  // only measure if the peak column is at least 50 ppmm (over the offset-level)
+    desiredAngle = 5;  // the inital desired angle
     useCalculatedPlumeParameters = 0; // the initial settings for using calculated wind-field
     SwitchRange = 50.0;
 }
@@ -212,4 +213,3 @@ bool IdentifySpectrometer(const CConfigurationSetting& settings, const std::stri
 
     return false;
 }
-

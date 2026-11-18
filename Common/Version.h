@@ -4,7 +4,6 @@
 class CVersion
 {
 public:
-
     /** The major version number */
     static const int majorNumber = 3;
 

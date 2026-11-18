@@ -375,16 +375,16 @@ public:
         CString userName;       // the user name at the FTP-server
         CString password;       // the password at the FTP-server
         CString protocol;       // the protocol to use, must be either FTP or SFTP
-        int     ftpStatus;      // not used?
-        int     ftpStartTime;   // the time of day when to start uploading (seconds since midnight)
-        int     ftpStopTime;    // the time of day when to stop uploading (seconds since midnight)
+        int ftpStatus;      // not used?
+        int ftpStartTime;   // the time of day when to start uploading (seconds since midnight)
+        int ftpStopTime;    // the time of day when to stop uploading (seconds since midnight)
     };
 
     /** Settings for publishing the results on a web - page */
     class WebSettings
     {
     public:
-        int     publish = 0;           // 0 if don't publish, otherwise publish
+        int publish = 0;           // 0 if don't publish, otherwise publish
         CString localDirectory = "";   // set to a local directory if the output is to be stored on the same computer
         CString imageFormat = ".png";  // the format of the images to save, can be .bmp, .gif, .jpg or .png
     };
@@ -450,9 +450,9 @@ public:
     CWindFieldDataSettings windSourceSettings;
 };
 
-// --------------------------------------------------------------------------------------------------------- 
+// ---------------------------------------------------------------------------------------------------------
 // --------------------------- Free functions working on the settings --------------------------------------
-// --------------------------------------------------------------------------------------------------------- 
+// ---------------------------------------------------------------------------------------------------------
 
 /** Lists the name of all volcanoes monitored by instruments connected to this computer. */
 std::vector<std::string> ListMonitoredVolcanoes(const CConfigurationSetting& settings);

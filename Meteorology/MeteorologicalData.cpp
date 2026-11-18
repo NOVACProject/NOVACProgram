@@ -122,4 +122,3 @@ bool CMeteorologicalData::ReadWindFieldFromTextFile(const CString& fileName)
 
     return returnCode == SUCCESS;
 }
-

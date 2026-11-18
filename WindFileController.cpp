@@ -58,8 +58,7 @@ void CWindFileController::ReadWindFieldFile()
         }
 
         // If the file exists on an FTP-server
-        if (Equals(g_settings.windSourceSettings.windFieldFile.Left(6), "ftp://")
-            || Equals(g_settings.windSourceSettings.windFieldFile.Left(7), "sftp://"))
+        if (Equals(g_settings.windSourceSettings.windFieldFile.Left(6), "ftp://") || Equals(g_settings.windSourceSettings.windFieldFile.Left(7), "sftp://"))
         {
             DownloadFileByFTP();
         }
@@ -79,7 +78,8 @@ BOOL CWindFileController::InitInstance()
     //	every now and then then set the timer
     if (g_settings.windSourceSettings.enabled == 1 &&
         g_settings.windSourceSettings.windFileReloadInterval > 0 &&
-        g_settings.windSourceSettings.windFieldFile.GetLength() > 3) {
+        g_settings.windSourceSettings.windFieldFile.GetLength() > 3)
+    {
 
         // Read the log-file now
         ReadWindFieldFile();

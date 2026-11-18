@@ -31,7 +31,8 @@ CRatioScanFilesDialog::~CRatioScanFilesDialog()
     m_controller = nullptr;
 }
 
-BOOL CRatioScanFilesDialog::OnInitDialog() {
+BOOL CRatioScanFilesDialog::OnInitDialog()
+{
     CPropertyPage::OnInitDialog();
 
     // Initialize the spectrum graph.
@@ -103,7 +104,8 @@ void CRatioScanFilesDialog::OnBnClickedBtnBrowsescanfile()
     POSITION pos = fileDialog.GetStartPosition();
 
     std::vector<std::string> pakfileList;
-    while (pos) {
+    while (pos)
+    {
         std::string str = std::string((LPCSTR)fileDialog.GetNextPathName(pos));
         pakfileList.push_back(str);
     }
@@ -267,9 +269,13 @@ void CRatioScanFilesDialog::UpdateSpectrumInfo(const novac::CSpectrum& spectrum,
 
     // Show if this is a cone-scanner or a flat scanner
     if (fabs(info.m_coneAngle - 90.0) < 1e-2)
+    {
         geomStr.Format("Geometry: flat");
+    }
     else
+    {
         geomStr.Format("Geometry: Cone, %.1lf [deg]", info.m_coneAngle);
+    }
     SetDlgItemText(IDC_LBL_CONEORFLAT, geomStr);
 
     if (m_controller->m_spectrometerModel == nullptr)

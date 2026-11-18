@@ -4,7 +4,7 @@
 #include "NovacProgramLog.h"
 
 #ifdef _MSC_VER
-#pragma warning (push, 4)
+#pragma warning(push, 4)
 #endif
 
 // Include synchronization classes
@@ -28,7 +28,7 @@ using namespace WindSpeedMeasurement;
 using namespace Geometry;
 using namespace FileHandler;
 
-extern CConfigurationSetting g_settings;	// <-- The settings
+extern CConfigurationSetting g_settings; // <-- The settings
 
 /** The communication controller */
 CWinThread* g_comm;
@@ -67,13 +67,13 @@ UINT CheckForOldSpectra(LPVOID pParam);
 
 void SetThreadName(DWORD dwThreadID, LPCTSTR szThreadName);
 
-#define MS_VC_EXCEPTION 0x406d1388 
+#define MS_VC_EXCEPTION 0x406d1388
 typedef struct tagTHREADNAME_INFO
 {
-    DWORD dwType; // must be 0x1000 
-    LPCSTR szName; // pointer to name (in same addr space) 
-    DWORD dwThreadID; // thread ID (-1 caller thread) 
-    DWORD dwFlags; // reserved for future use, most be zero 
+    DWORD dwType; // must be 0x1000
+    LPCSTR szName; // pointer to name (in same addr space)
+    DWORD dwThreadID; // thread ID (-1 caller thread)
+    DWORD dwFlags; // reserved for future use, most be zero
 } THREADNAME_INFO;
 
 CMasterController::CMasterController()
@@ -182,7 +182,7 @@ void CMasterController::Stop()
 
 UINT CheckForOldSpectra(LPVOID /*pParam*/)
 {
-    CList <CString, CString&> pakFilesToEvaluate;
+    CList<CString, CString&> pakFilesToEvaluate;
     Common common;
 
     // 1. check for spectra in the output\\temp - directory
@@ -252,7 +252,7 @@ bool CMasterController::CheckSettings()
             for (int k = 0; k < g_settings.scanner[i].spec[j].channelNum; ++k)
             {
                 const novac::CFitWindow* window = &g_settings.scanner[i].spec[j].channel[k].fitWindow;
-                for(const auto& reference : window->reference)
+                for (const auto& reference : window->reference)
                 {
                     FILE* f = fopen(reference.m_path.c_str(), "r");
                     if (nullptr == f)
@@ -288,5 +288,5 @@ void SetThreadName(DWORD dwThreadID, LPCTSTR szThreadName)
 }
 
 #ifdef _MSC_VER
-#pragma warning (pop)
+#pragma warning(pop)
 #endif

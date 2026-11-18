@@ -4,7 +4,8 @@
 using namespace FileHandler;
 
 // ----------------- FIRST START BY DEFINING THE CLASS CMeasLine -----------
-CCfgTxtFileHandler::CMeasLine::CMeasLine() {
+CCfgTxtFileHandler::CMeasLine::CMeasLine()
+{
     sprintf(baseName, "\0");
     this->chn = 0;
     this->expTime = -1;
@@ -15,8 +16,8 @@ CCfgTxtFileHandler::CMeasLine::CMeasLine() {
     this->sum1 = 15;
     this->sum2 = 1;
 }
-CCfgTxtFileHandler::CMeasLine::~CMeasLine() {
-
+CCfgTxtFileHandler::CMeasLine::~CMeasLine()
+{
 }
 
 // -----------------  THE CLASS CCfgTxtFileHandler -----------
@@ -29,7 +30,8 @@ CCfgTxtFileHandler::~CCfgTxtFileHandler(void)
 {
 }
 
-void CCfgTxtFileHandler::Clear() {
+void CCfgTxtFileHandler::Clear()
+{
     this->m_batteryLimit = 9.0;
     this->m_compass = 0.0;
     this->m_coneAngle = 90.0;
@@ -62,7 +64,8 @@ void CCfgTxtFileHandler::Clear() {
 
 /** Reads and parses a given cfg.txt - file.
     The read in parameters will be stored in this object.*/
-int CCfgTxtFileHandler::ReadCfgTxt(const CString& fileName) {
+int CCfgTxtFileHandler::ReadCfgTxt(const CString& fileName)
+{
     char nl[2] = { 0x0a, 0 };
     char lf[2] = { 0x0d, 0 };
     char* pt;
@@ -72,121 +75,151 @@ int CCfgTxtFileHandler::ReadCfgTxt(const CString& fileName) {
 
     // Open the cfg.txt - file
     FILE* f = fopen(fileName, "r");
-    if (f == nullptr) {
+    if (f == nullptr)
+    {
         return 0;
     }
 
-    while (fgets(txt, sizeof(txt) - 1, f)) {
-        if (strlen(txt) > 4 && txt[0] != '%') {
+    while (fgets(txt, sizeof(txt) - 1, f))
+    {
+        if (strlen(txt) > 4 && txt[0] != '%')
+        {
             pt = txt;
             if (pt = strstr(txt, nl))
+            {
                 pt[0] = 0;
+            }
 
             pt = txt;
             if (pt = strstr(txt, lf))
+            {
                 pt[0] = 0;
+            }
 
             // 1. Parse the motor parameters...
-            if (pt = strstr(txt, "STEPSPERROUND=")) {
+            if (pt = strstr(txt, "STEPSPERROUND="))
+            {
                 pt = strstr(txt, "=");
                 m_nMotors = sscanf(&pt[1], "%d %d", &m_motorStepsPerRound[0], &m_motorStepsPerRound[1]);
             }
 
-            if (pt = strstr(txt, "MOTORSTEPSCOMP=")) {
+            if (pt = strstr(txt, "MOTORSTEPSCOMP="))
+            {
                 pt = strstr(txt, "=");
                 m_nMotors = sscanf(&pt[1], "%d %d", &m_motorStepsComp[0], &m_motorStepsComp[1]);
             }
 
-            if (pt = strstr(txt, "DELAY=")) {
+            if (pt = strstr(txt, "DELAY="))
+            {
                 pt = strstr(txt, "=");
                 int ret = sscanf(&pt[1], "%d", &m_motorDelay);
             }
 
-            if (pt = strstr(txt, "SKIPMOTOR=")) {
+            if (pt = strstr(txt, "SKIPMOTOR="))
+            {
                 pt = strstr(txt, "=");
                 int ret = sscanf(&pt[1], "%d", &m_motorSkip);
             }
 
             // 2. Parse the channel-settings
-            if (pt = strstr(txt, "STARTCHN=")) {
+            if (pt = strstr(txt, "STARTCHN="))
+            {
                 pt = strstr(txt, "=");
                 int ret = sscanf(&pt[1], "%d", &m_startChn);
             }
-            if (pt = strstr(txt, "STOPCHN=")) {
+            if (pt = strstr(txt, "STOPCHN="))
+            {
                 pt = strstr(txt, "=");
                 int ret = sscanf(&pt[1], "%d", &m_stopChn);
             }
 
             // 3. Parse the exposure-time settings
-            if (pt = strstr(txt, "PERCENT=")) {
+            if (pt = strstr(txt, "PERCENT="))
+            {
                 pt = strstr(txt, "=");
                 int ret = sscanf(&pt[1], "%lf", &m_percent);
             }
-            if (pt = strstr(txt, "MAXINTTIME=")) {
+            if (pt = strstr(txt, "MAXINTTIME="))
+            {
                 pt = strstr(txt, "=");
                 int ret = sscanf(&pt[1], "%d", &m_maxIntTime);
             }
-            if (pt = strstr(txt, "MININTTIME=")) {
+            if (pt = strstr(txt, "MININTTIME="))
+            {
                 pt = strstr(txt, "=");
                 int ret = sscanf(&pt[1], "%d", &m_minIntTime);
             }
 
             // 4. Parse the stratospheric-measurement settings
-            if (pt = strstr(txt, "STRATOANGLE=")) {
+            if (pt = strstr(txt, "STRATOANGLE="))
+            {
                 pt = strstr(txt, "=");
                 int ret = sscanf(&pt[1], "%d", &m_stratoAngle);
             }
 
             // 5. Parse the energy-options...
-            if (pt = strstr(txt, "POWERSAVE=")) {
+            if (pt = strstr(txt, "POWERSAVE="))
+            {
                 pt = strstr(txt, "=");
                 int ret = sscanf(&pt[1], "%d", &m_powerSave);
             }
-            if (pt = strstr(txt, "BATTERYLIMIT=")) {
+            if (pt = strstr(txt, "BATTERYLIMIT="))
+            {
                 pt = strstr(txt, "=");
                 int ret = sscanf(&pt[1], "%lf", &m_batteryLimit);
             }
 
             // 6. Parse the FTP-server settings...
-            if (pt = strstr(txt, "FTPTIMEOUT=")) {
+            if (pt = strstr(txt, "FTPTIMEOUT="))
+            {
                 pt = strstr(txt, "=");
                 int ret = sscanf(&pt[1], "%d", &m_ftpServerTimeOut);
             }
-            if (pt = strstr(txt, "SERVER=")) {
+            if (pt = strstr(txt, "SERVER="))
+            {
                 char username[1024], password[1024];
                 pt = strstr(txt, "=");
                 int nFields = sscanf(&pt[1], "%d.%d.%d.%d %s %s",
-                            &m_ftpServerIp[0], &m_ftpServerIp[1], &m_ftpServerIp[2], &m_ftpServerIp[3],
-                            username, password);
-                if (nFields == 6) {
+                    &m_ftpServerIp[0], &m_ftpServerIp[1], &m_ftpServerIp[2], &m_ftpServerIp[3],
+                    username, password);
+                if (nFields == 6)
+                {
                     this->m_ftpServerUserName.Format("%s", username);
                     this->m_ftpServerPassword.Format("%s", password);
                 }
-                else {
+                else
+                {
                 }
             }
 
             // 6. Parse the geometry
-            if (pt = strstr(txt, "CONEANGLE=")) {
+            if (pt = strstr(txt, "CONEANGLE="))
+            {
                 pt = strstr(txt, "=");
-                if (pt) {
+                if (pt)
+                {
                     int ret = sscanf(&pt[1], "%lf", &m_coneAngle);
                 }
             }
-            if (pt = strstr(txt, "COMPASS=")) {
+            if (pt = strstr(txt, "COMPASS="))
+            {
                 pt = strstr(txt, "=");
-                if (pt) {
+                if (pt)
+                {
                     int ret = sscanf(&pt[1], "%lf %lf %lf", &m_compass, &m_tiltX, &m_tiltY);
                 }
             }
 
             // --- Finally parse the measurement lines ---
-            if (pt = strstr(txt, "MEAS=")) {
+            if (pt = strstr(txt, "MEAS="))
+            {
                 pt = strstr(txt, "=");
                 CMeasLine meas;
                 int nFields = 0;
-                if (m_nMotors == 1) {
-                    if (pt) {
+                if (m_nMotors == 1)
+                {
+                    if (pt)
+                    {
                         nFields = sscanf(&pt[1], "%d %d %d %d %d %hhd %d %d ",
                             &meas.pos,
                             &meas.expTime,
@@ -197,7 +230,8 @@ int CCfgTxtFileHandler::ReadCfgTxt(const CString& fileName) {
                             &meas.repetitions,
                             &meas.flag);
                     }
-                    if (nFields == 8) {
+                    if (nFields == 8)
+                    {
                         m_measurements.SetAtGrow(m_measurementNum, meas);
                     }
                 }
@@ -212,7 +246,8 @@ int CCfgTxtFileHandler::ReadCfgTxt(const CString& fileName) {
 }
 
 /** Writes a cfg.txt - file. */
-int CCfgTxtFileHandler::WriteCfgTxt(const CString& fileName) {
+int CCfgTxtFileHandler::WriteCfgTxt(const CString& fileName)
+{
 
     return 0;
 }

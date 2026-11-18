@@ -18,7 +18,8 @@ CGlobalConfiguration::CGlobalConfiguration()
 }
 
 CGlobalConfiguration::~CGlobalConfiguration()
-{}
+{
+}
 
 void CGlobalConfiguration::DoDataExchange(CDataExchange* pDX)
 {
@@ -99,7 +100,9 @@ void CGlobalConfiguration::OnBrowseOutputPath()
     CString folderName;
 
     if (common.BrowseForDirectory(folderName))
+    {
         this->m_configuration->outputDirectory.Format("%s", (LPCSTR)folderName);
+    }
 
     UpdateData(FALSE);
 }
@@ -146,15 +149,25 @@ BOOL ConfigurationDialog::CGlobalConfiguration::OnInitDialog()
     m_imageFormatCombo.AddString(".gif");
     m_imageFormatCombo.AddString(".jpg");
     if (Equals(m_configuration->webSettings.imageFormat, ".png"))
+    {
         m_imageFormatCombo.SetCurSel(0);
+    }
     else if (Equals(m_configuration->webSettings.imageFormat, ".bmp"))
+    {
         m_imageFormatCombo.SetCurSel(1);
+    }
     else if (Equals(m_configuration->webSettings.imageFormat, ".gif"))
+    {
         m_imageFormatCombo.SetCurSel(2);
+    }
     else if (Equals(m_configuration->webSettings.imageFormat, ".jpg"))
+    {
         m_imageFormatCombo.SetCurSel(3);
+    }
     else
+    {
         m_imageFormatCombo.SetCurSel(0);
+    }
 
     // Select the 'local' - directory
     m_useLocalDirectory = 0;
@@ -165,7 +178,7 @@ BOOL ConfigurationDialog::CGlobalConfiguration::OnInitDialog()
     // Set which controls should be enabled and which should be disabled
     OnChangePublish();
     OnChangeWindFileUpdate();
-    return TRUE;	// return TRUE unless you set the focus to a control
+    return TRUE; // return TRUE unless you set the focus to a control
     // EXCEPTION: OCX Property Pages should return FALSE
 }
 
@@ -176,10 +189,10 @@ void CGlobalConfiguration::InitToolTips()
         TRACE0("Failed to create tooltip control\n");
     }
     // add tools here...
-    m_toolTip.AddTool(&m_outputDirectory, IDC_LABEL_OUTPUT_DIRECTORY);		// TODO: THIS DOES NOT WORK FOR THE GROUP BOXES!!!
+    m_toolTip.AddTool(&m_outputDirectory, IDC_LABEL_OUTPUT_DIRECTORY);  // TODO: THIS DOES NOT WORK FOR THE GROUP BOXES!!!
     m_toolTip.AddTool(&m_outputDir, IDC_LABEL_OUTPUT_DIRECTORY);
-    m_toolTip.AddTool(&m_startup, IDC_LABEL_STARTUP);		// TODO: THIS DOES NOT WORK FOR THE GROUP BOXES!!!
-    m_toolTip.AddTool(&m_ftpUploadServer, IDC_LABEL_FTP_UPLOAD_SERVER);		// TODO: THIS DOES NOT WORK FOR THE GROUP BOXES!!!
+    m_toolTip.AddTool(&m_startup, IDC_LABEL_STARTUP);  // TODO: THIS DOES NOT WORK FOR THE GROUP BOXES!!!
+    m_toolTip.AddTool(&m_ftpUploadServer, IDC_LABEL_FTP_UPLOAD_SERVER);  // TODO: THIS DOES NOT WORK FOR THE GROUP BOXES!!!
     m_toolTip.AddTool(&m_ftpURL, IDC_LABEL_FTP_SERVER_URL);
     m_toolTip.AddTool(&m_ftpUserName, IDC_LABEL_FTP_USERNAME);
     m_toolTip.AddTool(&m_ftpUserNameLabel, IDC_LABEL_FTP_USERNAME);

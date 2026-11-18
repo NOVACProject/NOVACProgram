@@ -45,7 +45,6 @@ void CMergePakFilesDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Radio(pDX, IDC_RADIO_CONCATENATE, m_mergeOption);
 
     DDX_Text(pDX, IDC_EDIT_MERGENUM, m_mergeNum);
-
 }
 
 
@@ -78,7 +77,8 @@ BOOL CMergePakFilesDlg::OnInitDialog()
 }
 
 /** Called to let the user browse for .pak files to merge */
-void CMergePakFilesDlg::OnBrowsePakFiles() {
+void CMergePakFilesDlg::OnBrowsePakFiles()
+{
     TCHAR filter[] = _T("Pak Files|*.pak|All Files|*.*||");
     CString str;
 
@@ -86,7 +86,9 @@ void CMergePakFilesDlg::OnBrowsePakFiles() {
     Dialogs::CMultiSelectOpenFileDialog fileDialog(TRUE, NULL, NULL, OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_ALLOWMULTISELECT | OFN_EXPLORER, filter);
 
     if (fileDialog.DoModal() != IDOK)
+    {
         return;
+    }
 
     /** Reset the old values */
     this->m_pakFileNum = 0;
@@ -95,7 +97,8 @@ void CMergePakFilesDlg::OnBrowsePakFiles() {
     /** Go through the filenames */
     POSITION pos = fileDialog.GetStartPosition();
 
-    while (pos) {
+    while (pos)
+    {
         str = fileDialog.GetNextPathName(pos);
 
         m_pakFile.AddTail(str);
@@ -108,7 +111,8 @@ void CMergePakFilesDlg::OnBrowsePakFiles() {
 }
 
 /** Called to let the user browse for an output file */
-void CMergePakFilesDlg::OnBrowseOutputFile() {
+void CMergePakFilesDlg::OnBrowseOutputFile()
+{
     TCHAR filter[512];
     CString fileName;
     Common common;
@@ -120,7 +124,8 @@ void CMergePakFilesDlg::OnBrowseOutputFile() {
 
 
     // let the user browse for an output directory
-    if (!common.BrowseForFile_SaveAs(filter, fileName)) {
+    if (!common.BrowseForFile_SaveAs(filter, fileName))
+    {
         return;
     }
     m_outputFile.Format("%s", (LPCSTR)fileName);
@@ -128,18 +133,24 @@ void CMergePakFilesDlg::OnBrowseOutputFile() {
     SetDlgItemText(IDC_EDIT_OUTPUTFILE, m_outputFile);
 
     if (m_pakFileNum > 0)
+    {
         m_btnMergeFiles.EnableWindow(TRUE);
+    }
 }
 
 /** Called when the user has edited the output-file edit-box */
-void CMergePakFilesDlg::OnChangeOutputFile() {
+void CMergePakFilesDlg::OnChangeOutputFile()
+{
     GetDlgItemText(IDC_EDIT_OUTPUTFILE, m_outputFile);
 
     if (m_pakFileNum > 0)
+    {
         m_btnMergeFiles.EnableWindow(TRUE);
+    }
 }
 
-LRESULT CMergePakFilesDlg::OnProgress(WPARAM wp, LPARAM lp) {
+LRESULT CMergePakFilesDlg::OnProgress(WPARAM wp, LPARAM lp)
+{
     CString str;
     int progress = (int)wp;
 
@@ -153,7 +164,8 @@ LRESULT CMergePakFilesDlg::OnProgress(WPARAM wp, LPARAM lp) {
 
     return 0;
 }
-LRESULT CMergePakFilesDlg::OnFailure(WPARAM wp, LPARAM lp) {
+LRESULT CMergePakFilesDlg::OnFailure(WPARAM wp, LPARAM lp)
+{
     CString str;
 
     m_progressBar.SetPos(0);
@@ -167,20 +179,23 @@ LRESULT CMergePakFilesDlg::OnFailure(WPARAM wp, LPARAM lp) {
 
 /** Called when the user pressed the 'merge files' button.
         Does the actual work in this dialog. */
-void CMergePakFilesDlg::OnMergeFiles() {
+void CMergePakFilesDlg::OnMergeFiles()
+{
     CString message;
 
     // Update the contents of the dialog
     UpdateData(TRUE);
 
     // Check the input
-    if (m_pakFileNum <= 0) {
+    if (m_pakFileNum <= 0)
+    {
         MessageBox("No pak files to merge");
         return;
     }
 
     // Check for errors in the input
-    if (m_mergeOption == 1 && m_mergeNum > MAX_SCANS_COMBINATIONS) {
+    if (m_mergeOption == 1 && m_mergeNum > MAX_SCANS_COMBINATIONS)
+    {
         message.Format("Cannot merge more than %d scans together. Please check settings and try again", MAX_SCANS_COMBINATIONS);
         MessageBox(message, "Error in settings", MB_OK);
         return;
@@ -198,9 +213,13 @@ void CMergePakFilesDlg::OnMergeFiles() {
 
     // Sort the files
     if (m_sortOrder == 0)
+    {
         Common::Sort(m_pakFile, true, true);
+    }
     else
+    {
         Common::Sort(m_pakFile, true, false);
+    }
 
 
     m_statusBar.ShowWindow(SW_SHOW);
@@ -208,12 +227,17 @@ void CMergePakFilesDlg::OnMergeFiles() {
 
     // start a thread to merge the pakfiles
     if (m_mergeOption == 0)
+    {
         AfxBeginThread(MergePakFiles_Concatenate, this, THREAD_PRIORITY_NORMAL, 0, 0, NULL);
+    }
     else
+    {
         AfxBeginThread(MergePakFiles_Combine, this, THREAD_PRIORITY_NORMAL, 0, 0, NULL);
+    }
 }
 
-UINT MergePakFiles_Concatenate(LPVOID pParam) {
+UINT MergePakFiles_Concatenate(LPVOID pParam)
+{
     CString errorMsg;
     CSpectrum curSpec;
     static const int BUFFER_SIZE = 16384;
@@ -234,7 +258,8 @@ UINT MergePakFiles_Concatenate(LPVOID pParam) {
 
     // Try to open the output-file
     FILE* uf = fopen(outputFile, "wb");
-    if (uf == NULL) {
+    if (uf == NULL)
+    {
         MessageBox(NULL, "Could not open output-file for writing. Please check file-name and try again", "Error", MB_OK);
         free(spectrumHeader);
         return 1;
@@ -244,7 +269,8 @@ UINT MergePakFiles_Concatenate(LPVOID pParam) {
     POSITION pos = dialog->m_pakFile.GetHeadPosition();
     int pakFileNum = 0;
 
-    while (pos != NULL) {
+    while (pos != NULL)
+    {
         CString& pakFile = dialog->m_pakFile.GetNext(pos); // <-- get the next .pak file in the list
 
         int spectrumNum = 0; // <-- remember the spectrum we're at
@@ -252,9 +278,11 @@ UINT MergePakFiles_Concatenate(LPVOID pParam) {
         // Loop through all spectra in the file
         FILE* f = fopen(pakFile, "rb");
 
-        if (f != NULL) {
+        if (f != NULL)
+        {
             size_t ret = 1;
-            while (ret > 0) {
+            while (ret > 0)
+            {
                 ret = fread(dataBuffer, sizeof(char), BUFFER_SIZE, f);
                 fwrite(dataBuffer, sizeof(char), ret, uf);
 
@@ -294,13 +322,14 @@ UINT MergePakFiles_Concatenate(LPVOID pParam) {
     return 0;
 }
 
-UINT MergePakFiles_Combine(LPVOID pParam) {
+UINT MergePakFiles_Combine(LPVOID pParam)
+{
     CString errorMsg;
     CSpectrum curSpec, tmpSpec;
     static const int BUFFER_SIZE = 16384;
     FILE* f[CMergePakFilesDlg::MAX_SCANS_COMBINATIONS];
-    int		isFinished[CMergePakFilesDlg::MAX_SCANS_COMBINATIONS]; // <-- this equals 1 if we have read all spectra in the current file
-    int		nFinished = 0;
+    int isFinished[CMergePakFilesDlg::MAX_SCANS_COMBINATIONS]; // <-- this equals 1 if we have read all spectra in the current file
+    int nFinished = 0;
 
     int fileIndex; // <-- iterator for the files
 
@@ -314,7 +343,8 @@ UINT MergePakFiles_Combine(LPVOID pParam) {
 
     // Try to open the output-file
     FILE* uf = fopen(outputFile, "wb");
-    if (uf == NULL) {
+    if (uf == NULL)
+    {
         MessageBox(NULL, "Could not open output-file for writing. Please check file-name and try again", "Error", MB_OK);
         return 1;
     }
@@ -323,11 +353,14 @@ UINT MergePakFiles_Combine(LPVOID pParam) {
     POSITION pos = dialog->m_pakFile.GetHeadPosition();
     int pakFileNum = 0;
 
-    while (pos != NULL) {
+    while (pos != NULL)
+    {
 
         // ----- First open all the .pak-files we want to read from -----
-        for (fileIndex = 0; fileIndex < dialog->m_mergeNum; ++fileIndex) {
-            if (pos == NULL) {
+        for (fileIndex = 0; fileIndex < dialog->m_mergeNum; ++fileIndex)
+        {
+            if (pos == NULL)
+            {
                 --dialog->m_mergeNum; // <-- we're running out of files to merge
                 --fileIndex;
                 continue;
@@ -339,7 +372,8 @@ UINT MergePakFiles_Combine(LPVOID pParam) {
             f[fileIndex] = fopen(pakFile, "rb");
 
             // Check
-            if (f[fileIndex] == NULL) {
+            if (f[fileIndex] == NULL)
+            {
                 MessageBox(NULL, "Could not open .pak-file for writing", "Error", MB_OK);
                 fclose(uf);
                 return 1;
@@ -349,17 +383,21 @@ UINT MergePakFiles_Combine(LPVOID pParam) {
         // ----- Now loop through all the spectra in the .pak-files -----
         memset(isFinished, 0, CMergePakFilesDlg::MAX_SCANS_COMBINATIONS * sizeof(int));
         nFinished = 0;
-        while (nFinished < dialog->m_mergeNum) {
+        while (nFinished < dialog->m_mergeNum)
+        {
             curSpec.Clear();
-            for (fileIndex = 0; fileIndex < dialog->m_mergeNum; ++fileIndex) {
+            for (fileIndex = 0; fileIndex < dialog->m_mergeNum; ++fileIndex)
+            {
                 // check if we have read all the spectra in this file
-                if (isFinished[fileIndex]) {
+                if (isFinished[fileIndex])
+                {
                     continue;
                 }
 
                 // Read the next spectrum in each file
                 const bool success = specHandler.ReadNextSpectrum(f[fileIndex], tmpSpec);
-                if (!success) {
+                if (!success)
+                {
                     // Ignore this spectrum and try to find the spectrum in the next file
                     isFinished[fileIndex] = 1;
                     ++nFinished;
@@ -368,9 +406,13 @@ UINT MergePakFiles_Combine(LPVOID pParam) {
 
                 // Add the spectra
                 if (fileIndex == 0)
+                {
                     curSpec = tmpSpec;
+                }
                 else
+                {
                     curSpec.Add(tmpSpec);
+                }
             }
 
             // -------- Save the spectrum to file ----------
@@ -382,7 +424,8 @@ UINT MergePakFiles_Combine(LPVOID pParam) {
         }
 
         // ---- Close all the files ----
-        for (fileIndex = 0; fileIndex < dialog->m_mergeNum; ++fileIndex) {
+        for (fileIndex = 0; fileIndex < dialog->m_mergeNum; ++fileIndex)
+        {
             fclose(f[fileIndex]);
         }
 

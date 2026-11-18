@@ -32,7 +32,7 @@ CReEvaluator::CReEvaluator()
     m_ignore_Upper.m_intensity = 4000.0;
     m_ignore_Upper.m_type = IGNORE_NOTHING;
 
-    // The sky spectrum 
+    // The sky spectrum
     m_skySettings.skyOption = Configuration::SKY_OPTION::MEASURED_IN_SCAN;
     m_skySettings.indexInScan = 0;
 }
@@ -282,23 +282,31 @@ void CReEvaluator::WriteEvaluationLogHeader(int fitWindowIndex)
 
     // Ignoring the dark spectra?
     if (m_ignore_Lower.m_type == IGNORE_LIMIT)
+    {
         fprintf(f, "#Ignore Spectra with intensity below=%.1lf @ channel %d\n", m_ignore_Lower.m_intensity, m_ignore_Lower.m_channel);
+    }
     else
+    {
         fprintf(f, "#Ignore Dark Spectra\n");
+    }
 
     // Ignoring saturated spectra?
     if (m_ignore_Upper.m_type == IGNORE_LIMIT)
+    {
         fprintf(f, "#Ignore Spectra with intensity above=%.1lf @ channel %d\n", m_ignore_Upper.m_intensity, m_ignore_Upper.m_channel);
+    }
     else
+    {
         fprintf(f, "#Ignore Saturated Spectra\n");
+    }
 
     // The sky-spectrum used
     switch (m_skySettings.skyOption)
     {
-    case Configuration::SKY_OPTION::MEASURED_IN_SCAN:                   fprintf(f, "#Sky: First spectrum in scanFile\n");	break;
-    case Configuration::SKY_OPTION::USER_SUPPLIED:                      fprintf(f, "#Sky: %s\n", m_skySettings.skySpectrumFile.c_str()); break;
-    case Configuration::SKY_OPTION::SPECTRUM_INDEX_IN_SCAN:             fprintf(f, "#Sky: Spectrum number %d", m_skySettings.indexInScan); break;
-    case Configuration::SKY_OPTION::AVERAGE_OF_GOOD_SPECTRA_IN_SCAN:    fprintf(f, "#Sky: Average of all good spectra in scanFile\n");
+    case Configuration::SKY_OPTION::MEASURED_IN_SCAN: fprintf(f, "#Sky: First spectrum in scanFile\n"); break;
+    case Configuration::SKY_OPTION::USER_SUPPLIED: fprintf(f, "#Sky: %s\n", m_skySettings.skySpectrumFile.c_str()); break;
+    case Configuration::SKY_OPTION::SPECTRUM_INDEX_IN_SCAN: fprintf(f, "#Sky: Spectrum number %d", m_skySettings.indexInScan); break;
+    case Configuration::SKY_OPTION::AVERAGE_OF_GOOD_SPECTRA_IN_SCAN: fprintf(f, "#Sky: Average of all good spectra in scanFile\n");
     }
 
     // Write the region used:
@@ -307,7 +315,9 @@ void CReEvaluator::WriteEvaluationLogHeader(int fitWindowIndex)
 
     // If the spectra are averaged or not
     if (m_averagedSpectra)
+    {
         fprintf(f, "#Spectra are averaged, not summed\n");
+    }
 
     // The reference-files
     fprintf(f, "#nSpecies=%d\n", window.NumberOfReferences());
@@ -318,25 +328,31 @@ void CReEvaluator::WriteEvaluationLogHeader(int fitWindowIndex)
         switch (reference.m_shiftOption)
         {
         case SHIFT_TYPE::SHIFT_FIX:
-            fprintf(f, "%0.3lf\t", reference.m_shiftValue); break;
+            fprintf(f, "%0.3lf\t", reference.m_shiftValue);
+            break;
         case SHIFT_TYPE::SHIFT_LINK:
-            fprintf(f, "linked to %s\t", window.reference[static_cast<size_t>(reference.m_shiftValue)].m_specieName.c_str()); break;
+            fprintf(f, "linked to %s\t", window.reference[static_cast<size_t>(reference.m_shiftValue)].m_specieName.c_str());
+            break;
         case SHIFT_TYPE::SHIFT_LIMIT:
             fprintf(f, "limited to +-%0.3lf\t", reference.m_shiftValue);
         default:
-            fprintf(f, "free\t"); break;
+            fprintf(f, "free\t");
+            break;
         }
 
         switch (reference.m_squeezeOption)
         {
         case SHIFT_TYPE::SHIFT_FIX:
-            fprintf(f, "%0.3lf\t", reference.m_squeezeValue); break;
+            fprintf(f, "%0.3lf\t", reference.m_squeezeValue);
+            break;
         case SHIFT_TYPE::SHIFT_LINK:
-            fprintf(f, "linked to %s\t", window.reference[static_cast<size_t>(reference.m_squeezeValue)].m_specieName.c_str()); break;
+            fprintf(f, "linked to %s\t", window.reference[static_cast<size_t>(reference.m_squeezeValue)].m_specieName.c_str());
+            break;
         case SHIFT_TYPE::SHIFT_LIMIT:
             fprintf(f, "limited to +-%0.3lf\t", reference.m_squeezeValue);
         default:
-            fprintf(f, "free\t"); break;
+            fprintf(f, "free\t");
+            break;
         }
         fprintf(f, "%s\n", reference.m_path.c_str());
     }

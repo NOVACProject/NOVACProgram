@@ -318,13 +318,19 @@ RETURN_CODE CFitWindowFileHandler::WriteFitWindow(const novac::CFitWindow& windo
 
     // Open the file
     if (overWrite)
+    {
         f = fopen(fileName, "w");
+    }
     else
+    {
         f = fopen(fileName, "a+");
+    }
 
     // Check so that we could read from the file.
     if (nullptr == f)
+    {
         return FAIL;
+    }
 
     fprintf(f, "<fitWindow name=\"%s\">\n", window.name.c_str());
     indent.Format("\t");
@@ -393,4 +399,3 @@ RETURN_CODE CFitWindowFileHandler::WriteFitWindow(const novac::CFitWindow& windo
 
     return SUCCESS;
 }
-

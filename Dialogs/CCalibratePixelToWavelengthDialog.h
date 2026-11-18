@@ -11,7 +11,7 @@ class NovacProgramWavelengthCalibrationController;
 
 namespace novac
 {
-    class StandardCrossSectionSetup;
+class StandardCrossSectionSetup;
 }
 
 /// <summary>
@@ -21,15 +21,14 @@ namespace novac
 struct CalibratePixelToWavelengthDialogSetup
 {
 public:
-    CalibratePixelToWavelengthDialogSetup() :
-        m_calibrationOption(0),
-        m_initialCalibrationFile(""),
-        m_instrumentLineshapeFile(""),
-        m_solarSpectrumFile(""),
-        m_fitInstrumentLineShapeOption(0),
-        m_fitInstrumentLineShapeRegionStart("320"),
-        m_fitInstrumentLineShapeRegionStop("350"),
-        m_fitInstrumentLineShapeOzoneReference("")
+    CalibratePixelToWavelengthDialogSetup() : m_calibrationOption(0),
+                                              m_initialCalibrationFile(""),
+                                              m_instrumentLineshapeFile(""),
+                                              m_solarSpectrumFile(""),
+                                              m_fitInstrumentLineShapeOption(0),
+                                              m_fitInstrumentLineShapeRegionStart("320"),
+                                              m_fitInstrumentLineShapeRegionStop("350"),
+                                              m_fitInstrumentLineShapeOzoneReference("")
     {
     }
 
@@ -57,7 +56,10 @@ public:
 
     // Dialog Data
 #ifdef AFX_DESIGN_TIME
-    enum { IDD = IDD_CALIBRATE_WAVELENGTH_DIALOG };
+    enum
+    {
+        IDD = IDD_CALIBRATE_WAVELENGTH_DIALOG
+    };
 #endif
 
 protected:
@@ -65,7 +67,6 @@ protected:
 
     DECLARE_MESSAGE_MAP()
 public:
-
     CString m_inputSpectrumFile;
 
     CalibratePixelToWavelengthDialogSetup m_setup;
@@ -145,5 +146,4 @@ private:
     novac::StandardCrossSectionSetup* m_standardCrossSections;
 
     char* m_initialCalibrationFileTypeFilter = nullptr;
-
 };

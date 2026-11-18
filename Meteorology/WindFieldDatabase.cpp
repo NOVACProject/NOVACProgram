@@ -138,7 +138,7 @@ RETURN_CODE CWindFieldDatabase::InterpolateWindField(const CDateTime& desiredTim
         }
     }
 
-    // If we are to interpolate the wind-field between two data points which are 
+    // If we are to interpolate the wind-field between two data points which are
     //  separated by more than 24 hours, the interpolation will not be meaningful
     //  return FALSE
     double totalTimeDifference = CDateTime::Difference(closestAfter.GetTimeAndDate(), closestBefore.GetTimeAndDate());
@@ -153,10 +153,8 @@ RETURN_CODE CWindFieldDatabase::InterpolateWindField(const CDateTime& desiredTim
     double alpha = timeDifference1 / totalTimeDifference;
 
     // interpolate the wind speed and direction vectorially
-    double x_comp = (1.0 - alpha) * closestBefore.GetWindSpeed() * cos(DEGREETORAD * closestBefore.GetWindDirection())
-        + alpha * closestAfter.GetWindSpeed() * cos(DEGREETORAD * closestAfter.GetWindDirection());
-    double y_comp = (1.0 - alpha) * closestBefore.GetWindSpeed() * sin(DEGREETORAD * closestBefore.GetWindDirection())
-        + alpha * closestAfter.GetWindSpeed() * sin(DEGREETORAD * closestAfter.GetWindDirection());
+    double x_comp = (1.0 - alpha) * closestBefore.GetWindSpeed() * cos(DEGREETORAD * closestBefore.GetWindDirection()) + alpha * closestAfter.GetWindSpeed() * cos(DEGREETORAD * closestAfter.GetWindDirection());
+    double y_comp = (1.0 - alpha) * closestBefore.GetWindSpeed() * sin(DEGREETORAD * closestBefore.GetWindDirection()) + alpha * closestAfter.GetWindSpeed() * sin(DEGREETORAD * closestAfter.GetWindDirection());
     double wd = RADTODEGREE * atan2(y_comp, x_comp);
     double ws = sqrt(x_comp * x_comp + y_comp * y_comp);
     double ph = (1.0 - alpha) * closestBefore.GetPlumeHeight() + alpha * closestAfter.GetPlumeHeight();

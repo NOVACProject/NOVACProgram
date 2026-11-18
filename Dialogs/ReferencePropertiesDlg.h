@@ -14,7 +14,10 @@ public:
     virtual ~CReferencePropertiesDlg() {}
 
     // Dialog Data
-    enum { IDD = IDD_REFERENCE_PROPERTIES_DLG };
+    enum
+    {
+        IDD = IDD_REFERENCE_PROPERTIES_DLG
+    };
 
     // The reference file that we're modifying
     novac::CReferenceFile& m_ref;

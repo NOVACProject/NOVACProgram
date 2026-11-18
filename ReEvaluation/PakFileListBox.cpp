@@ -10,7 +10,8 @@ IMPLEMENT_DYNAMIC(CPakFileListBox, CListBox)
 
 CPakFileListBox::CPakFileListBox(CReEvaluator& reeval, CWnd* parent)
     : m_reeval(reeval), m_parent(parent)
-{}
+{
+}
 
 CPakFileListBox::~CPakFileListBox()
 {
@@ -21,7 +22,6 @@ CPakFileListBox::~CPakFileListBox()
 BEGIN_MESSAGE_MAP(CPakFileListBox, CListBox)
     ON_WM_CONTEXTMENU()
 END_MESSAGE_MAP()
-
 
 
 // CPakFileListBox message handlers
@@ -38,10 +38,10 @@ void CPakFileListBox::PopulateList()
     }
 
     // Find the longest string in the list box.
-    CString      str;
-    CSize      sz;
-    int      dx = 0;
-    TEXTMETRIC   tm;
+    CString str;
+    CSize sz;
+    int dx = 0;
+    TEXTMETRIC tm;
     CDC* pDC = this->GetDC();
     CFont* pFont = this->GetFont();
 
@@ -59,7 +59,9 @@ void CPakFileListBox::PopulateList()
         sz.cx += tm.tmAveCharWidth;
 
         if (sz.cx > dx)
+        {
             dx = sz.cx;
+        }
     }
     // Select the old font back into the DC
     pDC->SelectObject(pOldFont);
@@ -97,7 +99,6 @@ void CPakFileListBox::OnContextMenu(CWnd* pWnd, CPoint pos)
 
     // show the popup menu
     pPopup->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, pos.x, pos.y, m_parent);
-
 }
 
 } // namespace ReEvaluation

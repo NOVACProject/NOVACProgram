@@ -32,14 +32,14 @@ CNovacMasterProgramDoc::~CNovacMasterProgramDoc()
 BOOL CNovacMasterProgramDoc::OnNewDocument()
 {
     if (!CDocument::OnNewDocument())
+    {
         return FALSE;
+    }
 
     // (SDI documents will reuse this document)
 
     return TRUE;
 }
-
-
 
 
 // CNovacMasterProgramDoc serialization

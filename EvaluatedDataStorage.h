@@ -7,52 +7,57 @@
 /** <b>CEvaluatedDataStorage</b> is a class for holding evaluated data for
     later plotting. */
 
-const enum SPECTROMETER_STATUS { STATUS_GREEN, STATUS_YELLOW, STATUS_RED };
+const enum SPECTROMETER_STATUS { STATUS_GREEN,
+    STATUS_YELLOW,
+    STATUS_RED };
 
 class CEvaluatedDataStorage
 {
     // ------------------- class CScanData ----------------------
     // --- takes care of 'remembering' data from entire scans ---
-    class CScanData {
+    class CScanData
+    {
     public:
         CScanData();
         ~CScanData();
-        double  m_flux;				// the calculated flux [kg/s]
-        bool    m_fluxOk;		// true if the flux-value is a good measurement
-        double  m_time;				// the time-of-day (seconds since midnight) when the scan was started
-        int     m_date;			// the date (day of month) when the scan was made
-        double  m_battery;			// the battery voltage [V] when the scan was started
-        double  m_temp;				// the temperature of the instrument [deg C] when the scan was started
-        long    m_expTime;		// the exposure-time of the measurement
+        double m_flux;    // the calculated flux [kg/s]
+        bool m_fluxOk;  // true if the flux-value is a good measurement
+        double m_time;    // the time-of-day (seconds since midnight) when the scan was started
+        int m_date;   // the date (day of month) when the scan was made
+        double m_battery;   // the battery voltage [V] when the scan was started
+        double m_temp;    // the temperature of the instrument [deg C] when the scan was started
+        long m_expTime;  // the exposure-time of the measurement
         CScanData& operator=(const CScanData&);
     };
 
     // ------------------- class CSpectrumData --------------------
     // --- takes care of 'remembering' data from full scans -------
-    class CSpectrumData {
+    class CSpectrumData
+    {
     public:
         CSpectrumData();
         ~CSpectrumData();
-        int     m_time;           // the time of day for each spectrum (seconds since midnight)
-        double  m_column;         // the evaluated columns
-        double  m_columnError;    // the error in the evaluated columns
-        double  m_peakSaturation; // the peak saturation-ratios of the spectrum
-        double  m_fitSaturation;  // the maximum saturation-ratio in the fit region of the spectrum
-        double  m_angle;          // the scan angle used
-        bool    m_isBadFit;       // the goodness of fit for the evaluated spectrum
+        int m_time;           // the time of day for each spectrum (seconds since midnight)
+        double m_column;         // the evaluated columns
+        double m_columnError;    // the error in the evaluated columns
+        double m_peakSaturation; // the peak saturation-ratios of the spectrum
+        double m_fitSaturation;  // the maximum saturation-ratio in the fit region of the spectrum
+        double m_angle;          // the scan angle used
+        bool m_isBadFit;       // the goodness of fit for the evaluated spectrum
         CSpectrumData& operator=(const CSpectrumData&);
     };
 
     // ------------------- class CWindMeasData -----------------------
     // --- takes care of 'remembering' data wind-measurements made ---
-    class CWindMeasData {
+    class CWindMeasData
+    {
     public:
         CWindMeasData();
         ~CWindMeasData();
-        int    m_scannerIndex;   // the index of the scanner that generated this measurement
-        int    m_time;           // the time of day when the wind-speed measurement was started (seconds since midnight)
-        int    m_date;           // the date (day of month) when the measurement was made
-        int    m_duration;       // the duration of the measurement (seconds)
+        int m_scannerIndex;   // the index of the scanner that generated this measurement
+        int m_time;           // the time of day when the wind-speed measurement was started (seconds since midnight)
+        int m_date;           // the date (day of month) when the measurement was made
+        int m_duration;       // the duration of the measurement (seconds)
         double m_correlation;    // the average correlation coefficient of the measurement (0->1)
         double m_windSpeed;      // the calculated wind-speed
         double m_windSpeedErr;   // the estimated error in the wind-speed
@@ -60,7 +65,6 @@ class CEvaluatedDataStorage
     };
 
 public:
-
     CEvaluatedDataStorage(void);
     ~CEvaluatedDataStorage(void);
 
@@ -195,7 +199,7 @@ public:
     double GetDynamicRange(const CString& serial);
 
     /** Gets the temperature of the last scan */
-    double  GetTemperature(const CString& serial);
+    double GetTemperature(const CString& serial);
 
     /** Gets the temperature of saved scans.
         @param serial - the serial number of the spectrometer for which the data should be retrieved.
@@ -203,7 +207,7 @@ public:
         @param dataBuffer - the flux data will be copied into this buffer.
         @param bufferSize - the maximum number of data points that the buffer can handle.
         @return the number of data points copied into the dataBuffer*/
-    long  GetTemperatureData(const CString& serial, double* timeBuffer, double* dataBuffer, long bufferSize);
+    long GetTemperatureData(const CString& serial, double* timeBuffer, double* dataBuffer, long bufferSize);
 
     /** Gets the battery voltage of the last scan */
     double GetBatteryVoltage(const CString& serial);
@@ -272,7 +276,7 @@ private:
     /** The list of wind-speed measurements made.
         This is impplemented as a list for simplicity, the number of wind-speed
         measurements in one day will in all cases be very low. */
-    CList <CWindMeasData, CWindMeasData&> m_windData;
+    CList<CWindMeasData, CWindMeasData&> m_windData;
 
     /** The serial numbers */
     CString m_serials[MAX_NUMBER_OF_SCANNING_INSTRUMENTS];
@@ -281,7 +285,7 @@ private:
     std::string m_models[MAX_NUMBER_OF_SCANNING_INSTRUMENTS];
 
     /** The time-difference between GMT and the position of each scanner */
-    double	m_hoursToGMT[MAX_NUMBER_OF_SCANNING_INSTRUMENTS];
+    double m_hoursToGMT[MAX_NUMBER_OF_SCANNING_INSTRUMENTS];
 
     /** How many serial numbers have been inserted */
     unsigned int m_serialNum;
@@ -297,7 +301,7 @@ private:
     void RemoveOldFluxResults();
 
     /** Reset spec index */
-    void  RemoveOldSpec(int scannerIndex);
+    void RemoveOldSpec(int scannerIndex);
 
     /** Returns the spectrometer index given a serial number */
     int GetScannerIndex(const CString& serial);

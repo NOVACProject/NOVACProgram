@@ -15,13 +15,13 @@ private:
     const std::string m_msg = "";
 
 public:
-    ConfigurationFileException(const char* msg) :
-        m_msg(msg)
-    {}
+    ConfigurationFileException(const char* msg) : m_msg(msg)
+    {
+    }
 
-    ConfigurationFileException(std::string msg) :
-        m_msg(msg.c_str())
-    {}
+    ConfigurationFileException(std::string msg) : m_msg(msg.c_str())
+    {
+    }
 
     const char* what() const noexcept override final { return m_msg.c_str(); }
 };
@@ -101,7 +101,7 @@ private:
     int Parse_Communication();
 
     /** Parses one 'windmeasurement' section */
-    int	Parse_WindMeasurement();
+    int Parse_WindMeasurement();
 
     /** Parses one 'realtimesetup' section */
     int Parse_RealTimeSetup();

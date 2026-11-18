@@ -91,7 +91,8 @@ END_MESSAGE_MAP()
 
 // CDarkConfigurationDlg message handlers
 
-BOOL CDarkConfigurationDlg::OnInitDialog() {
+BOOL CDarkConfigurationDlg::OnInitDialog()
+{
     CDialog::OnInitDialog();
 
     // setup the tool tips
@@ -106,35 +107,44 @@ BOOL CDarkConfigurationDlg::OnInitDialog() {
     // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CDarkConfigurationDlg::InitToolTips() {
+void CDarkConfigurationDlg::InitToolTips()
+{
     // Don't initialize the tool tips twice
     if (m_toolTip.m_hWnd != nullptr)
+    {
         return;
+    }
 
     // Enable the tool tips
-    if (!m_toolTip.Create(this)) {
+    if (!m_toolTip.Create(this))
+    {
         TRACE0("Failed to create tooltip control\n");
     }
 
     //	m_toolTip.AddTool(&m_labelVolcano, IDC_EDIT_VOLCANO);
 }
 
-BOOL CDarkConfigurationDlg::OnKillActive() {
+BOOL CDarkConfigurationDlg::OnKillActive()
+{
 
     return CPropertyPage::OnKillActive();
 }
 
-void CDarkConfigurationDlg::SaveData() {
+void CDarkConfigurationDlg::SaveData()
+{
     int i;
     CString str;
 
     if (m_hWnd == nullptr)
+    {
         return;
+    }
 
-    // ------- Save the change ----------- 
+    // ------- Save the change -----------
     if (UpdateData(TRUE))
     {
-        for (i = 0; i < m_curSpec->channelNum; ++i) {
+        for (i = 0; i < m_curSpec->channelNum; ++i)
+        {
             // The option for how to get the dark-spectrum
             m_curSpec->channel[i].darkSettings.m_darkSpecOption = (Configuration::DARK_SPEC_OPTION)m_darkSpecOption;
 
@@ -147,51 +157,65 @@ void CDarkConfigurationDlg::SaveData() {
 
         // The path of the offset spectrum
         m_curSpec->channel[0].darkSettings.m_offsetSpec = std::string((LPCSTR)m_offsetPath1);
-        if (m_curSpec->channelNum > 1) {
+        if (m_curSpec->channelNum > 1)
+        {
             m_curSpec->channel[1].darkSettings.m_offsetSpec = std::string((LPCSTR)m_offsetPath2);
         }
 
         // The path of the dark-current spectrum
         m_curSpec->channel[0].darkSettings.m_darkCurrentSpec = std::string((LPCSTR)m_dcPath1);
-        if (m_curSpec->channelNum > 1) {
+        if (m_curSpec->channelNum > 1)
+        {
             m_curSpec->channel[1].darkSettings.m_darkCurrentSpec = std::string((LPCSTR)m_dcPath2);
         }
 
         // Show or hide the label telling that the user must himself offset correct the
         //	dark current spectrum
-        if (m_curSpec->channel[0].darkSettings.m_darkCurrentOption == Configuration::DARK_MODEL_OPTION::USER_SUPPLIED) {
+        if (m_curSpec->channel[0].darkSettings.m_darkCurrentOption == Configuration::DARK_MODEL_OPTION::USER_SUPPLIED)
+        {
             m_labelDarkOffsetCorr.ShowWindow(SW_SHOW);
         }
-        else {
+        else
+        {
             m_labelDarkOffsetCorr.ShowWindow(SW_HIDE);
         }
     }
 }
 
-void CDarkConfigurationDlg::UpdateDlg() {
+void CDarkConfigurationDlg::UpdateDlg()
+{
     UpdateData(FALSE);
 }
 
-BOOL CDarkConfigurationDlg::PreTranslateMessage(MSG* pMsg) {
+BOOL CDarkConfigurationDlg::PreTranslateMessage(MSG* pMsg)
+{
     m_toolTip.RelayEvent(pMsg);
 
     return CPropertyPage::PreTranslateMessage(pMsg);
 }
 
-void CDarkConfigurationDlg::OnChangeScanner() {
+void CDarkConfigurationDlg::OnChangeScanner()
+{
     if (!m_initialized)
+    {
         return;
+    }
 
     if (m_hWnd == nullptr)
+    {
         return; // happens if this tab just disappeared
+    }
 
-    if (UpdateData(TRUE)) { // <-- first save the data in the dialog
+    if (UpdateData(TRUE))
+    { // <-- first save the data in the dialog
 
         // Then change the settings so that we're using the newly selected scanner
         CSystemConfigurationPage::OnChangeScanner();
 
         if (m_curScanner == nullptr)
+        {
             return;
+        }
 
         // The option for how to get the dark-spectrum
         m_darkSpecOption = (int)m_curSpec->channel[0].darkSettings.m_darkSpecOption;
@@ -203,18 +227,22 @@ void CDarkConfigurationDlg::OnChangeScanner() {
         m_dcSpecOption = (int)m_curSpec->channel[0].darkSettings.m_darkCurrentOption;
 
         // Show the path of the offset spectrum
-        if (m_curSpec->channel[0].darkSettings.m_offsetSpec.size() > 1) {
+        if (m_curSpec->channel[0].darkSettings.m_offsetSpec.size() > 1)
+        {
             m_offsetPath1.Format("%s", m_curSpec->channel[0].darkSettings.m_offsetSpec.c_str());
         }
-        if (m_curSpec->channel[1].darkSettings.m_offsetSpec.size() > 1 && m_curSpec->channelNum > 1) {
+        if (m_curSpec->channel[1].darkSettings.m_offsetSpec.size() > 1 && m_curSpec->channelNum > 1)
+        {
             m_offsetPath2.Format("%s", m_curSpec->channel[1].darkSettings.m_offsetSpec.c_str());
         }
 
         // Show the path of the dark-current spectrum
-        if (m_curSpec->channel[0].darkSettings.m_darkCurrentSpec.size() > 1) {
+        if (m_curSpec->channel[0].darkSettings.m_darkCurrentSpec.size() > 1)
+        {
             m_dcPath1.Format("%s", m_curSpec->channel[0].darkSettings.m_darkCurrentSpec.c_str());
         }
-        if (m_curSpec->channel[1].darkSettings.m_darkCurrentSpec.size() > 1 && m_curSpec->channelNum > 1) {
+        if (m_curSpec->channel[1].darkSettings.m_darkCurrentSpec.size() > 1 && m_curSpec->channelNum > 1)
+        {
             m_dcPath2.Format("%s", m_curSpec->channel[1].darkSettings.m_darkCurrentSpec.c_str());
         }
 
@@ -227,11 +255,15 @@ void CDarkConfigurationDlg::OnChangeScanner() {
     }
 }
 
-void CDarkConfigurationDlg::OnChangeDarkSpecOption() {
+void CDarkConfigurationDlg::OnChangeDarkSpecOption()
+{
     if (!m_initialized)
+    {
         return;
+    }
 
-    if (UpdateData(TRUE)) { // <-- first save the data in the dialog
+    if (UpdateData(TRUE))
+    { // <-- first save the data in the dialog
 
         // Enable the controls that should be enabled and disable the controls
         //	that should be disabled
@@ -242,10 +274,12 @@ void CDarkConfigurationDlg::OnChangeDarkSpecOption() {
     }
 }
 
-void CDarkConfigurationDlg::UpdateControls() {
+void CDarkConfigurationDlg::UpdateControls()
+{
     // if there is only one channel on this spectrometer, then hide
     //	the edit-boxes and labels that belongs to the slave
-    if (m_curSpec->channelNum == 1) {
+    if (m_curSpec->channelNum == 1)
+    {
         m_labelSlave1.ShowWindow(SW_HIDE);
         m_labelSlave2.ShowWindow(SW_HIDE);
         m_editOffset2.ShowWindow(SW_HIDE);
@@ -253,7 +287,8 @@ void CDarkConfigurationDlg::UpdateControls() {
         m_btnSlaveOff.ShowWindow(SW_HIDE);
         m_btnSlaveDC.ShowWindow(SW_HIDE);
     }
-    else {
+    else
+    {
         m_labelSlave1.ShowWindow(SW_SHOW);
         m_labelSlave2.ShowWindow(SW_SHOW);
         m_editOffset2.ShowWindow(SW_SHOW);
@@ -265,10 +300,12 @@ void CDarkConfigurationDlg::UpdateControls() {
     // If the user only wants to use measured spectra, then
     //	the controls on the screed should be disabled
     BOOL state = TRUE;
-    if (m_darkSpecOption == 0) {
+    if (m_darkSpecOption == 0)
+    {
         state = FALSE;
     }
-    else {
+    else
+    {
         state = TRUE;
     }
     m_labelMaster1.EnableWindow(state);
@@ -294,21 +331,26 @@ void CDarkConfigurationDlg::UpdateControls() {
 }
 
 // The 'Browse' buttons
-void CDarkConfigurationDlg::OnBrowseOffset1() {
+void CDarkConfigurationDlg::OnBrowseOffset1()
+{
     BrowseFile(IDC_EDIT_OFFSETSPECTRUM);
 }
-void CDarkConfigurationDlg::OnBrowseOffset2() {
+void CDarkConfigurationDlg::OnBrowseOffset2()
+{
     BrowseFile(IDC_EDIT_OFFSETSPECTRUM2);
 }
-void CDarkConfigurationDlg::OnBrowseDC1() {
+void CDarkConfigurationDlg::OnBrowseDC1()
+{
     BrowseFile(IDC_EDIT_DARKCURRENT_SPECTRUM);
 }
-void CDarkConfigurationDlg::OnBrowseDC2() {
+void CDarkConfigurationDlg::OnBrowseDC2()
+{
     BrowseFile(IDC_EDIT_DARKCURRENT_SPECTRUM2);
 }
 
 /** Browsing for a file, the result will be saved in the edit box 'editbox' */
-void CDarkConfigurationDlg::BrowseFile(int editBox) {
+void CDarkConfigurationDlg::BrowseFile(int editBox)
+{
     CString fileName;
     TCHAR filter[512];
     int n = _stprintf(filter, "Spectrum files\0");
@@ -317,11 +359,14 @@ void CDarkConfigurationDlg::BrowseFile(int editBox) {
     Common common;
 
     if (m_curSpec == nullptr)
+    {
         return;
+    }
 
     // Let the user browse for the file
     fileName.Format("");
-    if (!common.BrowseForFile(filter, fileName)) {
+    if (!common.BrowseForFile(filter, fileName))
+    {
         return;
     }
 

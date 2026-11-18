@@ -16,7 +16,10 @@ public:
     virtual ~CGlobalConfiguration();
 
     // Dialog Data
-    enum { IDD = IDD_CONFIGURATION_GLOBAL };
+    enum
+    {
+        IDD = IDD_CONFIGURATION_GLOBAL
+    };
 
     /** the actual configuration */
     CConfigurationSetting* m_configuration;
@@ -47,13 +50,14 @@ public:
 
     /** Setup the tool tips */
     void InitToolTips();
+
 protected:
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
     DECLARE_MESSAGE_MAP()
 
     /** the tool tips */
-    CToolTipCtrl  m_toolTip;
+    CToolTipCtrl m_toolTip;
 
 public:
     // The labels (only used for the tooltips)
@@ -83,6 +87,6 @@ public:
     CEdit m_localDir;
 
     /** Controlling the behaviour of the local/ftp radio-button */
-    int     m_useLocalDirectory;
+    int m_useLocalDirectory;
 };
 }

@@ -12,10 +12,8 @@ protected: // create from serialization only
 
     // Attributes
 public:
-
     // Operations
 public:
-
     // Overrides
 public:
     virtual BOOL OnNewDocument();
@@ -30,10 +28,7 @@ public:
 #endif
 
 protected:
-
     // Generated message map functions
 protected:
     DECLARE_MESSAGE_MAP()
 };
-
-

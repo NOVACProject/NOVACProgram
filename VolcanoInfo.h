@@ -50,4 +50,3 @@ int IndexOfVolcano(const std::string& volcanoName);
 
 /** Retrieves the information regarding the volcanoe with the given index */
 novac::CNamedLocation GetVolcano(unsigned int volcanoIndex);
-

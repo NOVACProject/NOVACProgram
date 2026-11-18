@@ -12,7 +12,7 @@ class CCustomDrawTreeCtrl : public CNonFlickeringTreeControl
     DECLARE_DYNAMIC(CCustomDrawTreeCtrl)
 
 public:
-    CCustomDrawTreeCtrl() { }
+    CCustomDrawTreeCtrl() {}
     virtual ~CCustomDrawTreeCtrl() {}
 
     // Set the color of a single HTREEITEM
@@ -21,18 +21,17 @@ public:
     void DeleteAllItems();
 
 protected:
-
     afx_msg void OnPaint();
 
     DECLARE_MESSAGE_MAP()
 
 private:
-
-    struct FontWithColor {
+    struct FontWithColor
+    {
         COLORREF color;
-        LOGFONT  logfont;
+        LOGFONT logfont;
     };
 
     // listing which elements in the tree have a custom font and color.
-    std::unordered_map< HTREEITEM, FontWithColor> m_customElements;
+    std::unordered_map<HTREEITEM, FontWithColor> m_customElements;
 };

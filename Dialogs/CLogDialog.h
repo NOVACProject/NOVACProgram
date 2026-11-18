@@ -19,7 +19,10 @@ public:
 
     // Dialog Data
 #ifdef AFX_DESIGN_TIME
-    enum { IDD = IDD_VIEW_LOG_DIALOG };
+    enum
+    {
+        IDD = IDD_VIEW_LOG_DIALOG
+    };
 #endif
 
 protected:

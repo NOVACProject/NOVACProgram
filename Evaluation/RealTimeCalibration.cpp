@@ -96,9 +96,7 @@ std::vector<novac::CReferenceFile> CreateStandardReferences(
         referenceController.ConvolveReference(*calibration);
 
         // Save the result
-        const std::string filteringStr = (autoCalibrationSettings.filterReferences) ?
-            "_HP500_PPMM" :
-            "";
+        const std::string filteringStr = (autoCalibrationSettings.filterReferences) ? "_HP500_PPMM" : "";
         const std::string dstFileName =
             directoryName +
             spectrumInformation.m_device +
@@ -291,7 +289,7 @@ bool CRealTimeCalibration::IsTimeForInstrumentCalibration(
         return false;
     }
     else if (autoCalibrationSettings.instrumentLineShapeFitOption != 0 &&
-            autoCalibrationSettings.instrumentLineShapeFitRegion.Empty())
+        autoCalibrationSettings.instrumentLineShapeFitRegion.Empty())
     {
         std::stringstream message;
         message << "Cannot fit an instrument line shape if no region is defined. Current region: ";
@@ -300,7 +298,7 @@ bool CRealTimeCalibration::IsTimeForInstrumentCalibration(
         return false;
     }
 
-    // no further objections found. 
+    // no further objections found.
     return true;
 }
 
@@ -315,7 +313,7 @@ bool CRealTimeCalibration::RunInstrumentCalibration(
 
         const auto& autoCalibrationSettings = spectrometer.m_scanner.spec[0].channel[0].autoCalibration;
 
-        // Use the WavelengthCalibrationController, which is also used when the 
+        // Use the WavelengthCalibrationController, which is also used when the
         //  user performs the instrument calibrations using the CCalibratePixelToWavelengthDialog.
         // This makes sure we get the same behavior in the dialog and here.
         NovacProgramWavelengthCalibrationController calibrationController(log);

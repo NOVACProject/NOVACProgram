@@ -11,10 +11,10 @@ struct RatioCalculationResult;
 
 namespace novac
 {
-    struct DoasResult;
+struct DoasResult;
 }
 
-// CRatioEvaluationDialog is page page in the Ratio calculation dialog where the 
+// CRatioEvaluationDialog is page page in the Ratio calculation dialog where the
 // user finally runs the configured evaluation and sees the result.
 
 class CRatioEvaluationDialog : public CPropertyPage
@@ -33,7 +33,10 @@ public:
 
     // Dialog Data
 #ifdef AFX_DESIGN_TIME
-    enum { IDD = IDD_RATIO_EVALUATE_DIALOG };
+    enum
+    {
+        IDD = IDD_RATIO_EVALUATE_DIALOG
+    };
 #endif
 
     afx_msg void OnBnClickedRunEvaluationOnNextScan();
@@ -55,7 +58,6 @@ protected:
     DECLARE_MESSAGE_MAP()
 
 private:
-
     // The controller which this dialog helps to setup. Notice that this dialog does not own the pointer and will not delete it.
     RatioCalculationController* m_controller;
 

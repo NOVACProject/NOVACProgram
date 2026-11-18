@@ -5,7 +5,8 @@
 #include "../Common/EvaluationLogFileHandler.h"
 
 // CGeometryDlg dialog
-namespace Dialogs {
+namespace Dialogs
+{
 class CGeometryDlg : public CDialog
 {
     DECLARE_DYNAMIC(CGeometryDlg)
@@ -15,14 +16,16 @@ public:
     virtual ~CGeometryDlg();
 
     // Dialog Data
-    enum { IDD = IDD_GEOMETRY_DIALOG };
+    enum
+    {
+        IDD = IDD_GEOMETRY_DIALOG
+    };
 
 protected:
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
     DECLARE_MESSAGE_MAP()
 public:
-
     // The maximum number of scanners that we can look at at one time
     static const int MAX_N_SCANNERS = 4;
 
@@ -41,7 +44,7 @@ public:
     Graph::CGraphCtrl m_map;
 
     /** The list of scanners */
-    CListBox  m_scannerList;
+    CListBox m_scannerList;
 
     // ------------------- DATA -------------------------
 
@@ -49,43 +52,43 @@ public:
     FileHandler::CEvaluationLogFileHandler* m_evalLogReader[MAX_N_SCANNERS];
 
     /** The currently selected scanner */
-    int      m_curScanner;
+    int m_curScanner;
 
     /** The serial-numbers of the scanning instruments */
-    CString    m_serialNumber[MAX_N_SCANNERS];
+    CString m_serialNumber[MAX_N_SCANNERS];
 
     /** The assumed compass directions */
-    double    m_compass[MAX_N_SCANNERS];
+    double m_compass[MAX_N_SCANNERS];
 
     /** The assumed plume height */
-    double    m_plumeHeight;
+    double m_plumeHeight;
 
     /** The currently selected scan */
-    int           m_curScan[MAX_N_SCANNERS];
+    int m_curScan[MAX_N_SCANNERS];
 
     /** The position of the scanning instruments */
-    novac::CGPSData   m_gps[MAX_N_SCANNERS];
+    novac::CGPSData m_gps[MAX_N_SCANNERS];
 
     /** The index of the nearest volcano into the global g_volcanoes-list */
-    int      m_volcanoIndex[MAX_N_SCANNERS];
+    int m_volcanoIndex[MAX_N_SCANNERS];
 
     /** 1 if we should show the volcano on the map */
-    int      m_showVolcano;
+    int m_showVolcano;
 
     /** 1 if we should show the columns as different-sized circles instead
                 of varying colors */
-    int      m_showColumnAsSize;
+    int m_showColumnAsSize;
 
     /** 1 if we should show the direction to the sun on the map */
-    int      m_showSunRay;
+    int m_showSunRay;
 
     /** The calculated plume height, from the last call to 'CalculatePlumeHeight' */
-    double    m_calcPlumeHeight;
+    double m_calcPlumeHeight;
 
     /** The calculated wind direction, from the last call to 'CalculateWindDirection' */
-    double    m_calcWindDirection;
+    double m_calcWindDirection;
 
-    // ------------------ METHODS ----------------------- 
+    // ------------------ METHODS -----------------------
     /** Called when the user browses for a new evaluation log */
     afx_msg void OnBrowseEvalLog1();
     afx_msg void OnBrowseEvalLog2();
@@ -136,7 +139,7 @@ public:
     afx_msg void OnMenu_CalculateGeometries();
 
 protected:
-    // --------------- PROTECTED METHODS ----------------------- 
+    // --------------- PROTECTED METHODS -----------------------
 
       /** This function extracts the gps - data from the evaluation log.
                   If no data can be extracted, lat and lon will be set to 0.*/
@@ -170,7 +173,7 @@ protected:
             On successful return, the name and path of the opened file is given by the parameter 'fileName' */
     FILE* OpenPostGeometryLogFile(int seriesNumber1, int seriesNumber2, CString& fileName);
 
-    // --------------- PROTECTED DATA ----------------------- 
+    // --------------- PROTECTED DATA -----------------------
 
     typedef struct
     {
@@ -179,7 +182,7 @@ protected:
         double minLon;
         double maxLon;
         double margin;
-    }PlotRange;
+    } PlotRange;
 
     PlotRange m_plotRange;
 };

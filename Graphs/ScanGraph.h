@@ -4,8 +4,7 @@
 namespace Graph
 {
 
-class CScanGraph :
-    public CGraphCtrl
+class CScanGraph : public CGraphCtrl
 {
 public:
     CScanGraph(void);
@@ -16,7 +15,5 @@ public:
 
     DECLARE_MESSAGE_MAP()
     afx_msg void OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/);
-
-
 };
 }

@@ -19,4 +19,3 @@ CScannerFolderInfo::CScannerFolderInfo(char pDiskName, CString pFolderName, CStr
 
     m_fileList.RemoveAll();
 }
-

@@ -31,8 +31,7 @@ IMPLEMENT_DYNAMIC(CMultiSelectOpenFileDialog, CFileDialog)
 
 
 CMultiSelectOpenFileDialog::CMultiSelectOpenFileDialog(BOOL bOpenFileDialog, LPCTSTR lpszDefExt, LPCTSTR lpszFileName,
-                               DWORD dwFlags, LPCTSTR lpszFilter, CWnd* pParentWnd) :
-    CFileDialog(bOpenFileDialog, lpszDefExt, lpszFileName, dwFlags, lpszFilter, pParentWnd)
+    DWORD dwFlags, LPCTSTR lpszFilter, CWnd* pParentWnd) : CFileDialog(bOpenFileDialog, lpszDefExt, lpszFileName, dwFlags, lpszFilter, pParentWnd)
 {
     Files = NULL;
     Folder = NULL;
@@ -95,8 +94,10 @@ INT_PTR CMultiSelectOpenFileDialog::DoModal()
     if (ret == IDCANCEL)
     {
         DWORD err = CommDlgExtendedError();
-        if (err == FNERR_BUFFERTOOSMALL/*0x3003*/ && Files)
+        if (err == FNERR_BUFFERTOOSMALL /*0x3003*/ && Files)
+        {
             ret = IDOK;
+        }
     }
     return ret;
 }
@@ -120,7 +121,9 @@ INT_PTR CMultiSelectOpenFileDialog::DoModal()
 CString CMultiSelectOpenFileDialog::GetNextPathName(POSITION& pos) const
 {
     if (!Files)
+    {
         return CFileDialog::GetNextPathName(pos);
+    }
 
     ASSERT(pos);
     TCHAR* ptr = (TCHAR*)pos;
@@ -131,9 +134,13 @@ CString CMultiSelectOpenFileDialog::GetNextPathName(POSITION& pos) const
 
     ptr += _tcslen(ptr) + 1;
     if (*ptr)
+    {
         pos = (POSITION)ptr;
+    }
     else
+    {
         pos = NULL;
+    }
 
     return ret;
 }
@@ -155,7 +162,9 @@ CString CMultiSelectOpenFileDialog::GetNextPathName(POSITION& pos) const
 POSITION CMultiSelectOpenFileDialog::GetStartPosition()
 {
     if (!Files)
+    {
         return CFileDialog::GetStartPosition();
+    }
 
     if (!bParsed)
     {
@@ -170,7 +179,9 @@ POSITION CMultiSelectOpenFileDialog::GetStartPosition()
         while (*ptr)
         {
             if ('\"' == *ptr)
+            {
                 *ptr = '\0';
+            }
             ++ptr;
         }
         bParsed = TRUE;
@@ -213,7 +224,7 @@ void CMultiSelectOpenFileDialog::_SetExtBuffer(DWORD dwReqBuffSize)
     try
     {
         GetOFN().nMaxFile = dwReqBuffSize;
-        delete[]m_pFileBuff;
+        delete[] m_pFileBuff;
         m_pFileBuff = new TCHAR[dwReqBuffSize];
         GetOFN().lpstrFile = m_pFileBuff;
     }

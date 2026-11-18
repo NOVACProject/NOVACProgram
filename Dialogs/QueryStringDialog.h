@@ -2,37 +2,42 @@
 
 #include "afxwin.h"
 
-namespace Dialogs {
+namespace Dialogs
+{
 
-    class CQueryStringDialog : public CDialog
-    {
-        DECLARE_DYNAMIC(CQueryStringDialog)
+class CQueryStringDialog : public CDialog
+{
+    DECLARE_DYNAMIC(CQueryStringDialog)
 
-    public:
+public:
         /** Default constructor */
-        CQueryStringDialog(CWnd* pParent = NULL);
+    CQueryStringDialog(CWnd* pParent = NULL);
 
         /** Default destructor */
-        virtual ~CQueryStringDialog();
+    virtual ~CQueryStringDialog();
 
         // Dialog Data
-        enum { IDD = IDD_QUERY_STRING_DIALOG };
+    enum
+    {
+        IDD = IDD_QUERY_STRING_DIALOG
+    };
 
         /** The window text */
-        CString   m_windowText;
+    CString m_windowText;
 
         /** The returned string */
-        CString* m_inputString;
+    CString* m_inputString;
 
         /** When the user presses the 'ok' button */
-        virtual void OnOK();
-    protected:
-        virtual BOOL OnInitDialog();
-        virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+    virtual void OnOK();
 
-        DECLARE_MESSAGE_MAP()
+protected:
+    virtual BOOL OnInitDialog();
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+
+    DECLARE_MESSAGE_MAP()
 
         /** The input edit-box */
-        CEdit m_editBox;
-    };
+    CEdit m_editBox;
+};
 }

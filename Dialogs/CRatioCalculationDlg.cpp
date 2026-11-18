@@ -55,13 +55,16 @@ BOOL CRatioCalculationDlg::OnInitDialog()
     CWnd* pOk = this->GetDlgItem(IDOK);
 
     // Remove each of the buttons
-    if (pApply) {
+    if (pApply)
+    {
         pApply->DestroyWindow();
     }
-    if (pCancel) {
+    if (pCancel)
+    {
         pCancel->DestroyWindow();
     }
-    if (pOk) {
+    if (pOk)
+    {
         pOk->DestroyWindow();
     }
 

@@ -7,7 +7,8 @@ using namespace novac;
 
 CSpectrometer::CSpectrometer()
     : m_history(nullptr), m_channel(0), m_gpsReadingsNum(0)
-{}
+{
+}
 
 CSpectrometer::~CSpectrometer(void)
 {

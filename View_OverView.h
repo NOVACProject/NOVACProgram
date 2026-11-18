@@ -20,7 +20,10 @@ public:
     virtual ~CView_OverView();
 
     // Dialog Data
-    enum { IDD = IDD_VIEW_OVERVIEW };
+    enum
+    {
+        IDD = IDD_VIEW_OVERVIEW
+    };
 
 protected:
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support

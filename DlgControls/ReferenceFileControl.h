@@ -19,12 +19,10 @@ public:
     DECLARE_MESSAGE_MAP()
 
 public:
-
     /** Pointer to the fit window that this grid controls */
     novac::CFitWindow* m_window = nullptr;
 
 private:
-
     /** Handle to the parent */
     CWnd* parent;
 
@@ -33,6 +31,5 @@ private:
 
     /** Called to show a context menu */
     afx_msg void OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/);
-
 };
 }

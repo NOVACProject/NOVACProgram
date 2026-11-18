@@ -9,10 +9,12 @@ using namespace novac;
 // --------------------------------------------------------
 // ----------------- CEvalLogFile -------------------------
 // --------------------------------------------------------
-CCombinerThread::CEvalLogFile::CEvalLogFile() {
+CCombinerThread::CEvalLogFile::CEvalLogFile()
+{
 }
 
-CCombinerThread::CEvalLogFile::~CEvalLogFile() {
+CCombinerThread::CEvalLogFile::~CEvalLogFile()
+{
 }
 
 // --------------------------------------------------------
@@ -34,12 +36,14 @@ BOOL CCombinerThread::InitInstance()
     return TRUE;
 }
 
-void CCombinerThread::OnQuit(WPARAM wp, LPARAM lp) {
+void CCombinerThread::OnQuit(WPARAM wp, LPARAM lp)
+{
     m_evalLogs.RemoveAll();
 }
 
 /** Called when the message queue is empty */
-BOOL CCombinerThread::OnIdle(LONG lCount) {
+BOOL CCombinerThread::OnIdle(LONG lCount)
+{
     return CWinThread::OnIdle(lCount);
 }
 
@@ -49,7 +53,8 @@ END_MESSAGE_MAP()
 
 // CCombinerThread message handlers
 /** Inserts the given evaluation log into the correct position into the list. */
-void CCombinerThread::InsertIntoList(const CString& evalLog, int volcanoIndex) {
+void CCombinerThread::InsertIntoList(const CString& evalLog, int volcanoIndex)
+{
     CEvalLogFile newLog;
 
     // 1. Create a novel CEvalLogFile object to insert into the list
@@ -67,7 +72,8 @@ void CCombinerThread::InsertIntoList(const CString& evalLog, int volcanoIndex) {
         together. The files are stored in the list, waiting for matching log-files
         to arrive. When long enough time has passed, the files are removed from
         the list. */
-void CCombinerThread::CleanEvalLogList() {
+void CCombinerThread::CleanEvalLogList()
+{
     CDateTime now;
 
     // 1. Get the time now;
@@ -75,7 +81,8 @@ void CCombinerThread::CleanEvalLogList() {
 
     // 2. Go through the list and remove all items which are too old
     POSITION pos = m_evalLogs.GetTailPosition();
-    while (pos != NULL) {
+    while (pos != NULL)
+    {
         // 2a. get a reference to the arrival-time
         CDateTime& arrived = m_evalLogs.GetAt(pos).arrived;
 
@@ -84,12 +91,14 @@ void CCombinerThread::CleanEvalLogList() {
 
         // 2c. If the time is longer than the maximum allowed time, remove
         //			the rest of the list
-        if (secondsPassed > MAX_RESIDENCE_TIME) {
+        if (secondsPassed > MAX_RESIDENCE_TIME)
+        {
             m_evalLogs.GetPrev(pos);
             m_evalLogs.RemoveTail();
         }
-        else {
-            // if this item has been less than 'MAX_RESIDENCE_TIME' 
+        else
+        {
+            // if this item has been less than 'MAX_RESIDENCE_TIME'
             //	in the list, then the previous items in the list
             //	have been there shorter time, no need to even look at them...
             return;

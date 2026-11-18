@@ -18,7 +18,10 @@ public:
     virtual BOOL OnInitDialog();
 
     // Dialog Data
-    enum { IDD = IDD_FLUX_HISTORY_DLG };
+    enum
+    {
+        IDD = IDD_FLUX_HISTORY_DLG
+    };
 
 protected:
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -44,8 +47,8 @@ public:
     void DrawPlot();
     void DrawHistoryPlots();
     void RedrawAll();
-private:
 
+private:
     Common common;
 
     // min and max flux (Y-axis range)

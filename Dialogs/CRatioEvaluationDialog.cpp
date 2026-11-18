@@ -178,7 +178,8 @@ IMPLEMENT_DYNAMIC(CRatioEvaluationDialog, CPropertyPage)
 
 CRatioEvaluationDialog::CRatioEvaluationDialog(RatioCalculationController* controller, CWnd* pParent /*=nullptr*/)
     : CPropertyPage(IDD_RATIO_EVALUATE_DIALOG), m_controller(controller)
-{}
+{
+}
 
 CRatioEvaluationDialog::~CRatioEvaluationDialog()
 {

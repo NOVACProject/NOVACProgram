@@ -7,24 +7,23 @@ CScannerFileInfo::CScannerFileInfo()
 
 CScannerFileInfo::CScannerFileInfo(char pDiskName, CString pFileName, CString pFileSubfix, long pFileSize, CString pDate, CString pTime)
     : diskName(pDiskName),
-    fileName(pFileName),
-    fileSuffix(pFileSubfix),
-    fileSize(pFileSize),
-    date(pDate),
-    time(pTime)
+      fileName(pFileName),
+      fileSuffix(pFileSubfix),
+      fileSize(pFileSize),
+      date(pDate),
+      time(pTime)
 {
 }
 
 CScannerFileInfo::CScannerFileInfo(const CScannerFileInfo& info2)
     : diskName(info2.diskName),
-    fileName(info2.fileName),
-    fileSuffix(info2.fileSuffix),
-    fileSize(info2.fileSize),
-    date(info2.date),
-    time(info2.time)
+      fileName(info2.fileName),
+      fileSuffix(info2.fileSuffix),
+      fileSize(info2.fileSize),
+      date(info2.date),
+      time(info2.time)
 
 {
-
 }
 
 CScannerFileInfo& CScannerFileInfo::operator=(const CScannerFileInfo& info2)

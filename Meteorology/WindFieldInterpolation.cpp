@@ -38,8 +38,14 @@ void InterpolateWind(
     const std::vector<double>& spatialIndices,
     InterpolatedWind& result)
 {
-    if (sizes.size() != 4) throw new std::invalid_argument("Invalid data to InterpolateWind, the data must be four-dimensional.");
-    if (spatialIndices.size() != 3) throw new std::invalid_argument("Invalid data to InterpolateWind, there must be three spatial dimensions.");
+    if (sizes.size() != 4)
+    {
+        throw new std::invalid_argument("Invalid data to InterpolateWind, the data must be four-dimensional.");
+    }
+    if (spatialIndices.size() != 3)
+    {
+        throw new std::invalid_argument("Invalid data to InterpolateWind, there must be three spatial dimensions.");
+    }
 
     // defining the dimensions
     const size_t timeDim = 0;
@@ -115,8 +121,14 @@ void InterpolateValue(
     const std::vector<double>& spatialIndices,
     std::vector<double>& result)
 {
-    if (sizes.size() != 4) throw new std::invalid_argument("Invalid data to InterpolateValue, the data must be four-dimensional.");
-    if (spatialIndices.size() != 3) throw new std::invalid_argument("Invalid data to InterpolateValue, there must be three spatial dimensions.");
+    if (sizes.size() != 4)
+    {
+        throw new std::invalid_argument("Invalid data to InterpolateValue, the data must be four-dimensional.");
+    }
+    if (spatialIndices.size() != 3)
+    {
+        throw new std::invalid_argument("Invalid data to InterpolateValue, there must be three spatial dimensions.");
+    }
 
     // defining the dimensions
     const size_t timeDim = 0;
@@ -157,4 +169,3 @@ void InterpolateValue(
         }
     }
 }
-

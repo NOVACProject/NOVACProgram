@@ -16,7 +16,10 @@ public:
     virtual ~CEvaluationConfigurationDlg();
 
     // Dialog Data
-    enum { IDD = IDD_CONFIGURE_EVALUATION };
+    enum
+    {
+        IDD = IDD_CONFIGURE_EVALUATION
+    };
 
 protected:
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support

@@ -30,7 +30,6 @@ BEGIN_MESSAGE_MAP(CFileTreeCtrl, CTreeCtrl)
 END_MESSAGE_MAP()
 
 
-
 // CFileTreeCtrl message handlers
 void CFileTreeCtrl::SetWnd(CWnd* pWnd)
 {
@@ -79,7 +78,6 @@ void CFileTreeCtrl::OnLButtonDown(UINT nFlags, CPoint point)
     }
     CTreeCtrl::OnLButtonDown(nFlags, point);
     // Select the item that is at the point myPoint.
-
 }
 void CFileTreeCtrl::OnRButtonDown(UINT nFlags, CPoint point)
 {
@@ -97,28 +95,33 @@ void CFileTreeCtrl::OnRButtonDown(UINT nFlags, CPoint point)
     itemText = this->GetItemText(GetSelectedItem());
     int length = strlen(itemText);
 
-    if (length > 4 && Equals(itemText.Left(4), "disk")) {
+    if (length > 4 && Equals(itemText.Left(4), "disk"))
+    {
         // this is a disk
         pPopup->EnableMenuItem(ID_FILETREE_VIEWFILE, MF_DISABLED | MF_GRAYED);
         pPopup->EnableMenuItem(ID_FILETREE_DELETE, MF_DISABLED | MF_GRAYED);
         pPopup->ModifyMenu(ID_FILETREE_DOWNLOAD, MF_BYCOMMAND, ID_FILETREE_DOWNLOAD, "Download All Files");
     }
-    else if (length == 4 && Equals(itemText.Left(1), "R")) {
+    else if (length == 4 && Equals(itemText.Left(1), "R"))
+    {
         // This is most likely a directory
         pPopup->EnableMenuItem(ID_FILETREE_VIEWFILE, MF_DISABLED | MF_GRAYED);
         pPopup->EnableMenuItem(ID_FILETREE_DELETE, MF_DISABLED | MF_GRAYED);
         pPopup->ModifyMenu(ID_FILETREE_DOWNLOAD, MF_BYCOMMAND, ID_FILETREE_DOWNLOAD, "Download Folder");
     }
-    else {
+    else
+    {
         // this is not a directory...
         pPopup->EnableMenuItem(ID_FILETREE_ENTERFOLDER, MF_DISABLED | MF_GRAYED);
         pPopup->ModifyMenu(ID_FILETREE_DOWNLOAD, MF_BYCOMMAND, ID_FILETREE_DOWNLOAD, "Download");
 
         // check if this is a text-file
-        if (length > 4 && (Equals(itemText.Right(4), ".txt") || Equals(itemText.Right(4), ".bat") || Equals(itemText.Right(4), ".ini"))) {
+        if (length > 4 && (Equals(itemText.Right(4), ".txt") || Equals(itemText.Right(4), ".bat") || Equals(itemText.Right(4), ".ini")))
+        {
             // this is a text-file
         }
-        else {
+        else
+        {
             pPopup->EnableMenuItem(ID_FILETREE_VIEWFILE, MF_DISABLED | MF_GRAYED);
         }
     }
@@ -126,5 +129,4 @@ void CFileTreeCtrl::OnRButtonDown(UINT nFlags, CPoint point)
     CRect rect;
     GetWindowRect(rect);
     pPopup->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x + rect.left, point.y + rect.top, parent);
-
 }

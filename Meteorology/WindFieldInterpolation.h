@@ -42,5 +42,3 @@ void InterpolateValue(
     const std::vector<size_t>& sizes,
     const std::vector<double>& spatialIndices,
     std::vector<double>& result);
-
-

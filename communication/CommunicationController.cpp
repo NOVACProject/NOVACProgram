@@ -9,7 +9,7 @@
 
 #ifdef _MSC_VER
 // Make sure to use warning level 4
-#pragma warning (push, 4)
+#pragma warning(push, 4)
 #endif
 
 using namespace Communication;
@@ -21,7 +21,7 @@ UINT ConnectByFTP(LPVOID pParam);
 UINT PollDirectory(LPVOID pParam);
 void Pause(double startTime, double stopTime, int serialID);
 
-void UploadFile_SerialTx(int i, Communication::CCommunicationController *mainController, Communication::CSerialControllerWithTx *cable);
+void UploadFile_SerialTx(int i, Communication::CCommunicationController* mainController, Communication::CSerialControllerWithTx* cable);
 void UploadFile_FTP(int mainIndex, Communication::CFTPHandler& ftpHandler);
 
 
@@ -39,7 +39,7 @@ bool g_runFlag;
 // This is an array of files to upload to the instruments
 //	the element 'g_fileToUpload[i]' contains the name and path
 //	of the file to upload to instrument with mainIndex=i
-CArray <CString, CString &> g_fileToUpload;
+CArray<CString, CString&> g_fileToUpload;
 
 CCommunicationController::CCommunicationController()
 {
@@ -94,7 +94,8 @@ void CCommunicationController::OnUploadCfgOnce(WPARAM wp, LPARAM lp)
     CString* localFilePath = (CString*)lp;
 
     // Check the data...
-    if (localFilePath == nullptr || !IsExistingFile(*localFilePath)) {
+    if (localFilePath == nullptr || !IsExistingFile(*localFilePath))
+    {
         ShowMessage("Recieved upload command for non-existing file");
         delete spectrometerID;
         delete localFilePath;
@@ -102,7 +103,8 @@ void CCommunicationController::OnUploadCfgOnce(WPARAM wp, LPARAM lp)
     }
 
     int scannerIndex = m_nodeControl->GetMainIndex(*spectrometerID);
-    if ((unsigned long)scannerIndex >= g_settings.scannerNum) {
+    if ((unsigned long)scannerIndex >= g_settings.scannerNum)
+    {
         ShowMessage("Received upload command for non-existing instrument");
         delete spectrometerID;
         delete localFilePath;
@@ -143,7 +145,7 @@ void CCommunicationController::StartCommunicationThreads()
 
     for (unsigned long i = 0; i < g_settings.scannerNum; ++i)
     {
-        CConfigurationSetting::CommunicationSetting &comm = g_settings.scanner[i].comm;
+        CConfigurationSetting::CommunicationSetting& comm = g_settings.scanner[i].comm;
 
         unsigned int connectionType = comm.connectionType;
 
@@ -184,22 +186,26 @@ void CCommunicationController::StartCommunicationThreads()
         StartFTP();
     }
 
-    if (m_totalDirectoryPolling > 0) {
+    if (m_totalDirectoryPolling > 0)
+    {
         StartDirectoryPolling();
     }
 }
-void CCommunicationController::StartDirectoryPolling() {
+void CCommunicationController::StartDirectoryPolling()
+{
     POSITION pos = m_dirPolList.GetHeadPosition();
     // Start the directory polling -threads
     pos = m_dirPolList.GetHeadPosition();
-    while (pos != nullptr) {
+    while (pos != nullptr)
+    {
         int* index = new int;
         *index = m_dirPolList.GetNext(pos);
         AfxBeginThread(PollDirectory, index, THREAD_PRIORITY_NORMAL, 0, 0, nullptr);
     }
 }
 
-UINT PollDirectory(LPVOID pParam) {
+UINT PollDirectory(LPVOID pParam)
+{
     int mainIndex = *(int*)pParam;
     CString directory = g_settings.scanner[mainIndex].comm.directory;
     long nRoundsAfterWakeUp = 0;
@@ -211,7 +217,7 @@ UINT PollDirectory(LPVOID pParam) {
     timeStruct sleepTime = g_settings.scanner[mainIndex].comm.sleepTime;
     timeStruct wakeupTime = g_settings.scanner[mainIndex].comm.wakeupTime;
     CString serialId = g_settings.scanner[mainIndex].spec[0].serialNumber;
-    
+
     NovacProgramLog log;
 
     while (g_runFlag)
@@ -235,20 +241,22 @@ UINT PollDirectory(LPVOID pParam) {
             }
         }
 
-        // Check directory for data 
+        // Check directory for data
         message.Format("Checking for pak files in %s", (LPCSTR)directory);
         ShowMessage(message);
-        CList <CString, CString&> pakFilesToEvaluate;
+        CList<CString, CString&> pakFilesToEvaluate;
         int rcode = common.CheckForSpectraInDir(directory, pakFilesToEvaluate);
-        if (rcode == INVALID_FILE_ATTRIBUTES) {
+        if (rcode == INVALID_FILE_ATTRIBUTES)
+        {
             pView->PostMessage(WM_SCANNER_NOT_CONNECT, (WPARAM) & (serialId), 0);
             message.Format("Error reading directory: %s", (LPCSTR)directory);
             ShowMessage(message);
         }
-        else {
+        else
+        {
             // Check subdirectories in format of RXYZ for data
             common.CheckForSpectraInHexDir(directory, pakFilesToEvaluate);
-            
+
             // Go through all the spectrum files found and evaluate them
             if (!pakFilesToEvaluate.IsEmpty())
             {
@@ -264,15 +272,14 @@ UINT PollDirectory(LPVOID pParam) {
                     {
                         pakFileHandler.ReadDownloadedFile(fn);
                     }
-
                 }
             }
-            else {
+            else
+            {
                 pView->PostMessage(WM_SCANNER_SLEEP, (WPARAM) & (serialId), 0);
                 message.Format("0 pak files found for %s", (LPCSTR)serialId);
                 ShowMessage(message);
             }
-
         }
         message.Format("%s directory polling sleeping for %d seconds", (LPCSTR)serialId, queryPeriod);
         ShowMessage(message);
@@ -288,13 +295,17 @@ void CCommunicationController::StartFTP()
     POSITION pos = m_ftpList.GetHeadPosition();
 
     // 1. Make sure that there are no duplicates in the list
-    if (m_ftpList.GetSize() > 1) {
-        while (pos != nullptr) {
+    if (m_ftpList.GetSize() > 1)
+    {
+        while (pos != nullptr)
+        {
             POSITION pos2 = pos;
             m_ftpList.GetNext(pos2);
-            while (pos2 != nullptr) {
+            while (pos2 != nullptr)
+            {
                 int index = m_ftpList.GetNext(pos2);
-                if (index == m_ftpList.GetAt(pos)) {
+                if (index == m_ftpList.GetAt(pos))
+                {
                     // there are duplicates in the list. Start over!
                     m_ftpList.RemoveAt(pos2);
                     StartFTP();
@@ -307,8 +318,9 @@ void CCommunicationController::StartFTP()
 
     // 2. Start the FTP-threads
     pos = m_ftpList.GetHeadPosition();
-    while (pos != nullptr) {
-        int *index = new int;
+    while (pos != nullptr)
+    {
+        int* index = new int;
         *index = m_ftpList.GetNext(pos);
         AfxBeginThread(ConnectByFTP, index, THREAD_PRIORITY_NORMAL, 0, 0, nullptr);
     }
@@ -389,7 +401,8 @@ UINT ConnectByFTP(LPVOID pParam)
         stopTime = clock();
 
         // if there's no file to upload then we can take a pause...
-        if (mainIndex >= 0 && (mainIndex < g_fileToUpload.GetCount()) && g_fileToUpload.GetAt(mainIndex).GetLength() <= 4) {
+        if (mainIndex >= 0 && (mainIndex < g_fileToUpload.GetCount()) && g_fileToUpload.GetAt(mainIndex).GetLength() <= 4)
+        {
             Pause(startTime, stopTime, mainIndex);
         }
         nRoundsAfterWakeUp++;
@@ -400,7 +413,7 @@ UINT ConnectByFTP(LPVOID pParam)
     return 0;
 }
 
-void UploadFile_SerialTx(int i, Communication::CCommunicationController *mainController, CSerialControllerWithTx *cable)
+void UploadFile_SerialTx(int i, Communication::CCommunicationController* mainController, CSerialControllerWithTx* cable)
 {
     Common common;
 
@@ -442,11 +455,11 @@ void UploadFile_FTP(int mainIndex, CFTPHandler& ftpHandler)
 
         // Connect to the server
         if (ftpHandler.Connect(
-            g_settings.scanner[mainIndex].comm.ftpHostName,
-            g_settings.scanner[mainIndex].comm.ftpAdminUserName,
-            g_settings.scanner[mainIndex].comm.ftpAdminPassword,
-            g_settings.scanner[mainIndex].comm.timeout,
-            g_settings.scanner[mainIndex].comm.ftpPort))
+                g_settings.scanner[mainIndex].comm.ftpHostName,
+                g_settings.scanner[mainIndex].comm.ftpAdminUserName,
+                g_settings.scanner[mainIndex].comm.ftpAdminPassword,
+                g_settings.scanner[mainIndex].comm.timeout,
+                g_settings.scanner[mainIndex].comm.ftpPort))
         {
             // Upload the file
             if (ftpHandler.UploadFile(fullLocalFileName, remoteFile))
@@ -480,8 +493,8 @@ UINT ConnectBySerialWithTX(LPVOID pParam)
     CString msg, timetxt;
     long sleepPeriod;
     int nRound, mainIndex;
-    CArray <clock_t, clock_t> cStart;
-    CArray <clock_t, clock_t> cPrevStart;
+    CArray<clock_t, clock_t> cStart;
+    CArray<clock_t, clock_t> cPrevStart;
     cStart.SetSize(SMALL_NODE_SUM);
     cPrevStart.SetSize(SMALL_NODE_SUM);
 
@@ -496,7 +509,7 @@ UINT ConnectBySerialWithTX(LPVOID pParam)
     // --------------- RUNNING ----------------
     nRound = 0;
 
-    CSerialControllerWithTx *cable = nullptr;
+    CSerialControllerWithTx* cable = nullptr;
 
     while (1)
     {
@@ -511,7 +524,9 @@ UINT ConnectBySerialWithTX(LPVOID pParam)
 
             // If we're using a radio then make sure we've set the radio-ID
             if (mainController->m_serialList[i]->m_medium == MEDIUM_FREEWAVE_SERIAL_MODEM)
+            {
                 cable->SetModem(g_settings.scanner[mainIndex].comm.radioID);
+            }
 
             // Check wheather the scanning instrument is sleeping/should be sleeping
             cStart.SetAtGrow(i, clock());
@@ -588,7 +603,9 @@ void Pause(double startTime, double stopTime, int serialID)
         msg.Format("<node %d>:Will sleep %.1lf seconds", serialID, interval - elapsedTime);
         ShowMessage(msg);
         if ((interval - elapsedTime) > 0)
+        {
             Sleep((int)(interval - elapsedTime) * 1000);
+        }
     }
 }
 void CCommunicationController::SleepAllNodes(int connectionType)
@@ -598,8 +615,8 @@ void CCommunicationController::SleepAllNodes(int connectionType)
     int i;
     int sleepPeriodArray[MAX_NUMBER_OF_SCANNING_INSTRUMENTS];
 
-    int connectionNumber[3] = { m_totalSerialConnection,m_totalFTPConnection,
-                                                        m_totalHttpConnection };
+    int connectionNumber[3] = { m_totalSerialConnection, m_totalFTPConnection,
+        m_totalHttpConnection };
 
     //assume all scanners sleep period is same
     allSleepPeriod = GetSleepTime(g_settings.scanner[0].comm.sleepTime,
@@ -610,7 +627,9 @@ void CCommunicationController::SleepAllNodes(int connectionType)
             g_settings.scanner[i].comm.wakeupTime);
 
         if ((sleepPeriodArray[i] < allSleepPeriod) && (sleepPeriodArray[i] > 0))
+        {
             allSleepPeriod = sleepPeriodArray[i];
+        }
     }
     if (allSleepPeriod > 0)
     {
@@ -650,7 +669,9 @@ void CCommunicationController::SetupSerialConnections()
         ShowMessage(msg);
 
         if (g_settings.scanner[mainIndex].comm.medium == MEDIUM_FREEWAVE_SERIAL_MODEM)
+        {
             m_SerialControllerTx[i]->SetModem(g_settings.scanner[mainIndex].comm.radioID);
+        }
 
         m_SerialControllerTx[i]->WakeUp(0);
         Sleep(1000);
@@ -659,5 +680,5 @@ void CCommunicationController::SetupSerialConnections()
 //--------------End of CCommunicationController --------//
 
 #ifdef _MSC_VER
-#pragma warning (pop)
+#pragma warning(pop)
 #endif

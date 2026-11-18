@@ -12,7 +12,7 @@
 #include "PSAPI.H"
 #include <tlhelp32.h>
 #include <VersionHelpers.h>
-#pragma comment( lib, "PSAPI.LIB" )
+#pragma comment(lib, "PSAPI.LIB")
 
 extern CFormView* pView;
 extern CConfigurationSetting g_settings;    // <-- the settings for the scanners
@@ -35,19 +35,27 @@ long GetSleepTime(struct timeStruct& startTime, struct timeStruct& stopTime)
     if (startT > stopT)
     {
         if ((currentT >= startT) && (currentT <= 86399))
+        {
             waitTime = (86400 - currentT + stopT) * 1000;
+        }
         else if ((currentT <= stopT) && (currentT >= 0))
+        {
             waitTime = (stopT - currentT) * 1000;
+        }
     }
     else if (startT < stopT)
     {
         if ((currentT >= startT) && (currentT <= stopT))
+        {
             waitTime = (stopT - currentT) * 1000;
+        }
     }
     else if (startT == stopT)
     {
         if (currentT >= startT)
+        {
             waitTime = (86400 - currentT + startT) * 1000;
+        }
     }
     return waitTime;
 }
@@ -69,7 +77,9 @@ int IsExistingFile(const CString& fileName)
     HANDLE hFile = FindFirstFile(fileToFind, &FindFileData);
 
     if (hFile == INVALID_HANDLE_VALUE)
+    {
         return 0; // file not found
+    }
 
     FindClose(hFile);
 
@@ -81,7 +91,9 @@ int CreateDirectoryStructure(const CString& path)
     char buffer[1024]; // buffer is a local copy of 'path'
     memset(buffer, 0, 1024 * sizeof(char));
     if (strlen(path) > 1023)
+    {
         return 1;
+    }
 
     char pathSeparator;
 #ifdef WINDOWS
@@ -96,7 +108,9 @@ int CreateDirectoryStructure(const CString& path)
 
     // add a finishing backslash if it does not exist already
     if (buffer[strlen(buffer) - 1] != pathSeparator)
+    {
         buffer[strlen(buffer)] = pathSeparator;
+    }
 
     char* pt = strchr(buffer, pathSeparator);
 
@@ -124,9 +138,13 @@ int CreateDirectoryStructure(const CString& path)
         }
         pt[0] = pathSeparator;
         if (*(pt + 1) == pathSeparator)
+        {
             pt = strchr(pt + 2, pathSeparator);
+        }
         else
+        {
             pt = strchr(pt + 1, pathSeparator);
+        }
     }
 
     return 0;
@@ -181,7 +199,9 @@ void UpdateMessage(const CString& message)
 
     msg->Format("%s", (LPCSTR)message);
     if (pView != NULL)
+    {
         pView->PostMessage(WM_UPDATE_MESSAGE, (WPARAM)msg, NULL);
+    }
 }
 
 void ShowMessage(const CString& message)
@@ -192,7 +212,9 @@ void ShowMessage(const CString& message)
     commonObj.GetDateTimeText(timeTxt);
     msg->Format("%s -- %s", (LPCSTR)message, (LPCSTR)timeTxt);
     if (pView != NULL)
+    {
         pView->PostMessage(WM_SHOW_MESSAGE, (WPARAM)msg, NULL);
+    }
 }
 void ShowMessage(const std::string& message)
 {
@@ -202,7 +224,9 @@ void ShowMessage(const std::string& message)
     commonObj.GetDateTimeText(timeTxt);
     msg->Format("%s -- %s", message.c_str(), (LPCSTR)timeTxt);
     if (pView != NULL)
+    {
         pView->PostMessage(WM_SHOW_MESSAGE, (WPARAM)msg, NULL);
+    }
 }
 void ShowMessage(const CString& message, CString connectionID)
 {
@@ -212,7 +236,9 @@ void ShowMessage(const CString& message, CString connectionID)
     commonObj.GetDateTimeText(timeTxt);
     msg->Format("<%s> : %s   -- %s", (LPCSTR)connectionID, (LPCSTR)message, (LPCSTR)timeTxt);
     if (pView != NULL)
+    {
         pView->PostMessage(WM_SHOW_MESSAGE, (WPARAM)msg, NULL);
+    }
 }
 
 void ShowMessage(const TCHAR message[])
@@ -249,7 +275,9 @@ double Common::GPSDistance(double lat1, double lon1, double lat2, double lon2)
     double dLat = lat2 - lat1;
 
     if ((dLon == 0) && (dLat == 0))
+    {
         return 0;
+    }
 
     a = pow((sin(dLat / 2)), 2) + cos(lat1) * cos(lat2) * pow((sin(dLon / 2)), 2);
     c = 2 * asin(min(1, sqrt(a)));
@@ -277,7 +305,9 @@ double Common::GPSBearing(double lat1, double lon1, double lat2, double lon2)
     double dLon = lon1 - lon2;
 
     if ((dLon == 0) && (dLat == 0))
+    {
         return 0;
+    }
 
     tmpAngle = atan2(-sin(dLon) * cos(lat2),
         cos(lat1) * sin(lat2) - sin(lat1) * cos(lat2) * cos(dLon));
@@ -285,7 +315,9 @@ double Common::GPSBearing(double lat1, double lon1, double lat2, double lon2)
     /*  	tmpAngle = atan2(lon1*cos(lat1)-lon2*cos(lat2), lat1-lat2); */
 
     if (tmpAngle < 0)
+    {
         tmpAngle = TWO_PI + tmpAngle;
+    }
 
     tmpAngle = RADTODEGREE * tmpAngle;
     return tmpAngle;
@@ -570,33 +602,45 @@ int Common::GetDay()
 }
 
 /** Takes a given year and month and returns the number of days in that month. */
-int	Common::DaysInMonth(int year, int month)
+int Common::DaysInMonth(int year, int month)
 {
     static int nDays[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
     // detect non-existing months.
     if (month < 1 || month > 12)
+    {
         return 0;
+    }
 
     // If the month is not february, then it's easy!!!
     if (month != 2)
+    {
         return nDays[month - 1];
+    }
 
     // If february, then check for leap-years
     if (year % 4 != 0)
+    {
         return 28; // not a leap-year
+    }
 
     if (year % 400 == 0) // every year dividable by 400 is a leap-year
+    {
         return 29;
+    }
 
     if (year % 100 == 0) // years diviable by 4 and by 100 are not leap-years
+    {
         return 28;
+    }
     else
-        return 29;		// years dividable by 4 and not by 100 are leap-years
+    {
+        return 29;  // years dividable by 4 and not by 100 are leap-years
+    }
 }
 
 /** Takes a given date and calculates the day of the year. */
-int	Common::DayNr(const unsigned short day[3])
+int Common::DayNr(const unsigned short day[3])
 {
     novac::CDateTime d;
     d.year = day[2];
@@ -606,11 +650,13 @@ int	Common::DayNr(const unsigned short day[3])
 }
 
 /** Takes a given date and calculates the day of the year. */
-int	Common::DayNr(const novac::CDateTime& day)
+int Common::DayNr(const novac::CDateTime& day)
 {
     // Check errors in input
     if (day.month <= 0 || day.month > 12 || day.day < 1 || day.day > DaysInMonth(day.year, day.month))
+    {
         return 0;
+    }
 
     int dayNr = day.day; // the daynumber
 
@@ -631,38 +677,46 @@ double Common::JulianDay(const novac::CDateTime& utcTime)
     double Hd, H, JD;
 
     if (utcTime.year < 1901 || utcTime.year > 2100 || utcTime.month < 1 || utcTime.month > 12 || utcTime.day < 1 || utcTime.day > 31)
+    {
         return 0.0;
+    }
     if (utcTime.hour < 0 || utcTime.hour > 23 || utcTime.minute < 0 || utcTime.minute > 59 || utcTime.second < 0 || utcTime.second > 59)
+    {
         return 0.0;
+    }
 
     N = 4713 + utcTime.year - 1;
     J = N * 365 + N / 4 - 10 - 3;
 
     if (N % 4 == 1 || N % 4 == 2 || N % 4 == 3)
+    {
         ++J;
+    }
 
     switch (utcTime.month)
     {
-    case(1):  b = utcTime.day - 1;		break;
-    case(2):  b = utcTime.day + 30;	break;
-    case(3):  b = utcTime.day + 58;	break;
-    case(4):  b = utcTime.day + 89;	break;
-    case(5):  b = utcTime.day + 119;	break;
-    case(6):  b = utcTime.day + 150;	break;
-    case(7):  b = utcTime.day + 180;	break;
-    case(8):  b = utcTime.day + 211;	break;
-    case(9):  b = utcTime.day + 242;	break;
-    case(10): b = utcTime.day + 272;	break;
-    case(11): b = utcTime.day + 303;	break;
-    case(12): b = utcTime.day + 333;	break;
+    case (1): b = utcTime.day - 1; break;
+    case (2): b = utcTime.day + 30; break;
+    case (3): b = utcTime.day + 58; break;
+    case (4): b = utcTime.day + 89; break;
+    case (5): b = utcTime.day + 119; break;
+    case (6): b = utcTime.day + 150; break;
+    case (7): b = utcTime.day + 180; break;
+    case (8): b = utcTime.day + 211; break;
+    case (9): b = utcTime.day + 242; break;
+    case (10): b = utcTime.day + 272; break;
+    case (11): b = utcTime.day + 303; break;
+    case (12): b = utcTime.day + 333; break;
     default: return 0.0; // should never be the case
     }
     if (utcTime.year % 4 == 0)
+    {
         ++b;
+    }
 
     H = (double)(J + b);
 
-    Hd = (utcTime.hour - 12.0) / 24.0 + utcTime.minute / (60.0 * 24.0) + utcTime.second / (3600.0 * 24.0);						/*CONVERSION HORAR TO DECIMAL SYSTEM*/
+    Hd = (utcTime.hour - 12.0) / 24.0 + utcTime.minute / (60.0 * 24.0) + utcTime.second / (3600.0 * 24.0);      /*CONVERSION HORAR TO DECIMAL SYSTEM*/
 
     JD = J + Hd + b;
     return JD;
@@ -710,9 +764,9 @@ RETURN_CODE Common::GetSunPosition(const novac::CDateTime& gmtTime, double lat, 
     double D = JulianDay(gmtTime) - 2451545.0;
 
     // Get the Equatorial coordinates...
-    double	RA; //	the right ascension (deg)
-    double	dec; // the declination	(deg)
-    double	EqT;	// the equation of time (hours)
+    double RA; //	the right ascension (deg)
+    double dec; // the declination	(deg)
+    double EqT; // the equation of time (hours)
     EquatorialCoordinates(D, RA, dec, EqT);
 
     // Get the hour angle
@@ -720,13 +774,13 @@ RETURN_CODE Common::GetSunPosition(const novac::CDateTime& gmtTime, double lat, 
     double H = GetHourAngle(fractionalHour, lon, EqT);
 
     // Get the horizontal coordinates
-    double	elev, sAzim; // The elevation and azimuth (towards south);
+    double elev, sAzim; // The elevation and azimuth (towards south);
     HorizontalCoordinates(lat, H, dec, elev, sAzim);
 
     // Convert the elevation into sza
     SZA = 90.0 - elev;
 
-    // Convert the azimuth to a value counted from the north and 
+    // Convert the azimuth to a value counted from the north and
     SAZ = fmod(180.0 + sAzim, 360.0);
 
     return SUCCESS;
@@ -781,24 +835,40 @@ CString& Common::SimplifyString(const CString& in)
 
         // 4. Check if there's any accent on the character
         if ((unsigned char)buffer[i] <= 127)
+        {
             continue;
+        }
 
         char c = buffer[i];
 
         if (c == 'á' || c == 'à' || c == 'â' || c == 'ä' || c == 'å')
+        {
             buffer[i] = 'a';
+        }
         else if (c == 'ç' || c == 'c')
+        {
             buffer[i] = 'c';
+        }
         else if (c == 'é' || c == 'è' || c == 'ê' || c == 'ë')
+        {
             buffer[i] = 'e';
+        }
         else if (c == 'í' || c == 'ì' || c == 'î' || c == 'ï')
+        {
             buffer[i] = 'i';
+        }
         else if (c == 'ó' || c == 'ò' || c == 'ô' || c == 'ö')
+        {
             buffer[i] = 'o';
+        }
         else if (c == 'ú' || c == 'ù' || c == 'ü' || c == 'û')
+        {
             buffer[i] = 'u';
+        }
         else if (c == 'ñ')
+        {
             buffer[i] = 'n';
+        }
     }
 
     // copy the buffer to a CString
@@ -823,12 +893,14 @@ void Common::CleanString(const char* in, CString& out)
     for (unsigned int it = 0; it < strlen(in); ++it)
     {
         if ((unsigned char)in[it] >= 32)
+        {
             out.AppendFormat("%c", in[it]);
+        }
     }
 }
 
 /** Sorts a list of strings in either ascending or descending order */
-void Common::Sort(CList <CString, CString&>& strings, bool files, bool ascending)
+void Common::Sort(CList<CString, CString&>& strings, bool files, bool ascending)
 {
     unsigned long nStrings = (unsigned long)strings.GetCount(); // number of elements
     unsigned long it = 0; // <-- iterator
@@ -839,8 +911,8 @@ void Common::Sort(CList <CString, CString&>& strings, bool files, bool ascending
     }
     else
     {
-        CList <CString, CString&> left;
-        CList <CString, CString&> right;
+        CList<CString, CString&> left;
+        CList<CString, CString&> right;
 
         // Make two copies of the list, one of the first half and one of the second half
         POSITION pos = strings.GetHeadPosition();
@@ -865,9 +937,9 @@ void Common::Sort(CList <CString, CString&>& strings, bool files, bool ascending
 
 /** Merges the two lists 'list1' and 'list2' in a sorted way and stores
         the result in the output-list 'result' */
-void Common::MergeLists(const CList <CString, CString&>& list1, const CList <CString, CString&>& list2, CList <CString, CString&>& result, bool files, bool ascending)
+void Common::MergeLists(const CList<CString, CString&>& list1, const CList<CString, CString&>& list2, CList<CString, CString&>& result, bool files, bool ascending)
 {
-    CString	name1, name2, fullName1, fullName2;
+    CString name1, name2, fullName1, fullName2;
     int comparison;
 
     POSITION pos_1 = list1.GetHeadPosition();
@@ -879,9 +951,9 @@ void Common::MergeLists(const CList <CString, CString&>& list1, const CList <CSt
     // 1. As long as there are elements in both lists, do this
     while (pos_1 != NULL && pos_2 != NULL)
     {
-        // Get the file-names of the first and the second 
-        fullName1.Format(list1.GetAt(pos_1));	// position k
-        fullName2.Format(list2.GetAt(pos_2));	// position k+1
+        // Get the file-names of the first and the second
+        fullName1.Format(list1.GetAt(pos_1)); // position k
+        fullName2.Format(list2.GetAt(pos_2)); // position k+1
 
         if (files)
         {
@@ -939,7 +1011,6 @@ void Common::MergeLists(const CList <CString, CString&>& list1, const CList <CSt
                 continue;
             }
         }
-
     }
 
     // 2. If we're out of elements in list 2 but not in list 1, do this
@@ -955,7 +1026,6 @@ void Common::MergeLists(const CList <CString, CString&>& list1, const CList <CSt
         fullName2.Format(list2.GetNext(pos_2));
         result.AddTail(fullName2);
     }
-
 }
 
 // get the gas factor for the supplied specie
@@ -984,9 +1054,13 @@ double Common::CalculateFlux(const double* scanAngle, const double* scanAngle2, 
     double plumeHeight = wind.GetPlumeHeight();
 
     if (fabs(coneAngle - 90.0) < 1.0)
+    {
         return CalculateFluxFlatScanner(scanAngle, column, offset, nDataPoints, windSpeed, windDirection, plumeHeight, compass, gasFactor);
+    }
     else
+    {
         return CalculateFluxConicalScanner(scanAngle, column, offset, nDataPoints, windSpeed, windDirection, plumeHeight, compass, gasFactor, coneAngle, tilt);
+    }
 }
 
 
@@ -998,7 +1072,9 @@ void Common::GuessSpecieName(const CString& fileName, CString& specie)
 
     int index = fileName.ReverseFind('\\');
     if (index == 0)
+    {
         return;
+    }
 
     CString fil;
     fil.Format("%s", (LPCSTR)fileName.Right((int)strlen(fileName) - index - 1));
@@ -1048,7 +1124,9 @@ int Common::CheckProcessExistance(CString& exeName, int pid)
                         return processid[i];
                     }
                     else
+                    {
                         continue;
+                    }
                 }
                 else
                 {
@@ -1126,7 +1204,9 @@ BOOL WINAPI Common::KillProcess(IN DWORD dwProcessId)
     if (hProcess == NULL)
     {
         if (GetLastError() != ERROR_ACCESS_DENIED)
+        {
             return FALSE;
+        }
 
         //OSVERSIONINFO osvi;
 
@@ -1150,17 +1230,21 @@ BOOL WINAPI Common::KillProcess(IN DWORD dwProcessId)
 
         // obtain the token of the current thread
         if (!OpenThreadToken(GetCurrentThread(),
-            TOKEN_QUERY | TOKEN_ADJUST_PRIVILEGES,
-            FALSE, &hToken))
+                TOKEN_QUERY | TOKEN_ADJUST_PRIVILEGES,
+                FALSE, &hToken))
         {
             if (GetLastError() != ERROR_NO_TOKEN)
+            {
                 return FALSE;
+            }
 
             // revert to the process token
             if (!OpenProcessToken(GetCurrentProcess(),
-                TOKEN_QUERY | TOKEN_ADJUST_PRIVILEGES,
-                &hToken))
+                    TOKEN_QUERY | TOKEN_ADJUST_PRIVILEGES,
+                    &hToken))
+            {
                 return FALSE;
+            }
         }
 
         _ASSERTE(ANYSIZE_ARRAY > 0);
@@ -1195,7 +1279,9 @@ BOOL WINAPI Common::KillProcess(IN DWORD dwProcessId)
         CloseHandle(hToken);
 
         if (hProcess == NULL)
+        {
             return SetLastError(FALSE), NULL;
+        }
     }
 
     // terminate the process
@@ -1237,19 +1323,21 @@ void Common::GetDirectory(CString& fileName)
 {
     int position = fileName.ReverseFind('\\');
     if (position >= 0)
+    {
         fileName = fileName.Left(position + 1);
+    }
 }
 
 long Common::RetrieveFileSize(CString& fileName)
 {
     TRY
     {
-        CFile file(fileName,CFile::modeRead | CFile::shareDenyNone);
+        CFile file(fileName, CFile::modeRead | CFile::shareDenyNone);
         long fileLength = (long)file.GetLength();
         file.Close();
         return fileLength;
     }
-        CATCH(CFileException, ex)
+    CATCH(CFileException, ex)
     {
         return 0; // could not get file
     }
@@ -1262,45 +1350,63 @@ bool Common::FormatErrorCode(DWORD error, CString& string)
     switch (error)
     {
     case ERROR_FILE_NOT_FOUND:
-        string.Format("File not found"); return true;
+        string.Format("File not found");
+        return true;
     case ERROR_PATH_NOT_FOUND:
-        string.Format("Path not found"); return true;
+        string.Format("Path not found");
+        return true;
     case ERROR_TOO_MANY_OPEN_FILES:
-        string.Format("Too many open files"); return true;
+        string.Format("Too many open files");
+        return true;
     case ERROR_ACCESS_DENIED:
-        string.Format("Access denied"); return true;
+        string.Format("Access denied");
+        return true;
     case ERROR_NOT_ENOUGH_MEMORY:
-        string.Format("Not enough memory"); return true;
+        string.Format("Not enough memory");
+        return true;
     case ERROR_OUTOFMEMORY:
-        string.Format("Out of memory"); return true;
+        string.Format("Out of memory");
+        return true;
     case ERROR_WRITE_PROTECT:
-        string.Format("The media is write protected"); return true;
+        string.Format("The media is write protected");
+        return true;
     case ERROR_SEEK:
-        string.Format("The drive cannot locate a specific area or track on the disk."); return true;
+        string.Format("The drive cannot locate a specific area or track on the disk.");
+        return true;
     case ERROR_WRITE_FAULT:
-        string.Format("The system cannot write to the specified device"); return true;
+        string.Format("The system cannot write to the specified device");
+        return true;
     case ERROR_READ_FAULT:
-        string.Format("The system cannot read from the specified device"); return true;
+        string.Format("The system cannot read from the specified device");
+        return true;
     case ERROR_HANDLE_DISK_FULL:
     case ERROR_DISK_FULL:
-        string.Format("The disk is full"); return true;
+        string.Format("The disk is full");
+        return true;
     case ERROR_CANNOT_MAKE:
-        string.Format("The directory or file cannot be created"); return true;
+        string.Format("The directory or file cannot be created");
+        return true;
     case ERROR_BUFFER_OVERFLOW:
-        string.Format("The file name is too long"); return true;
+        string.Format("The file name is too long");
+        return true;
     case ERROR_INVALID_NAME:
-        string.Format("The filename, directory name, or volume label syntax is incorrect"); return true;
+        string.Format("The filename, directory name, or volume label syntax is incorrect");
+        return true;
     case ERROR_DIRECTORY:
-        string.Format("The directory name is invalid"); return true;
+        string.Format("The directory name is invalid");
+        return true;
     case ERROR_DISK_TOO_FRAGMENTED:
-        string.Format("The volume is too fragmented to complete this operation"); return true;
+        string.Format("The volume is too fragmented to complete this operation");
+        return true;
     case ERROR_ARITHMETIC_OVERFLOW:
-        string.Format("Arithmetic result exceeded 32 bits"); return true;
+        string.Format("Arithmetic result exceeded 32 bits");
+        return true;
     case ERROR_ALREADY_EXISTS:
-        string.Format("The file already exists"); return true;
+        string.Format("The file already exists");
+        return true;
     case ERROR_SHARING_VIOLATION:
-        string.Format("Cannot access the file, it is used by another process"); return true;
-
+        string.Format("Cannot access the file, it is used by another process");
+        return true;
     }
 
     return false;
@@ -1317,7 +1423,9 @@ int Common::GetInterlaceSteps(int channel, int& interlaceSteps)
 
     // special case, channel = 128 is same as channel = 0
     if (channel == 128)
+    {
         channel = 0;
+    }
 
     // If the spectrum is a single spectrum
     interlaceSteps = (channel / 16) + 1; // 16->31 means interlace=2, 32->47 means interlace=3 etc.
@@ -1326,7 +1434,7 @@ int Common::GetInterlaceSteps(int channel, int& interlaceSteps)
 
 /** Find the volcano-index that the spectrometer with the supplied
         serial-number monitors. If none is found then -1 is returned */
-int	Common::GetMonitoredVolcano(const CString& serialNumber)
+int Common::GetMonitoredVolcano(const CString& serialNumber)
 {
 
     // find the name of the volcano that is monitored
@@ -1345,7 +1453,9 @@ int	Common::GetMonitoredVolcano(const CString& serialNumber)
 
     // now find the index of this volcano
     if (strlen(volcanoName) == 0)
+    {
         return -1; // <-- nothing found
+    }
 
     for (unsigned int k = 0; k < g_volcanoes.m_volcanoNum; ++k)
     {
@@ -1361,11 +1471,11 @@ int	Common::GetMonitoredVolcano(const CString& serialNumber)
 /*EQUATORIAL COORDINATES:RIGHT ASCENSION AND DECLINATION*/
 void Common::EquatorialCoordinates(double D, double& RA, double& dec, double& EQT)
 {
-    double g_deg, q_deg, L_deg;				/*ANGLES IN DEGREES*/
-    double g_rad, q_rad, L_rad;				/*ANGLES IN	RADIANS*/
-    double R;												/*DISTANCE SUN-EARTH IN A.U*/
-    double obliq_deg, obliq_rad;			/*OBLIQUITY OF THE ECLIPTIC*/
-    double RA_rad, dec_rad;					/*EQUATORIAL COORDINATES IN RADIANS*/
+    double g_deg, q_deg, L_deg;    /*ANGLES IN DEGREES*/
+    double g_rad, q_rad, L_rad;    /*ANGLES IN	RADIANS*/
+    double R;            /*DISTANCE SUN-EARTH IN A.U*/
+    double obliq_deg, obliq_rad;   /*OBLIQUITY OF THE ECLIPTIC*/
+    double RA_rad, dec_rad;     /*EQUATORIAL COORDINATES IN RADIANS*/
 
     g_deg = fmod(357.529 + 0.98560028 * D, 360.0);
     g_rad = g_deg * DEGREETORAD;
@@ -1385,13 +1495,17 @@ void Common::EquatorialCoordinates(double D, double& RA, double& dec, double& EQ
     // The right ascension (RA)
     RA_rad = atan(cos(obliq_rad) * sin(L_rad) / cos(L_rad));
     if (RA_rad < 0)
+    {
         RA_rad = TWO_PI + RA_rad;
+    }
 
     if (fabs(RA_rad - L_rad) > 1.570796)
+    {
         RA_rad = M_PI + RA_rad;
+    }
 
     dec_rad = asin(sin(obliq_rad) * sin(L_rad));
-    RA = fmod(RA_rad * RADTODEGREE, 360.0);		// The right ascension
+    RA = fmod(RA_rad * RADTODEGREE, 360.0);  // The right ascension
 
     // The declination
     dec = dec_rad * RADTODEGREE;
@@ -1417,13 +1531,21 @@ void Common::HorizontalCoordinates(double lat, double H, double dec, double& ele
 
     double azim_rad = 0.0;
     if (cazim_rad > 0 && sazim_rad > 0)
-        azim_rad = asin(sazim_rad);						// azim is in the range 0 - 90 degrees
+    {
+        azim_rad = asin(sazim_rad);      // azim is in the range 0 - 90 degrees
+    }
     else if (cazim_rad < 0 && sazim_rad > 0)
-        azim_rad = M_PI - asin(sazim_rad);			// azim is in the range 90 - 180 degrees
+    {
+        azim_rad = M_PI - asin(sazim_rad);   // azim is in the range 90 - 180 degrees
+    }
     else if (cazim_rad < 0 && sazim_rad < 0)
-        azim_rad = M_PI - asin(sazim_rad);		// azim is in the range 180 - 270 degrees
+    {
+        azim_rad = M_PI - asin(sazim_rad);  // azim is in the range 180 - 270 degrees
+    }
     else if (cazim_rad > 0 && sazim_rad < 0)
-        azim_rad = TWO_PI + asin(sazim_rad);		// azim is in the range 270 - 360 degrees
+    {
+        azim_rad = TWO_PI + asin(sazim_rad);  // azim is in the range 270 - 360 degrees
+    }
 
     elev = elev_rad * RADTODEGREE;
     azim = azim_rad * RADTODEGREE;
@@ -1436,7 +1558,7 @@ double Common::GetHourAngle(double hr, double lon, double EqT)
 {
     double H = 15.0 * (hr + lon / 15 + EqT - 12);
     //    printf("HOUR ANGLE (from noon,increasing with time): %f\n",H);
-    return(H);
+    return (H);
 }
 
 bool Common::FillBuffer(char* srcBuf, char* destBuf, long destStart, long moveLen)
@@ -1444,16 +1566,17 @@ bool Common::FillBuffer(char* srcBuf, char* destBuf, long destStart, long moveLe
     long i;
     // destination buffer is full
     if (destStart + moveLen >= MAXBUFFER)
+    {
         return false;
+    }
     for (i = 0; i < moveLen; i++)
     {
         destBuf[destStart + i] = srcBuf[i];
     }
     return true;
-
 }
 
-int Common::CheckForSpectraInDir(const CString& path, CList <CString, CString&>& fileList)
+int Common::CheckForSpectraInDir(const CString& path, CList<CString, CString&>& fileList)
 {
     if (GetFileAttributes(path) == INVALID_FILE_ATTRIBUTES)
     {
@@ -1497,11 +1620,11 @@ int Common::CheckForSpectraInDir(const CString& path, CList <CString, CString&>&
     return 0;
 }
 
-void Common::CheckForSpectraInHexDir(const CString& path, CList <CString, CString&>& fileList)
+void Common::CheckForSpectraInHexDir(const CString& path, CList<CString, CString&>& fileList)
 {
     WIN32_FIND_DATA FindFileData;
     char fileToFind[MAX_PATH];
-    CList <CString, CString&> pathList;
+    CList<CString, CString&> pathList;
     CString pathName;
 
     // Find all RXYZ - directories...

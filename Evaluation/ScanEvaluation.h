@@ -63,7 +63,6 @@ public:
     int NumberOfSpectraInLastResult();
 
 private:
-
     /** The evaluation results from the last scan evaluated */
     std::shared_ptr<CScanResult> m_result;
 

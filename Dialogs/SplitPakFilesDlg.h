@@ -16,16 +16,19 @@ public:
     virtual ~CSplitPakFilesDlg();
 
     // Dialog Data
-    enum { IDD = IDD_PAKFILES_SPLIT };
+    enum
+    {
+        IDD = IDD_PAKFILES_SPLIT
+    };
 
     /** Initializes the dialog and its controls */
     virtual BOOL OnInitDialog();
 
     /** The output directory */
-    CString	m_outputDir;
+    CString m_outputDir;
 
     /** The list of .pak files */
-    CList <CString, CString&> m_pakFile;
+    CList<CString, CString&> m_pakFile;
 
     NovacProgramLog m_log;
 
@@ -54,7 +57,7 @@ protected:
     LRESULT OnFailure(WPARAM wp, LPARAM lp);
 
     /** The number of pak-files in the list */
-    long    m_pakFileNum;
+    long m_pakFileNum;
 
     /** The 'split files' button */
     CButton m_btnSplitFiles;
@@ -63,7 +66,6 @@ protected:
     CProgressCtrl m_progressBar;
 
     /** The statusbar */
-    CStatic	m_statusBar;
-
+    CStatic m_statusBar;
 };
 }

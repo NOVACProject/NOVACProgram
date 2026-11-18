@@ -28,7 +28,8 @@ CView_Instrument::~CView_Instrument()
 
     // Clear the labels
     POSITION pos = m_serialLegend.GetHeadPosition();
-    while (pos != nullptr) {
+    while (pos != nullptr)
+    {
         CLegend* leg = m_serialLegend.GetNext(pos);
         delete leg;
     }
@@ -58,7 +59,7 @@ BOOL CView_Instrument::OnInitDialog()
     CRect labelRect, textRect;
     int margin = 4; // the margin between the graphs
     int labelWidth = 80; // the width of each label
-    int	labelHeight = 15; // the height of each label
+    int labelHeight = 15; // the height of each label
     int nSpectrometers = g_settings.scannerNum;
     COLORREF colors[] = { RGB(255, 0, 0), RGB(0, 255, 0), RGB(255, 255, 0), RGB(255, 0, 255), RGB(0, 255, 255), RGB(0, 0, 255) };
     int nColors = 6;
@@ -101,11 +102,11 @@ BOOL CView_Instrument::OnInitDialog()
     // The font we want to use
     CFont* font = new CFont();
     font->CreateFont((int)(16 - 0.2 * nSpectrometers), 0, 0, 0, FW_BOLD,
-                       FALSE, FALSE, 0, ANSI_CHARSET,
-                       OUT_DEFAULT_PRECIS,
-                       CLIP_DEFAULT_PRECIS,
-                       DEFAULT_QUALITY,
-                       DEFAULT_PITCH | FF_SWISS, "Arial");
+        FALSE, FALSE, 0, ANSI_CHARSET,
+        OUT_DEFAULT_PRECIS,
+        CLIP_DEFAULT_PRECIS,
+        DEFAULT_QUALITY,
+        DEFAULT_PITCH | FF_SWISS, "Arial");
 
     // Create the graphs
     // 1. The battery voltage graph
@@ -170,10 +171,13 @@ BOOL CView_Instrument::OnInitDialog()
 
     // if there are no spectrometers then we don't have anything more to do
     if (nSpectrometers == 0)
+    {
         return TRUE;
+    }
 
     // Create the legends
-    for (unsigned int index = 0; index < g_settings.scannerNum; ++index) {
+    for (unsigned int index = 0; index < g_settings.scannerNum; ++index)
+    {
         // the size and position of the colored square
         labelRect.top = linkSpeedGraphRect.bottom + margin / 2;
         labelRect.bottom = labelRect.top + labelHeight;
@@ -201,7 +205,8 @@ BOOL CView_Instrument::OnInitDialog()
     }
 
     // Enable the tool tips
-    if (!m_toolTip.Create(this)) {
+    if (!m_toolTip.Create(this))
+    {
         TRACE0("Failed to create tooltip control\n");
     }
     m_toolTip.AddTool(&m_batteryGraph, "Variation in battery voltage of the connected instruments today");
@@ -222,20 +227,23 @@ BOOL CView_Instrument::OnSetActive()
     return CPropertyPage::OnSetActive();
 }
 
-BOOL CView_Instrument::PreTranslateMessage(MSG* pMsg) {
+BOOL CView_Instrument::PreTranslateMessage(MSG* pMsg)
+{
     m_toolTip.RelayEvent(pMsg);
 
     return CPropertyPage::PreTranslateMessage(pMsg);
 }
 
-LRESULT CView_Instrument::OnUpdateGraphs(WPARAM wParam, LPARAM lParam) {
+LRESULT CView_Instrument::OnUpdateGraphs(WPARAM wParam, LPARAM lParam)
+{
     // Re-draw the screen
     DrawGraphs();
 
     return 0;
 }
 
-void CView_Instrument::DrawGraphs() {
+void CView_Instrument::DrawGraphs()
+{
     DrawTempGraph();
     DrawBatteryGraph();
     DrawExpTimeGraph();
@@ -243,7 +251,8 @@ void CView_Instrument::DrawGraphs() {
 }
 
 /** Draws the temperature graph */
-void CView_Instrument::DrawTempGraph() {
+void CView_Instrument::DrawTempGraph()
+{
     const int BUFFER_SIZE = 200;
     double timeBuffer[BUFFER_SIZE];
     double tempBuffer[BUFFER_SIZE];
@@ -255,10 +264,13 @@ void CView_Instrument::DrawTempGraph() {
     SetRange(m_temperatureGraph, 60);
     // loop through all double-spectrometers
     if (m_serialLegend.GetCount() == 0)
+    {
         return;
+    }
 
     POSITION pos = m_serialLegend.GetHeadPosition();
-    while (pos != nullptr) {
+    while (pos != nullptr)
+    {
         CLegend* legend = m_serialLegend.GetNext(pos);
 
         // get the serial of the spectrometer
@@ -270,7 +282,8 @@ void CView_Instrument::DrawTempGraph() {
         // ---------- Plot the data ------------
 
         // Draw the wind-measurements as function of time
-        if (0 != dataLength) {
+        if (0 != dataLength)
+        {
             m_temperatureGraph.SetCircleColor(legend->m_color);
             m_temperatureGraph.XYPlot(timeBuffer, tempBuffer, dataLength, CGraphCtrl::PLOT_CIRCLES | CGraphCtrl::PLOT_FIXED_AXIS);
         }
@@ -278,7 +291,8 @@ void CView_Instrument::DrawTempGraph() {
 }
 
 /** Draws the battery-voltage graph */
-void CView_Instrument::DrawBatteryGraph() {
+void CView_Instrument::DrawBatteryGraph()
+{
     const int BUFFER_SIZE = 200;
     double timeBuffer[BUFFER_SIZE];
     double batteryBuffer[BUFFER_SIZE];
@@ -290,7 +304,8 @@ void CView_Instrument::DrawBatteryGraph() {
 
     // loop through all double-spectrometers
     POSITION pos = m_serialLegend.GetHeadPosition();
-    while (pos != nullptr) {
+    while (pos != nullptr)
+    {
         CLegend* legend = m_serialLegend.GetNext(pos);
 
         // get the serial of the spectrometer
@@ -302,16 +317,17 @@ void CView_Instrument::DrawBatteryGraph() {
         // ---------- Plot the data ------------
 
         // Draw the wind-measurements as function of time
-        if (0 != dataLength) {
+        if (0 != dataLength)
+        {
             m_batteryGraph.SetCircleColor(legend->m_color);
             m_batteryGraph.XYPlot(timeBuffer, batteryBuffer, dataLength, CGraphCtrl::PLOT_FIXED_AXIS | CGraphCtrl::PLOT_CIRCLES);
         }
     }
-
 }
 
 /** Draws the exposure-time graph */
-void CView_Instrument::DrawExpTimeGraph() {
+void CView_Instrument::DrawExpTimeGraph()
+{
     const int BUFFER_SIZE = 200;
     double timeBuffer[BUFFER_SIZE];
     double expTimeBuffer[BUFFER_SIZE];
@@ -323,7 +339,8 @@ void CView_Instrument::DrawExpTimeGraph() {
 
     // loop through all double-spectrometers
     POSITION pos = m_serialLegend.GetHeadPosition();
-    while (pos != nullptr) {
+    while (pos != nullptr)
+    {
         CLegend* legend = m_serialLegend.GetNext(pos);
 
         // get the serial of the spectrometer
@@ -335,7 +352,8 @@ void CView_Instrument::DrawExpTimeGraph() {
         // ---------- Plot the data ------------
 
         // Draw the wind-measurements as function of time
-        if (0 != dataLength) {
+        if (0 != dataLength)
+        {
             m_expTimeGraph.SetCircleColor(legend->m_color);
             m_expTimeGraph.XYPlot(timeBuffer, expTimeBuffer, dataLength, CGraphCtrl::PLOT_FIXED_AXIS | CGraphCtrl::PLOT_CIRCLES);
         }
@@ -343,7 +361,8 @@ void CView_Instrument::DrawExpTimeGraph() {
 }
 
 /** Draws the link-speed graph */
-void CView_Instrument::DrawLinkSpeedGraph() {
+void CView_Instrument::DrawLinkSpeedGraph()
+{
     const int BUFFER_SIZE = 1024;
     double* timeBuffer = new double[BUFFER_SIZE];
     double* linkSpeed = new double[BUFFER_SIZE];
@@ -357,7 +376,8 @@ void CView_Instrument::DrawLinkSpeedGraph() {
     // First find the range for the graph
     double maxDataRate = 1.0; //kb/s
     POSITION pos = m_serialLegend.GetHeadPosition();
-    while (pos != nullptr) {
+    while (pos != nullptr)
+    {
         CLegend* legend = m_serialLegend.GetNext(pos);
 
         // get the serial of the spectrometer
@@ -372,12 +392,14 @@ void CView_Instrument::DrawLinkSpeedGraph() {
     maxDataRate = 2 * ceil(maxDataRate / 2); // to make the max-rate a factor of two...
 
     // decide on a unit...
-    if (maxDataRate > 1024) {
+    if (maxDataRate > 1024)
+    {
         // Mb/s
         divisor = 1024.0;
         m_linkSpeedGraph.SetYUnits("Link [MB/s]");
     }
-    else {
+    else
+    {
         m_linkSpeedGraph.SetYUnits("Link [kB/s]");
     }
     maxDataRate /= divisor;
@@ -386,7 +408,8 @@ void CView_Instrument::DrawLinkSpeedGraph() {
 
     // loop through all spectrometers
     pos = m_serialLegend.GetHeadPosition();
-    while (pos != nullptr) {
+    while (pos != nullptr)
+    {
         CLegend* legend = m_serialLegend.GetNext(pos);
 
         // get the serial of the spectrometer
@@ -396,15 +419,18 @@ void CView_Instrument::DrawLinkSpeedGraph() {
         int dataLength = this->m_commDataStorage->GetLinkSpeedData(serial, timeBuffer, linkSpeed, BUFFER_SIZE);
 
         // Shold we scale to MB/s?
-        if (divisor > 1.5) {
-            for (int k = 0; k < dataLength; ++k) {
+        if (divisor > 1.5)
+        {
+            for (int k = 0; k < dataLength; ++k)
+            {
                 linkSpeed[k] /= divisor;
             }
         }
         // ---------- Plot the data ------------
 
         // Draw the wind-measurements as function of time
-        if (0 != dataLength) {
+        if (0 != dataLength)
+        {
             m_linkSpeedGraph.SetCircleColor(legend->m_color);
             m_linkSpeedGraph.XYPlot(timeBuffer, linkSpeed, dataLength, CGraphCtrl::PLOT_FIXED_AXIS | CGraphCtrl::PLOT_CIRCLES);
         }
@@ -414,7 +440,8 @@ void CView_Instrument::DrawLinkSpeedGraph() {
     delete[] linkSpeed;
 }
 
-void CView_Instrument::SetRange(Graph::CGraphCtrl& graph, int maxy) {
+void CView_Instrument::SetRange(Graph::CGraphCtrl& graph, int maxy)
+{
     struct tm* tm;
     time_t t;
     time(&t);

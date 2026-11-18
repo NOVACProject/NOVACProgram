@@ -19,8 +19,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
     ON_WM_CREATE()
 END_MESSAGE_MAP()
 
-static UINT indicators[] =
-{
+static UINT indicators[] = {
     ID_SEPARATOR,           // status line indicator
     ID_INDICATOR_CAPS,
     ID_INDICATOR_NUM,
@@ -42,10 +41,11 @@ CMainFrame::~CMainFrame()
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
     if (CFrameWnd::OnCreate(lpCreateStruct) == -1)
+    {
         return -1;
+    }
 
-    if (!m_wndToolBar.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE | CBRS_TOP
-        | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC) ||
+    if (!m_wndToolBar.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC) ||
         !m_wndToolBar.LoadToolBar(IDR_MAINFRAME))
     {
         TRACE0("Failed to create toolbar\n");
@@ -70,12 +70,13 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 {
     if (!CFrameWnd::PreCreateWindow(cs))
+    {
         return FALSE;
+    }
     // TODO: Modify the Window class or styles here by modifying
     //  the CREATESTRUCT cs
 
-    cs.style = WS_OVERLAPPED | WS_CAPTION | FWS_ADDTOTITLE
-        | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_MAXIMIZE | WS_SYSMENU;
+    cs.style = WS_OVERLAPPED | WS_CAPTION | FWS_ADDTOTITLE | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_MAXIMIZE | WS_SYSMENU;
 
     return TRUE;
 }
@@ -97,6 +98,7 @@ void CMainFrame::Dump(CDumpContext& dc) const
 #endif //_DEBUG
 
 
-void CMainFrame::SetStatusBarText(CString& str) {
+void CMainFrame::SetStatusBarText(CString& str)
+{
     this->m_wndStatusBar.SetPaneText(0, str);
 }

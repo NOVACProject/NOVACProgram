@@ -82,15 +82,19 @@ END_MESSAGE_MAP()
 // CPostWindDlg message handlers
 
 void CPostWindDlg::OnChangeEvallog1()
-{}
+{
+}
 
 void CPostWindDlg::OnChangeEvallog2()
-{}
+{
+}
 
 void CPostWindDlg::OnBrowseSeries1()
 {
     if (0 == BrowseForEvalLog(0))
+    {
         return;
+    }
 
     SetDlgItemText(IDC_EDIT_EVALLOG1, m_logFileHandler[0]->m_evaluationLog);
 
@@ -100,7 +104,9 @@ void CPostWindDlg::OnBrowseSeries1()
 void CPostWindDlg::OnBrowseSeries2()
 {
     if (0 == BrowseForEvalLog(1))
+    {
         return;
+    }
 
     SetDlgItemText(IDC_EDIT_EVALLOG2, m_logFileHandler[1]->m_evaluationLog);
 
@@ -118,7 +124,9 @@ int CPostWindDlg::BrowseForEvalLog(int seriesNumber)
     Common common;
 
     if (seriesNumber > MAX_N_SERIES - 1)
+    {
         return 0;
+    }
 
     // let the user browse for an evaluation log file and if one is selected, read it
     if (common.BrowseForFile(filter, evLog))
@@ -126,7 +134,9 @@ int CPostWindDlg::BrowseForEvalLog(int seriesNumber)
 
         // completely reset any old data
         if (m_logFileHandler[seriesNumber] != NULL)
+        {
             delete m_logFileHandler[seriesNumber];
+        }
         m_logFileHandler[seriesNumber] = new FileHandler::CEvaluationLogFileHandler();
 
         m_logFileHandler[seriesNumber]->m_evaluationLog.Format(evLog);
@@ -198,17 +208,23 @@ BOOL CPostWindDlg::OnInitDialog()
 
     // Initialize the unit to use
     if (g_userSettings.m_columnUnit == UNIT_MOLEC_CM2)
+    {
         columnAxisLabel.Format("%s [ppmm]", (LPCTSTR)common.GetString(AXIS_COLUMN));
+    }
     else
+    {
         columnAxisLabel.Format("%s [molec/cm²]", (LPCTSTR)common.GetString(AXIS_COLUMN));
+    }
 
     // Initialize the column graph
     CRect rect;
     m_columnFrame.GetWindowRect(rect);
     int height = rect.bottom - rect.top;
     int width = rect.right - rect.left;
-    rect.top = 20; rect.bottom = height - 10;
-    rect.left = 10; rect.right = width - 10;
+    rect.top = 20;
+    rect.bottom = height - 10;
+    rect.left = 10;
+    rect.right = width - 10;
     m_columnGraph.Create(WS_VISIBLE | WS_CHILD, rect, &m_columnFrame);
     m_columnGraph.SetXUnits("Time [s]");
     m_columnGraph.SetYUnits(columnAxisLabel);
@@ -221,8 +237,10 @@ BOOL CPostWindDlg::OnInitDialog()
     m_resultFrame.GetWindowRect(rect);
     height = rect.bottom - rect.top;
     width = rect.right - rect.left;
-    rect.top = 20; rect.bottom = height - 10;
-    rect.left = 10; rect.right = width - 10;
+    rect.top = 20;
+    rect.bottom = height - 10;
+    rect.left = 10;
+    rect.right = width - 10;
     m_resultGraph.Create(WS_VISIBLE | WS_CHILD, rect, &m_resultFrame);
     m_resultGraph.SetXUnits("Time [s]");
     m_resultGraph.SetYUnits("Wind Speed [m/s]");
@@ -244,7 +262,7 @@ BOOL CPostWindDlg::OnInitDialog()
 }
 
 /** Draws the result */
-void	CPostWindDlg::DrawResult()
+void CPostWindDlg::DrawResult()
 {
     static const int BUFFER_SIZE = 1024;
     if (corr == NULL)
@@ -255,7 +273,9 @@ void	CPostWindDlg::DrawResult()
     }
 
     if (m_calc.m_length == 0 || m_calc.corr == 0)
+    {
         return;
+    }
 
     UpdateData(TRUE); // <-- get the options for how to plot the data
 
@@ -281,15 +301,21 @@ void	CPostWindDlg::DrawResult()
     for (int k = 0; k < m_calc.m_length; ++k)
     {
         if (length > BUFFER_SIZE)
+        {
             break;
+        }
         if (m_calc.used[k])
         {
             corr[length] = m_calc.corr[k];
             delay[length] = m_calc.delays[k];
             if (fabs(delay[length]) > 0.01)
+            {
                 ws[length] = distance / delay[length];
+            }
             else
+            {
                 ws[length] = 0.0;
+            }
             ++length;
         }
     }
@@ -315,7 +341,7 @@ void	CPostWindDlg::DrawResult()
 }
 
 /** Draws the column plot */
-void	CPostWindDlg::DrawColumn()
+void CPostWindDlg::DrawColumn()
 {
 
     double minT = 1e16, maxT = -1e16, minC = 1e16, maxC = -1e16;
@@ -337,7 +363,9 @@ void	CPostWindDlg::DrawColumn()
     }
 
     if (nSeries == 0)
+    {
         return; // <-- nothing to plot
+    }
 
     // Set the range for the plot
     m_columnGraph.SetRange(minT, maxT, 0, minC, maxC, 1);
@@ -376,9 +404,7 @@ void	CPostWindDlg::DrawColumn()
 
                 //				m_columnGraph.SetLineWidth(1);
             }
-
         }
-
     }
 }
 
@@ -386,26 +412,38 @@ void	CPostWindDlg::DrawColumn()
         The number of iterations is taken from 'm_settings.lowPassFilterAverage'
         The treated series is m_OriginalSeries[seriesNo]
         The result is saved as m_PreparedSeries[seriesNo]	*/
-int	CPostWindDlg::LowPassFilter(int seriesNo)
+int CPostWindDlg::LowPassFilter(int seriesNo)
 {
     if (m_settings.lowPassFilterAverage <= 0)
+    {
         return 0;
+    }
 
     if (seriesNo < 0 || seriesNo > MAX_N_SERIES)
+    {
         return 0;
+    }
 
     if (m_OriginalSeries[seriesNo] == NULL)
+    {
         return 0;
+    }
 
     int length = m_OriginalSeries[seriesNo]->length;
     if (length <= 0)
+    {
         return 0;
+    }
 
     if (m_PreparedSeries[seriesNo] == NULL)
+    {
         m_PreparedSeries[seriesNo] = new WindSpeedMeasurement::CWindSpeedCalculator::CMeasurementSeries();
+    }
 
     if (SUCCESS != WindSpeedMeasurement::CWindSpeedCalculator::LowPassFilter(m_OriginalSeries[seriesNo], m_PreparedSeries[seriesNo], m_settings.lowPassFilterAverage))
+    {
         return 0;
+    }
 
     return 1;
 }
@@ -414,7 +452,9 @@ void CPostWindDlg::OnChangeLPIterations()
 {
     UpdateData(TRUE); // <-- save the data in the dialog
     if (m_settings.lowPassFilterAverage >= 0)
+    {
         DrawColumn();
+    }
 }
 
 void CPostWindDlg::OnCalculateWindspeed()
@@ -427,13 +467,13 @@ void CPostWindDlg::OnCalculateWindspeed()
     m_calc.CalculateDelay(delay, m_OriginalSeries[0], m_OriginalSeries[1], m_settings);
 
     // 2. Calculate the average value of the correlation
-    double	 avgCorr1 = Average(m_calc.corr, m_calc.m_length);
+    double avgCorr1 = Average(m_calc.corr, m_calc.m_length);
 
     // 3. Perform the correlation - calculations with the second series as upwind
     m_calc.CalculateDelay(delay, m_OriginalSeries[1], m_OriginalSeries[0], m_settings);
 
     // 4. Calculate the average correlation for the second case
-    double	avgCorr2 = Average(m_calc.corr, m_calc.m_length);
+    double avgCorr2 = Average(m_calc.corr, m_calc.m_length);
 
     // 5. Use the results which gave the highest average correlation
     if (avgCorr1 > avgCorr2)
@@ -452,9 +492,9 @@ void CPostWindDlg::OnChangePlumeHeight()
 
     // 2. Update the result-graph, if necessary
     if (m_showOption == 2)
+    {
         DrawResult();
-
-
+    }
 }
 
 void CPostWindDlg::InitLegends()

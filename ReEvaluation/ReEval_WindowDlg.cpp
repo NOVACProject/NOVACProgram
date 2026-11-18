@@ -16,10 +16,12 @@ IMPLEMENT_DYNAMIC(CReEval_WindowDlg, CPropertyPage)
 
 CReEval_WindowDlg::CReEval_WindowDlg(CReEvaluator& reeval)
     : CPropertyPage(CReEval_WindowDlg::IDD), m_reeval(reeval), m_windowList(reeval), m_referenceGrid(this)
-{}
+{
+}
 
 CReEval_WindowDlg::~CReEval_WindowDlg()
-{}
+{
+}
 
 void CReEval_WindowDlg::DoDataExchange(CDataExchange* pDX)
 {
@@ -236,28 +238,44 @@ void CReEval_WindowDlg::PopulateReferenceFileControl()
         m_referenceGrid.SetItemTextFmt(1 + i, 1, path);
 
         if (ref.m_shiftOption == SHIFT_TYPE::SHIFT_FREE)
+        {
             m_referenceGrid.SetItemTextFmt(1 + i, 2, "free");
+        }
 
         if (ref.m_shiftOption == SHIFT_TYPE::SHIFT_FIX)
+        {
             m_referenceGrid.SetItemTextFmt(1 + i, 2, "fixed to %.2lf", ref.m_shiftValue);
+        }
 
         if (ref.m_shiftOption == SHIFT_TYPE::SHIFT_LINK)
+        {
             m_referenceGrid.SetItemTextFmt(1 + i, 2, "linked to %.2lf", ref.m_shiftValue);
+        }
 
         if (ref.m_shiftOption == SHIFT_TYPE::SHIFT_LIMIT)
+        {
             m_referenceGrid.SetItemTextFmt(1 + i, 2, "limited to %.2lf", ref.m_shiftValue);
+        }
 
         if (ref.m_squeezeOption == SHIFT_TYPE::SHIFT_FREE)
+        {
             m_referenceGrid.SetItemTextFmt(1 + i, 3, "free");
+        }
 
         if (ref.m_squeezeOption == SHIFT_TYPE::SHIFT_FIX)
+        {
             m_referenceGrid.SetItemTextFmt(1 + i, 3, "fixed to %.2lf", ref.m_squeezeValue);
+        }
 
         if (ref.m_squeezeOption == SHIFT_TYPE::SHIFT_LINK)
+        {
             m_referenceGrid.SetItemTextFmt(1 + i, 3, "linked to %.2lf", ref.m_squeezeValue);
+        }
 
         if (ref.m_squeezeOption == SHIFT_TYPE::SHIFT_LIMIT)
+        {
             m_referenceGrid.SetItemTextFmt(1 + i, 3, "limited to %.2lf", ref.m_squeezeValue);
+        }
     }
 
     // make sure that the last line is clear
@@ -380,7 +398,9 @@ void CReEval_WindowDlg::OnShowPropertiesWindow()
 
     // if there's no reference file, then there's nothing to remove
     if (currentWindow.NumberOfReferences() == 0)
+    {
         return;
+    }
 
     if (currentWindow.NumberOfReferences() == 1)
     {
@@ -426,7 +446,9 @@ void ReEvaluation::CReEval_WindowDlg::OnShowReferenceGraph()
 
     // if there's no reference file, then there's nothing to remove
     if (currentWindow.NumberOfReferences() == 0)
+    {
         return;
+    }
 
     // Open the dialog
     Dialogs::CReferencePlotDlg dlg(currentWindow);
@@ -471,4 +493,3 @@ void CReEval_WindowDlg::OnBrowseSolarSpectrum()
 }
 
 } // namespace ReEvaluation
-

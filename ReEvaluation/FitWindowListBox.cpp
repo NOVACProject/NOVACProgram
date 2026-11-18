@@ -14,10 +14,12 @@ IMPLEMENT_DYNAMIC(CFitWindowListBox, CListBox)
 
 CFitWindowListBox::CFitWindowListBox(CReEvaluator& reeval)
     : m_reeval(reeval)
-{}
+{
+}
 
 CFitWindowListBox::~CFitWindowListBox()
-{}
+{
+}
 
 BEGIN_MESSAGE_MAP(CFitWindowListBox, CListBox)
     ON_WM_CONTEXTMENU()
@@ -32,7 +34,6 @@ BEGIN_MESSAGE_MAP(CFitWindowListBox, CListBox)
 
     ON_COMMAND(ID__RENAMEWINDOW, OnRenameWindow)
 END_MESSAGE_MAP()
-
 
 
 // CFitWindowListBox message handlers
@@ -82,7 +83,6 @@ void CFitWindowListBox::OnContextMenu(CWnd* pWnd, CPoint pos)
 
     // show the popup menu
     pPopup->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, pos.x, pos.y, this);
-
 }
 
 /** Called to insert a fit window into the list */
@@ -90,9 +90,11 @@ void CFitWindowListBox::OnInsertFitWindow()
 {
     CString name;
 
-    // Make sure that there's enough space to store one more window 
+    // Make sure that there's enough space to store one more window
     if (m_reeval.m_windowNum == CReEvaluator::MAX_N_WINDOWS - 1)
+    {
         return;
+    }
 
     // Ask the user for the name of the window
     Dialogs::CQueryStringDialog nameDialog;
@@ -101,7 +103,9 @@ void CFitWindowListBox::OnInsertFitWindow()
     INT_PTR ret = nameDialog.DoModal();
 
     if (IDCANCEL == ret)
+    {
         return;
+    }
 
     // insert an empty fit window.
     m_reeval.m_window[m_reeval.m_windowNum].name = std::string((LPCTSTR)name);
@@ -157,7 +161,9 @@ void CFitWindowListBox::OnSaveFitWindows()
     FileHandler::CFitWindowFileHandler fitWindowWriter;
 
     if (0 == m_reeval.m_windowNum)
+    {
         return;
+    }
 
     // Ask for a file to save the data to
     CString fileName = "";
@@ -171,7 +177,7 @@ void CFitWindowListBox::OnSaveFitWindows()
             fileName.AppendFormat(".nfw");
         }
 
-        bool overWrite = true;	// the first window to be saved overwrites the file, the others appends the file
+        bool overWrite = true; // the first window to be saved overwrites the file, the others appends the file
 
         for (int i = 0; i < m_reeval.m_windowNum; ++i)
         {
@@ -188,7 +194,9 @@ void CFitWindowListBox::OnRenameWindow()
 
     int curSel = GetCurSel();
     if (curSel < 0 || curSel > m_reeval.MAX_N_WINDOWS)
+    {
         return;
+    }
 
     // Let the initial guess for the name be the old name of the window
     name = CString(m_reeval.m_window[curSel].name.c_str());
@@ -200,9 +208,11 @@ void CFitWindowListBox::OnRenameWindow()
     INT_PTR ret = nameDialog.DoModal();
 
     if (IDCANCEL == ret)
+    {
         return;
+    }
 
-    // Change the name 
+    // Change the name
     m_reeval.m_window[curSel].name = std::string((LPCTSTR)name);
 
     // Update hte list
@@ -214,16 +224,22 @@ void CFitWindowListBox::OnRemoveFitWindow()
 {
     // make sure that there's always at least one window defined
     if (m_reeval.m_windowNum <= 1)
+    {
         return;
+    }
 
     int curSel = this->GetCurSel();
     if (curSel < 0 || curSel > m_reeval.MAX_N_WINDOWS)
+    {
         return;
+    }
 
     // Are you sure?
     int ret = MessageBox("Are you sure you want to remove this fit window?", "Remove fit window", MB_YESNO);
     if (IDNO == ret)
+    {
         return;
+    }
 
     // Remove the window
 

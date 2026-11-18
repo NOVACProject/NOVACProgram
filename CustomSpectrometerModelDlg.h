@@ -15,7 +15,10 @@ public:
 
     // Dialog Data
 #ifdef AFX_DESIGN_TIME
-    enum { IDD = IDD_CONFIGURE_SPECTROMETERMODEL };
+    enum
+    {
+        IDD = IDD_CONFIGURE_SPECTROMETERMODEL
+    };
 #endif
 
 protected:

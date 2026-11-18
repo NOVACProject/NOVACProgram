@@ -19,7 +19,10 @@ public:
     virtual ~CView_Instrument();
 
     // Dialog Data
-    enum { IDD = IDD_VIEW_INSTRUMENT_OVERVIEW };
+    enum
+    {
+        IDD = IDD_VIEW_INSTRUMENT_OVERVIEW
+    };
 
 protected:
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -28,12 +31,13 @@ protected:
 
     afx_msg LRESULT OnUpdateGraphs(WPARAM wParam, LPARAM lParam);
 
-    class CLegend {
+    class CLegend
+    {
     public:
-        DlgControls::CLabel	m_label;
-        CStatic		m_text;
-        COLORREF	m_color;
-        CString		m_serial;
+        DlgControls::CLabel m_label;
+        CStatic m_text;
+        COLORREF m_color;
+        CString m_serial;
     };
 
 public:
@@ -64,16 +68,16 @@ protected:
 
     /** The graphs, one for the temperature, one for the battery voltage
             and one for the exposure times */
-    Graph::CGraphCtrl			m_batteryGraph;
-    Graph::CGraphCtrl			m_temperatureGraph;
-    Graph::CGraphCtrl			m_expTimeGraph;
-    Graph::CGraphCtrl			m_linkSpeedGraph;
+    Graph::CGraphCtrl m_batteryGraph;
+    Graph::CGraphCtrl m_temperatureGraph;
+    Graph::CGraphCtrl m_expTimeGraph;
+    Graph::CGraphCtrl m_linkSpeedGraph;
 
     /** The legend that tells which serial-number is connected with which color */
     CList<CLegend*, CLegend*> m_serialLegend;
 
     // the tool tips
-    CToolTipCtrl  m_toolTip;
+    CToolTipCtrl m_toolTip;
 
     // --------------- EVENT HANDLERS ------------------------------
 

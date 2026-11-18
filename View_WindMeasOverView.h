@@ -18,7 +18,10 @@ public:
     virtual ~CView_WindMeasOverView();
 
     // Dialog Data
-    enum { IDD = IDD_VIEW_WIND_OVERVIEW };
+    enum
+    {
+        IDD = IDD_VIEW_WIND_OVERVIEW
+    };
 
 protected:
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -27,12 +30,13 @@ protected:
 
     afx_msg LRESULT OnUpdateGraphs(WPARAM wParam, LPARAM lParam);
 
-    class CLegend {
+    class CLegend
+    {
     public:
-        DlgControls::CLabel	m_label;
-        CStatic							m_text;
-        COLORREF						m_color;
-        CString							m_serial;
+        DlgControls::CLabel m_label;
+        CStatic m_text;
+        COLORREF m_color;
+        CString m_serial;
     };
 
 public:
@@ -66,8 +70,7 @@ protected:
     CList<CLegend*, CLegend*> m_serialLegend;
 
     /** the tool tips */
-    CToolTipCtrl  m_toolTip;
+    CToolTipCtrl m_toolTip;
 
     // ----------- PROTECTED DATA ---------------
-
 };

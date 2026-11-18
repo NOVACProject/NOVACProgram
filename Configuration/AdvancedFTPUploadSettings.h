@@ -4,50 +4,50 @@ class CConfigurationSetting;
 
 namespace ConfigurationDialog
 {
-    class CAdvancedFTPUploadSettings : public CDialog
-    {
-        DECLARE_DYNAMIC(CAdvancedFTPUploadSettings)
+class CAdvancedFTPUploadSettings : public CDialog
+{
+    DECLARE_DYNAMIC(CAdvancedFTPUploadSettings)
 
-    public:
-        CAdvancedFTPUploadSettings(CWnd* pParent = NULL);   // standard constructor
-        virtual ~CAdvancedFTPUploadSettings();
+public:
+    CAdvancedFTPUploadSettings(CWnd* pParent = NULL);   // standard constructor
+    virtual ~CAdvancedFTPUploadSettings();
 
         // Dialog Data
-        enum { IDD = IDD_CONFIGURATION_ADVANCED_FTP_UPLOAD };
+    enum
+    {
+        IDD = IDD_CONFIGURATION_ADVANCED_FTP_UPLOAD
+    };
 
-    protected:
-        virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+protected:
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
-        DECLARE_MESSAGE_MAP()
-    public:
-
+    DECLARE_MESSAGE_MAP()
+public:
         // ------------------- DATA -------------------------
 
         /** the actual configuration */
-        CConfigurationSetting* m_configuration = nullptr;
+    CConfigurationSetting* m_configuration = nullptr;
 
         /** The time when to start uploading */
-        int	m_startHr, m_startMin, m_startSec;
+    int m_startHr, m_startMin, m_startSec;
 
         /** The time when to stop uploading */
-        int m_stopHr, m_stopMin, m_stopSec;
+    int m_stopHr, m_stopMin, m_stopSec;
 
-        // ------------------ METHODS ----------------------- 
+        // ------------------ METHODS -----------------------
 
         /** Initialzing the dialog */
-        virtual BOOL OnInitDialog();
+    virtual BOOL OnInitDialog();
 
         /** Called when the user presses the 'OK'-button.
                 Saves the filled in data in the dialog */
-        virtual void OnOK();
+    virtual void OnOK();
 
-    protected:
-
-        // ------------------ METHODS ----------------------- 
+protected:
+        // ------------------ METHODS -----------------------
 
         /** Returns the width of the supplied component to be able to fit in
                 the supplied string */
-        void	GetNecessaryComponentSize(CWnd* wnd, CString& str, int& width, int& height);
-
-    };
+    void GetNecessaryComponentSize(CWnd* wnd, CString& str, int& width, int& height);
+};
 }

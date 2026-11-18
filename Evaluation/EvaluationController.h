@@ -91,7 +91,7 @@ private:
         the spectrometer is connected to and where it is situated and what
         reference files, and settings, that should be used to evaluate spectra
         from each spectrometer. */
-    CArray<CSpectrometer*, CSpectrometer*>m_spectrometer;
+    CArray<CSpectrometer*, CSpectrometer*> m_spectrometer;
 
     /** A log-file writer to handle the output of the program.
         This is not used for any output which can be connected to a single

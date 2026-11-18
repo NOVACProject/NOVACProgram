@@ -117,7 +117,8 @@ END_MESSAGE_MAP()
 
 // CView_Scanner message handlers
 
-void CView_Scanner::SetLayout() {
+void CView_Scanner::SetLayout()
+{
     const int rightMargin = 25;
 
     CRect thisClientRegion;
@@ -125,7 +126,8 @@ void CView_Scanner::SetLayout() {
     this->ScreenToClient(thisClientRegion);
 
     // Adjust the width of the column frame
-    if (this->m_lastScanFrame.m_hWnd != nullptr) {
+    if (this->m_lastScanFrame.m_hWnd != nullptr)
+    {
         CRect lastScanFrameClientRegion;
         m_lastScanFrame.GetWindowRect(&lastScanFrameClientRegion);
         this->ScreenToClient(lastScanFrameClientRegion);
@@ -137,7 +139,8 @@ void CView_Scanner::SetLayout() {
     }
 
     // Adjust the width of the flux frame
-    if (this->m_todayScanFrame.m_hWnd != nullptr) {
+    if (this->m_todayScanFrame.m_hWnd != nullptr)
+    {
         CRect fluxFrameClientRegion;
         m_todayScanFrame.GetWindowRect(&fluxFrameClientRegion);
         this->ScreenToClient(fluxFrameClientRegion);
@@ -165,10 +168,12 @@ BOOL CView_Scanner::OnInitDialog()
     m_redLight.LoadBitmap(MAKEINTRESOURCE(IDB_RED_LIGHT));
 
     // Initialize the unit to use
-    if (g_userSettings.m_columnUnit == UNIT_MOLEC_CM2) {
+    if (g_userSettings.m_columnUnit == UNIT_MOLEC_CM2)
+    {
         columnAxisLabel.Format("%s [ppmm]", (LPCTSTR)common.GetString(AXIS_COLUMN));
     }
-    else {
+    else
+    {
         columnAxisLabel.Format("%s [molec/cm²]", (LPCTSTR)common.GetString(AXIS_COLUMN));
     }
 
@@ -178,8 +183,10 @@ BOOL CView_Scanner::OnInitDialog()
     m_lastScanFrame.GetWindowRect(rect);
     height = rect.bottom - rect.top;
     width = rect.right - rect.left;
-    rect.top = 20; rect.bottom = height - 10;
-    rect.left = 10; rect.right = width - 10;
+    rect.top = 20;
+    rect.bottom = height - 10;
+    rect.left = 10;
+    rect.right = width - 10;
     m_lastScanPlot.Create(WS_VISIBLE | WS_CHILD, rect, &m_lastScanFrame);
     m_lastScanPlot.SetSecondYUnit(common.GetString(AXIS_INTENSITY));
     m_lastScanPlot.SetSecondRangeY(0, 4096, 0);
@@ -202,8 +209,10 @@ BOOL CView_Scanner::OnInitDialog()
     m_todayScanFrame.GetWindowRect(rect);
     height = rect.bottom - rect.top;
     width = rect.right - rect.left;
-    rect.top = 20; rect.bottom = height - 10;
-    rect.left = 10; rect.right = width - 10;
+    rect.top = 20;
+    rect.bottom = height - 10;
+    rect.left = 10;
+    rect.right = width - 10;
     m_todayPlot.Create(WS_VISIBLE | WS_CHILD, rect, &m_todayScanFrame);
     m_todayPlot.SetXUnits(common.GetString(AXIS_UTCTIME));
     m_todayPlot.SetXAxisNumberFormat(FORMAT_DATETIME);
@@ -217,7 +226,8 @@ BOOL CView_Scanner::OnInitDialog()
     SetTodayRange();
 
     // Enable the tool tips
-    if (!m_toolTip.Create(this)) {
+    if (!m_toolTip.Create(this))
+    {
         TRACE0("Failed to create tooltip control\n");
     }
     m_toolTip.AddTool(&m_windDirection, IDC_EDIT_WINDDIRECTION);
@@ -246,19 +256,22 @@ BOOL CView_Scanner::OnInitDialog()
     m_toolTip.Activate(TRUE);
 
     // Update the plot...
-    if (g_settings.scanner[m_scannerIndex].plotColumn) {
+    if (g_settings.scanner[m_scannerIndex].plotColumn)
+    {
         m_todayPlot.SetCircleRadius(1);
         DrawColumnDay();
     }
-    else {
+    else
+    {
         m_todayPlot.SetLineWidth(2);
         DrawFlux();
     };
 
     // If the wind-field has been set automatically, then show it to the user
     CWindField windField;
-    CDateTime	dt;
-    if (0 == g_metData.GetWindField(m_serial, dt, windField)) {
+    CDateTime dt;
+    if (0 == g_metData.GetWindField(m_serial, dt, windField))
+    {
         this->windSpeed = windField.GetWindSpeed();
         this->windDirection = windField.GetWindDirection();
         this->plumeHeight = windField.GetPlumeHeight();
@@ -269,7 +282,8 @@ BOOL CView_Scanner::OnInitDialog()
     // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CView_Scanner::SetTodayRange() {
+void CView_Scanner::SetTodayRange()
+{
     // set time range for last day plot
     struct tm* tm;
     time_t endtime;
@@ -279,7 +293,8 @@ void CView_Scanner::SetTodayRange() {
     m_todayPlot.SetRangeX(starttime, endtime, 0);
 }
 
-void CView_Scanner::DrawColumn() {
+void CView_Scanner::DrawColumn()
+{
     Common common;
     // Strings used for the saving of images
     CString sDate, sTime, imageFileName, lastImageFileName, directory, latestInfoFileName;
@@ -293,9 +308,13 @@ void CView_Scanner::DrawColumn() {
 
     // Set the unit of the plot
     if (g_userSettings.m_columnUnit == UNIT_PPMM)
+    {
         m_lastScanPlot.SetYUnits("Column [ppmm]");
+    }
     else if (g_userSettings.m_columnUnit == UNIT_MOLEC_CM2)
+    {
         m_lastScanPlot.SetYUnits("Column [molec/cm²]");
+    }
 
     // Get the data
     int dataLength = m_evalDataStorage->GetColumnData(m_serial, column, columnError, BUFFER_SIZE);
@@ -304,7 +323,9 @@ void CView_Scanner::DrawColumn() {
 
     // If there's no data then don't draw anything
     if (dataLength <= 0)
+    {
         return;
+    }
 
     // Get the ranges for the data
     m_evalDataStorage->GetAngleRange(m_serial, minAngle, maxAngle);
@@ -316,18 +337,22 @@ void CView_Scanner::DrawColumn() {
     // Check if this is a fixed-angle or wind-measurement of if its a normal scan
     m_isTimeSeries = fabs(maxAngle - minAngle) < 1e-2;
     int nRepetitions = 0;
-    for (int i = 2; i < dataLength; ++i) {
-        if (angle[i] == angle[i - 2]) {
+    for (int i = 2; i < dataLength; ++i)
+    {
+        if (angle[i] == angle[i - 2])
+        {
             ++nRepetitions;
         }
     }
-    if (nRepetitions > 5) {
+    if (nRepetitions > 5)
+    {
         m_isTimeSeries = true;
     }
 
     // Check data ranges
     minColumn = min(minColumn, 0);
-    if (fabs(maxColumn - minColumn) < 1E-2) {
+    if (fabs(maxColumn - minColumn) < 1E-2)
+    {
         minColumn -= 1;
         maxColumn += 1;
     }
@@ -339,12 +364,14 @@ void CView_Scanner::DrawColumn() {
     double offset = m_evalDataStorage->GetOffset(m_serial);
 
     // and the plume centre
-    double	plumeCentre = m_evalDataStorage->GetPlumeCentre(m_serial);
+    double plumeCentre = m_evalDataStorage->GetPlumeCentre(m_serial);
 
     // remove the offset
-    for (int i = 0; i < dataLength; ++i) {
+    for (int i = 0; i < dataLength; ++i)
+    {
         column[i] = column[i] - offset;
-        if (fabs(badColumn[i]) > 1.0) {
+        if (fabs(badColumn[i]) > 1.0)
+        {
             badColumn[i] -= offset;
         }
     }
@@ -355,13 +382,15 @@ void CView_Scanner::DrawColumn() {
     maxColumn = (maxColumn > 0) ? (maxColumn * 1.25) : (maxColumn / 1.5);
 
     // Convert the saturation ratios to percent
-    for (int i = 0; i < dataLength; ++i) {
+    for (int i = 0; i < dataLength; ++i)
+    {
         fitSat[i] *= 100.0;
         peakSat[i] *= 100.0;
     }
 
     // Set the range for the graph
-    if (m_isTimeSeries) {
+    if (m_isTimeSeries)
+    {
         // wind speed measurement?
         // Get the timeOfDay for each spectrum
         m_evalDataStorage->GetTimeData(m_serial, time, BUFFER_SIZE);
@@ -370,20 +399,22 @@ void CView_Scanner::DrawColumn() {
         m_lastScanPlot.SetXUnits(common.GetString(AXIS_TIMEOFDAY));
         m_lastScanPlot.SetXAxisNumberFormat(Graph::FORMAT_TIME);
     }
-    else {
+    else
+    {
         // normal scan
         m_lastScanPlot.SetRange(minAngle, maxAngle, 1, minColumn, maxColumn, 0);
         m_lastScanPlot.SetXUnits(common.GetString(AXIS_ANGLE));
         m_lastScanPlot.SetXAxisNumberFormat(Graph::FORMAT_GENERAL);
     }
 
-    // If we know the dynamic range for the spectrometer, 
+    // If we know the dynamic range for the spectrometer,
     //	set the plot to show saturation-levels instead of intensities
     m_lastScanPlot.SetSecondRangeY(0, 100, 0, false);
     m_lastScanPlot.SetSecondYUnit(common.GetString(AXIS_SATURATION));
 
     // draw the columns
-    if (m_isTimeSeries) {
+    if (m_isTimeSeries)
+    {
         m_lastScanPlot.XYPlot(time, column, dataLength, CGraphCtrl::PLOT_FIXED_AXIS | CGraphCtrl::PLOT_CONNECTED);
 
         // draw the peak saturation
@@ -394,7 +425,8 @@ void CView_Scanner::DrawColumn() {
         m_lastScanPlot.SetCircleColor(RGB(255, 255, 0));
         m_lastScanPlot.DrawCircles(time, fitSat, dataLength, CGraphCtrl::PLOT_SECOND_AXIS);
     }
-    else {
+    else
+    {
         // All the column-values
         m_lastScanPlot.SetPlotColor(RGB(255, 0, 0));
         m_lastScanPlot.BarChart(angle, column, columnError, dataLength, CGraphCtrl::PLOT_FIXED_AXIS | CGraphCtrl::PLOT_BAR_SHOW_X);
@@ -412,20 +444,24 @@ void CView_Scanner::DrawColumn() {
         m_lastScanPlot.DrawCircles(angle, fitSat, dataLength, CGraphCtrl::PLOT_SECOND_AXIS);
 
         // Draw the plume-centre position (if known);
-        if (plumeCentre > -200) {
+        if (plumeCentre > -200)
+        {
             m_lastScanPlot.DrawLine(Graph::VERTICAL, plumeCentre, RGB(255, 255, 0), Graph::STYLE_DASHED);
         }
     }
 
     // If the user wants to save the graph, then do so
-    if (g_settings.webSettings.publish) {
+    if (g_settings.webSettings.publish)
+    {
         sDate.Format("%02d%02d%02d", m_lastScanStart.year % 1000, m_lastScanStart.month, m_lastScanStart.day);
         sTime.Format("%02d%02d", m_lastScanStart.hour, m_lastScanStart.minute);
 
-        if (strlen(g_settings.webSettings.localDirectory) > 0) {
+        if (strlen(g_settings.webSettings.localDirectory) > 0)
+        {
             // The directory where to store the images
             directory.Format("%s\\%s", (LPCTSTR)g_settings.webSettings.localDirectory, (LPCTSTR)sDate);
-            if (CreateDirectoryStructure(directory)) {
+            if (CreateDirectoryStructure(directory))
+            {
                 ShowMessage("Could not create storage-directory for images. No image stored.");
                 return; // failed to create directory, no idea to try to continue...
             }
@@ -444,9 +480,11 @@ void CView_Scanner::DrawColumn() {
 
             // Also save a copy of the column-plot to an additional directory, if this is
             //		the latest file received
-            if (m_lastScanStart == m_mostRecentScanStart) {
+            if (m_lastScanStart == m_mostRecentScanStart)
+            {
                 lastImageFileName.Format("%s\\%s\\", (LPCTSTR)g_settings.webSettings.localDirectory, (LPCTSTR)m_serial);
-                if (CreateDirectoryStructure(lastImageFileName)) {
+                if (CreateDirectoryStructure(lastImageFileName))
+                {
                     ShowMessage("Could not create storage-directory for images. No image stored.");
                     return; // failed to create directory, no idea to try to continue...
                 }
@@ -457,13 +495,15 @@ void CView_Scanner::DrawColumn() {
             // Make a small file which contains the name of the last file generated
             latestInfoFileName.Format("%s\\LastColumnGraph_%s.txt", (LPCTSTR)g_settings.webSettings.localDirectory, (LPCTSTR)m_serial);
             FILE* f = fopen(latestInfoFileName, "w");
-            if (f != nullptr) {
+            if (f != nullptr)
+            {
                 fprintf(f, "%s\n", (LPCTSTR)imageFileName);
                 fclose(f);
             }
 
             // if the user wants to call an external script, then do so
-            if (strlen(g_settings.externalSetting.imageScript) > 2) {
+            if (strlen(g_settings.externalSetting.imageScript) > 2)
+            {
                 ExecuteScript_Image(imageFileName);
             }
         }
@@ -471,7 +511,8 @@ void CView_Scanner::DrawColumn() {
 }
 
 /** For single direction measurements, do not plot flux.  Instead, plot columns for the day. */
-void CView_Scanner::DrawColumnDay() {
+void CView_Scanner::DrawColumnDay()
+{
     Common common;
 
     // variables
@@ -485,23 +526,30 @@ void CView_Scanner::DrawColumnDay() {
 
     // If there's no data then don't draw anything
     if (dataLength <= 0)
+    {
         return;
+    }
 
     // remove the old plot
     m_todayPlot.CleanPlot();
 
     // Set the unit of the plot
     if (g_userSettings.m_columnUnit == UNIT_PPMM)
+    {
         m_todayPlot.SetYUnits("Column [ppmm]");
+    }
     else if (g_userSettings.m_columnUnit == UNIT_MOLEC_CM2)
+    {
         m_todayPlot.SetYUnits("Column [molec/cm²]");
+    }
 
     // Get the ranges for the data
     m_evalDataStorage->GetColumnRange(m_serial, minColumn, maxColumn, true);
 
     // Check data ranges
     minColumn = min(minColumn, 0);
-    if (fabs(maxColumn - minColumn) < 1E-2) {
+    if (fabs(maxColumn - minColumn) < 1E-2)
+    {
         minColumn -= 1;
         maxColumn += 1;
     }
@@ -516,9 +564,11 @@ void CView_Scanner::DrawColumnDay() {
     double offset = m_evalDataStorage->GetOffset(m_serial);
 
     // remove the offset
-    for (int i = 0; i < dataLength; ++i) {
+    for (int i = 0; i < dataLength; ++i)
+    {
         column[i] = column[i] - offset;
-        if (fabs(badColumn[i]) > 1.0) {
+        if (fabs(badColumn[i]) > 1.0)
+        {
             badColumn[i] -= offset;
         }
     }
@@ -529,7 +579,8 @@ void CView_Scanner::DrawColumnDay() {
     maxColumn = (maxColumn > 0) ? (maxColumn * 1.25) : (maxColumn / 1.5);
 
     // Convert the saturation ratios to percent
-    for (int i = 0; i < dataLength; ++i) {
+    for (int i = 0; i < dataLength; ++i)
+    {
         fitSat[i] *= 100.0;
         peakSat[i] *= 100.0;
     }
@@ -537,14 +588,16 @@ void CView_Scanner::DrawColumnDay() {
     m_todayPlot.SetRangeY(minColumn, maxColumn, 0);
     SetTodayRange();
 
-    // If we know the dynamic range for the spectrometer, 
+    // If we know the dynamic range for the spectrometer,
     //	set the plot to show saturation-levels instead of intensities
     double maxIntensity = m_evalDataStorage->GetDynamicRange(m_serial);
-    if (maxIntensity > 0) {
+    if (maxIntensity > 0)
+    {
         m_todayPlot.SetSecondRangeY(0, 100, 0, false);
         m_todayPlot.SetSecondYUnit(common.GetString(AXIS_SATURATION));
     }
-    else {
+    else
+    {
         m_todayPlot.SetSecondRangeY(0, 4096, 0, false);
         m_todayPlot.SetSecondYUnit(common.GetString(AXIS_INTENSITY));
     }
@@ -564,17 +617,20 @@ void CView_Scanner::DrawColumnDay() {
     m_todayPlot.DrawCircles(time, fitSat, dataLength, CGraphCtrl::PLOT_SECOND_AXIS);
 
     // If the user wants to save the graph, then do so
-    if (g_settings.webSettings.publish) {
+    if (g_settings.webSettings.publish)
+    {
 
         // Strings used for the saving of images
         CString sDate, sTime, imageFileName, lastImageFileName, directory, latestInfoFileName;
 
         sDate.Format("%02d%02d%02d", m_lastScanStart.year % 1000, m_lastScanStart.month, m_lastScanStart.day);
 
-        if (strlen(g_settings.webSettings.localDirectory) > 0) {
+        if (strlen(g_settings.webSettings.localDirectory) > 0)
+        {
             // The directory where to store the images
             directory.Format("%s\\%s", (LPCTSTR)g_settings.webSettings.localDirectory, (LPCTSTR)sDate);
-            if (CreateDirectoryStructure(directory)) {
+            if (CreateDirectoryStructure(directory))
+            {
                 ShowMessage("Could not create storage-directory for images. No image stored.");
                 return; // failed to create directory, no idea to try to continue...
             }
@@ -592,9 +648,11 @@ void CView_Scanner::DrawColumnDay() {
 
             // Also save a copy of the column-plot to an additional directory, if this is
             //		the latest file received
-            if (m_lastScanStart == m_mostRecentScanStart) {
+            if (m_lastScanStart == m_mostRecentScanStart)
+            {
                 lastImageFileName.Format("%s\\%s\\", (LPCTSTR)g_settings.webSettings.localDirectory, (LPCTSTR)m_serial);
-                if (CreateDirectoryStructure(lastImageFileName)) {
+                if (CreateDirectoryStructure(lastImageFileName))
+                {
                     ShowMessage("Could not create storage-directory for images. No image stored.");
                     return; // failed to create directory, no idea to try to continue...
                 }
@@ -605,20 +663,23 @@ void CView_Scanner::DrawColumnDay() {
             // Make a small file which contains the name of the last file generated
             latestInfoFileName.Format("%s\\DayColumnGraph_%s.txt", (LPCTSTR)g_settings.webSettings.localDirectory, (LPCTSTR)m_serial);
             FILE* f = fopen(latestInfoFileName, "w");
-            if (f != nullptr) {
+            if (f != nullptr)
+            {
                 fprintf(f, "%s\n", (LPCTSTR)imageFileName);
                 fclose(f);
             }
 
             // if the user wants to call an external script, then do so
-            if (strlen(g_settings.externalSetting.imageScript) > 2) {
+            if (strlen(g_settings.externalSetting.imageScript) > 2)
+            {
                 ExecuteScript_Image(imageFileName);
             }
         }
     }
 }
 
-void CView_Scanner::DrawFlux() {
+void CView_Scanner::DrawFlux()
+{
     double maxFlux;
     const int BUFFER_SIZE = 200;
     double allFluxes[BUFFER_SIZE];
@@ -637,13 +698,16 @@ void CView_Scanner::DrawFlux() {
     int dataLength = m_evalDataStorage->GetFluxData(m_serial, tid, allFluxes, fluxOk, BUFFER_SIZE);
 
     // sort the data into good values and bad values
-    for (int k = 0; k < dataLength; ++k) {
-        if (fluxOk[k]) {
+    for (int k = 0; k < dataLength; ++k)
+    {
+        if (fluxOk[k])
+        {
             goodFluxes[nGoodFluxes] = allFluxes[k];
             goodTime[nGoodFluxes] = tid[k];
             ++nGoodFluxes;
         }
-        else {
+        else
+        {
             badFluxes[nBadFluxes] = allFluxes[k];
             badTime[nBadFluxes] = tid[k];
             ++nBadFluxes;
@@ -654,17 +718,21 @@ void CView_Scanner::DrawFlux() {
     m_todayPlot.CleanPlot();
 
     // Set the unit of the plot
-    if (g_userSettings.m_fluxUnit == UNIT_TONDAY) {
+    if (g_userSettings.m_fluxUnit == UNIT_TONDAY)
+    {
         fluxAxisLabel.Format("%s [ton/day]", (LPCTSTR)common.GetString(AXIS_FLUX));
     }
-    else {
+    else
+    {
         fluxAxisLabel.Format("%s [kg/s]", (LPCTSTR)common.GetString(AXIS_FLUX));
     }
     m_todayPlot.SetYUnits(fluxAxisLabel);
 
     // If there's no data, don't draw anything
     if (dataLength == 0)
+    {
         return;
+    }
 
     // Get the ranges for the flux data
     maxFlux = Max(allFluxes, dataLength);
@@ -682,10 +750,12 @@ void CView_Scanner::DrawFlux() {
 
 
     // If the user wants to save the graph, then do so
-    if (g_settings.webSettings.publish) {
+    if (g_settings.webSettings.publish)
+    {
         CString sDate;
         Common::GetDateText(sDate);
-        if (strlen(g_settings.webSettings.localDirectory) > 0) {
+        if (strlen(g_settings.webSettings.localDirectory) > 0)
+        {
             CString fileName;
             fileName.Format("%s\\flux_%s_%s%s",
                 (LPCTSTR)g_settings.webSettings.localDirectory,
@@ -697,12 +767,14 @@ void CView_Scanner::DrawFlux() {
     }
 }
 
-LRESULT CView_Scanner::OnEvaluatedScan(WPARAM wParam, LPARAM lParam) {
+LRESULT CView_Scanner::OnEvaluatedScan(WPARAM wParam, LPARAM lParam)
+{
     // Update the screen
     OnUpdateEvalStatus(wParam, lParam);
     OnUpdateWindParam(wParam, lParam);
 
-    if (lParam != NULL) {
+    if (lParam != NULL)
+    {
         Evaluation::CScanResult* result = (Evaluation::CScanResult*)lParam;
         delete result;
     }
@@ -710,7 +782,8 @@ LRESULT CView_Scanner::OnEvaluatedScan(WPARAM wParam, LPARAM lParam) {
     return 0;
 }
 
-LRESULT CView_Scanner::OnUpdateEvalStatus(WPARAM wParam, LPARAM lParam) {
+LRESULT CView_Scanner::OnUpdateEvalStatus(WPARAM wParam, LPARAM lParam)
+{
     CString txt;
 
     // The status for the evaluation
@@ -724,21 +797,24 @@ LRESULT CView_Scanner::OnUpdateEvalStatus(WPARAM wParam, LPARAM lParam) {
     comm_status = (COMMUNICATION_STATUS)(m_commDataStorage->GetStatus(m_serial));
 
     // update the status light
-    switch (status) {
-    case STATUS_RED:          m_statusLight.SetBitmap((HBITMAP)m_redLight); break;
-    case STATUS_GREEN:        m_statusLight.SetBitmap((HBITMAP)m_greenLight); break;
-    case STATUS_YELLOW:       m_statusLight.SetBitmap((HBITMAP)m_yellowLight); break;
-    default:                  m_statusLight.SetBitmap((HBITMAP)m_yellowLight); break;
+    switch (status)
+    {
+    case STATUS_RED: m_statusLight.SetBitmap((HBITMAP)m_redLight); break;
+    case STATUS_GREEN: m_statusLight.SetBitmap((HBITMAP)m_greenLight); break;
+    case STATUS_YELLOW: m_statusLight.SetBitmap((HBITMAP)m_yellowLight); break;
+    default: m_statusLight.SetBitmap((HBITMAP)m_yellowLight); break;
     }
-    switch (comm_status) {
-    case COMM_STATUS_RED:     m_commStatusLight.SetBitmap((HBITMAP)m_redLight); break;
-    case COMM_STATUS_GREEN:   m_commStatusLight.SetBitmap((HBITMAP)m_greenLight); break;
-    case COMM_STATUS_YELLOW:  m_commStatusLight.SetBitmap((HBITMAP)m_yellowLight); break;
-    default:                  m_commStatusLight.SetBitmap((HBITMAP)m_yellowLight); break;
+    switch (comm_status)
+    {
+    case COMM_STATUS_RED: m_commStatusLight.SetBitmap((HBITMAP)m_redLight); break;
+    case COMM_STATUS_GREEN: m_commStatusLight.SetBitmap((HBITMAP)m_greenLight); break;
+    case COMM_STATUS_YELLOW: m_commStatusLight.SetBitmap((HBITMAP)m_yellowLight); break;
+    default: m_commStatusLight.SetBitmap((HBITMAP)m_yellowLight); break;
     }
 
     Common common;
-    if (g_settings.scanner[m_scannerIndex].gps.m_latitude == 0) {
+    if (g_settings.scanner[m_scannerIndex].gps.m_latitude == 0)
+    {
         printf("ojsan");
     }
     // update the configuration info
@@ -750,18 +826,21 @@ LRESULT CView_Scanner::OnUpdateEvalStatus(WPARAM wParam, LPARAM lParam) {
     this->SetDlgItemText(IDC_CONFINFO_LATITUDE, txt);
     txt.Format("%.5lf", g_settings.scanner[m_scannerIndex].gps.m_longitude);
     this->SetDlgItemText(IDC_CONFINFO_LONGITUDE, txt);
-    if (fabs(g_settings.scanner[m_scannerIndex].coneAngle - 90.0) < 1e-2) {
+    if (fabs(g_settings.scanner[m_scannerIndex].coneAngle - 90.0) < 1e-2)
+    {
         // flat scanner
         txt.Format("%s", (LPCTSTR)common.GetString(STR_FLAT));
     }
-    else {
+    else
+    {
         // Cone-scanner
         txt.Format("%s,%.0lf [deg]", (LPCTSTR)common.GetString(STR_CONE), g_settings.scanner[m_scannerIndex].coneAngle);
     }
     this->SetDlgItemText(IDC_CONFINFO_CONEORFLAT, txt);
 
     // Update the info about the last scan
-    if (lParam != NULL) {
+    if (lParam != NULL)
+    {
         Evaluation::CScanResult* result = (Evaluation::CScanResult*)lParam;
         CDateTime startTime;
         result->GetSkyStartTime(startTime);
@@ -789,7 +868,8 @@ LRESULT CView_Scanner::OnUpdateEvalStatus(WPARAM wParam, LPARAM lParam) {
         m_lastScanStart.hour = startTime.hour;
         m_lastScanStart.minute = startTime.minute;
         m_lastScanStart.second = startTime.second;
-        if (m_mostRecentScanStart < m_lastScanStart) {
+        if (m_mostRecentScanStart < m_lastScanStart)
+        {
             m_mostRecentScanStart = m_lastScanStart;
         }
 
@@ -801,17 +881,20 @@ LRESULT CView_Scanner::OnUpdateEvalStatus(WPARAM wParam, LPARAM lParam) {
     DrawColumn();
 
     // update today's plot
-    if (g_settings.scanner[m_scannerIndex].plotColumn) {
+    if (g_settings.scanner[m_scannerIndex].plotColumn)
+    {
         DrawColumnDay();
     }
-    else {
+    else
+    {
         DrawFlux();
     }
 
     return 0;
 }
 
-LRESULT CView_Scanner::OnUpdateWindParam(WPARAM wParam, LPARAM lParam) {
+LRESULT CView_Scanner::OnUpdateWindParam(WPARAM wParam, LPARAM lParam)
+{
     CWindField wind;
     CDateTime dt;
 
@@ -820,7 +903,8 @@ LRESULT CView_Scanner::OnUpdateWindParam(WPARAM wParam, LPARAM lParam) {
     dt.Increment(_timezone); // convert from local-time to GMT
 
     // Get the wind-field for this scanner...
-    if (g_metData.GetWindField(m_serial, dt, wind)) {
+    if (g_metData.GetWindField(m_serial, dt, wind))
+    {
         // if the wind field could not be found, use the standard values
         wind = g_metData.defaultWindField;
     }
@@ -854,7 +938,8 @@ void CView_Scanner::OnBnClickedButtonSetWindfield()
     // get the time now
     lastTime = now;
     time(&now);
-    if (difftime(now, lastTime) < 5 * 60) {
+    if (difftime(now, lastTime) < 5 * 60)
+    {
         // If the user has pressed this button two (or more) times
         //  within five minutes, then interpret this as he/she wanted
         //  to set the wind-field for all instruments on the first
@@ -864,31 +949,36 @@ void CView_Scanner::OnBnClickedButtonSetWindfield()
         // tell the user which wind field has been changed
         message.Format("Set windfield @ %s to: ", (LPCTSTR)m_siteName);
 
-        // tell the user what the wind field is 
+        // tell the user what the wind field is
         message.AppendFormat("%.1lf m/s, %.1lf degrees, plume @ %.0lf m above the scanner",
             wf.GetWindSpeed(), wf.GetWindDirection(), wf.GetPlumeHeight());
-
     }
-    else {
+    else
+    {
         // It's quite some time since the user pressed this button
-        //  last time. Set the wind-field for all instruments and not just for 
+        //  last time. Set the wind-field for all instruments and not just for
         //	the currently shown...
 
-        // The wind-field should be the same for all instruments at this volcano, 
+        // The wind-field should be the same for all instruments at this volcano,
         //			find out which other instruments look at the same volcano and set the
         //			wind-field for them too.
         curVolcano.Format(g_settings.scanner[m_scannerIndex].volcano);
-        for (it = 0; it < g_settings.scannerNum; ++it) {
+        for (it = 0; it < g_settings.scannerNum; ++it)
+        {
             if (it == m_scannerIndex)
+            {
                 continue;
+            }
             if (Equals(curVolcano, g_settings.scanner[it].volcano))
+            {
                 g_metData.SetWindField(g_settings.scanner[it].spec[0].serialNumber, wf);
+            }
         }
 
         // tell the user which wind field has been changed
         message.Format("Set windfield @ %s to: ", (LPCTSTR)curVolcano);
 
-        // tell the user what the wind field is 
+        // tell the user what the wind field is
         message.AppendFormat("%.1lf m/s, %.1lf degrees, plume @ %.0lf m above the scanner",
             wf.GetWindSpeed(), wf.GetWindDirection(), wf.GetPlumeHeight());
     }
@@ -912,7 +1002,8 @@ BOOL CView_Scanner::OnSetActive()
     return CPropertyPage::OnSetActive();
 }
 
-void CView_Scanner::ExecuteScript_Image(const CString& imageFile) {
+void CView_Scanner::ExecuteScript_Image(const CString& imageFile)
+{
     CString command, filePath, directory;
 
     // The file to execute
@@ -930,25 +1021,27 @@ void CView_Scanner::ExecuteScript_Image(const CString& imageFile) {
 
     // Check the return-code if there was any error...
     if (result > 32)
+    {
         return;
-    switch (result) {
-    case 0:	break;// out of memory
-    case ERROR_FILE_NOT_FOUND:	MessageBox("Specified script-file not found");	break;	// file not found
-    case ERROR_PATH_NOT_FOUND:	MessageBox("Specified script-file not found");	break;	// path not found
-    case ERROR_BAD_FORMAT:		break;	// 
-    case SE_ERR_ACCESSDENIED:break;
-    case SE_ERR_ASSOCINCOMPLETE:break;
-    case SE_ERR_DDEBUSY:break;
-    case SE_ERR_DDEFAIL:break;
-    case SE_ERR_DDETIMEOUT:break;
-    case SE_ERR_DLLNOTFOUND:break;
-    case SE_ERR_NOASSOC:break;
-    case SE_ERR_OOM:break;
-    case SE_ERR_SHARE:break;
+    }
+    switch (result)
+    {
+    case 0: break;// out of memory
+    case ERROR_FILE_NOT_FOUND: MessageBox("Specified script-file not found"); break; // file not found
+    case ERROR_PATH_NOT_FOUND: MessageBox("Specified script-file not found"); break; // path not found
+    case ERROR_BAD_FORMAT: break; //
+    case SE_ERR_ACCESSDENIED: break;
+    case SE_ERR_ASSOCINCOMPLETE: break;
+    case SE_ERR_DDEBUSY: break;
+    case SE_ERR_DDEFAIL: break;
+    case SE_ERR_DDETIMEOUT: break;
+    case SE_ERR_DLLNOTFOUND: break;
+    case SE_ERR_NOASSOC: break;
+    case SE_ERR_OOM: break;
+    case SE_ERR_SHARE: break;
     }
     // don't try again to access the file
     g_settings.externalSetting.imageScript.Format("");
-
 }
 void CView_Scanner::OnSize(UINT nType, int cx, int cy)
 {
@@ -962,11 +1055,14 @@ void DDX_Text_Formatted(CDataExchange* pDX, int nIDC, double& value, LPCTSTR lps
     CString temp;
 
     if (!pDX->m_bSaveAndValidate)
+    {
         temp.Format(lpszOutFormat, value);
+    }
 
     DDX_Text(pDX, nIDC, temp);
 
-    if (pDX->m_bSaveAndValidate) {
+    if (pDX->m_bSaveAndValidate)
+    {
         int ret = sscanf(temp, lpszInFormat, &value);
     }
 }

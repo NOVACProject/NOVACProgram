@@ -65,15 +65,19 @@ BOOL CNovacMasterProgramApp::InitInstance()
 
     // this portion of code reading 'language.txt' is for
     //	backward compatibility only. Should eventually be removed...
-    if (IsExistingFile(oldFileName)) {
+    if (IsExistingFile(oldFileName))
+    {
         FILE* f = fopen(oldFileName, "r");
-        if (f != 0) {
+        if (f != 0)
+        {
             char buffer[512];
             fgets(buffer, 512, f);
-            if (0 == _tcsncicmp(buffer, "spanish", 7)) {
+            if (0 == _tcsncicmp(buffer, "spanish", 7))
+            {
                 g_userSettings.m_language = LANGUAGE_SPANISH;
             }
-            else {
+            else
+            {
                 g_userSettings.m_language = LANGUAGE_ENGLISH;
             }
             fclose(f);
@@ -81,7 +85,8 @@ BOOL CNovacMasterProgramApp::InitInstance()
         }
     }
 
-    switch (g_userSettings.m_language) {
+    switch (g_userSettings.m_language)
+    {
     case LANGUAGE_ENGLISH:
         ::SetThreadLocale(MAKELCID(MAKELANGID(0x0409, SUBLANG_DEFAULT), SORT_DEFAULT));
         primaryLanguage = 0x0409;
@@ -129,7 +134,9 @@ BOOL CNovacMasterProgramApp::InitInstance()
     // Dispatch commands specified on the command line.  Will return FALSE if
     // app was launched with /RegServer, /Register, /Unregserver or /Unregister.
     if (!ProcessShellCommand(cmdInfo))
+    {
         return FALSE;
+    }
     // The one and only window has been initialized, so show and update it
     m_pMainWnd->SetWindowText("NovacProgram");
 
@@ -176,7 +183,10 @@ public:
     CAboutDlg();
 
     // Dialog Data
-    enum { IDD = IDD_ABOUTBOX };
+    enum
+    {
+        IDD = IDD_ABOUTBOX
+    };
 
 protected:
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support

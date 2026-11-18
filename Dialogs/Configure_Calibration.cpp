@@ -10,7 +10,6 @@ IMPLEMENT_DYNAMIC(Configure_Calibration, CPropertyPage)
 Configure_Calibration::Configure_Calibration(CWnd* pParent /*=nullptr*/)
     : CPropertyPage(IDD_CONFIGURE_CALIBRATION, pParent)
 {
-
 }
 
 Configure_Calibration::~Configure_Calibration()

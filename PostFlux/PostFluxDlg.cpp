@@ -77,7 +77,6 @@ CPostFluxDlg::~CPostFluxDlg()
         delete m_windFieldFromFile;
         m_windFieldFromFile = nullptr;
     }
-
 }
 
 void CPostFluxDlg::DoDataExchange(CDataExchange* pDX)
@@ -214,7 +213,8 @@ BOOL CPostFluxDlg::OnInitDialog()
     int screenWidth = GetSystemMetrics(SM_CXSCREEN);
     GetWindowRect(windowRect);
     int windowWidth = windowRect.Width();
-    windowRect.right = screenWidth; windowRect.left = windowRect.right - windowWidth;
+    windowRect.right = screenWidth;
+    windowRect.left = windowRect.right - windowWidth;
     MoveWindow(windowRect);
 
     // load the available units into the unit selection box
@@ -222,9 +222,13 @@ BOOL CPostFluxDlg::OnInitDialog()
     m_fluxUnitCombo.AddString("ton/day");
     m_fluxUnitCombo.AddString("kg/h");
     if (g_userSettings.m_fluxUnit == UNIT_TONDAY)
+    {
         m_fluxUnitCombo.SetCurSel(1);
+    }
     else
+    {
         m_fluxUnitCombo.SetCurSel(0);
+    }
 
     // Initialize the list of available gases
     m_gasCombo.ResetContent();
@@ -235,16 +239,22 @@ BOOL CPostFluxDlg::OnInitDialog()
 
     // Initialize the unit to use
     if (g_userSettings.m_columnUnit == UNIT_MOLEC_CM2)
+    {
         columnAxisLabel.Format("%s [molec/cm²]", (LPCTSTR)common.GetString(AXIS_COLUMN));
+    }
     else
+    {
         columnAxisLabel.Format("%s [ppmm]", (LPCTSTR)common.GetString(AXIS_COLUMN));
+    }
 
     // Initialize the scan graph
     this->m_scanGraphFrame.GetWindowRect(rect);
     height = rect.bottom - rect.top;
     width = rect.right - rect.left;
-    rect.top = 20; rect.bottom = height - 10;
-    rect.left = 10; rect.right = width - 10;
+    rect.top = 20;
+    rect.bottom = height - 10;
+    rect.left = 10;
+    rect.right = width - 10;
     m_scanGraph.Create(WS_VISIBLE | WS_CHILD, rect, &m_scanGraphFrame);
     m_scanGraph.parent = this;
     m_scanGraph.SetSecondRangeY(0, 4096, 0, false);
@@ -265,7 +275,8 @@ BOOL CPostFluxDlg::OnInitDialog()
 
     // The list of available cone-angles
     m_coneAngleNum = 2;
-    m_coneAngles[0] = 90.0; m_coneAngles[1] = 60.0;
+    m_coneAngles[0] = 90.0;
+    m_coneAngles[1] = 60.0;
     m_coneangleCombo.ResetContent();
     for (int k = 0; k < m_coneAngleNum; ++k)
     {
@@ -301,7 +312,7 @@ BOOL CPostFluxDlg::OnInitDialog()
     m_editFlux.EnableWindow(FALSE);
     m_editSelectedPoints.EnableWindow(FALSE);
 
-    return TRUE;	// return TRUE unless you set the focus to a control
+    return TRUE; // return TRUE unless you set the focus to a control
     // EXCEPTION: OCX Property Pages should return FALSE
 }
 
@@ -321,7 +332,9 @@ void CPostFluxDlg::OnBrowseEvallog()
 
         // Completely reset the data.
         if (m_calculator != nullptr)
+        {
             delete m_calculator;
+        }
         m_calculator = new CPostFluxCalculator();
 
         // set the path
@@ -346,7 +359,6 @@ void CPostFluxDlg::OnBrowseEvallog()
     }
     else
     {
-
     }
 }
 
@@ -359,7 +371,7 @@ void CPostFluxDlg::DrawScan()
     static double column[MAX_SPEC_PER_SCAN];
     static double badColumn[MAX_SPEC_PER_SCAN];
     static double badColumnErr[MAX_SPEC_PER_SCAN];
-    static bool   badEvaluation[MAX_SPEC_PER_SCAN];
+    static bool badEvaluation[MAX_SPEC_PER_SCAN];
     static double columnError[MAX_SPEC_PER_SCAN];
     static double peakIntensity[MAX_SPEC_PER_SCAN];
     static double fitIntensity[MAX_SPEC_PER_SCAN];
@@ -374,14 +386,20 @@ void CPostFluxDlg::DrawScan()
 
     // Set the unit of the plot
     if (g_userSettings.m_columnUnit == UNIT_MOLEC_CM2)
+    {
         columnAxisLabel.Format("%s [molec/cm²]", (LPCTSTR)common.GetString(AXIS_COLUMN));
+    }
     else
+    {
         columnAxisLabel.Format("%s [ppmm]", (LPCTSTR)common.GetString(AXIS_COLUMN));
+    }
     m_scanGraph.SetYUnits(columnAxisLabel);
 
     // If no ev.log has been opened yet.
     if (m_calculator == nullptr)
+    {
         return;
+    }
 
     // A handle to the current scan
     Evaluation::CScanResult& scan = m_calculator->m_scan[m_curScan];
@@ -474,9 +492,13 @@ void CPostFluxDlg::DrawScan()
         else if (measurementMode == novac::MeasurementMode::Windspeed)
         {
             if (scan.GetSkySpectrumInfo().m_channel == 0)
+            {
                 message.Format("Wind measurement - Master channel");
+            }
             else
+            {
                 message.Format("Wind measurement - Slave channel");
+            }
         }
         else if (measurementMode == novac::MeasurementMode::Composition)
         {
@@ -578,14 +600,18 @@ void CPostFluxDlg::DrawScan()
     double minColumn = Min(column, numSpec);
     double maxColumn = Max(column, numSpec);
     if (minColumn == maxColumn)
+    {
         maxColumn += 1;
+    }
 
     if (!isTimeSeries)
     {
         double minAngle = Min(angle, numSpec);
         double maxAngle = Max(angle, numSpec);
         if (minAngle == maxAngle)
+        {
             maxAngle += 1;
+        }
 
         // Set the properties for the plot
         if (maxAngle > 90.0 || minAngle < -90.0)
@@ -639,7 +665,9 @@ void CPostFluxDlg::DrawScan()
         double minTime = Min(times, numSpec);
         double maxTime = Max(times, numSpec);
         if (minTime == maxTime)
+        {
             maxTime += 1;
+        }
 
         // Set the properties for the plot
         m_scanGraph.SetRange(minTime, maxTime, 0, minColumn, maxColumn, 1);
@@ -735,7 +763,9 @@ void CPostFluxDlg::InitializeControls()
 
     // If no ev.log has been opened yet
     if (m_calculator == nullptr)
+    {
         return;
+    }
 
     // enable all the buttons and controls...
     m_editTilt.EnableWindow(TRUE);
@@ -805,7 +835,9 @@ void CPostFluxDlg::InitializeControls()
     // The species evaluated for
     m_gasCombo.ResetContent();
     for (int k = 0; k < m_calculator->m_specieNum; ++k)
+    {
         m_gasCombo.InsertString(k, m_calculator->m_specie[k]);
+    }
     m_gasCombo.SetCurSel(0);
 
     // Initialize the legend
@@ -852,7 +884,9 @@ void CPostFluxDlg::OnChangeSelectedScan(NMHDR* pNMHDR, LRESULT* pResult)
 
     // If no ev.log has been opened yet
     if (m_calculator == nullptr)
+    {
         return;
+    }
 
     // If there's no scans read, we cannot change the current scannumber
     if (m_calculator->m_scanNum <= 0)
@@ -864,9 +898,13 @@ void CPostFluxDlg::OnChangeSelectedScan(NMHDR* pNMHDR, LRESULT* pResult)
     // Set the currently selected scan
     this->m_curScan = m_scanSpinCtrl.GetPos32();
     if (pNMUpDown->iDelta > 0)
+    {
         OnShowNextScan();
+    }
     else
+    {
         OnShowPreviousScan();
+    }
 
     *pResult = 0;
 }
@@ -884,7 +922,9 @@ void CPostFluxDlg::UpdateSelectionList()
 
     // If no ev.log has been opened yet
     if (m_calculator == nullptr)
+    {
         return;
+    }
 
     // The currently selected scan
     Evaluation::CScanResult& scan = m_calculator->m_scan[m_curScan];
@@ -929,16 +969,20 @@ void CPostFluxDlg::UpdateSelectionList()
         if (scan.GetPeakIntensity(i) / divisor < selectedIntensity)
         {
             if (m_selectedNum == 0)
+            {
                 str.AppendFormat("%d", i);
+            }
             else
+            {
                 str.AppendFormat(",%d", i);
+            }
 
             m_selected[m_selectedNum] = i;
             ++m_selectedNum;
         }
     }
 
-    // Finally, do the update. 
+    // Finally, do the update.
     m_automaticChange = true;
     SetDlgItemText(IDC_EDIT_SELECTEDPOINTS, str);
 
@@ -953,7 +997,9 @@ void CPostFluxDlg::OnChangeSelectionList()
 
     // If no ev.log has been opened yet
     if (m_calculator == nullptr)
+    {
         return;
+    }
 
     // If the update was made by the program, not by the user.
     if (m_automaticChange)
@@ -973,10 +1019,14 @@ void CPostFluxDlg::OnChangeSelectionList()
     while (szToken = strtok(szToken, ",; "))
     {
         if (strlen(szToken) == 0)
+        {
             continue;
+        }
 
         if (!sscanf(szToken, "%d", &i))
+        {
             break;
+        }
 
         if (i >= 0 && i <= m_calculator->m_scan[m_curScan].GetEvaluatedNum())
         {
@@ -993,7 +1043,7 @@ void CPostFluxDlg::OnChangeSelectionList()
 
 /** Retrieves the wind-speed and -direction to use and fills the values
         into the correct place for calculating the flux */
-void	CPostFluxDlg::RetrieveWindField()
+void CPostFluxDlg::RetrieveWindField()
 {
     CString ws, wd, ph;
     double tmpDouble;
@@ -1018,7 +1068,7 @@ void	CPostFluxDlg::RetrieveWindField()
     }
     else
     {
-        // Find the time 
+        // Find the time
         CDateTime dt;
         m_calculator->m_scan[this->m_curScan].GetStartTime(0, dt);
         if (SUCCESS != m_windFieldFromFile->InterpolateWindField(dt, m_calculator->m_wind))
@@ -1036,7 +1086,8 @@ void	CPostFluxDlg::RetrieveWindField()
         else
         {
             GetDlgItemText(IDC_PF_WINDSPEED, ws);
-            int ret = sscanf(ws, "%lf", &tmpDouble);	m_calculator->m_wind.SetWindSpeed(tmpDouble, MET_USER);
+            int ret = sscanf(ws, "%lf", &tmpDouble);
+            m_calculator->m_wind.SetWindSpeed(tmpDouble, MET_USER);
         }
 
         if (m_windFieldFromFile->m_containsWindDirection)
@@ -1047,7 +1098,8 @@ void	CPostFluxDlg::RetrieveWindField()
         else
         {
             GetDlgItemText(IDC_PF_WINDDIRECTION, wd);
-            int ret = sscanf(wd, "%lf", &tmpDouble);	m_calculator->m_wind.SetWindDirection(tmpDouble, MET_USER);
+            int ret = sscanf(wd, "%lf", &tmpDouble);
+            m_calculator->m_wind.SetWindDirection(tmpDouble, MET_USER);
         }
 
         if (m_windFieldFromFile->m_containsPlumeHeight)
@@ -1058,7 +1110,8 @@ void	CPostFluxDlg::RetrieveWindField()
         else
         {
             GetDlgItemText(IDC_PF_PLUMEHEIGHT, ph);
-            int ret = sscanf(ph, "%lf", &tmpDouble);	m_calculator->m_wind.SetPlumeHeight(tmpDouble, MET_USER);
+            int ret = sscanf(ph, "%lf", &tmpDouble);
+            m_calculator->m_wind.SetPlumeHeight(tmpDouble, MET_USER);
         }
     }
 }
@@ -1077,11 +1130,15 @@ void CPostFluxDlg::OnCalcFlux()
 
     // If no ev.log has been opened yet
     if (m_calculator == nullptr)
+    {
         return;
+    }
 
     // if there's no data, there's no use to try to calculate the flux
     if (m_calculator->m_scanNum <= 0)
+    {
         return;
+    }
 
     // Save all the data
     UpdateData(TRUE);
@@ -1095,9 +1152,13 @@ void CPostFluxDlg::OnCalcFlux()
 
     // The cone-angle
     if (m_coneangleCombo.GetCurSel() == -1)
+    {
         m_calculator->m_coneAngle = 90.0;
+    }
     else
+    {
         m_calculator->m_coneAngle = m_coneAngles[m_coneangleCombo.GetCurSel()];
+    }
 
     // The tilt
     GetDlgItemText(IDC_PF_TILT, tilt);
@@ -1158,7 +1219,9 @@ void CPostFluxDlg::OnDeleteSelectedPoints()
 
     // If no ev.log has been opened yet
     if (m_calculator == nullptr)
+    {
         return;
+    }
 
     // A handle to the current scan.
     Evaluation::CScanResult& scan = m_calculator->m_scan[m_curScan];
@@ -1177,7 +1240,9 @@ void CPostFluxDlg::OnResetDeletion()
 {
     // If no ev.log has been opened yet
     if (m_calculator == nullptr)
+    {
         return;
+    }
 
     // A handle to the current scan.
     Evaluation::CScanResult& scan = m_calculator->m_scan[m_curScan];
@@ -1198,7 +1263,9 @@ void CPostFluxDlg::OnChangeGas()
 
     // If no ev.log has been opened yet
     if (m_calculator == nullptr)
+    {
         return;
+    }
 
     // Get the specie
     m_curSpecie = m_gasCombo.GetCurSel();
@@ -1209,7 +1276,6 @@ void CPostFluxDlg::OnChangeGas()
 
     // Redraw the screen
     DrawScan();
-
 }
 
 /** Called when the user changes the cone-angle */
@@ -1229,13 +1295,19 @@ void CPostFluxDlg::OnChangeConeAngle()
 double CPostFluxDlg::Convert(double flux)
 {
     if (m_fluxUnitCombo.GetCurSel() == 0)
+    {
         return flux;
+    }
 
     if (m_fluxUnitCombo.GetCurSel() == 1)
-        return flux * 3.6 * 24.0;	// ton/day
+    {
+        return flux * 3.6 * 24.0; // ton/day
+    }
 
     if (m_fluxUnitCombo.GetCurSel() == 2)
-        return flux * 3600.0;		// kg/h
+    {
+        return flux * 3600.0;  // kg/h
+    }
 
     // shouldn't happen.
     return flux;
@@ -1323,7 +1395,7 @@ void CPostFluxDlg::SaveUserOffset(bool correct)
         return;
     }
 
-    // read the data 
+    // read the data
     m_userOffset = fValue;
 }
 void CPostFluxDlg::OnChangeEdit_Offset()
@@ -1347,7 +1419,6 @@ void CPostFluxDlg::OnShowPreviousScan()
 
     // updates the selection list
     UpdateSelectionList();
-
 }
 
 void CPostFluxDlg::OnShowNextScan()
@@ -1364,7 +1435,6 @@ void CPostFluxDlg::OnShowNextScan()
 
     // updates the selection list
     UpdateSelectionList();
-
 }
 
 void CPostFluxDlg::OnCalculateFlux_AllScansInPlume()
@@ -1375,24 +1445,31 @@ void CPostFluxDlg::OnCalculateFlux_AllScansInPlume()
 
     // If no ev.log has been opened yet
     if (m_calculator == nullptr)
+    {
         return;
+    }
 
     // If there's no data, there's no use to try to calculate the flux
     if (m_calculator->m_scanNum <= 0)
+    {
         return;
+    }
 
     // Tell the user about what is about to happen
     str.Format("This will calculate the flux for all scans which are judged as being in the plume. Only automatically removed data points will be deleted, and the offset will be calculated automatically. Do you want to continue?");
     int answer = MessageBox(str, "Automatic Calculation", MB_YESNO | MB_ICONWARNING);
     if (answer == IDNO)
+    {
         return;
+    }
 
     // Save all the data
     UpdateData(TRUE);
 
     // Get the plume height
     GetDlgItemText(IDC_PF_PLUMEHEIGHT, ph);
-    ret = sscanf(ph, "%lf", &tmpDouble);	m_calculator->m_wind.SetPlumeHeight(tmpDouble, MET_USER);
+    ret = sscanf(ph, "%lf", &tmpDouble);
+    m_calculator->m_wind.SetPlumeHeight(tmpDouble, MET_USER);
 
     // Get the compass-direction
     GetDlgItemText(IDC_PF_COMPASS, compass);
@@ -1400,9 +1477,13 @@ void CPostFluxDlg::OnCalculateFlux_AllScansInPlume()
 
     // The cone-angle
     if (m_coneangleCombo.GetCurSel() == -1)
+    {
         m_calculator->m_coneAngle = 90.0;
+    }
     else
+    {
         m_calculator->m_coneAngle = m_coneAngles[m_coneangleCombo.GetCurSel()];
+    }
 
     for (m_curScan = 0; m_curScan < m_calculator->m_scanNum; ++m_curScan)
     {
@@ -1418,7 +1499,9 @@ void CPostFluxDlg::OnCalculateFlux_AllScansInPlume()
         // If this measurement is not in the plume, then continue with the next
         //	scan in the file.
         if (!inplume)
+        {
             continue;
+        }
 
         // get the wind-speed and direction
         RetrieveWindField();
@@ -1460,7 +1543,9 @@ void CPostFluxDlg::OnCalculateWinddirection()
 
     // If no ev.log has been opened yet.
     if (m_calculator == nullptr)
+    {
         return;
+    }
 
     // A handle to the current scan
     Evaluation::CScanResult& scan = m_calculator->m_scan[m_curScan];
@@ -1486,7 +1571,9 @@ void CPostFluxDlg::OnCalculateWinddirection()
     {
         volcanoIndex = Geometry::CGeometryCalculator::GetNearestVolcano(sLat, sLon);
         if (volcanoIndex == -1)
+        {
             return; //<-- no volcano found
+        }
     }
     source.m_latitude = g_volcanoes.m_peakLatitude[volcanoIndex];
     source.m_longitude = g_volcanoes.m_peakLongitude[volcanoIndex];
@@ -1504,7 +1591,9 @@ void CPostFluxDlg::OnCalculateWinddirection()
         scan.CalculatePlumeCentre(scan.GetSpecieName(0, m_curSpecie), plumeCentre, tmp, plumeCompleteness, plumeEdge_low, plumeEdge_high);
     }
     if (plumeCentre < -900)
+    {
         return; // <-- no plume to see.
+    }
 
     // 6. Get the cone-angle of the system
     coneAngle = scan.GetConeAngle();
@@ -1515,7 +1604,9 @@ void CPostFluxDlg::OnCalculateWinddirection()
     // 8. Calculate the wind-direction
     double windDirection = Geometry::CGeometryCalculator::GetWindDirection(source, assumedPlumeHeight, scannerPos, compass, plumeCentre, coneAngle, tilt);
     if (windDirection < -900)
+    {
         return;
+    }
 
     m_windField.SetWindDirection(windDirection, MET_GEOMETRY_CALCULATION);
 
@@ -1523,7 +1614,6 @@ void CPostFluxDlg::OnCalculateWinddirection()
     CString str;
     str.Format("%.1lf", m_windField.GetWindDirection());
     SetDlgItemText(IDC_PF_WINDDIRECTION, str);
-
 }
 
 
@@ -1575,7 +1665,9 @@ void CPostFluxDlg::OnImportWindField()
 
     // let the user browse for an evaluation log file and if one is selected, read it
     if (!common.BrowseForFile(filter, windFile))
+    {
         return;
+    }
 
     // Completely reset the data.
     if (m_windFieldFromFile != nullptr)
@@ -1604,17 +1696,29 @@ void CPostFluxDlg::OnImportWindField()
 
     // Disable the user input of the wind-speed and direction
     if (m_windFieldFromFile->m_containsWindSpeed)
+    {
         m_editWindSpeed.EnableWindow(FALSE);
+    }
     else
+    {
         m_editWindSpeed.EnableWindow(TRUE);
+    }
     if (m_windFieldFromFile->m_containsWindDirection)
+    {
         m_editWindDirection.EnableWindow(FALSE);
+    }
     else
+    {
         m_editWindDirection.EnableWindow(TRUE);
+    }
     if (m_windFieldFromFile->m_containsPlumeHeight)
+    {
         m_editPlumeHeight.EnableWindow(FALSE);
+    }
     else
+    {
         m_editPlumeHeight.EnableWindow(TRUE);
+    }
 }
 
 void CPostFluxDlg::OnInitMenuPopup(CMenu* pPopupMenu, UINT nIndex, BOOL bSysMenu)
@@ -1631,7 +1735,9 @@ void CPostFluxDlg::OnInitMenuPopup(CMenu* pPopupMenu, UINT nIndex, BOOL bSysMenu
     // it if so (m_pParentMenu == nullptr indicates that it is secondary popup).
     HMENU hParentMenu;
     if (AfxGetThreadState()->m_hTrackingMenu == pPopupMenu->m_hMenu)
-        state.m_pParentMenu = pPopupMenu;		// Parent == child for tracking popup.
+    {
+        state.m_pParentMenu = pPopupMenu;  // Parent == child for tracking popup.
+    }
     else if ((hParentMenu = ::GetMenu(m_hWnd)) != nullptr)
     {
         CWnd* pParent = this;
@@ -1658,7 +1764,9 @@ void CPostFluxDlg::OnInitMenuPopup(CMenu* pPopupMenu, UINT nIndex, BOOL bSysMenu
     {
         state.m_nID = pPopupMenu->GetMenuItemID(state.m_nIndex);
         if (state.m_nID == 0)
+        {
             continue; // Menu separator or invalid cmd - ignore it.
+        }
 
         ASSERT(state.m_pOther == nullptr);
         ASSERT(state.m_pMenu != nullptr);
@@ -1670,9 +1778,9 @@ void CPostFluxDlg::OnInitMenuPopup(CMenu* pPopupMenu, UINT nIndex, BOOL bSysMenu
                 (state.m_nID = state.m_pSubMenu->GetMenuItemID(0)) == 0 ||
                 state.m_nID == (UINT)-1)
             {
-                continue;			 // First item of popup can't be routed to.
+                continue;    // First item of popup can't be routed to.
             }
-            state.DoUpdate(this, TRUE);	 // Popups are never auto disabled.
+            state.DoUpdate(this, TRUE);  // Popups are never auto disabled.
         }
         else
         {
@@ -1701,43 +1809,65 @@ void CPostFluxDlg::OnInitMenuPopup(CMenu* pPopupMenu, UINT nIndex, BOOL bSysMenu
 void CPostFluxDlg::OnUpdateViewPeakintensity(CCmdUI* pCmdUI)
 {
     if (m_show.peakIntensity)
+    {
         pCmdUI->SetCheck(BST_CHECKED);
+    }
     else
+    {
         pCmdUI->SetCheck(BST_UNCHECKED);
+    }
 }
 void CPostFluxDlg::OnUpdateViewFitintensity(CCmdUI* pCmdUI)
 {
     if (m_show.fitIntensity)
+    {
         pCmdUI->SetCheck(1);
+    }
     else
+    {
         pCmdUI->SetCheck(0);
+    }
 }
 void CPostFluxDlg::OnUpdateViewChiSquare(CCmdUI* pCmdUI)
 {
     if (m_show.chiSquare)
+    {
         pCmdUI->SetCheck(1);
+    }
     else
+    {
         pCmdUI->SetCheck(0);
+    }
 }
 void CPostFluxDlg::OnUpdateViewDelta(CCmdUI* pCmdUI)
 {
     if (m_show.delta)
+    {
         pCmdUI->SetCheck(1);
+    }
     else
+    {
         pCmdUI->SetCheck(0);
+    }
 }
 void CPostFluxDlg::OnUpdateViewColumnError(CCmdUI* pCmdUI)
 {
     if (m_show.columnError)
+    {
         pCmdUI->SetCheck(1);
+    }
     else
+    {
         pCmdUI->SetCheck(0);
+    }
 }
 
 void CPostFluxDlg::OnClickedLabelCompassdirection()
 {
     if (m_calculator == nullptr)
+    {
         return; // no evaluation log to open....
+    }
 
     Dialogs::CGeometryDlg geomDlg;
 
@@ -1747,7 +1877,6 @@ void CPostFluxDlg::OnClickedLabelCompassdirection()
     geomDlg.m_evalLogReader[0]->ReadEvaluationLog();
 
     geomDlg.DoModal();
-
 }
 
 void CPostFluxDlg::OnSaveScanGraph_AsASCII()
@@ -1767,7 +1896,6 @@ void CPostFluxDlg::OnSaveScanGraph_AsASCII()
             MessageBox("Could not open file for writing. Failed to save graph.");
             return;
         }
-
 
 
         fclose(f);

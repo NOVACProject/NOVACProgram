@@ -15,7 +15,10 @@ public:
 
     // Dialog Data
 #ifdef AFX_DESIGN_TIME
-    enum { IDD = IDD_CONFIGURE_CALIBRATION };
+    enum
+    {
+        IDD = IDD_CONFIGURE_CALIBRATION
+    };
 #endif
 
 protected:

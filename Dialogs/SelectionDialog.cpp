@@ -38,9 +38,12 @@ BOOL CSelectionDialog::OnInitDialog()
     CDialog::OnInitDialog();
 
     /** Add the strings */
-    for (int i = 0; i < MAX_OPTIONS; ++i) {
+    for (int i = 0; i < MAX_OPTIONS; ++i)
+    {
         if (strlen(m_option[i]) > 0)
+        {
             m_comboBox.AddString(m_option[i]);
+        }
     }
     m_comboBox.SetCurSel(0);
 
@@ -55,7 +58,8 @@ BOOL CSelectionDialog::OnInitDialog()
 
 void CSelectionDialog::OnOK()
 {
-    if ((this->m_currentSelection != NULL) && (m_comboBox.GetCurSel() >= 0)) {
+    if ((this->m_currentSelection != NULL) && (m_comboBox.GetCurSel() >= 0))
+    {
         UpdateData(TRUE);
         m_currentSelection->Format(m_option[m_comboBox.GetCurSel()]);
     }

@@ -47,7 +47,8 @@ UINT DownloadFileListWithSerial(LPVOID pParam)
     dlg->m_fileStatusEdit.SetWindowText("Downloading file list ...");
     time(&tStart);
 
-    if (!dlg->m_SerialController->InitCommunication('B')) {
+    if (!dlg->m_SerialController->InitCommunication('B'))
+    {
         dlg->m_busy = false;
         return 0;
     }
@@ -143,7 +144,7 @@ UINT DownloadFileWithSerial(LPVOID pParam)
     CFileTransferDlg* dlg = (CFileTransferDlg*)pParam;
     CString oldFullName, fileName, directory;
     char disk = dlg->m_diskName[0];
-    int  curScanner = dlg->m_curScanner;
+    int curScanner = dlg->m_curScanner;
     char command[128];
     long fileSize;
 
@@ -156,7 +157,8 @@ UINT DownloadFileWithSerial(LPVOID pParam)
     fileName.Format(dlg->m_remoteFileName);
     int slashIndex = fileName.Find('\\');
 
-    if (slashIndex != -1) {
+    if (slashIndex != -1)
+    {
         // If the file resides inside one directory...
         directory.Format("%s", (LPCSTR)fileName.Left(slashIndex));
         fileName.Format("%s", (LPCSTR)fileName.Right(strlen(dlg->m_remoteFileName) - slashIndex - 1));
@@ -166,7 +168,8 @@ UINT DownloadFileWithSerial(LPVOID pParam)
         sprintf(command, "cd %s", (LPCSTR)directory);
         dlg->m_SerialController->SendCommand(command);
     }
-    else {
+    else
+    {
         // If the file resided in the top directory
         fileName.Format("%s", dlg->m_remoteFileName);
         fileSize = dlg->GetListFileSize(fileName, disk);
@@ -176,13 +179,15 @@ UINT DownloadFileWithSerial(LPVOID pParam)
     {
         oldFullName.Format("%s%s", (LPCSTR)dlg->m_storagePath, (LPCSTR)fileName);
         if (oldFullName != dlg->m_localFileFullName)
+        {
             CFile::Rename(oldFullName, dlg->m_localFileFullName);
+        }
         dlg->m_fileStatusEdit.SetWindowText("SUCCESSFULLY DOWNLOADED");
-
     }
 
     // Remember to go up from the specified directory again...
-    if (slashIndex != -1) {
+    if (slashIndex != -1)
+    {
         dlg->m_SerialController->SendCommand("cd ..");
     }
 
@@ -199,13 +204,14 @@ UINT DownloadFileWithFTP(LPVOID pParam)
 
     time(&startTime);
     char disk = dlg->m_diskName[0];
-    if (disk == 'B') {
+    if (disk == 'B')
+    {
         if (dlg->m_ftpController->Connect(
-            dlg->m_ftpController->m_ftpInfo.hostName,
-            dlg->m_ftpController->m_ftpInfo.userName,
-            dlg->m_ftpController->m_ftpInfo.password,
-            dlg->m_ftpController->m_ftpInfo.timeout,
-            dlg->m_ftpController->m_ftpInfo.port) != 1)
+                dlg->m_ftpController->m_ftpInfo.hostName,
+                dlg->m_ftpController->m_ftpInfo.userName,
+                dlg->m_ftpController->m_ftpInfo.password,
+                dlg->m_ftpController->m_ftpInfo.timeout,
+                dlg->m_ftpController->m_ftpInfo.port) != 1)
         {
             msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.hostName);
             dlg->m_fileStatusEdit.SetWindowText(msg);
@@ -213,12 +219,13 @@ UINT DownloadFileWithFTP(LPVOID pParam)
             return 0;
         }
     }
-    else {
+    else
+    {
         if (dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.hostName,
-            dlg->m_ftpController->m_ftpInfo.adminUserName,
-            dlg->m_ftpController->m_ftpInfo.adminPassword,
-            dlg->m_ftpController->m_ftpInfo.timeout,
-            dlg->m_ftpController->m_ftpInfo.port) != 1)
+                dlg->m_ftpController->m_ftpInfo.adminUserName,
+                dlg->m_ftpController->m_ftpInfo.adminPassword,
+                dlg->m_ftpController->m_ftpInfo.timeout,
+                dlg->m_ftpController->m_ftpInfo.port) != 1)
         {
             msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.hostName);
             dlg->m_fileStatusEdit.SetWindowText(msg);
@@ -229,7 +236,8 @@ UINT DownloadFileWithFTP(LPVOID pParam)
 
     fileName.Format(dlg->m_remoteFileName);
     int slashIndex = fileName.Find('\\');
-    if (slashIndex != -1) {
+    if (slashIndex != -1)
+    {
         // If the file resides inside one directory...
         directory.Format("%s", (LPCSTR)fileName.Left(slashIndex));
         fileName.Format("%s", (LPCSTR)fileName.Right(strlen(dlg->m_remoteFileName) - slashIndex - 1));
@@ -237,7 +245,8 @@ UINT DownloadFileWithFTP(LPVOID pParam)
         // Enter the folder of the file
         dlg->m_ftpController->EnterFolder(directory);
     }
-    else {
+    else
+    {
         // If the file resided in the top directory
         fileName.Format("%s", dlg->m_remoteFileName);
     }
@@ -251,7 +260,9 @@ UINT DownloadFileWithFTP(LPVOID pParam)
         return false;
     }
     if (slashIndex != -1)
+    {
         dlg->m_ftpController->GotoTopDirectory();
+    }
 
     time(&stopTime);
     dlg->m_ftpController->Disconnect();
@@ -266,14 +277,15 @@ UINT DownloadFolderWithSerial(LPVOID pParam)
     CString fileName, folderName;
     CString oldFullName, msg;
     char disk = dlg->m_diskName[0];
-    int  curScanner = dlg->m_curScanner;
+    int curScanner = dlg->m_curScanner;
     char command[128];
     long fileSize;
 
     dlg->m_busy = true;
 
     // First get the list of the files to download
-    if (ExpandFolderBySerial(pParam)) {
+    if (ExpandFolderBySerial(pParam))
+    {
         msg.Format("Failed to get file list");
         return 1;
     }
@@ -282,16 +294,19 @@ UINT DownloadFolderWithSerial(LPVOID pParam)
     folderName.Format(dlg->m_remoteFileName);
 
     // Get a handle to the folder-list
-    CList <CScannerFileInfo*, CScannerFileInfo*>* list = NULL;
+    CList<CScannerFileInfo*, CScannerFileInfo*>* list = NULL;
     POSITION pos = dlg->m_folderListB.GetHeadPosition();
-    while (pos != NULL) {
+    while (pos != NULL)
+    {
         CScannerFolderInfo* folderInfo = dlg->m_folderListB.GetNext(pos);
-        if (Equals(folderInfo->folderName, folderName)) {
+        if (Equals(folderInfo->folderName, folderName))
+        {
             list = &folderInfo->m_fileList;
             break;
         }
     }
-    if (list == NULL) {
+    if (list == NULL)
+    {
         dlg->m_busy = false;
         return 1; // ERROR...
     }
@@ -308,7 +323,8 @@ UINT DownloadFolderWithSerial(LPVOID pParam)
 
     // Download all files in the directory...
     pos = list->GetHeadPosition();
-    while (pos != NULL) {
+    while (pos != NULL)
+    {
         CScannerFileInfo* folderItem = list->GetNext(pos);
 
         // the name and size of the remote file to download
@@ -320,14 +336,17 @@ UINT DownloadFolderWithSerial(LPVOID pParam)
         {
             // Get the file-name on the local computer
             if (!Equals(dlg->m_storagePath.Right(1), "\\"))
+            {
                 oldFullName.Format("%s\\%s", (LPCSTR)dlg->m_storagePath, (LPCSTR)fileName);
+            }
             else
+            {
                 oldFullName.Format("%s%s", (LPCSTR)dlg->m_storagePath, (LPCSTR)fileName);
+            }
 
             // Tell the user about our progress
             msg.Format("%s downloaded", (LPCSTR)fileName);
             dlg->m_fileStatusEdit.SetWindowText(msg);
-
         }
     }
 
@@ -347,7 +366,8 @@ UINT DownloadFolderWithFTP(LPVOID pParam)
     time(&startTime);
 
     // First get the list of the files to download
-    if (ExpandFolderByFTP(pParam)) {
+    if (ExpandFolderByFTP(pParam))
+    {
         msg.Format("Failed to get file list");
         return 1;
     }
@@ -356,23 +376,27 @@ UINT DownloadFolderWithFTP(LPVOID pParam)
     folderName.Format(dlg->m_remoteFileName);
 
     // Get a handle to the folder-list
-    CList <CScannerFileInfo*, CScannerFileInfo*>* list = NULL;
+    CList<CScannerFileInfo*, CScannerFileInfo*>* list = NULL;
     POSITION pos = dlg->m_folderListB.GetHeadPosition();
-    while (pos != NULL) {
+    while (pos != NULL)
+    {
         CScannerFolderInfo* folderInfo = dlg->m_folderListB.GetNext(pos);
-        if (Equals(folderInfo->folderName, folderName)) {
+        if (Equals(folderInfo->folderName, folderName))
+        {
             list = &folderInfo->m_fileList;
             break;
         }
     }
     if (list == NULL)
+    {
         return 1; // ERROR...
+    }
 
     if (dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.hostName,
-        dlg->m_ftpController->m_ftpInfo.userName,
-        dlg->m_ftpController->m_ftpInfo.password,
-        dlg->m_ftpController->m_ftpInfo.timeout,
-        dlg->m_ftpController->m_ftpInfo.port) != 1)
+            dlg->m_ftpController->m_ftpInfo.userName,
+            dlg->m_ftpController->m_ftpInfo.password,
+            dlg->m_ftpController->m_ftpInfo.timeout,
+            dlg->m_ftpController->m_ftpInfo.port) != 1)
     {
         msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.hostName);
         dlg->m_fileStatusEdit.SetWindowText(msg);
@@ -385,7 +409,8 @@ UINT DownloadFolderWithFTP(LPVOID pParam)
 
     // Download all files in the directory...
     pos = list->GetHeadPosition();
-    while (pos != NULL) {
+    while (pos != NULL)
+    {
         CScannerFileInfo* folderItem = list->GetNext(pos);
 
         // the name and size of the remote file to download
@@ -434,12 +459,13 @@ UINT ViewFileByFTP(LPVOID pParam)
     // download file
     char disk = dlg->m_diskName[0];
     time(&startTime);
-    if (disk == 'B') {
+    if (disk == 'B')
+    {
         if (dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.hostName,
-            dlg->m_ftpController->m_ftpInfo.userName,
-            dlg->m_ftpController->m_ftpInfo.password,
-            dlg->m_ftpController->m_ftpInfo.timeout,
-            dlg->m_ftpController->m_ftpInfo.port) != 1)
+                dlg->m_ftpController->m_ftpInfo.userName,
+                dlg->m_ftpController->m_ftpInfo.password,
+                dlg->m_ftpController->m_ftpInfo.timeout,
+                dlg->m_ftpController->m_ftpInfo.port) != 1)
         {
             msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.hostName);
             dlg->m_fileStatusEdit.SetWindowText(msg);
@@ -447,12 +473,13 @@ UINT ViewFileByFTP(LPVOID pParam)
             return 0;
         }
     }
-    else {
+    else
+    {
         if (dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.hostName,
-            dlg->m_ftpController->m_ftpInfo.adminUserName,
-            dlg->m_ftpController->m_ftpInfo.adminPassword,
-            dlg->m_ftpController->m_ftpInfo.timeout,
-            dlg->m_ftpController->m_ftpInfo.port) != 1)
+                dlg->m_ftpController->m_ftpInfo.adminUserName,
+                dlg->m_ftpController->m_ftpInfo.adminPassword,
+                dlg->m_ftpController->m_ftpInfo.timeout,
+                dlg->m_ftpController->m_ftpInfo.port) != 1)
         {
             msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.hostName);
             dlg->m_fileStatusEdit.SetWindowText(msg);
@@ -462,7 +489,8 @@ UINT ViewFileByFTP(LPVOID pParam)
     }
 
     int slashIndex = fileName.Find('\\');
-    if (slashIndex != -1) {
+    if (slashIndex != -1)
+    {
         // If the file resides inside one directory...
         directory.Format("%s", (LPCSTR)fileName.Left(slashIndex));
         fileName.Format("%s", (LPCSTR)fileName.Right(strlen(dlg->m_remoteFileName) - slashIndex - 1));
@@ -470,7 +498,8 @@ UINT ViewFileByFTP(LPVOID pParam)
         // Enter the folder of the file
         dlg->m_ftpController->EnterFolder(directory);
     }
-    else {
+    else
+    {
         // If the file resided in the top directory
         fileName.Format("%s", dlg->m_remoteFileName);
     }
@@ -491,14 +520,13 @@ UINT ViewFileByFTP(LPVOID pParam)
     //show content
     dlg->ShowFileContent(fullFileName);
     return 0;
-
 }
 UINT ViewFileBySerial(LPVOID pParam)
 {
     CString string, fileName, msg;
     long fileSize;
     char* buffer = 0;
-    char  disk;
+    char disk;
     CFileTransferDlg* dlg = (CFileTransferDlg*)pParam;
     //judge whether the file is  downloaded
     fileName.Format("%s%s", (LPCSTR)dlg->m_storagePath, (LPCSTR)dlg->m_remoteFileName);
@@ -536,7 +564,8 @@ UINT ExpandFolderBySerial(LPVOID pParam)
     // Judge if this actually is a folder
     folderName.Format(dlg->m_remoteFileName);
 
-    if (!dlg->IsDir(folderName)) {
+    if (!dlg->IsDir(folderName))
+    {
         msg.Format("%s is not a directory\r\n", (LPCSTR)folderName);
         dlg->ShowDlgInfo(msg);
         return 1;
@@ -545,16 +574,19 @@ UINT ExpandFolderBySerial(LPVOID pParam)
     dlg->m_busy = true;
 
     // Get a handle to the folder-list
-    CList <CScannerFileInfo*, CScannerFileInfo*>* list = NULL;
+    CList<CScannerFileInfo*, CScannerFileInfo*>* list = NULL;
     POSITION pos = dlg->m_folderListB.GetHeadPosition();
-    while (pos != NULL) {
+    while (pos != NULL)
+    {
         CScannerFolderInfo* folderInfo = dlg->m_folderListB.GetNext(pos);
-        if (Equals(folderInfo->folderName, folderName)) {
+        if (Equals(folderInfo->folderName, folderName))
+        {
             list = &folderInfo->m_fileList;
             break;
         }
     }
-    if (list == NULL) {
+    if (list == NULL)
+    {
         dlg->m_busy = false;
         return 1; // ERROR...
     }
@@ -562,7 +594,8 @@ UINT ExpandFolderBySerial(LPVOID pParam)
     time(&tStart);
     dlg->m_SerialController->Bye();
 
-    if (!dlg->m_SerialController->GetFileListText_Folder(folderName, text)) {
+    if (!dlg->m_SerialController->GetFileListText_Folder(folderName, text))
+    {
         dlg->m_fileStatusEdit.SetWindowText("Can not download file list");
         dlg->m_busy = false;
         return 1;
@@ -589,27 +622,33 @@ UINT ExpandFolderByFTP(LPVOID pParam)
     // Judge if this actually is a folder
     folderName.Format(dlg->m_remoteFileName);
 
-    if (!dlg->IsDir(folderName)) {
+    if (!dlg->IsDir(folderName))
+    {
         msg.Format("%s is not a directory\r\n", (LPCSTR)folderName);
         dlg->ShowDlgInfo(msg);
         return 0;
     }
 
     // Get a handle to the folder-list
-    CList <CScannerFileInfo*, CScannerFileInfo*>* list = NULL;
+    CList<CScannerFileInfo*, CScannerFileInfo*>* list = NULL;
     POSITION pos = dlg->m_folderListB.GetHeadPosition();
-    while (pos != NULL) {
+    while (pos != NULL)
+    {
         CScannerFolderInfo* folderInfo = dlg->m_folderListB.GetNext(pos);
-        if (Equals(folderInfo->folderName, folderName)) {
+        if (Equals(folderInfo->folderName, folderName))
+        {
             list = &folderInfo->m_fileList;
             break;
         }
     }
     if (list == NULL)
+    {
         return 0; // ERROR...
+    }
 
     time(&tStart);
-    if (!dlg->m_ftpController->GetPakFileList(folderName)) {
+    if (!dlg->m_ftpController->GetPakFileList(folderName))
+    {
         dlg->m_fileStatusEdit.SetWindowText("Can not download file list");
         return 0;
     }
@@ -639,12 +678,13 @@ UINT UpdateFileWithFTP(LPVOID pParam)
     localFilePath.Format("%s%s", (LPCSTR)dlg->m_storagePath, (LPCSTR)dlg->m_remoteFileName);
     //connect with ftp server
     char disk = dlg->m_diskName[0];
-    if (disk == 'B') {
+    if (disk == 'B')
+    {
         if (dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.hostName,
-            dlg->m_ftpController->m_ftpInfo.userName,
-            dlg->m_ftpController->m_ftpInfo.password,
-            dlg->m_ftpController->m_ftpInfo.timeout,
-            dlg->m_ftpController->m_ftpInfo.port) != 1)
+                dlg->m_ftpController->m_ftpInfo.userName,
+                dlg->m_ftpController->m_ftpInfo.password,
+                dlg->m_ftpController->m_ftpInfo.timeout,
+                dlg->m_ftpController->m_ftpInfo.port) != 1)
         {
             msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.hostName);
             dlg->m_fileStatusEdit.SetWindowText(msg);
@@ -652,12 +692,13 @@ UINT UpdateFileWithFTP(LPVOID pParam)
             return 0;
         }
     }
-    else {
+    else
+    {
         if (dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.hostName,
-            dlg->m_ftpController->m_ftpInfo.adminUserName,
-            dlg->m_ftpController->m_ftpInfo.adminPassword,
-            dlg->m_ftpController->m_ftpInfo.timeout,
-            dlg->m_ftpController->m_ftpInfo.port) != 1)
+                dlg->m_ftpController->m_ftpInfo.adminUserName,
+                dlg->m_ftpController->m_ftpInfo.adminPassword,
+                dlg->m_ftpController->m_ftpInfo.timeout,
+                dlg->m_ftpController->m_ftpInfo.port) != 1)
         {
             msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.hostName);
             dlg->m_fileStatusEdit.SetWindowText(msg);
@@ -683,12 +724,13 @@ UINT UploadFileWithFTP(LPVOID pParam)
     localFilePath.Format("%s%s", (LPCSTR)dlg->m_storagePath, (LPCSTR)dlg->m_remoteFileName);
     //connect with ftp server
     char disk = dlg->m_diskName[0];
-    if (disk == 'B') {
+    if (disk == 'B')
+    {
         if (dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.hostName,
-            dlg->m_ftpController->m_ftpInfo.userName,
-            dlg->m_ftpController->m_ftpInfo.password,
-            dlg->m_ftpController->m_ftpInfo.timeout,
-            dlg->m_ftpController->m_ftpInfo.port) != 1)
+                dlg->m_ftpController->m_ftpInfo.userName,
+                dlg->m_ftpController->m_ftpInfo.password,
+                dlg->m_ftpController->m_ftpInfo.timeout,
+                dlg->m_ftpController->m_ftpInfo.port) != 1)
         {
             msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.hostName);
             dlg->m_fileStatusEdit.SetWindowText(msg);
@@ -696,12 +738,13 @@ UINT UploadFileWithFTP(LPVOID pParam)
             return 0;
         }
     }
-    else {
+    else
+    {
         if (dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.hostName,
-            dlg->m_ftpController->m_ftpInfo.adminUserName,
-            dlg->m_ftpController->m_ftpInfo.adminPassword,
-            dlg->m_ftpController->m_ftpInfo.timeout,
-            dlg->m_ftpController->m_ftpInfo.port) != 1)
+                dlg->m_ftpController->m_ftpInfo.adminUserName,
+                dlg->m_ftpController->m_ftpInfo.adminPassword,
+                dlg->m_ftpController->m_ftpInfo.timeout,
+                dlg->m_ftpController->m_ftpInfo.port) != 1)
         {
             msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.hostName);
             dlg->m_fileStatusEdit.SetWindowText(msg);
@@ -747,12 +790,13 @@ UINT DeleteFileByFTP(LPVOID pParam)
     remoteFileName.Format("%s", dlg->m_remoteFileName);
 
     char disk = dlg->m_diskName[0];
-    if (disk == 'B') {
+    if (disk == 'B')
+    {
         if (dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.hostName,
-            dlg->m_ftpController->m_ftpInfo.userName,
-            dlg->m_ftpController->m_ftpInfo.password,
-            dlg->m_ftpController->m_ftpInfo.timeout,
-            dlg->m_ftpController->m_ftpInfo.port) != 1)
+                dlg->m_ftpController->m_ftpInfo.userName,
+                dlg->m_ftpController->m_ftpInfo.password,
+                dlg->m_ftpController->m_ftpInfo.timeout,
+                dlg->m_ftpController->m_ftpInfo.port) != 1)
         {
             msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.hostName);
             dlg->m_fileStatusEdit.SetWindowText(msg);
@@ -760,12 +804,13 @@ UINT DeleteFileByFTP(LPVOID pParam)
             return 0;
         }
     }
-    else {
+    else
+    {
         if (dlg->m_ftpController->Connect(dlg->m_ftpController->m_ftpInfo.hostName,
-            dlg->m_ftpController->m_ftpInfo.adminUserName,
-            dlg->m_ftpController->m_ftpInfo.adminPassword,
-            dlg->m_ftpController->m_ftpInfo.timeout,
-            dlg->m_ftpController->m_ftpInfo.port) != 1)
+                dlg->m_ftpController->m_ftpInfo.adminUserName,
+                dlg->m_ftpController->m_ftpInfo.adminPassword,
+                dlg->m_ftpController->m_ftpInfo.timeout,
+                dlg->m_ftpController->m_ftpInfo.port) != 1)
         {
             msg.Format("%s can not be connected", (LPCSTR)dlg->m_ftpController->m_ftpInfo.hostName);
             dlg->m_fileStatusEdit.SetWindowText(msg);
@@ -780,7 +825,6 @@ UINT DeleteFileByFTP(LPVOID pParam)
     dlg->m_ftpController->Disconnect();
     AfxBeginThread(DownloadFileListWithFTP, dlg, THREAD_PRIORITY_NORMAL, 0, 0, NULL);
     return 0;
-
 }
 //delete file with serial connection
 UINT DeleteFileBySerial(LPVOID pParam)
@@ -838,7 +882,6 @@ UINT UploadFileWithSerial(LPVOID pParam)
             return 0;
         }
         dlg->m_fileStatusEdit.SetWindowText("Finish downloading file list from disks ");
-
     }
 
     // Update the lists...
@@ -849,7 +892,6 @@ UINT UploadFileWithSerial(LPVOID pParam)
     dlg->m_busy = false;
     return 0;
 }
-
 
 
 IMPLEMENT_DYNAMIC(CFileTransferDlg, CDialog)
@@ -866,23 +908,24 @@ CFileTransferDlg::CFileTransferDlg(CWnd* pParent /*=NULL*/)
     m_storagePath.Format("%sTemp\\", (LPCSTR)g_settings.outputDirectory);
     m_preScanner = -100;
     m_click = 0;
-    if (CreateDirectoryStructure(m_storagePath)) { // Make sure that the storage directory exists
+    if (CreateDirectoryStructure(m_storagePath))
+    { // Make sure that the storage directory exists
         GetSysTempFolder(m_storagePath); // Try with the system - temp folder instead
-        if (CreateDirectoryStructure(m_storagePath)) {
+        if (CreateDirectoryStructure(m_storagePath))
+        {
             MessageBox("Could not create temporary directory");
         }
     }
-
 }
 
 CFileTransferDlg::~CFileTransferDlg()
 {
     ClearOut();
-    if (m_SerialController != NULL) {
-        delete(m_SerialController);
+    if (m_SerialController != NULL)
+    {
+        delete (m_SerialController);
         m_SerialController = NULL;
     }
-
 }
 
 void CFileTransferDlg::DoDataExchange(CDataExchange* pDX)
@@ -921,8 +964,10 @@ BOOL CFileTransferDlg::OnInitDialog()
     m_preScanner = -100;
     // Update the scanner list.
     m_scannerList.ResetContent();
-    if (g_settings.scannerNum > 0) {
-        for (i = 0; i < g_settings.scannerNum; ++i) {
+    if (g_settings.scannerNum > 0)
+    {
+        for (i = 0; i < g_settings.scannerNum; ++i)
+        {
             m_scannerList.AddString(g_settings.scanner[i].spec[0].serialNumber);
         }
         m_scannerList.SetCurSel(0);
@@ -1016,7 +1061,8 @@ LRESULT CFileTransferDlg::OnUpdateFileTree(WPARAM wParam, LPARAM lParam)
 
         // Also fill in the file information in the folder, if any...
         POSITION folderListPos = folderInfo->m_fileList.GetHeadPosition();
-        while (folderListPos != NULL) {
+        while (folderListPos != NULL)
+        {
             CScannerFileInfo* fileInfo = folderInfo->m_fileList.GetNext(folderListPos);
             fileFullName.Format("%s.%s", (LPCSTR)fileInfo->fileName, (LPCSTR)fileInfo->fileSuffix);
 
@@ -1025,7 +1071,9 @@ LRESULT CFileTransferDlg::OnUpdateFileTree(WPARAM wParam, LPARAM lParam)
             elementIdx++;
         }
         if (folderInfo->m_fileList.GetSize() > 0)
+        {
             m_fileTree.Expand(hTItem, TVE_EXPAND);
+        }
     }
 
 
@@ -1044,11 +1092,17 @@ void CFileTransferDlg::SetFilter(TCHAR* filterText)
     CString subfix = m_selItemText.Right(3);
 
     if (subfix = _T("PAK"))
+    {
         sprintf(filterText, "Compressed spectrum file\0*.pak\0\0");
+    }
     else if (subfix = _T("EXE"))
+    {
         sprintf(filterText, "Executable file\0*.exe\0\0");
+    }
     else
+    {
         sprintf(filterText, "%s file\0*.%s\0\0", (LPCSTR)subfix);
+    }
 }
 
 void CFileTransferDlg::OnDownloadFile()
@@ -1058,7 +1112,8 @@ void CFileTransferDlg::OnDownloadFile()
     CString filePath, directory, fileSubfix;
 
     // check if we're busy doing something else...
-    if (m_busy) {
+    if (m_busy)
+    {
         MessageBox("Please wait for current transfer to finish");
         return;
     }
@@ -1066,19 +1121,24 @@ void CFileTransferDlg::OnDownloadFile()
     // Get the currently selected scanner
     int curScanner = m_scannerList.GetCurSel();
     if (curScanner < 0)
+    {
         return;
+    }
 
     // Check if this is a disk
-    if (Equals(m_remoteFileName, "disk A") || Equals(m_remoteFileName, "disk B")) {
+    if (Equals(m_remoteFileName, "disk A") || Equals(m_remoteFileName, "disk B"))
+    {
         // this is a disk
         return OnDownloadDisk();
     }
 
     // Check if this is a file or a folder...
     POSITION pos = m_folderListB.GetHeadPosition();
-    while (pos != NULL) {
+    while (pos != NULL)
+    {
         CScannerFolderInfo* folderInfo = m_folderListB.GetNext(pos);
-        if (Equals(m_remoteFileName, folderInfo->folderName)) {
+        if (Equals(m_remoteFileName, folderInfo->folderName))
+        {
             return OnDownloadFolder(); // this is a folder, call the function to downloads folders instead
         }
     }
@@ -1087,16 +1147,20 @@ void CFileTransferDlg::OnDownloadFile()
     TCHAR subfix[56];
     SetFilter(subfix);
     char* pt = strstr(m_remoteFileName, "\\");
-    if (pt != NULL) {
+    if (pt != NULL)
+    {
         filePath.Format("%s", pt + 1);
     }
-    else {
+    else
+    {
         filePath.Format("%s", m_remoteFileName);
     }
     common.BrowseForFile_SaveAs(subfix, filePath);
     m_localFileFullName = filePath;
     if (strlen(filePath) <= 0)
+    {
         return;
+    }
 
     // Get the directory that the user chose
     directory.Format(filePath);
@@ -1115,16 +1179,24 @@ void CFileTransferDlg::OnDownloadFile()
             }
         }
         else
+        {
             return;
+        }
     }
     if (m_diskName[0] == 'Z')
+    {
         return;
+    }
 
     m_curScanner = curScanner;
     if (m_communicationType == SERIAL_CONNECTION)
+    {
         AfxBeginThread(DownloadFileWithSerial, this, THREAD_PRIORITY_NORMAL, 0, 0, NULL);
+    }
     else
+    {
         AfxBeginThread(DownloadFileWithFTP, this, THREAD_PRIORITY_NORMAL, 0, 0, NULL);
+    }
 }
 
 void CFileTransferDlg::OnDownloadFolder()
@@ -1133,7 +1205,8 @@ void CFileTransferDlg::OnDownloadFolder()
     CString localFolderName;
 
     // Check if we're busy downloading something else...
-    if (m_busy) {
+    if (m_busy)
+    {
         MessageBox("Please wait for current transfer to finish");
         return;
     }
@@ -1141,10 +1214,13 @@ void CFileTransferDlg::OnDownloadFolder()
     // Get the currently selected scanner
     int curScanner = m_scannerList.GetCurSel();
     if (curScanner < 0)
+    {
         return;
+    }
 
     // Ask the user where to store the folder
-    if (!common.BrowseForDirectory(localFolderName)) {
+    if (!common.BrowseForDirectory(localFolderName))
+    {
         return;
     }
 
@@ -1152,7 +1228,8 @@ void CFileTransferDlg::OnDownloadFolder()
     localFolderName.AppendFormat("\\%s\\", m_remoteFileName);
 
     // Try to create the directory that the user wants...
-    if (CreateDirectoryStructure(localFolderName)) {
+    if (CreateDirectoryStructure(localFolderName))
+    {
         MessageBox("Could not create local directory");
         return;
     }
@@ -1160,9 +1237,13 @@ void CFileTransferDlg::OnDownloadFolder()
     m_storagePath.Format(localFolderName);
     m_curScanner = curScanner;
     if (m_communicationType == SERIAL_CONNECTION)
+    {
         AfxBeginThread(DownloadFolderWithSerial, this, THREAD_PRIORITY_NORMAL, 0, 0, NULL);
+    }
     else
+    {
         AfxBeginThread(DownloadFolderWithFTP, this, THREAD_PRIORITY_NORMAL, 0, 0, NULL);
+    }
 }
 
 void CFileTransferDlg::OnDownloadDisk()
@@ -1174,7 +1255,8 @@ void CFileTransferDlg::OnDownloadDisk()
     return;
 
     // Check if we're busy downloading something else...
-    if (m_busy) {
+    if (m_busy)
+    {
         MessageBox("Please wait for current transfer to finish");
         return;
     }
@@ -1182,10 +1264,13 @@ void CFileTransferDlg::OnDownloadDisk()
     // Get the currently selected scanner
     int curScanner = m_scannerList.GetCurSel();
     if (curScanner < 0)
+    {
         return;
+    }
 
     // Ask the user where to store the data
-    if (!common.BrowseForDirectory(localFolderName)) {
+    if (!common.BrowseForDirectory(localFolderName))
+    {
         return;
     }
 
@@ -1193,17 +1278,20 @@ void CFileTransferDlg::OnDownloadDisk()
     localFolderName.AppendFormat("\\%s\\", m_remoteFileName);
 
     // Try to create the directory that the user wants...
-    if (CreateDirectoryStructure(localFolderName)) {
+    if (CreateDirectoryStructure(localFolderName))
+    {
         MessageBox("Could not create local directory");
         return;
     }
 
     m_storagePath.Format(localFolderName);
     m_curScanner = curScanner;
-    if (m_communicationType == SERIAL_CONNECTION) {
+    if (m_communicationType == SERIAL_CONNECTION)
+    {
         //	AfxBeginThread(DownloadDiskWithSerial,this,THREAD_PRIORITY_NORMAL,0,0,NULL);
     }
-    else {
+    else
+    {
         //	AfxBeginThread(DownloadDiskWithFTP,this,THREAD_PRIORITY_NORMAL,0,0,NULL);
     }
 }
@@ -1211,10 +1299,11 @@ void CFileTransferDlg::OnDownloadDisk()
 void CFileTransferDlg::OnUploadFile()
 {
     Common common;
-    CString   name, diskName;
+    CString name, diskName;
 
     // Check if we're busy downloading something else...
-    if (m_busy) {
+    if (m_busy)
+    {
         MessageBox("Please wait for current transfer to finish");
         return;
     }
@@ -1222,11 +1311,15 @@ void CFileTransferDlg::OnUploadFile()
     // Get the currently selected scanner
     m_curScanner = m_scannerList.GetCurSel();
     if (m_curScanner < 0)
+    {
         return;
+    }
 
     m_uploadFileEdit.SetWindowText(m_fileToUpload);
     if (m_fileToUpload.GetLength() <= 3)
+    {
         return;
+    }
 
     // Get the directory that the user chose
     m_storagePath = m_fileToUpload;
@@ -1242,11 +1335,14 @@ void CFileTransferDlg::OnUploadFile()
 
     m_fileStatusEdit.SetWindowText("Begin to upload file");
     if (m_communicationType == SERIAL_CONNECTION)
+    {
         AfxBeginThread(UploadFileWithSerial, this, THREAD_PRIORITY_NORMAL, 0, 0, NULL);
+    }
     else if (m_communicationType == FTP_CONNECTION)
+    {
         AfxBeginThread(UploadFileWithFTP, this, THREAD_PRIORITY_NORMAL, 0, 0, NULL);
+    }
 }
-
 
 
 void CFileTransferDlg::OnTvnSelchangedFileTree(NMHDR* pNMHDR, LRESULT* pResult)
@@ -1264,12 +1360,14 @@ void CFileTransferDlg::OnTvnSelchangedFileTree(NMHDR* pNMHDR, LRESULT* pResult)
 
     m_selItemText = itemText;
 
-    if (-1 == parentText.Find("Disk") && -1 == itemText.Find("Disk")) {
+    if (-1 == parentText.Find("Disk") && -1 == itemText.Find("Disk"))
+    {
         sprintf(m_remoteFileName, "%s\\%s", (LPCSTR)parentText, (LPCSTR)itemText);
 
         hRootItem = m_fileTree.GetParentItem(hParentItem);
     }
-    else {
+    else
+    {
         sprintf(m_remoteFileName, itemText);
 
         hRootItem = hParentItem;
@@ -1290,15 +1388,23 @@ long CFileTransferDlg::GetListFileSize(CString& inFileName, char disk)
     CScannerFileInfo* fileInfo;
     fileInfo = new CScannerFileInfo();
     if (disk == 'B')
+    {
         listPos = m_fileListB.GetHeadPosition();
+    }
     else
+    {
         listPos = m_fileListA.GetHeadPosition();
+    }
     while (listPos != NULL)
     {
         if (disk == 'B')
+        {
             fileInfo = m_fileListB.GetNext(listPos);
+        }
         else
+        {
             fileInfo = m_fileListA.GetNext(listPos);
+        }
         if (inFileName.Find(fileInfo->fileName) != -1)
         {
             fileSize = fileInfo->fileSize;
@@ -1307,7 +1413,7 @@ long CFileTransferDlg::GetListFileSize(CString& inFileName, char disk)
     }
     return fileSize;
 }
-void CFileTransferDlg::FillList(CString& token, CList <CScannerFileInfo*, CScannerFileInfo*>& list)
+void CFileTransferDlg::FillList(CString& token, CList<CScannerFileInfo*, CScannerFileInfo*>& list)
 {
     CString resToken;
     int folderNameLength;
@@ -1324,17 +1430,20 @@ void CFileTransferDlg::FillList(CString& token, CList <CScannerFileInfo*, CScann
     {
         folderNameLength = token.Find(" ");
         if (folderNameLength <= 0)
+        {
             return;
+        }
         folderName.Format("%s", (LPCSTR)token.Left(folderNameLength));
         if (Equals(folderName, emptyName1) || Equals(folderName, emptyName2))
+        {
             return;
+        }
 
         folderInfo = new CScannerFolderInfo();
         folderInfo->folderName = folderName;
 
         m_folderListB.AddTail(folderInfo);
         return;
-
     }
 
     //add in file info
@@ -1343,29 +1452,40 @@ void CFileTransferDlg::FillList(CString& token, CList <CScannerFileInfo*, CScann
     {
         resToken = token.Tokenize(" \t", curPos);
         if (resToken.GetLength() <= 0)
+        {
             break;
+        }
         switch (count)
         {
-        case 0: fileInfo->fileName = resToken;
+        case 0:
+            fileInfo->fileName = resToken;
             break;
-        case 1: fileInfo->fileSuffix = resToken;
+        case 1:
+            fileInfo->fileSuffix = resToken;
             break;
-        case 2: fileInfo->fileSize = atoi(resToken);
+        case 2:
+            fileInfo->fileSize = atoi(resToken);
             break;
-        case 3: fileInfo->date = resToken;
+        case 3:
+            fileInfo->date = resToken;
             break;
-        case 4: fileInfo->time = resToken;
+        case 4:
+            fileInfo->time = resToken;
             break;
         }
         count++;
         if (count == 5)
+        {
             break;
+        }
     } while (resToken != "");
 
-    if (count >= 3) {
+    if (count >= 3)
+    {
         list.AddTail(fileInfo);
     }
-    else {
+    else
+    {
         delete fileInfo;
     }
 }
@@ -1374,26 +1494,26 @@ HTREEITEM CFileTransferDlg::AddOneItem(HTREEITEM hParent, LPSTR szText,
     HTREEITEM hInsAfter, int iImage)
 {
     HTREEITEM hItem;
-    TVITEM tvI;            // tree control structures	
+    TVITEM tvI;            // tree control structures
     TVINSERTSTRUCT tvIns;
-    //	
-    //  set mask to text and images	
-    //	
+    //
+    //  set mask to text and images
+    //
     tvI.mask = TVIF_TEXT | TVIF_IMAGE;
-    tvI.iImage = iImage;  // associate the image	
-    tvI.pszText = szText; // associate the text	
+    tvI.iImage = iImage;  // associate the image
+    tvI.pszText = szText; // associate the text
     tvI.cchTextMax = lstrlen(szText);
-    //	
+    //
     tvIns.item = tvI;
-    tvIns.hInsertAfter = hInsAfter;     // where to insert	
+    tvIns.hInsertAfter = hInsAfter;     // where to insert
     tvIns.hParent = hParent;
-    //	
-    // insert this item into the tree	
-    //	
+    //
+    // insert this item into the tree
+    //
     hItem = m_fileTree.InsertItem(&tvIns);
-    //	
-    //    make selected image index+1 	
-    //	
+    //
+    //    make selected image index+1
+    //
     m_fileTree.SetItemImage(hItem, iImage, (iImage + 1));
     return (hItem);
 }   // end AddOneItem()
@@ -1422,7 +1542,8 @@ void CFileTransferDlg::ClearOut()
     {
         CScannerFolderInfo* info = m_folderListB.GetNext(listPos);
         POSITION listPos2 = info->m_fileList.GetHeadPosition();
-        while (listPos2 != NULL) {
+        while (listPos2 != NULL)
+        {
             delete info->m_fileList.GetNext(listPos2);
         }
         info->m_fileList.RemoveAll();
@@ -1439,7 +1560,9 @@ bool CFileTransferDlg::DisconnectPrevScanner(int scanner)
     int preCommunication;
 
     if (scanner < 0)
+    {
         return false;
+    }
     CConfigurationSetting::CommunicationSetting& comm = g_settings.scanner[scanner].comm;
     preCommunication = comm.connectionType;
     switch (preCommunication)
@@ -1543,7 +1666,7 @@ void CFileTransferDlg::OnLbnSelchangeScannerList()
         break;
     }
 }
-int CFileTransferDlg::ParseDir(CString line, CList <CScannerFileInfo*, CScannerFileInfo*>& list)
+int CFileTransferDlg::ParseDir(CString line, CList<CScannerFileInfo*, CScannerFileInfo*>& list)
 {
     CString resToken, str, subToken;
     CString tmpStr;
@@ -1556,20 +1679,23 @@ int CFileTransferDlg::ParseDir(CString line, CList <CScannerFileInfo*, CScannerF
 
     // Remove any unwanted junk in the end...
     index = line.Find("bytes free");
-    if (index >= 0) {
+    if (index >= 0)
+    {
         line = line.Left(index + 10);
         lineLength = line.GetLength();
     }
 
     // Remove any unwanted junk in the beginning...
     index = line.Find("mksh>");
-    while (index >= 0) {
+    while (index >= 0)
+    {
         line = line.Right(lineLength - index - 5);
         lineLength = line.GetLength();
         index = line.Find("mksh>");
     }
     index = line.Find("Directory of");
-    while (index >= 0) {
+    while (index >= 0)
+    {
         line = line.Right(lineLength - index - 16);
         lineLength = line.GetLength();
         index = line.Find("Directory of");
@@ -1581,7 +1707,9 @@ int CFileTransferDlg::ParseDir(CString line, CList <CScannerFileInfo*, CScannerF
         tokenLength = resToken.GetLength();
         resToken.Trim();
         if (resToken.Find("files use") != -1)
+        {
             break;
+        }
         if (resToken.GetLength() > 0)
         {
             FillList(resToken, list);
@@ -1594,15 +1722,25 @@ int CFileTransferDlg::ParseDir(CString line, CList <CScannerFileInfo*, CScannerF
 void CFileTransferDlg::SetFileItemImage(HTREEITEM hItem, CString subfix)
 {
     if (subfix == _T("TXT") || subfix == _T("INI"))
+    {
         m_fileTree.SetItemImage(hItem, 1, 1);
+    }
     else if (subfix == _T("EXE"))
+    {
         m_fileTree.SetItemImage(hItem, 2, 2);
+    }
     else if (subfix == _T("PAK"))
+    {
         m_fileTree.SetItemImage(hItem, 3, 3);
+    }
     else if (subfix == _T("DIR"))
+    {
         m_fileTree.SetItemImage(hItem, 5, 5);
+    }
     else
+    {
         m_fileTree.SetItemImage(hItem, 4, 4);
+    }
 }
 void CFileTransferDlg::OnDeleteFile()
 {
@@ -1610,26 +1748,38 @@ void CFileTransferDlg::OnDeleteFile()
     if (ret == IDYES)
     {
         if (m_communicationType == SERIAL_CONNECTION)
+        {
             AfxBeginThread(DeleteFileBySerial, this, THREAD_PRIORITY_NORMAL, 0, 0, NULL);
+        }
         else if (m_communicationType == FTP_CONNECTION)
+        {
             AfxBeginThread(DeleteFileByFTP, this, THREAD_PRIORITY_NORMAL, 0, 0, NULL);
+        }
     }
-
 }
 void CFileTransferDlg::OnViewFile()
 {
     if (m_communicationType == SERIAL_CONNECTION)
+    {
         AfxBeginThread(ViewFileBySerial, this, THREAD_PRIORITY_NORMAL, 0, 0, NULL);
+    }
     else if (m_communicationType == FTP_CONNECTION)
+    {
         AfxBeginThread(ViewFileByFTP, this, THREAD_PRIORITY_NORMAL, 0, 0, NULL);
+    }
 }
 
 /** Called to expand the contents of a folder on the remote PC */
-void CFileTransferDlg::OnExpandFolder() {
+void CFileTransferDlg::OnExpandFolder()
+{
     if (m_communicationType == SERIAL_CONNECTION)
+    {
         AfxBeginThread(ExpandFolderBySerial, this, THREAD_PRIORITY_NORMAL, 0, 0, NULL);
+    }
     else if (m_communicationType == FTP_CONNECTION)
+    {
         AfxBeginThread(ExpandFolderByFTP, this, THREAD_PRIORITY_NORMAL, 0, 0, NULL);
+    }
 }
 
 void CFileTransferDlg::OnBnClickedBrowseButton()
@@ -1643,9 +1793,13 @@ void CFileTransferDlg::OnBnClickedBrowseButton()
 void CFileTransferDlg::EmptyFileArray()
 {
     if (!m_fileListA.IsEmpty())
+    {
         m_fileListA.RemoveAll();
+    }
     if (!m_fileListB.IsEmpty())
+    {
         m_fileListB.RemoveAll();
+    }
 }
 void CFileTransferDlg::OnBnClickedOk()
 {
@@ -1662,12 +1816,16 @@ void CFileTransferDlg::OnBnClickedUpdatefilebtn()
 
     int ret = MessageBox("Are you sure to update the remote file?", NULL, MB_YESNO);
     if (ret != IDYES)
+    {
         return;
+    }
     fileName.Format("%s%s", (LPCSTR)m_storagePath, (LPCSTR)m_remoteFileName);
     //get current selected scanner
     m_curScanner = m_scannerList.GetCurSel();
     if (m_curScanner < 0)
+    {
         return;
+    }
     //Save to local file
     FILE* f = fopen(fileName, "w");
     if (f == NULL)
@@ -1688,9 +1846,13 @@ void CFileTransferDlg::OnBnClickedUpdatefilebtn()
     free(buffer);
     //update file
     if (m_communicationType == SERIAL_CONNECTION)
+    {
         AfxBeginThread(UpdateFileWithSerial, this, THREAD_PRIORITY_NORMAL, 0, 0, NULL);
+    }
     else if (m_communicationType == FTP_CONNECTION)
+    {
         AfxBeginThread(UpdateFileWithFTP, this, THREAD_PRIORITY_NORMAL, 0, 0, NULL);
+    }
 }
 
 void CFileTransferDlg::ShowDlgInfo(CString& msg)
@@ -1702,7 +1864,7 @@ void CFileTransferDlg::ShowFileContent(CString& fileName)
 {
     CString string;
     char* buffer = 0;
-    //get file size	
+    //get file size
     long fileLength = Common::RetrieveFileSize(fileName);
     //allocate buffer
     buffer = (char*)malloc(fileLength + 1);
@@ -1711,7 +1873,9 @@ void CFileTransferDlg::ShowFileContent(CString& fileName)
     if (f == NULL)
     {
         if (buffer)
+        {
             free(buffer);
+        }
         return;
     }
     while (fgets(buffer, fileLength, f) != NULL)
@@ -1720,32 +1884,40 @@ void CFileTransferDlg::ShowFileContent(CString& fileName)
         memset(buffer, 0, fileLength * sizeof(char));
     }
     fclose(f);
-    m_fileContentEdit.SetWindowText(string);	// show text in content
+    m_fileContentEdit.SetWindowText(string); // show text in content
     //free memory
     if (buffer)
+    {
         free(buffer);
+    }
 }
 bool CFileTransferDlg::IsTextFile(const CString& fileName)
 {
     if (strlen(fileName) < 4)
+    {
         return false;
+    }
 
     CString ending;
     ending.Format(fileName.Right(3));
 
-    if (Equals(ending, "txt") || Equals(ending, "bat") || Equals(ending, "ini")) {
+    if (Equals(ending, "txt") || Equals(ending, "bat") || Equals(ending, "ini"))
+    {
         return true;
     }
     return false;
 }
 bool CFileTransferDlg::IsDir(const CString& fileName)
 {
-    if (-1 != fileName.Find('.')) {
+    if (-1 != fileName.Find('.'))
+    {
         return false;
     }
 
     if (Equals(fileName.Left(1), "R"))
+    {
         return true;
+    }
 
     return false;
 }

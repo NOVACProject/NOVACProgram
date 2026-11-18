@@ -1,57 +1,60 @@
 #pragma once
 
 
-namespace Dialogs {
+namespace Dialogs
+{
     // CFluxErrorDlg dialog
 
-    class CFluxErrorDlg : public CDialog
-    {
-        DECLARE_DYNAMIC(CFluxErrorDlg)
+class CFluxErrorDlg : public CDialog
+{
+    DECLARE_DYNAMIC(CFluxErrorDlg)
 
-    public:
-        CFluxErrorDlg(CWnd* pParent = NULL);   // standard constructor
-        virtual ~CFluxErrorDlg();
+public:
+    CFluxErrorDlg(CWnd* pParent = NULL);   // standard constructor
+    virtual ~CFluxErrorDlg();
 
         // Dialog Data
-        enum { IDD = IDD_FLUXERROR_DIALOG };
+    enum
+    {
+        IDD = IDD_FLUXERROR_DIALOG
+    };
 
-    protected:
-        virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+protected:
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
-        DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
 
-    public:
-
+public:
         // ------------------------------------------------------
-        // ------------------ PUBLIC DATA ----------------------- 
+        // ------------------ PUBLIC DATA -----------------------
         // ------------------------------------------------------
 
         /** The geometrical error */
-        double	m_geomError;
+    double m_geomError;
 
         /** The spectroscopical error */
-        double	m_specError;
+    double m_specError;
 
         /** The scattering error */
-        double	m_scatteringError;
+    double m_scatteringError;
 
         /** The wind error */
-        double	m_windError;
+    double m_windError;
 
         // ------------------------------------------------------
         // ------------------ PUBLIC METHODS --------------------
         // ------------------------------------------------------
 
         /** Initializing the dialog and everything in it */
-        virtual BOOL OnInitDialog();
+    virtual BOOL OnInitDialog();
 
         /** Saving the data in the dialog */
-        afx_msg void SaveData();
+    afx_msg void SaveData();
 
         /** When the window is about to loose the input focus */
-        afx_msg void OnKillFocus(CWnd* pNewWnd);
+    afx_msg void OnKillFocus(CWnd* pNewWnd);
 
-    private:
+private:
         // ------------------------------------------------------
         // ------------------ PRIVATE DATA ----------------------
         // ------------------------------------------------------
@@ -60,6 +63,5 @@ namespace Dialogs {
         // ------------------------------------------------------
         // ------------------ PRIVATE METHODS -------------------
         // ------------------------------------------------------
-
-    };
+};
 }

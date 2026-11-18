@@ -4,7 +4,7 @@
 #include "../NovacProgramLog.h"
 
 #ifdef _MSC_VER
-#pragma warning (push, 4)
+#pragma warning(push, 4)
 #endif
 
 using namespace Communication;
@@ -247,7 +247,7 @@ bool CFTPHandler::DownloadOldPak(long /*interval*/)
 {
     time_t startTime, stopTime;
 
-    if (m_fileInfoList.size() <= 0)	//changed 2006-12-12. Omit get pak file list one more time
+    if (m_fileInfoList.size() <= 0) //changed 2006-12-12. Omit get pak file list one more time
     {
         return false;
     }
@@ -406,10 +406,14 @@ int CFTPHandler::FillFileList(const CString& fileName, char disk)
     while (file.ReadString(str))
     {
         if (str.GetLength() <= 0)
+        {
             break;
+        }
 
         if (str.Find("Í") != -1)
+        {
             break;
+        }
 
         if (ParseFileInfo(str, disk))
         {
@@ -740,7 +744,7 @@ void CFTPHandler::WakeUp()
     }
     else
     {
-        // Try to download the cfg.txt - file from the instrument. This is done 
+        // Try to download the cfg.txt - file from the instrument. This is done
         //	both to test the connection and to get information from the
         //	file (such as motor-steps-comp)
         this->DownloadCfgTxt();
@@ -815,5 +819,5 @@ int CFTPHandler::DownloadCfgTxt()
 
 
 #ifdef _MSC_VER
-#pragma warning (pop)
+#pragma warning(pop)
 #endif

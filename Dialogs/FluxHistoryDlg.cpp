@@ -12,8 +12,8 @@
 #include "../Common/FluxLogFileHandler.h"
 #include <SpectralEvaluation/StringUtils.h>
 
-extern CConfigurationSetting	g_settings;
-extern CUserSettings			g_userSettings;
+extern CConfigurationSetting g_settings;
+extern CUserSettings g_userSettings;
 
 // FluxHistoryDlg dialog
 
@@ -70,13 +70,14 @@ BOOL FluxHistoryDlg::OnInitDialog()
     Init10DayPlot();
     Init30DayPlot();
 
-    // Read evaluation logs 
+    // Read evaluation logs
     ReadFluxLogs();
 
     return TRUE;
 }
 
-void FluxHistoryDlg::InitPlot() {
+void FluxHistoryDlg::InitPlot()
+{
 
     CRect rect;
     m_frame.GetWindowRect(rect);
@@ -91,10 +92,12 @@ void FluxHistoryDlg::InitPlot() {
     Common common;
     m_plot.SetXUnits(common.GetString(AXIS_UTCTIME));
     m_plot.SetXAxisNumberFormat(FORMAT_DATETIME);
-    if (g_userSettings.m_fluxUnit == UNIT_TONDAY) {
+    if (g_userSettings.m_fluxUnit == UNIT_TONDAY)
+    {
         m_plot.SetYUnits("Flux [ton/day]");
     }
-    else {
+    else
+    {
         m_plot.SetYUnits("Flux [kg/s]");
     }
     m_plot.EnableGridLinesX(true);
@@ -107,7 +110,8 @@ void FluxHistoryDlg::InitPlot() {
     SetRange();
 }
 
-void FluxHistoryDlg::Init10DayPlot() {
+void FluxHistoryDlg::Init10DayPlot()
+{
 
     CRect rect;
     m_frame10.GetWindowRect(rect);
@@ -122,10 +126,12 @@ void FluxHistoryDlg::Init10DayPlot() {
     Common common;
     m_plot10.SetXUnits(common.GetString(AXIS_UTCTIME));
     m_plot10.SetXAxisNumberFormat(FORMAT_DATE);
-    if (g_userSettings.m_fluxUnit == UNIT_TONDAY) {
+    if (g_userSettings.m_fluxUnit == UNIT_TONDAY)
+    {
         m_plot10.SetYUnits("Flux [ton/day]");
     }
-    else {
+    else
+    {
         m_plot10.SetYUnits("Flux [kg/s]");
     }
     m_plot10.EnableGridLinesX(true);
@@ -136,7 +142,8 @@ void FluxHistoryDlg::Init10DayPlot() {
     m_plot10.SetCircleRadius(3);
 }
 
-void FluxHistoryDlg::Init30DayPlot() {
+void FluxHistoryDlg::Init30DayPlot()
+{
 
     CRect rect;
     m_frame30.GetWindowRect(rect);
@@ -151,10 +158,12 @@ void FluxHistoryDlg::Init30DayPlot() {
     Common common;
     m_plot30.SetXUnits(common.GetString(AXIS_UTCTIME));
     m_plot30.SetXAxisNumberFormat(FORMAT_DATE);
-    if (g_userSettings.m_fluxUnit == UNIT_TONDAY) {
+    if (g_userSettings.m_fluxUnit == UNIT_TONDAY)
+    {
         m_plot30.SetYUnits("Flux [ton/day]");
     }
-    else {
+    else
+    {
         m_plot30.SetYUnits("Flux [kg/s]");
     }
     m_plot30.EnableGridLinesX(true);
@@ -163,9 +172,9 @@ void FluxHistoryDlg::Init30DayPlot() {
     m_plot30.SetBackgroundColor(RGB(0, 0, 0));
     m_plot30.SetCircleColor(RGB(255, 255, 255));
     m_plot30.SetCircleRadius(3);
-
 }
-void FluxHistoryDlg::DrawPlot() {
+void FluxHistoryDlg::DrawPlot()
+{
     // variables
     const int BUFFER_SIZE = 500;
     double time[BUFFER_SIZE];
@@ -183,16 +192,21 @@ void FluxHistoryDlg::DrawPlot() {
 
     // If there's no data then don't draw anything
     if (dataLength <= 0)
+    {
         return;
+    }
 
     // sort the data into good values and bad values
-    for (int k = 0; k < dataLength; ++k) {
-        if (fluxOk[k]) {
+    for (int k = 0; k < dataLength; ++k)
+    {
+        if (fluxOk[k])
+        {
             goodFluxes[nGoodFluxes] = allFluxes[k];
             goodTime[nGoodFluxes] = time[k];
             ++nGoodFluxes;
         }
-        else {
+        else
+        {
             badFluxes[nBadFluxes] = allFluxes[k];
             badTime[nBadFluxes] = time[k];
             ++nBadFluxes;
@@ -203,10 +217,12 @@ void FluxHistoryDlg::DrawPlot() {
     m_plot.CleanPlot();
 
     // Set the unit of the plot
-    if (g_userSettings.m_fluxUnit == UNIT_TONDAY) {
+    if (g_userSettings.m_fluxUnit == UNIT_TONDAY)
+    {
         m_plot.SetYUnits("Flux [ton/day]");
     }
-    else {
+    else
+    {
         m_plot.SetYUnits("Flux [kg/s]");
     }
 
@@ -222,9 +238,11 @@ void FluxHistoryDlg::DrawPlot() {
     m_plot.XYPlot(goodTime, goodFluxes, nGoodFluxes, CGraphCtrl::PLOT_FIXED_AXIS | CGraphCtrl::PLOT_CIRCLES);
 }
 
-void FluxHistoryDlg::ReadFluxLogs() {
+void FluxHistoryDlg::ReadFluxLogs()
+{
     // clean plots
-    if (!IsWindow(m_frame10.m_hWnd) || !IsWindow(m_frame30.m_hWnd)) {
+    if (!IsWindow(m_frame10.m_hWnd) || !IsWindow(m_frame30.m_hWnd))
+    {
         return;
     }
     m_plot10.CleanPlot();
@@ -232,10 +250,12 @@ void FluxHistoryDlg::ReadFluxLogs() {
 
     // get flux units
     double unitConversionFactor = 0;
-    if (g_userSettings.m_fluxUnit == UNIT_TONDAY) {
+    if (g_userSettings.m_fluxUnit == UNIT_TONDAY)
+    {
         unitConversionFactor = 1.0;
     }
-    else {
+    else
+    {
         unitConversionFactor = 2.5e15;
     }
 
@@ -249,7 +269,8 @@ void FluxHistoryDlg::ReadFluxLogs() {
     utc = gmtime(&rawtime);
     // get time offset
     time_t offset = mktime(utc) - rawtime;
-    if (utc->tm_isdst) {
+    if (utc->tm_isdst)
+    {
         offset -= 3600;
     }
     // make it midnight (00:00:00) of current day
@@ -260,7 +281,8 @@ void FluxHistoryDlg::ReadFluxLogs() {
     // Read last 30 days worth of flux logs
     CString path, dateStr;
     CWaitCursor wait;
-    for (int day = 0; day < 30; day++) {
+    for (int day = 0; day < 30; day++)
+    {
         FileHandler::CFluxLogFileHandler fluxLogReader;
 
         // get date
@@ -281,35 +303,42 @@ void FluxHistoryDlg::ReadFluxLogs() {
 
         // check if file exists
         std::ifstream ifile(path);
-        if (!ifile) {
+        if (!ifile)
+        {
             continue;
         }
 
         // Try to read the flux-log
         fluxLogReader.m_fluxLog.Format(path);
         if (FAIL == fluxLogReader.ReadFluxLog())
+        {
             return;
+        }
 
         // check if there are fluxes in log
         int fluxNum = fluxLogReader.m_fluxesNum;
-        if (fluxNum <= 0) {
+        if (fluxNum <= 0)
+        {
             continue;
         }
 
         // Plot the read in data
         m_goodFluxNum[day] = 0;
         m_badFluxNum[day] = 0;
-        for (int j = 0; j < fluxNum; ++j) {
+        for (int j = 0; j < fluxNum; ++j)
+        {
             Evaluation::CFluxResult& fr = fluxLogReader.m_fluxes[j];
             CDateTime st = fr.m_startTime;
             int startsec = st.hour * 3600 + st.minute * 60 + st.second;
             double epoch = (double)(epochDay + startsec - offset); // unsure why offset substraction is needed but it is
-            if (fr.m_fluxOk && m_goodFluxNum[day] < 500) {
+            if (fr.m_fluxOk && m_goodFluxNum[day] < 500)
+            {
                 m_goodTime[day][m_goodFluxNum[day]] = epoch;
                 m_goodFlux[day][m_goodFluxNum[day]] = fr.m_flux * unitConversionFactor;
                 m_goodFluxNum[day]++;
             }
-            if (!fr.m_fluxOk && m_badFluxNum[day] < 500) {
+            if (!fr.m_fluxOk && m_badFluxNum[day] < 500)
+            {
                 m_badTime[day][m_badFluxNum[day]] = epoch;
                 m_badFlux[day][m_badFluxNum[day]] = fr.m_flux * unitConversionFactor;
                 m_badFluxNum[day]++;
@@ -319,10 +348,13 @@ void FluxHistoryDlg::ReadFluxLogs() {
     wait.Restore();
 }
 
-void FluxHistoryDlg::DrawHistoryPlots() {
+void FluxHistoryDlg::DrawHistoryPlots()
+{
     // plot
-    for (int day = 0; day < 30; day++) {
-        if (day < 10) {
+    for (int day = 0; day < 30; day++)
+    {
+        if (day < 10)
+        {
             // First draw the bad values, then the good ones
             m_plot10.SetCircleColor(RGB(150, 150, 150));
             m_plot10.XYPlot(m_badTime[day], m_badFlux[day], m_badFluxNum[day], CGraphCtrl::PLOT_FIXED_AXIS | CGraphCtrl::PLOT_CIRCLES);
@@ -355,7 +387,8 @@ void FluxHistoryDlg::OnSize(UINT nType, int cx, int cy)
     const int oneThirdScreenHeight = (int)(thisClientRegion.Height() / 3);
 
     // Adjust the width of each of the column plots
-    if (this->m_frame.m_hWnd != NULL) {
+    if (this->m_frame.m_hWnd != NULL)
+    {
         CRect frameClientRegion;
         m_frame.GetWindowRect(&frameClientRegion);
         this->ScreenToClient(frameClientRegion);
@@ -369,7 +402,8 @@ void FluxHistoryDlg::OnSize(UINT nType, int cx, int cy)
         ResizeGraphControl(m_plot, m_frame, this);
     }
 
-    if (this->m_frame10.m_hWnd != NULL) {
+    if (this->m_frame10.m_hWnd != NULL)
+    {
         CRect frameClientRegion;
         m_frame10.GetWindowRect(&frameClientRegion);
         this->ScreenToClient(frameClientRegion);
@@ -383,7 +417,8 @@ void FluxHistoryDlg::OnSize(UINT nType, int cx, int cy)
         ResizeGraphControl(m_plot10, m_frame10, this);
     }
 
-    if (this->m_frame30.m_hWnd != NULL) {
+    if (this->m_frame30.m_hWnd != NULL)
+    {
         CRect frameClientRegion;
         m_frame30.GetWindowRect(&frameClientRegion);
         this->ScreenToClient(frameClientRegion);
@@ -396,7 +431,8 @@ void FluxHistoryDlg::OnSize(UINT nType, int cx, int cy)
 
         ResizeGraphControl(m_plot30, m_frame30, this);
     }
-    if (this->m_frame.m_hWnd != NULL) {
+    if (this->m_frame.m_hWnd != NULL)
+    {
         RedrawAll();
     }
 }
@@ -406,7 +442,8 @@ BOOL FluxHistoryDlg::OnSetActive()
     return CPropertyPage::OnSetActive();
 }
 
-void FluxHistoryDlg::SetRange() {
+void FluxHistoryDlg::SetRange()
+{
     struct tm* tm;
     time_t t;
     time(&t);
@@ -416,7 +453,8 @@ void FluxHistoryDlg::SetRange() {
     m_plot.SetRange(starttime, endtime, 0, m_minFlux, m_maxFlux, 0);
 }
 
-void FluxHistoryDlg::SetHistoryRange() {
+void FluxHistoryDlg::SetHistoryRange()
+{
     // get end time
     struct tm* tm;
     time_t t;
@@ -430,17 +468,20 @@ void FluxHistoryDlg::SetHistoryRange() {
     starttime = endtime - SECONDS_IN_DAY * 30;
     m_plot30.SetRange(starttime, endtime, 0, m_minFlux, m_maxFlux, 0);
 }
-void FluxHistoryDlg::RedrawAll() {
+void FluxHistoryDlg::RedrawAll()
+{
     DrawPlot();
     DrawHistoryPlots();
 }
 
-LRESULT FluxHistoryDlg::OnEvalSuccess(WPARAM wParam, LPARAM lParam) {
+LRESULT FluxHistoryDlg::OnEvalSuccess(WPARAM wParam, LPARAM lParam)
+{
     DrawPlot();
 
     // check to see if new UTC day. If so, draw history plot too.
     int today = common.GetDay();
-    if (m_lastDay == today) {
+    if (m_lastDay == today)
+    {
         return 0;
     }
     ReadFluxLogs();

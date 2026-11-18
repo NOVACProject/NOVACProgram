@@ -23,17 +23,7 @@
 IMPLEMENT_DYNAMIC(CRatioSetupDialog, CPropertyPage)
 
 CRatioSetupDialog::CRatioSetupDialog(RatioCalculationController* controller, CWnd* pParent /*=nullptr*/)
-    : CPropertyPage(IDD_RATIO_WINDOW_SETUP_DIALOG), m_controller(controller)
-    , m_fitLowSO2(_T(""))
-    , m_fitHighSO2(_T(""))
-    , m_fitLowBrO(_T(""))
-    , m_fitHighBrO(_T(""))
-    , m_polyOrderSO2(_T(""))
-    , m_polyOrderBrO(_T(""))
-    , m_minScanAngle(_T(""))
-    , m_maxScanAngle(_T(""))
-    , m_minSaturationRatio(_T(""))
-    , m_maxSaturationRatio(_T(""))
+    : CPropertyPage(IDD_RATIO_WINDOW_SETUP_DIALOG), m_controller(controller), m_fitLowSO2(_T("")), m_fitHighSO2(_T("")), m_fitLowBrO(_T("")), m_fitHighBrO(_T("")), m_polyOrderSO2(_T("")), m_polyOrderBrO(_T("")), m_minScanAngle(_T("")), m_maxScanAngle(_T("")), m_minSaturationRatio(_T("")), m_maxSaturationRatio(_T(""))
 {
 }
 
@@ -42,7 +32,8 @@ CRatioSetupDialog::~CRatioSetupDialog()
     m_controller = nullptr;
 }
 
-BOOL CRatioSetupDialog::OnInitDialog() {
+BOOL CRatioSetupDialog::OnInitDialog()
+{
     CPropertyPage::OnInitDialog();
 
     m_fitTypeCombo.AddString("Polynomial");
@@ -58,7 +49,8 @@ BOOL CRatioSetupDialog::OnInitDialog() {
 
     SetDlgItemText(IDC_STATIC_EXPLANATION, "These settings sets boundaries for which spectra to select as in-plume or out-of-plume spectrum. ");
 
-    if (!m_toolTip.Create(this)) {
+    if (!m_toolTip.Create(this))
+    {
         TRACE0("Failed to create tooltip control\n");
     }
     m_toolTip.AddTool(&m_fitTypeCombo, "Select 'HP Divide by sky' if the references are High Pass filtered, otherwise 'Polynomial'");
@@ -106,7 +98,7 @@ GridListCtrl::CGridColumnTraitImage* CreateCheckBoxColumn(int nStateImageIdx)
 {
     auto includeInSO2Column = new GridListCtrl::CGridColumnTraitImage();
     includeInSO2Column->AddImageIndex(nStateImageIdx, _T(""), false);       // Unchecked (and not editable)
-    includeInSO2Column->AddImageIndex(nStateImageIdx + 1, _T(""), false);	// Checked (and not editable)
+    includeInSO2Column->AddImageIndex(nStateImageIdx + 1, _T(""), false); // Checked (and not editable)
     includeInSO2Column->SetToggleSelection(true);
     return includeInSO2Column;
 }
@@ -124,7 +116,7 @@ void CRatioSetupDialog::InitReferenceFileControl()
 {
     // Create an image list (requred for the check boxes)
     m_ImageList.Create(16, 16, ILC_COLOR16 | ILC_MASK, 1, 0);
-    int nStateImageIdx = GridListCtrl::CGridColumnTraitImage::AppendStateImages(m_referencesList, m_ImageList);	// Add checkboxes
+    int nStateImageIdx = GridListCtrl::CGridColumnTraitImage::AppendStateImages(m_referencesList, m_ImageList); // Add checkboxes
     m_referencesList.SetImageList(&m_ImageList, LVSIL_SMALL);
 
     CRect referenceCtrlRect;
@@ -133,7 +125,7 @@ void CRatioSetupDialog::InitReferenceFileControl()
     const int pathColumnWidth = referenceCtrlRect.Width() - 4 * defaultColumnWidth - 10; // the width of the path, expands to (almost) the entire available width of the control
 
     // Set the columns of the grid
-    m_referencesList.InsertHiddenLabelColumn();	// Requires one never uses column 0
+    m_referencesList.InsertHiddenLabelColumn(); // Requires one never uses column 0
     m_referencesList.InsertColumnTrait(1, "Name", LVCFMT_LEFT, defaultColumnWidth, -1, new GridListCtrl::CGridColumnTraitEdit());
     m_referencesList.InsertColumnTrait(2, "Path", LVCFMT_LEFT, pathColumnWidth, -1, CreateLinkColumn());
     m_referencesList.InsertColumnTrait(3, "Include in SO2 Fit", LVCFMT_CENTER, defaultColumnWidth, -1, CreateCheckBoxColumn(nStateImageIdx));
@@ -164,23 +156,35 @@ void CRatioSetupDialog::InitReferenceFileControl()
 
         // Include in SO2 window
         if (reference.m_includeInMajor)
+        {
             m_referencesList.SetCellImage(nItem, ReferenceListColumns::INCLUDE_SO2, nStateImageIdx + 1);
+        }
         else
+        {
             m_referencesList.SetCellImage(nItem, ReferenceListColumns::INCLUDE_SO2, nStateImageIdx);
+        }
 
         // Include in BrO window
         if (reference.m_includeInMinor)
+        {
             m_referencesList.SetCellImage(nItem, ReferenceListColumns::INCLUDE_BRO, nStateImageIdx + 1);
+        }
         else
+        {
             m_referencesList.SetCellImage(nItem, ReferenceListColumns::INCLUDE_BRO, nStateImageIdx);
+        }
 
         // Automatically calculate
         if (reference.CanBeAutomaticallyCalculated())
         {
             if (reference.m_automaticallyCalculate)
+            {
                 m_referencesList.SetCellImage(nItem, ReferenceListColumns::AUTOCALCULATE, nStateImageIdx + 1);
+            }
             else
+            {
                 m_referencesList.SetCellImage(nItem, ReferenceListColumns::AUTOCALCULATE, nStateImageIdx);
+            }
         }
         else
         {

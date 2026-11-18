@@ -64,9 +64,9 @@
 #define new DEBUG_NEW
 #endif
 
-extern CMeteorologicalData		g_metData;
-extern CConfigurationSetting	g_settings;
-extern CUserSettings			g_userSettings;
+extern CMeteorologicalData g_metData;
+extern CConfigurationSetting g_settings;
+extern CUserSettings g_userSettings;
 
 CFormView* pView;
 
@@ -77,7 +77,7 @@ using namespace novac;
 IMPLEMENT_DYNCREATE(CNovacMasterProgramView, CFormView)
 
 BEGIN_MESSAGE_MAP(CNovacMasterProgramView, CFormView)
-    // Messages from other parts of the program 
+    // Messages from other parts of the program
     ON_MESSAGE(WM_STATUSMSG, OnShowStatus)
     ON_MESSAGE(WM_UPDATE_MESSAGE, OnUpdateMessage)
     ON_MESSAGE(WM_SHOW_MESSAGE, OnShowMessage)
@@ -381,7 +381,9 @@ void CNovacMasterProgramView::ReadFluxLog(int scannerIndex, CString dateStr, CSt
         // Try to read the flux-log
         fluxLogReader.m_fluxLog.Format(path);
         if (FAIL == fluxLogReader.ReadFluxLog())
+        {
             return;
+        }
 
         if (fluxLogReader.m_fluxesNum > 0)
         {
@@ -447,7 +449,9 @@ void CNovacMasterProgramView::ReadEvalLog(int scannerIndex, CString dateStr, CSt
         // Try to read the eval-log
         evalLogReader.m_evaluationLog.Format(path);
         if (FAIL == evalLogReader.ReadEvaluationLog())
+        {
             return;
+        }
 
         if (evalLogReader.m_scanNum > 0)
         {
@@ -473,7 +477,6 @@ void CNovacMasterProgramView::ReadEvalLog(int scannerIndex, CString dateStr, CSt
                         m_evalDataStorage->AppendSpecDataHistory(scannerIndex, time, column, columnError,
                             peakIntensity, fitIntensity, angle, isBadFit);
                     }
-
                 }
             }
         }
@@ -534,7 +537,9 @@ LRESULT CNovacMasterProgramView::OnShowMessage(WPARAM wParam, LPARAM lParam)
     CString logFile, dateStr, logPath;
 
     if (msg == NULL)
+    {
         return 0;
+    }
 
     // add the message to the log file
     m_common.GetDateText(dateStr);
@@ -581,7 +586,9 @@ LRESULT CNovacMasterProgramView::OnShowMessage(WPARAM wParam, LPARAM lParam)
             sz.cx += tm.tmAveCharWidth;
 
             if (sz.cx > dx)
+            {
                 dx = sz.cx;
+            }
         }
         // Select the old font back into the DC
         pDC->SelectObject(pOldFont);
@@ -602,11 +609,15 @@ void CNovacMasterProgramView::ForwardMessage(int message, WPARAM wParam, LPARAM 
 
     // 1. forward the message to the flux-overview, if it is selected
     if (m_overView->m_hWnd != NULL)
+    {
         m_overView->PostMessage(message, wParam, lParam);
+    }
 
     // 2. forward the message to the instrument-overview, if it is selected
     if (m_instrumentView->m_hWnd != NULL)
+    {
         m_instrumentView->PostMessage(message, wParam, lParam);
+    }
 
     // 3. Find the scanner view to forward to...
     if (wParam != NULL)
@@ -617,14 +628,20 @@ void CNovacMasterProgramView::ForwardMessage(int message, WPARAM wParam, LPARAM 
         for (i = 0; i < g_settings.scannerNum; ++i)
         {
             if (Equals(*serial, g_settings.scanner[i].spec[0].serialNumber))
+            {
                 break;
+            }
         }
         if (i == g_settings.scannerNum)
+        {
             return; // <-- nothing found.
+        }
 
         // 3b. forward the message to the correct scanner view, if it is selected
         if (m_scannerPages[i]->m_hWnd != NULL)
+        {
             m_scannerPages[i]->PostMessage(message, wParam, lParam);
+        }
     }
     else
     {
@@ -705,11 +722,17 @@ LRESULT CNovacMasterProgramView::OnEvalSucess(WPARAM wParam, LPARAM lParam)
     Evaluation::CScanResult* result = (Evaluation::CScanResult*)lParam;
 
     if (result->GetCorruptedNum() == 0)
+    {
         m_evalDataStorage->SetStatus(*serial, STATUS_GREEN);
+    }
     else if (result->GetCorruptedNum() < 5)
+    {
         m_evalDataStorage->SetStatus(*serial, STATUS_YELLOW);
+    }
     else
+    {
         m_evalDataStorage->SetStatus(*serial, STATUS_RED);
+    }
 
     m_evalDataStorage->AddData(*serial, result);
 
@@ -788,7 +811,9 @@ LRESULT CNovacMasterProgramView::OnCorrelationSuccess(WPARAM wParam, LPARAM lPar
 
     // Tell the wind-measurement overview to update, if it is available and selected
     if (m_showWindOverView == true && m_windOverView->m_hWnd != NULL)
+    {
         m_windOverView->PostMessage(WM_CORR_SUCCESS, NULL, NULL);
+    }
 
     // Finally, release the memory
     delete result;
@@ -842,17 +867,25 @@ void CNovacMasterProgramView::OnMenuSetLanguageSpanish()
 void CNovacMasterProgramView::OnUpdateSetLanguageEnglish(CCmdUI* pCmdUI)
 {
     if (primaryLanguage == 0x0c0a) // 0x0c0a == spanish...
+    {
         pCmdUI->SetCheck(0);
+    }
     else
+    {
         pCmdUI->SetCheck(1);
+    }
 }
 
 void CNovacMasterProgramView::OnUpdateSetLanguageSpanish(CCmdUI* pCmdUI)
 {
     if (primaryLanguage == 0x0c0a)
+    {
         pCmdUI->SetCheck(1);
+    }
     else
+    {
         pCmdUI->SetCheck(0);
+    }
 }
 
 void CNovacMasterProgramView::OnUpdateStart(CCmdUI* pCmdUI)
@@ -1077,7 +1110,7 @@ int CNovacMasterProgramView::InitializeControls()
         }
     }
 
-    // At last, add the wind-measurements overview page, 
+    // At last, add the wind-measurements overview page,
     //	if there is at least one instrument which is capable of making wind-measurements
     if (m_showWindOverView)
     {
@@ -1301,7 +1334,7 @@ void CNovacMasterProgramView::UploadAuxData()
     static int lastUploadDate = 0;
     CString fileName[52];
     int fileNameIndex = 0;
-    CString	cfgFileName, observatoryStr, dateStr, timeStr;
+    CString cfgFileName, observatoryStr, dateStr, timeStr;
 
     int todaysDate = Common::GetDay();
 
@@ -1314,7 +1347,7 @@ void CNovacMasterProgramView::UploadAuxData()
         int monitoredVolcanoes[64]; // a list of the volcanoes that we're monitoring
 
         dateStr.Format("%02d%02d%02d", m_common.GetYear(), m_common.GetMonth(), m_common.GetDay()); // current day
-        timeStr.Format("%02d%02d", m_common.GetHour(), m_common.GetMinute());	// current time
+        timeStr.Format("%02d%02d", m_common.GetHour(), m_common.GetMinute()); // current time
         unsigned int it;
         for (it = 0; it < g_settings.scannerNum; ++it)
         {
@@ -1378,9 +1411,13 @@ void CNovacMasterProgramView::UploadAuxData()
 void CNovacMasterProgramView::OnUpdateMenuViewInstrumenttab(CCmdUI* pCmdUI)
 {
     if (m_instrumentViewVisible)
+    {
         pCmdUI->SetCheck(1);
+    }
     else
+    {
         pCmdUI->SetCheck(0);
+    }
 }
 
 void CNovacMasterProgramView::OnChangeUnitOfFluxToKgS()
@@ -1429,17 +1466,25 @@ void CNovacMasterProgramView::OnChangeUnitOfFluxToTonDay()
 void CNovacMasterProgramView::OnUpdateChangeUnitOfFluxToKgS(CCmdUI* pCmdUI)
 {
     if (g_userSettings.m_fluxUnit == UNIT_KGS)
+    {
         pCmdUI->SetCheck(1);
+    }
     else
+    {
         pCmdUI->SetCheck(0);
+    }
 }
 
 void CNovacMasterProgramView::OnUpdateChangeUnitOfFluxToTonDay(CCmdUI* pCmdUI)
 {
     if (g_userSettings.m_fluxUnit == UNIT_TONDAY)
+    {
         pCmdUI->SetCheck(1);
+    }
     else
+    {
         pCmdUI->SetCheck(0);
+    }
 }
 
 void CNovacMasterProgramView::OnChangeUnitOfColumnToPPMM()
@@ -1656,8 +1701,6 @@ LRESULT CNovacMasterProgramView::OnRewriteConfigurationXml(WPARAM wParam, LPARAM
 
     return 0;
 }
-
-
 
 
 void CNovacMasterProgramView::OnSize(UINT nType, int cx, int cy)

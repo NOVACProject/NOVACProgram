@@ -1,19 +1,18 @@
 #include "StdAfx.h"
 #include "WindField.h"
 
-CWindField::CWindField(const CWindField& other) :
-    m_windSpeed(other.m_windSpeed),
-    m_windSpeedError(other.m_windSpeedError),
-    m_windSpeedSource(other.m_windSpeedSource),
-    m_windDirection(other.m_windDirection),
-    m_windDirectionError(other.m_windDirectionError),
-    m_windDirectionSource(other.m_windDirectionSource),
-    m_altitude(other.m_altitude),
-    m_plumeHeight(other.m_plumeHeight),
-    m_plumeHeightError(other.m_plumeHeightError),
-    m_plumeHeightSource(other.m_plumeHeightSource),
-    m_windError(other.m_windError),
-    m_time(other.m_time)
+CWindField::CWindField(const CWindField& other) : m_windSpeed(other.m_windSpeed),
+                                                  m_windSpeedError(other.m_windSpeedError),
+                                                  m_windSpeedSource(other.m_windSpeedSource),
+                                                  m_windDirection(other.m_windDirection),
+                                                  m_windDirectionError(other.m_windDirectionError),
+                                                  m_windDirectionSource(other.m_windDirectionSource),
+                                                  m_altitude(other.m_altitude),
+                                                  m_plumeHeight(other.m_plumeHeight),
+                                                  m_plumeHeightError(other.m_plumeHeightError),
+                                                  m_plumeHeightSource(other.m_plumeHeightSource),
+                                                  m_windError(other.m_windError),
+                                                  m_time(other.m_time)
 {
 }
 
@@ -91,17 +90,29 @@ MET_SOURCE CWindField::GetWindSpeedSource() const
 void CWindField::GetWindSpeedSource(CString& str) const
 {
     if (MET_DEFAULT == m_windSpeedSource)
+    {
         str = "default";
+    }
     else if (MET_USER == m_windSpeedSource)
+    {
         str = "user";
+    }
     else if (MET_ECMWF_FORECAST == m_windSpeedSource)
+    {
         str = "ecmwf_forecast";
+    }
     else if (MET_ECMWF_ANALYSIS == m_windSpeedSource)
+    {
         str = "ecmwf_analysis";
+    }
     else if (MET_DUAL_BEAM_MEASUREMENT == m_windSpeedSource)
+    {
         str = "dual_beam_measurement";
+    }
     else
+    {
         str = "unknown";
+    }
 
     return;
 }
@@ -119,17 +130,29 @@ MET_SOURCE CWindField::GetWindDirectionSource() const
 void CWindField::GetWindDirectionSource(CString& str) const
 {
     if (MET_DEFAULT == m_windDirectionSource)
+    {
         str = "default";
+    }
     else if (MET_USER == m_windDirectionSource)
+    {
         str = "user";
+    }
     else if (MET_ECMWF_FORECAST == m_windDirectionSource)
+    {
         str = "ecmwf_forecast";
+    }
     else if (MET_ECMWF_ANALYSIS == m_windDirectionSource)
+    {
         str = "ecmwf_analysis";
+    }
     else if (MET_GEOMETRY_CALCULATION == m_windDirectionSource)
+    {
         str = "triangulation";
+    }
     else
+    {
         str = "unknown";
+    }
 }
 
 double CWindField::GetPlumeHeight() const
@@ -145,17 +168,29 @@ MET_SOURCE CWindField::GetPlumeHeightSource() const
 void CWindField::GetPlumeHeightSource(CString& sourceStr) const
 {
     if (MET_DEFAULT == m_plumeHeightSource)
+    {
         sourceStr = "default";
+    }
     else if (MET_USER == m_plumeHeightSource)
+    {
         sourceStr = "user";
+    }
     else if (MET_ECMWF_FORECAST == m_plumeHeightSource)
+    {
         sourceStr = "ecmwf_forecast";
+    }
     else if (MET_ECMWF_ANALYSIS == m_plumeHeightSource)
+    {
         sourceStr = "ecmwf_analysis";
+    }
     else if (MET_GEOMETRY_CALCULATION == m_plumeHeightSource)
+    {
         sourceStr = "triangulation";
+    }
     else
+    {
         sourceStr = "unknown";
+    }
 
     return;
 }

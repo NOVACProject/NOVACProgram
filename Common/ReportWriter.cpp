@@ -28,7 +28,8 @@ CReportWriter::~CReportWriter()
 {
 }
 
-BOOL CReportWriter::InitInstance() {
+BOOL CReportWriter::InitInstance()
+{
     CWinThread::InitInstance();
 
     m_nTimerID = 0;
@@ -38,7 +39,8 @@ BOOL CReportWriter::InitInstance() {
     return 1;
 }
 
-void CReportWriter::SetTimer() {
+void CReportWriter::SetTimer()
+{
     long lastSleep = -1, curTime = 0;
 
     // If the timer is already running, then we need to stop it...
@@ -48,9 +50,11 @@ void CReportWriter::SetTimer() {
     }
 
     // Find the last sleeptime
-    for (unsigned int k = 0; k < g_settings.scannerNum; ++k) {
+    for (unsigned int k = 0; k < g_settings.scannerNum; ++k)
+    {
         long sleepTime = 3600 * g_settings.scanner[k].comm.sleepTime.hour + 60 * g_settings.scanner[k].comm.sleepTime.minute;
-        if (sleepTime > lastSleep) {
+        if (sleepTime > lastSleep)
+        {
             lastSleep = sleepTime;
         }
     }
@@ -63,7 +67,9 @@ void CReportWriter::SetTimer() {
 
     // if we're starting up during the sleeping time...
     while (lastSleep <= curTime)
+    {
         lastSleep += 86400;
+    }
 
     // Set a timer to wake up 2 hours after the last instrument has fallen asleep...
     m_nTimerID = ::SetTimer(NULL, 0, (lastSleep - curTime) * 1000, NULL);
@@ -89,7 +95,8 @@ END_MESSAGE_MAP()
 // CReportWriter message handlers
 
 
-void CReportWriter::OnTimer(WPARAM nIDEvent, LPARAM lp) {
+void CReportWriter::OnTimer(WPARAM nIDEvent, LPARAM lp)
+{
     pView->PostMessage(WM_WRITE_REPORT);
 
     // Set the timer for a new period
@@ -98,14 +105,17 @@ void CReportWriter::OnTimer(WPARAM nIDEvent, LPARAM lp) {
 
 
 /** Called to write the report */
-void CReportWriter::WriteReport(CEvaluatedDataStorage* evalDataStorage, CCommunicationDataStorage* commDataStorage) {
+void CReportWriter::WriteReport(CEvaluatedDataStorage* evalDataStorage, CCommunicationDataStorage* commDataStorage)
+{
     CString reportFileName, dateStr, fluxUnitStr, style;
     //	CString imageDirectory, imageFileName_temp, imageFileName_linkSpeed, imageFileName_battery, imageFileName_flux;
     long numDataPoints, numGoodDataPoints;
 
     // Check that we have something to write
     if (evalDataStorage == NULL || commDataStorage == NULL)
+    {
         return;
+    }
 
     // Allocate some memory for storing the data
     const int BUF_SIZE = 1024;
@@ -131,7 +141,8 @@ void CReportWriter::WriteReport(CEvaluatedDataStorage* evalDataStorage, CCommuni
 
     // Open the file
     FILE* f = fopen(reportFileName, "w");
-    if (f == NULL) {
+    if (f == NULL)
+    {
         delete[] timeBuffer;
         delete[] qualityBuffer;
         delete[] dataBuffer;
@@ -142,7 +153,8 @@ void CReportWriter::WriteReport(CEvaluatedDataStorage* evalDataStorage, CCommuni
     WriteReportHeader(f);
 
     // Loop through each of the connected systems...
-    for (unsigned int instrument = 0; instrument < g_settings.scannerNum; ++instrument) {
+    for (unsigned int instrument = 0; instrument < g_settings.scannerNum; ++instrument)
+    {
         const CString& serial = g_settings.scanner[instrument].spec[0].serialNumber;
 
         // Write a header for this spectrometer
@@ -153,9 +165,13 @@ void CReportWriter::WriteReport(CEvaluatedDataStorage* evalDataStorage, CCommuni
         numGoodDataPoints = RemoveBadFluxData(timeBuffer, dataBuffer, qualityBuffer, numDataPoints);
         FLUX_UNIT fluxUnit = g_userSettings.m_fluxUnit;
         if (fluxUnit == UNIT_TONDAY)
+        {
             fluxUnitStr.Format("ton/day");
+        }
         else
+        {
             fluxUnitStr.Format("kg/s");
+        }
 
         // ------------ Write a table with the flux data -------------
         fprintf(f, "<p><table border=\"2\" frame=\"box\" rules=\"groups\">\r\n");
@@ -167,9 +183,13 @@ void CReportWriter::WriteReport(CEvaluatedDataStorage* evalDataStorage, CCommuni
 
         fprintf(f, "<tbody>\r\n");
         if (numGoodDataPoints == 0 || (numDataPoints - numGoodDataPoints >= 2 * numGoodDataPoints))
+        {
             style.Format(" id=\"warning\"");
+        }
         else
+        {
             style.Format("");
+        }
 
         fprintf(f, "<tr><th>Number of good scans</th><td%s>%ld</td><td></td><td></td></tr>\r\n", (LPCSTR)style, numGoodDataPoints);
         fprintf(f, "<tr><th>Number of bad scans</th><td%s>%ld</td><td></td><td></td></tr>\r\n", (LPCSTR)style, numDataPoints - numGoodDataPoints);
@@ -277,16 +297,18 @@ void CReportWriter::WriteReport(CEvaluatedDataStorage* evalDataStorage, CCommuni
 
     // Clear up...
     delete[] timeBuffer, qualityBuffer, dataBuffer;
-
 }
 
 /** Generate the header of the Report */
-void CReportWriter::WriteReportHeader(FILE* f) {
+void CReportWriter::WriteReportHeader(FILE* f)
+{
     CString dateStr;
     Common::GetDateText(dateStr);
 
     if (f == NULL)
+    {
         return;
+    }
 
     fprintf(f, "<html>\r\n");
     fprintf(f, "<head>\r\n");
@@ -299,15 +321,19 @@ void CReportWriter::WriteReportHeader(FILE* f) {
 }
 
 /** Generate the footer of the Report */
-void CReportWriter::WriteReportFooter(FILE* f) {
+void CReportWriter::WriteReportFooter(FILE* f)
+{
     if (f == NULL)
+    {
         return;
+    }
 
     fprintf(f, "</body>\r\n");
     fprintf(f, "</html>\r\n");
 }
 
-long CReportWriter::RemoveBadFluxData(double* timeBuffer, double* dataBuffer, int* qualityBuffer, long numDataPoints) {
+long CReportWriter::RemoveBadFluxData(double* timeBuffer, double* dataBuffer, int* qualityBuffer, long numDataPoints)
+{
     double* tempDataBuffer = new double[numDataPoints];
     double* tempTimeBuffer = new double[numDataPoints];
     memset(tempDataBuffer, 0, numDataPoints * sizeof(double));
@@ -315,15 +341,18 @@ long CReportWriter::RemoveBadFluxData(double* timeBuffer, double* dataBuffer, in
 
     // Copy the good data points to the temporary buffers
     long nGoodFluxes = 0;
-    for (int k = 0; k < numDataPoints; ++k) {
-        if (qualityBuffer[k]) {
+    for (int k = 0; k < numDataPoints; ++k)
+    {
+        if (qualityBuffer[k])
+        {
             tempDataBuffer[nGoodFluxes] = dataBuffer[k];
             tempTimeBuffer[nGoodFluxes] = timeBuffer[k];
         }
     }
 
     // Copy the temporary buffers to the output-buffers
-    if (nGoodFluxes > 0) {
+    if (nGoodFluxes > 0)
+    {
         memcpy(dataBuffer, tempDataBuffer, nGoodFluxes * sizeof(double));
         memcpy(timeBuffer, tempTimeBuffer, nGoodFluxes * sizeof(double));
     }
@@ -336,7 +365,8 @@ long CReportWriter::RemoveBadFluxData(double* timeBuffer, double* dataBuffer, in
 }
 
 /** Generate a histogram of the data and stores it to a graphics file */
-int CReportWriter::WriteDataHistogram(double* data, long nDataPoints, long nBins, const CString& filePath, const CString& fileName) {
+int CReportWriter::WriteDataHistogram(double* data, long nDataPoints, long nBins, const CString& filePath, const CString& fileName)
+{
     DWORD errorCode;
     long* sortedData = new long[nBins];
     memset(sortedData, 0, nBins * sizeof(long));
@@ -357,12 +387,15 @@ int CReportWriter::WriteDataHistogram(double* data, long nDataPoints, long nBins
     double minV = Min(data, nDataPoints);
     double binSize = (maxV - minV) / (double)nBins; // the size of each bin
     binSize = (binSize == 0.0) ? 0.1 : binSize;
-    for (int k = 0; k < nDataPoints; ++k) {
+    for (int k = 0; k < nDataPoints; ++k)
+    {
         curBin = (long)((data[k] - minV) / binSize);
-        if (curBin >= 0 && curBin < nBins) {
+        if (curBin >= 0 && curBin < nBins)
+        {
             ++sortedData[curBin];
         }
-        else {
+        else
+        {
             ++sortedData[nBins - 1];
         }
     }
@@ -370,9 +403,12 @@ int CReportWriter::WriteDataHistogram(double* data, long nDataPoints, long nBins
 
     CMetaFileDC* dc = new CMetaFileDC();
     if (dc == NULL)
+    {
         return 1; // FAIL
+    }
     int ret = dc->Create(fileName_WMF); // create a meta-file
-    if (ret == 0 || dc->m_hDC) {
+    if (ret == 0 || dc->m_hDC)
+    {
         delete dc;
         return 1; // FAIL;
     }
@@ -385,7 +421,8 @@ int CReportWriter::WriteDataHistogram(double* data, long nDataPoints, long nBins
     CPoint pt[4]; // each rectangle...
     CBrush barBrush(RGB(0, 0, 240));
     CBrush* pBrush = dc->SelectObject(&barBrush);
-    for (int k = 0; k < nBins; ++k) {
+    for (int k = 0; k < nBins; ++k)
+    {
         x1 = axisMargin + binWidth * k;
         x2 = axisMargin + binWidth * (k + 1);
         y1 = imageHeight - axisMargin;
@@ -445,7 +482,8 @@ int CReportWriter::WriteDataHistogram(double* data, long nDataPoints, long nBins
 
     // Remove the original .wmf - file
     BOOL bFileDeleted = DeleteFile(fileName_WMF);
-    if (0 == bFileDeleted) {
+    if (0 == bFileDeleted)
+    {
         errorCode = GetLastError();
     }
 

@@ -4,30 +4,30 @@
 
 // CConfigurationTreeCtrl
 
-namespace ConfigurationDialog {
+namespace ConfigurationDialog
+{
 
-    class CConfigurationTreeCtrl : public CTreeCtrl
-    {
-        DECLARE_DYNAMIC(CConfigurationTreeCtrl)
+class CConfigurationTreeCtrl : public CTreeCtrl
+{
+    DECLARE_DYNAMIC(CConfigurationTreeCtrl)
 
-    public:
-        CConfigurationTreeCtrl();
-        virtual ~CConfigurationTreeCtrl();
+public:
+    CConfigurationTreeCtrl();
+    virtual ~CConfigurationTreeCtrl();
 
         /** The local copy of the configuration list */
-        const CConfigurationSetting* m_configuration;
+    const CConfigurationSetting* m_configuration;
 
         /** Updates the tree control */
-        void UpdateTree();
+    void UpdateTree();
 
         /** Fills in the configuration tree control */
-        void PopulateTreeControl();
+    void PopulateTreeControl();
 
         /** Retrieves the currently selected scanner and spectrometer */
-        void GetCurScanAndSpec(int& curScan, int& curSpec);
+    void GetCurScanAndSpec(int& curScan, int& curSpec);
 
-    protected:
-        DECLARE_MESSAGE_MAP()
-
-    };
+protected:
+    DECLARE_MESSAGE_MAP()
+};
 }

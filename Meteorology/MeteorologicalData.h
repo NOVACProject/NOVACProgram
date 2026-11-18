@@ -40,7 +40,6 @@ public:
     CWindField defaultWindField;
 
 private:
-
     // This class is not copyable because of the owned pointer.
     //  better to make this explicit here than to discover it later in a crash.
     CMeteorologicalData(const CMeteorologicalData&) = delete;

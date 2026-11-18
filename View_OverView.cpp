@@ -25,25 +25,29 @@ CView_OverView::~CView_OverView()
 {
     m_evalDataStorage = nullptr;
     m_commDataStorage = nullptr;
-    for (int i = 0; i < m_graphs.GetCount(); ++i) {
+    for (int i = 0; i < m_graphs.GetCount(); ++i)
+    {
         CGraphCtrl* graph = m_graphs[i];
         delete graph;
     }
     m_graphs.RemoveAll();
 
-    for (int i = 0; i < m_specLabel.GetCount(); ++i) {
+    for (int i = 0; i < m_specLabel.GetCount(); ++i)
+    {
         CStatic* label = m_specLabel[i];
         delete label;
     }
     m_specLabel.RemoveAll();
 
-    for (int i = 0; i < m_statusLabel.GetCount(); ++i) {
+    for (int i = 0; i < m_statusLabel.GetCount(); ++i)
+    {
         CStatic* label = m_statusLabel[i];
         delete label;
     }
     m_statusLabel.RemoveAll();
 
-    for (int i = 0; i < m_fluxLabel.GetCount(); ++i) {
+    for (int i = 0; i < m_fluxLabel.GetCount(); ++i)
+    {
         CStatic* label = m_fluxLabel[i];
         delete label;
     }
@@ -82,12 +86,16 @@ BOOL CView_OverView::OnInitDialog()
     this->GetWindowRect(thisRect);
 
     if (nSpectrometers == 0)
+    {
         return TRUE;
+    }
 
-    if (g_userSettings.m_fluxUnit == UNIT_TONDAY) {
+    if (g_userSettings.m_fluxUnit == UNIT_TONDAY)
+    {
         fluxAxisLabel.Format("%s [ton/day]", (LPCTSTR)common.GetString(AXIS_FLUX));
     }
-    else {
+    else
+    {
         fluxAxisLabel.Format("%s [kg/s]", (LPCTSTR)common.GetString(AXIS_FLUX));
     }
 
@@ -106,24 +114,27 @@ BOOL CView_OverView::OnInitDialog()
     // The font we want to use
     CFont* font = new CFont();
     font->CreateFont((int)(16 - 0.2 * nSpectrometers), 0, 0, 0, FW_BOLD,
-                         FALSE, FALSE, 0, ANSI_CHARSET,
-                         OUT_DEFAULT_PRECIS,
-                         CLIP_DEFAULT_PRECIS,
-                         DEFAULT_QUALITY,
-                         DEFAULT_PITCH | FF_SWISS, "Arial");
+        FALSE, FALSE, 0, ANSI_CHARSET,
+        OUT_DEFAULT_PRECIS,
+        CLIP_DEFAULT_PRECIS,
+        DEFAULT_QUALITY,
+        DEFAULT_PITCH | FF_SWISS, "Arial");
 
     // Create all the graphs
-    for (int i = 0; i < nSpectrometers; ++i) {
+    for (int i = 0; i < nSpectrometers; ++i)
+    {
         rect.top = i * (height + margin) + margin;
         rect.bottom = rect.top + height;
 
         // Create the graph
         CGraphCtrl* graph = new CGraphCtrl();
 
-        if (i == nSpectrometers - 1) {
+        if (i == nSpectrometers - 1)
+        {
             graph->SetXUnits(m_common.GetString(AXIS_UTCTIME));
         }
-        else {
+        else
+        {
             graph->HideXScale();
         }
         graph->Create(WS_VISIBLE | WS_CHILD, rect, this);
@@ -164,10 +175,12 @@ BOOL CView_OverView::OnInitDialog()
 
         rect2.top = rect.top + (rect.bottom - rect.top) * 2 / 5;
         rect2.bottom = rect2.top + 90;
-        if (g_userSettings.m_fluxUnit == UNIT_TONDAY) {
+        if (g_userSettings.m_fluxUnit == UNIT_TONDAY)
+        {
             fluxString[i].Format("%s\tavg: 0 [ton/day]\r\n\tstd: 0 [ton/day]", (LPCTSTR)common.GetString(AXIS_FLUX));
         }
-        else {
+        else
+        {
             fluxString[i].Format("%s\tavg: 0 [kg/s]\r\n\tstd: 0 [kg/s]", (LPCTSTR)common.GetString(AXIS_FLUX));
         }
         fluxLabel->Create(fluxString[i], WS_VISIBLE | WS_CHILD, rect2, this);
@@ -181,15 +194,16 @@ BOOL CView_OverView::OnInitDialog()
 }
 
 
-
-LRESULT CView_OverView::OnUpdateFluxes(WPARAM wParam, LPARAM lParam) {
+LRESULT CView_OverView::OnUpdateFluxes(WPARAM wParam, LPARAM lParam)
+{
     // Re-draw the screen
     DrawFlux();
 
     return 0;
 }
 
-void CView_OverView::DrawFlux() {
+void CView_OverView::DrawFlux()
+{
     double maxFlux;
     const int BUFFER_SIZE = 200;
     double allFluxes[BUFFER_SIZE], tid[BUFFER_SIZE];
@@ -204,7 +218,8 @@ void CView_OverView::DrawFlux() {
 
     int nSpectrometers = g_settings.scannerNum;
 
-    for (int i = 0; i < nSpectrometers; ++i) {
+    for (int i = 0; i < nSpectrometers; ++i)
+    {
         // The serialnumber
         serial.Format(g_settings.scanner[i].spec[0].serialNumber);
 
@@ -214,13 +229,16 @@ void CView_OverView::DrawFlux() {
         // sort the data into good values and bad values
         nGoodFluxes = 0;
         nBadFluxes = 0;
-        for (int k = 0; k < dataLength; ++k) {
-            if (fluxOk[k]) {
+        for (int k = 0; k < dataLength; ++k)
+        {
+            if (fluxOk[k])
+            {
                 goodFluxes[nGoodFluxes] = allFluxes[k];
                 goodTime[nGoodFluxes] = tid[k];
                 ++nGoodFluxes;
             }
-            else {
+            else
+            {
                 badFluxes[nBadFluxes] = allFluxes[k];
                 badTime[nBadFluxes] = tid[k];
                 ++nBadFluxes;
@@ -235,17 +253,21 @@ void CView_OverView::DrawFlux() {
         graph->CleanPlot();
 
         // Set the unit of the plot
-        if (g_userSettings.m_fluxUnit == UNIT_TONDAY) {
+        if (g_userSettings.m_fluxUnit == UNIT_TONDAY)
+        {
             fluxAxisLabel.Format("%s [ton/day]", (LPCTSTR)common.GetString(AXIS_FLUX));
         }
-        else {
+        else
+        {
             fluxAxisLabel.Format("%s [kg/s]", (LPCTSTR)common.GetString(AXIS_FLUX));
         }
         graph->SetYUnits(fluxAxisLabel);
 
         // If there's no data, don't draw anything
         if (dataLength == 0)
+        {
             continue;
+        }
 
         // Get the ranges for the flux data
         maxFlux = Max(allFluxes, dataLength);
@@ -268,10 +290,12 @@ void CView_OverView::DrawFlux() {
         // Update the flux-label
         // 1. Flux
         m_evalDataStorage->GetFluxStat(serial, avgFlux, stdFlux);
-        if (UNIT_KGS == g_userSettings.m_fluxUnit) {
+        if (UNIT_KGS == g_userSettings.m_fluxUnit)
+        {
             tempStr.Format("%s\tavg: %.0lf [kg/s]\r\n\tstd: %.0lf [kg/s]\r\n", (LPCTSTR)common.GetString(AXIS_FLUX), avgFlux, stdFlux);
         }
-        else {
+        else
+        {
             tempStr.Format("%s\tavg: %.0lf [ton/day]\r\n\tstd: %.0lf [ton/day]\r\n", (LPCTSTR)common.GetString(AXIS_FLUX), avgFlux, stdFlux);
         }
 
@@ -287,7 +311,8 @@ BOOL CView_OverView::OnSetActive()
     return CPropertyPage::OnSetActive();
 }
 
-void CView_OverView::SetTodayRange(CGraphCtrl* graph) {
+void CView_OverView::SetTodayRange(CGraphCtrl* graph)
+{
     // set time range for last day plot
     struct tm* tm;
     time_t endtime;
