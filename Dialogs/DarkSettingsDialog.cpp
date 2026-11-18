@@ -180,7 +180,7 @@ void CDarkSettingsDialog::InitToolTips()
         TRACE0("Failed to create tooltip control\n");
     }
 
-    //	m_toolTip.AddTool(&m_labelVolcano,							IDC_EDIT_VOLCANO);
+    //  m_toolTip.AddTool(&m_labelVolcano,                          IDC_EDIT_VOLCANO);
 }
 
 void CDarkSettingsDialog::SaveData()
@@ -214,25 +214,25 @@ BOOL CDarkSettingsDialog::PreTranslateMessage(MSG* pMsg)
 void CDarkSettingsDialog::UpdateControls()
 {
     // if there is only one channel on this spectrometer, then hide
-    //	the edit-boxes and labels that belongs to the slave
+    //  the edit-boxes and labels that belongs to the slave
     //if(m_curSpec->channelNum == 1){
-    //	m_labelSlave1.ShowWindow(SW_HIDE);
-    //	m_labelSlave2.ShowWindow(SW_HIDE);
-    //	m_editOffset2.ShowWindow(SW_HIDE);
-    //	m_editDC2.ShowWindow(SW_HIDE);
-    //	m_btnSlaveOff.ShowWindow(SW_HIDE);
-    //	m_btnSlaveDC.ShowWindow(SW_HIDE);
+    //  m_labelSlave1.ShowWindow(SW_HIDE);
+    //  m_labelSlave2.ShowWindow(SW_HIDE);
+    //  m_editOffset2.ShowWindow(SW_HIDE);
+    //  m_editDC2.ShowWindow(SW_HIDE);
+    //  m_btnSlaveOff.ShowWindow(SW_HIDE);
+    //  m_btnSlaveDC.ShowWindow(SW_HIDE);
     //}else{
-    //	m_labelSlave1.ShowWindow(SW_SHOW);
-    //	m_labelSlave2.ShowWindow(SW_SHOW);
-    //	m_editOffset2.ShowWindow(SW_SHOW);
-    //	m_editDC2.ShowWindow(SW_SHOW);
-    //	m_btnSlaveOff.ShowWindow(SW_SHOW);
-    //	m_btnSlaveDC.ShowWindow(SW_SHOW);
+    //  m_labelSlave1.ShowWindow(SW_SHOW);
+    //  m_labelSlave2.ShowWindow(SW_SHOW);
+    //  m_editOffset2.ShowWindow(SW_SHOW);
+    //  m_editDC2.ShowWindow(SW_SHOW);
+    //  m_btnSlaveOff.ShowWindow(SW_SHOW);
+    //  m_btnSlaveDC.ShowWindow(SW_SHOW);
     //}
 
     // If the user only wants to use measured spectra, then
-    //	the controls on the screed should be disabled
+    //  the controls on the screed should be disabled
     BOOL state = TRUE;
     if (m_darkSpecOption == 0)
     {
@@ -331,7 +331,7 @@ void CDarkSettingsDialog::OnChangeDarkSpecOption()
     { // <-- first save the data in the dialog
 
         // Enable the controls that should be enabled and disable the controls
-        //	that should be disabled
+        //  that should be disabled
         UpdateControls();
 
         // Save the data in the dialog

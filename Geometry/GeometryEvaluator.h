@@ -78,8 +78,8 @@ protected:
     bool GetInfoFromFileName(const CString fileName, novac::CDateTime& start, CString& serial);
 
         ///** Writes the results of the geometry calculation to a file.
-        //		@param calc - the windspeed calculator which has performed the correlation calculations
-        //		@param evallog - one of the evaluation-log files used in the correlation calculations 		*/
+        //      @param calc - the windspeed calculator which has performed the correlation calculations
+        //      @param evallog - one of the evaluation-log files used in the correlation calculations       */
         //void WriteGeometryLog(const CWindSpeedCalculator &calc, const CString &evalLog, const Evaluation::CScanResult &scan);
 };
 }

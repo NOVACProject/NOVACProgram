@@ -514,7 +514,7 @@ UINT ViewFileByFTP(LPVOID pParam)
     }
     time(&stopTime);
     dlg->m_ftpController->Disconnect();
-    //	dlg->m_ftpController->m_dataSpeed = (dlg->m_ftpController->m_remoteFileSize/1024.0)/(stopTime - startTime);
+    //  dlg->m_ftpController->m_dataSpeed = (dlg->m_ftpController->m_remoteFileSize/1024.0)/(stopTime - startTime);
     msg.Format("%s was downloaded. The downloading spent %d seconds", (LPCSTR)fileName, static_cast<int>(stopTime - startTime));
     dlg->m_fileStatusEdit.SetWindowText(msg);
     //show content
@@ -1288,11 +1288,11 @@ void CFileTransferDlg::OnDownloadDisk()
     m_curScanner = curScanner;
     if (m_communicationType == SERIAL_CONNECTION)
     {
-        //	AfxBeginThread(DownloadDiskWithSerial,this,THREAD_PRIORITY_NORMAL,0,0,NULL);
+        //  AfxBeginThread(DownloadDiskWithSerial,this,THREAD_PRIORITY_NORMAL,0,0,NULL);
     }
     else
     {
-        //	AfxBeginThread(DownloadDiskWithFTP,this,THREAD_PRIORITY_NORMAL,0,0,NULL);
+        //  AfxBeginThread(DownloadDiskWithFTP,this,THREAD_PRIORITY_NORMAL,0,0,NULL);
     }
 }
 
@@ -1804,7 +1804,7 @@ void CFileTransferDlg::EmptyFileArray()
 void CFileTransferDlg::OnBnClickedOk()
 {
     // TODO: Add your control notification handler code here
-//	CloseSerialPort();
+//  CloseSerialPort();
     DisconnectPrevScanner(m_curScanner);
     OnOK();
 }

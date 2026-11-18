@@ -122,7 +122,7 @@ bool CReEvaluator::DoEvaluation()
             if (skySpec.m_info.m_startChannel > 0 || skySpec.m_length != thisWindow.specLength / thisWindow.interlaceStep)
             {
                 // If the spectra are too short or the start channel is not zero
-                //	then they are read out as partial spectra. Lets adapt the evaluator to that
+                //  then they are read out as partial spectra. Lets adapt the evaluator to that
                 thisWindow.specLength = skySpec.m_length;
                 thisWindow.startChannel = skySpec.m_info.m_startChannel;
             }
@@ -472,7 +472,7 @@ bool CReEvaluator::AppendResultToEvaluationLog(const Evaluation::CScanResult& re
         // The 'flag' - solenoid or diffusor plate
         fprintf(f, "%d\t", info.m_flag);
 
-        //		fprintf(f, "%.0lf\t", spec.MaxValue(m_window[m_curWindow].fitLow, m_window[m_curWindow].fitHigh));
+        //      fprintf(f, "%.0lf\t", spec.MaxValue(m_window[m_curWindow].fitLow, m_window[m_curWindow].fitHigh));
 
         // the number of references
         int nRef = window.NumberOfReferences();

@@ -187,7 +187,7 @@ BEGIN_MESSAGE_MAP(CPostFluxDlg, CDialog)
     ON_UPDATE_COMMAND_UI(ID_VIEW_COLUMNERROR, OnUpdateViewColumnError)
 
     // Updating the interface, notice that this has to be here due to a bug in Microsoft MFC
-    //	http://support.microsoft.com/kb/242577
+    //  http://support.microsoft.com/kb/242577
     ON_WM_INITMENUPOPUP()
 
     // The user has clicked the label 'compass direction'
@@ -1119,7 +1119,7 @@ void CPostFluxDlg::RetrieveWindField()
 void CPostFluxDlg::OnCalcFlux()
 {
     CString compass, ph, coneAngle, str, tilt;
-    //	double tmpDouble;
+    //  double tmpDouble;
     int ret; // return value from sscanf
 
 #ifdef _DEBUG
@@ -1208,7 +1208,7 @@ void CPostFluxDlg::OnCalcFlux()
     if (diffMem.Difference(oldMem, newMem))
     {
         diffMem.DumpStatistics();
-        //		diffMem.DumpAllObjectsSince();
+        //      diffMem.DumpAllObjectsSince();
     }
 #endif
 }
@@ -1497,7 +1497,7 @@ void CPostFluxDlg::OnCalculateFlux_AllScansInPlume()
         bool inplume = scan.CalculatePlumeCentre(currentSpecieName, plumeCentre1, plumeCentre2, plumeCompleteness, plumeEdge_low, plumeEdge_high);
 
         // If this measurement is not in the plume, then continue with the next
-        //	scan in the file.
+        //  scan in the file.
         if (!inplume)
         {
             continue;

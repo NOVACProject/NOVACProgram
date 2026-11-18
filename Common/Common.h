@@ -301,11 +301,11 @@ public:
     // --------------------------------------------------------------------
 
     /** Take out the file name from a long path
-            @param fileName path of the file	*/
+            @param fileName path of the file    */
     static void GetFileName(CString& fileName);
 
     /** Take out the file name from a long path
-            @param fileName path of the file	*/
+            @param fileName path of the file    */
     static void GetFileName(std::string& fullFileNameAndPath);
 
     /** Take out the directory from a long path name.
@@ -437,17 +437,17 @@ public:
     /** ????
         D  is the JulianDay counted from the 1st of January 2000 @ midnight
         Ra is the  Right Ascencion
-        dec	is the declination
+        dec is the declination
         EQT is the equation of time (in hours)
     */
     static void EquatorialCoordinates(double D, double& RA, double& dec, double& EQT);
 
     /** ???
             lat - latitude in degrees
-            H		- The hour angle, in degrees
+            H       - The hour angle, in degrees
             dec - The declination, degres
             elev - the returned elevation of the sun above the horizon
-            azim - the returned azimuth angle of the sun, counted from south to west			*/
+            azim - the returned azimuth angle of the sun, counted from south to west            */
     static void HorizontalCoordinates(double lat, double H, double dec, double& elev, double& azim);
 
     /** Returns the hour angle given the longitude and equation of time. */
@@ -602,7 +602,7 @@ T Min(T* pBuffer, long bufLen)
         @param array - the array to look into
         @param nElements - the number of elements in the supplied array
         @param output - the output array, must be at least 'N'- elements long
-        @param N - the number of values to take out. 	*/
+        @param N - the number of values to take out.    */
 template <class T>
 bool FindNLowest(const T array[], long nElements, T output[], int N, int* indices = NULL)
 {

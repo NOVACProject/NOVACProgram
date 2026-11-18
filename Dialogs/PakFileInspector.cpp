@@ -184,7 +184,7 @@ void CPakFileInspector::OnOpenPakFile()
     fileName.Format("");
 
     // 0. Turn off the zooming temporarily, this since if the user double-clicks
-    //		in the dialog we want to show then this can be percieved as a zoom-click by the graph...
+    //      in the dialog we want to show then this can be percieved as a zoom-click by the graph...
     m_graph.m_userZoomableGraph = false;
 
     // 1. Let the user browse for the reference file

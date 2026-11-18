@@ -563,12 +563,12 @@ bool CFTPSocket::Connect(SOCKET& usedSocket, char* ftpServerIPOrHostName, int se
 int CFTPSocket::CloseASocket(SOCKET sock)
 {
     /*
-	 1. Call WSAAsyncSelect to register for FD_CLOSE notification.
+     1. Call WSAAsyncSelect to register for FD_CLOSE notification.
    2. Call shutdown with how=SD_SEND.
    3. When FD_CLOSE received, call recv until zero returned, or SOCKET_ERROR.
    4. Call closesocket.
 
-	*/
+    */
     int ret;
     int reply = -1;
     char buf[1024];

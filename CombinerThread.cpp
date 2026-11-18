@@ -90,7 +90,7 @@ void CCombinerThread::CleanEvalLogList()
         double secondsPassed = fabs(CDateTime::Difference(arrived, now));
 
         // 2c. If the time is longer than the maximum allowed time, remove
-        //			the rest of the list
+        //          the rest of the list
         if (secondsPassed > MAX_RESIDENCE_TIME)
         {
             m_evalLogs.GetPrev(pos);
@@ -99,8 +99,8 @@ void CCombinerThread::CleanEvalLogList()
         else
         {
             // if this item has been less than 'MAX_RESIDENCE_TIME'
-            //	in the list, then the previous items in the list
-            //	have been there shorter time, no need to even look at them...
+            //  in the list, then the previous items in the list
+            //  have been there shorter time, no need to even look at them...
             return;
         }
     }

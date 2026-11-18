@@ -16,7 +16,7 @@ struct FTPUploadOptions
 };
 
     /** The class CFTPServerContacter is responsible for the uploading of
-            spectra and results to the data-server. 
+            spectra and results to the data-server.
         This is designed as a soliton class and there must be only one instance of this class running. */
 
 class CFTPServerContacter : public CWinThread

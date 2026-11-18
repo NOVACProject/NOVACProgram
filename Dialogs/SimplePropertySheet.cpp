@@ -58,7 +58,7 @@ BOOL Dialogs::CSimplePropertySheet::OnInitDialog()
     }
 
     // Change the 'Cancel'-button to a 'Close'-button, move it to where the
-    //	'Apply'-button was
+    //  'Apply'-button was
     if (pCancel)
     {
         pCancel->SetWindowText("Close");

@@ -26,7 +26,7 @@ void CScanGraph::OnContextMenu(CWnd* pWnd, CPoint point)
     CMenu* pPopup = menu.GetSubMenu(0);
     ASSERT(pPopup != NULL);
 
-    //		pPopup->EnableMenuItem(ID__SAVEASBITMAP, MF_DISABLED | MF_GRAYED);
+    //      pPopup->EnableMenuItem(ID__SAVEASBITMAP, MF_DISABLED | MF_GRAYED);
 
     if (parent != NULL)
     {

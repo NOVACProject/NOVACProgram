@@ -207,7 +207,7 @@ long CCommunicationDataStorage::GetLinkSpeedData(const CString& serial, double* 
             CLinkInfo& info = m_ftpServerLinkInformation[i];
             dataBuffer[i] = info.m_downloadSpeed;
             timeBuffer[i] = common.Epoch(info.m_time);
-            //timeBuffer[i]			= info.m_time.hour * 3600.0 + info.m_time.minute * 60.0 + info.m_time.second;
+            //timeBuffer[i]         = info.m_time.hour * 3600.0 + info.m_time.minute * 60.0 + info.m_time.second;
         }
     }
     else
@@ -227,7 +227,7 @@ long CCommunicationDataStorage::GetLinkSpeedData(const CString& serial, double* 
             CLinkInfo& info = m_dataLinkInformation[scannerIndex][i];
             dataBuffer[i] = info.m_downloadSpeed;
             timeBuffer[i] = common.Epoch(info.m_time);
-            //timeBuffer[i]			= info.m_time.hour * 3600.0 + info.m_time.minute * 60.0 + info.m_time.second;
+            //timeBuffer[i]         = info.m_time.hour * 3600.0 + info.m_time.minute * 60.0 + info.m_time.second;
         }
     }
 

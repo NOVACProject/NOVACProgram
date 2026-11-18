@@ -96,7 +96,7 @@ BEGIN_MESSAGE_MAP(CDataBrowserDlg, CDialog)
     ON_UPDATE_COMMAND_UI(ID_VIEW_CHISQUARE_BD, OnUpdateViewChiSquare)
 
     // Updating the interface, notice that this has to be here due to a bug in Microsoft MFC
-    //	http://support.microsoft.com/kb/242577
+    //  http://support.microsoft.com/kb/242577
     ON_WM_INITMENUPOPUP()
 
 END_MESSAGE_MAP()

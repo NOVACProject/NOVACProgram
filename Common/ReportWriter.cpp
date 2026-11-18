@@ -58,7 +58,7 @@ void CReportWriter::SetTimer()
             lastSleep = sleepTime;
         }
     }
-    //	lastSleep = lastSleep + 7200; // make the time 2 hours after the last sleeping time
+    //  lastSleep = lastSleep + 7200; // make the time 2 hours after the last sleeping time
     lastSleep = lastSleep + 60; // make the time 1 minute after the last sleeping time
 
     // Get the current time
@@ -108,7 +108,7 @@ void CReportWriter::OnTimer(WPARAM nIDEvent, LPARAM lp)
 void CReportWriter::WriteReport(CEvaluatedDataStorage* evalDataStorage, CCommunicationDataStorage* commDataStorage)
 {
     CString reportFileName, dateStr, fluxUnitStr, style;
-    //	CString imageDirectory, imageFileName_temp, imageFileName_linkSpeed, imageFileName_battery, imageFileName_flux;
+    //  CString imageDirectory, imageFileName_temp, imageFileName_linkSpeed, imageFileName_battery, imageFileName_flux;
     long numDataPoints, numGoodDataPoints;
 
     // Check that we have something to write
@@ -133,11 +133,11 @@ void CReportWriter::WriteReport(CEvaluatedDataStorage* evalDataStorage, CCommuni
     reportFileName.Format("%s\\Output\\%s\\DailyReport_%s.html", (LPCSTR)g_settings.outputDirectory, (LPCSTR)dateStr, (LPCSTR)dateStr);
 
     //// The names of the images
-    //imageDirectory.Format("%sOutput\\%s\\",							g_settings.outputDirectory, dateStr);
-    //imageFileName_flux.Format("FluxHist_%s.png",				dateStr);
-    //imageFileName_temp.Format("TempHist_%s.png",				dateStr);
-    //imageFileName_linkSpeed.Format("LinkSHist_%s.png",	dateStr);
-    //imageFileName_battery.Format("BatteryHist_%s.png",	dateStr);
+    //imageDirectory.Format("%sOutput\\%s\\", g_settings.outputDirectory, dateStr);
+    //imageFileName_flux.Format("FluxHist_%s.png",              dateStr);
+    //imageFileName_temp.Format("TempHist_%s.png",              dateStr);
+    //imageFileName_linkSpeed.Format("LinkSHist_%s.png",    dateStr);
+    //imageFileName_battery.Format("BatteryHist_%s.png",    dateStr);
 
     // Open the file
     FILE* f = fopen(reportFileName, "w");
@@ -195,7 +195,7 @@ void CReportWriter::WriteReport(CEvaluatedDataStorage* evalDataStorage, CCommuni
         fprintf(f, "<tr><th>Number of bad scans</th><td%s>%ld</td><td></td><td></td></tr>\r\n", (LPCSTR)style, numDataPoints - numGoodDataPoints);
 
         fprintf(f, "<tbody>\r\n");
-        //		fprintf(f, "<tr><th>Average Flux</th><td>%.1lf</td><td>%s</td><td><img src=\"%s\"></td></tr>\r\n", Average(dataBuffer, numGoodDataPoints), fluxUnitStr, imageFileName_flux);
+        //      fprintf(f, "<tr><th>Average Flux</th><td>%.1lf</td><td>%s</td><td><img src=\"%s\"></td></tr>\r\n", Average(dataBuffer, numGoodDataPoints), fluxUnitStr, imageFileName_flux);
         fprintf(f, "<tr><th>Average Flux</th><td>%.1lf</td><td>%s</td><td></tr>\r\n", Average(dataBuffer, numGoodDataPoints), (LPCSTR)fluxUnitStr);
         fprintf(f, "<tr><th>Std Flux</th><td>%.1lf</td><td>%s</td><td></td></tr>\r\n", Std(dataBuffer, numGoodDataPoints), (LPCSTR)fluxUnitStr);
         fprintf(f, "<tr><th>Max Flux</th><td>%.1lf</td><td>%s</td><td></td></tr>\r\n", Max(dataBuffer, numGoodDataPoints), (LPCSTR)fluxUnitStr);
@@ -224,8 +224,8 @@ void CReportWriter::WriteReport(CEvaluatedDataStorage* evalDataStorage, CCommuni
         fprintf(f, "</table>\r\n</p>");
 
         // Generate the histogram...
-///		WriteDataHistogram(dataBuffer, numDataPoints, numDataPoints/10, imageDirectory, imageFileName_temp);
-//		fprintf(f, "<img src=\"%s\">\r\n",  imageFileName_temp);
+///     WriteDataHistogram(dataBuffer, numDataPoints, numDataPoints/10, imageDirectory, imageFileName_temp);
+//      fprintf(f, "<img src=\"%s\">\r\n",  imageFileName_temp);
 
         // Get the temperature data
         numDataPoints = evalDataStorage->GetBatteryVoltageData(serial, timeBuffer, dataBuffer, BUF_SIZE);
@@ -444,10 +444,10 @@ int CReportWriter::WriteDataHistogram(double* data, long nDataPoints, long nBins
     dc->LineTo((int)axisMargin, (int)axisMargin);
 
     // 2a. minimum value
-    //rect.left		= axisMargin;
+    //rect.left     = axisMargin;
     //rect.bottom = imageHeight - 1;
-    //rect.right	= imageHeight;
-    //rect.top		= imageHeight - 20;
+    //rect.right    = imageHeight;
+    //rect.top      = imageHeight - 20;
     //axisStr.Format("%.1lf", minV);
     //dc->DrawText(axisStr, rect, DT_END_ELLIPSIS);
     rect.left = (LONG)imageHeight;
@@ -458,10 +458,10 @@ int CReportWriter::WriteDataHistogram(double* data, long nDataPoints, long nBins
     dc->DrawText(axisStr, rect, DT_END_ELLIPSIS);
 
     // 2a. maximum value
-    //rect.left		= imageHeight * 0.9;
+    //rect.left     = imageHeight * 0.9;
     //rect.bottom = imageHeight;
-    //rect.right	= imageHeight;
-    //rect.top		= imageHeight - 20;
+    //rect.right    = imageHeight;
+    //rect.top      = imageHeight - 20;
     //axisStr.Format("%.1lf", maxV);
     //dc->DrawText(axisStr, rect, DT_END_ELLIPSIS);
 

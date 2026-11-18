@@ -37,8 +37,8 @@ extern CConfigurationSetting g_settings; // <-- the configuration
 bool g_runFlag;
 
 // This is an array of files to upload to the instruments
-//	the element 'g_fileToUpload[i]' contains the name and path
-//	of the file to upload to instrument with mainIndex=i
+//  the element 'g_fileToUpload[i]' contains the name and path
+//  of the file to upload to instrument with mainIndex=i
 CArray<CString, CString&> g_fileToUpload;
 
 CCommunicationController::CCommunicationController()

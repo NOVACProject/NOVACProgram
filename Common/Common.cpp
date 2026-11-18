@@ -312,7 +312,7 @@ double Common::GPSBearing(double lat1, double lon1, double lat2, double lon2)
     tmpAngle = atan2(-sin(dLon) * cos(lat2),
         cos(lat1) * sin(lat2) - sin(lat1) * cos(lat2) * cos(dLon));
 
-    /*  	tmpAngle = atan2(lon1*cos(lat1)-lon2*cos(lat2), lat1-lat2); */
+    /*      tmpAngle = atan2(lon1*cos(lat1)-lon2*cos(lat2), lat1-lat2); */
 
     if (tmpAngle < 0)
     {
@@ -764,8 +764,8 @@ RETURN_CODE Common::GetSunPosition(const novac::CDateTime& gmtTime, double lat, 
     double D = JulianDay(gmtTime) - 2451545.0;
 
     // Get the Equatorial coordinates...
-    double RA; //	the right ascension (deg)
-    double dec; // the declination	(deg)
+    double RA; //   the right ascension (deg)
+    double dec; // the declination  (deg)
     double EqT; // the equation of time (hours)
     EquatorialCoordinates(D, RA, dec, EqT);
 
@@ -1472,7 +1472,7 @@ int Common::GetMonitoredVolcano(const CString& serialNumber)
 void Common::EquatorialCoordinates(double D, double& RA, double& dec, double& EQT)
 {
     double g_deg, q_deg, L_deg;    /*ANGLES IN DEGREES*/
-    double g_rad, q_rad, L_rad;    /*ANGLES IN	RADIANS*/
+    double g_rad, q_rad, L_rad;    /*ANGLES IN  RADIANS*/
     double R;            /*DISTANCE SUN-EARTH IN A.U*/
     double obliq_deg, obliq_rad;   /*OBLIQUITY OF THE ECLIPTIC*/
     double RA_rad, dec_rad;     /*EQUATORIAL COORDINATES IN RADIANS*/

@@ -5,7 +5,7 @@ namespace WindSpeedMeasurement
 
     /** The <b>CWindSpeedMeasSettings</b> contains the parameters
             necessary for calculating the correlation between data series
-            in order to calculate wind speeds. 	*/
+            in order to calculate wind speeds.  */
 class CWindSpeedMeasSettings
 {
 public:

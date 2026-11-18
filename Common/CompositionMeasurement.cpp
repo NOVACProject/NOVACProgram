@@ -273,8 +273,8 @@ void CCompositionMeasurement::StartCompositionMeasurement(const Evaluation::CSpe
 
         // 3e. Write the motor information
         //fprintf(f, "%% StepsPerRound defines the number of steps the steppermotor divides one round into\n");
-        //fprintf(f, "STEPSPERROUND=%d\n",	stepsPerRound);
-        //fprintf(f, "MOTORSTEPCOMP=%d\n",	spec->m_scanner.motor[0].motorStepsComp);
+        //fprintf(f, "STEPSPERROUND=%d\n",  stepsPerRound);
+        //fprintf(f, "MOTORSTEPCOMP=%d\n",  spec->m_scanner.motor[0].motorStepsComp);
     fprintf(f, "%% If Skipmotor=1 then the scanner will not be used. ONLY FOR TESTING PURPOSES\n");
     fprintf(f, "SKIPMOTOR=0\n");
     if (spec->m_scanner.coneAngle == 90.0)

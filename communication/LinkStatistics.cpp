@@ -37,8 +37,8 @@ void CLinkStatistics::Clear()
 
 // -------------------- Retrieving data -----------------------
 /** Getting the successrate for the number of downloads.
-		@return the portion of number of attempts to download files
-			that have succeeded (0 -> 1) */
+        @return the portion of number of attempts to download files
+            that have succeeded (0 -> 1) */
 double CLinkStatistics::GetDownloadSuccessRate() const
 {
     return GetSuccessRate(m_downloads);
@@ -57,8 +57,8 @@ long CLinkStatistics::GetDownloadNum() const
 }
 
 /** Getting the successrate for the number of uploads
-		@return the portion of number of attempts to upload files
-			that have succeeded (0 -> 1) */
+        @return the portion of number of attempts to upload files
+            that have succeeded (0 -> 1) */
 double CLinkStatistics::GetUploadSuccessRate() const
 {
     return GetSuccessRate(m_uploads);
@@ -78,7 +78,7 @@ long CLinkStatistics::GetUploadNum() const
 
 // ----------------------- Adding data -------------------------
 /** Append one download-speed to the history,
-		this will also append one successfull download to the statistics */
+        this will also append one successfull download to the statistics */
 void CLinkStatistics::AppendDownloadSpeed(double speed)
 {
     AppendSuccessfulTransfer(speed, m_downloads);
@@ -91,7 +91,7 @@ void CLinkStatistics::AppendFailedDownload()
 }
 
 /** Append one upload-speed to the history
-		this will also append one successfull upload to the statistics */
+        this will also append one successfull upload to the statistics */
 void CLinkStatistics::AppendUploadSpeed(double speed)
 {
     AppendSuccessfulTransfer(speed, m_uploads);
@@ -106,7 +106,7 @@ void CLinkStatistics::AppendFailedUpload()
 // ------------- Protected methods ---------------
 
 /** Trim the list of transfer-data so that they only contain data from
-		today... */
+        today... */
 void CLinkStatistics::TrimLists()
 {
     // Get the current time and date
@@ -114,8 +114,8 @@ void CLinkStatistics::TrimLists()
     now.SetToNow();
 
     // the data is sorted in order of appendance, thus wee only need to check the
-    //	first items in the list. If we find one element which is from today then
-    //	all elements after it will also be from today...
+    //  first items in the list. If we find one element which is from today then
+    //  all elements after it will also be from today...
 
     // 1. The download list
     POSITION dPos = m_downloads.GetHeadPosition();

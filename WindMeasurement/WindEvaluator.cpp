@@ -92,8 +92,8 @@ void CWindEvaluator::OnEvaluatedWindMeasurement(WPARAM wp, LPARAM lp)
     }
 
     // 4. If this is a wind-measurement made with a Heidelberg instrument,
-    //		then it does not have to be matched with any other log-file
-    //		the wind-speed can be calculated directly.
+    //      then it does not have to be matched with any other log-file
+    //      the wind-speed can be calculated directly.
     FileHandler::CEvaluationLogFileHandler reader;
     reader.m_evaluationLog.Format("%s", (LPCTSTR)fileName);
     if (SUCCESS != reader.ReadEvaluationLog())
@@ -131,7 +131,7 @@ int CWindEvaluator::FindMatchingEvalLog(const CString& evalLog, CString match[MA
     CString fileName;
 
     // The name of an evaluation-log file is given by:
-    //	SerialNumber_Date_StartTime_ChannelNumber.txt
+    //  SerialNumber_Date_StartTime_ChannelNumber.txt
     // this function compares everything exept the part: '_ChannelNumber.txt'
     // if they are same, then the files are considered to match
 
@@ -141,7 +141,7 @@ int CWindEvaluator::FindMatchingEvalLog(const CString& evalLog, CString match[MA
     fileName = fileName.Left(fileName.ReverseFind('_'));
 
     // 2. Go through the list of evaluation-logs and note how many have a
-    //		matching filename to this evallog
+    //      matching filename to this evallog
     POSITION pos = m_evalLogs.GetHeadPosition();
     while (pos != NULL)
     {
@@ -244,7 +244,7 @@ RETURN_CODE CWindEvaluator::CalculateCorrelation(const CString& evalLog1, const 
             series[k]->column[i] = scan.GetColumn(i, 0);
 
             // calculate the time-difference between the start of the
-            //	time-series and this measurement
+            //  time-series and this measurement
             series[k]->time[i] = 3600.0 * (time->hour - startTime->hour) +
                 60.0 * (time->minute - startTime->minute) +
                 1.0 * (time->second - startTime->second);
@@ -360,7 +360,7 @@ void CWindEvaluator::WriteWindMeasurementLog(const CWindSpeedCalculator& calc, c
         distance = m_settings.plumeHeight * fabs(tan(angle) - tan(angle - DEGREETORAD * m_settings.angleSeparation));
     }
     // If the scanners are not looking straight up then the distance between
-    //		the two directions gets decreased with the scanAngle
+    //      the two directions gets decreased with the scanAngle
     distance *= cos(scanAngle * DEGREETORAD);
 
     // 6. Write the header of the wind-log file

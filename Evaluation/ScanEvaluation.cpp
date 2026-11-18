@@ -87,7 +87,7 @@ long CScanEvaluation::EvaluateScan(novac::LogContext context, const std::string&
     CScanFileHandler scan(m_log);
 
     // Check the scan file, make sure it's correct and that the file
-    //	actually contains spectra
+    //  actually contains spectra
     const std::string scanFileName(scanfile);
     if (!scan.CheckScanFile(context, scanFileName))
     {
@@ -119,7 +119,7 @@ long CScanEvaluation::EvaluateScan(novac::LogContext context, const std::string&
     }
 
     // Get some important information about the spectra, like
-    //	interlace steps, spectrum length and start-channel
+    //  interlace steps, spectrum length and start-channel
     copyOfWindow.interlaceStep = scan.GetInterlaceSteps();
     copyOfWindow.specLength = scan.GetSpectrumLength() * copyOfWindow.interlaceStep;
     copyOfWindow.startChannel = scan.GetStartChannel();
@@ -132,7 +132,7 @@ long CScanEvaluation::EvaluateScan(novac::LogContext context, const std::string&
     std::unique_ptr<CEvaluationBase> eval;
 
     // If we have a solar-spectrum that we can use to determine the shift
-    //	& squeeze then fit that first so that we know the wavelength calibration
+    //  & squeeze then fit that first so that we know the wavelength calibration
     if (copyOfWindow.fraunhoferRef.m_path.size() > 4)
     {
         m_lastErrorMessage = "";
@@ -651,11 +651,11 @@ CEvaluationResult CScanEvaluation::FindOptimumShiftAndSqueeze(const CEvaluationB
     // 1. Find the spectrum with the highest column value
 
     // 2. Make sure that this spectrum was ok and that the column-value is high enough
-    //double columnError		= result->GetColumnError(m_indexOfMostAbsorbingSpectrum, specieNum); // <-- the column error that corresponds to the highest column-value
-    //double highestColumn	= result->GetColumn(m_indexOfMostAbsorbingSpectrum, specieNum);
+    //double columnError        = result->GetColumnError(m_indexOfMostAbsorbingSpectrum, specieNum); // <-- the column error that corresponds to the highest column-value
+    //double highestColumn  = result->GetColumn(m_indexOfMostAbsorbingSpectrum, specieNum);
     //if(highestColumn < 2 * columnError){
-    //	ShowMessage("Could not determine optimal shift & squeeze. Maximum column is too low.");
-    //	return;
+    //  ShowMessage("Could not determine optimal shift & squeeze. Maximum column is too low.");
+    //  return;
     //}
 
     // 2. Tell the user

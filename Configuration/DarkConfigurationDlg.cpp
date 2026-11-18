@@ -121,7 +121,7 @@ void CDarkConfigurationDlg::InitToolTips()
         TRACE0("Failed to create tooltip control\n");
     }
 
-    //	m_toolTip.AddTool(&m_labelVolcano, IDC_EDIT_VOLCANO);
+    //  m_toolTip.AddTool(&m_labelVolcano, IDC_EDIT_VOLCANO);
 }
 
 BOOL CDarkConfigurationDlg::OnKillActive()
@@ -170,7 +170,7 @@ void CDarkConfigurationDlg::SaveData()
         }
 
         // Show or hide the label telling that the user must himself offset correct the
-        //	dark current spectrum
+        //  dark current spectrum
         if (m_curSpec->channel[0].darkSettings.m_darkCurrentOption == Configuration::DARK_MODEL_OPTION::USER_SUPPLIED)
         {
             m_labelDarkOffsetCorr.ShowWindow(SW_SHOW);
@@ -247,7 +247,7 @@ void CDarkConfigurationDlg::OnChangeScanner()
         }
 
         // Enable the controls that should be enabled and disable the controls
-        //	that should be disabled
+        //  that should be disabled
         UpdateControls();
 
         // Finally, update the screen
@@ -266,7 +266,7 @@ void CDarkConfigurationDlg::OnChangeDarkSpecOption()
     { // <-- first save the data in the dialog
 
         // Enable the controls that should be enabled and disable the controls
-        //	that should be disabled
+        //  that should be disabled
         UpdateControls();
 
         // Save the data in the dialog
@@ -277,7 +277,7 @@ void CDarkConfigurationDlg::OnChangeDarkSpecOption()
 void CDarkConfigurationDlg::UpdateControls()
 {
     // if there is only one channel on this spectrometer, then hide
-    //	the edit-boxes and labels that belongs to the slave
+    //  the edit-boxes and labels that belongs to the slave
     if (m_curSpec->channelNum == 1)
     {
         m_labelSlave1.ShowWindow(SW_HIDE);
@@ -298,7 +298,7 @@ void CDarkConfigurationDlg::UpdateControls()
     }
 
     // If the user only wants to use measured spectra, then
-    //	the controls on the screed should be disabled
+    //  the controls on the screed should be disabled
     BOOL state = TRUE;
     if (m_darkSpecOption == 0)
     {

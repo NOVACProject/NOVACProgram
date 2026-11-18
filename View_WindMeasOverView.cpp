@@ -76,7 +76,7 @@ BOOL CView_WindMeasOverView::OnInitDialog()
     this->GetWindowRect(thisRect);
 
     // The legends are arranged in a matrix with up to four in each row
-    //	and as many rows as are needed
+    //  and as many rows as are needed
     int nRows = 1 + (int)(nSpectrometers / 4);
 
     // Calculate the size of the graph

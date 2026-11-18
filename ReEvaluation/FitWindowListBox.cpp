@@ -67,14 +67,14 @@ void CFitWindowListBox::OnContextMenu(CWnd* pWnd, CPoint pos)
     ASSERT(pPopup != nullptr);
 
     // There has to be at least one fit window defined at all times
-    //	if there are to few, don't allow the user to remove any
+    //  if there are to few, don't allow the user to remove any
     if (m_reeval.m_windowNum <= 1)
     {
         pPopup->EnableMenuItem(ID__REMOVEWINDOW, MF_DISABLED | MF_GRAYED);
     }
 
     // If the list of fit windows is full, don't let the user
-    //	add any more fit windows
+    //  add any more fit windows
     if (m_reeval.m_windowNum == CReEvaluator::MAX_N_WINDOWS - 1)
     {
         pPopup->EnableMenuItem(ID__INSERTFITWINDOW, MF_DISABLED | MF_GRAYED);

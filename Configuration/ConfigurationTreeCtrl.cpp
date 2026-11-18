@@ -75,7 +75,7 @@ void CConfigurationTreeCtrl::PopulateTreeControl()
     else
     {
         // Compare each volcano-name to the names in the list,
-        //	if this scanner monitors a volcano not in the list - then insert it
+        //  if this scanner monitors a volcano not in the list - then insert it
         for (unsigned long i = 1; i < m_configuration->scannerNum; ++i)
         {
             bool found = false;
@@ -105,7 +105,7 @@ void CConfigurationTreeCtrl::PopulateTreeControl()
     HTREEITEM firstItem = nullptr;
     int first = true;
     // now loop through each of the volcanoes and for each, insert the
-    //	scanners that belong to this volcano
+    //  scanners that belong to this volcano
     for (int i = 0; i < nVolcanoes; ++i)
     {
         hTree = InsertItem(volcanoes[i]);

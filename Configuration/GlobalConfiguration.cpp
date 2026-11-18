@@ -198,7 +198,7 @@ void CGlobalConfiguration::InitToolTips()
     m_toolTip.AddTool(&m_ftpUserNameLabel, IDC_LABEL_FTP_USERNAME);
     m_toolTip.AddTool(&m_ftpPassword, IDC_LABEL_FTP_PASSWORD);
     m_toolTip.AddTool(&m_ftpPasswordLabel, IDC_LABEL_FTP_PASSWORD);
-    //	m_toolTip.AddTool(this, IDC_LABEL_OUTPUT_DIRECTORY);
+    //  m_toolTip.AddTool(this, IDC_LABEL_OUTPUT_DIRECTORY);
     m_toolTip.SetMaxTipWidth(SHRT_MAX);
     m_toolTip.Activate(TRUE);
 }

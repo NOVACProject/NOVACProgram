@@ -319,7 +319,7 @@ void CReEval_WindowDlg::OnInsertReference()
     currentWindow.reference.push_back(newReference);
 
     // If this is the first reference inserted, also make a guess for the window name
-    //	 (if the user has not already given the window a name)
+    //   (if the user has not already given the window a name)
     if (currentWindow.NumberOfReferences() == 1 && strlen(specie) != 0 && EqualsIgnoringCase(currentWindow.name, "SO2"))
     {
         currentWindow.name = std::string((LPCTSTR)specie);

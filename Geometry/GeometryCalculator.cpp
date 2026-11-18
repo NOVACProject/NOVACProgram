@@ -192,8 +192,8 @@ bool CGeometryCalculator::GetPlumeHeight_Exact(const CGPSData gps[2], const doub
     Common common;
 
     // 1. To make the calculations easier, we put a changed coordinate system
-    //		on the lowest of the two scanners and calculate the position of the
-    //		other scanner in this coordinate system.
+    //      on the lowest of the two scanners and calculate the position of the
+    //      other scanner in this coordinate system.
     int lowerScanner = (gps[0].m_altitude < gps[1].m_altitude) ? 0 : 1;
     int upperScanner = 1 - lowerScanner;
 
@@ -216,11 +216,11 @@ bool CGeometryCalculator::GetPlumeHeight_Exact(const CGPSData gps[2], const doub
     GetDirection(dirUpper, plumeCentre[upperScanner], coneAngle[upperScanner], tilt[upperScanner]);
 
     // 6. Find the direction of the plume-center ray of the upper scanner
-    //		in the coordinate system of the lower scanner
+    //      in the coordinate system of the lower scanner
     Rotate(dirUpper, compass[upperScanner] - compass[lowerScanner], 3);
 
     // 7. Find the position of the upper scanner in the coordinate-system
-    //		of the lower scanner.
+    //      of the lower scanner.
     CGeometryCalculator::Rotate(posUpper, -compass[lowerScanner], 3);
 
     // 8. Calculate the intersection point of the two rays
@@ -231,7 +231,7 @@ bool CGeometryCalculator::GetPlumeHeight_Exact(const CGPSData gps[2], const doub
 
 
     // 9. The plume-height (above the lower scanner) is the z-component of
-    //		the intersection-point
+    //      the intersection-point
     if (hit)
     {
         double intersectionPoint[3];
@@ -241,7 +241,7 @@ bool CGeometryCalculator::GetPlumeHeight_Exact(const CGPSData gps[2], const doub
     else
     {
         // if the rays don't actually hit each other, calculate the distance between
-        //	them. If this is small enough let's consider them as a hit.
+        //  them. If this is small enough let's consider them as a hit.
         double point1[3], point2[3];
         PointOnRay(posLower, dirLower, t1, point1); // <-- calculate the intersection point
         PointOnRay(posUpper, dirUpper, t2, point2); // <-- calculate the intersection point
@@ -273,8 +273,8 @@ bool CGeometryCalculator::GetPlumeHeight_Fuzzy(const CGPSData source, const CGPS
     Common common;
 
     // 1. To make the calculations easier, we put a changed coordinate system
-    //		on the lowest of the two scanners and calculate the position of the
-    //		other scanner in this coordinate system.
+    //      on the lowest of the two scanners and calculate the position of the
+    //      other scanner in this coordinate system.
     int lowerScanner = (gps[0].m_altitude < gps[1].m_altitude) ? 0 : 1;
     int upperScanner = 1 - lowerScanner;
 
@@ -343,8 +343,8 @@ bool CGeometryCalculator::GetPlumeHeight_Fuzzy(const CGPSData source, const CGPS
         double dfdx = (f_plus - f) / h;
 
         // one step using the Newton method, make a line-search
-        //	of the step-size to guarantee that we do decrease
-        //	the difference at each step
+        //  of the step-size to guarantee that we do decrease
+        //  the difference at each step
         double alpha = 0.5;
         double newGuess = guess - alpha * f / dfdx;
         double f_new = fabs(GetWindDirection(source, newGuess, gps[lowerScanner], compass[lowerScanner], plumeCentre[lowerScanner], coneAngle[lowerScanner], tilt[lowerScanner]) -
@@ -383,30 +383,30 @@ bool CGeometryCalculator::GetPlumeHeight_Fuzzy(const CGPSData source, const CGPS
 
     //// ------------------------ HERE FOLLOW THE OLD ITERATION ALGORITHM -------------------
     //// Calculate the local derivaitve
-    //double diff			= fabs(GetWindDirection(source, guess,		 gps[lowerScanner], compass[lowerScanner], plumeCentre[lowerScanner], coneAngle[lowerScanner], tilt[lowerScanner]) -
-    //								 GetWindDirection(source, guess,		 gps[upperScanner], compass[upperScanner], plumeCentre[upperScanner], coneAngle[upperScanner], tilt[upperScanner]));
-    //double diff2			= fabs(GetWindDirection(source, guess + h, gps[lowerScanner], compass[lowerScanner], plumeCentre[lowerScanner], coneAngle[lowerScanner], tilt[lowerScanner]) -
-    //								 GetWindDirection(source, guess + h, gps[upperScanner], compass[upperScanner], plumeCentre[upperScanner], coneAngle[upperScanner], tilt[upperScanner]));
+    //double diff           = fabs(GetWindDirection(source, guess,       gps[lowerScanner], compass[lowerScanner], plumeCentre[lowerScanner], coneAngle[lowerScanner], tilt[lowerScanner]) -
+    //                               GetWindDirection(source, guess,         gps[upperScanner], compass[upperScanner], plumeCentre[upperScanner], coneAngle[upperScanner], tilt[upperScanner]));
+    //double diff2          = fabs(GetWindDirection(source, guess + h, gps[lowerScanner], compass[lowerScanner], plumeCentre[lowerScanner], coneAngle[lowerScanner], tilt[lowerScanner]) -
+    //                               GetWindDirection(source, guess + h, gps[upperScanner], compass[upperScanner], plumeCentre[upperScanner], coneAngle[upperScanner], tilt[upperScanner]));
 
     //if(diff == diff2)
-    //	return false; // error
+    //  return false; // error
 
     //// The sign of the local derivative
     //int sign = (diff2 > diff) ? -1 : 1;
 
     //// Now make a step in the opposite direction of the derivative.
-    ////	Make a line search to find the optimal step to take
+    ////    Make a line search to find the optimal step to take
     //int nIterations = 0;
     //while(diff > maxDiff || nIterations == 0){// make at least 1 iteration
-    //	guess			= guess + sign * diff;
+    //  guess           = guess + sign * diff;
 
-    //	diff			= fabs(GetWindDirection(source, guess,		 gps[lowerScanner], compass[lowerScanner], plumeCentre[lowerScanner], coneAngle[lowerScanner], tilt[lowerScanner]) -
-    //								   GetWindDirection(source, guess,		 gps[upperScanner], compass[upperScanner], plumeCentre[upperScanner], coneAngle[upperScanner], tilt[upperScanner]));
+    //  diff            = fabs(GetWindDirection(source, guess,       gps[lowerScanner], compass[lowerScanner], plumeCentre[lowerScanner], coneAngle[lowerScanner], tilt[lowerScanner]) -
+    //                                 GetWindDirection(source, guess,       gps[upperScanner], compass[upperScanner], plumeCentre[upperScanner], coneAngle[upperScanner], tilt[upperScanner]));
     //
-    //	// Increase and check the number of iterations
-    //	if(nIterations++ > 100){
-    //		return false;
-    //	}
+    //  // Increase and check the number of iterations
+    //  if(nIterations++ > 100){
+    //      return false;
+    //  }
     //}
 
     //// Return our guess
@@ -613,7 +613,7 @@ void CGeometryCalculator::Normalize(double v[3])
             The properties of the scanner are given by the 'compass' - direction (degrees from north)
             and the 'coneAngle' (degrees)
             @return the wind-direction if the calculations are successful
-            @return -999 if something is wrong.				*/
+            @return -999 if something is wrong.             */
 double CGeometryCalculator::GetWindDirection(const CGPSData source, double plumeHeight, const CGPSData scannerPos, double compass, double plumeCentre, double coneAngle, double tilt)
 {
     if (plumeCentre < -900)
@@ -642,7 +642,7 @@ double CGeometryCalculator::GetWindDirection(const CGPSData source, double plume
         intersectionDistance = plumeHeight * sqrt(pow(x, 2) + pow(y, 2));
 
         // 1b. the direction from the system to the intersection-point
-//		angle	= -atan2(y, x) / DEGREETORAD + compass;
+//      angle   = -atan2(y, x) / DEGREETORAD + compass;
         angle = atan2(y, x) / DEGREETORAD + compass;
     }
     else
@@ -683,7 +683,7 @@ double CGeometryCalculator::GetWindDirection(const CGPSData source, double plume
             the scanning instrument is given by 'plumeHeight' (in meters).
             This function is intended for use with V-II Heidelberg instruments
             @return the wind-direction if the calculations are successful
-            @return -999 if something is wrong. 					*/
+            @return -999 if something is wrong.                     */
 double CGeometryCalculator::GetWindDirection(const CGPSData source, const CGPSData scannerPos, double plumeHeight, double alpha_center_of_mass, double phi_center_of_mass)
 {
     Common common;
@@ -724,7 +724,7 @@ double CGeometryCalculator::GetWindDirection(const CGPSData source, const CGPSDa
 }
 
 /** Retrieve the plume height from a measurement using one scanning-instrument
-        with an given assumption of the wind-direction 	*/
+        with an given assumption of the wind-direction  */
 double CGeometryCalculator::GetPlumeHeight_OneInstrument(const CGPSData source, const CGPSData gps, double WindDirection, double alpha_center_of_mass, double phi_center_of_mass)
 {
     Common common;

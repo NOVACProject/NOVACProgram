@@ -132,7 +132,7 @@ RETURN_CODE CWindSpeedCalculator::CalculateDelay(
     }
 
     // 1c. Calculate the length of the comparison-interval
-    //		in data-points instead of in seconds
+    //      in data-points instead of in seconds
     int comparisonLength = (int)round(settings.testLength / sampleInterval);
 
     // 1d. Calculate the how many pixels that we should shift maximum
@@ -145,7 +145,7 @@ RETURN_CODE CWindSpeedCalculator::CalculateDelay(
     }
 
     // 2. Allocate some assistance arrays
-    //		(Note that it is the down wind data series that is shifted)
+    //      (Note that it is the down wind data series that is shifted)
     m_length = modifiedDownWind.length;
     InitializeArrays();
 
@@ -153,7 +153,7 @@ RETURN_CODE CWindSpeedCalculator::CalculateDelay(
     int skipped = 0;
 
     // 3. Iterate over the set of sub-arrays in the down-wind data series
-    //		Offset is the starting-point in this sub-array whos length is 'comparisonLength'
+    //      Offset is the starting-point in this sub-array whos length is 'comparisonLength'
     for (int offset = 0; offset < m_length - (int)maximumShift - comparisonLength; ++offset)
     {
         double highestCorr;
@@ -168,7 +168,7 @@ RETURN_CODE CWindSpeedCalculator::CalculateDelay(
         // 3b. The midpoint in the subvector
         int midPoint = (int)round(offset + comparisonLength / 2);
 
-        //	3c. Check if we see the plume...
+        //  3c. Check if we see the plume...
         if (upWindSerie->AverageColumn(offset, offset + comparisonLength) < settings.columnMin)
         {
             // we don't see the plume.
@@ -311,7 +311,7 @@ RETURN_CODE CWindSpeedCalculator::FindBestCorrelation(
     bestShift = 0;
 
     // To calculate the correlation, we need to pick out a subvector (with length 'shortLength)
-    //	from the longVector and compare this with 'shortVector' and calculate the correlation.
+    //  from the longVector and compare this with 'shortVector' and calculate the correlation.
     // left is the startingpoint of this subvector
     int left = 0;
 

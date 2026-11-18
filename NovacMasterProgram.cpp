@@ -64,7 +64,7 @@ BOOL CNovacMasterProgramApp::InitInstance()
     g_userSettings.ReadSettings(&userSettingsFile);
 
     // this portion of code reading 'language.txt' is for
-    //	backward compatibility only. Should eventually be removed...
+    //  backward compatibility only. Should eventually be removed...
     if (IsExistingFile(oldFileName))
     {
         FILE* f = fopen(oldFileName, "r");
@@ -148,10 +148,10 @@ BOOL CNovacMasterProgramApp::InitInstance()
     // if(cx <= 1024){
     m_pMainWnd->ShowWindow(SW_SHOWMAXIMIZED);
     // }else{
-    // 	int width = 1050;
-    // 	int height = 750;
-    // 	m_pMainWnd->ShowWindow(SW_SHOWNORMAL);
-    // 	m_pMainWnd->MoveWindow((cx-width)/2, (cy-height)/2, width, height);
+    //  int width = 1050;
+    //  int height = 750;
+    //  m_pMainWnd->ShowWindow(SW_SHOWNORMAL);
+    //  m_pMainWnd->MoveWindow((cx-width)/2, (cy-height)/2, width, height);
     // }
 
     // Initialize resources used by libCurl

@@ -68,7 +68,7 @@ BOOL CView_Instrument::OnInitDialog()
     this->GetWindowRect(thisRect);
 
     // The legends are arranged in a matrix with up to 'nLegends' in each row
-    //	and as many rows as are needed
+    //  and as many rows as are needed
     const int nLegendsPerRow = 8;
     int nRows = 1 + (int)(nSpectrometers / nLegendsPerRow);
 

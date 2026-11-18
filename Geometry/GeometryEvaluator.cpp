@@ -131,13 +131,13 @@ int CGeometryEvaluator::FindMatchingEvalLog(const CString& evalLog, CString matc
     CString message;
 
     // The name of an evaluation-log file is given by:
-    //	SerialNumber_Date_StartTime_ChannelNumber.txt
+    //  SerialNumber_Date_StartTime_ChannelNumber.txt
     // this function compares everything exept the part: '_ChannelNumber.txt'
     // The two files are considered to match if :
-    //		1 - the serial-numbers are different
-    //		2 - the dates are the same
-    //		3 - the start-times do not differ by more than MAX_TIME_DIFFERENCE seconds
-    //		4 - the measurements are made on the same volcano
+    //      1 - the serial-numbers are different
+    //      2 - the dates are the same
+    //      3 - the start-times do not differ by more than MAX_TIME_DIFFERENCE seconds
+    //      4 - the measurements are made on the same volcano
 
     // 1. Get the serial and start-time
     if (!GetInfoFromFileName(evalLog, startTime1, serial1))

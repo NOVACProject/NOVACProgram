@@ -61,7 +61,7 @@ public:
     static bool GetPlumeHeight_Fuzzy(const novac::CGPSData source, const novac::CGPSData gps[2], const double compass[2], const double plumeCentre[2], const double coneAngle[2], const double tilt[2], double& plumeHeight);
 
         /** Retrieve the plume height from a measurement using one scanning-instrument
-                with an given assumption of the wind-direction 	*/
+                with an given assumption of the wind-direction  */
     static double GetPlumeHeight_OneInstrument(const novac::CGPSData source, const novac::CGPSData gps, double WindDirection, double alpha_center_of_mass, double phi_center_of_mass);
 
         /** Calculates the wind-direction for a scan, assuming that the plume originates
@@ -71,7 +71,7 @@ public:
                     The properties of the scanner are given by the 'compass' - direction (degrees from north)
                     and the 'coneAngle' (degrees)
                     @return the wind-direction if the calculations are successful
-                    @return -999 if something is wrong. 					*/
+                    @return -999 if something is wrong.                     */
     static double GetWindDirection(const novac::CGPSData source, double plumeHeight, const novac::CGPSData scannerPos, double compass, double plumeCentre, double coneAngle, double tilt);
 
         /** Calculates the wind-direction for a scan, assuming that the plume originates
@@ -80,7 +80,7 @@ public:
                     the scanning instrument is given by 'plumeHeight' (in meters).
                     This function is intended for use with V-II Heidelberg instruments
                     @return the wind-direction if the calculations are successful
-                    @return -999 if something is wrong. 					*/
+                    @return -999 if something is wrong.                     */
     static double GetWindDirection(const novac::CGPSData source, const novac::CGPSData scannerPos, double plumeHeight, double alpha_center_of_mass, double phi_center_of_mass);
 
         /** Rotates the given vector the given angle [degrees] around the given axis

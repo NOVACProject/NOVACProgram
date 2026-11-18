@@ -504,7 +504,7 @@ void CEvaluatedDataStorage::AppendSpecDataHistory(int scannerIndex, int time, do
     RemoveOldSpec(scannerIndex);
 
     // m_specIndex[scannerIndex] is the number of data-points there are in
-    //	the array of col-values
+    //  the array of col-values
     if (m_specIndex[scannerIndex] < MAX_SPEC_PER_SCAN * 300)
     {
         // insert the datapoint into the array
@@ -551,7 +551,7 @@ void CEvaluatedDataStorage::AppendFluxResult(int scannerIndex, const CDateTime& 
     // If there are any old values in the array then remove them before appending more data.
     RemoveOldFluxResults();
     // m_fluxIndex[scannerIndex] is the number of data-points there are in
-    //	the array of flux-values
+    //  the array of flux-values
 
     Common common;
     if (m_fluxIndex[scannerIndex] < MAX_HISTORY)
@@ -849,7 +849,7 @@ long CEvaluatedDataStorage::GetGoodColumnData(const CString& serial, double* dat
 /** Get Intensity data.
     @param scannerIndex - the scanner for which the data should be retrieved.
     @param peakSat - the peak saturation data will be copied into this buffer.
-    @param fitSat	- the fit saturation data will be copied into this buffer.
+    @param fitSat   - the fit saturation data will be copied into this buffer.
     @param bufferSize - the maximum number of data points that the buffer can handle.
     @param fullDay - whether to get for full day (true) or just last scan (false)
     @return the number of data points copied into the dataBuffer*/

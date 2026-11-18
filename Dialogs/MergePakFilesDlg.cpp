@@ -290,22 +290,22 @@ UINT MergePakFiles_Concatenate(LPVOID pParam)
                 //// Read the next spectrum in the file
                 //RETURN_CODE ret = specHandler->ReadNextSpectrum(f, curSpec, specHeaderSize, spectrumHeader, HEADER_BUF_SIZE);
                 //if(ret == FAIL){
-                //	// 1. Check if this is the end of the file
-                //	if(specHandler->m_lastError == SpectrumIO::CSpectrumIO::ERROR_EOF || specHandler->m_lastError == SpectrumIO::CSpectrumIO::ERROR_COULD_NOT_OPEN_FILE || specHandler->m_lastError == SpectrumIO::CSpectrumIO::ERROR_SPECTRUM_NOT_FOUND){
-                //		break;
-                //	}
+                //  // 1. Check if this is the end of the file
+                //  if(specHandler->m_lastError == SpectrumIO::CSpectrumIO::ERROR_EOF || specHandler->m_lastError == SpectrumIO::CSpectrumIO::ERROR_COULD_NOT_OPEN_FILE || specHandler->m_lastError == SpectrumIO::CSpectrumIO::ERROR_SPECTRUM_NOT_FOUND){
+                //      break;
+                //  }
 
-                //	// 2. Ignore this spectrum and try to find the next one in the file
-                //	++spectrumNum;
-                //	if(SUCCESS != specHandler->FindSpectrumNumber(f, spectrumNum))
-                //		break;
+                //  // 2. Ignore this spectrum and try to find the next one in the file
+                //  ++spectrumNum;
+                //  if(SUCCESS != specHandler->FindSpectrumNumber(f, spectrumNum))
+                //      break;
                 //}
 
                 //// Save the spectrum to file
                 //if(specHeaderSize > 0){
-                //	specHandler->AddSpectrumToFile(outputFile, curSpec, spectrumHeader, specHeaderSize);
+                //  specHandler->AddSpectrumToFile(outputFile, curSpec, spectrumHeader, specHeaderSize);
                 //}else{
-                //	specHandler->AddSpectrumToFile(outputFile, curSpec);
+                //  specHandler->AddSpectrumToFile(outputFile, curSpec);
                 //}
             }
             fclose(f);

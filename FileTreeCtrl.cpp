@@ -37,34 +37,34 @@ void CFileTreeCtrl::SetWnd(CWnd* pWnd)
 }
 //void CFileTreeCtrl::OnItemexpanding(NMHDR* pNMHDR, LRESULT* pResult)
 //{
-//	NM_TREEVIEW* pNMTreeView = (NM_TREEVIEW*)pNMHDR;
-//	// TODO: Add your control notification handler code here
+//  NM_TREEVIEW* pNMTreeView = (NM_TREEVIEW*)pNMHDR;
+//  // TODO: Add your control notification handler code here
 //
-//	// find out what item is getting expanded, and send that to Expand(hItem, TVE_EXPAND)
-//	if (pNMTreeView->hdr.code == TVN_ITEMEXPANDING)
-//	{
-//		HTREEITEM hIT = pNMTreeView->itemNew.hItem;
-//		CString cstr, strPath;
+//  // find out what item is getting expanded, and send that to Expand(hItem, TVE_EXPAND)
+//  if (pNMTreeView->hdr.code == TVN_ITEMEXPANDING)
+//  {
+//      HTREEITEM hIT = pNMTreeView->itemNew.hItem;
+//      CString cstr, strPath;
 //
-//		// build up the path to htreeitem
-//		strPath = GetItemText(hIT);
+//      // build up the path to htreeitem
+//      strPath = GetItemText(hIT);
 //
-//		while (hIT != GetRootItem())
-//		{
-//			hIT = GetParentItem(hIT);
+//      while (hIT != GetRootItem())
+//      {
+//          hIT = GetParentItem(hIT);
 //
-//			if (hIT == GetRootItem())
-//				cstr.Format(_T("/%s"), (LPCTSTR)strPath);
-//			else
-//				cstr.Format(_T("%s/%s"), (LPCTSTR)GetItemText(hIT), (LPCTSTR)strPath);
+//          if (hIT == GetRootItem())
+//              cstr.Format(_T("/%s"), (LPCTSTR)strPath);
+//          else
+//              cstr.Format(_T("%s/%s"), (LPCTSTR)GetItemText(hIT), (LPCTSTR)strPath);
 //
-//			strPath = cstr;
-//		}
+//          strPath = cstr;
+//      }
 //
-//		// use that dir to call ExploreDir
-////		ExploreDir(strPath, pNMTreeView->itemNew.hItem);
-//	}
-//	*pResult = 0;
+//      // use that dir to call ExploreDir
+////        ExploreDir(strPath, pNMTreeView->itemNew.hItem);
+//  }
+//  *pResult = 0;
 //}
 
 void CFileTreeCtrl::OnLButtonDown(UINT nFlags, CPoint point)

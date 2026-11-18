@@ -8,9 +8,9 @@
 namespace FileHandler
 {
     // The <b>CReportWriter</b> class takes care of writing a report at the end
-    //	of each day containing the results of the measurements for the past day.
-    //	The writing should take place ~2 hours after the last instrument has gone
-    //	to sleep for the night.
+    //  of each day containing the results of the measurements for the past day.
+    //  The writing should take place ~2 hours after the last instrument has gone
+    //  to sleep for the night.
 
 class CReportWriter : public CWinThread
 {

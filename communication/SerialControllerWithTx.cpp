@@ -111,7 +111,7 @@ void CSerialControllerWithTx::SetSerialPort(int serialID, int COMPort, int baudr
 void CSerialControllerWithTx::SetDefaultPort()
 {
     sourceBufferPointer = 0;
-    //	m_mainIndex		= 0;
+    //  m_mainIndex     = 0;
     m_Port.baudrate = 115200;
     m_Port.COMPort = 1;
     m_Port.length = 8;
@@ -257,7 +257,7 @@ RETURN_CODE CSerialControllerWithTx::Resync()
 //download file from remote PC
 RETURN_CODE CSerialControllerWithTx::GetFile(char* fileName, CString filePath, char diskName)
 {
-    //	#define maxchunk 8192
+    //  #define maxchunk 8192
     unsigned long maxchunk;
     if (m_electronicsBox == BOX_MOXA)
     {
@@ -609,7 +609,7 @@ int CSerialControllerWithTx::ParseMode(CString string)
             break;
         }
     }
-    //	printf("mode= %d\n,1-user,2-both,3-shell\n",modeIndex);
+    //  printf("mode= %d\n,1-user,2-both,3-shell\n",modeIndex);
     return modeIndex;
 }
 RETURN_CODE CSerialControllerWithTx::Test()
@@ -954,7 +954,7 @@ bool CSerialControllerWithTx::GoToSleep()
             ShowMessage(msg, m_connectionID);
             break; // Changed 2007.11.13. To make sure that the program always downloads the old spectra
             //CloseSerialPort();
-            //return true;	//to get all sleep later. 2007.5.23
+            //return true;  //to get all sleep later. 2007.5.23
         }
     } while (CheckKongoExit() != 1);
     //CloseSerialPort();
@@ -1039,7 +1039,7 @@ int CSerialControllerWithTx::WakeUp(int mode)
 
     // This is currently being tested.
     // Also download the cfg.txt - file, just for checking some parameters
-    //	like motorstepscomp and stepsperround...
+    //  like motorstepscomp and stepsperround...
     DownloadCfgTxt();
 
     return SUCCESS;
@@ -1914,7 +1914,7 @@ bool CSerialControllerWithTx::GetFileListText(CString& textA, CString& textB)
     //long validIndex = 0;
     // time_t startTime,stopTime;
     //if(!InitCommunication(diskName))
-    //	return false;
+    //  return false;
     //
     Bye();
 
@@ -1945,16 +1945,16 @@ bool CSerialControllerWithTx::GetFileListText(CString& textA, CString& textB)
 
     //do
     //{
-    //	memset(buffer,0,SMALLBUFFER);
-    //	validIndex = GetSerialData(buffer,SMALLBUFFER,1000);
-    //	buffer[validIndex] = 0;
-    //	textB.AppendFormat("%s",buffer);
-    //	cycleNumber++;
-    //	time(&stopTime);
-    //	if(stopTime - startTime > 7)
-    //	{
-    //		return false;
-    //	}
+    //  memset(buffer,0,SMALLBUFFER);
+    //  validIndex = GetSerialData(buffer,SMALLBUFFER,1000);
+    //  buffer[validIndex] = 0;
+    //  textB.AppendFormat("%s",buffer);
+    //  cycleNumber++;
+    //  time(&stopTime);
+    //  if(stopTime - startTime > 7)
+    //  {
+    //      return false;
+    //  }
     //
     //}while(textB.Find("files use") == -1);
 
@@ -1992,15 +1992,15 @@ bool CSerialControllerWithTx::GetFileListText(CString& textA, CString& textB)
 
     //do
     //{
-    //	memset(buffer,0,SMALLBUFFER);
-    //	validIndex = GetSerialData(buffer,SMALLBUFFER,1000);
-    //	buffer[validIndex] = 0;
-    //	textA.AppendFormat("%s",buffer);
-    //	time(&stopTime);
-    //	if(stopTime - startTime > 7)
-    //	{
-    //		return false;
-    //	}
+    //  memset(buffer,0,SMALLBUFFER);
+    //  validIndex = GetSerialData(buffer,SMALLBUFFER,1000);
+    //  buffer[validIndex] = 0;
+    //  textA.AppendFormat("%s",buffer);
+    //  time(&stopTime);
+    //  if(stopTime - startTime > 7)
+    //  {
+    //      return false;
+    //  }
     //
     //}while(textA.Find("files use") == -1);
     return true;

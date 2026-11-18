@@ -16,9 +16,9 @@ struct FTPInformation
     CString password;
     long port;
 };
-    /** <b>CFTPController</b> class handles one link of downloading and uploading file 
-	*to the remote PC
-	*/
+    /** <b>CFTPController</b> class handles one link of downloading and uploading file
+    *to the remote PC
+    */
 class CFTPController : public CFTPSocket
 {
 public:
@@ -47,9 +47,9 @@ public:
     void ParseFileInfo(CString line);
     int FillFileList();
         /**delet remote file
-		@param remote file name ( without path)
-		return TRUE if deleted successfully
-		*/
+        @param remote file name ( without path)
+        return TRUE if deleted successfully
+        */
     BOOL DeleteRemoteFile(CString& remoteFile);
         /**get the file transfer speed, return bytes per second*/
     long GetFtpSpeed();

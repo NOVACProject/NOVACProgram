@@ -71,8 +71,8 @@ void CVIIAdvancedConfigurationDlg::InitToolTips()
     {
         TRACE0("Failed to create tooltip control\n");
     }
-    //	m_toolTip.AddTool(&m_labelVolcano,							IDC_EDIT_VOLCANO);
-    //	m_toolTip.AddTool(&m_editSerial,								"The serial number of the spectrometer");
+    //  m_toolTip.AddTool(&m_labelVolcano,                          IDC_EDIT_VOLCANO);
+    //  m_toolTip.AddTool(&m_editSerial,                                "The serial number of the spectrometer");
 
     m_toolTip.SetMaxTipWidth(SHRT_MAX);
     m_toolTip.Activate(TRUE);

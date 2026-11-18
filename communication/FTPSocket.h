@@ -23,11 +23,11 @@ public:
 
 
         /**Connect FTP server
-		   @usedSocket - the socket to be used to make connection
-		   @serverIP - server ip address
-		   @serverPort - the port on the server for connection
-		   @return true if connected
-		*/
+           @usedSocket - the socket to be used to make connection
+           @serverIP - server ip address
+           @serverPort - the port on the server for connection
+           @return true if connected
+        */
     bool Connect(SOCKET& usedSocket, char* serverIP, int serverPort);
 
         /** Read the control response from the server, write message to m_serverMsg
@@ -42,22 +42,22 @@ public:
     void SetLogFileName(const CString fileName);
 
         /**Upload a file from the local path
-		   @fileLocalPath file full path including file name
-		*/
+           @fileLocalPath file full path including file name
+        */
     bool UploadFile(CString fileLocalPath);
 
         /**delete a file in remote ftp server*/
     bool DeleteFTPFile(CString fileName);
 
         /**Get file name from full file path
-		    @filePath - file's full path
-		*/
+            @filePath - file's full path
+        */
     void GetFileName(CString& filePath);
 
         /**Get port number from FTP server's response
-		    @return port number if successful
-		    @return 0 if it fails
-		*/
+            @return port number if successful
+            @return 0 if it fails
+        */
     int GetPortNumber();
 
     bool SendFileToServer(CString& fileLocalPath);
@@ -103,37 +103,37 @@ public:
     bool GetServerFeature();
 
         /**Get the remote file size in FTP server,NOT FOR NOVAC SCANNER FTP SERVER
-		  @fileName - the remote file's name
-		  @return file size if successful,
-		  @return -1 if fails
-		*/
+          @fileName - the remote file's name
+          @return file size if successful,
+          @return -1 if fails
+        */
     long Size(CString& fileName);
 
         /**Check whehter the remote file exists
-		*@remoteFileName - the remote file name 
-		*@remoteDirectory - remote directory
-		*return true if exists
-		*return false if the file does not exist
-		*/
+        *@remoteFileName - the remote file name
+        *@remoteDirectory - remote directory
+        *return true if exists
+        *return false if the file does not exist
+        */
     bool CheckFileExistence(CString& remoteFileName, CString& remoteDirectory);
 
         /**Get FTP error code which is at the beginning of the reply
-		*@ftpMsg- the mesage that the FTP server responses.
-		*return 0 if fail to find a number at the beginning of the reply
-		*return a positive integer if successful
-		*/
+        *@ftpMsg- the mesage that the FTP server responses.
+        *return 0 if fail to find a number at the beginning of the reply
+        *return a positive integer if successful
+        */
     int GetMsgCode(CString& ftpMsg);
 
         /**judge the ftp error code meaning
-		*@code - the ftp error code
-		*return TRUE if successful
-		*return FALSE if there is error in last communication
-		*/
+        *@code - the ftp error code
+        *return TRUE if successful
+        *return FALSE if there is error in last communication
+        */
     int JudgeFTPCode(int code);
 
-        /**Judge successful or not from the ftp reply message 
-		*return true if successful
-		*/
+        /**Judge successful or not from the ftp reply message
+        *return true if successful
+        */
     bool IsFTPCommandDone();
 
     int DownloadFile(CString remoteFileName, CString localFileName);
@@ -141,24 +141,24 @@ public:
     bool OpenFileHandle(CString& fileName);
 
         /**Makes the given directory to be the current directory in the FTP server
-		*@directory the directory to be change to in the FTP server
-		*/
+        *@directory the directory to be change to in the FTP server
+        */
     bool SetCurrentFTPDirectory(CString& directory);
 
         /**Get the current directory*/
     bool GetCurrentFTPDirectory(CString& curDirectory);
 
         /**Get a string which is in one pair of seperator
-		*@param line a string which includes the wanted part
-		*@seperator one pair of seperators which keep the wanted part in the middle
-		*for example, 220 xx "\" is the current. "\" is what we want
-		*/
+        *@param line a string which includes the wanted part
+        *@seperator one pair of seperators which keep the wanted part in the middle
+        *for example, 220 xx "\" is the current. "\" is what we want
+        */
     void GetCitedString(CString& line, CString& leftSeperator, CString& rightSeperator);
 
         /**Create a directory in remote FTP server
-		*@param parenetDirectory parent directory name
-		*@param newDirectory new directory name
-		*/
+        *@param parenetDirectory parent directory name
+        *@param newDirectory new directory name
+        */
     bool CreateFTPDirectory(CString& parentDirectory, CString& newDirectory);
 
         /**close socket*/
@@ -167,8 +167,8 @@ public:
     int CloseASocket(SOCKET sock);
 
         /**find a file in ftp server
-		*return true if it finds the file
-		*/
+        *return true if it finds the file
+        */
     bool FindFile(CString fileName);
 
         /**store receive data from data socket in m_vDataBuffer*/

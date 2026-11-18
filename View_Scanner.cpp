@@ -160,7 +160,7 @@ BOOL CView_Scanner::OnInitDialog()
     CString columnAxisLabel, fluxAxisLabel;
 
     // Fix the layout first
-    //	SetLayout();
+    //  SetLayout();
 
     // Load the bitmaps
     m_greenLight.LoadBitmap(MAKEINTRESOURCE(IDB_GREEN_LIGHT));
@@ -408,7 +408,7 @@ void CView_Scanner::DrawColumn()
     }
 
     // If we know the dynamic range for the spectrometer,
-    //	set the plot to show saturation-levels instead of intensities
+    //  set the plot to show saturation-levels instead of intensities
     m_lastScanPlot.SetSecondRangeY(0, 100, 0, false);
     m_lastScanPlot.SetSecondYUnit(common.GetString(AXIS_SATURATION));
 
@@ -479,7 +479,7 @@ void CView_Scanner::DrawColumn()
             m_lastScanPlot.SaveGraph(imageFileName);
 
             // Also save a copy of the column-plot to an additional directory, if this is
-            //		the latest file received
+            //      the latest file received
             if (m_lastScanStart == m_mostRecentScanStart)
             {
                 lastImageFileName.Format("%s\\%s\\", (LPCTSTR)g_settings.webSettings.localDirectory, (LPCTSTR)m_serial);
@@ -589,7 +589,7 @@ void CView_Scanner::DrawColumnDay()
     SetTodayRange();
 
     // If we know the dynamic range for the spectrometer,
-    //	set the plot to show saturation-levels instead of intensities
+    //  set the plot to show saturation-levels instead of intensities
     double maxIntensity = m_evalDataStorage->GetDynamicRange(m_serial);
     if (maxIntensity > 0)
     {
@@ -647,7 +647,7 @@ void CView_Scanner::DrawColumnDay()
             m_todayPlot.SaveGraph(imageFileName);
 
             // Also save a copy of the column-plot to an additional directory, if this is
-            //		the latest file received
+            //      the latest file received
             if (m_lastScanStart == m_mostRecentScanStart)
             {
                 lastImageFileName.Format("%s\\%s\\", (LPCTSTR)g_settings.webSettings.localDirectory, (LPCTSTR)m_serial);
@@ -957,11 +957,11 @@ void CView_Scanner::OnBnClickedButtonSetWindfield()
     {
         // It's quite some time since the user pressed this button
         //  last time. Set the wind-field for all instruments and not just for
-        //	the currently shown...
+        //  the currently shown...
 
         // The wind-field should be the same for all instruments at this volcano,
-        //			find out which other instruments look at the same volcano and set the
-        //			wind-field for them too.
+        //          find out which other instruments look at the same volcano and set the
+        //          wind-field for them too.
         curVolcano.Format(g_settings.scanner[m_scannerIndex].volcano);
         for (it = 0; it < g_settings.scannerNum; ++it)
         {

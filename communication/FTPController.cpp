@@ -40,8 +40,8 @@ bool CFTPController::PollScanner()
 
     //if(!Login(m_ftpInfo.IPAddress,m_ftpInfo.userName, m_ftpInfo.password))
     //{
-    //	pView->PostMessage(WM_SCANNER_NOT_CONNECT,(WPARAM)&(m_spectrometerSerialID),0);
-    //	return false;
+    //  pView->PostMessage(WM_SCANNER_NOT_CONNECT,(WPARAM)&(m_spectrometerSerialID),0);
+    //  return false;
     //}
     //pView->PostMessage(WM_SCANNER_RUN,(WPARAM)&(m_spectrometerSerialID),0);
         //download upload.pak
@@ -96,15 +96,15 @@ bool CFTPController::DownloadOldPak(long interval)
     }
     //download Uxxx.pak files from Rxxx directories
 
-/*	for(i=0;i< m_oldPakList.GetCount();i++)
-	{
-		fileSize = m_oldPakList.GetTail()->m_fileSize;
-		//estimatedTime = fileSize/m_dataSpeed;		
-		downloadResult = DownloadSpectra(m_oldPakList.GetTail()->m_fileName,m_storageDirectory);
-		
-		if( downloadResult )
-			m_oldPakList.RemoveTail();
-	}	*/
+/*  for(i=0;i< m_oldPakList.GetCount();i++)
+    {
+        fileSize = m_oldPakList.GetTail()->m_fileSize;
+        //estimatedTime = fileSize/m_dataSpeed;
+        downloadResult = DownloadSpectra(m_oldPakList.GetTail()->m_fileName,m_storageDirectory);
+
+        if( downloadResult )
+            m_oldPakList.RemoveTail();
+    }   */
     return true;
 }
 //download pak files listed in m_oldpakList
@@ -258,14 +258,14 @@ BOOL CFTPController::DeleteRemoteFile(CString& remoteFile)
 {
     BOOL result = FALSE;
     /*if(Connect(m_ftpInfo.IPAddress, m_ftpInfo.userName, m_ftpInfo.password)==1)
-	{*/
+    {*/
     if (!FindFile(remoteFile))
     {
-    //		Disconnect();
+    //      Disconnect();
         return FALSE;
     }
     result = DeleteFTPFile(remoteFile);
-    //	Disconnect();
+    //  Disconnect();
     //}
     return result;
 }
@@ -327,10 +327,10 @@ bool CFTPController::SendCommand(char* cmd)
     //upload file to the server
     if (UploadFile(localFileFullPath) == 0)
     {
-    //	Disconnect();
+    //  Disconnect();
         return false;
     }
-//	Disconnect();
+//  Disconnect();
     return true;
 }
 void CFTPController::GotoSleep()
@@ -361,7 +361,7 @@ bool CFTPController::ArrangeFileList(char* string)
     static char seps[] = "\t\n";
     char* token;
     CString tokenStr;
-//	CString str, resToken;
+//  CString str, resToken;
     CString strFileName, strFolder;
     strFileName.Format("U");
     strFolder.Format("drw-------");

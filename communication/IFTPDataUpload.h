@@ -5,7 +5,7 @@
 namespace Communication
 {
     /** The IFTPDataUpload is an abstract base class for the classes which are able
-        to upload data to the Novac data server, the FTPCom (which uses regular FTP) 
+        to upload data to the Novac data server, the FTPCom (which uses regular FTP)
         and SFTPCom (which uses SFTP). */
 class IFTPDataUpload
 {

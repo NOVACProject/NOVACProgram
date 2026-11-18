@@ -81,8 +81,8 @@ BEGIN_MESSAGE_MAP(CGeometryDlg, CDialog)
 
     // Showing the next, or the previous scan.
     ON_NOTIFY(UDN_DELTAPOS, IDC_SCAN_SPIN, OnChangeSelectedScan)
-    //ON_COMMAND(ID_VIEW_PREVIOUSSCAN,				OnShowPreviousScan)
-    //ON_COMMAND(ID_VIEW_NEXTSCAN,						OnShowNextScan)
+    //ON_COMMAND(ID_VIEW_PREVIOUSSCAN,              OnShowPreviousScan)
+    //ON_COMMAND(ID_VIEW_NEXTSCAN,                      OnShowNextScan)
 
       // Changing the selected scanner
     ON_LBN_SELCHANGE(IDC_SCANNER_LIST, OnChangeScanner)
@@ -353,7 +353,7 @@ void CGeometryDlg::DrawMap()
     }
 
     // Make sure that the plot is square, i.e. the range in latitude is
-    //	same as the range in longitude
+    //  same as the range in longitude
     if (m_plotRange.maxLon - m_plotRange.minLon > m_plotRange.maxLat - m_plotRange.minLat)
     {
         double midLat = (m_plotRange.maxLat + m_plotRange.minLat) * 0.5;
@@ -372,7 +372,7 @@ void CGeometryDlg::DrawMap()
         m_plotRange.minLat - m_plotRange.margin, m_plotRange.maxLat + m_plotRange.margin, 3);
 
     // To fix the scale for the column-values, we must normalize it. Find the
-    //	highest and the lowest column value there is
+    //  highest and the lowest column value there is
     for (int scanner = 0; scanner < MAX_N_SCANNERS; ++scanner)
     {
         // If this evaluation-log has not yet been opened, then check the next one
@@ -464,7 +464,7 @@ void CGeometryDlg::DrawMap()
     CalculateWindDirection(curScanner, m_curScan[curScanner]);
 
     // If there are more than two evaluation-log files then we can combine them
-    //	to calculate plume-height
+    //  to calculate plume-height
     if (nScanners > 1)
     {
         CalculatePlumeHeight(0, m_curScan[0], 1, m_curScan[1]);
@@ -543,7 +543,7 @@ void CGeometryDlg::ShowSunPosition(int scanner)
     SetDlgItemText(IDC_LABEL_SAZ, msgAngle);
 
     // If the user wants to see the direction towards the sun in the map, then
-    //	calculate and show it also
+    //  calculate and show it also
     if (m_showSunRay)
     {
         double sunLat[2], sunLon[2];
@@ -1055,8 +1055,8 @@ void Dialogs::CGeometryDlg::SelectScan()
     CString dateAndTimeStr;
 
     // When we change the time for the currently selected scanner,
-    //	we should also change the time for the other scanner(s) to the
-    //	scan closest in time to the current one
+    //  we should also change the time for the other scanner(s) to the
+    //  scan closest in time to the current one
     CDateTime currentlySelectedTime, time2;
     int otherScanners[2];
     double diffTime, smallestDiffTime;

@@ -4,8 +4,7 @@
 #ifndef __OScopeCtrl_H__
 #define __OScopeCtrl_H__
 
-/////////////////////////////////////////////////////////////////////////////
-// COScopeCtrl window
+// ---- COScopeCtrl window ----
 
 namespace Graph
 {
@@ -28,7 +27,7 @@ public:
     /** Default destructor */
     virtual ~COScopeCtrl();
 
-    /** Used when the plot is used in oscilloscope-mode. This function will 
+    /** Used when the plot is used in oscilloscope-mode. This function will
         simply append one data point to the plot. */
     double AppendPoint(double dNewPoint);
 
@@ -72,9 +71,9 @@ public:
     /** ??? */
     void Reset();
 
-    /** Customized function for drawing points with lines connecting them. 
+    /** Customized function for drawing points with lines connecting them.
         @param yPositions - the y values for the points.
-        @param pointSum - the number of points to draw. 
+        @param pointSum - the number of points to draw.
         @param clear - if 'clear' is true the plot will be cleared before the points are drawn. */
     void DrawMyPoint(double* yPositions, int pointSum, bool clear);
 
@@ -229,5 +228,4 @@ private:
 };
 }
 
-/////////////////////////////////////////////////////////////////////////////
 #endif

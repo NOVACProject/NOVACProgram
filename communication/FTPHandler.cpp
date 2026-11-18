@@ -723,7 +723,7 @@ void CFTPHandler::WakeUp()
 {
     if (!DeleteRemoteFile(m_commandFileName))
     {
-        //	ShowMessage("Remote File command.txt could not be removed");
+        //  ShowMessage("Remote File command.txt could not be removed");
     }
     bool success = SendCommand("poweron\nresume");
 
@@ -745,8 +745,8 @@ void CFTPHandler::WakeUp()
     else
     {
         // Try to download the cfg.txt - file from the instrument. This is done
-        //	both to test the connection and to get information from the
-        //	file (such as motor-steps-comp)
+        //  both to test the connection and to get information from the
+        //  file (such as motor-steps-comp)
         this->DownloadCfgTxt();
     }
 }
@@ -755,7 +755,7 @@ void CFTPHandler::Reboot()
 {
     if (!DeleteRemoteFile(m_commandFileName))
     {
-        //		ShowMessage("Remote File command.txt could not be removed");
+        //      ShowMessage("Remote File command.txt could not be removed");
     }
     SendCommand("reboot");
 }

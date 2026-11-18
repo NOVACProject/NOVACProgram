@@ -83,7 +83,7 @@ BOOL CScannerConfiguration::OnInitDialog()
         m_pageEvaluation[k].m_pPSP->pszTitle = titles[k].GetBuffer();
         m_showEvalPage[k] = true;   /** m_showEvalPage[i] is true if m_pageEvaluation[i] is visible */
         m_showWindPage = true;      /** m_showWindPage is true if the wind configuration page is visible */
-        //m_showVIIPage	 = true;    /** m_showVIIPage is true if the version2 configuration page is visible */
+        //m_showVIIPage  = true;    /** m_showVIIPage is true if the version2 configuration page is visible */
     }
 
     // the wind configuration
@@ -174,7 +174,7 @@ BOOL CScannerConfiguration::OnInitDialog()
     m_toolTip.Activate(TRUE);
 
     // if there's no scanners configured then we need to call 'OnChangeScanner'
-    //	manually to make sure that the controls are enabled/disabled properly
+    //  manually to make sure that the controls are enabled/disabled properly
     if (m_configuration->scannerNum == 0)
     {
         OnChangeScanner();
@@ -241,8 +241,8 @@ void CScannerConfiguration::OnChangeScanner()
 
     // Show or not to show the Version2 page
     //if (m_showVIIPage) {
-    //	m_sheet.RemovePage(&m_pageVII);
-    //	m_showVIIPage = false;
+    //  m_sheet.RemovePage(&m_pageVII);
+    //  m_showVIIPage = false;
     //}
 
     // show or not to show the windpage
@@ -280,7 +280,7 @@ void CScannerConfiguration::OnChangeScanner()
         }
     }
     //if(m_showVIIPage)
-    //	m_pageVII.OnChangeScanner();
+    //  m_pageVII.OnChangeScanner();
     if (m_showWindPage)
     {
         m_pageWind.OnChangeScanner();
@@ -405,7 +405,7 @@ void CScannerConfiguration::OnAddScanner()
     }
 
     // Since there's now at least one scanner in the list,
-    //	make sure that it's possible to remove it...
+    //  make sure that it's possible to remove it...
     m_removeScannerBtn.EnableWindow(TRUE);
 
     /** Update the dialog */

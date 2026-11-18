@@ -10,7 +10,7 @@
 
         Known children are:
             CGeometryEvaluator - calculates plume-heights in real-time from normal scans
-            CWindEvaluator		- calculates wind-speeds in real-time from wind-measurements
+            CWindEvaluator      - calculates wind-speeds in real-time from wind-measurements
         */
 
 class CCombinerThread : public CWinThread

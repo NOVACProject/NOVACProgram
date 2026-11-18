@@ -13,8 +13,7 @@ static char THIS_FILE[] = __FILE__;
 
 using namespace Graph;
 
-/////////////////////////////////////////////////////////////////////////////
-// COScopeCtrl
+// ---- COScopeCtrl ----
 COScopeCtrl::COScopeCtrl()
 {
   // since plotting is based on a LineTo for each new point
@@ -74,7 +73,6 @@ COScopeCtrl::COScopeCtrl()
     digitsFlag = 0;
 }  // COScopeCtrl
 
-/////////////////////////////////////////////////////////////////////////////
 COScopeCtrl::~COScopeCtrl()
 {
   // just to be picky restore the bitmaps for the two memory dc's
@@ -99,10 +97,8 @@ BEGIN_MESSAGE_MAP(COScopeCtrl, CWnd)
 END_MESSAGE_MAP()
 
 
-/////////////////////////////////////////////////////////////////////////////
-// COScopeCtrl message handlers
+// ---- COScopeCtrl message handlers ----
 
-/////////////////////////////////////////////////////////////////////////////
 BOOL COScopeCtrl::Create(DWORD dwStyle, const RECT& rect,
     CWnd* pParentWnd, UINT nID)
 {
@@ -122,7 +118,6 @@ BOOL COScopeCtrl::Create(DWORD dwStyle, const RECT& rect,
 
 } // Create
 
-/////////////////////////////////////////////////////////////////////////////
 void COScopeCtrl::SetRange(double dLower, double dUpper, int nDecimalPlaces)
 {
     ASSERT(dUpper > dLower);
@@ -139,7 +134,6 @@ void COScopeCtrl::SetRange(double dLower, double dUpper, int nDecimalPlaces)
 }  // SetRange
 
 
-/////////////////////////////////////////////////////////////////////////////
 void COScopeCtrl::SetXUnits(CString string)
 {
     m_strXUnitsString = string;
@@ -149,7 +143,6 @@ void COScopeCtrl::SetXUnits(CString string)
 
 }  // SetXUnits
 
-/////////////////////////////////////////////////////////////////////////////
 void COScopeCtrl::SetYUnits(CString string)
 {
     m_strYUnitsString = string;
@@ -159,7 +152,6 @@ void COScopeCtrl::SetYUnits(CString string)
 
 }  // SetYUnits
 
-/////////////////////////////////////////////////////////////////////////////
 void COScopeCtrl::SetGridColor(COLORREF color)
 {
     m_colors.grid = color;
@@ -170,7 +162,6 @@ void COScopeCtrl::SetGridColor(COLORREF color)
 }  // SetGridColor
 
 
-/////////////////////////////////////////////////////////////////////////////
 void COScopeCtrl::SetPlotColor(COLORREF color, bool clear)
 {
     m_crPlotColor = color;
@@ -187,7 +178,6 @@ void COScopeCtrl::SetPlotColor(COLORREF color, bool clear)
 }  // SetPlotColor
 
 
-/////////////////////////////////////////////////////////////////////////////
 void COScopeCtrl::SetBackgroundColor(COLORREF color)
 {
     m_colors.background = color;
@@ -212,7 +202,6 @@ void COScopeCtrl::SetCircleColor(COLORREF color, bool clear)
     }
 }
 
-/////////////////////////////////////////////////////////////////////////////
 void COScopeCtrl::IncreaseLineWidth()
 {
     m_penPlot.DeleteObject();
@@ -223,7 +212,6 @@ void COScopeCtrl::IncreaseLineWidth()
 
 }  // IncreaseLineWidth
 
-/////////////////////////////////////////////////////////////////////////////
 void COScopeCtrl::DecreaseLineWidth()
 {
     if (m_crPlotLineWidth == 0)
@@ -239,7 +227,6 @@ void COScopeCtrl::DecreaseLineWidth()
 
 }  // DecreaseLineWidth
 
-/////////////////////////////////////////////////////////////////////////////
 void COScopeCtrl::InvalidateCtrl()
 {
   // There is a lot of drawing going on here - particularly in terms of
@@ -457,7 +444,6 @@ void COScopeCtrl::InvalidateCtrl()
 } // InvalidateCtrl
 
 
-/////////////////////////////////////////////////////////////////////////////
 double COScopeCtrl::AppendPoint(double dNewPoint)
 {
   // append a data point to the plot
@@ -468,14 +454,13 @@ double COScopeCtrl::AppendPoint(double dNewPoint)
     dPrevious = m_dCurrentPosition;
     m_dCurrentPosition = dNewPoint;
     DrawPoint();
-//	DrawMyPoint();
+//  DrawMyPoint();
     Invalidate();
 
     return dPrevious;
 
 } // AppendPoint
 
-////////////////////////////////////////////////////////////////////////////
 void COScopeCtrl::AppendRect(double dNewColumn, double dDegree, int nSum)
 {
     m_dCurrentPosition = dNewColumn;
@@ -504,7 +489,6 @@ void COScopeCtrl::AppendCircle(double dNewColumn, double dDegree, double dVertic
     DrawCircle(factor);
     Invalidate();
 }
-////////////////////////////////////////////////////////////////////////////
 void COScopeCtrl::OnPaint()
 {
     CPaintDC dc(this);  // device context for painting
@@ -539,7 +523,6 @@ void COScopeCtrl::OnPaint()
 
 } // OnPaint
 
-/////////////////////////////////////////////////////////////////////////////
 void COScopeCtrl::DrawPoint()
 {
   // this does the work of "scrolling" the plot to the left
@@ -852,7 +835,6 @@ void COScopeCtrl::DrawMyPoint(double* yPositions, int pointSum, double xrange, d
     Invalidate(clear);
 }
 
-/////////////////////////////////////////////////////////////////////////////
 void COScopeCtrl::OnSize(UINT nType, int cx, int cy)
 {
     CWnd::OnSize(nType, cx, cy);
@@ -885,7 +867,6 @@ void COScopeCtrl::OnSize(UINT nType, int cx, int cy)
 } // OnSize
 
 
-/////////////////////////////////////////////////////////////////////////////
 void COScopeCtrl::Reset()
 {
   // to clear the existing data (in the form of a bitmap)

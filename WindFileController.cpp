@@ -75,7 +75,7 @@ BOOL CWindFileController::InitInstance()
     CWinThread::InitInstance();
 
     // Check the global settings if we are to be re-loading the wind-field file
-    //	every now and then then set the timer
+    //  every now and then then set the timer
     if (g_settings.windSourceSettings.enabled == 1 &&
         g_settings.windSourceSettings.windFileReloadInterval > 0 &&
         g_settings.windSourceSettings.windFieldFile.GetLength() > 3)
@@ -91,7 +91,7 @@ BOOL CWindFileController::InitInstance()
     else
     {
         // If we should not re-read the wind-field file then this thread has
-        //	nothing to do. We can just as well quit it
+        //  nothing to do. We can just as well quit it
         AfxEndThread(0);
     }
 

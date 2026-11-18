@@ -317,7 +317,7 @@ RETURN_CODE CEvaluationLogFileHandler::ReadEvaluationLog()
     }
 
     // First count the number of scans in the file.
-    //	This to speed up the initialization of the arrays
+    //  This to speed up the initialization of the arrays
     CArray<CDateTime*, CDateTime*> allStartTimes;
     CArray<unsigned int, unsigned int&> sortOrder;
     long nScans = GetScanStartTimes(allStartTimes);
@@ -402,7 +402,7 @@ RETURN_CODE CEvaluationLogFileHandler::ReadEvaluationLog()
             {
 
                 // check so that there was some information in the last scan read
-                //	if not the re-use the memory space
+                //  if not the re-use the memory space
                 if ((measNr > 0) || (measNr == 0 && m_scanNum < 0))
                 {
 
@@ -646,11 +646,11 @@ RETURN_CODE CEvaluationLogFileHandler::ReadEvaluationLog()
             //  CScanResult structure
 
             // If this is the first spectrum in the new scan, then make
-            //	an initial guess for how large the arrays are going to be...
+            //  an initial guess for how large the arrays are going to be...
             if (measNr == 0 && m_scanNum > 1)
             {
                 // If this is the first spectrum in a new scan, then initialize the
-                //	size of the arrays, to save some time on re-allocating memory
+                //  size of the arrays, to save some time on re-allocating memory
                 m_scan[sortOrder[m_scanNum]].InitializeArrays(m_scan[m_scanNum - 1].GetEvaluatedNum());
             }
 
@@ -708,7 +708,7 @@ RETURN_CODE CEvaluationLogFileHandler::ReadEvaluationLog()
     ++m_scanNum;
 
     // Sort the scans in order of collection
-//	SortScans();
+//  SortScans();
 
     return SUCCESS;
 }
@@ -1218,14 +1218,14 @@ void CEvaluationLogFileHandler::SortScans()
     m_scan.SetSize(m_scanNum);
 
     // If the scans are already in order then we don't need to sort them
-    //	or if there is only one scan then we don't need to fix it.
+    //  or if there is only one scan then we don't need to fix it.
     if (IsSorted() || m_scanNum <= 1)
     {
         return;
     }
 
     // Then sort the array
-    //	CEvaluationLogFileHandler::SortScans(m_scan);
+    //  CEvaluationLogFileHandler::SortScans(m_scan);
     CEvaluationLogFileHandler::BubbleSortScans(m_scan);
 
     return;
@@ -1243,7 +1243,7 @@ bool CEvaluationLogFileHandler::IsSorted()
         m_scan[k + 1].GetStartTime(0, time2);
 
         // If the second scan has started before the first,
-        //	then change the order, otherwise don't do anything
+        //  then change the order, otherwise don't do anything
         if (time2 < time1)
         {
             return false;
@@ -1285,7 +1285,7 @@ void CEvaluationLogFileHandler::SortScanStartTimes(CArray<CDateTime*, CDateTime*
         for (k = 0; k < nElements - 1; ++k)
         {
             // If the second scan has started before the first,
-            //	then change the order, otherwise don't do anything
+            //  then change the order, otherwise don't do anything
             if (*allStartTimes[k + 1] < *allStartTimes[k])
             {
                 tmpTime = allStartTimes[k];
@@ -1390,9 +1390,9 @@ RETURN_CODE CEvaluationLogFileHandler::WriteEvaluationLog(const CString fileName
         string.AppendFormat("\twinddirectionsource=%s\n", (LPCSTR)wdSrc);
         string.AppendFormat("\tplumeheightsource=%s\n", (LPCSTR)phSrc);
         //if(fabs(spectrometer.m_scanner.compass) > 360.0)
-        //	string.AppendFormat("\tcompasssource=compassreading\n");
+        //  string.AppendFormat("\tcompasssource=compassreading\n");
         //else
-        //	string.AppendFormat("\tcompasssource=user\n");
+        //  string.AppendFormat("\tcompasssource=user\n");
         string.AppendFormat("</fluxinfo>\n");
         fprintf(f, string);
 
@@ -1454,8 +1454,8 @@ RETURN_CODE CEvaluationLogFileHandler::FormatEvaluationResult(const CSpectrumInf
     string.AppendFormat("%s\t", simplifiedName.c_str());
 
     // 6. The (maximum) saturation ratio of the whole spectrum,
-    //			the (maximum) saturation ratio in the fit-region
-    //			and the normalized maximum intensity of the whole spectrum
+    //          the (maximum) saturation ratio in the fit-region
+    //          and the normalized maximum intensity of the whole spectrum
     if (maxIntensity > 0.0)
     {
         string.AppendFormat("%.2lf\t", info->m_peakIntensity / maxIntensity);
@@ -1547,7 +1547,7 @@ void FileHandler::CEvaluationLogFileHandler::SortScans(CArray<Evaluation::CScanR
     else if (nElements <= 7)
     {
         // For small lists, its much faster to do a bubble sorting of the
-        //	list since this does not require so much copying back and forth
+        //  list since this does not require so much copying back and forth
         BubbleSortScans(array, ascending);
         return;
     }
@@ -1681,7 +1681,7 @@ void FileHandler::CEvaluationLogFileHandler::BubbleSortScans(CArray<Evaluation::
         for (k = 0; k < nElements - 1; ++k)
         {
             // If the second scan has started before the first,
-            //	then change the order, otherwise don't do anything
+            //  then change the order, otherwise don't do anything
             if (allStartTimes[k + 1] < allStartTimes[k])
             {
                 tmpTime = allStartTimes[k];

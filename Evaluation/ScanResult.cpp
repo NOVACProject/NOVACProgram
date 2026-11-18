@@ -128,7 +128,7 @@ bool CScanResult::CheckGoodnessOfFit(const novac::CSpectrumInfo& info, int index
     }
 
     // remember the electronic offset (NB. this is not same as the scan-offset)
-//  m_specInfo[index].m_offset				= (float)offsetLevel;
+//  m_specInfo[index].m_offset              = (float)offsetLevel;
 
     // TODO: we should be able to pass in a spectrometer model here and not have to recreate it for each an every spectrum.
     return m_spec[index].CheckGoodnessOfFit(info, nullptr, chi2Limit, upperLimit, lowerLimit);
@@ -157,7 +157,7 @@ int CScanResult::CalculateOffset(const std::string& specie)
         columns[i] = m_spec[i].m_referenceResult[specieIndex].m_column;
 
         // The spectrum is considered as bad if the goodness-of-fit checking
-        //	has marked it as bad or the user has marked it as deleted
+        //  has marked it as bad or the user has marked it as deleted
         if (m_spec[i].IsBad() || m_spec[i].IsDeleted())
         {
             badEval[i] = true;
@@ -643,7 +643,7 @@ bool CScanResult::RemoveMark(unsigned long index, int MARK_FLAG)
     return m_spec[index].RemoveMark(MARK_FLAG);
 }
 
-/** returns the date (UMT) when the evaluated spectrum number 'index'	was collected
+/** returns the date (UMT) when the evaluated spectrum number 'index'   was collected
         @param index - the zero-based index into the list of evaluated spectra. */
 bool CScanResult::GetDate(unsigned long index, unsigned short date[3]) const
 {

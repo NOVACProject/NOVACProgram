@@ -206,9 +206,9 @@ RETURN_CODE CFitWindowFileHandler::Parse_FitWindow(novac::CFitWindow& window)
             continue;
         }
         //if(Equals(szToken, "nRef")){
-        //	Parse_IntItem(TEXT("/nRef"), window.nRef);
-    //		continue;
-    //	}
+        //  Parse_IntItem(TEXT("/nRef"), window.nRef);
+    //      continue;
+    //  }
 
         if (Equals(szToken, "ref", 3))
         {

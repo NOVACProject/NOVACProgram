@@ -193,7 +193,7 @@ void CNovacMasterProgramView::DoDataExchange(CDataExchange* pDX)
 BOOL CNovacMasterProgramView::PreCreateWindow(CREATESTRUCT& cs)
 {
     // TODO: Modify the Window class or styles here by modifying
-    //	the CREATESTRUCT cs
+    //  the CREATESTRUCT cs
 
     return CFormView::PreCreateWindow(cs);
 }
@@ -509,7 +509,7 @@ LRESULT CNovacMasterProgramView::OnShowStatus(WPARAM wParam, LPARAM lParam)
 {
     // CString str = "status";
     CString* msg;
-    //msg	= &str;
+    //msg   = &str;
     msg = (CString*)wParam;
 
     CMainFrame* pFrame = (CMainFrame*)AfxGetApp()->m_pMainWnd;
@@ -1111,7 +1111,7 @@ int CNovacMasterProgramView::InitializeControls()
     }
 
     // At last, add the wind-measurements overview page,
-    //	if there is at least one instrument which is capable of making wind-measurements
+    //  if there is at least one instrument which is capable of making wind-measurements
     if (m_showWindOverView)
     {
         m_windOverView = new CView_WindMeasOverView();
@@ -1152,7 +1152,7 @@ int CNovacMasterProgramView::InitializeControls()
             tcItem.mask = TCIF_TEXT;
 
             // Set the text in the 'item'. !!!! The serial-string is necessary
-            //	otherwise this function changes the global object !!!!!!!!!!!
+            //  otherwise this function changes the global object !!!!!!!!!!!
             site.Format("%s", (LPCTSTR)g_settings.scanner[i].site);
             tcItem.pszText = site.GetBuffer(256);
 
@@ -1167,7 +1167,7 @@ int CNovacMasterProgramView::InitializeControls()
                 tcItem.mask = TCIF_TEXT;
 
                 // Set the text in the 'item'. !!!! The serial-string is necessary
-                //	otherwise this function changes the global object !!!!!!!!!!!
+                //  otherwise this function changes the global object !!!!!!!!!!!
                 site.Format("%s Column History", (LPCTSTR)g_settings.scanner[i].site);
                 tcItem.pszText = site.GetBuffer(256);
 
@@ -1182,7 +1182,7 @@ int CNovacMasterProgramView::InitializeControls()
                 tcItem.mask = TCIF_TEXT;
 
                 // Set the text in the 'item'. !!!! The serial-string is necessary
-                //	otherwise this function changes the global object !!!!!!!!!!!
+                //  otherwise this function changes the global object !!!!!!!!!!!
                 site.Format("%s Flux History", (LPCTSTR)g_settings.scanner[i].site);
                 tcItem.pszText = site.GetBuffer(256);
 
@@ -1339,8 +1339,8 @@ void CNovacMasterProgramView::UploadAuxData()
     int todaysDate = Common::GetDay();
 
     // if todays date is dividable by 7 and if we haven't uploaded anything
-    //	today, then try to upload the files. (i.e. uploads will only occur
-    //	arround once a week, maximum)
+    //  today, then try to upload the files. (i.e. uploads will only occur
+    //  arround once a week, maximum)
     if ((todaysDate != lastUploadDate) && (todaysDate % 7 == 0))
     {
         int nVolcanoes = 0;
@@ -1542,10 +1542,10 @@ void CNovacMasterProgramView::OnUpdateChangeUnitOfColumnToPPMM(CCmdUI* pCmdUI)
     }
 
     //for (int i = 0; i < m_fluxHistoryPages.GetCount(); ++i) {
-    //	FluxHistoryDlg *page = (FluxHistoryDlg *)m_fluxHistoryPages[i];
-    //	if (page->m_hWnd != NULL) {
-    //		page->RedrawAll();
-    //	}
+    //  FluxHistoryDlg *page = (FluxHistoryDlg *)m_fluxHistoryPages[i];
+    //  if (page->m_hWnd != NULL) {
+    //      page->RedrawAll();
+    //  }
     //}
 }
 
@@ -1561,10 +1561,10 @@ void CNovacMasterProgramView::OnUpdateChangeUnitOfColumnToMolecCm2(CCmdUI* pCmdU
     }
 
     //for (int i = 0; i < m_fluxHistoryPages.GetCount(); ++i) {
-    //	FluxHistoryDlg *page = (FluxHistoryDlg *)m_fluxHistoryPages[i];
-    //	if (page->m_hWnd != NULL) {
-    //		page->RedrawAll();
-    //	}
+    //  FluxHistoryDlg *page = (FluxHistoryDlg *)m_fluxHistoryPages[i];
+    //  if (page->m_hWnd != NULL) {
+    //      page->RedrawAll();
+    //  }
     //}
 }
 
@@ -1661,7 +1661,7 @@ void CNovacMasterProgramView::ScanStatusLogFile()
 LRESULT CNovacMasterProgramView::OnRewriteConfigurationXml(WPARAM wParam, LPARAM lParam)
 {
     // Lock this object to make sure that now one else tries to read
-    //	data from this object while we are reading
+    //  data from this object while we are reading
     CSingleLock singleLock(&m_critSect);
     singleLock.Lock();
 

@@ -293,7 +293,7 @@ void CPostWindDlg::DrawResult()
         distance = m_settings.plumeHeight * fabs(tan(angle) - tan(angle - DEGREETORAD * m_settings.angleSeparation));
     }
     // If the scanners are not looking straight up then the distance between
-    //		the two directions gets decreased with the scanAngle
+    //      the two directions gets decreased with the scanAngle
     distance *= cos(m_scanAngle * DEGREETORAD);
 
     /** Copy the values to the local buffers */
@@ -402,7 +402,7 @@ void CPostWindDlg::DrawColumn()
                     m_PreparedSeries[k]->length,
                     Graph::CGraphCtrl::PLOT_FIXED_AXIS | Graph::CGraphCtrl::PLOT_CONNECTED);
 
-                //				m_columnGraph.SetLineWidth(1);
+                //              m_columnGraph.SetLineWidth(1);
             }
         }
     }
@@ -411,7 +411,7 @@ void CPostWindDlg::DrawColumn()
 /** Performes a low pass filtering procedure on series number 'seriesNo'.
         The number of iterations is taken from 'm_settings.lowPassFilterAverage'
         The treated series is m_OriginalSeries[seriesNo]
-        The result is saved as m_PreparedSeries[seriesNo]	*/
+        The result is saved as m_PreparedSeries[seriesNo]   */
 int CPostWindDlg::LowPassFilter(int seriesNo)
 {
     if (m_settings.lowPassFilterAverage <= 0)

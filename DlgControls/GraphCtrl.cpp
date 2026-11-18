@@ -18,8 +18,7 @@ CGraphCtrl::CFontOption::CFontOption()
     this->width = FW_NORMAL;
 }
 
-/////////////////////////////////////////////////////////////////////////////
-// CGraphCtrl
+// ---- CGraphCtrl ----
 CGraphCtrl::CGraphCtrl()
 {
   // public variable for the number of decimal places on the axis
@@ -89,7 +88,6 @@ CGraphCtrl::CGraphCtrl()
 
 }  // CGraphCtrl
 
-/////////////////////////////////////////////////////////////////////////////
 CGraphCtrl::~CGraphCtrl()
 {
   // just to be picky restore the bitmaps for the two memory dc's
@@ -112,10 +110,8 @@ BEGIN_MESSAGE_MAP(CGraphCtrl, CWnd)
 END_MESSAGE_MAP()
 
 
-/////////////////////////////////////////////////////////////////////////////
-// CGraphCtrl message handlers
+// ---- CGraphCtrl message handlers ----
 
-/////////////////////////////////////////////////////////////////////////////
 BOOL CGraphCtrl::Create(DWORD dwStyle, const RECT& rect,
     CWnd* pParentWnd, UINT nID)
 {
@@ -136,13 +132,11 @@ BOOL CGraphCtrl::Create(DWORD dwStyle, const RECT& rect,
 } // Create
 
 
-/////////////////////////////////////////////////////////////////////////////
 void CGraphCtrl::SetXUnits(CString string)
 {
     m_strXUnitsString = string;
 }  // SetXUnits
 
-/////////////////////////////////////////////////////////////////////////////
 void CGraphCtrl::SetYUnits(CString string)
 {
     m_strYUnitsString = string;
@@ -174,7 +168,6 @@ void CGraphCtrl::SetYAxisNumberFormat(NUMBER_FORMAT format)
 }
 
 
-/////////////////////////////////////////////////////////////////////////////
 void CGraphCtrl::SetGridColor(COLORREF color)
 {
     m_colors.grid = color;
@@ -185,7 +178,6 @@ void CGraphCtrl::SetGridColor(COLORREF color)
 }  // SetGridColor
 
 
-/////////////////////////////////////////////////////////////////////////////
 void CGraphCtrl::SetPlotColor(COLORREF color, bool redraw)
 {
     m_colors.plot = color;
@@ -202,7 +194,6 @@ void CGraphCtrl::SetPlotColor(COLORREF color, bool redraw)
 }  // SetPlotColor
 
 
-/////////////////////////////////////////////////////////////////////////////
 void CGraphCtrl::SetBackgroundColor(COLORREF color)
 {
     m_colors.background = color;
@@ -227,7 +218,6 @@ void CGraphCtrl::SetCircleColor(COLORREF color, bool clear)
     }
 }
 
-/////////////////////////////////////////////////////////////////////////////
 void CGraphCtrl::IncreaseLineWidth()
 {
     m_penPlot.DeleteObject();
@@ -238,7 +228,6 @@ void CGraphCtrl::IncreaseLineWidth()
 
 }  // IncreaseLineWidth
 
-/////////////////////////////////////////////////////////////////////////////
 void CGraphCtrl::DecreaseLineWidth()
 {
     if (m_plotOptions.lineWidth == 0)
@@ -270,7 +259,6 @@ void CGraphCtrl::SetLineWidth(int width, bool clear)
     }
 }
 
-/////////////////////////////////////////////////////////////////////////////
 void CGraphCtrl::InvalidateCtrl()
 {
   // There is a lot of drawing going on here - particularly in terms of
@@ -477,7 +465,6 @@ void CGraphCtrl::InvalidateCtrl()
 } // InvalidateCtrl
 
 
-////////////////////////////////////////////////////////////////////////////
 void CGraphCtrl::OnPaint()
 {
     CPaintDC dc(this);  // device context for painting
@@ -545,7 +532,7 @@ void CGraphCtrl::XYPlot(double* xPosition, double* yPosition, double* color, lon
     if ((plotOption & PLOT_SECOND_AXIS) || (plotOption & PLOT_FIXED_AXIS))
     {
         // For plotting on the second axis, or for fixed axes, we don't want to
-        //	change the scale of the axes, it's enough just to know the range of the data
+        //  change the scale of the axes, it's enough just to know the range of the data
         GetDataRange(xPosition, yPosition, pointSum, maxX, minX, maxY, minY);
     }
     else
@@ -671,7 +658,6 @@ int CGraphCtrl::SaveGraph(const CString& fileName)
     return 0;
 }
 
-/////////////////////////////////////////////////////////////////////////////
 void CGraphCtrl::OnSize(UINT nType, int cx, int cy)
 {
     CWnd::OnSize(nType, cx, cy);
@@ -723,7 +709,6 @@ void CGraphCtrl::OnSize(UINT nType, int cx, int cy)
 } // OnSize
 
 
-/////////////////////////////////////////////////////////////////////////////
 
 void CGraphCtrl::CleanPlot()
 {
@@ -731,8 +716,8 @@ void CGraphCtrl::CleanPlot()
 }
 
 /** Prints out a string onto the plot.
-		The function generates a text-box into which the string will be 
-			drawn centered using default font. 		*/
+        The function generates a text-box into which the string will be
+            drawn centered using default font.      */
 void CGraphCtrl::DrawTextBox(double x_min, double x_max, double y_min, double y_max, CString& str)
 {
     CFont tmpFont, *oldFont;
@@ -810,7 +795,7 @@ void CGraphCtrl::BarChart(double* xPosition, double* yValues, int pointSum, int 
     if ((plotOption & PLOT_SECOND_AXIS) || (plotOption & PLOT_FIXED_AXIS))
     {
         // For plotting on the second axis, or for fixed axes, we don't want to
-        //	change the scale of the axes, it's enough just to know the range of the data
+        //  change the scale of the axes, it's enough just to know the range of the data
         GetDataRange(xPosition, yValues, pointSum, maxX, minX, maxY, minY);
     }
     else
@@ -883,7 +868,7 @@ void CGraphCtrl::BarChart(double* xPosition, double* yValues, int pointSum, int 
 }
 
 /** Draws a vectorfield. The vector field is defined at the points
-    'x' and 'y'. The x-, and y-component of each vector is defined 
+    'x' and 'y'. The x-, and y-component of each vector is defined
     in 'u', and 'v' respectively.
     @param x - The x-coordinates where the vectorfield is defined
     @param y - The y-coordinates where the vectorfield is defined

@@ -229,7 +229,7 @@ RETURN_CODE CEvaluationController::EvaluateSpectrum(const CString& /*fileName*/,
     return FAIL;
 }
 
-/** This function takes care of the evaluation of one scan.	*/
+/** This function takes care of the evaluation of one scan. */
 RETURN_CODE CEvaluationController::EvaluateScan(const CString& fileName, int volcanoIndex)
 {
     clock_t cStart, cFinish;
@@ -238,7 +238,7 @@ RETURN_CODE CEvaluationController::EvaluateScan(const CString& fileName, int vol
     CDateTime startTime;
 
     // The CScanFileHandler is a structure for reading the
-    //		spectral information from the scan-file
+    //      spectral information from the scan-file
     std::unique_ptr<CScanFileHandler> scan = std::make_unique<CScanFileHandler>(m_log);
 
     // success is true if the evaluation is successful
@@ -388,7 +388,7 @@ RETURN_CODE CEvaluationController::CalculateFlux(CScanResult* result, const CSpe
     CString errorMessage;
 
     // 0. If there's only one specie evaluated for, use it as flux specie.
-    //		No matter what previously said
+    //      No matter what previously said
     if (result->GetSpecieNum(0) == 1)
     {
         m_fluxSpecie = result->GetSpecieName(0, 0);
@@ -412,7 +412,7 @@ RETURN_CODE CEvaluationController::CalculateFlux(CScanResult* result, const CSpe
     }
 
     // 2. Check the direction of the scanner, if it's a cone and pointing to the
-    //		volcano, then change the compass direction to be away from the volcano
+    //      volcano, then change the compass direction to be away from the volcano
 #ifdef _DEBUG
     if (spectrometer->m_scanner.compass > 270.5 || spectrometer->m_scanner.compass < 270.3)
     {
@@ -600,7 +600,7 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult* resu
     GetArchivingfileName(pakFile, txtFile, fName);
 
     // 1. Get the name of the evaluation-log file to write to...
-    //		The path is the top-directory of the text-file
+    //      The path is the top-directory of the text-file
     evalLogFile.Format(txtFile);
     m_common.GetDirectory(evalLogFile); // the directory where the pak/txt-files are
     evalLogFile = evalLogFile.Left((int)strlen(evalLogFile) - 1); // remove the last backslash
@@ -647,7 +647,7 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult* resu
 
     string.AppendFormat("</scaninformation>\n");
 
-    // 0.1	Create an flux-information part and write it to the same file
+    // 0.1  Create an flux-information part and write it to the same file
     windField.GetWindSpeedSource(wsSrc);
     windField.GetWindDirectionSource(wdSrc);
     windField.GetPlumeHeightSource(phSrc);
@@ -679,7 +679,7 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult* resu
     string.AppendFormat("\tplumeedge2=%.2lf\n", plumeEdge2);
     string.AppendFormat("</fluxinfo>\n");
 
-    // 0.2	Write spectrometer settings to file
+    // 0.2  Write spectrometer settings to file
 
     string.AppendFormat("<spectrometer>\n");
     string.AppendFormat("\t<serialNumber>%s</serialNumber>\n", (LPCSTR)settings.serialNumber);
@@ -1143,7 +1143,7 @@ RETURN_CODE CEvaluationController::GetArchivingfileName(CString& pakFile, CStrin
     int channel = info.m_channel;
 
     // 1a. If the GPS had no connection with the satelites when collecting the sky-spectrum,
-    //			then try to find a spectrum in the file for which it had connection...
+    //          then try to find a spectrum in the file for which it had connection...
     i = 1;
     while (info.m_startTime.year == 2004 && info.m_startTime.month == 3 && info.m_startTime.day == 22)
     {
@@ -1191,8 +1191,8 @@ RETURN_CODE CEvaluationController::GetArchivingfileName(CString& pakFile, CStrin
 void CEvaluationController::UpdateOutputDirectories()
 {
     // Check the current date. If the current date is different from the
-    //	date when the output directories were last initialized, then
-    //	initialize them again.
+    //  date when the output directories were last initialized, then
+    //  initialize them again.
     if ((m_date[0] != m_common.GetYear()) || (m_date[1] != m_common.GetMonth()) || (m_date[2] != m_common.GetDay()))
     {
         InitializeOutput();

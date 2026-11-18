@@ -6,8 +6,7 @@
 
 #include "../Common/Common.h"
 
-/////////////////////////////////////////////////////////////////////////////
-// CGraphCtrl window
+// ---- CGraphCtrl window ----
 
 namespace DlgControls
 {
@@ -196,85 +195,85 @@ public:
         /** Marks the whole plot for redrawing */
     void InvalidateCtrl();
 
-    /** Customized function for drawing points with lines connecting them. 
+    /** Customized function for drawing points with lines connecting them.
         @param yPositions - the y values for the points.
-        @param pointSum - the number of points to draw. 
-				@param plotOption - Specifies the options for drawing the plot. Must be 
-					one of, or a combination of, the parameters 'PLOT_...' defined in the 
-					CGraphCtrl class. */
+        @param pointSum - the number of points to draw.
+                @param plotOption - Specifies the options for drawing the plot. Must be
+                    one of, or a combination of, the parameters 'PLOT_...' defined in the
+                    CGraphCtrl class. */
     void Plot(double* yPositions, int pointSum, int plotOption = PLOT_CONNECTED)
     {
         return XYPlot(NULL, yPositions, pointSum, plotOption | PLOT_CONNECTED);
     }
 
-        /** Creates an XY-graph 
-				@param xPosition - the x-values.
-				@param yPosition - the y-values.
-				@param pointSum - the number of points that will be drawn.
-				if xPositions is NULL then the yPositions will be drawn against their index in the array.
-				*/
+        /** Creates an XY-graph
+                @param xPosition - the x-values.
+                @param yPosition - the y-values.
+                @param pointSum - the number of points that will be drawn.
+                if xPositions is NULL then the yPositions will be drawn against their index in the array.
+                */
     void XYPlot(double* xPosition, double* yPosition, long pointSum, int plotOption = PLOT_CONNECTED)
     {
         XYPlot(xPosition, yPosition, NULL, pointSum, plotOption);
     }
 
-        /** Creates an XY-graph with a customizable color of the plot. 
-				@param xPosition - the x-values.
-				@param yPosition - the y-values.
-				@param color - the color value, the lowest value in this set will be blue and the highest red.
-					If this is null then the common plot color will be used.
-				@param pointSum - the number of points that will be drawn.
-				if xPositions is NULL then the yPositions will be drawn against their index in the array.
-				*/
+        /** Creates an XY-graph with a customizable color of the plot.
+                @param xPosition - the x-values.
+                @param yPosition - the y-values.
+                @param color - the color value, the lowest value in this set will be blue and the highest red.
+                    If this is null then the common plot color will be used.
+                @param pointSum - the number of points that will be drawn.
+                if xPositions is NULL then the yPositions will be drawn against their index in the array.
+                */
     void XYPlot(double* xPosition, double* yPosition, double* color, long pointSum, int plotOption = PLOT_CONNECTED);
 
         /** Draws a horizontal or vertical solid line across the whole plot area.
-				@param direction - the orientation of the line. 0 means horizontal line, 1 means vertical line
-				@param value - the logical value at which the line will be drawn. */
+                @param direction - the orientation of the line. 0 means horizontal line, 1 means vertical line
+                @param value - the logical value at which the line will be drawn. */
     void DrawLine(DIRECTION direction, double value)
     {
         return DrawLine(direction, value, m_colors.plot, STYLE_SOLID);
     }
 
         /** Draws a horizontal or vertical line across the whole plot area.
-				@param direction - the orientation of the line. 0 means horizontal line, 1 means vertical line
-				@param value - the logical value at which the line will be drawn.
-				@param pColor -  the color of the line
-				@param lineType - the style of the line. 0 means dashed line, 1 means solid line.
-				@param plotOption - the options for how to plot the line */
+                @param direction - the orientation of the line. 0 means horizontal line, 1 means vertical line
+                @param value - the logical value at which the line will be drawn.
+                @param pColor -  the color of the line
+                @param lineType - the style of the line. 0 means dashed line, 1 means solid line.
+                @param plotOption - the options for how to plot the line */
     void DrawLine(DIRECTION direction, double value, COLORREF pColor, LINE_STYLE lineStyle = STYLE_SOLID, int plotOption = PLOT_FIXED_AXIS);
 
-    /** Draws the data set as a set of small circles. The plotOptions decides the 
-				look of the final plot. plotOptions must be one of, or a combination of, 
-				the parameters 'PLOT_...' defined in the CGraphCtrl class.*/
+    /** Draws the data set as a set of small circles. The plotOptions decides the
+                look of the final plot. plotOptions must be one of, or a combination of,
+                the parameters 'PLOT_...' defined in the CGraphCtrl class.*/
     void DrawCircles(double* x, double* y, int nSum, int plotOption = PLOT_CIRCLES)
     {
         return XYPlot(x, y, nSum, plotOption | PLOT_CIRCLES);
     }
 
-    /** Draws the data set as a set of small circles. The plotOptions decides the 
-				look of the final plot. plotOptions must be one of, or a combination of, 
-				the parameters 'PLOT_...' defined in the CGraphCtrl class.*/
+    /** Draws the data set as a set of small circles. The plotOptions decides the
+                look of the final plot. plotOptions must be one of, or a combination of,
+                the parameters 'PLOT_...' defined in the CGraphCtrl class.*/
     void DrawCircles(double* x, double* y, double* color, int nSum, int plotOption = PLOT_CIRCLES)
     {
         return XYPlot(x, y, color, nSum, plotOption | PLOT_CIRCLES);
     }
 
         /** Prints out a string onto the plot.
-				The function generates a text-box into which the string will be 
-					drawn centered using default font. 		*/
+                The function generates a text-box into which the string will be
+                    drawn centered using default font.      */
     void DrawTextBox(double x_min, double x_max, double y_min, double y_max, CString& str);
 
-        /** Creates a bar chart, 
-				@param xPositions - the x-positions for each bar.
-				@param yValues - the height of each bar
-				@param pointSum - the total number of points to draw.
-				@param plotOptions - the options for the plot. Must be PLOT_SECOND_AXIS or PLOT_FIXED_AXIS.
-				If xPositions is NULL then the bars will be drawn on 0, 1, 2, ...*/
+        /** Creates a bar chart,
+                @param xPositions - the x-positions for each bar.
+                @param yValues - the height of each bar
+                @param pointSum - the total number of points to draw.
+                @param plotOptions - the options for the plot. Must be PLOT_SECOND_AXIS or PLOT_FIXED_AXIS.
+                If xPositions is NULL then the bars will be drawn on 0, 1, 2, ...*/
     void BarChart(double* xPositions, double* yValues, int pointSum, int plotOption = 0);
 
     /** Draws a vectorfield. The vector field is defined at the points
-        'x' and 'y'. The x-, and y-component of each vector is defined 
+        'x' and 'y'. The x-, and y-component of each vector is defined
         in 'u', and 'v' respectively.
         @param x - The x-coordinates where the vectorfield is defined
         @param y - The y-coordinates where the vectorfield is defined
@@ -424,11 +423,11 @@ protected:
     CBitmap m_bitmapPlot;
 
         /** Sets the grid spacing for the desired dimension, given that the
-				output on the plot is supposed to be plotted as a general number */
+                output on the plot is supposed to be plotted as a general number */
     void SetGridSpacing(double& left, double& right, int dim, NUMBER_FORMAT format);
 
         /** Sets the grid spacing for the desired dimension, given that the
-				output on the plot is supposed to be plotted as a general number */
+                output on the plot is supposed to be plotted as a general number */
     void SetGridSpacing(float& left, float& right, int dim, NUMBER_FORMAT format);
 
         /** Sets the grid spacing for the X-Axis using the given limits */
@@ -511,5 +510,4 @@ protected:
 };
 }
 
-/////////////////////////////////////////////////////////////////////////////
 #endif

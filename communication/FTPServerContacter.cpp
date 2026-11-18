@@ -360,7 +360,7 @@ bool CFTPServerContacter::ParseAFile(const CString& fileName)
     }
 
     // Temporarily lower the priority of this thread. This since the
-    //	reading in of very long file-lists can take quite some time...
+    //  reading in of very long file-lists can take quite some time...
     SetThreadPriority(THREAD_PRIORITY_LOWEST);
 
     while (fileRef.ReadString(line))
@@ -535,7 +535,7 @@ void CFTPServerContacter::ExportList()
     }
 
     // Delete the old file-list and move the new one to it's place
-    //	(move the file fileList_temp.txt to fileList.txt)
+    //  (move the file fileList_temp.txt to fileList.txt)
     DeleteFile(m_listLogFile);
     MoveFile(m_listLogFile_Temp, m_listLogFile);
 }

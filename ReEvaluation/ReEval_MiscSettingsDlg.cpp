@@ -41,7 +41,7 @@ void CReEval_MiscSettingsDlg::DoDataExchange(CDataExchange* pDX)
 
     // The user supplied sky-spectrum
     // TODO: Fix this.
-    //DDX_Text(pDX,	IDC_EDIT_USER_SKY,								m_reeval.m_skySettings.skySpectrumFile);
+    //DDX_Text(pDX, IDC_EDIT_USER_SKY,                              m_reeval.m_skySettings.skySpectrumFile);
 }
 
 

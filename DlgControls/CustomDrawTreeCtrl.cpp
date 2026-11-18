@@ -69,7 +69,7 @@ void CCustomDrawTreeCtrl::OnPaint()
         UINT selflag = TVIS_DROPHILITED | TVIS_SELECTED;
 
         //if ( !(GetTreeCtrl().GetItemState( hItem, selflag ) & selflag )
-        //	&& m_mapColorFont.Lookup( hItem, cf ))
+        //  && m_mapColorFont.Lookup( hItem, cf ))
 
         if ((GetItemState(hItem, selflag) & selflag) && ::GetFocus() == m_hWnd)
         {

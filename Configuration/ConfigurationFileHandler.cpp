@@ -1580,8 +1580,8 @@ int CConfigurationFileHandler::Parse_WindMeasurement()
     CConfigurationSetting::WindSpeedMeasurementSetting* wind = &(curScanner->windSettings);
 
     // the fact that there is a windmeasurement section
-    //	in the configuration file means that we should automatically
-    //	do wind measurements
+    //  in the configuration file means that we should automatically
+    //  do wind measurements
     wind->automaticWindMeasurements = true;
 
     // the actual reading loop
@@ -1664,8 +1664,8 @@ int CConfigurationFileHandler::Parse_RealTimeSetup()
     CConfigurationSetting::SetupChangeSetting* scs = &(curScanner->scSettings);
 
     // the fact that there is a real-time setup-section
-    //	in the configuration file means that we should automatically
-    //	do real-time changes of the configuration-file
+    //  in the configuration file means that we should automatically
+    //  do real-time changes of the configuration-file
     scs->automaticSetupChange = 1;
 
     // the actual reading loop
@@ -1756,7 +1756,7 @@ int CConfigurationFileHandler::Parse_SourceInfo()
             Parse_StringItem("/name", name);
             correct = true;
             // Check if this source already exists in our list, if so then just replace that information
-            //	otherwise add it as a new source
+            //  otherwise add it as a new source
             for (unsigned int k = 0; k < g_volcanoes.m_volcanoNum; ++k)
             {
                 if (Equals(name, g_volcanoes.m_name[k]))

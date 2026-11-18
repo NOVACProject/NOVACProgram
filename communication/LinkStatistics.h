@@ -18,8 +18,8 @@ public:
 
         // -------------------- Retrieving data -----------------------
         /** Getting the successrate for the number of downloads.
-				@return the portion of number of attempts to download files
-					that have succeeded (0 -> 1) */
+                @return the portion of number of attempts to download files
+                    that have succeeded (0 -> 1) */
     double GetDownloadSuccessRate() const;
 
         /** Getting the average download speed for this link [kb/s] */
@@ -29,8 +29,8 @@ public:
     long GetDownloadNum() const;
 
         /** Getting the successrate for the number of uploads
-				@return the portion of number of attempts to upload files
-					that have succeeded (0 -> 1) */
+                @return the portion of number of attempts to upload files
+                    that have succeeded (0 -> 1) */
     double GetUploadSuccessRate() const;
 
         /** Getting the average upload speed for this link [kb/s] */
@@ -41,14 +41,14 @@ public:
 
         // ----------------------- Adding data -------------------------
         /** Append one download-speed to the history,
-				this will also append one successfull download to the statistics */
+                this will also append one successfull download to the statistics */
     void AppendDownloadSpeed(double speed);
 
         /** Append one failed download to the history */
     void AppendFailedDownload();
 
         /** Append one upload-speed to the history
-				this will also append one successfull upload to the statistics */
+                this will also append one successfull upload to the statistics */
     void AppendUploadSpeed(double speed);
 
         /** Append one failed upload to the history */
@@ -77,7 +77,7 @@ protected:
         // ------------- Protected methods ---------------
 
         /** Trim the list of transfer-data so that they only contain data from
-				today... */
+                today... */
     void TrimLists();
 
         /** Retrieves the success-rate from the given list */

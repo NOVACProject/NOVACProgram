@@ -222,7 +222,7 @@ void CReEval_DoEvaluationDlg::OnCancelEvaluation()
 {
 
     // If the 'pause' - button is pressed and the thread is waiting for the
-    //	user to press 'next'...
+    //  user to press 'next'...
     if (m_reeval.fRun && m_reeval.m_sleeping)
     {
         pReEvalThread->ResumeThread();

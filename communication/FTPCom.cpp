@@ -220,7 +220,7 @@ int CFTPCom::UploadFile(LPCTSTR localFile, LPCTSTR remoteFile)
     }
 
     // See if we can find the file on the remote computer, if so
-    //	then we can't upload it...
+    //  then we can't upload it...
     if (FindFile((CString&)remoteFile))
     {
         return 1;

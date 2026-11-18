@@ -105,7 +105,7 @@ bool CRealTimeWind::IsTimeForWindMeasurement(const Evaluation::CSpectrometer* sp
     }
 
         // 2d. Get the plume centre variation over the last few scans
-        //			If any scan missed the plume, return false
+        //          If any scan missed the plume, return false
     double centreMin, centreMax;
     if (false == spectrometer->m_history->GetPlumeCentreVariation(windSettings.stablePeriod, 0, centreMin, centreMax))
     {

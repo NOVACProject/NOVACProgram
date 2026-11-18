@@ -511,7 +511,7 @@ UINT ImportScanDOASSpectra(LPVOID pParam)
         else
         {
             // 2. Compare with all the other directories in the list, if the current directory
-            //		is not in the list, then insert it.
+            //      is not in the list, then insert it.
             bool found = false;
             POSITION pos = directories.GetHeadPosition();
             while (pos != NULL)
@@ -538,8 +538,8 @@ UINT ImportScanDOASSpectra(LPVOID pParam)
     }
 
     // 2. We should now have a list of which directories we are going to look through.
-    //		If there are more than one, then call 'ImportScanDOASSpectraInDirectory'
-    //		once for each sub-directory.
+    //      If there are more than one, then call 'ImportScanDOASSpectraInDirectory'
+    //      once for each sub-directory.
     if (nDirectories == 1)
     {
         nSpectraDone = 0;
@@ -727,7 +727,7 @@ int ImportScanDOASSpectraInDirectory(const CArray<CString*, CString*>& m_spectru
             // Check if we should continue running
             if (wnd->m_running == false)
             {
-                //				wnd->SendMessage(WM_DONE, specIndex + skyIndex + darkIndex - 2 - startIndex);
+                //              wnd->SendMessage(WM_DONE, specIndex + skyIndex + darkIndex - 2 - startIndex);
                 return 0;
             }
 

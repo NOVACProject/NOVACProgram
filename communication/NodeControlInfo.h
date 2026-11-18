@@ -55,7 +55,7 @@ public:
 
         /**set node status - run , off, sleep, run in special mode
             *@param mainIndex - the index in the array , also in the configuration file
-            *@param status		- the node operating status */
+            *@param status      - the node operating status */
     void SetNodeStatus(int mainIndex, DeviceMode status);
 
         /** Set the device to upload a file */
