@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "communicationdatastorage.h"
 #include "Common/Common.h"
 

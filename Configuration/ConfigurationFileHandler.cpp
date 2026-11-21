@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "ConfigurationFileHandler.h"
 #include <SpectralEvaluation/Spectra/SpectrometerModel.h>
 #include "../VolcanoInfo.h"

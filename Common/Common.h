@@ -5,7 +5,7 @@
       which are used throughout the whole program.
 */
 
-#include <math.h>
+#include <cmath>
 #include <vector>
 
 #include <afxtempl.h>

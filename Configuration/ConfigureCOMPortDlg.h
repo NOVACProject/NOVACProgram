@@ -1,7 +1,7 @@
 #pragma once
 
 #include "SystemConfigurationPage.h"
-#include "afxwin.h"
+#include <afxwin.h>
 
 namespace ConfigurationDialog
 {

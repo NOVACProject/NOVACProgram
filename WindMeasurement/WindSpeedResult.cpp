@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "windspeedresult.h"
 
 using namespace WindSpeedMeasurement;

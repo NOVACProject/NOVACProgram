@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "WindFileController.h"
 
 // we also need the meterological data

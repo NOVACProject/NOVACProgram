@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "CompositionMeasurement.h"
 #include "../VolcanoInfo.h"
 #include "../Evaluation/Spectrometer.h"

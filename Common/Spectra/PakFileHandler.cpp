@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "pakfilehandler.h"
 #include <SpectralEvaluation/StringUtils.h>
 #include <SpectralEvaluation/File/ScanFileHandler.h>

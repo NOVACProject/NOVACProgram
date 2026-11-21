@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "postfluxcalculator.h"
 
 #include "../Common/Version.h"

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "afxwin.h"
+#include <afxwin.h>
 
 namespace Dialogs
 {

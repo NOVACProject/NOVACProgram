@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "FitWindowFileHandler.h"
 #include <SpectralEvaluation/StringUtils.h>
 

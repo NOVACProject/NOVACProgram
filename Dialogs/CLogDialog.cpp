@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 #include "CLogDialog.h"
-#include "afxdlgs.h"
+#include <afxdlgs.h>
 #include "../resource.h"
 
 

@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "DOASFitGraph.h"
 #include "../resource.h"
 #include "../Common/Common.h"

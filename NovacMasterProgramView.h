@@ -3,7 +3,7 @@
 // NovacMasterProgramView.h : interface of the CNovacMasterProgramView class
 //
 
-#include "afxwin.h"
+#include <afxwin.h>
 
 #include "MasterController.h"
 #include "Dialogs/ConfigurationDlg.h"
@@ -14,7 +14,7 @@
 #include "View_Instrument.h"
 #include "View_Scanner.h"
 
-#include "afxcmn.h"
+#include <afxcmn.h>
 
 class CCommunicationDataStorage;
 class CEvaluatedDataStorage;

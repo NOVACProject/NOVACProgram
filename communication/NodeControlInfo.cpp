@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "NodeControlInfo.h"
 #include "../Common/Common.h"
 

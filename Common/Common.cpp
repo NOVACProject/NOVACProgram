@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "Common.h"
 
 // include the global settings
@@ -9,7 +9,7 @@
 
 #include <SpectralEvaluation/Flux/Flux.h>
 
-#include "PSAPI.H"
+#include <Psapi.h>
 #include <tlhelp32.h>
 #include <VersionHelpers.h>
 #pragma comment(lib, "PSAPI.LIB")

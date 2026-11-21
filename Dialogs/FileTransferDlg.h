@@ -1,13 +1,13 @@
 #pragma once
-#include "afxwin.h"
+#include <afxwin.h>
 
 #include "../Communication/SerialControllerWithTx.h"
 #include "../Communication/FTPHandler.h"
 #include "../FileTreeCtrl.h"
 #include "../ScannerFileInfo.h"
 #include "../ScannerFolderInfo.h"
-#include "afxcmn.h"
-#include "afxtempl.h"
+#include <afxcmn.h>
+#include <afxtempl.h>
 
 namespace Dialogs
 {

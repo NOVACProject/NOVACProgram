@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "MasterController.h"
 #include "Common/Common.h"
 #include "NovacProgramLog.h"

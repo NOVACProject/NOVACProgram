@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "CRatioCalculationDlg.h"
 #include "../resource.h"
 #include "CRatioScanFilesDialog.h"

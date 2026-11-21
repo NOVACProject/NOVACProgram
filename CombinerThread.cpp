@@ -2,7 +2,7 @@
 #include "NovacMasterProgram.h"
 #include "CombinerThread.h"
 
-#include <math.h>
+#include <cmath>
 
 using namespace novac;
 

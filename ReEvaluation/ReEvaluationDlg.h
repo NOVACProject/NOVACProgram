@@ -1,6 +1,6 @@
 #pragma once
 
-#include "afxdlgs.h"
+#include <afxdlgs.h>
 #include "../Dialogs/SimplePropertySheet.h"
 
 namespace ReEvaluation

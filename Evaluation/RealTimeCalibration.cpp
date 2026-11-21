@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "RealTimeCalibration.h"
 #include "../Common/Common.h"
 #include "../Evaluation/Spectrometer.h"

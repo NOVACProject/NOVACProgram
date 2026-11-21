@@ -1,7 +1,7 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "ftpcom.h"
 #include "../Common/common.h"
-#include "Winsock2.h"
+#include <WinSock2.h>
 
 using namespace Communication;
 

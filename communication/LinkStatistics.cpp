@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "linkstatistics.h"
 #include <SpectralEvaluation/DateTime.h>
 

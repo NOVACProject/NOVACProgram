@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "spectrometer.h"
 #include <SpectralEvaluation/Spectra/SpectrometerModel.h>
 

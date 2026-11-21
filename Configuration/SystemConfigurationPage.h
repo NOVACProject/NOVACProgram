@@ -1,5 +1,5 @@
 #pragma once
-#include "afxdlgs.h"
+#include <afxdlgs.h>
 
 #include "../Common/Common.h"
 #include "Configuration.h"

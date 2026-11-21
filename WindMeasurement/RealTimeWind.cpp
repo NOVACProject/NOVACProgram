@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "realtimewind.h"
 #include "../VolcanoInfo.h"
 #include "../Evaluation/Spectrometer.h"
