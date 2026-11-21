@@ -24,10 +24,7 @@ CDialog* wavelengthCalibrationDialog = nullptr;
 IMPLEMENT_DYNAMIC(CCalibratePixelToWavelengthDialog, CPropertyPage)
 
 CCalibratePixelToWavelengthDialog::CCalibratePixelToWavelengthDialog(CWnd* pParent /*=nullptr*/)
-    : CPropertyPage(IDD_CALIBRATE_WAVELENGTH_DIALOG)
-    , m_inputSpectrumFile(_T(""))
-    , m_standardCrossSections(nullptr)
-    , m_initialCalibrationFileTypeFilter("Novac Instrument Calibration Files\0*.xml\0")
+    : CPropertyPage(IDD_CALIBRATE_WAVELENGTH_DIALOG), m_inputSpectrumFile(_T("")), m_standardCrossSections(nullptr), m_initialCalibrationFileTypeFilter("Novac Instrument Calibration Files\0*.xml\0")
 {
     wavelengthCalibrationDialog = this;
 
@@ -770,4 +767,3 @@ void CCalibratePixelToWavelengthDialog::UpdateRedLegend(bool show, const char* m
         m_redLegendLabel.ShowWindow(SW_HIDE);
     }
 }
-

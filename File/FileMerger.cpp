@@ -25,12 +25,14 @@ void FileMerger::SetOutputFile(CString& outputFile)
 
 /** Specifies the full path and filename of the
     files to merge */
-void FileMerger::SetFilesToMerge(CList <CString, CString&>& filesToMerge)
+void FileMerger::SetFilesToMerge(CList<CString, CString&>& filesToMerge)
 {
     this->m_filesToMerge.RemoveAll();
     POSITION p = filesToMerge.GetHeadPosition();
     while (p != NULL)
+    {
         m_filesToMerge.AddTail(filesToMerge.GetNext(p));
+    }
 }
 
 const CString* FileMerger::GetErrorMessage()
@@ -45,21 +47,29 @@ int FileMerger::MergeFiles()
     char newLine[] = "\r\n\0";
 
     if (m_errorMsg != NULL)
+    {
         delete m_errorMsg;
+    }
     m_errorMsg = new CString();
 
     // Check the input files
     if (m_filesToMerge.GetCount() <= 0)
+    {
         return 1;
+    }
 
     // Check the output file
     if (m_outputFile.GetLength() <= 3)
+    {
         return 2;
+    }
 
     // Open the output file
     FILE* fout = fopen(m_outputFile, "wb");
     if (fout == NULL)
+    {
         return 3;
+    }
 
     // Do the merging...
     POSITION pos = m_filesToMerge.GetHeadPosition();

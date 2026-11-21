@@ -15,11 +15,7 @@
 IMPLEMENT_DYNAMIC(CCreateStandardReferencesDialog, CDialog)
 
 CCreateStandardReferencesDialog::CCreateStandardReferencesDialog(CWnd* pParent /*=nullptr*/)
-    : CDialog(IDD_CALIBRATE_STANDARD_REFERENCES, pParent)
-    , m_outputdirectory(_T(""))
-    , m_instrumentName(_T(""))
-    , m_fileNameSuffix(_T(""))
-    , m_outputFileNamesExplanation(_T(""))
+    : CDialog(IDD_CALIBRATE_STANDARD_REFERENCES, pParent), m_outputdirectory(_T("")), m_instrumentName(_T("")), m_fileNameSuffix(_T("")), m_outputFileNamesExplanation(_T(""))
 {
 }
 
@@ -148,5 +144,4 @@ void CCreateStandardReferencesDialog::UpdateOutputFileNamesExplanation()
     m_outputFileNamesExplanation.Format("%s", message.str().c_str());
 
     UpdateData(FALSE); // Update the UI
-
 }

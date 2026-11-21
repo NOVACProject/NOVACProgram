@@ -29,5 +29,3 @@ void CFluxResult::Clear()
     m_windSpeedSource = MET_DEFAULT;
     m_plumeHeightSource = MET_DEFAULT;
 }
-
-

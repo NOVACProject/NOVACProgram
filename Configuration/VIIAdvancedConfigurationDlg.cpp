@@ -58,17 +58,21 @@ BOOL CVIIAdvancedConfigurationDlg::OnInitDialog()
     // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CVIIAdvancedConfigurationDlg::InitToolTips() {
+void CVIIAdvancedConfigurationDlg::InitToolTips()
+{
     // Don't initialize the tool tips twice
     if (m_toolTip.m_hWnd != NULL)
+    {
         return;
+    }
 
     // Enable the tool tips
-    if (!m_toolTip.Create(this)) {
+    if (!m_toolTip.Create(this))
+    {
         TRACE0("Failed to create tooltip control\n");
     }
-    //	m_toolTip.AddTool(&m_labelVolcano,							IDC_EDIT_VOLCANO);
-    //	m_toolTip.AddTool(&m_editSerial,								"The serial number of the spectrometer");
+    //  m_toolTip.AddTool(&m_labelVolcano,                          IDC_EDIT_VOLCANO);
+    //  m_toolTip.AddTool(&m_editSerial,                                "The serial number of the spectrometer");
 
     m_toolTip.SetMaxTipWidth(SHRT_MAX);
     m_toolTip.Activate(TRUE);
@@ -81,14 +85,19 @@ BOOL CVIIAdvancedConfigurationDlg::PreTranslateMessage(MSG* pMsg)
     return CPropertyPage::PreTranslateMessage(pMsg);
 }
 
-void CVIIAdvancedConfigurationDlg::OnChangeScanner() {
-    if (UpdateData(TRUE)) { // <-- first save the data in the dialog
+void CVIIAdvancedConfigurationDlg::OnChangeScanner()
+{
+    if (UpdateData(TRUE))
+    {
+        // <-- first save the data in the dialog
 
         // Then change the settings so that we're using the newly selected scanner
         CSystemConfigurationPage::OnChangeScanner();
 
         if (m_curScanner == NULL)
+        {
             return;
+        }
 
         CConfigurationSetting::SetupChangeSetting& scs = m_curScanner->scSettings;
 
@@ -110,7 +119,8 @@ void CVIIAdvancedConfigurationDlg::OnChangeScanner() {
     }
 }
 
-void CVIIAdvancedConfigurationDlg::OnOnOff() {
+void CVIIAdvancedConfigurationDlg::OnOnOff()
+{
     SaveData(); // <-- first save the data in the dialog
 
     BOOL show = (m_automaticSetupChange == 0) ? FALSE : TRUE;
@@ -120,11 +130,16 @@ void CVIIAdvancedConfigurationDlg::OnOnOff() {
     m_checkUseAutoValues.EnableWindow(show);
 }
 
-void CVIIAdvancedConfigurationDlg::SaveData() {
-    if (UpdateData(TRUE)) { // <-- first save the data in the dialog
+void CVIIAdvancedConfigurationDlg::SaveData()
+{
+    if (UpdateData(TRUE))
+    {
+        // <-- first save the data in the dialog
 
         if (m_curScanner == NULL)
+        {
             return;
+        }
 
         CConfigurationSetting::SetupChangeSetting& scs = m_curScanner->scSettings;
 

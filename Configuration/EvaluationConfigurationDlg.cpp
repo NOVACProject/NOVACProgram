@@ -99,7 +99,9 @@ BOOL CEvaluationConfigurationDlg::OnInitDialog()
 void CEvaluationConfigurationDlg::InitToolTips()
 {
     if (m_toolTip.m_hWnd != nullptr)
+    {
         return;
+    }
 
     // Enable the tool tips
     if (!m_toolTip.Create(this))
@@ -121,7 +123,7 @@ BOOL CEvaluationConfigurationDlg::OnKillActive()
 {
     //if((currentSpec >= 0) && (currentSpec < MAX_NUMBER_OF_SCANNING_INSTRUMENTS)){
     //  CConfigurationSetting::SpectrometerSetting *spec = &m_configuration->scanner[currentScanner].spec[currentSpec];
-    //  
+    //
     //  // Check if there's any references defined
     //  long numberOfReferences = spec->channel[m_channel].fitWindow.nRef;
     //  if(numberOfReferences <= 0){
@@ -148,7 +150,9 @@ void CEvaluationConfigurationDlg::InitReferenceFileControl()
     int height = rect.bottom - rect.top;
 
     if (m_referenceFileCtrl.m_hWnd != nullptr)
+    {
         return;
+    }
 
     rect.top = 20;
     rect.left = 10;
@@ -168,7 +172,7 @@ void CEvaluationConfigurationDlg::InitReferenceFileControl()
     m_referenceFileCtrl.SetFixedRowCount(1);
     m_referenceFileCtrl.SetEditable(TRUE); /* make sure the user can edit the positions */
     m_referenceFileCtrl.SetRowCount(3);
-    m_referenceFileCtrl.EnableTitleTips(FALSE);	// <-- Disable the small title tips
+    m_referenceFileCtrl.EnableTitleTips(FALSE); // <-- Disable the small title tips
 }
 
 void CEvaluationConfigurationDlg::PopulateReferenceFileControl()
@@ -195,28 +199,44 @@ void CEvaluationConfigurationDlg::PopulateReferenceFileControl()
         m_referenceFileCtrl.SetItemTextFmt(i + 1, 1, CString(ref.m_path.c_str()));
 
         if (ref.m_shiftOption == SHIFT_TYPE::SHIFT_FREE)
+        {
             m_referenceFileCtrl.SetItemTextFmt(1 + i, 2, "free");
+        }
 
         if (ref.m_shiftOption == SHIFT_TYPE::SHIFT_FIX)
+        {
             m_referenceFileCtrl.SetItemTextFmt(1 + i, 2, "fix to %.2lf", ref.m_shiftValue);
+        }
 
         if (ref.m_shiftOption == SHIFT_TYPE::SHIFT_LINK)
+        {
             m_referenceFileCtrl.SetItemTextFmt(1 + i, 2, "link to %.2lf", ref.m_shiftValue);
+        }
 
         if (ref.m_shiftOption == SHIFT_TYPE::SHIFT_LIMIT)
+        {
             m_referenceFileCtrl.SetItemTextFmt(1 + i, 2, "limit to %.2lf", ref.m_shiftValue);
+        }
 
         if (ref.m_squeezeOption == SHIFT_TYPE::SHIFT_FREE)
+        {
             m_referenceFileCtrl.SetItemTextFmt(1 + i, 3, "free");
+        }
 
         if (ref.m_squeezeOption == SHIFT_TYPE::SHIFT_FIX)
+        {
             m_referenceFileCtrl.SetItemTextFmt(1 + i, 3, "fix to %.2lf", ref.m_squeezeValue);
+        }
 
         if (ref.m_squeezeOption == SHIFT_TYPE::SHIFT_LINK)
+        {
             m_referenceFileCtrl.SetItemTextFmt(1 + i, 3, "link to %.2lf", ref.m_squeezeValue);
+        }
 
         if (ref.m_squeezeOption == SHIFT_TYPE::SHIFT_LIMIT)
+        {
             m_referenceFileCtrl.SetItemTextFmt(1 + i, 3, "limit to %.2lf", ref.m_squeezeValue);
+        }
     }
 
     // the last line should be cleared
@@ -312,21 +332,31 @@ void CEvaluationConfigurationDlg::OnRemoveReferenceFile()
     int nRows = cellRange.GetRowSpan();
 
     if (m_curSpec == nullptr)
+    {
         return;
+    }
 
     if (nRows <= 0)
     {
         if (m_curSpec->channel[m_channel].fitWindow.NumberOfReferences() > 1)
+        {
             return;   /* nothing selected*/
+        }
         else
+        {
             minRow = 0; /* if there's only one reference file, assume that the user want's to remove it, even though it's not marked*/
+        }
     }
 
     if (nRows > 1)
+    {
         return; /** Several lines selected */
+    }
 
     if (minRow >= m_curSpec->channel[m_channel].fitWindow.NumberOfReferences())
+    {
         return; // The last, empty, line is selected for removal
+    }
 
     novac::CFitWindow& window = m_curSpec->channel[m_channel].fitWindow;
 
@@ -335,7 +365,9 @@ void CEvaluationConfigurationDlg::OnRemoveReferenceFile()
     message.Format("Are you sure you want to delete the reference for specie %s ?", window.reference[minRow].m_specieName.c_str());
     int answer = MessageBox(message, "Delete Reference File", MB_YESNO);
     if (IDNO == answer)
+    {
         return;
+    }
 
     // remove the reference file
     window.reference.erase(window.reference.begin() + minRow);
@@ -383,7 +415,9 @@ void CEvaluationConfigurationDlg::OnShowPropertiesWindow()
     int minRow, nRows;
 
     if (m_curSpec == nullptr)
+    {
         return;
+    }
 
     // save the data in the dialog
     UpdateData(TRUE);
@@ -393,7 +427,9 @@ void CEvaluationConfigurationDlg::OnShowPropertiesWindow()
 
     // if there's no reference file, then there's nothing to show the properties for
     if (window.NumberOfReferences() == 0)
+    {
         return;
+    }
 
     if (window.NumberOfReferences() == 1)
     {
@@ -412,10 +448,11 @@ void CEvaluationConfigurationDlg::OnShowPropertiesWindow()
             {
                 MessageBox("Please select a reference file.", "Properties");
                 return;   /* nothing selected*/
-
             }
             else
+            {
                 minRow = 0; /* if there's only one reference file, assume that the user want's to remove it, even though it's not marked*/
+            }
         }
 
         if (nRows > 1)
@@ -443,7 +480,9 @@ void ConfigurationDialog::CEvaluationConfigurationDlg::OnShowReferenceGraph()
 {
 
     if (m_curSpec == nullptr)
+    {
         return;
+    }
 
     // save the data in the dialog
     UpdateData(TRUE);

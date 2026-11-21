@@ -36,12 +36,14 @@ BOOL CWindEvaluator::InitInstance()
     return TRUE;
 }
 
-void CWindEvaluator::OnQuit(WPARAM wp, LPARAM lp) {
+void CWindEvaluator::OnQuit(WPARAM wp, LPARAM lp)
+{
     m_evalLogs.RemoveAll();
 }
 
 /** Called when the message queue is empty */
-BOOL CWindEvaluator::OnIdle(LONG lCount) {
+BOOL CWindEvaluator::OnIdle(LONG lCount)
+{
     return CCombinerThread::OnIdle(lCount);
 }
 
@@ -55,9 +57,12 @@ END_MESSAGE_MAP()
             evaluation log containing the time-series.
         @param lp - not used.
 */
-void CWindEvaluator::OnEvaluatedWindMeasurement(WPARAM wp, LPARAM lp) {
+void CWindEvaluator::OnEvaluatedWindMeasurement(WPARAM wp, LPARAM lp)
+{
     if (wp == NULL)
+    {
         return;
+    }
 
     // 1. Go through the list of old eval-log names, if they are too old - remove them!
     CleanEvalLogList();
@@ -68,28 +73,33 @@ void CWindEvaluator::OnEvaluatedWindMeasurement(WPARAM wp, LPARAM lp) {
     delete fn;
 
     // 2b. Get the volcano-index
-    int	volcanoIndex = (int)lp;
+    int volcanoIndex = (int)lp;
 
     // 3. Make sure that the filename is valid and that the file exists
     //      The name of an evaluation-log file is given on the form:
     //      SerialNumber_Date_StartTime_ChannelNumber.txt
-    if (!IsExistingFile(fileName)) {
+    if (!IsExistingFile(fileName))
+    {
         return;
     }
-    if (!Equals(fileName.Right(4), ".txt")) {
+    if (!Equals(fileName.Right(4), ".txt"))
+    {
         return;
     }
-    if (fileName.Find('_') == -1) {
+    if (fileName.Find('_') == -1)
+    {
         return;
     }
 
-    // 4. If this is a wind-measurement made with a Heidelberg instrument, 
-    //		then it does not have to be matched with any other log-file
-    //		the wind-speed can be calculated directly.
+    // 4. If this is a wind-measurement made with a Heidelberg instrument,
+    //      then it does not have to be matched with any other log-file
+    //      the wind-speed can be calculated directly.
     FileHandler::CEvaluationLogFileHandler reader;
     reader.m_evaluationLog.Format("%s", (LPCTSTR)fileName);
     if (SUCCESS != reader.ReadEvaluationLog())
+    {
         return;
+    }
     const std::string serialNumber = reader.m_scan[0].GetSerial();
 
     // 5. Find matching evaluation-logs, to make wind-speed measurements
@@ -100,12 +110,14 @@ void CWindEvaluator::OnEvaluatedWindMeasurement(WPARAM wp, LPARAM lp) {
     InsertIntoList(fileName, volcanoIndex);
 
     // 7. If there were no matching evaluation-logs in the list, quit it now...
-    if (nFiles == 0) {
+    if (nFiles == 0)
+    {
         return;
     }
 
     // 8. For each pair of files, make a correlation-calculation
-    for (int i = 0; i < nFiles; ++i) {
+    for (int i = 0; i < nFiles; ++i)
+    {
         CalculateCorrelation(fileName, match[i], volcanoIndex);
     }
 }
@@ -113,12 +125,13 @@ void CWindEvaluator::OnEvaluatedWindMeasurement(WPARAM wp, LPARAM lp) {
 /** Searches the list of evaluation logs and tries to find a log-file
         which matches the given evaluation-log.
         @return - the number of matching files found. */
-int	CWindEvaluator::FindMatchingEvalLog(const CString& evalLog, CString match[MAX_MATCHING_FILES], int volcanoIndex) {
+int CWindEvaluator::FindMatchingEvalLog(const CString& evalLog, CString match[MAX_MATCHING_FILES], int volcanoIndex)
+{
     int nFound = 0;
     CString fileName;
 
     // The name of an evaluation-log file is given by:
-    //	SerialNumber_Date_StartTime_ChannelNumber.txt
+    //  SerialNumber_Date_StartTime_ChannelNumber.txt
     // this function compares everything exept the part: '_ChannelNumber.txt'
     // if they are same, then the files are considered to match
 
@@ -127,10 +140,11 @@ int	CWindEvaluator::FindMatchingEvalLog(const CString& evalLog, CString match[MA
     Common::GetFileName(fileName);
     fileName = fileName.Left(fileName.ReverseFind('_'));
 
-    // 2. Go through the list of evaluation-logs and note how many have a 
-    //		matching filename to this evallog
+    // 2. Go through the list of evaluation-logs and note how many have a
+    //      matching filename to this evallog
     POSITION pos = m_evalLogs.GetHeadPosition();
-    while (pos != NULL) {
+    while (pos != NULL)
+    {
         // 1a. Get (a copy) of the filename
         CString name = m_evalLogs.GetAt(pos).fileName;
 
@@ -139,10 +153,13 @@ int	CWindEvaluator::FindMatchingEvalLog(const CString& evalLog, CString match[MA
         name = name.Left(name.ReverseFind('_'));
 
         // 1c. The left-overs should match
-        if (Equals(name, fileName)) {
+        if (Equals(name, fileName))
+        {
             match[nFound++].Format("%s", (LPCSTR)m_evalLogs.GetAt(pos).fileName);
             if (nFound == MAX_MATCHING_FILES)
+            {
                 return nFound;
+            }
         }
 
         // 1d. Go to the next item in the list
@@ -154,8 +171,9 @@ int	CWindEvaluator::FindMatchingEvalLog(const CString& evalLog, CString match[MA
 
 /** Calculate the correlation between the two time-series found in the
         given evaluation-files. */
-RETURN_CODE CWindEvaluator::CalculateCorrelation(const CString& evalLog1, const CString& evalLog2, int volcanoIndex) {
-    WindSpeedMeasurement::CWindSpeedCalculator	calc; // <-- The actual calculator
+RETURN_CODE CWindEvaluator::CalculateCorrelation(const CString& evalLog1, const CString& evalLog2, int volcanoIndex)
+{
+    WindSpeedMeasurement::CWindSpeedCalculator calc; // <-- The actual calculator
     FileHandler::CEvaluationLogFileHandler reader[2];
     CDateTime startTime_dt, stopTime;
     CWindField wf;
@@ -169,17 +187,28 @@ RETURN_CODE CWindEvaluator::CalculateCorrelation(const CString& evalLog1, const 
     reader[0].m_evaluationLog.Format("%s", (LPCTSTR)evalLog1);
     reader[1].m_evaluationLog.Format("%s", (LPCTSTR)evalLog2);
     if (SUCCESS != reader[0].ReadEvaluationLog())
+    {
         return FAIL;
+    }
     if (SUCCESS != reader[1].ReadEvaluationLog())
+    {
         return FAIL;
+    }
 
     // 2. Find the wind-speed measurement series in the log-files
-    for (k = 0; k < 2; ++k) {
+    for (k = 0; k < 2; ++k)
+    {
         for (scanIndex[k] = 0; scanIndex[k] < reader[k].m_scanNum; ++scanIndex[k])
+        {
             if (reader[k].IsWindSpeedMeasurement(scanIndex[k]))
+            {
                 break;
+            }
+        }
         if (scanIndex[k] == reader[k].m_scanNum)
-            return FAIL;		// <-- no wind-speed measurement found
+        {
+            return FAIL;  // <-- no wind-speed measurement found
+        }
     }
     // 2a. Find the start and stop-time of the measurement
     Evaluation::CScanResult& scan = reader[0].m_scan[scanIndex[0]];
@@ -192,7 +221,8 @@ RETURN_CODE CWindEvaluator::CalculateCorrelation(const CString& evalLog1, const 
     m_settings.plumeHeight = wf.GetPlumeHeight();
 
     // 3. Create the wind-speed measurement series
-    for (k = 0; k < 2; ++k) {
+    for (k = 0; k < 2; ++k)
+    {
         // 3a. The scan we're looking at
         Evaluation::CScanResult& scan = reader[k].m_scan[scanIndex[k]];
 
@@ -200,20 +230,21 @@ RETURN_CODE CWindEvaluator::CalculateCorrelation(const CString& evalLog1, const 
         const CDateTime* startTime = scan.GetStartTime(0);
 
         // 3c. The length of the measurement
-        int	length = scan.GetEvaluatedNum();
+        int length = scan.GetEvaluatedNum();
 
         // 3d. Allocate the memory for the series
         series[k] = new CWindSpeedCalculator::CMeasurementSeries(length);
 
         // 3e. Copy the relevant data in the scan
-        for (int i = 0; i < length; ++i) {
+        for (int i = 0; i < length; ++i)
+        {
             const CDateTime* time = scan.GetStartTime(i);
 
             // get the column value
             series[k]->column[i] = scan.GetColumn(i, 0);
 
             // calculate the time-difference between the start of the
-            //	time-series and this measurement
+            //  time-series and this measurement
             series[k]->time[i] = 3600.0 * (time->hour - startTime->hour) +
                 60.0 * (time->minute - startTime->minute) +
                 1.0 * (time->second - startTime->second);
@@ -223,7 +254,8 @@ RETURN_CODE CWindEvaluator::CalculateCorrelation(const CString& evalLog1, const 
     // 4. Perform the correlation calculations...
 
     // 4a. Calculate the correlation, assuming that series[0] is the upwind series
-    if (SUCCESS != calc.CalculateDelay(delay, series[0], series[1], m_settings)) {
+    if (SUCCESS != calc.CalculateDelay(delay, series[0], series[1], m_settings))
+    {
         ShowMessage("Failed to correlate time-series, no windspeed could be derived");
 
         // Tell the world that we've tried to make a correlation calculation but failed
@@ -232,7 +264,8 @@ RETURN_CODE CWindEvaluator::CalculateCorrelation(const CString& evalLog1, const 
         PostWindMeasurementResult(0, 0, 0, startTime_dt, stopTime, scannerSerialNumber);
 
         // Clean up and return
-        delete series[0];		delete series[1];
+        delete series[0];
+        delete series[1];
         return FAIL;
     }
 
@@ -240,7 +273,8 @@ RETURN_CODE CWindEvaluator::CalculateCorrelation(const CString& evalLog1, const 
     double avgCorr1 = Average(calc.corr, calc.m_length);
 
     // 4c. Calculate the correlation, assuming that series[1] is the upwind series
-    if (SUCCESS != calc.CalculateDelay(delay, series[1], series[0], m_settings)) {
+    if (SUCCESS != calc.CalculateDelay(delay, series[1], series[0], m_settings))
+    {
         ShowMessage("Failed to correlate time-series, no windspeed could be derived");
 
         // Tell the world that we've tried to make a correlation calculation but failed
@@ -249,7 +283,8 @@ RETURN_CODE CWindEvaluator::CalculateCorrelation(const CString& evalLog1, const 
         PostWindMeasurementResult(0, 0, 0, startTime_dt, stopTime, scannerSerialNumber);
 
         // Clean up and return
-        delete series[0];		delete series[1];
+        delete series[0];
+        delete series[1];
         return FAIL;
     }
 
@@ -257,11 +292,14 @@ RETURN_CODE CWindEvaluator::CalculateCorrelation(const CString& evalLog1, const 
     double avgCorr2 = Average(calc.corr, calc.m_length);
 
     // 4e. Use the result which gave the higest correlation
-    if (avgCorr1 > avgCorr2) {
-        if (SUCCESS != calc.CalculateDelay(delay, series[0], series[1], m_settings)) {
+    if (avgCorr1 > avgCorr2)
+    {
+        if (SUCCESS != calc.CalculateDelay(delay, series[0], series[1], m_settings))
+        {
             // this should never happen
             ShowMessage("Failed to correlate time-series, no windspeed could be derived");
-            delete series[0];		delete series[1];
+            delete series[0];
+            delete series[1];
             return FAIL;
         }
     }
@@ -277,7 +315,8 @@ RETURN_CODE CWindEvaluator::CalculateCorrelation(const CString& evalLog1, const 
 }
 
 /** Writes the results of the windspeed measurement to a file */
-void CWindEvaluator::WriteWindMeasurementLog(const CWindSpeedCalculator& calc, const CString& evalLog, const Evaluation::CScanResult& scan, int volcanoIndex) {
+void CWindEvaluator::WriteWindMeasurementLog(const CWindSpeedCalculator& calc, const CString& evalLog, const Evaluation::CScanResult& scan, int volcanoIndex)
+{
     CString fileName, directory, commonName, str;
     CDateTime startTime, stopTime;
 
@@ -300,24 +339,28 @@ void CWindEvaluator::WriteWindMeasurementLog(const CWindSpeedCalculator& calc, c
     // 4. Make sure that we can open and write to the log-file
     FILE* f = fopen(fileName, "w");
     if (f == NULL)
+    {
         return;
+    }
 
     // 5. Calculate the distance at plume-height
     double distance;
     double coneAngle = scan.GetConeAngle();
     double scanAngle = scan.GetScanAngle(scan.GetEvaluatedNum() / 2);
 
-    if (fabs(coneAngle - 90.0) < 1) {
+    if (fabs(coneAngle - 90.0) < 1)
+    {
         // Flat scanner
         distance = m_settings.plumeHeight * (1.0 / cos(DEGREETORAD * scanAngle)) * tan(DEGREETORAD * m_settings.angleSeparation);
     }
-    else {
+    else
+    {
         // Cone scanner
         double angle = DEGREETORAD * (90.0 - (coneAngle - fabs(scan.GetPitch())));
         distance = m_settings.plumeHeight * fabs(tan(angle) - tan(angle - DEGREETORAD * m_settings.angleSeparation));
     }
     // If the scanners are not looking straight up then the distance between
-    //		the two directions gets decreased with the scanAngle
+    //      the two directions gets decreased with the scanAngle
     distance *= cos(scanAngle * DEGREETORAD);
 
     // 6. Write the header of the wind-log file
@@ -337,10 +380,13 @@ void CWindEvaluator::WriteWindMeasurementLog(const CWindSpeedCalculator& calc, c
     fprintf(f, "correlation\tshift\twindspeed\n");
 
     // 7. Write the correlation data
-    double avgDelay = 0.0;	int nDelayPoints = 0;
+    double avgDelay = 0.0;
+    int nDelayPoints = 0;
     double avgCorr = 0.0;
-    for (int k = 0; k < calc.m_length; ++k) {
-        if (calc.used[k]) {
+    for (int k = 0; k < calc.m_length; ++k)
+    {
+        if (calc.used[k])
+        {
             fprintf(f, "%.2lf\t", calc.corr[k]);
             fprintf(f, "%.2lf\t", calc.delays[k]);
             fprintf(f, "%.2lf\n", distance / calc.delays[k]);
@@ -372,7 +418,8 @@ void CWindEvaluator::WriteWindMeasurementLog(const CWindSpeedCalculator& calc, c
 
 /** Tells the rest of the program about the result of the correlation - calculation.
         Either if the calculation was successful or not... */
-void CWindEvaluator::PostWindMeasurementResult(double avgDelay, double avgCorr, double distance, const CDateTime startTime, const CDateTime stopTime, const CString& serial) {
+void CWindEvaluator::PostWindMeasurementResult(double avgDelay, double avgCorr, double distance, const CDateTime startTime, const CDateTime stopTime, const CString& serial)
+{
     CWindSpeedResult* result = new CWindSpeedResult();
     result->m_delayAvg = avgDelay;
     result->m_corrAvg = avgCorr;

@@ -14,8 +14,8 @@
 #include "../Common/EvaluationLogFileHandler.h"
 #include <SpectralEvaluation/StringUtils.h>
 
-extern CConfigurationSetting    g_settings;
-extern CUserSettings            g_userSettings;
+extern CConfigurationSetting g_settings;
+extern CUserSettings g_userSettings;
 
 // ColumnHistoryDlg dialog
 
@@ -72,13 +72,14 @@ BOOL ColumnHistoryDlg::OnInitDialog()
     Init10DayPlot();
     Init30DayPlot();
 
-    // Read evaluation logs 
+    // Read evaluation logs
     ReadEvalLogs();
 
     return TRUE;
 }
 
-void ColumnHistoryDlg::InitPlot() {
+void ColumnHistoryDlg::InitPlot()
+{
 
     CRect rect;
     m_frame.GetWindowRect(rect);
@@ -94,9 +95,13 @@ void ColumnHistoryDlg::InitPlot() {
     m_plot.SetXUnits(common.GetString(AXIS_UTCTIME));
     m_plot.SetXAxisNumberFormat(FORMAT_DATETIME);
     if (g_userSettings.m_columnUnit == UNIT_PPMM)
+    {
         m_plot.SetYUnits("Column [ppmm]");
+    }
     else if (g_userSettings.m_columnUnit == UNIT_MOLEC_CM2)
+    {
         m_plot.SetYUnits("Column [molec/cm²]");
+    }
     m_plot.EnableGridLinesX(true);
     m_plot.SetPlotColor(RGB(255, 255, 255));
     m_plot.SetGridColor(RGB(255, 255, 255));
@@ -107,7 +112,8 @@ void ColumnHistoryDlg::InitPlot() {
     SetRange();
 }
 
-void ColumnHistoryDlg::Init10DayPlot() {
+void ColumnHistoryDlg::Init10DayPlot()
+{
 
     CRect rect;
     m_frame10.GetWindowRect(rect);
@@ -123,9 +129,13 @@ void ColumnHistoryDlg::Init10DayPlot() {
     m_plot10.SetXUnits(common.GetString(AXIS_UTCTIME));
     m_plot10.SetXAxisNumberFormat(FORMAT_DATE);
     if (g_userSettings.m_columnUnit == UNIT_PPMM)
+    {
         m_plot10.SetYUnits("Column [ppmm]");
+    }
     else if (g_userSettings.m_columnUnit == UNIT_MOLEC_CM2)
+    {
         m_plot10.SetYUnits("Column [molec/cm²]");
+    }
     m_plot10.EnableGridLinesX(true);
     m_plot10.SetPlotColor(RGB(255, 255, 255));
     m_plot10.SetGridColor(RGB(255, 255, 255));
@@ -134,7 +144,8 @@ void ColumnHistoryDlg::Init10DayPlot() {
     m_plot10.SetCircleRadius(2);
 }
 
-void ColumnHistoryDlg::Init30DayPlot() {
+void ColumnHistoryDlg::Init30DayPlot()
+{
 
     CRect rect;
     m_frame30.GetWindowRect(rect);
@@ -150,18 +161,22 @@ void ColumnHistoryDlg::Init30DayPlot() {
     m_plot30.SetXUnits(common.GetString(AXIS_UTCTIME));
     m_plot30.SetXAxisNumberFormat(FORMAT_DATE);
     if (g_userSettings.m_columnUnit == UNIT_PPMM)
+    {
         m_plot30.SetYUnits("Column [ppmm]");
+    }
     else if (g_userSettings.m_columnUnit == UNIT_MOLEC_CM2)
+    {
         m_plot30.SetYUnits("Column [molec/cm²]");
+    }
     m_plot30.EnableGridLinesX(true);
     m_plot30.SetPlotColor(RGB(255, 255, 255));
     m_plot30.SetGridColor(RGB(255, 255, 255));
     m_plot30.SetBackgroundColor(RGB(0, 0, 0));
     m_plot30.SetCircleColor(RGB(255, 0, 0));
     m_plot30.SetCircleRadius(2);
-
 }
-void ColumnHistoryDlg::DrawPlot() {
+void ColumnHistoryDlg::DrawPlot()
+{
     // variables
     const int BUFFER_SIZE = 10000;
     double time[BUFFER_SIZE], column[BUFFER_SIZE];
@@ -171,16 +186,22 @@ void ColumnHistoryDlg::DrawPlot() {
 
     // If there's no data then don't draw anything
     if (dataLength <= 0)
+    {
         return;
+    }
 
     // remove the old plot
     m_plot.CleanPlot();
 
     // Set the unit of the plot
     if (g_userSettings.m_columnUnit == UNIT_PPMM)
+    {
         m_plot.SetYUnits("Column [ppmm]");
+    }
     else if (g_userSettings.m_columnUnit == UNIT_MOLEC_CM2)
+    {
         m_plot.SetYUnits("Column [molec/cm²]");
+    }
 
     SetRange();
 
@@ -190,9 +211,11 @@ void ColumnHistoryDlg::DrawPlot() {
     m_plot.XYPlot(time, column, dataLength, CGraphCtrl::PLOT_FIXED_AXIS | CGraphCtrl::PLOT_CIRCLES);
 }
 
-void ColumnHistoryDlg::ReadEvalLogs() {
+void ColumnHistoryDlg::ReadEvalLogs()
+{
     // clean plots
-    if (!IsWindow(m_frame10.m_hWnd) || !IsWindow(m_frame30.m_hWnd)) {
+    if (!IsWindow(m_frame10.m_hWnd) || !IsWindow(m_frame30.m_hWnd))
+    {
         return;
     }
     m_plot10.CleanPlot();
@@ -201,9 +224,13 @@ void ColumnHistoryDlg::ReadEvalLogs() {
     // get column units
     double unitConversionFactor = 0;
     if (g_userSettings.m_columnUnit == UNIT_PPMM)
+    {
         unitConversionFactor = 1.0;
+    }
     else if (g_userSettings.m_columnUnit == UNIT_MOLEC_CM2)
+    {
         unitConversionFactor = 2.5e15;
+    }
 
     // set time range
     SetHistoryRange();
@@ -215,7 +242,8 @@ void ColumnHistoryDlg::ReadEvalLogs() {
     utc = gmtime(&rawtime);
     // get time offset
     time_t offset = mktime(utc) - rawtime;
-    if (utc->tm_isdst) {
+    if (utc->tm_isdst)
+    {
         offset -= 3600;
     }
     // make it midnight (00:00:00) of current day
@@ -229,7 +257,8 @@ void ColumnHistoryDlg::ReadEvalLogs() {
     //double time[BUFFER_SIZE], column[BUFFER_SIZE];
     CString path, dateStr;
     CWaitCursor wait;
-    for (int day = 0; day < 30; day++) {
+    for (int day = 0; day < 30; day++)
+    {
         m_index[day] = 0;
         FileHandler::CEvaluationLogFileHandler evalLogReader;
 
@@ -251,30 +280,37 @@ void ColumnHistoryDlg::ReadEvalLogs() {
 
         // check if file exists
         std::ifstream ifile(path);
-        if (!ifile) {
+        if (!ifile)
+        {
             continue;
         }
 
         // Try to read the eval-log
         evalLogReader.m_evaluationLog.Format(path);
         if (FAIL == evalLogReader.ReadEvaluationLog())
+        {
             continue;
+        }
 
         // check if there are scan in log
-        if (evalLogReader.m_scanNum <= 0) {
+        if (evalLogReader.m_scanNum <= 0)
+        {
             continue;
         }
 
         // Plot the read in data
         int scanNum = evalLogReader.m_scanNum;
-        for (int j = 0; j < scanNum; ++j) {
+        for (int j = 0; j < scanNum; ++j)
+        {
             Evaluation::CScanResult& sr = evalLogReader.m_scan[j];
-            for (unsigned long k = 0; k < sr.GetEvaluatedNum(); ++k) {
+            for (unsigned long k = 0; k < sr.GetEvaluatedNum(); ++k)
+            {
                 // Check if this is a dark measurement, if so then don't include it...
                 // 1. Clean the spectrum name from special characters...
                 std::string spectrumName = CleanString(sr.GetSpectrumInfo(k).m_name);
                 Trim(spectrumName, " \t");
-                if (fabs(sr.GetScanAngle(k)) - 180.0 < 1e-3 && (EqualsIgnoringCase(spectrumName, "offset") || EqualsIgnoringCase(spectrumName, "dark_cur") || EqualsIgnoringCase(spectrumName, "dark"))) {
+                if (fabs(sr.GetScanAngle(k)) - 180.0 < 1e-3 && (EqualsIgnoringCase(spectrumName, "offset") || EqualsIgnoringCase(spectrumName, "dark_cur") || EqualsIgnoringCase(spectrumName, "dark")))
+                {
                     continue;
                 }
 
@@ -284,21 +320,24 @@ void ColumnHistoryDlg::ReadEvalLogs() {
                 double epoch = (double)(epochDay + startsec - offset); // unsure why offset substraction is needed but it is
                 double col = sr.GetColumn(k, 0); //Assumes SO2 ref is at index 0
                 bool isBadFit = sr.IsBad(k);
-                if (!isBadFit && m_index[day] < 10000) {
+                if (!isBadFit && m_index[day] < 10000)
+                {
                     m_time[day][m_index[day]] = epoch;
                     m_column[day][m_index[day]] = col * unitConversionFactor;
                     m_index[day]++;
                 }
             }
-
         }
     }
     wait.Restore();
 }
 
-void ColumnHistoryDlg::DrawHistoryPlots() {
-    for (int day = 0; day < 30; day++) {
-        if (day < 10) {
+void ColumnHistoryDlg::DrawHistoryPlots()
+{
+    for (int day = 0; day < 30; day++)
+    {
+        if (day < 10)
+        {
             m_plot10.XYPlot(m_time[day], m_column[day], m_index[day], CGraphCtrl::PLOT_FIXED_AXIS | CGraphCtrl::PLOT_CIRCLES);
         }
         m_plot30.XYPlot(m_time[day], m_column[day], m_index[day], CGraphCtrl::PLOT_FIXED_AXIS | CGraphCtrl::PLOT_CIRCLES);
@@ -320,7 +359,8 @@ void ColumnHistoryDlg::OnSize(UINT nType, int cx, int cy)
     const int oneThirdScreenHeight = (int)(thisClientRegion.Height() / 3);
 
     // Adjust the width of each of the column plots
-    if (this->m_frame.m_hWnd != NULL) {
+    if (this->m_frame.m_hWnd != NULL)
+    {
         CRect frameClientRegion;
         m_frame.GetWindowRect(&frameClientRegion);
         this->ScreenToClient(frameClientRegion);
@@ -334,7 +374,8 @@ void ColumnHistoryDlg::OnSize(UINT nType, int cx, int cy)
         ResizeGraphControl(m_plot, m_frame, this);
     }
 
-    if (this->m_frame10.m_hWnd != NULL) {
+    if (this->m_frame10.m_hWnd != NULL)
+    {
         CRect frameClientRegion;
         m_frame10.GetWindowRect(&frameClientRegion);
         this->ScreenToClient(frameClientRegion);
@@ -348,7 +389,8 @@ void ColumnHistoryDlg::OnSize(UINT nType, int cx, int cy)
         ResizeGraphControl(m_plot10, m_frame10, this);
     }
 
-    if (this->m_frame30.m_hWnd != NULL) {
+    if (this->m_frame30.m_hWnd != NULL)
+    {
         CRect frameClientRegion;
         m_frame30.GetWindowRect(&frameClientRegion);
         this->ScreenToClient(frameClientRegion);
@@ -361,7 +403,8 @@ void ColumnHistoryDlg::OnSize(UINT nType, int cx, int cy)
 
         ResizeGraphControl(m_plot30, m_frame30, this);
     }
-    if (this->m_frame.m_hWnd != NULL) {
+    if (this->m_frame.m_hWnd != NULL)
+    {
         RedrawAll();
     }
 }
@@ -371,7 +414,8 @@ BOOL ColumnHistoryDlg::OnSetActive()
     return CPropertyPage::OnSetActive();
 }
 
-void ColumnHistoryDlg::SetRange() {
+void ColumnHistoryDlg::SetRange()
+{
     struct tm* tm;
     time_t t;
     time(&t);
@@ -381,7 +425,8 @@ void ColumnHistoryDlg::SetRange() {
     m_plot.SetRange(starttime, endtime, 0, m_minColumn, m_maxColumn, 0);
 }
 
-void ColumnHistoryDlg::SetHistoryRange() {
+void ColumnHistoryDlg::SetHistoryRange()
+{
     // get end time
     struct tm* tm;
     time_t t;
@@ -395,17 +440,20 @@ void ColumnHistoryDlg::SetHistoryRange() {
     starttime = endtime - SECONDS_IN_DAY * 30;
     m_plot30.SetRange(starttime, endtime, 0, m_minColumn, m_maxColumn, 0);
 }
-void ColumnHistoryDlg::RedrawAll() {
+void ColumnHistoryDlg::RedrawAll()
+{
     DrawPlot();
     DrawHistoryPlots();
 }
 
-LRESULT ColumnHistoryDlg::OnEvalSuccess(WPARAM wParam, LPARAM lParam) {
+LRESULT ColumnHistoryDlg::OnEvalSuccess(WPARAM wParam, LPARAM lParam)
+{
     DrawPlot();
 
     // check to see if new UTC day. If so, draw history plot too.
     int today = Common::GetDay();
-    if (m_lastDay == today) {
+    if (m_lastDay == today)
+    {
         return 0;
     }
     ReadEvalLogs();

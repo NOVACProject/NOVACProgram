@@ -33,7 +33,7 @@ public:
     std::vector<std::string> m_scanFile;
 
     /** The fit windows */
-    novac::CFitWindow  m_window[MAX_N_WINDOWS];
+    novac::CFitWindow m_window[MAX_N_WINDOWS];
 
     /** How many windows are defined? */
     long m_windowNum = 1;
@@ -63,8 +63,8 @@ public:
     CString m_evalLog[MAX_N_WINDOWS];
 
     /** The options for which spectra to ignore */
-    Evaluation::IgnoreOption  m_ignore_Lower;
-    Evaluation::IgnoreOption  m_ignore_Upper;
+    Evaluation::IgnoreOption m_ignore_Lower;
+    Evaluation::IgnoreOption m_ignore_Upper;
 
     /** The options for how to get the sky spectrum */
     Configuration::CSkySettings m_skySettings;
@@ -87,7 +87,6 @@ public:
     void SortScans();
 
 private:
-
     NovacProgramLog m_log;
 
     CString m_outputDir;
@@ -105,6 +104,5 @@ private:
     void WriteEvaluationLogHeader(int fitWindowIndex);
 
     bool AppendResultToEvaluationLog(const Evaluation::CScanResult& result, const novac::CScanFileHandler& scan, int fitWindowIndex);
-
 };
 }

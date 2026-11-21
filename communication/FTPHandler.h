@@ -17,14 +17,13 @@ struct FTPInformation
     CString password;
     CString adminUserName;
     CString adminPassword;
-    long    port;
-    int     timeout;
+    long port;
+    int timeout;
 };
 
 /** <b>CFTPHandler</b> class handles one link of downloading and uploading file
 *to the remote PC */
-class CFTPHandler :
-    public CFTPCom
+class CFTPHandler : public CFTPCom
 {
 public:
     CFTPHandler(void);
@@ -112,7 +111,6 @@ public:
     ELECTRONICS_BOX m_electronicsBox;
 
 private:
-
     //-------------------------------------------//
     //------------ private functions ------------//
     //-------------------------------------------//
@@ -201,6 +199,5 @@ private:
 
     /** Statistics on the speed to download file, in kilo-bytes/second*/
     double m_dataSpeed;
-
 };
 }

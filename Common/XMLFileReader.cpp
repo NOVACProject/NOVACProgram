@@ -12,7 +12,8 @@ namespace FileHandler
 
 CXMLFileReader::CXMLFileReader()
     : m_File(nullptr), nLinesRead(0), szToken(nullptr)
-{}
+{
+}
 
 CXMLFileReader::~CXMLFileReader()
 {
@@ -54,13 +55,17 @@ char* CXMLFileReader::NextToken()
     {
         // this is not the first call to this function
         if (pt = strtok(szToken, separators))
+        {
             return pt;
+        }
 
         szLine[0] = 0;
         while (0 == strlen(szLine))
         {
             if (!m_File->ReadString(szLine, 4095))
+            {
                 return nullptr;
+            }
         }
 
         szToken = (char*)(LPCSTR)szLine;
@@ -77,7 +82,9 @@ int CXMLFileReader::Parse_StringItem(const CString& label, CString& str)
     {
 
         if (Equals(szToken, label))
+        {
             return 1;
+        }
 
         str.Format(szToken);
     }
@@ -119,7 +126,9 @@ int CXMLFileReader::Parse_LongItem(const CString& label, long& number)
     while (szToken = NextToken())
     {
         if (Equals(szToken, label))
+        {
             return 1;
+        }
 
         number = _tstol(szToken);
     }
@@ -132,7 +141,9 @@ int CXMLFileReader::Parse_FloatItem(const CString& label, double& number)
     while (szToken = NextToken())
     {
         if (Equals(szToken, label))
+        {
             return 1;
+        }
 
         number = _tstof(szToken);
     }
@@ -146,7 +157,9 @@ int CXMLFileReader::Parse_IntItem(const CString& label, int& number)
     while (szToken = NextToken())
     {
         if (Equals(szToken, label))
+        {
             return 1;
+        }
 
         number = _tstoi(szToken);
     }
@@ -161,7 +174,9 @@ int CXMLFileReader::Parse_IPNumber(const CString& label, BYTE& ip0, BYTE& ip1, B
         int i0, i1, i2, i3;
 
         if (Equals(szToken, label))
+        {
             return 1;
+        }
 
         if (sscanf(szToken, "%d.%d.%d.%d", &i0, &i1, &i2, &i3) == 4)
         {

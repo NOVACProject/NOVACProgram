@@ -34,7 +34,6 @@ void CWindConfigurationDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Text(pDX, IDC_EDIT_MAXANGLE, maxAngle);
     DDX_Text(pDX, IDC_EDIT_STABLEPERIOD, stablePeriod);
     DDX_Text(pDX, IDC_EDIT_MINPEAKCOLUMN, minPeakColumn);
-
 }
 
 
@@ -64,17 +63,21 @@ BOOL CWindConfigurationDlg::OnInitDialog()
     // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CWindConfigurationDlg::InitToolTips() {
+void CWindConfigurationDlg::InitToolTips()
+{
     // Don't initialize the tool tips twice
     if (m_toolTip.m_hWnd != NULL)
+    {
         return;
+    }
 
     // Enable the tool tips
-    if (!m_toolTip.Create(this)) {
+    if (!m_toolTip.Create(this))
+    {
         TRACE0("Failed to create tooltip control\n");
     }
-    //	m_toolTip.AddTool(&m_labelVolcano,							IDC_EDIT_VOLCANO);
-    //	m_toolTip.AddTool(&m_editSerial,								"The serial number of the spectrometer");
+    //  m_toolTip.AddTool(&m_labelVolcano,                          IDC_EDIT_VOLCANO);
+    //  m_toolTip.AddTool(&m_editSerial,                                "The serial number of the spectrometer");
 
     m_toolTip.SetMaxTipWidth(SHRT_MAX);
     m_toolTip.Activate(TRUE);
@@ -87,14 +90,19 @@ BOOL CWindConfigurationDlg::PreTranslateMessage(MSG* pMsg)
     return CPropertyPage::PreTranslateMessage(pMsg);
 }
 
-void CWindConfigurationDlg::OnChangeScanner() {
-    if (UpdateData(TRUE)) { // <-- first save the data in the dialog
+void CWindConfigurationDlg::OnChangeScanner()
+{
+    if (UpdateData(TRUE))
+    {
+        // <-- first save the data in the dialog
 
         // Then change the settings so that we're using the newly selected scanner
         CSystemConfigurationPage::OnChangeScanner();
 
         if (m_curScanner == NULL)
+        {
             return;
+        }
 
         CConfigurationSetting::WindSpeedMeasurementSetting& wind = m_curScanner->windSettings;
 
@@ -105,14 +113,16 @@ void CWindConfigurationDlg::OnChangeScanner() {
         this->minPeakColumn = wind.minPeakColumn;
         this->automatic = wind.automaticWindMeasurements;
 
-        if (automatic) {
+        if (automatic)
+        {
             m_editDuration.EnableWindow(TRUE);
             m_editInterval.EnableWindow(TRUE);
             m_editMaxAngle.EnableWindow(TRUE);
             m_editStablePeriod.EnableWindow(TRUE);
             m_editMinPeakColumn.EnableWindow(TRUE);
         }
-        else {
+        else
+        {
             m_editDuration.EnableWindow(FALSE);
             m_editInterval.EnableWindow(FALSE);
             m_editMaxAngle.EnableWindow(FALSE);
@@ -125,15 +135,18 @@ void CWindConfigurationDlg::OnChangeScanner() {
     }
 }
 
-void CWindConfigurationDlg::OnOnOff() {
+void CWindConfigurationDlg::OnOnOff()
+{
     SaveData(); // <-- first save the data in the dialog
-    if (automatic) {
+    if (automatic)
+    {
         m_editDuration.EnableWindow(TRUE);
         m_editInterval.EnableWindow(TRUE);
         m_editMaxAngle.EnableWindow(TRUE);
         m_editStablePeriod.EnableWindow(TRUE);
     }
-    else {
+    else
+    {
         m_editDuration.EnableWindow(FALSE);
         m_editInterval.EnableWindow(FALSE);
         m_editMaxAngle.EnableWindow(FALSE);
@@ -141,11 +154,16 @@ void CWindConfigurationDlg::OnOnOff() {
     }
 }
 
-void CWindConfigurationDlg::SaveData() {
-    if (UpdateData(TRUE)) { // <-- first save the data in the dialog
+void CWindConfigurationDlg::SaveData()
+{
+    if (UpdateData(TRUE))
+    {
+        // <-- first save the data in the dialog
 
         if (m_curScanner == NULL)
+        {
             return;
+        }
 
         CConfigurationSetting::WindSpeedMeasurementSetting& wind = m_curScanner->windSettings;
 
@@ -160,13 +178,18 @@ void CWindConfigurationDlg::SaveData() {
 }
 
 /** Called when the user has changed between using angles or distances */
-void CWindConfigurationDlg::OnChangeAngleDistance() {
-    if (UpdateData(TRUE)) { // <-- first save the data in the dialog
-        if (useAngle == 0) {
+void CWindConfigurationDlg::OnChangeAngleDistance()
+{
+    if (UpdateData(TRUE))
+    {
+        // <-- first save the data in the dialog
+        if (useAngle == 0)
+        {
             m_editAngle.EnableWindow(TRUE);
             m_editDistance.EnableWindow(FALSE);
         }
-        else {
+        else
+        {
             m_editAngle.EnableWindow(FALSE);
             m_editDistance.EnableWindow(TRUE);
         }

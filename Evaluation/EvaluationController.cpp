@@ -9,7 +9,7 @@
 #include <sstream>
 
 #ifdef _MSC_VER
-#pragma warning (push, 4)
+#pragma warning(push, 4)
 #endif
 
 // we also need the meterological data
@@ -35,8 +35,8 @@ using namespace Evaluation;
 using namespace FileHandler;
 using namespace novac;
 
-extern CMeteorologicalData      g_metData;      // <-- The meteorological data
-extern CConfigurationSetting    g_settings;     // <-- The settings
+extern CMeteorologicalData g_metData;      // <-- The meteorological data
+extern CConfigurationSetting g_settings;     // <-- The settings
 extern CFormView* pView;        // <-- The screen
 extern CWinThread* g_windMeas;  // <-- The thread that evaluates the wind-measurements.
 extern CWinThread* g_geometry;  // <-- The thread that performes geometrical calculations from the scans
@@ -85,7 +85,7 @@ void CEvaluationController::OnQuit(WPARAM /*wp*/, LPARAM /*lp*/)
 
 void CEvaluationController::OnArrivedSpectra(WPARAM wp, LPARAM /*lp*/)
 {
-    // The filename of the newly arrived file is the first parameter 
+    // The filename of the newly arrived file is the first parameter
     if ((CString*)wp == nullptr)
     {
         CString errorMessage = "EvaluationController recieved filename with null file name.";
@@ -140,14 +140,19 @@ void CEvaluationController::OnArrivedSpectra(WPARAM wp, LPARAM /*lp*/)
     // 6. Move the file to the archive
     GetArchivingfileName(storeFileName_pak, storeFileName_txt, fileName);
     if (0 == MoveFileEx(fileName, storeFileName_pak, MOVEFILE_REPLACE_EXISTING))
-    {// after evaluation, move the file to the archive
+    {
+        // after evaluation, move the file to the archive
         DWORD errorCode = GetLastError();
         message.Format("Could not move file");
         CString str;
         if (Common::FormatErrorCode(errorCode, str))
+        {
             message.AppendFormat("Reason - %s", (LPCSTR)str);
+        }
         else
+        {
             message.AppendFormat("Reason - unknown");
+        }
         ShowMessage(message);
         // Try to copy the file instead...
         CopyFile(fileName, storeFileName_pak, TRUE);
@@ -163,9 +168,9 @@ void CEvaluationController::OnArrivedSpectra(WPARAM wp, LPARAM /*lp*/)
         MakeWindMeasurement(storeFileName_txt, volcanoIndex);
     }
     else if (measurementMode == novac::MeasurementMode::Stratosphere ||
-                measurementMode == novac::MeasurementMode::DirectSun ||
-                measurementMode == novac::MeasurementMode::Lunar ||
-                measurementMode == novac::MeasurementMode::Composition)
+        measurementMode == novac::MeasurementMode::DirectSun ||
+        measurementMode == novac::MeasurementMode::Lunar ||
+        measurementMode == novac::MeasurementMode::Composition)
     {
         // TODO!!!
     }
@@ -225,7 +230,7 @@ RETURN_CODE CEvaluationController::EvaluateSpectrum(const CString& /*fileName*/,
     return FAIL;
 }
 
-/** This function takes care of the evaluation of one scan.	*/
+/** This function takes care of the evaluation of one scan. */
 RETURN_CODE CEvaluationController::EvaluateScan(const CString& fileName, int volcanoIndex)
 {
     clock_t cStart, cFinish;
@@ -233,8 +238,8 @@ RETURN_CODE CEvaluationController::EvaluateScan(const CString& fileName, int vol
     CWindField windField;
     CDateTime startTime;
 
-    // The CScanFileHandler is a structure for reading the 
-    //		spectral information from the scan-file
+    // The CScanFileHandler is a structure for reading the
+    //      spectral information from the scan-file
     std::unique_ptr<CScanFileHandler> scan = std::make_unique<CScanFileHandler>(m_log);
 
     // success is true if the evaluation is successful
@@ -383,8 +388,8 @@ RETURN_CODE CEvaluationController::CalculateFlux(CScanResult* result, const CSpe
 {
     CString errorMessage;
 
-    // 0. If there's only one specie evaluated for, use it as flux specie. 
-    //		No matter what previously said
+    // 0. If there's only one specie evaluated for, use it as flux specie.
+    //      No matter what previously said
     if (result->GetSpecieNum(0) == 1)
     {
         m_fluxSpecie = result->GetSpecieName(0, 0);
@@ -408,10 +413,12 @@ RETURN_CODE CEvaluationController::CalculateFlux(CScanResult* result, const CSpe
     }
 
     // 2. Check the direction of the scanner, if it's a cone and pointing to the
-    //		volcano, then change the compass direction to be away from the volcano
+    //      volcano, then change the compass direction to be away from the volcano
 #ifdef _DEBUG
     if (spectrometer->m_scanner.compass > 270.5 || spectrometer->m_scanner.compass < 270.3)
+    {
         printf("ojdå");
+    }
 #endif
 
     // 2. Calculate the flux
@@ -473,7 +480,7 @@ RETURN_CODE CEvaluationController::WriteFluxResult(const CScanResult* result, co
     // 8. Output the plume height that was used for calculating this flux
     string.AppendFormat("%.1lf\t", windField.GetPlumeHeight());
 
-    // 9. Output where we got the plume height from 
+    // 9. Output where we got the plume height from
     string.AppendFormat("%s\t", (LPCSTR)phSrc);
 
     // 10. Output the compass direction
@@ -481,9 +488,13 @@ RETURN_CODE CEvaluationController::WriteFluxResult(const CScanResult* result, co
 
     // 11. Output where we got the compass direction from
     if (fabs(spectrometer.m_scanner.compass) > 360)
+    {
         string.AppendFormat("compassreading\t");
+    }
     else
+    {
         string.AppendFormat("user\t");
+    }
 
     // 12. Output the plume centre
     string.AppendFormat("%.1lf\t", result->GetCalculatedPlumeCentre());
@@ -503,9 +514,13 @@ RETURN_CODE CEvaluationController::WriteFluxResult(const CScanResult* result, co
 
     // 17. Output whether we think this is a good measurement or not
     if (result->IsFluxOk())
+    {
         string.AppendFormat("1\t");
+    }
     else
+    {
         string.AppendFormat("0\t");
+    }
 
     // 18. Output the instrument temperature
     string.AppendFormat("%.1lf\t", result->GetTemperature());
@@ -586,10 +601,10 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult* resu
     GetArchivingfileName(pakFile, txtFile, fName);
 
     // 1. Get the name of the evaluation-log file to write to...
-    //		The path is the top-directory of the text-file
+    //      The path is the top-directory of the text-file
     evalLogFile.Format(txtFile);
     m_common.GetDirectory(evalLogFile); // the directory where the pak/txt-files are
-    evalLogFile = evalLogFile.Left((int)strlen(evalLogFile) - 1);	// remove the last backslash
+    evalLogFile = evalLogFile.Left((int)strlen(evalLogFile) - 1); // remove the last backslash
     m_common.GetDirectory(evalLogFile); // the parent-directory to the pak/txt-files
 
     // The date of the measurement & the serial-number of the spectrometer
@@ -633,7 +648,7 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult* resu
 
     string.AppendFormat("</scaninformation>\n");
 
-    // 0.1	Create an flux-information part and write it to the same file
+    // 0.1  Create an flux-information part and write it to the same file
     windField.GetWindSpeedSource(wsSrc);
     windField.GetWindDirectionSource(wdSrc);
     windField.GetPlumeHeightSource(phSrc);
@@ -652,16 +667,20 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult* resu
     string.AppendFormat("\twinddirectionsource=%s\n", (LPCSTR)wdSrc);
     string.AppendFormat("\tplumeheightsource=%s\n", (LPCSTR)phSrc);
     if (fabs(spectrometer.m_scanner.compass) > 360.0)
+    {
         string.AppendFormat("\tcompasssource=compassreading\n");
+    }
     else
+    {
         string.AppendFormat("\tcompasssource=user\n");
+    }
     string.AppendFormat("\tplumecompleteness=%.2lf\n", plumeCompleteness);
     string.AppendFormat("\tplumecentre=%.2lf\n", plumeCentre1);
     string.AppendFormat("\tplumeedge1=%.2lf\n", plumeEdge1);
     string.AppendFormat("\tplumeedge2=%.2lf\n", plumeEdge2);
     string.AppendFormat("</fluxinfo>\n");
 
-    // 0.2	Write spectrometer settings to file
+    // 0.2  Write spectrometer settings to file
 
     string.AppendFormat("<spectrometer>\n");
     string.AppendFormat("\t<serialNumber>%s</serialNumber>\n", (LPCSTR)settings.serialNumber);
@@ -678,24 +697,40 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult* resu
 
             CString shiftString;
             if (ref.m_shiftOption == novac::SHIFT_TYPE::SHIFT_FIX)
+            {
                 shiftString.Format("fix to %.2lf", ref.m_shiftValue);
+            }
             else if (ref.m_shiftOption == novac::SHIFT_TYPE::SHIFT_FREE)
+            {
                 shiftString.Format("free");
+            }
             else if (ref.m_shiftOption == novac::SHIFT_TYPE::SHIFT_LIMIT)
+            {
                 shiftString.Format("limit from %.2lf to %.2lf", ref.m_shiftValue, ref.m_shiftMaxValue);
+            }
             else if (ref.m_shiftOption == novac::SHIFT_TYPE::SHIFT_LINK)
+            {
                 shiftString.Format("link to %.0lf", ref.m_shiftValue);
+            }
             string.AppendFormat("\t\t\t<shift>%s</shift>\n", (LPCSTR)shiftString);
 
             CString squeezeString;
             if (ref.m_squeezeOption == novac::SHIFT_TYPE::SHIFT_FIX)
+            {
                 squeezeString.Format("fix to %.2lf", ref.m_squeezeValue);
+            }
             else if (ref.m_squeezeOption == novac::SHIFT_TYPE::SHIFT_FREE)
+            {
                 squeezeString.Format("free");
+            }
             else if (ref.m_squeezeOption == novac::SHIFT_TYPE::SHIFT_LIMIT)
+            {
                 squeezeString.Format("limit from %.2lf to %.2lf", ref.m_squeezeValue, ref.m_squeezeMaxValue);
+            }
             else if (ref.m_squeezeOption == novac::SHIFT_TYPE::SHIFT_LINK)
+            {
                 squeezeString.Format("link to %.0lf", ref.m_squeezeValue);
+            }
             string.AppendFormat("\t\t\t<squeeze>%s</squeeze>\n", (LPCSTR)squeezeString);
 
             string.AppendFormat("\t\t</Reference>\n");
@@ -725,30 +760,43 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult* resu
     // 2. ----------------- Write the parameters for the sky and the dark-spectra -------------------
     // ----------------------------------------------------------------------------------------------
     CSpectrum sky, dark, darkCurrent, offset;
-    string1.Format(""); string2.Format(""); string3.Format(""); string4.Format("");
+    string1.Format("");
+    string2.Format("");
+    string3.Format("");
+    string4.Format("");
     scan.GetSky(sky);
     if (sky.m_info.m_interlaceStep > 1)
+    {
         sky.InterpolateSpectrum();
+    }
     if (sky.m_length > 0)
     {
         sky.m_info.m_fitIntensity = (float)(sky.MaxValue(window.fitLow, window.fitHigh));
         if (sky.NumSpectra() > 0)
+        {
             sky.Div(sky.NumSpectra());
+        }
         CEvaluationLogFileHandler::FormatEvaluationResult(&sky.m_info, nullptr, maxIntensity * sky.NumSpectra(), spectrometer.m_fitWindows[0].NumberOfReferences(), string1);
     }
     scan.GetDark(dark);
     if (dark.m_info.m_interlaceStep > 1)
+    {
         dark.InterpolateSpectrum();
+    }
     if (dark.m_length > 0)
     {
         dark.m_info.m_fitIntensity = (float)(dark.MaxValue(window.fitLow, window.fitHigh));
         if (dark.NumSpectra() > 0)
+        {
             dark.Div(dark.NumSpectra());
+        }
         CEvaluationLogFileHandler::FormatEvaluationResult(&dark.m_info, nullptr, maxIntensity * dark.NumSpectra(), spectrometer.m_fitWindows[0].NumberOfReferences(), string2);
     }
     scan.GetOffset(offset);
     if (offset.m_info.m_interlaceStep > 1)
+    {
         offset.InterpolateSpectrum();
+    }
     if (offset.m_length > 0)
     {
         offset.m_info.m_fitIntensity = (float)(offset.MaxValue(window.fitLow, window.fitHigh));
@@ -757,7 +805,9 @@ RETURN_CODE CEvaluationController::WriteEvaluationResult(const CScanResult* resu
     }
     scan.GetDarkCurrent(darkCurrent);
     if (darkCurrent.m_info.m_interlaceStep > 1)
+    {
         darkCurrent.InterpolateSpectrum();
+    }
     if (darkCurrent.m_length > 0)
     {
         darkCurrent.m_info.m_fitIntensity = (float)(darkCurrent.MaxValue(window.fitLow, window.fitHigh));
@@ -863,7 +913,7 @@ BOOL Evaluation::CEvaluationController::InitInstance()
 {
     CWinThread::InitInstance();
 
-    // 1. Set the language of the thread 
+    // 1. Set the language of the thread
     ::SetThreadLocale(MAKELCID(MAKELANGID(primaryLanguage, subLanguage), SORT_DEFAULT));
 
     // 2. Initialize the spectrometers
@@ -932,7 +982,8 @@ RETURN_CODE CEvaluationController::InitializeSpectrometers()
     catch (novac::InvalidReferenceException& ex)
     {
         std::stringstream msg;
-        msg << "Cannot read all references.\n" << ex.what() << "\n";
+        msg << "Cannot read all references.\n"
+            << ex.what() << "\n";
         msg << "The program will now terminate.\nCheck the settings and restart.";
         ShowMessage(msg.str());
         MessageBox(nullptr, msg.str().c_str(), "Serious Error - Cannot read References", MB_OK);
@@ -997,7 +1048,7 @@ RETURN_CODE CEvaluationController::InitializeOutput()
         }
     }
 
-    // the log files for the spectrometers 
+    // the log files for the spectrometers
     CString filePath;
     for (i = 0; i < m_spectrometer.GetSize(); ++i)
     {
@@ -1077,24 +1128,30 @@ RETURN_CODE CEvaluationController::GetArchivingfileName(CString& pakFile, CStrin
     {
         pakFile.Format("%s\\Output\\UnknownScans\\%d.pak", (LPCSTR)g_settings.outputDirectory, ++i);
         if (!IsExistingFile(pakFile))
+        {
             break;
+        }
     }
     txtFile.Format("%s\\Output\\UnknownScans\\%d.txt", (LPCSTR)g_settings.outputDirectory, i);
 
     // 1. Read the first spectrum in the scan
     const std::string tempScanFileName((LPCSTR)temporaryScanFile);
     if (SUCCESS != reader.ReadSpectrum(tempScanFileName, 0, tmpSpec))
+    {
         return FAIL;
+    }
     CSpectrumInfo& info = tmpSpec.m_info;
     int channel = info.m_channel;
 
     // 1a. If the GPS had no connection with the satelites when collecting the sky-spectrum,
-    //			then try to find a spectrum in the file for which it had connection...
+    //          then try to find a spectrum in the file for which it had connection...
     i = 1;
     while (info.m_startTime.year == 2004 && info.m_startTime.month == 3 && info.m_startTime.day == 22)
     {
         if (SUCCESS != reader.ReadSpectrum(tempScanFileName, i++, tmpSpec))
+        {
             break;
+        }
         info = tmpSpec.m_info;
     }
 
@@ -1118,21 +1175,25 @@ RETURN_CODE CEvaluationController::GetArchivingfileName(CString& pakFile, CStrin
 
     // 4c. Write the name of the archiving file itself
     if (channel < 128 && channel > MAX_CHANNEL_NUM)
+    {
         channel = channel % 16;
+    }
     pakFile.AppendFormat("%s_%s_%s_%1d.pak", (LPCSTR)serialNumber, (LPCSTR)dateStr, (LPCSTR)timeStr, channel);
     txtFile.AppendFormat("%s_%s_%s_%1d.txt", (LPCSTR)serialNumber, (LPCSTR)dateStr, (LPCSTR)timeStr, channel);
 
     if (strlen(pakFile) > MAX_PATH)
+    {
         return FAIL;
+    }
 
     return SUCCESS;
 }
 
 void CEvaluationController::UpdateOutputDirectories()
 {
-    // Check the current date. If the current date is different from the 
-    //	date when the output directories were last initialized, then
-    //	initialize them again.
+    // Check the current date. If the current date is different from the
+    //  date when the output directories were last initialized, then
+    //  initialize them again.
     if ((m_date[0] != m_common.GetYear()) || (m_date[1] != m_common.GetMonth()) || (m_date[2] != m_common.GetDay()))
     {
         InitializeOutput();
@@ -1155,7 +1216,7 @@ void CEvaluationController::GetSpectrumInformation(CSpectrometer* spectrometer, 
 
     if (std::abs(skySpec.Latitude()) > 0.01 && std::abs(skySpec.Longitude()) > 0.01)
     {
-        double	N = spectrometer->m_gpsReadingsNum;
+        double N = spectrometer->m_gpsReadingsNum;
         lat = (spectrometer->m_scanner.gps.m_latitude * N + skySpec.GPS().m_latitude) / (N + 1);
         lon = (spectrometer->m_scanner.gps.m_longitude * N + skySpec.GPS().m_longitude) / (N + 1);
         alt = (spectrometer->m_scanner.gps.m_altitude * N + skySpec.GPS().m_altitude) / (N + 1);
@@ -1214,7 +1275,9 @@ RETURN_CODE CEvaluationController::MakeWindMeasurement(const CString& fileName, 
     CString* fn = nullptr;
 
     if (g_windMeas == nullptr)
+    {
         return FAIL;
+    }
 
     fn = new CString();
     fn->Format(fileName);
@@ -1235,7 +1298,9 @@ RETURN_CODE CEvaluationController::MakeGeometryCalculations(const CString& fileN
     CString* fn = nullptr;
 
     if (g_geometry == nullptr)
+    {
         return FAIL;
+    }
 
     fn = new CString();
     fn->Format(fileName);
@@ -1269,22 +1334,24 @@ void CEvaluationController::ExecuteScript_FullScan(const CString& param1, const 
 
     // Check the return-code if there was any error...
     if (result > 32)
+    {
         return;
+    }
     switch (result)
     {
-    case 0:	break;// out of memory
-    case ERROR_FILE_NOT_FOUND:	MessageBox(nullptr, "Specified script-file not found", "Error in script", MB_OK);	break;	// file not found
-    case ERROR_PATH_NOT_FOUND:	MessageBox(nullptr, "Specified script-file not found", "Error in script", MB_OK);	break;	// path not found
-    case ERROR_BAD_FORMAT:		break;	// 
-    case SE_ERR_ACCESSDENIED:break;
-    case SE_ERR_ASSOCINCOMPLETE:break;
-    case SE_ERR_DDEBUSY:break;
-    case SE_ERR_DDEFAIL:break;
-    case SE_ERR_DDETIMEOUT:break;
-    case SE_ERR_DLLNOTFOUND:break;
-    case SE_ERR_NOASSOC:break;
-    case SE_ERR_OOM:break;
-    case SE_ERR_SHARE:break;
+    case 0: break;// out of memory
+    case ERROR_FILE_NOT_FOUND: MessageBox(nullptr, "Specified script-file not found", "Error in script", MB_OK); break; // file not found
+    case ERROR_PATH_NOT_FOUND: MessageBox(nullptr, "Specified script-file not found", "Error in script", MB_OK); break; // path not found
+    case ERROR_BAD_FORMAT: break; //
+    case SE_ERR_ACCESSDENIED: break;
+    case SE_ERR_ASSOCINCOMPLETE: break;
+    case SE_ERR_DDEBUSY: break;
+    case SE_ERR_DDEFAIL: break;
+    case SE_ERR_DDETIMEOUT: break;
+    case SE_ERR_DLLNOTFOUND: break;
+    case SE_ERR_NOASSOC: break;
+    case SE_ERR_OOM: break;
+    case SE_ERR_SHARE: break;
     }
 
     // don't try again to access the file
@@ -1303,9 +1370,13 @@ void CEvaluationController::InitiateSpecialModeMeasurement(const CSpectrometer* 
     // If we have done a special-mode measurement recently, then don't
     //  even check if we should do it again.
     if ((cTimeOfLastWindMeasurement != 0) && (difftime(now, cTimeOfLastWindMeasurement) < 3600))
+    {
         return;
+    }
     if ((cTimeOfLastCompMeasurement != 0) && (difftime(now, cTimeOfLastCompMeasurement) < 3600))
+    {
         return;
+    }
 
     // Check if we should do a wind-measurement
     if (WindSpeedMeasurement::CRealTimeWind::IsTimeForWindMeasurement(spectrometer))
@@ -1335,5 +1406,5 @@ void CEvaluationController::UpdateInstrumentCalibration(CSpectrometer& spectrome
 }
 
 #ifdef _MSC_VER
-#pragma warning (pop)
+#pragma warning(pop)
 #endif

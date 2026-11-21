@@ -26,7 +26,8 @@ CWindSpeedResult::~CWindSpeedResult(void)
 }
 
 /** Assignement operator */
-CWindSpeedResult& CWindSpeedResult::operator=(const CWindSpeedResult& wr) {
+CWindSpeedResult& CWindSpeedResult::operator=(const CWindSpeedResult& wr)
+{
     // The information about the measurement
     m_serial.Format(wr.m_serial);
     m_date = wr.m_date;

@@ -12,10 +12,12 @@ IMPLEMENT_DYNAMIC(CReEval_MiscSettingsDlg, CPropertyPage)
 
 CReEval_MiscSettingsDlg::CReEval_MiscSettingsDlg(CReEvaluator& reeval)
     : CPropertyPage(CReEval_MiscSettingsDlg::IDD), m_reeval(reeval)
-{}
+{
+}
 
 CReEval_MiscSettingsDlg::~CReEval_MiscSettingsDlg()
-{}
+{
+}
 
 void CReEval_MiscSettingsDlg::DoDataExchange(CDataExchange* pDX)
 {
@@ -39,7 +41,7 @@ void CReEval_MiscSettingsDlg::DoDataExchange(CDataExchange* pDX)
 
     // The user supplied sky-spectrum
     // TODO: Fix this.
-    //DDX_Text(pDX,	IDC_EDIT_USER_SKY,								m_reeval.m_skySettings.skySpectrumFile);
+    //DDX_Text(pDX, IDC_EDIT_USER_SKY,                              m_reeval.m_skySettings.skySpectrumFile);
 }
 
 
@@ -97,9 +99,11 @@ void CReEval_MiscSettingsDlg::SaveData()
     CString str;
 
     if (m_hWnd == NULL)
+    {
         return;
+    }
 
-    // ------- Save the change ----------- 
+    // ------- Save the change -----------
     if (UpdateData(TRUE))
     {
     }
@@ -135,7 +139,9 @@ void ReEvaluation::CReEval_MiscSettingsDlg::OnSaveMiscSettings()
 
     // Get the data in the dialog
     if (!UpdateData(TRUE))
+    {
         return;
+    }
 
     // let the user browse for an evaluation log file and if one is selected, read it
     if (common.BrowseForFile_SaveAs(filter, fileName))

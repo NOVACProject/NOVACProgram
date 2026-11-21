@@ -22,8 +22,7 @@
 
 namespace Communication
 {
-class CSerialControllerWithTx :
-    public CSerialCOM
+class CSerialControllerWithTx : public CSerialCOM
 {
 public:
     CSerialControllerWithTx(void);
@@ -295,7 +294,7 @@ public:
     int m_timeout;
 
     /** average download-speed for the last downloaded file [kbits/second]*/
-    double	m_avgDownloadSpeed;
+    double m_avgDownloadSpeed;
 
     /**status messages*/
     CString m_ErrorMsg;
@@ -320,10 +319,9 @@ public:
     ELECTRONICS_BOX m_electronicsBox;
 
     /** The statistics for this link */
-    CLinkStatistics	m_linkStatistics;
+    CLinkStatistics m_linkStatistics;
 
 private:
-
     NovacProgramLog m_log;
 
     /** This function tries to download cfg.txt from this instrument.

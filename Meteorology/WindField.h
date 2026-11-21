@@ -72,7 +72,6 @@ public:
     const novac::CDateTime& GetTimeAndDate() const;
 
 private:
-
     /** The speed of the wind */
     double m_windSpeed = 10.0;
 

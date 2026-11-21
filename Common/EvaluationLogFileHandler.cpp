@@ -18,7 +18,7 @@ CEvaluationLogFileHandler::CEvaluationLogFileHandler(void)
 {
     // Defining which column contains which information
     m_col.position = 1;
-    m_col.position2 = -1; // azimuth does not exist in the typical eval-log files 
+    m_col.position2 = -1; // azimuth does not exist in the typical eval-log files
     m_col.starttime = 2;
     m_col.stoptime = 3;
     m_col.name = -1; // the name does not exist in the original version
@@ -62,9 +62,13 @@ void CEvaluationLogFileHandler::ParseScanHeader(const char szLine[8192])
 
     char str[8192];
     if (szLine[0] == '#')
+    {
         strncpy(str, szLine + 1, 8191 * sizeof(char));
+    }
     else
+    {
         strncpy(str, szLine, 8192 * sizeof(char));
+    }
 
     char* szToken = (char*)(LPCSTR)str;
     int curCol = -1;
@@ -74,11 +78,11 @@ void CEvaluationLogFileHandler::ParseScanHeader(const char szLine[8192])
     char azimuth[] = _T("azimuth");
     char column[] = _T("column");
     char columnError[] = _T("columnerror");
-    char intensity[] = _T("intensity");	// peak intensity
+    char intensity[] = _T("intensity"); // peak intensity
     char fitIntensity[] = _T("intens(fitregion)"); // fit-region intensity
     char fitIntensity2[] = _T("fitintensity"); // fit-region intensity
-    char peakSat[] = _T("specsaturation");	// maximum saturation ratio of the whole spectrum
-    char fitSat[] = _T("fitsaturation");	// maximum saturation ratio in the fit region
+    char peakSat[] = _T("specsaturation"); // maximum saturation ratio of the whole spectrum
+    char fitSat[] = _T("fitsaturation"); // maximum saturation ratio in the fit region
     char delta[] = _T("delta");
     char chiSquare[] = _T("chisquare");
     char shift[] = _T("shift");
@@ -284,18 +288,20 @@ void CEvaluationLogFileHandler::ParseScanHeader(const char szLine[8192])
 
     m_specieNum = m_evResult.NumberOfSpecies();
     for (int k = 0; k < m_specieNum; ++k)
+    {
         m_specie[k].Format("%s", m_evResult.m_referenceResult[k].m_specieName.c_str());
+    }
 
     return;
 }
 
 RETURN_CODE CEvaluationLogFileHandler::ReadEvaluationLog()
 {
-    char  expTimeStr[] = _T("exposuretime");         // this string only exists in the header line.
-    char  scanInformation[] = _T("<scaninformation>");    // this string only exists in the scan-information section before the scan-data
-    char  fluxInformation[] = _T("<fluxinfo>");           // this string only exists in the flux-information section before the scan-data
-    char  spectralData[] = _T("<spectraldata>");
-    char  endofSpectralData[] = _T("</spectraldata>");
+    char expTimeStr[] = _T("exposuretime");         // this string only exists in the header line.
+    char scanInformation[] = _T("<scaninformation>");    // this string only exists in the scan-information section before the scan-data
+    char fluxInformation[] = _T("<fluxinfo>");           // this string only exists in the flux-information section before the scan-data
+    char spectralData[] = _T("<spectraldata>");
+    char endofSpectralData[] = _T("</spectraldata>");
     CString str;
     char szLine[8192];
     int measNr = 0;
@@ -306,10 +312,12 @@ RETURN_CODE CEvaluationLogFileHandler::ReadEvaluationLog()
 
     // If no evaluation log selected, quit
     if (strlen(m_evaluationLog) <= 1)
+    {
         return FAIL;
+    }
 
     // First count the number of scans in the file.
-    //	This to speed up the initialization of the arrays
+    //  This to speed up the initialization of the arrays
     CArray<CDateTime*, CDateTime*> allStartTimes;
     CArray<unsigned int, unsigned int&> sortOrder;
     long nScans = GetScanStartTimes(allStartTimes);
@@ -389,12 +397,12 @@ RETURN_CODE CEvaluationLogFileHandler::ReadEvaluationLog()
                 continue;
             }
 
-            // find the next start of a scan 
+            // find the next start of a scan
             if (NULL != strstr(szLine, expTimeStr))
             {
 
                 // check so that there was some information in the last scan read
-                //	if not the re-use the memory space
+                //  if not the re-use the memory space
                 if ((measNr > 0) || (measNr == 0 && m_scanNum < 0))
                 {
 
@@ -431,8 +439,8 @@ RETURN_CODE CEvaluationLogFileHandler::ReadEvaluationLog()
                 }
 
                 // This line is the header line which says what each column represents.
-                //  Read it and parse it to find out how to interpret the rest of the 
-                //  file. 
+                //  Read it and parse it to find out how to interpret the rest of the
+                //  file.
                 ParseScanHeader(szLine);
 
                 // start parsing the lines
@@ -444,13 +452,17 @@ RETURN_CODE CEvaluationLogFileHandler::ReadEvaluationLog()
 
             // ignore comment lines
             if (szLine[0] == '#')
+            {
                 continue;
+            }
 
             // if we're not reading a scan, let's read the next line
             if (!fReadingScan)
+            {
                 continue;
+            }
 
-            // Split the scan information up into tokens and parse them. 
+            // Split the scan information up into tokens and parse them.
             char* szToken = (char*)(LPCSTR)szLine;
             int curCol = -1;
             while (szToken = strtok(szToken, " \t"))
@@ -630,15 +642,15 @@ RETURN_CODE CEvaluationLogFileHandler::ReadEvaluationLog()
             }
 
             // start reading the next line in the evaluation log (i.e. the next
-            //  spectrum in the scan). Insert the data from this spectrum into the 
+            //  spectrum in the scan). Insert the data from this spectrum into the
             //  CScanResult structure
 
             // If this is the first spectrum in the new scan, then make
-            //	an initial guess for how large the arrays are going to be...
+            //  an initial guess for how large the arrays are going to be...
             if (measNr == 0 && m_scanNum > 1)
             {
-                // If this is the first spectrum in a new scan, then initialize the 
-                //	size of the arrays, to save some time on re-allocating memory
+                // If this is the first spectrum in a new scan, then initialize the
+                //  size of the arrays, to save some time on re-allocating memory
                 m_scan[sortOrder[m_scanNum]].InitializeArrays(m_scan[m_scanNum - 1].GetEvaluatedNum());
             }
 
@@ -667,7 +679,8 @@ RETURN_CODE CEvaluationLogFileHandler::ReadEvaluationLog()
 
             double dynamicRange = 1.0; // <-- unknown
             if (m_col.peakSaturation != -1)
-            { // If the intensity is specified as a saturation ratio...
+            {
+                // If the intensity is specified as a saturation ratio...
                 dynamicRange = CSpectrometerDatabase::GetInstance().GetModel(m_specInfo.m_specModelName).maximumIntensityForSingleReadout;
             }
             m_scan[sortOrder[m_scanNum]].CheckGoodnessOfFit(m_specInfo);
@@ -696,7 +709,7 @@ RETURN_CODE CEvaluationLogFileHandler::ReadEvaluationLog()
     ++m_scanNum;
 
     // Sort the scans in order of collection
-//	SortScans();
+//  SortScans();
 
     return SUCCESS;
 }
@@ -705,13 +718,15 @@ RETURN_CODE CEvaluationLogFileHandler::ReadEvaluationLog()
     to count the number of scans in it */
 long CEvaluationLogFileHandler::CountScansInFile()
 {
-    char  expTimeStr[] = _T("exposuretime"); // this string only exists in the header line.
+    char expTimeStr[] = _T("exposuretime"); // this string only exists in the header line.
     char szLine[8192];
-    long  nScans = 0;
+    long nScans = 0;
 
     // If no evaluation log selected, quit
     if (strlen(m_evaluationLog) <= 1)
+    {
         return 0;
+    }
 
     CSingleLock singleLock(&g_evalLogCritSect);
     singleLock.Lock();
@@ -735,7 +750,7 @@ long CEvaluationLogFileHandler::CountScansInFile()
                 szLine[it] = tolower(szLine[it]);
             }
 
-            // find the next start of a scan 
+            // find the next start of a scan
             if (NULL != strstr(szLine, expTimeStr))
             {
                 ++nScans;
@@ -743,7 +758,6 @@ long CEvaluationLogFileHandler::CountScansInFile()
         }
 
         fclose(f);
-
     }
     singleLock.Unlock();
 
@@ -756,10 +770,10 @@ long CEvaluationLogFileHandler::CountScansInFile()
     @return the number of scans in the file */
 long CEvaluationLogFileHandler::GetScanStartTimes(CArray<CDateTime*, CDateTime*>& array)
 {
-    char  scanInfoStart[] = _T("<scaninformation>"); // this string indicates the beginning of a 'scanInformation' section
-    char  scanInfoStop[] = _T("</scaninformation>"); // this string indicates the beginning of a 'scanInformation' section
+    char scanInfoStart[] = _T("<scaninformation>"); // this string indicates the beginning of a 'scanInformation' section
+    char scanInfoStop[] = _T("</scaninformation>"); // this string indicates the beginning of a 'scanInformation' section
     char szLine[8192];
-    long  nScans = 0;
+    long nScans = 0;
     char* pt = NULL;
     bool inScanInfoSection = false;
     CDateTime scanStartTime;
@@ -768,7 +782,9 @@ long CEvaluationLogFileHandler::GetScanStartTimes(CArray<CDateTime*, CDateTime*>
 
     // If no evaluation log selected, quit
     if (strlen(m_evaluationLog) <= 1)
+    {
         return 0;
+    }
 
     CSingleLock singleLock(&g_evalLogCritSect);
     singleLock.Lock();
@@ -792,7 +808,7 @@ long CEvaluationLogFileHandler::GetScanStartTimes(CArray<CDateTime*, CDateTime*>
                 szLine[it] = tolower(szLine[it]);
             }
 
-            // find the next start of a scan 
+            // find the next start of a scan
             if (NULL != strstr(szLine, scanInfoStart))
             {
                 inScanInfoSection = true;
@@ -959,7 +975,7 @@ void CEvaluationLogFileHandler::ParseScanInformation(CSpectrumInfo& scanInfo, do
         {
             scanInfo.m_device = std::string(pt + 7);
             Remove(scanInfo.m_device, '\n'); // remove remaining strange things in the serial-number
-            MakeUpper(scanInfo.m_device);	// Convert the serial-number to all upper case letters
+            MakeUpper(scanInfo.m_device); // Convert the serial-number to all upper case letters
 
             // Extract the spectrometer-model from the serial-number of the spectrometer
             SpectrometerModel spectrometer = CSpectrometerDatabase::GetInstance().GuessModelFromSerial(scanInfo.m_device);
@@ -1019,7 +1035,6 @@ void CEvaluationLogFileHandler::ParseScanInformation(CSpectrumInfo& scanInfo, do
         {
             int ret = sscanf(pt + 12, "%f", &scanInfo.m_temperature);
         }
-
     }
 }
 
@@ -1181,7 +1196,8 @@ void CEvaluationLogFileHandler::ResetScanInformation()
     m_specInfo.m_channel = 0;
     m_specInfo.m_compass = m_specInfo.m_scanAngle = 0.0;
 
-    m_col.starttime = -1; m_col.stoptime = -1;
+    m_col.starttime = -1;
+    m_col.stoptime = -1;
 }
 
 bool CEvaluationLogFileHandler::IsWindSpeedMeasurement(int scanNo) const
@@ -1203,21 +1219,21 @@ void CEvaluationLogFileHandler::SortScans()
     m_scan.SetSize(m_scanNum);
 
     // If the scans are already in order then we don't need to sort them
-    //	or if there is only one scan then we don't need to fix it.
+    //  or if there is only one scan then we don't need to fix it.
     if (IsSorted() || m_scanNum <= 1)
     {
         return;
     }
 
     // Then sort the array
-    //	CEvaluationLogFileHandler::SortScans(m_scan);
+    //  CEvaluationLogFileHandler::SortScans(m_scan);
     CEvaluationLogFileHandler::BubbleSortScans(m_scan);
 
     return;
 }
 
 /** Returns true if the scans are already ordered */
-bool	CEvaluationLogFileHandler::IsSorted()
+bool CEvaluationLogFileHandler::IsSorted()
 {
     CDateTime time1, time2;
 
@@ -1227,8 +1243,8 @@ bool	CEvaluationLogFileHandler::IsSorted()
         m_scan[k].GetStartTime(0, time1);
         m_scan[k + 1].GetStartTime(0, time2);
 
-        // If the second scan has started before the first, 
-        //	then change the order, otherwise don't do anything
+        // If the second scan has started before the first,
+        //  then change the order, otherwise don't do anything
         if (time2 < time1)
         {
             return false;
@@ -1253,11 +1269,15 @@ void CEvaluationLogFileHandler::SortScanStartTimes(CArray<CDateTime*, CDateTime*
     CArray<unsigned int, unsigned int&> tmpOrder;
 
     if (nElements == 0)
+    {
         return;
+    }
 
     // fill up the sort-order array with the original indices
     for (k = 0; k < nElements; ++k)
+    {
         tmpOrder.SetAtGrow(k, k);
+    }
 
     // Sort the start-times using bubble sort
     do
@@ -1265,8 +1285,8 @@ void CEvaluationLogFileHandler::SortScanStartTimes(CArray<CDateTime*, CDateTime*
         change = false;
         for (k = 0; k < nElements - 1; ++k)
         {
-            // If the second scan has started before the first, 
-            //	then change the order, otherwise don't do anything
+            // If the second scan has started before the first,
+            //  then change the order, otherwise don't do anything
             if (*allStartTimes[k + 1] < *allStartTimes[k])
             {
                 tmpTime = allStartTimes[k];
@@ -1289,7 +1309,9 @@ void CEvaluationLogFileHandler::SortScanStartTimes(CArray<CDateTime*, CDateTime*
 
     // create the array sortOrder
     for (k = 0; k < nElements; ++k)
+    {
         sortOrder.SetAtGrow(tmpOrder[k], k);
+    }
 
     return;
 }
@@ -1304,7 +1326,9 @@ RETURN_CODE CEvaluationLogFileHandler::WriteEvaluationLog(const CString fileName
 
     // 1. Test if the file already exists, if so then return false
     if (IsExistingFile(fileName))
+    {
         return FAIL;
+    }
 
     // 2. Write the file
     FILE* f = fopen(fileName, "w");
@@ -1367,9 +1391,9 @@ RETURN_CODE CEvaluationLogFileHandler::WriteEvaluationLog(const CString fileName
         string.AppendFormat("\twinddirectionsource=%s\n", (LPCSTR)wdSrc);
         string.AppendFormat("\tplumeheightsource=%s\n", (LPCSTR)phSrc);
         //if(fabs(spectrometer.m_scanner.compass) > 360.0)
-        //	string.AppendFormat("\tcompasssource=compassreading\n");
+        //  string.AppendFormat("\tcompasssource=compassreading\n");
         //else
-        //	string.AppendFormat("\tcompasssource=user\n");
+        //  string.AppendFormat("\tcompasssource=user\n");
         string.AppendFormat("</fluxinfo>\n");
         fprintf(f, string);
 
@@ -1403,9 +1427,7 @@ RETURN_CODE CEvaluationLogFileHandler::WriteEvaluationLog(const CString fileName
             fprintf(f, "\n");
         }
         fprintf(f, "</spectraldata>\n");
-
     }
-
 
 
     // Remember to close the file
@@ -1433,8 +1455,8 @@ RETURN_CODE CEvaluationLogFileHandler::FormatEvaluationResult(const CSpectrumInf
     string.AppendFormat("%s\t", simplifiedName.c_str());
 
     // 6. The (maximum) saturation ratio of the whole spectrum,
-    //			the (maximum) saturation ratio in the fit-region
-    //			and the normalized maximum intensity of the whole spectrum
+    //          the (maximum) saturation ratio in the fit-region
+    //          and the normalized maximum intensity of the whole spectrum
     if (maxIntensity > 0.0)
     {
         string.AppendFormat("%.2lf\t", info->m_peakIntensity / maxIntensity);
@@ -1449,15 +1471,23 @@ RETURN_CODE CEvaluationLogFileHandler::FormatEvaluationResult(const CSpectrumInf
 
     // 7. The delta of the fit
     if (result != NULL)
+    {
         string.AppendFormat("%.2e\t", result->m_delta);
+    }
     else
+    {
         string.AppendFormat("%.2e\t", 0.0);
+    }
 
     // 8. The chi-square of the fit
     if (result != NULL)
+    {
         string.AppendFormat("%.2e\t", result->m_chiSquare);
+    }
     else
+    {
         string.AppendFormat("%.2e\t", 0.0);
+    }
 
     // 9. The exposure time and the number of spectra averaged
     string.AppendFormat("%ld\t%ld\t", info->m_exposureTime, info->m_numSpec);
@@ -1468,9 +1498,13 @@ RETURN_CODE CEvaluationLogFileHandler::FormatEvaluationResult(const CSpectrumInf
         if (result != NULL)
         {
             if ((fabs(result->m_referenceResult[itSpecie].m_column) > 5e-2) && (fabs(result->m_referenceResult[itSpecie].m_columnError) > 5e-2))
+            {
                 string.AppendFormat("%.2lf\t%.2lf\t", result->m_referenceResult[itSpecie].m_column, result->m_referenceResult[itSpecie].m_columnError);
+            }
             else
+            {
                 string.AppendFormat("%.2e\t%.2e\t", result->m_referenceResult[itSpecie].m_column, result->m_referenceResult[itSpecie].m_columnError);
+            }
             string.AppendFormat("%.2lf\t%.2lf\t", result->m_referenceResult[itSpecie].m_shift, result->m_referenceResult[itSpecie].m_shiftError);
             string.AppendFormat("%.2lf\t%.2lf\t", result->m_referenceResult[itSpecie].m_squeeze, result->m_referenceResult[itSpecie].m_squeezeError);
         }
@@ -1482,9 +1516,13 @@ RETURN_CODE CEvaluationLogFileHandler::FormatEvaluationResult(const CSpectrumInf
 
     // 11. The quality of the fit
     if (result != NULL)
+    {
         string.AppendFormat("%d\t", result->IsOK());
+    }
     else
+    {
         string.AppendFormat("%d\t", 1);
+    }
 
     // 12. The offset
     string.AppendFormat("%.0lf\t", info->m_offset);
@@ -1509,15 +1547,15 @@ void FileHandler::CEvaluationLogFileHandler::SortScans(CArray<Evaluation::CScanR
     }
     else if (nElements <= 7)
     {
-        // For small lists, its much faster to do a bubble sorting of the 
-        //	list since this does not require so much copying back and forth
+        // For small lists, its much faster to do a bubble sorting of the
+        //  list since this does not require so much copying back and forth
         BubbleSortScans(array, ascending);
         return;
     }
     else
     {
-        CArray <Evaluation::CScanResult, Evaluation::CScanResult&> left;
-        CArray <Evaluation::CScanResult, Evaluation::CScanResult&> right;
+        CArray<Evaluation::CScanResult, Evaluation::CScanResult&> left;
+        CArray<Evaluation::CScanResult, Evaluation::CScanResult&> right;
         left.SetSize(halfSize);
         right.SetSize(halfSize);
 
@@ -1546,7 +1584,7 @@ void FileHandler::CEvaluationLogFileHandler::SortScans(CArray<Evaluation::CScanR
         result in the output-array 'result' */
 void FileHandler::CEvaluationLogFileHandler::MergeArrays(CArray<Evaluation::CScanResult, Evaluation::CScanResult&>& array1, CArray<Evaluation::CScanResult, Evaluation::CScanResult&>& array2, CArray<Evaluation::CScanResult, Evaluation::CScanResult&>& result, bool ascending)
 {
-    CDateTime	time1, time2;
+    CDateTime time1, time2;
     unsigned long it1 = 0; // iterator for array1
     unsigned long it2 = 0; // iterator for array2
     unsigned long itr = 0; // iterator for result
@@ -1643,8 +1681,8 @@ void FileHandler::CEvaluationLogFileHandler::BubbleSortScans(CArray<Evaluation::
         change = false;
         for (k = 0; k < nElements - 1; ++k)
         {
-            // If the second scan has started before the first, 
-            //	then change the order, otherwise don't do anything
+            // If the second scan has started before the first,
+            //  then change the order, otherwise don't do anything
             if (allStartTimes[k + 1] < allStartTimes[k])
             {
                 tmpTime = allStartTimes[k];

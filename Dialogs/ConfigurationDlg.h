@@ -20,7 +20,10 @@ public:
     virtual ~CConfigurationDlg();
 
     // Dialog Data
-    enum { IDD = IDD_CONFIGURATION_DIALOG };
+    enum
+    {
+        IDD = IDD_CONFIGURATION_DIALOG
+    };
 
     virtual BOOL OnInitDialog();
 
@@ -49,7 +52,6 @@ private:
 
     /** This function goes through the settings and checks their reasonability */
     RETURN_CODE CheckSettings();
-
 };
 
 }

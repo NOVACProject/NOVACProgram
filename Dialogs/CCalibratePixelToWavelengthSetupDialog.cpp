@@ -26,7 +26,8 @@ CCalibratePixelToWavelengthSetupDialog::~CCalibratePixelToWavelengthSetupDialog(
     m_standardCrossSections = nullptr;
 }
 
-BOOL CCalibratePixelToWavelengthSetupDialog::OnInitDialog() {
+BOOL CCalibratePixelToWavelengthSetupDialog::OnInitDialog()
+{
     CDialog::OnInitDialog();
 
     UpdateData(FALSE);

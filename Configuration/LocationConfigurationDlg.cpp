@@ -66,7 +66,8 @@ void CLocationConfigurationDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_EDIT_MINFLUX, m_minFlux);
     DDX_Control(pDX, IDC_EDIT_MAXFLUX, m_maxFlux);
 
-    if (m_curScanner != nullptr) {
+    if (m_curScanner != nullptr)
+    {
         DDX_Text(pDX, IDC_EDIT_SITE, m_curScanner->site);
         DDX_Text(pDX, IDC_EDIT_OBSERVATORY, m_curScanner->observatory);
         DDX_Text(pDX, IDC_EDIT_SERIALNUMBER, m_curScanner->spec[0].serialNumber);
@@ -78,9 +79,9 @@ void CLocationConfigurationDlg::DoDataExchange(CDataExchange* pDX)
         DDX_Check(pDX, IDC_CHECK_PLOT_FLUX_HISTORY, m_curScanner->plotFluxHistory);
         DDX_Text(pDX, IDC_EDIT_MINFLUX, m_curScanner->minFlux);
         DDX_Text(pDX, IDC_EDIT_MAXFLUX, m_curScanner->maxFlux);
-
     }
-    else {
+    else
+    {
         CString site, observatory, serialNumber;
         DDX_Text(pDX, IDC_EDIT_SITE, site);
         DDX_Text(pDX, IDC_EDIT_OBSERVATORY, observatory);
@@ -116,7 +117,7 @@ BOOL CLocationConfigurationDlg::OnInitDialog()
 
     CDialog::OnInitDialog();
 
-    // The volcanoes - combo box 
+    // The volcanoes - combo box
     UpdateVolcanoList();
 
     // The spectrometer models combo box
@@ -151,13 +152,17 @@ BOOL CLocationConfigurationDlg::OnInitDialog()
     // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CLocationConfigurationDlg::InitToolTips() {
+void CLocationConfigurationDlg::InitToolTips()
+{
     // Don't initialize the tool tips twice
     if (m_toolTip.m_hWnd != nullptr)
+    {
         return;
+    }
 
     // Enable the tool tips
-    if (!m_toolTip.Create(this)) {
+    if (!m_toolTip.Create(this))
+    {
         TRACE0("Failed to create tooltip control\n");
     }
     m_toolTip.AddTool(&m_labelVolcano, IDC_EDIT_VOLCANO);
@@ -174,36 +179,44 @@ void CLocationConfigurationDlg::InitToolTips() {
     m_toolTip.Activate(TRUE);
 }
 
-BOOL CLocationConfigurationDlg::OnKillActive() {
+BOOL CLocationConfigurationDlg::OnKillActive()
+{
     return CPropertyPage::OnKillActive();
 }
 
-void CLocationConfigurationDlg::SaveData() {
+void CLocationConfigurationDlg::SaveData()
+{
     UpdateData(TRUE);
 }
 
-void CLocationConfigurationDlg::UpdateDlg() {
+void CLocationConfigurationDlg::UpdateDlg()
+{
     UpdateData(FALSE);
 }
 
-BOOL CLocationConfigurationDlg::PreTranslateMessage(MSG* pMsg) {
+BOOL CLocationConfigurationDlg::PreTranslateMessage(MSG* pMsg)
+{
     m_toolTip.RelayEvent(pMsg);
 
     return CPropertyPage::PreTranslateMessage(pMsg);
 }
 
-void CLocationConfigurationDlg::OnChangeScanner() {
+void CLocationConfigurationDlg::OnChangeScanner()
+{
 
     // Then change the settings so that we're using the newly selected scanner
     CSystemConfigurationPage::OnChangeScanner();
 
-    if (m_curScanner == nullptr) {
+    if (m_curScanner == nullptr)
+    {
         return;
     }
 
     // Then Update the volcano combo-box
-    for (unsigned int i = 0; i < g_volcanoes.m_volcanoNum; ++i) {
-        if (Equals(g_volcanoes.m_name[i], m_curScanner->volcano)) {
+    for (unsigned int i = 0; i < g_volcanoes.m_volcanoNum; ++i)
+    {
+        if (Equals(g_volcanoes.m_name[i], m_curScanner->volcano))
+        {
             m_comboVolcano.SetCurSel(i);
             break;
         }
@@ -231,16 +244,22 @@ BOOL ConfigurationDialog::CLocationConfigurationDlg::OnSetActive()
     return CSystemConfigurationPage::OnSetActive();
 }
 
-void CLocationConfigurationDlg::OnChangeVolcano() {
+void CLocationConfigurationDlg::OnChangeVolcano()
+{
 
     if (m_curScanner == nullptr)
+    {
         return;
+    }
 
     int curSel = m_comboVolcano.GetCurSel();
     if (curSel < 0)
+    {
         return;
+    }
 
-    if (curSel == g_volcanoes.m_volcanoNum) {
+    if (curSel == g_volcanoes.m_volcanoNum)
+    {
         // The user has selected the 'Other' - volcano, add one more volcano to the list
         AddAVolcano();
     }
@@ -270,11 +289,15 @@ void CLocationConfigurationDlg::RecreateSpectrometerModelCombo()
 void CLocationConfigurationDlg::OnChangeModel()
 {
     if (m_curScanner == nullptr)
+    {
         return;
+    }
 
     const int curSel = m_comboSpectrometerModel.GetCurSel();
     if (curSel < 0)
+    {
         return;
+    }
 
     SpectrometerModel spectrometerModel = CSpectrometerDatabase::GetInstance().GetModel(curSel);
 
@@ -304,13 +327,18 @@ void CLocationConfigurationDlg::OnChangeModel()
 }
 
 /** The user has changed the number of channels in the spectrometer */
-void CLocationConfigurationDlg::OnChangeChannelNum() {
+void CLocationConfigurationDlg::OnChangeChannelNum()
+{
     if (m_curScanner == nullptr)
+    {
         return;
+    }
 
     int curSel = m_comboSpectrometerChannels.GetCurSel();
     if (curSel < 0)
+    {
         return;
+    }
 
     m_curScanner->spec[0].channelNum = curSel + 1;
 
@@ -319,11 +347,12 @@ void CLocationConfigurationDlg::OnChangeChannelNum() {
 
 
 /** Adds a volcano to the list of volcanoes */
-void	CLocationConfigurationDlg::AddAVolcano() {
+void CLocationConfigurationDlg::AddAVolcano()
+{
     CString name, tempStr;
     Common common;
     double latitude, longitude;
-    long	altitude;
+    long altitude;
 
     // 1. Ask the user about the name of the volcano
     Dialogs::CQueryStringDialog nameDlg;
@@ -332,7 +361,9 @@ void	CLocationConfigurationDlg::AddAVolcano() {
     INT_PTR ret = nameDlg.DoModal();
 
     if (IDCANCEL == ret)
+    {
         return;
+    }
 
     // 2. Ask the user about the latitude, longitude and altitude of the source
     nameDlg.m_windowText.Format("The latitude of the source?");
@@ -341,21 +372,27 @@ void	CLocationConfigurationDlg::AddAVolcano() {
     ret = nameDlg.DoModal();
 
     if (IDCANCEL == ret || 1 != sscanf(tempStr, "%lf", &latitude))
+    {
         return;
+    }
 
     nameDlg.m_windowText.Format("The longitude of the source?");
     tempStr.Format("0.0");
     ret = nameDlg.DoModal();
 
     if (IDCANCEL == ret || 1 != sscanf(tempStr, "%lf", &longitude))
+    {
         return;
+    }
 
     nameDlg.m_windowText.Format("The altitude of the source?");
     tempStr.Format("0");
     ret = nameDlg.DoModal();
 
     if (IDCANCEL == ret || 1 != sscanf(tempStr, "%ld", &altitude))
+    {
         return;
+    }
 
     // 3. Add the user-given source to the list of volcanoes
     unsigned int index = g_volcanoes.m_volcanoNum;
@@ -376,11 +413,13 @@ void	CLocationConfigurationDlg::AddAVolcano() {
 }
 
 /** (Re-)initializes the list of volcanoes */
-void CLocationConfigurationDlg::UpdateVolcanoList() {
+void CLocationConfigurationDlg::UpdateVolcanoList()
+{
     CString str;
 
     m_comboVolcano.ResetContent();
-    for (unsigned int k = 0; k < g_volcanoes.m_volcanoNum; ++k) {
+    for (unsigned int k = 0; k < g_volcanoes.m_volcanoNum; ++k)
+    {
         str.Format("%s", (LPCSTR)g_volcanoes.m_name[k]);
         m_comboVolcano.AddString(str);
     }
@@ -391,12 +430,15 @@ void CLocationConfigurationDlg::UpdateVolcanoList() {
 void CLocationConfigurationDlg::OnChangeElectronics()
 {
     if (m_curScanner == nullptr)
+    {
         return;
+    }
 
     int curSel = m_comboElectronics.GetCurSel();
     if (curSel < 0)
+    {
         return;
+    }
 
     m_curScanner->electronicsBox = (ELECTRONICS_BOX)curSel;
 }
-

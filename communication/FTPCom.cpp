@@ -160,7 +160,7 @@ bool CFTPCom::DownloadAFile(LPCTSTR remoteFile, LPCTSTR fileFullName)
         bool result = (r == TRUE);
 
         if (!result)
-        { 
+        {
             // this means something went wrong
             int ftpError = GetLastError();
             if (ftpError != 0)
@@ -170,13 +170,14 @@ bool CFTPCom::DownloadAFile(LPCTSTR remoteFile, LPCTSTR fileFullName)
                 DWORD code;
                 DWORD size_needed = 0;
                 InternetGetLastResponseInfo(&code, nullptr, &size_needed);
-                char *message = (char*)malloc(size_needed + 1);
+                char* message = (char*)malloc(size_needed + 1);
                 InternetGetLastResponseInfo(&code, message, &size_needed);
                 msg.Format("Error message :%s", message);
                 ShowMessage(msg);
             }
         }
-        else {
+        else
+        {
             // SUCCESS!!
             msg.Format("Finish downloading %s", fileFullName);
             ShowMessage(msg);
@@ -219,18 +220,19 @@ int CFTPCom::UploadFile(LPCTSTR localFile, LPCTSTR remoteFile)
     }
 
     // See if we can find the file on the remote computer, if so
-    //	then we can't upload it...
+    //  then we can't upload it...
     if (FindFile((CString&)remoteFile))
     {
         return 1;
     }
 
-    try {
+    try
+    {
         // Try to upload the file
         result = m_FtpConnection->PutFile(localFile, remoteFile);
-
     }
-    catch (CInternetException *pEx) {
+    catch (CInternetException* pEx)
+    {
         // catch errors from WinINet
         TCHAR szErr[255];
         if (pEx->GetErrorMessage(szErr, 255))
@@ -251,7 +253,8 @@ int CFTPCom::UploadFile(LPCTSTR localFile, LPCTSTR remoteFile)
 int CFTPCom::CreateDirectory(LPCTSTR remoteDirectory)
 {
     // Check that we are connected
-    if (m_FtpConnection == nullptr) {
+    if (m_FtpConnection == nullptr)
+    {
         ShowMessage("ERROR: Attempted to create directory using FTP while not connected!");
         return 0;
     }
@@ -262,7 +265,8 @@ int CFTPCom::CreateDirectory(LPCTSTR remoteDirectory)
 
 bool CFTPCom::SetCurDirectory(CString curDirName)
 {
-    if (m_FtpConnection == nullptr) {
+    if (m_FtpConnection == nullptr)
+    {
         ShowMessage("ERROR: Attempted to set directory using FTP while not connected!");
         return false; // cannot connect...
     }
@@ -296,7 +300,8 @@ bool CFTPCom::FindFile(const CString& fileName)
 BOOL CFTPCom::DeleteFolder(const CString& folder)
 {
     // Check
-    if (m_FtpConnection == nullptr) {
+    if (m_FtpConnection == nullptr)
+    {
         ShowMessage("ERROR: Attempted to delete folder using FTP while not connected");
         return 0;
     }
@@ -387,7 +392,8 @@ void CFTPCom::ReadResponse(CInternetFile* file)
     unsigned int rd = 0;
 
     // Check input-parameter...
-    if (file == nullptr) {
+    if (file == nullptr)
+    {
         return;
     }
 

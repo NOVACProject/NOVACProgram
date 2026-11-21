@@ -66,7 +66,8 @@ BOOL CSplitPakFilesDlg::OnInitDialog()
 }
 
 /** Called to let the user browse for .pak files to split */
-void CSplitPakFilesDlg::OnBrowsePakFiles() {
+void CSplitPakFilesDlg::OnBrowsePakFiles()
+{
     TCHAR filter[] = _T("Pak Files|*.pak|All Files|*.*||");
     CString str;
 
@@ -74,7 +75,9 @@ void CSplitPakFilesDlg::OnBrowsePakFiles() {
     Dialogs::CMultiSelectOpenFileDialog fileDialog(TRUE, NULL, NULL, OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_ALLOWMULTISELECT | OFN_EXPLORER, filter);
 
     if (fileDialog.DoModal() != IDOK)
+    {
         return;
+    }
 
     /** Reset the old values */
     this->m_pakFileNum = 0;
@@ -83,7 +86,8 @@ void CSplitPakFilesDlg::OnBrowsePakFiles() {
     /** Go through the filenames */
     POSITION pos = fileDialog.GetStartPosition();
 
-    while (pos) {
+    while (pos)
+    {
         str = fileDialog.GetNextPathName(pos);
 
         m_pakFile.AddTail(str);
@@ -92,16 +96,17 @@ void CSplitPakFilesDlg::OnBrowsePakFiles() {
 
     str.Format("%d pak-files selected", m_pakFileNum);
     this->SetDlgItemText(IDC_LABEL_PAKFILES, str);
-
 }
 
 /** Called to let the user browse for an output directory */
-void CSplitPakFilesDlg::OnBrowseOutputDir() {
+void CSplitPakFilesDlg::OnBrowseOutputDir()
+{
     m_outputDir.Format("");
     Common common;
 
     // let the user browse for an output directory
-    if (!common.BrowseForDirectory(m_outputDir)) {
+    if (!common.BrowseForDirectory(m_outputDir))
+    {
         m_outputDir.Format("");
         return;
     }
@@ -109,19 +114,24 @@ void CSplitPakFilesDlg::OnBrowseOutputDir() {
     SetDlgItemText(IDC_EDIT_OUTPUTDIRECTORY, m_outputDir);
 
     if (m_pakFileNum > 0)
+    {
         m_btnSplitFiles.EnableWindow(TRUE);
-
+    }
 }
 
 /** Called when the user has edited the output-directory edit-box */
-void CSplitPakFilesDlg::OnChangeOutputDir() {
+void CSplitPakFilesDlg::OnChangeOutputDir()
+{
     GetDlgItemText(IDC_EDIT_OUTPUTDIRECTORY, m_outputDir);
 
     if (m_pakFileNum > 0)
+    {
         m_btnSplitFiles.EnableWindow(TRUE);
+    }
 }
 
-LRESULT CSplitPakFilesDlg::OnProgress(WPARAM wp, LPARAM lp) {
+LRESULT CSplitPakFilesDlg::OnProgress(WPARAM wp, LPARAM lp)
+{
     CString str;
     int progress = (int)wp;
 
@@ -135,7 +145,8 @@ LRESULT CSplitPakFilesDlg::OnProgress(WPARAM wp, LPARAM lp) {
 
     return 0;
 }
-LRESULT CSplitPakFilesDlg::OnFailure(WPARAM wp, LPARAM lp) {
+LRESULT CSplitPakFilesDlg::OnFailure(WPARAM wp, LPARAM lp)
+{
     CString str;
 
     m_progressBar.SetPos(0);
@@ -150,9 +161,11 @@ LRESULT CSplitPakFilesDlg::OnFailure(WPARAM wp, LPARAM lp) {
 
 /** Called when the user pressed the 'split files' button.
         Does the actual work in this dialog. */
-void CSplitPakFilesDlg::OnSplitFiles() {
+void CSplitPakFilesDlg::OnSplitFiles()
+{
     // Check the input
-    if (m_pakFileNum <= 0) {
+    if (m_pakFileNum <= 0)
+    {
         MessageBox("No pak files to split");
         return;
     }
@@ -171,7 +184,8 @@ void CSplitPakFilesDlg::OnSplitFiles() {
     AfxBeginThread(SplitPakFiles, this, THREAD_PRIORITY_NORMAL, 0, 0, NULL);
 }
 
-UINT SplitPakFiles(LPVOID pParam) {
+UINT SplitPakFiles(LPVOID pParam)
+{
     CString errorMsg;
 
     Dialogs::CSplitPakFilesDlg* dialog = (Dialogs::CSplitPakFilesDlg*)pParam;
@@ -183,11 +197,13 @@ UINT SplitPakFiles(LPVOID pParam) {
     POSITION pos = dialog->m_pakFile.GetHeadPosition();
     int pakFileNum = 0;
 
-    while (pos != NULL) {
+    while (pos != NULL)
+    {
         CString& pakFile = dialog->m_pakFile.GetNext(pos); // <-- get the next .pak file in the list
 
         // let the pakfilehandler read the pakfile
-        if (1 == pakFileHandler->ReadDownloadedFile(pakFile, false, false, &dialog->m_outputDir)) {
+        if (1 == pakFileHandler->ReadDownloadedFile(pakFile, false, false, &dialog->m_outputDir))
+        {
             errorMsg.Format("Error in reading pakfile: %s", (LPCSTR)pakFile);
             MessageBox(NULL, errorMsg, "Error", MB_OK);
             dialog->PostMessage(WM_EVAL_FAILURE); // <-- tell the dialog about the crash!
@@ -198,8 +214,7 @@ UINT SplitPakFiles(LPVOID pParam) {
         dialog->PostMessage(WM_PROGRESS, ++pakFileNum);
     }
 
-    delete(pakFileHandler);
+    delete (pakFileHandler);
 
     return 0;
 }
-

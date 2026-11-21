@@ -49,7 +49,9 @@ void CMergeEvalLogDlg::OnBrowseEvallogs()
     Dialogs::CMultiSelectOpenFileDialog fileDialog(TRUE, NULL, NULL, OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_ALLOWMULTISELECT | OFN_EXPLORER, filter);
 
     if (fileDialog.DoModal() != IDOK)
+    {
         return;
+    }
 
     /** Reset the old values */
     this->m_evalLogFile.RemoveAll();
@@ -80,7 +82,8 @@ void CMergeEvalLogDlg::OnBrowseOutputFileEvallog()
     filter[n + 2] = 0;
 
     // let the user browse for an output directory
-    if (!common.BrowseForFile_SaveAs(filter, fileName)) {
+    if (!common.BrowseForFile_SaveAs(filter, fileName))
+    {
         return;
     }
     SetDlgItemText(IDC_EDIT_OUTPUTFILE_EVALLOG, fileName);
@@ -118,7 +121,8 @@ void CMergeEvalLogDlg::OnBnClickedMerge()
 
         return;
     }
-    else {
+    else
+    {
         MessageBox("Done!", "Info", MB_OK);
     }
 

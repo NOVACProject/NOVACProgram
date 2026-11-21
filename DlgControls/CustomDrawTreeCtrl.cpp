@@ -68,12 +68,11 @@ void CCustomDrawTreeCtrl::OnPaint()
         // Do not meddle with selected items or drop highlighted items
         UINT selflag = TVIS_DROPHILITED | TVIS_SELECTED;
 
-        //if ( !(GetTreeCtrl().GetItemState( hItem, selflag ) & selflag ) 
-        //	&& m_mapColorFont.Lookup( hItem, cf ))
+        //if ( !(GetTreeCtrl().GetItemState( hItem, selflag ) & selflag )
+        //  && m_mapColorFont.Lookup( hItem, cf ))
 
         if ((GetItemState(hItem, selflag) & selflag) && ::GetFocus() == m_hWnd)
         {
-
         }
         else
         {
@@ -87,8 +86,11 @@ void CCustomDrawTreeCtrl::OnPaint()
                 LOGFONT logfont;
 
                 if (cf.logfont.lfFaceName[0] != '\0')
+                {
                     logfont = cf.logfont;
-                else {
+                }
+                else
+                {
                     // No font specified, so use window font
                     CFont* pFont = GetFont();
                     pFont->GetLogFont(&logfont);
@@ -98,9 +100,13 @@ void CCustomDrawTreeCtrl::OnPaint()
                 pFontDC = memDC.SelectObject(&fontDC);
 
                 if (cf.color != (COLORREF)-1)
+                {
                     memDC.SetTextColor(cf.color);
+                }
                 else
+                {
                     memDC.SetTextColor(GetSysColor(COLOR_WINDOWTEXT));
+                }
 
 
                 CString sItem = GetItemText(hItem);
@@ -117,7 +123,7 @@ void CCustomDrawTreeCtrl::OnPaint()
 
 
     dc.BitBlt(rcClip.left, rcClip.top, rcClip.Width(), rcClip.Height(), &memDC,
-                rcClip.left, rcClip.top, SRCCOPY);
+        rcClip.left, rcClip.top, SRCCOPY);
 
     memDC.DeleteDC();
 }

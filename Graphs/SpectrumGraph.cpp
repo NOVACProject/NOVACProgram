@@ -40,13 +40,18 @@ void CSpectrumGraph::OnMouseMove(UINT nFlags, CPoint point)
 
     //  parentWnd->PostMessage(WM_SHOW_LATLONG);
 
-        // If the user is dragging with the left mouse button pressed
-    if (nFlags & MK_LBUTTON) {
+    // If the user is dragging with the left mouse button pressed
+    if (nFlags & MK_LBUTTON)
+    {
         if (!m_userZoomableGraph)
+        {
             return; // the user is not allowed to zoom, quit it...
+        }
 
         if (!m_zooming)
+        {
             m_zooming = true;
+        }
 
         // in case we haven't established the memory dc's
         CBitmap memBitmap;
@@ -57,7 +62,8 @@ void CSpectrumGraph::OnMouseMove(UINT nFlags, CPoint point)
         DrawShadedRect(lbdIntens, lbdLambda, m_curIntens, m_curLambda);
         return;
     }
-    if (m_zooming) {
+    if (m_zooming)
+    {
         m_zooming = false;
 
         // in case we haven't established the memory dc's
@@ -81,7 +87,8 @@ void CSpectrumGraph::OnLButtonUp(UINT nFlags, CPoint point)
     alpha = (point.y - m_rectPlot.top) / (double)(m_rectPlot.bottom - m_rectPlot.top);
     m_curIntens = alpha * m_axisOptions.first.bottom + (1 - alpha) * m_axisOptions.first.top;
 
-    if (m_zooming && m_userZoomableGraph) {
+    if (m_zooming && m_userZoomableGraph)
+    {
         // Remove any previously drawn squares...
         m_dcPlot.BitBlt(0, 0, m_nClientWidth, m_nClientHeight, &m_dcRoute, 0, 0, SRCCOPY);
         Invalidate(); // <-- Redraw everything
@@ -94,10 +101,10 @@ void CSpectrumGraph::OnLButtonUp(UINT nFlags, CPoint point)
 
         parentWnd->PostMessage(WM_ZOOM);
     }
-    else {
+    else
+    {
         //   parentWnd->PostMessage(WM_LBU_IN_GPSPLOT);
     }
-
 }
 
 void CSpectrumGraph::OnLButtonDown(UINT nFlags, CPoint point)
@@ -155,7 +162,8 @@ BOOL CSpectrumGraph::Create(DWORD dwStyle, const RECT& rect,
         rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top,
         pParentWnd->GetSafeHwnd(), (HMENU)nID);
 
-    if (result != 0) {
+    if (result != 0)
+    {
         InvalidateCtrl();
         SetYAxisNumberFormat(FORMAT_BINARY);
     }
@@ -164,13 +172,15 @@ BOOL CSpectrumGraph::Create(DWORD dwStyle, const RECT& rect,
 } // Create
 
 
-void CSpectrumGraph::OnPaint() {
+void CSpectrumGraph::OnPaint()
+{
     CGraphCtrl::OnPaint();
 }
 
 /** Draws a shaded rectangle between with the two given points
         as corners */
-void CSpectrumGraph::DrawShadedRect(double lat1, double lon1, double lat2, double lon2) {
+void CSpectrumGraph::DrawShadedRect(double lat1, double lon1, double lat2, double lon2)
+{
     double x[5], y[5];
     double maxX, minX, maxY, minY;
     double xFactor, yFactor, offsLeft, offsBottom;
@@ -204,7 +214,9 @@ void CSpectrumGraph::DrawShadedRect(double lat1, double lon1, double lat2, doubl
 
     // make sure there's a memory dc for the plot
     if (m_dcRoute.GetSafeHdc() == NULL)
+    {
         return;
+    }
 
     GetDataRange(x, y, 5, maxX, minX, maxY, minY);
 
@@ -220,7 +232,8 @@ void CSpectrumGraph::DrawShadedRect(double lat1, double lon1, double lat2, doubl
     prevX = (int)(left + (x[0] - offsLeft) * xFactor);
     prevY = (int)(bottom - (y[0] - offsBottom) * yFactor);
 
-    for (i = 0; i < 5; ++i) {
+    for (i = 0; i < 5; ++i)
+    {
         // Calculate the next point...
         curX = (int)(left + xFactor * (x[i] - offsLeft));
         curY = (int)(bottom - (y[i] - offsBottom) * yFactor);
@@ -242,17 +255,19 @@ void CSpectrumGraph::DrawShadedRect(double lat1, double lon1, double lat2, doubl
     // Invalidate the active region
     // TODO: Use InvalidateRect instead!!
     Invalidate();
-
 }
 
 /** Gets the coordinate values that the user wants to zoom into.
         If the user does not want to zoom, the values in 'rect' will be zero. */
-void CSpectrumGraph::GetZoomRect(struct plotRange& range) {
-    if (m_zoomRect.minIntens == m_zoomRect.maxIntens && m_zoomRect.minIntens == 0) {
+void CSpectrumGraph::GetZoomRect(struct plotRange& range)
+{
+    if (m_zoomRect.minIntens == m_zoomRect.maxIntens && m_zoomRect.minIntens == 0)
+    {
         range.maxIntens = range.maxLambda = range.minIntens = range.minLambda = 0.0;
         return;
     }
-    else {
+    else
+    {
         range.maxIntens = m_zoomRect.maxIntens;
         range.maxLambda = m_zoomRect.maxLambda;
         range.minIntens = m_zoomRect.minIntens;
@@ -262,7 +277,8 @@ void CSpectrumGraph::GetZoomRect(struct plotRange& range) {
 }
 
 /** Resets the range of the plot */
-void CSpectrumGraph::ResetZoomRect() {
+void CSpectrumGraph::ResetZoomRect()
+{
     m_zoomRect.minIntens = 0.0;
     m_zoomRect.maxIntens = 0.0;
     m_zoomRect.minLambda = 0.0;

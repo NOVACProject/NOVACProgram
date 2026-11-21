@@ -40,7 +40,9 @@ RETURN_CODE CWindFileReader::ReadWindFile(CWindFieldDatabase& result)
 
         // ignore comment lines
         if (szLine[0] == '#' || szLine[0] == '%')
+        {
             continue;
+        }
 
         // convert the string to all lower-case letters
         for (unsigned int it = 0; it < strlen(szLine); ++it)
@@ -61,7 +63,7 @@ RETURN_CODE CWindFileReader::ReadWindFile(CWindFieldDatabase& result)
             continue;
         }
 
-        // Split the scan information up into tokens and parse them. 
+        // Split the scan information up into tokens and parse them.
         char* szToken = (char*)(LPCSTR)szLine;
         int curCol = -1;
         while (szToken = strtok(szToken, " \t"))
@@ -75,9 +77,13 @@ RETURN_CODE CWindFileReader::ReadWindFile(CWindFieldDatabase& result)
                 int nValues;
 
                 if (strstr(szToken, ":"))
+                {
                     nValues = sscanf(szToken, "%d:%d:%d", &fValue1, &fValue2, &fValue3);
+                }
                 else
+                {
                     nValues = sscanf(szToken, "%d.%d.%d", &fValue1, &fValue2, &fValue3);
+                }
 
                 if (nValues == 2)
                 {
@@ -99,9 +105,13 @@ RETURN_CODE CWindFileReader::ReadWindFile(CWindFieldDatabase& result)
                 int nValues;
 
                 if (strstr(szToken, "_"))
+                {
                     nValues = sscanf(szToken, "%d_%d_%d", &fValue1, &fValue2, &fValue3);
+                }
                 else
+                {
                     nValues = sscanf(szToken, "%d.%d.%d", &fValue1, &fValue2, &fValue3);
+                }
 
                 if (nValues == 2)
                 {
@@ -156,7 +166,8 @@ RETURN_CODE CWindFileReader::ReadWindFile(CWindFieldDatabase& result)
     // close the file
     fclose(f);
 
-    if (result.m_containsWindDirection == false && result.m_containsWindSpeed == false && result.m_containsPlumeHeight == false) {
+    if (result.m_containsWindDirection == false && result.m_containsWindSpeed == false && result.m_containsPlumeHeight == false)
+    {
         return FAIL;
     }
 
@@ -187,9 +198,13 @@ void CWindFileReader::ParseFileHeader(const char szLine[8192], CWindFieldDatabas
     // Tokenize the string and see which column belongs to which what value
     char str[8192];
     if (szLine[0] == '#')
+    {
         strncpy(str, szLine + 1, 8191 * sizeof(char));
+    }
     else
+    {
         strncpy(str, szLine, 8192 * sizeof(char));
+    }
     char* szToken = (char*)(LPCSTR)str;
 
     while (szToken = strtok(szToken, "\t"))
@@ -270,12 +285,16 @@ void CWindFileReader::ParseFileHeader(const char szLine[8192], CWindFieldDatabas
         }
     }
 
-    // Make sure that columns which are not found are not in the 
+    // Make sure that columns which are not found are not in the
     //  log-columns structure.
     if (!database.m_containsWindDirection)
+    {
         m_col.windDirection = -1;
+    }
     if (!database.m_containsWindSpeed)
+    {
         m_col.windSpeed = -1;
+    }
 
 
     // done!!!

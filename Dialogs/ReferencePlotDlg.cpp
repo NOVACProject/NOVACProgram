@@ -11,10 +11,12 @@ IMPLEMENT_DYNAMIC(CReferencePlotDlg, CDialog)
 
 CReferencePlotDlg::CReferencePlotDlg(novac::CFitWindow& window, CWnd* pParent /*=NULL*/)
     : CDialog(CReferencePlotDlg::IDD, pParent), m_window(window)
-{}
+{
+}
 
 CReferencePlotDlg::~CReferencePlotDlg()
-{}
+{
+}
 
 void CReferencePlotDlg::DoDataExchange(CDataExchange* pDX)
 {
@@ -149,21 +151,22 @@ void CReferencePlotDlg::DrawGraph()
     {
         m_graphs[k].XYPlot(m_number + m_window.fitLow, m_data[k].data() + m_window.fitLow, m_window.fitHigh - m_window.fitLow);
     }
-
 }
 void Dialogs::CReferencePlotDlg::OnSize(UINT nType, int cx, int cy)
 {
     CDialog::OnSize(nType, cx, cy);
 
     if (!IsWindow(m_graphs[0].m_hWnd))
+    {
         return;
+    }
 
     unsigned int nReferences = m_window.NumberOfReferences();
 
-    int margin = 5;				// the space between each plot
-    int leftMargin = 25;		// the space to the left, for specie names
-    int labelWidth = 10;		// the width of the labels
-    int titleBarHeight = 30;	// the height of the title bar...
+    int margin = 5;    // the space between each plot
+    int leftMargin = 25;  // the space to the left, for specie names
+    int labelWidth = 10;  // the width of the labels
+    int titleBarHeight = 30; // the height of the title bar...
     int plotHeight = (cy - nReferences * margin) / nReferences; // the height of each graph
 
     // The width of each graph

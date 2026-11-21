@@ -32,9 +32,12 @@ CSerialControllerWithTx::CSerialControllerWithTx(void)
 
     pakFileHandler = new FileHandler::CPakFileHandler(m_log);
     m_storageDirectory.Format("%sTemp\\", (LPCSTR)g_settings.outputDirectory);
-    if (CreateDirectoryStructure(m_storageDirectory)) { // Make sure that the storage directory exists
+    if (CreateDirectoryStructure(m_storageDirectory))
+    {
+        // Make sure that the storage directory exists
         GetSysTempFolder(m_storageDirectory);
-        if (CreateDirectoryStructure(m_storageDirectory)) {
+        if (CreateDirectoryStructure(m_storageDirectory))
+        {
             errorMsg.Format("Could not create storage-directory for serial-data!! Please check settings and restart");
             MessageBox(NULL, errorMsg, "Serious error", MB_OK);
         }
@@ -46,13 +49,16 @@ CSerialControllerWithTx::CSerialControllerWithTx(void)
 }
 
 
-CSerialControllerWithTx::CSerialControllerWithTx(ELECTRONICS_BOX box) {
+CSerialControllerWithTx::CSerialControllerWithTx(ELECTRONICS_BOX box)
+{
 
     CString errorMsg;
 
     pakFileHandler = new FileHandler::CPakFileHandler(m_log);
     m_storageDirectory.Format("%sTemp\\", (LPCSTR)g_settings.outputDirectory);
-    if (CreateDirectoryStructure(m_storageDirectory)) { // Make sure that the storage directory exists
+    if (CreateDirectoryStructure(m_storageDirectory))
+    {
+        // Make sure that the storage directory exists
         errorMsg.Format("Could not create storage-directory for serial-data!! Please check settings and restart");
         MessageBox(NULL, errorMsg, "Serious error", MB_OK);
     }
@@ -93,20 +99,22 @@ void CSerialControllerWithTx::SetSerialPort(int serialID, int COMPort, int baudr
 
     // Make one directory for each instrument...
     m_storageDirectory.Format("%sTemp\\%s\\", (LPCSTR)g_settings.outputDirectory, (LPCSTR)m_spectrometerSerialNumber);
-    if (CreateDirectoryStructure(m_storageDirectory)) { // Make sure that the storage directory exists
+    if (CreateDirectoryStructure(m_storageDirectory))
+    {
+        // Make sure that the storage directory exists
         GetSysTempFolder(m_storageDirectory);
-        if (CreateDirectoryStructure(m_storageDirectory)) {
+        if (CreateDirectoryStructure(m_storageDirectory))
+        {
             errorMsg.Format("Could not create storage-directory for serial-data!! Please check settings and restart");
             MessageBox(NULL, errorMsg, "Serious error", MB_OK);
         }
     }
-
 }
 
 void CSerialControllerWithTx::SetDefaultPort()
 {
     sourceBufferPointer = 0;
-    //	m_mainIndex		= 0;
+    //  m_mainIndex     = 0;
     m_Port.baudrate = 115200;
     m_Port.COMPort = 1;
     m_Port.length = 8;
@@ -122,7 +130,9 @@ int CSerialControllerWithTx::InitCommandLine()
     command[0] = CR;
     command[1] = LF;
     if (!WriteSerial(command, 2))
+    {
         return FALSE;
+    }
     return TRUE;
 }
 
@@ -154,7 +164,7 @@ bool CSerialControllerWithTx::StartTx()
     Bye();
     Sleep(5000);
     // Check reply from remote PC, judge whether tx is started
-    for (i = 0; i < 5; i++)	//avoid tx loop 2007.4.30
+    for (i = 0; i < 5; i++) //avoid tx loop 2007.4.30
     {
         InitCommandLine(); // to avoid "qtx"
         SendCommand("a:\\tx");
@@ -178,7 +188,9 @@ BOOL CSerialControllerWithTx::IsTxStarted(long timeout)
     SendCommand(TX_HELLO);
     txt[0] = 0;
     if (CheckSerial(m_timeout))
+    {
         ReadSerial(txt, 1);
+    }
 
     if (txt[0] == TX_ACK)
     {
@@ -215,19 +227,29 @@ RETURN_CODE CSerialControllerWithTx::Resync()
         SendCommand(TX_HELLO);
         txt[0] = 0;
         if (CheckSerial(m_timeout))
+        {
             ReadSerial(txt, 1);
+        }
         if (txt[0] == TX_ACK)
+        {
             return SUCCESS;
+        }
         else
         {
             if (RestartTx(m_timeout))
+            {
                 return SUCCESS;
+            }
             else
+            {
                 continue;
+            }
         }
     }
     if (txt[0] == TX_ACK)
+    {
         return SUCCESS;
+    }
     else
     {
         ShowMessage("Resync fail");
@@ -238,16 +260,18 @@ RETURN_CODE CSerialControllerWithTx::Resync()
 //download file from remote PC
 RETURN_CODE CSerialControllerWithTx::GetFile(char* fileName, CString filePath, char diskName)
 {
-    //	#define maxchunk 8192
+    //  #define maxchunk 8192
     unsigned long maxchunk;
-    if (m_electronicsBox == BOX_MOXA) {
+    if (m_electronicsBox == BOX_MOXA)
+    {
         maxchunk = 2048; // This is necessary since it is not possible to download too large chunks using the Axis and the radio modems!!!
     }
-    else {
+    else
+    {
         maxchunk = 8192;
     }
     long tmp;
-    unsigned char* mem, ok;
+    unsigned char *mem, ok;
     unsigned long size, retries, sendlen, start, rstart;
     unsigned short rlen, chksum1, chksum2;
     time_t startTime, stopTime;
@@ -256,9 +280,13 @@ RETURN_CODE CSerialControllerWithTx::GetFile(char* fileName, CString filePath, c
     char fullfileName[64];
     //set the name of the file which will be downloaded
     if (diskName == 'A' && m_electronicsBox != BOX_MOXA)
+    {
         sprintf(fullfileName, "%c:\\%s", diskName, fileName);
+    }
     else
+    {
         sprintf(fullfileName, "%s", fileName);
+    }
     m_ErrorMsg.Format("Will download %s", fullfileName);
     ShowMessage(m_ErrorMsg, m_connectionID);
 
@@ -277,15 +305,17 @@ RETURN_CODE CSerialControllerWithTx::GetFile(char* fileName, CString filePath, c
     }
     else
     {
-        //get file size for pak files 
+        //get file size for pak files
         //setname is in getfilesize()
         if (!SetName(fileName))
         {
-            if (Resync() == FAIL) {
+            if (Resync() == FAIL)
+            {
                 m_linkStatistics.AppendFailedDownload();
                 return FAIL;
             }
-            if (!SetName(fileName)) {
+            if (!SetName(fileName))
+            {
                 m_linkStatistics.AppendFailedDownload();
                 return FAIL;
             }
@@ -294,7 +324,8 @@ RETURN_CODE CSerialControllerWithTx::GetFile(char* fileName, CString filePath, c
         size = GetListFileSize(fileName);
     }
     // size can not be too big or too small
-    if (size <= 0 || size >= 1048576) {
+    if (size <= 0 || size >= 1048576)
+    {
         m_linkStatistics.AppendFailedDownload();
         return FAIL;
     }
@@ -312,15 +343,21 @@ RETURN_CODE CSerialControllerWithTx::GetFile(char* fileName, CString filePath, c
         //send start point and data block size to remote PC
         sendlen = size - start;
         if (sendlen > maxchunk)
+        {
             sendlen = maxchunk;
+        }
         rlen = sendlen;
 
         FlushSerialPort(100);
         SendCommand(TX_GET);
         if (!WriteSerial(&start, 4))
+        {
             ShowMessage("Serial communication may be broken, please check");
+        }
         if (!WriteSerial(&rlen, 2))
+        {
             ShowMessage("Serial communication may be broken, please check");
+        }
 
         rstart = rlen = 0;
         ok = 1;
@@ -374,10 +411,11 @@ RETURN_CODE CSerialControllerWithTx::GetFile(char* fileName, CString filePath, c
                     SetName(fullfileName);
                     retries=0;
                 }
-                else*///get out of loop 2007.5.14
+                else*/
+                      //get out of loop 2007.5.14
 
                 m_linkStatistics.AppendFailedDownload();
-                return FAIL;	//get out of loop 2007.4.30
+                return FAIL; //get out of loop 2007.4.30
             }
         }
         else
@@ -400,22 +438,27 @@ RETURN_CODE CSerialControllerWithTx::GetFile(char* fileName, CString filePath, c
 
                 m_common.GetDateTimeText(timeTxt);
                 downloadedSize = start / 1024.0;
-                if (stopTime - startTime > 0.01) {
+                if (stopTime - startTime > 0.01)
+                {
                     curSpeed = downloadedSize / (stopTime - startTime);
                 }
                 m_ErrorMsg.Format("<%s>:%s Have downloaded %.1lfKBytes data at %.1f KBytes/second. Duration is %d seconds. %.1lf percent is finished",
                     (LPCSTR)m_connectionID, (LPCSTR)timeTxt, downloadedSize, curSpeed, static_cast<int>(stopTime - startTime), 100.0 * start / size);
                 if (nChunks == 0)
+                {
                     ShowMessage(m_ErrorMsg);
+                }
                 else
+                {
                     UpdateMessage(m_ErrorMsg);
+                }
 
                 m_avgDownloadSpeed += curSpeed;
                 ++nChunks;
             }
         }
     }
-    //---- end of the loop to download data -----// 
+    //---- end of the loop to download data -----//
     WriteSpectraFile(mem, size, filePath);
     free(mem);
 
@@ -448,14 +491,15 @@ RETURN_CODE CSerialControllerWithTx::WriteSpectraFile(BYTE* mem, long fileSize, 
     m_ErrorMsg.Format("Data is written to %s, file size is %.1lf KBytes", (LPCSTR)filePath, fileSize / 1024.0);
     ShowMessage(m_ErrorMsg, m_connectionID);
     return SUCCESS;
-
 }
 void CSerialControllerWithTx::SwitchMode()
 {
     char txt[3];
 
     if (m_electronicsBox == BOX_MOXA)
+    {
         return; // never necessary to switch disk for the Axis box
+    }
 
     txt[0] = SWITCHMODE;
     txt[1] = CR;
@@ -468,17 +512,23 @@ bool CSerialControllerWithTx::SwitchToDisk(char diskName)
 {
     char message[128];
 
-    if (m_electronicsBox == BOX_MOXA) {
+    if (m_electronicsBox == BOX_MOXA)
+    {
         int nChar = 0;
         if (diskName == 'A')
+        {
             nChar = sprintf(message, "cd /mnt/flash\r\n");
+        }
         else
+        {
             nChar = sprintf(message, "cd /mnt/flash/novac\r\n");
+        }
         WriteSerial(message, nChar + 2);
         FlushSerialPort(1);
         m_commandMode = true;
     }
-    else {
+    else
+    {
         message[0] = diskName;
         message[1] = ':';
         message[2] = CR;
@@ -500,7 +550,9 @@ RETURN_CODE CSerialControllerWithTx::SwitchToShell()
     int byteNum;
 
     if (m_electronicsBox == BOX_MOXA)
+    {
         return SUCCESS; // never necessary to switch disk for the Axis box
+    }
 
     msg.Format("Check remote PC´s mode");
     ShowMessage(msg, m_connectionID);
@@ -539,15 +591,17 @@ RETURN_CODE CSerialControllerWithTx::SwitchToShell()
             return SUCCESS;
         }
         else
+        {
             return SUCCESS;
+        }
     }
 }
 
 int CSerialControllerWithTx::ParseMode(CString string)
 {
-    int result[3] = { NOSTDIO,NOSTDIO,NOSTDIO };
+    int result[3] = { NOSTDIO, NOSTDIO, NOSTDIO };
     int modeIndex = NOSTDIO;
-    CString mode[3] = { "Stdio: User","Stdio: Both","Stdio: Shell" };
+    CString mode[3] = { "Stdio: User", "Stdio: Both", "Stdio: Shell" };
     for (int i = 0; i < 3; i++)
     {
         result[i] = string.Find(mode[i]);
@@ -558,9 +612,8 @@ int CSerialControllerWithTx::ParseMode(CString string)
             break;
         }
     }
-    //	printf("mode= %d\n,1-user,2-both,3-shell\n",modeIndex);
+    //  printf("mode= %d\n,1-user,2-both,3-shell\n",modeIndex);
     return modeIndex;
-
 }
 RETURN_CODE CSerialControllerWithTx::Test()
 {
@@ -582,7 +635,9 @@ bool CSerialControllerWithTx::Start()
     time(&startTime);
     ShowMessage("start", m_connectionID);
     if (!InitCommunication('B'))
+    {
         return false;
+    }
     Bye();
     InitCommandLine();
     Sleep(1000);
@@ -593,7 +648,7 @@ bool CSerialControllerWithTx::Start()
     time(&stopTime);
 
     Sleep(1000);
-    // download old upload*.pak files if time permitted	
+    // download old upload*.pak files if time permitted
     interval = g_settings.scanner[m_mainIndex].comm.queryPeriod - static_cast<long>(stopTime + startTime);
 
     DownloadOldPak(interval);
@@ -629,10 +684,13 @@ bool CSerialControllerWithTx::UploadFile(CString localPath, char* fileName, char
     return result;
 }
 
-bool CSerialControllerWithTx::DownloadFile(const CString& fileName, CString filePath, char diskName, bool delFlag) {
+bool CSerialControllerWithTx::DownloadFile(const CString& fileName, CString filePath, char diskName, bool delFlag)
+{
     long length = strlen(fileName);
     if (length <= 0 || length > 2048)
+    {
         return false;
+    }
 
     char* fileBuffer = (char*)calloc(length + 2, sizeof(char));
     sprintf(fileBuffer, "%s", (LPCSTR)fileName);
@@ -695,10 +753,12 @@ int CSerialControllerWithTx::OrganizeFileList(CString folderName, char diskName)
     memset(recBuf, 0, MAXBUFFER);
     memset(smallBuf, 0, 1024);
     char command[128];
-    if (this->m_electronicsBox != BOX_MOXA) {
+    if (this->m_electronicsBox != BOX_MOXA)
+    {
         sprintf(command, "dir %c:\\%s\\", diskName, (LPCSTR)folderName);
     }
-    else {
+    else
+    {
         sprintf(command, "dir %s", (LPCSTR)folderName);
     }
     int len = 0;
@@ -716,9 +776,13 @@ int CSerialControllerWithTx::OrganizeFileList(CString folderName, char diskName)
         return 0;
     }
     if (folderNameLen == 0)
+    {
         m_ErrorMsg.Format("Download file list from root directory");
+    }
     else
+    {
         m_ErrorMsg.Format("Download file list from %s", (LPCSTR)folderName);
+    }
     ShowMessage(m_ErrorMsg, m_connectionID);
 
     SendCommand(command);
@@ -727,12 +791,16 @@ int CSerialControllerWithTx::OrganizeFileList(CString folderName, char diskName)
     {
         len = GetSerialData(smallBuf, 1024, m_timeout / 5);
         if (len > 0)
+        {
             m_common.FillBuffer(smallBuf, recBuf, bufIndex, len);
+        }
         bufIndex = bufIndex + len;
         memset(smallBuf, 0, 1024);
         loop++;
-        if (loop == 65)	//get out of loop if this doesnt work or buffer is full. 2007.4.30
+        if (loop == 65) //get out of loop if this doesnt work or buffer is full. 2007.4.30
+        {
             break;
+        }
 
     } while (strstr(recBuf, "bytes free") == NULL);
 
@@ -755,13 +823,17 @@ long CSerialControllerWithTx::GetFileSize(char* fileName)
 {
     long size;
     char txt[8];
-    // query file 
+    // query file
     if (!SetName(fileName))
     {
         if (Resync() == FAIL)
+        {
             return FAIL;
+        }
         if (!SetName(fileName))
+        {
             return FAIL;
+        }
     }
     // ask for file size , remote PC should reply file size
     FlushSerialPort(100);
@@ -840,7 +912,9 @@ void CSerialControllerWithTx::EnterFolder(const CString& folderName)
     folder.Format("%s", (LPCSTR)folderName);
     //make sure folder name is not too long
     if (m_electronicsBox == BOX_AXIS && folder.GetLength() > 16)
+    {
         return;
+    }
     sprintf(command, "cd %s", (LPCSTR)folderName);
     SendCommand(command);
 }
@@ -851,7 +925,9 @@ bool CSerialControllerWithTx::GoToSleep()
     int nRound = 0;
     CString bufferStr;
     if (m_sleepFlag)
+    {
         return SUCCESS;
+    }
     struct timeStruct wakeupT = g_settings.scanner[m_mainIndex].comm.wakeupTime;
     // go to root directory
     GoTo_TopDataDir();
@@ -859,17 +935,22 @@ bool CSerialControllerWithTx::GoToSleep()
     //write command.txt
     MakeCommandFile("pause\npoweroff");
     if (!InitCommunication('B'))
+    {
         return true;//to get all sleep later. 2007.5.23
+    }
     do
-    { //keep it, change later.
+    {
+        //keep it, change later.
         if (UploadFile(m_storageDirectory, "command.txt", 'B'))
         {
             msg.Format("Command.txt is sent. Begin to stop kongo.");
             ShowMessage(msg, m_connectionID);
-            Sleep(5000);	//let status.dat have time to react on the commands
+            Sleep(5000); //let status.dat have time to react on the commands
         }
         else
+        {
             return true;//to get all sleep later. 2007.5.23
+        }
         nRound++;
         if (nRound == 5)
         {
@@ -877,7 +958,7 @@ bool CSerialControllerWithTx::GoToSleep()
             ShowMessage(msg, m_connectionID);
             break; // Changed 2007.11.13. To make sure that the program always downloads the old spectra
             //CloseSerialPort();
-            //return true;	//to get all sleep later. 2007.5.23
+            //return true;  //to get all sleep later. 2007.5.23
         }
     } while (CheckKongoExit() != 1);
     //CloseSerialPort();
@@ -896,7 +977,9 @@ int CSerialControllerWithTx::CheckKongoExit()
     CString filePath;
     filePath.Format("%sSTATUS.DAT", (LPCSTR)m_storageDirectory);
     if (DownloadFile("STATUS.DAT", m_storageDirectory, 'B') == FAIL)
+    {
         return FAIL;
+    }
     m_statusFileReader.SetWorkingPath(m_storageDirectory);
     if (m_statusFileReader.IsPoweroff() == 1)
     {
@@ -922,7 +1005,9 @@ int CSerialControllerWithTx::WakeUp(int mode)
     {
         isConnect = InitCommunication('B');
         if (isConnect)
+        {
             break;
+        }
     }
     if (!isConnect)
     {
@@ -932,7 +1017,9 @@ int CSerialControllerWithTx::WakeUp(int mode)
         return FAIL;
     }
     if (mode == 0)
+    {
         SwitchToShell();
+    }
 
     // Check the type of electronics-box...
     PollElectronicsType();
@@ -940,11 +1027,11 @@ int CSerialControllerWithTx::WakeUp(int mode)
     //go to root directory
     GoTo_TopDataDir();
 
-    MakeCommandFile("poweron\nresume");	//make command file for resuming kongo
-    StartTx();	//start tx for serial file transfering
-    UploadFile(m_storageDirectory, "command.txt", 'B');	// upload file to root folder of B: disk
+    MakeCommandFile("poweron\nresume"); //make command file for resuming kongo
+    StartTx(); //start tx for serial file transfering
+    UploadFile(m_storageDirectory, "command.txt", 'B'); // upload file to root folder of B: disk
 
-    CloseSerialPort();	//turn off serial
+    CloseSerialPort(); //turn off serial
 
     //delete old file list
     m_oldPakList.RemoveAll();
@@ -956,7 +1043,7 @@ int CSerialControllerWithTx::WakeUp(int mode)
 
     // This is currently being tested.
     // Also download the cfg.txt - file, just for checking some parameters
-    //	like motorstepscomp and stepsperround...
+    //  like motorstepscomp and stepsperround...
     DownloadCfgTxt();
 
     return SUCCESS;
@@ -967,7 +1054,9 @@ bool CSerialControllerWithTx::Reboot()
 #define REBOOT_MSG_SIZE 8192
 
     if (!InitCommunication('B'))
+    {
         return false;
+    }
     Sleep(5000);//wait for quiting tx
     Bye();
     InitCommandLine();
@@ -1007,7 +1096,7 @@ bool CSerialControllerWithTx::SetName(char* name)
     if ((GetSerialData(b, 1, m_timeout) != 1) || (b[0] != 'a'))
     {
         ShowMessage("TX can not set file name");
-        return false;	//No ACK 
+        return false; //No ACK
     }
     return true;
 }
@@ -1027,7 +1116,9 @@ bool CSerialControllerWithTx::RestartTx(long timeout)
         m_ErrorMsg.Format("Can not restart TX in remote PC");
         CloseSerialPort();
         if (!InitCommunication('B'))
+        {
             return false;
+        }
         Bye();
         InitCommandLine();
         SendCommand("a:\\tx");
@@ -1049,13 +1140,15 @@ bool CSerialControllerWithTx::RestartTx(long timeout)
     return true;
 }
 
-// calculate checksum 
+// calculate checksum
 unsigned short CSerialControllerWithTx::CalcChecksum(long bufferLength, unsigned char* buffer)
 {
     long j;
     unsigned short chksum;
     for (chksum = 0, j = 0; j < bufferLength; j++)
+    {
         chksum += buffer[j];
+    }
     return chksum;
 }
 
@@ -1087,20 +1180,24 @@ bool CSerialControllerWithTx::PutFile(char* name, CString fileFullPath, char dis
     time(&startTime);
     useHighResolutionCounter = QueryPerformanceCounter(&timingStart);
 
-    if (m_electronicsBox == BOX_MOXA) {
+    if (m_electronicsBox == BOX_MOXA)
+    {
         sprintf(nametoset, "/mnt/flash/XYZ");
     }
-    else {
+    else
+    {
         sprintf(nametoset, "%c:\\%s", diskName, name);
     }
 
     if (!SetName(nametoset))
     {
-        if (Resync() == FAIL) {
+        if (Resync() == FAIL)
+        {
             m_linkStatistics.AppendFailedUpload();
             return false;
         }
-        if (!SetName(nametoset)) {
+        if (!SetName(nametoset))
+        {
             m_linkStatistics.AppendFailedUpload();
             return false;
         }
@@ -1140,9 +1237,21 @@ bool CSerialControllerWithTx::PutFile(char* name, CString fileFullPath, char dis
         rstart = rlen = 0;
         ok = 1;
         //check replies
-        if (GetSerialData(&rstart, 4, m_timeout) != 4) { ShowMessage("No rstart"); ok = 0; }
-        else if (GetSerialData(&rlen, 2, m_timeout) != 2) { ShowMessage("No rlen"); ok = 0; }
-        else if (GetSerialData(&rack, 1, m_timeout) != 1) { ShowMessage("No ACK"); ok = 0; }
+        if (GetSerialData(&rstart, 4, m_timeout) != 4)
+        {
+            ShowMessage("No rstart");
+            ok = 0;
+        }
+        else if (GetSerialData(&rlen, 2, m_timeout) != 2)
+        {
+            ShowMessage("No rlen");
+            ok = 0;
+        }
+        else if (GetSerialData(&rack, 1, m_timeout) != 1)
+        {
+            ShowMessage("No ACK");
+            ok = 0;
+        }
         else if (rack != TX_ACK)
         {
             m_ErrorMsg.Format("Incorrect ACK==(%d %c)", rack, rack);
@@ -1192,10 +1301,12 @@ bool CSerialControllerWithTx::PutFile(char* name, CString fileFullPath, char dis
             {
                 if (rack != 'a')
                 {
-                    if (rack == TX_ERR) {
+                    if (rack == TX_ERR)
+                    {
                         m_ErrorMsg.Format("Tx returned Error Acknowledgement");
                     }
-                    else {
+                    else
+                    {
                         m_ErrorMsg.Format("Incorrect ACK==(%d %c)", rack, rack);
                     }
                     ok = 0;
@@ -1210,9 +1321,13 @@ bool CSerialControllerWithTx::PutFile(char* name, CString fileFullPath, char dis
                 useHighResolutionCounter = QueryPerformanceCounter(&timingStop);
 
                 if (useHighResolutionCounter)
+                {
                     curSpeed = (start / 1024.0) / ((double)timingStop.LowPart - (double)timingStart.LowPart) / (double)lpFrequency.LowPart;
+                }
                 else
+                {
                     curSpeed = (start / 1024.0) / (stopTime - startTime);
+                }
 
                 m_ErrorMsg.Format("%.1lf KBytes/second", curSpeed);
                 UpdateMessage(m_ErrorMsg);
@@ -1230,15 +1345,18 @@ bool CSerialControllerWithTx::PutFile(char* name, CString fileFullPath, char dis
     m_linkStatistics.AppendUploadSpeed(avgUploadSpeed / (double)nChunks);
 
     // If this is an axis-box then change the file-name to the correct one
-    if (m_electronicsBox == BOX_MOXA) {
+    if (m_electronicsBox == BOX_MOXA)
+    {
         // Close tx
         Bye();
         // Rename the file to it's correct filename
-        if (diskName == 'A') {
+        if (diskName == 'A')
+        {
             sprintf(nametoset, "mv /mnt/flash/XYZ /mnt/flash/%s", name);
             SendCommand(nametoset);
         }
-        else {
+        else
+        {
             sprintf(nametoset, "mv /mnt/flash/XYZ /mnt/flash/novac/%s", name);
             SendCommand(nametoset);
         }
@@ -1271,7 +1389,9 @@ bool CSerialControllerWithTx::Delete(char* fileName, char diskName)
         return true;
     }
     else
+    {
         return false;
+    }
 }
 
 bool CSerialControllerWithTx::DelFile(char* fileName, char diskName)
@@ -1280,20 +1400,30 @@ bool CSerialControllerWithTx::DelFile(char* fileName, char diskName)
     CString msg;
     char fileFullName[64];
     if (diskName == 'A' && this->m_electronicsBox != BOX_MOXA)
+    {
         sprintf(fileFullName, "%c:\\%s", diskName, fileName);
+    }
     //for B:\R001\U222.pak. long path
     else
+    {
         sprintf(fileFullName, "%s", fileName);
+    }
     if (!SetName(fileFullName))
     {
         if (Resync() == FAIL)
+        {
             return false;
+        }
         if (!SetName(fileFullName))
+        {
             return false;
+        }
     }
     SendCommand("del");
     if (CheckSerial(m_timeout))
+    {
         ReadSerial(txt, 1);
+    }
     if (txt[0] == 'a')
     {
         msg.Format("Successfully deleted %s", fileFullName);
@@ -1326,9 +1456,13 @@ bool CSerialControllerWithTx::CallModem()
     }
 
     if (m_radioID.GetLength() == 1)
+    {
         sprintf(command, "ATDT%s", (LPCSTR)m_radioID);
+    }
     else
+    {
         sprintf(command, "ATD%s", (LPCSTR)m_radioID);
+    }
 
     time(&startTime);
     WriteSerial((void*)command, strlen(command));
@@ -1338,7 +1472,8 @@ bool CSerialControllerWithTx::CallModem()
     ShowMessage(m_ErrorMsg, m_connectionID);
 #endif
 
-    do {
+    do
+    {
         GetSerialData(buf, BUFFER_SIZE, 3000);
         loopCount++;
         time(&stopTime);
@@ -1370,7 +1505,8 @@ bool CSerialControllerWithTx::InitCommunication(char diskName)
     if (m_radioID.GetLength() == 0)
     {
         if (InitialSerialPort() == 0)
-        {		//post error message,serial port is occupied or wrong setting
+        {
+            //post error message,serial port is occupied or wrong setting
             CloseSerialPort();
             ShowMessage("Can not initialize serial port", m_connectionID);
             pView->PostMessage(WM_SCANNER_NOT_CONNECT, (WPARAM) & (m_spectrometerSerialNumber), 0);
@@ -1380,11 +1516,13 @@ bool CSerialControllerWithTx::InitCommunication(char diskName)
     else
     {
         if (!CallModem())
+        {
             return false;
+        }
     }
     sourceBufferPointer = 0;
 
-    Bye();		// quit tx 2007.5.16
+    Bye();  // quit tx 2007.5.16
     if (!InitCommandLine())
     {
         ShowMessage("Command can not be sent. Check serial connection or power supply for the scanner");
@@ -1444,7 +1582,9 @@ bool CSerialControllerWithTx::ArrangeFileList(char* string, CString folder)
             else
             {
                 if (folder.GetLength() > 0)
+                {
                     AddPakFileInfo(tokenStr);
+                }
             }
         }
         else if (tokenStr.Find(strFolder) != -1)
@@ -1498,7 +1638,9 @@ bool CSerialControllerWithTx::DownloadOldPak(long interval)
     }
     time(&startTime);
     if (m_oldPakList.GetCount() > 0)
+    {
         downloadResult = DownloadPakFile(folder, interval);
+    }
 
     time(&stopTime);
     interval = interval + static_cast<long>(startTime - stopTime);
@@ -1528,7 +1670,9 @@ bool CSerialControllerWithTx::DownloadOldPak(long interval)
         time(&stopTime);
         interval = interval + static_cast<long>(startTime - stopTime);
         if (interval <= 0)
+        {
             break;
+        }
         if (DownloadPakFile(folder, interval))
         {
             m_rFolderList.RemoveTail();
@@ -1537,7 +1681,9 @@ bool CSerialControllerWithTx::DownloadOldPak(long interval)
             DeleteFolder(folder);
         }
         else
+        {
             break;
+        }
     }
     //stop communication
     CloseSerialPort();
@@ -1545,12 +1691,15 @@ bool CSerialControllerWithTx::DownloadOldPak(long interval)
 }
 
 bool CSerialControllerWithTx::DeleteFolder(CString folder)
-{//out of tx
+{
+    //out of tx
     char cmd[32];
-    if (m_electronicsBox != BOX_MOXA) {
+    if (m_electronicsBox != BOX_MOXA)
+    {
         sprintf(cmd, "rd %s", (LPCSTR)folder);
     }
-    else {
+    else
+    {
         sprintf(cmd, "rmdir %s", (LPCSTR)folder);
     }
     Sleep(1000);
@@ -1582,12 +1731,18 @@ bool CSerialControllerWithTx::DownloadPakFile(CString folderName, long interval)
             time(&stopTime);
             interval = interval + static_cast<long>(startTime - stopTime);
             if (downloadResult)
+            {
                 m_oldPakList.RemoveTail();
+            }
             else
+            {
                 return false;
+            }
         }
         else
+        {
             return false;
+        }
     }
     return true;
 }
@@ -1611,10 +1766,14 @@ void CSerialControllerWithTx::AddFolderInfo(CString string)
 {
     int folderNameLength = string.Find(" ");
     if (folderNameLength != 4)
+    {
         return;
+    }
     CString folderName = string.Left(folderNameLength);
     if (folderName.Left(1) != _T("R"))
+    {
         return;
+    }
     m_rFolderList.AddTail(folderName);
 }
 
@@ -1622,19 +1781,25 @@ void CSerialControllerWithTx::AddFolderInfo(CString string)
 void CSerialControllerWithTx::AddPakFileInfo(CString string)
 {
     CString strSize, fileName;
-    int sizeLength, fileSize, stringLength, fileNameLength; // length of the size string 
+    int sizeLength, fileSize, stringLength, fileNameLength; // length of the size string
     stringLength = string.GetLength();
     if (string.Find("PAK") == -1 || stringLength > 42)
+    {
         return;
+    }
 
     fileNameLength = string.Find(" ");
     if (fileNameLength > 6)
+    {
         return;
+    }
     fileName = string.Left(fileNameLength);
     string = string.Right(string.GetLength() - fileNameLength);
     string.TrimLeft(); // Changed 2007.10.22
     if (string.Find("PAK") == -1)
+    {
         return;
+    }
     string.TrimLeft("PAK");
     string.TrimLeft();
     if (string.Find("A--") != -1)
@@ -1644,7 +1809,9 @@ void CSerialControllerWithTx::AddPakFileInfo(CString string)
     }
     sizeLength = string.Find(" ");
     if (sizeLength < 0)
+    {
         return;
+    }
     fileSize = atoi(string.Left(sizeLength));
     if (fileSize > 0)
     {
@@ -1667,12 +1834,14 @@ int CSerialControllerWithTx::GetOldPakList(CString folderName)
     }
     fileSum = OrganizeFileList(folderName);
     if (fileSum == -10)
+    {
         return fileSum;
+    }
 
     result = m_oldPakList.GetCount() + m_rFolderList.GetCount();
     if (result > 0)
     {
-        //enter folder 
+        //enter folder
         if (folderName.GetLength() > 0)
         {
             sprintf(command, "cd %s", (LPCSTR)folderName);
@@ -1696,7 +1865,9 @@ bool CSerialControllerWithTx::IsKongoRunning()
     {
         counter++;
         if (counter == 3)
+        {
             return false;
+        }
     }
     m_statusFileReader.SetWorkingPath(m_storageDirectory);
     if (m_statusFileReader.IsStart() == 1)
@@ -1718,12 +1889,14 @@ bool CSerialControllerWithTx::DownloadSpectra(char* pakFileName)
 
     bool downloadResult = DownloadFile(pakFileName, m_storageDirectory, 'B', true);
     if (!downloadResult)
+    {
         return false;
+    }
     //call pakhandler
     if (1 == pakFileHandler->ReadDownloadedFile(specFile))
     {
         ShowMessage("downloaded file is corrupted", m_connectionID);
-        DeleteFile(specFile); // delete the local copy of Upload.pak		
+        DeleteFile(specFile); // delete the local copy of Upload.pak
         return false;
     }
 
@@ -1747,7 +1920,7 @@ bool CSerialControllerWithTx::GetFileListText(CString& textA, CString& textB)
     //long validIndex = 0;
     // time_t startTime,stopTime;
     //if(!InitCommunication(diskName))
-    //	return false;
+    //  return false;
     //
     Bye();
 
@@ -1762,33 +1935,39 @@ bool CSerialControllerWithTx::GetFileListText(CString& textA, CString& textB)
     {
         len = GetSerialData(smallBuf, 1024, m_timeout / 5);
         if (len > 0)
+        {
             m_common.FillBuffer(smallBuf, recBuf, bufIndex, len);
+        }
         bufIndex = bufIndex + len;
         memset(smallBuf, 0, 1024);
         loop++;
-        if (loop == 65)	//get out of loop if this doesnt work or buffer is full. 2007.4.30
+        if (loop == 65) //get out of loop if this doesnt work or buffer is full. 2007.4.30
+        {
             break;
+        }
 
     } while (strstr(recBuf, "bytes free") == NULL);
     textB.Format("%s", recBuf);
 
     //do
     //{
-    //	memset(buffer,0,SMALLBUFFER);
-    //	validIndex = GetSerialData(buffer,SMALLBUFFER,1000);
-    //	buffer[validIndex] = 0;
-    //	textB.AppendFormat("%s",buffer);
-    //	cycleNumber++;
-    //	time(&stopTime);
-    //	if(stopTime - startTime > 7)
-    //	{
-    //		return false;
-    //	}
-    //	
+    //  memset(buffer,0,SMALLBUFFER);
+    //  validIndex = GetSerialData(buffer,SMALLBUFFER,1000);
+    //  buffer[validIndex] = 0;
+    //  textB.AppendFormat("%s",buffer);
+    //  cycleNumber++;
+    //  time(&stopTime);
+    //  if(stopTime - startTime > 7)
+    //  {
+    //      return false;
+    //  }
+    //
     //}while(textB.Find("files use") == -1);
 
     if (m_electronicsBox == BOX_MOXA)
+    {
         return true; // On the Axis system, there's no A-disk to check...
+    }
 
     //check A disk
     bufIndex = 0;
@@ -1803,28 +1982,32 @@ bool CSerialControllerWithTx::GetFileListText(CString& textA, CString& textB)
     {
         len = GetSerialData(smallBuf, 1024, m_timeout / 5);
         if (len > 0)
+        {
             m_common.FillBuffer(smallBuf, recBuf, bufIndex, len);
+        }
         bufIndex = bufIndex + len;
         memset(smallBuf, 0, 1024);
         loop++;
-        if (loop == 65)	//get out of loop if this doesnt work or buffer is full. 2007.4.30
+        if (loop == 65) //get out of loop if this doesnt work or buffer is full. 2007.4.30
+        {
             break;
+        }
 
     } while (strstr(recBuf, "bytes free") == NULL);
     textA.Format("%s", recBuf);
 
     //do
     //{
-    //	memset(buffer,0,SMALLBUFFER);
-    //	validIndex = GetSerialData(buffer,SMALLBUFFER,1000);
-    //	buffer[validIndex] = 0;
-    //	textA.AppendFormat("%s",buffer);
-    //	time(&stopTime);
-    //	if(stopTime - startTime > 7)
-    //	{
-    //		return false;
-    //	}
-    //	
+    //  memset(buffer,0,SMALLBUFFER);
+    //  validIndex = GetSerialData(buffer,SMALLBUFFER,1000);
+    //  buffer[validIndex] = 0;
+    //  textA.AppendFormat("%s",buffer);
+    //  time(&stopTime);
+    //  if(stopTime - startTime > 7)
+    //  {
+    //      return false;
+    //  }
+    //
     //}while(textA.Find("files use") == -1);
     return true;
 }
@@ -1838,10 +2021,12 @@ bool CSerialControllerWithTx::GetFileListText_Folder(CString& folderName, CStrin
 
     // The command to send...
     char command[128];
-    if (this->m_electronicsBox != BOX_MOXA) {
+    if (this->m_electronicsBox != BOX_MOXA)
+    {
         sprintf(command, "dir B:\\%s\\", (LPCSTR)folderName);
     }
-    else {
+    else
+    {
         sprintf(command, "dir %s", (LPCSTR)folderName);
     }
 
@@ -1906,7 +2091,7 @@ void CSerialControllerWithTx::SetRemotePCTime()
     else
     {
         m_ErrorMsg.Format("set remote PC to local PC time %d-%d-%d %02d:%02d:%02d",
-        year, month, day, hour, minute, second);
+            year, month, day, hour, minute, second);
         ShowMessage(m_ErrorMsg, m_connectionID);
     }
     //CloseSerialPort();
@@ -1918,7 +2103,9 @@ bool CSerialControllerWithTx::MakeCommandFile(char* content)
     fileName.Format("%scommand.txt", (LPCSTR)m_storageDirectory);
     FILE* f = fopen(fileName, "w");
     if (f == NULL)
+    {
         return false;
+    }
     fprintf(f, content);
     fclose(f);
     return true;
@@ -1945,15 +2132,17 @@ long CSerialControllerWithTx::GetListFileSize(char* fileName)
         }
     }
     return size;
-
 }
 
 /** Go to the top-most directory of the data-disk */
-void CSerialControllerWithTx::GoTo_TopDataDir() {
-    if (m_electronicsBox != BOX_MOXA) {
+void CSerialControllerWithTx::GoTo_TopDataDir()
+{
+    if (m_electronicsBox != BOX_MOXA)
+    {
         SendCommand("cd ..");
     }
-    else {
+    else
+    {
         SendCommand("cd /mnt/flash/novac/");
     }
 }
@@ -1961,23 +2150,28 @@ void CSerialControllerWithTx::GoTo_TopDataDir() {
 /** Gets the type of electronics-box that the instrument uses
         this will set the type of electronics-box that this connection uses
         @return 0 on success else 1 */
-int CSerialControllerWithTx::PollElectronicsType() {
+int CSerialControllerWithTx::PollElectronicsType()
+{
     const long bufferSize = 512;
     char buffer[bufferSize];
 
     // Poll the version of the electronics - box
     SendCommand("ver");
 
-    if (CheckSerial(m_timeout)) {
+    if (CheckSerial(m_timeout))
+    {
         ReadSerial(buffer, bufferSize);
-        if (strstr(buffer, "BECK")) {
+        if (strstr(buffer, "BECK"))
+        {
             this->m_electronicsBox = BOX_AXIS;
         }
-        else if (strstr(buffer, "-sh: ver")) {
+        else if (strstr(buffer, "-sh: ver"))
+        {
             this->m_electronicsBox = BOX_MOXA;
         }
     }
-    else {
+    else
+    {
         // don't know type of box...
         return 1;
     }
@@ -1985,12 +2179,15 @@ int CSerialControllerWithTx::PollElectronicsType() {
     return 0;
 }
 
-int CSerialControllerWithTx::DownloadCfgTxt() {
+int CSerialControllerWithTx::DownloadCfgTxt()
+{
     CString localFileName, copyFileName;
 
     // Connect to the A-disk...
     if (!InitCommunication('A'))
+    {
         return 0;
+    }
     Bye();
     InitCommandLine();
     StartTx();
@@ -1999,19 +2196,25 @@ int CSerialControllerWithTx::DownloadCfgTxt() {
 
     // Check if we got the file...
     if (!downloadResult)
+    {
         return 0;
+    }
 
     // If we managed to download the file, then check it!
     // Try to parse the cfg.txt - file in order to get the paramters...
     FileHandler::CCfgTxtFileHandler cfgTxtReader;
     localFileName.Format("%scfg.txt", (LPCSTR)m_storageDirectory);
-    if (0 == cfgTxtReader.ReadCfgTxt(localFileName)) {
+    if (0 == cfgTxtReader.ReadCfgTxt(localFileName))
+    {
         return 0;
     }
-    if (cfgTxtReader.m_motorStepsComp[0] != 0) { // If we've found a motor steps comp...
+    if (cfgTxtReader.m_motorStepsComp[0] != 0)
+    {
+        // If we've found a motor steps comp...
         g_settings.scanner[m_mainIndex].motor[0].motorStepsComp = cfgTxtReader.m_motorStepsComp[0];
         g_settings.scanner[m_mainIndex].motor[0].stepsPerRound = cfgTxtReader.m_motorStepsPerRound[0];
-        if (cfgTxtReader.m_nMotors == 2) {
+        if (cfgTxtReader.m_nMotors == 2)
+        {
             g_settings.scanner[m_mainIndex].motor[1].motorStepsComp = cfgTxtReader.m_motorStepsComp[1];
             g_settings.scanner[m_mainIndex].motor[1].stepsPerRound = cfgTxtReader.m_motorStepsPerRound[1];
         }
@@ -2019,10 +2222,12 @@ int CSerialControllerWithTx::DownloadCfgTxt() {
 
     // if todays date is dividable by 7 then try to upload the file
     int todaysDate = m_common.GetDay();
-    if (todaysDate % 7 == 0) {
+    if (todaysDate % 7 == 0)
+    {
         // Copy the file to a new name.
         copyFileName.Format("%scfg_%s.txt", (LPCSTR)m_storageDirectory, (LPCSTR)m_spectrometerSerialNumber);
-        if (0 != CopyFile(localFileName, copyFileName, FALSE)) {
+        if (0 != CopyFile(localFileName, copyFileName, FALSE))
+        {
             // Get the index of this volcano
             int volcanoIndex = Common::GetMonitoredVolcano(m_spectrometerSerialNumber);
 
@@ -2033,5 +2238,3 @@ int CSerialControllerWithTx::DownloadCfgTxt() {
     return 1;
 }
 //------------------End of CSerialControllerWithTx ---------------//
-
-

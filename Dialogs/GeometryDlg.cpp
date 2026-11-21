@@ -41,7 +41,7 @@ CGeometryDlg::~CGeometryDlg()
 {
     for (int k = 0; k < MAX_N_SCANNERS; ++k)
     {
-        delete(m_evalLogReader[k]);
+        delete (m_evalLogReader[k]);
     }
 }
 
@@ -81,10 +81,10 @@ BEGIN_MESSAGE_MAP(CGeometryDlg, CDialog)
 
     // Showing the next, or the previous scan.
     ON_NOTIFY(UDN_DELTAPOS, IDC_SCAN_SPIN, OnChangeSelectedScan)
-    //ON_COMMAND(ID_VIEW_PREVIOUSSCAN,				OnShowPreviousScan)
-    //ON_COMMAND(ID_VIEW_NEXTSCAN,						OnShowNextScan)
+    //ON_COMMAND(ID_VIEW_PREVIOUSSCAN,              OnShowPreviousScan)
+    //ON_COMMAND(ID_VIEW_NEXTSCAN,                      OnShowNextScan)
 
-      // Changing the selected scanner
+    // Changing the selected scanner
     ON_LBN_SELCHANGE(IDC_SCANNER_LIST, OnChangeScanner)
 
     // Changing the source
@@ -105,14 +105,18 @@ END_MESSAGE_MAP()
 void CGeometryDlg::OnBrowseEvalLog1()
 {
     if (0 == BrowseForEvaluationLog(0))
+    {
         return;
+    }
 
     SetDlgItemText(IDC_EDIT_EVALLOG1, m_evalLogReader[0]->m_evaluationLog);
 }
 void CGeometryDlg::OnBrowseEvalLog2()
 {
     if (0 == BrowseForEvaluationLog(1))
+    {
         return;
+    }
 
     SetDlgItemText(IDC_EDIT_EVALLOG2, m_evalLogReader[1]->m_evaluationLog);
 }
@@ -120,7 +124,9 @@ void CGeometryDlg::OnBrowseEvalLog2()
 void CGeometryDlg::OnBrowseEvalLog3()
 {
     if (0 == BrowseForEvaluationLog(2))
+    {
         return;
+    }
 
     SetDlgItemText(IDC_EDIT_EVALLOG3, m_evalLogReader[2]->m_evaluationLog);
 }
@@ -128,7 +134,9 @@ void CGeometryDlg::OnBrowseEvalLog3()
 void CGeometryDlg::OnBrowseEvalLog4()
 {
     if (0 == BrowseForEvaluationLog(3))
+    {
         return;
+    }
 
     SetDlgItemText(IDC_EDIT_EVALLOG4, m_evalLogReader[3]->m_evaluationLog);
 }
@@ -149,7 +157,9 @@ int CGeometryDlg::BrowseForEvaluationLog(int seriesNumber)
     {
         // Completely reset the data.
         if (m_evalLogReader[seriesNumber] != nullptr)
+        {
             delete m_evalLogReader[seriesNumber];
+        }
         m_evalLogReader[seriesNumber] = new FileHandler::CEvaluationLogFileHandler();
 
 
@@ -165,10 +175,11 @@ int CGeometryDlg::BrowseForEvaluationLog(int seriesNumber)
 
         // Get the position of the scanning instrument
         double lat, lon;
-        long	alt;
+        long alt;
         GetGPSData(seriesNumber, lat, lon, alt);
         if (fabs(lat) < 1e-5 && fabs(lon) < 1e-5)
-        {// <-- no gps-data
+        {
+            // <-- no gps-data
             MessageBox("Evaluation log does not contain gps-data");
             return 0;
         }
@@ -227,7 +238,9 @@ void CGeometryDlg::OnChangeCompass()
     // Save the compass-direction
     int curScanner = m_scannerList.GetCurSel();
     if (curScanner < 0 || m_evalLogReader[curScanner] == nullptr)
+    {
         return;
+    }
     GetDlgItemText(IDC_EDIT_COMPASS, str);
     if (sscanf(str, "%f", &m_evalLogReader[curScanner]->m_specInfo.m_compass) == 1)
     {
@@ -245,8 +258,10 @@ BOOL CGeometryDlg::OnInitDialog()
     m_frameMap.GetWindowRect(rect);
     int height = rect.bottom - rect.top;
     int width = rect.right - rect.left;
-    rect.top = 20; rect.bottom = height - 10;
-    rect.left = 10; rect.right = width - 10;
+    rect.top = 20;
+    rect.bottom = height - 10;
+    rect.left = 10;
+    rect.right = width - 10;
     m_map.Create(WS_VISIBLE | WS_CHILD, rect, &m_frameMap);
     m_map.SetXUnits(common.GetString(AXIS_LONGITUDE));
     m_map.SetYUnits(common.GetString(AXIS_LATITUDE));
@@ -273,10 +288,11 @@ BOOL CGeometryDlg::OnInitDialog()
 
         // Get the position of the scanning instrument
         double lat, lon;
-        long	alt;
+        long alt;
         GetGPSData(0, lat, lon, alt);
         if (fabs(lat) < 1e-5 && fabs(lon) < 1e-5)
-        {// <-- no gps-data
+        {
+            // <-- no gps-data
             MessageBox("Evaluation log does not contain gps-data");
             return 0;
         }
@@ -321,10 +337,10 @@ void CGeometryDlg::DrawMap()
     static const int BUFFERSIZE = 128;
     static double iLat[BUFFERSIZE];
     static double iLon[BUFFERSIZE];
-    static double iCol[BUFFERSIZE];;
-    int		nScanners = 0; // <-- the number of scanners to draw
-    double maxColumn = -1e16;	// <-- the highest column we will draw
-    double minColumn = 1e16;	// <-- the lowest column we will draw
+    static double iCol[BUFFERSIZE];
+    int nScanners = 0; // <-- the number of scanners to draw
+    double maxColumn = -1e16; // <-- the highest column we will draw
+    double minColumn = 1e16; // <-- the lowest column we will draw
 
     UpdateData(TRUE); // <-- save the data in the dialog
 
@@ -333,10 +349,12 @@ void CGeometryDlg::DrawMap()
 
     // If there are no scanners defined, return now
     if (nScanners == 0)
+    {
         return;
+    }
 
-    // Make sure that the plot is square, i.e. the range in latitude is 
-    //	same as the range in longitude
+    // Make sure that the plot is square, i.e. the range in latitude is
+    //  same as the range in longitude
     if (m_plotRange.maxLon - m_plotRange.minLon > m_plotRange.maxLat - m_plotRange.minLat)
     {
         double midLat = (m_plotRange.maxLat + m_plotRange.minLat) * 0.5;
@@ -352,17 +370,21 @@ void CGeometryDlg::DrawMap()
 
     // Now set the range for the plot!
     m_map.SetRange(m_plotRange.minLon - m_plotRange.margin, m_plotRange.maxLon + m_plotRange.margin, 3,
-                                    m_plotRange.minLat - m_plotRange.margin, m_plotRange.maxLat + m_plotRange.margin, 3);
+        m_plotRange.minLat - m_plotRange.margin, m_plotRange.maxLat + m_plotRange.margin, 3);
 
-    // To fix the scale for the column-values, we must normalize it. Find the 
-    //	highest and the lowest column value there is
+    // To fix the scale for the column-values, we must normalize it. Find the
+    //  highest and the lowest column value there is
     for (int scanner = 0; scanner < MAX_N_SCANNERS; ++scanner)
     {
         // If this evaluation-log has not yet been opened, then check the next one
         if (m_evalLogReader[scanner] == nullptr || strlen(m_evalLogReader[scanner]->m_evaluationLog) <= 0)
+        {
             continue;
+        }
         if ((m_evalLogReader[scanner]->m_scanNum <= 0) || (m_evalLogReader[scanner]->m_specieNum <= 0))
+        {
             continue;
+        }
 
         // Calculate the offset for this scanner...
         m_evalLogReader[scanner]->m_scan[m_curScan[scanner]].CalculateOffset(m_evalLogReader[scanner]->m_scan[m_curScan[scanner]].GetSpecieName(0, 0));
@@ -385,9 +407,13 @@ void CGeometryDlg::DrawMap()
     {
         // If this evaluation-log has not yet been opened, then check the next one
         if (m_evalLogReader[scanner] == nullptr || strlen(m_evalLogReader[scanner]->m_evaluationLog) <= 0)
+        {
             continue;
+        }
         if ((m_evalLogReader[scanner]->m_scanNum <= 0) || (m_evalLogReader[scanner]->m_specieNum <= 0))
+        {
             continue;
+        }
 
         // Get the intersection points
         int nPoints = CalculateIntersectionPoints(scanner, m_curScan[scanner], iLat, iLon, iCol, BUFFERSIZE);
@@ -417,7 +443,9 @@ void CGeometryDlg::DrawMap()
         // Fix the options for how to draw the scan
         int plotOption = Graph::CGraphCtrl::PLOT_FIXED_AXIS | Graph::CGraphCtrl::PLOT_CIRCLES | Graph::CGraphCtrl::PLOT_NORMALIZED_COLORS;
         if (m_showColumnAsSize)
+        {
             plotOption |= Graph::CGraphCtrl::PLOT_SCALE_CIRCLE;
+        }
 
         // Draw the scan
         m_map.DrawCircles(iLon, iLat, iCol, nPoints, plotOption);
@@ -437,9 +465,11 @@ void CGeometryDlg::DrawMap()
     CalculateWindDirection(curScanner, m_curScan[curScanner]);
 
     // If there are more than two evaluation-log files then we can combine them
-    //	to calculate plume-height
+    //  to calculate plume-height
     if (nScanners > 1)
+    {
         CalculatePlumeHeight(0, m_curScan[0], 1, m_curScan[1]);
+    }
 }
 
 int CGeometryDlg::SetPlotRange()
@@ -457,9 +487,13 @@ int CGeometryDlg::SetPlotRange()
     {
         // If this evaluation-log has not yet been opened, then check the next one
         if (m_evalLogReader[scanner] == nullptr || strlen(m_evalLogReader[scanner]->m_evaluationLog) <= 0)
+        {
             continue;
+        }
         if ((m_evalLogReader[scanner]->m_scanNum <= 0) || (m_evalLogReader[scanner]->m_specieNum <= 0))
+        {
             continue;
+        }
 
         // Get the intersection points
         int nPoints = CalculateIntersectionPoints(scanner, m_curScan[scanner], iLat, iLon, iCol, BUFFERSIZE);
@@ -501,7 +535,7 @@ int CGeometryDlg::SetPlotRange()
 
 void CGeometryDlg::ShowSunPosition(int scanner)
 {
-    double saz, sza; // solar azimuth and zenith angle 
+    double saz, sza; // solar azimuth and zenith angle
     GetSunPosition(scanner, m_curScan[scanner], sza, saz);
     CString msgAngle;
     msgAngle.Format("SZA: %.1lf [deg]", sza);
@@ -510,7 +544,7 @@ void CGeometryDlg::ShowSunPosition(int scanner)
     SetDlgItemText(IDC_LABEL_SAZ, msgAngle);
 
     // If the user wants to see the direction towards the sun in the map, then
-    //	calculate and show it also
+    //  calculate and show it also
     if (m_showSunRay)
     {
         double sunLat[2], sunLon[2];
@@ -527,7 +561,7 @@ void CGeometryDlg::ShowSunPosition(int scanner)
 }
 
 /** This function extracts the gps - data from the evaluation log */
-void	CGeometryDlg::GetGPSData(int seriesNumber, double& lat, double& lon, long& alt)
+void CGeometryDlg::GetGPSData(int seriesNumber, double& lat, double& lon, long& alt)
 {
     lat = 0.0;
     lon = 0.0;
@@ -536,7 +570,9 @@ void	CGeometryDlg::GetGPSData(int seriesNumber, double& lat, double& lon, long& 
 
     // no data to read
     if (m_evalLogReader[seriesNumber] == nullptr || m_evalLogReader[seriesNumber]->m_scanNum <= 0)
+    {
         return;
+    }
 
     // check all data
     for (int k = 0; k < m_evalLogReader[seriesNumber]->m_scanNum; ++k)
@@ -547,11 +583,15 @@ void	CGeometryDlg::GetGPSData(int seriesNumber, double& lat, double& lon, long& 
 
         // Check if this position has GPS-data or not
         if (fabs(tmpLat) < 1e-5 || fabs(tmpLon) < 1e-5)
+        {
             continue;
+        }
 
         // Check so that the GPS-data is reasonable
         if (fabs(tmpLat) > 180.0 || fabs(tmpLon) > 180.0)
+        {
             continue;
+        }
 
         lat += tmpLat;
         lon += tmpLon;
@@ -560,7 +600,9 @@ void	CGeometryDlg::GetGPSData(int seriesNumber, double& lat, double& lon, long& 
     }
 
     if (nAveraged == 0)
+    {
         return;
+    }
 
     lat /= nAveraged;
     lon /= nAveraged;
@@ -571,15 +613,21 @@ void	CGeometryDlg::GetGPSData(int seriesNumber, double& lat, double& lon, long& 
 
 /** Calculates the latitude and longitude for
         the measurements, at plume height. */
-int	CGeometryDlg::CalculateIntersectionPoints(int seriesNumber, int scanNumber, double* lat, double* lon, double* column, int dataLength)
+int CGeometryDlg::CalculateIntersectionPoints(int seriesNumber, int scanNumber, double* lat, double* lon, double* column, int dataLength)
 {
     // Check the parameters
     if (m_evalLogReader[seriesNumber] == nullptr || scanNumber > m_evalLogReader[seriesNumber]->m_scanNum)
+    {
         return 0;
+    }
     if (scanNumber < 0)
+    {
         scanNumber = 0;
+    }
     if (lat == 0 || lon == 0)
+    {
         return 0;
+    }
 
     double sLat = m_gps[seriesNumber].m_latitude;
     double sLon = m_gps[seriesNumber].m_longitude;
@@ -627,7 +675,9 @@ int	CGeometryDlg::CalculateIntersectionPoints(int seriesNumber, int scanNumber, 
                 column[index] -= m_evalLogReader[seriesNumber]->m_scan[scanNumber].GetOffset();
             }
             else
+            {
                 column[index] = 0.0;
+            }
 
             ++index;
         }
@@ -667,9 +717,13 @@ int	CGeometryDlg::CalculateIntersectionPoints(int seriesNumber, int scanNumber, 
 
             // the columns (for specie 0) at the intersection-point
             if (m_evalLogReader[seriesNumber]->m_scan[scanNumber].IsOk(k))
+            {
                 column[index] = m_evalLogReader[seriesNumber]->m_scan[scanNumber].GetColumn(k, 0);
+            }
             else
+            {
                 column[index] = 0.0;
+            }
 
             ++index;
         }
@@ -679,16 +733,20 @@ int	CGeometryDlg::CalculateIntersectionPoints(int seriesNumber, int scanNumber, 
 }
 
 /** Calculates and shows the wind direction for scan number 'scanNumber'. */
-void	CGeometryDlg::CalculateWindDirection(int seriesNumber, int scanNumber)
+void CGeometryDlg::CalculateWindDirection(int seriesNumber, int scanNumber)
 {
     // Check the parameters
     if (m_evalLogReader[seriesNumber] == nullptr || scanNumber > m_evalLogReader[seriesNumber]->m_scanNum)
+    {
         return;
+    }
     if (scanNumber < 0)
+    {
         scanNumber = 0;
+    }
 
     double maxColumn = -1e16;
-    int		 indexOfMax = -1;
+    int indexOfMax = -1;
 
     // Get the maximum column
     int nDataPoints = m_evalLogReader[seriesNumber]->m_scan[scanNumber].GetEvaluatedNum();
@@ -707,7 +765,9 @@ void	CGeometryDlg::CalculateWindDirection(int seriesNumber, int scanNumber)
 
     // check so not all points are bad
     if (indexOfMax == -1)
+    {
         return;
+    }
 
     // the location of the system
     double sLat = m_gps[seriesNumber].m_latitude;
@@ -734,7 +794,9 @@ void	CGeometryDlg::CalculateWindDirection(int seriesNumber, int scanNumber)
     // Get the nearest volcano
     int volcanoIndex = CGeometryCalculator::GetNearestVolcano(sLat, sLon);
     if (volcanoIndex == -1)
+    {
         return; // <-- no volcano could be found
+    }
 
     // get the volcanoes latitude & longitude
     double vLat = g_volcanoes.m_peakLatitude[volcanoIndex];
@@ -753,7 +815,9 @@ void CGeometryDlg::OnChangeSelectedScan(NMHDR* pNMHDR, LRESULT* pResult)
 
     m_curScanner = m_scannerList.GetCurSel();
     if (m_curScanner < 0 || m_evalLogReader[m_curScanner] == nullptr)
+    {
         return;
+    }
 
     // If there's no scans read, we cannot change the current scannumber
     if (m_evalLogReader[m_curScanner]->m_scanNum <= 0)
@@ -764,9 +828,13 @@ void CGeometryDlg::OnChangeSelectedScan(NMHDR* pNMHDR, LRESULT* pResult)
 
     // Set the currently selected scan
     if (pNMUpDown->iDelta < 0)
+    {
         --m_curScan[m_curScanner];
+    }
     else
+    {
         ++m_curScan[m_curScanner];
+    }
 
     // set the limits for the selected scan
     m_curScan[m_curScanner] = max(m_curScan[m_curScanner], 0);
@@ -791,7 +859,9 @@ void CGeometryDlg::InitializeControls()
     for (int k = 0; k < MAX_N_SCANNERS; ++k)
     {
         if (m_evalLogReader[k] == nullptr || strlen(m_evalLogReader[k]->m_evaluationLog) <= 0)
+        {
             continue;
+        }
 
         str.Format("%s (%d scans)", (LPCSTR)m_serialNumber[k], m_evalLogReader[k]->m_scanNum);
         m_scannerList.AddString(str);
@@ -800,7 +870,9 @@ void CGeometryDlg::InitializeControls()
     // How many scanners are there?
     int nScanners = m_scannerList.GetCount();
     if (nScanners <= 0)
+    {
         return;
+    }
 
     // Select the last scanner in the list
     m_scannerList.SetCurSel(nScanners - 1);
@@ -814,7 +886,9 @@ void CGeometryDlg::OnChangeScanner()
 {
     int curScanner = m_scannerList.GetCurSel();
     if (curScanner < 0)
+    {
         return;
+    }
 
     // Initialize the spin control
     m_scanSpinCtrl.SetRange(0, (short)(m_evalLogReader[curScanner]->m_scanNum));
@@ -836,7 +910,9 @@ void CGeometryDlg::InitLegend()
     // Get the currently selected scanner
     m_curScanner = m_scannerList.GetCurSel();
     if (m_curScanner < 0 || m_evalLogReader[m_curScanner] == nullptr)
+    {
         return;
+    }
 
     // get the volcanoes latitude & longitude
     double vLat = g_volcanoes.m_peakLatitude[m_volcanoIndex[m_curScanner]];
@@ -860,7 +936,7 @@ void CGeometryDlg::InitLegend()
         if (SUCCESS == m_evalLogReader[m_curScanner]->m_scan[m_curScan[m_curScanner]].GetDate(0, date))
         {
             message.Format("Scan started on: %04d.%02d.%02d at %02d:%02d:%02d",
-            date[0], date[1], date[2], startTime->hour, startTime->minute, startTime->second);
+                date[0], date[1], date[2], startTime->hour, startTime->minute, startTime->second);
         }
         else
         {
@@ -888,9 +964,13 @@ int CGeometryDlg::CalculatePlumeHeight(int seriesNumber1, int scanNumber1, int s
 
     // 2. Get the plume centre positions
     if (false == m_evalLogReader[seriesNumber1]->m_scan[scanNumber1].CalculatePlumeCentre("SO2", plumeCentre[0], tmp, plumeCompleteness, plumeEdge_low, plumeEdge_high))
-        return 1;	// <-- cannot see the plume
+    {
+        return 1; // <-- cannot see the plume
+    }
     if (false == m_evalLogReader[seriesNumber2]->m_scan[scanNumber2].CalculatePlumeCentre("SO2", plumeCentre[1], tmp, plumeCompleteness, plumeEdge_low, plumeEdge_high))
-        return 1;	// <-- cannot see the plume
+    {
+        return 1; // <-- cannot see the plume
+    }
 
     // 3. Get the cone-angles
     coneAngle[0] = m_evalLogReader[seriesNumber1]->m_scan[scanNumber1].GetConeAngle();
@@ -911,7 +991,9 @@ int CGeometryDlg::CalculatePlumeHeight(int seriesNumber1, int scanNumber1, int s
     if (false == CGeometryCalculator::GetPlumeHeight_Exact(gps, compass, plumeCentre, coneAngle, tilt, m_calcPlumeHeight))
     {
         if (false == CGeometryCalculator::GetPlumeHeight_Fuzzy(source, gps, compass, plumeCentre, coneAngle, tilt, m_calcPlumeHeight))
+        {
             return 1; // could not calculate anything
+        }
     }
 
     // successfully calculated a plume-height, tell the user what we've done.
@@ -933,12 +1015,14 @@ void CGeometryDlg::GetSunPosition(int seriesNumber, int scanNumber, double& sza,
 
 /** Called when the user has changed which is to be the source for the current
             scanner. */
-void	CGeometryDlg::OnChangeSource()
+void CGeometryDlg::OnChangeSource()
 {
-    // The currently selected scanner 
+    // The currently selected scanner
     int curScanner = m_scannerList.GetCurSel();
     if (curScanner == -1)
+    {
         return;
+    }
 
     m_volcanoIndex[curScanner] = m_comboVolcano.GetCurSel();
 
@@ -971,9 +1055,9 @@ void Dialogs::CGeometryDlg::SelectScan()
 {
     CString dateAndTimeStr;
 
-    // When we change the time for the currently selected scanner, 
-    //	we should also change the time for the other scanner(s) to the
-    //	scan closest in time to the current one
+    // When we change the time for the currently selected scanner,
+    //  we should also change the time for the other scanner(s) to the
+    //  scan closest in time to the current one
     CDateTime currentlySelectedTime, time2;
     int otherScanners[2];
     double diffTime, smallestDiffTime;
@@ -981,15 +1065,18 @@ void Dialogs::CGeometryDlg::SelectScan()
     curScan.GetStartTime(0, currentlySelectedTime);
     if (m_curScanner == 0)
     {
-        otherScanners[0] = 1; otherScanners[1] = 2;
+        otherScanners[0] = 1;
+        otherScanners[1] = 2;
     }
     else if (m_curScanner == 1)
     {
-        otherScanners[0] = 0; otherScanners[1] = 2;
+        otherScanners[0] = 0;
+        otherScanners[1] = 2;
     }
     else
     {
-        otherScanners[0] = 0; otherScanners[1] = 1;
+        otherScanners[0] = 0;
+        otherScanners[1] = 1;
     }
     if (m_evalLogReader[otherScanners[0]] != nullptr)
     {
@@ -1062,7 +1149,9 @@ void Dialogs::CGeometryDlg::OnMenu_CalculateGeometries()
     for (it = 0; it < MAX_N_SCANNERS; ++it)
     {
         if (m_evalLogReader[it] != nullptr)
+        {
             ++nOpenedEvalLogs;
+        }
     }
     if (nOpenedEvalLogs < 2)
     {
@@ -1077,7 +1166,9 @@ void Dialogs::CGeometryDlg::OnMenu_CalculateGeometries()
     INT_PTR ret = timeDialog.DoModal();
 
     if (IDCANCEL == ret)
+    {
         return;
+    }
 
     // Check what the user typed
     if (0 == sscanf(userInputStr, "%lf", &maxStartTimeDifference))
@@ -1091,9 +1182,12 @@ void Dialogs::CGeometryDlg::OnMenu_CalculateGeometries()
 
     // Now combine all scans with a not too large time-difference
     for (it = 0; it < MAX_N_SCANNERS - 1; ++it)
-    {			// <-- these two for-loops loop through all combinations of the evaluation-logs
+    {
+        // <-- these two for-loops loop through all combinations of the evaluation-logs
         if (m_evalLogReader[it] == nullptr)
+        {
             continue;
+        }
 
         // Serial-number of spectrometer #1
         serial1.Format("%s", m_evalLogReader[it]->m_scan[0].GetSerial().c_str());
@@ -1101,7 +1195,9 @@ void Dialogs::CGeometryDlg::OnMenu_CalculateGeometries()
         for (it2 = it + 1; it2 < MAX_N_SCANNERS; ++it2)
         {
             if (m_evalLogReader[it2] == nullptr)
+            {
                 continue;
+            }
 
             // Serial-number of spectrometer #2
             serial2.Format("%s", m_evalLogReader[it2]->m_scan[0].GetSerial().c_str());
@@ -1110,23 +1206,31 @@ void Dialogs::CGeometryDlg::OnMenu_CalculateGeometries()
             FILE* f = OpenPostGeometryLogFile(it, it2, fileName);
             // The name of the volcano we're working on...
             if (m_volcanoIndex[0] != -1)
+            {
                 volcanoName.Format("%s", (LPCSTR)g_volcanoes.m_simpleName[m_volcanoIndex[0]]);
+            }
             else
+            {
                 volcanoName.Format("Unknown");
+            }
 
             for (scanNumber1 = 0; scanNumber1 < m_evalLogReader[it]->m_scanNum; ++scanNumber1)
-            { // <-- loop through all scans in eval-log #1
-// Start-time of scan #1
+            {
+                // <-- loop through all scans in eval-log #1
+                // Start-time of scan #1
                 m_evalLogReader[it]->m_scan[scanNumber1].GetStartTime(0, time1);
 
                 for (scanNumber2 = 0; scanNumber2 < m_evalLogReader[it2]->m_scanNum; ++scanNumber2)
-                { // <-- loop through all scans in eval-log #2
-// Start-time of scan #2
+                {
+                    // <-- loop through all scans in eval-log #2
+                    // Start-time of scan #2
                     m_evalLogReader[it2]->m_scan[scanNumber2].GetStartTime(0, time2);
 
                     // Check the difference in start-time
                     if (maxStartTimeDifference < fabs(CDateTime::Difference(time1, time2)))
+                    {
                         continue;
+                    }
 
                     // we're ok, combine the two scans...
 
@@ -1169,9 +1273,9 @@ FILE* Dialogs::CGeometryDlg::OpenPostGeometryLogFile(int seriesNumber1, int seri
     CString directory;
 
     directory.Format(m_evalLogReader[seriesNumber1]->m_evaluationLog);
-    Common::GetDirectory(directory);		// get the directory of the evaluation-log files
+    Common::GetDirectory(directory);  // get the directory of the evaluation-log files
     directory = directory.Left((int)strlen(directory) - 1);
-    Common::GetDirectory(directory);		// get the parent-directory to the evaluation-log files
+    Common::GetDirectory(directory);  // get the parent-directory to the evaluation-log files
     fileName.Format("%sPostGeometryLog.txt", (LPCSTR)directory);
     int exists = IsExistingFile(fileName);
     FILE* f = fopen(fileName, "a+");
@@ -1184,7 +1288,9 @@ FILE* Dialogs::CGeometryDlg::OpenPostGeometryLogFile(int seriesNumber1, int seri
         INT_PTR ret = timeDialog.DoModal();
 
         if (IDCANCEL == ret)
+        {
             return nullptr;
+        }
 
         // Try to open the file again
         fileName.Format("%sPostGeometryLog.txt", (LPCSTR)directory);

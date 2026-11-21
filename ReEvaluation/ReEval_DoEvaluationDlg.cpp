@@ -35,9 +35,7 @@ static UINT DoEvaluation(LPVOID pParam)
 IMPLEMENT_DYNAMIC(CReEval_DoEvaluationDlg, CPropertyPage)
 
 CReEval_DoEvaluationDlg::CReEval_DoEvaluationDlg(CReEvaluator& reeval)
-    : CPropertyPage(CReEval_DoEvaluationDlg::IDD)
-    , m_reeval(reeval)
-    , m_showFit(0)
+    : CPropertyPage(CReEval_DoEvaluationDlg::IDD), m_reeval(reeval), m_showFit(0)
 {
     m_curSpecie = 0;
 
@@ -94,7 +92,7 @@ END_MESSAGE_MAP()
 // CReEval_DoEvaluationDlg message handlers
 
 /** Initializes the graphs */
-void  CReEval_DoEvaluationDlg::InitializeGraphs()
+void CReEval_DoEvaluationDlg::InitializeGraphs()
 {
     CRect rect;
     Common common;
@@ -129,7 +127,7 @@ void  CReEval_DoEvaluationDlg::InitializeGraphs()
     m_referenceFitGraph.SetPlotColor(RGB(255, 0, 0));
 }
 
-void  CReEval_DoEvaluationDlg::PopulateRefList()
+void CReEval_DoEvaluationDlg::PopulateRefList()
 {
     m_specieList.ResetContent();
 
@@ -223,8 +221,8 @@ void CReEval_DoEvaluationDlg::OnDoEvaluation()
 void CReEval_DoEvaluationDlg::OnCancelEvaluation()
 {
 
-    // If the 'pause' - button is pressed and the thread is waiting for the 
-    //	user to press 'next'...
+    // If the 'pause' - button is pressed and the thread is waiting for the
+    //  user to press 'next'...
     if (m_reeval.fRun && m_reeval.m_sleeping)
     {
         pReEvalThread->ResumeThread();
@@ -344,10 +342,13 @@ void CReEval_DoEvaluationDlg::RedrawTotalFitGraph()
 {
 
     if (m_showFit == 0)
+    {
         DrawFit();
+    }
     else
+    {
         DrawResidual();
-
+    }
 }
 
 void CReEval_DoEvaluationDlg::DrawReference()
@@ -419,7 +420,9 @@ void CReEval_DoEvaluationDlg::DrawFit()
         maxV = std::max(maxV, spectrum[i]);
     }
     if (maxV <= minV)
+    {
         maxV = minV + 1;
+    }
 
     if ((maxV - minV) < 0.25 * (oldMaxV - oldMinV))
     {
@@ -429,14 +432,22 @@ void CReEval_DoEvaluationDlg::DrawFit()
     else
     {
         if (minV < oldMinV)
+        {
             oldMinV = minV;
+        }
         else
+        {
             minV = oldMinV;
+        }
 
         if (maxV > oldMaxV)
+        {
             oldMaxV = maxV;
+        }
         else
+        {
             maxV = oldMaxV;
+        }
     }
 
     // set the range for the plot
@@ -478,14 +489,22 @@ void CReEval_DoEvaluationDlg::DrawResidual()
     else
     {
         if (minV < oldMinV)
+        {
             oldMinV = minV;
+        }
         else
+        {
             minV = oldMinV;
+        }
 
         if (maxV > oldMaxV)
+        {
             oldMaxV = maxV;
+        }
         else
+        {
             maxV = oldMaxV;
+        }
     }
 
     // set the range for the plot

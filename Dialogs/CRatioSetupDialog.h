@@ -28,7 +28,10 @@ public:
 
     // Dialog Data
 #ifdef AFX_DESIGN_TIME
-    enum { IDD = IDD_RATIO_WINDOW_SETUP_DIALOG };
+    enum
+    {
+        IDD = IDD_RATIO_WINDOW_SETUP_DIALOG
+    };
 #endif
 
 protected:
@@ -37,7 +40,6 @@ protected:
     DECLARE_MESSAGE_MAP()
 
 private:
-
     afx_msg void OnClickInReferenceList(NMHDR* pNMHDR, LRESULT* pResult);
     afx_msg void OnKillfocusEditBox();
     afx_msg void OnSelchangeComboFitType();

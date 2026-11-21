@@ -27,7 +27,10 @@ public:
     void SetLayout();
 
     // Dialog Data
-    enum { IDD = IDD_VIEW_SCANNERSTATUS };
+    enum
+    {
+        IDD = IDD_VIEW_SCANNERSTATUS
+    };
 
 protected:
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -124,7 +127,7 @@ protected:
     CStatic m_scanInfo_ExpTime, m_scanInfo_NumSpec;
 
     /** the tool tips */
-    CToolTipCtrl  m_toolTip;
+    CToolTipCtrl m_toolTip;
 
     /** The legend for the column color */
     DlgControls::CLabel m_legend_ColumnColor;
@@ -154,6 +157,7 @@ protected:
     /** Executes the script specifyed in the g_settings to call when a full scan
             has been received. */
     void ExecuteScript_Image(const CString& imageFileName);
+
 public:
     afx_msg void OnSize(UINT nType, int cx, int cy);
 };

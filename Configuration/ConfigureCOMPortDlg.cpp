@@ -12,8 +12,7 @@ using namespace ConfigurationDialog;
 
 IMPLEMENT_DYNAMIC(CConfigureCOMPortDlg, CPropertyPage)
 CConfigureCOMPortDlg::CConfigureCOMPortDlg()
-    : CSystemConfigurationPage(CConfigureCOMPortDlg::IDD)
-    , m_ftpHostName(_T(""))
+    : CSystemConfigurationPage(CConfigureCOMPortDlg::IDD), m_ftpHostName(_T(""))
 {
     m_configuration = nullptr;
 
@@ -150,7 +149,7 @@ BEGIN_MESSAGE_MAP(CConfigureCOMPortDlg, CPropertyPage)
     ON_EN_CHANGE(IDC_FTP_USERNAME, SaveData)
     ON_EN_CHANGE(IDC_FTP_PASSWORD, SaveData)
 
-    // Dir polling 
+    // Dir polling
     ON_EN_CHANGE(IDC_EDIT_POLLING_DIRECTORY, SaveData)
 
     // The FTP/cable/radio radio-box
@@ -177,12 +176,14 @@ BOOL ConfigurationDialog::CConfigureCOMPortDlg::OnInitDialog()
     ShowFTP();
 
     /** Initialize the controls */
-    for (int i = 1; i < 22; ++i) {
+    for (int i = 1; i < 22; ++i)
+    {
         port.Format("COM%1d", i);
         m_comPort.AddString(port);
     }
 
-    for (int i = 0; i < sizeof(m_availableBaudrates) / sizeof(int); ++i) {
+    for (int i = 0; i < sizeof(m_availableBaudrates) / sizeof(int); ++i)
+    {
         bdr.Format("%d", m_availableBaudrates[i]);
         m_baudrate.AddString(bdr);
     }
@@ -200,27 +201,37 @@ BOOL ConfigurationDialog::CConfigureCOMPortDlg::OnInitDialog()
     // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CConfigureCOMPortDlg::OnChangeScanner() {
+void CConfigureCOMPortDlg::OnChangeScanner()
+{
     UpdateDlg();
 
     if (this->m_hWnd != nullptr)
+    {
         OnChangeMethod();
+    }
 }
 
-void CConfigureCOMPortDlg::UpdateDlg() {
+void CConfigureCOMPortDlg::UpdateDlg()
+{
     CString bdr;
     int currentScanner, currentSpec;
 
     if (m_hWnd == nullptr)
+    {
         return;
+    }
 
     HTREEITEM hTree = m_scannerTree->GetSelectedItem();
     GetScanAndSpec(currentScanner, currentSpec);
 
-    if (currentSpec == -1) {
+    if (currentSpec == -1)
+    {
         if ((currentScanner == -1) || (m_configuration->scanner[currentScanner].specNum > 1))
+        {
             return;
-        else {
+        }
+        else
+        {
             hTree = m_scannerTree->GetChildItem(hTree);
             currentSpec = 0;
         }
@@ -235,8 +246,10 @@ void CConfigureCOMPortDlg::UpdateDlg() {
     m_comPort.SetCurSel(comm.port - 1);
 
     // 1b. The baudrate
-    for (int i = 0; i < sizeof(m_availableBaudrates) / sizeof(int); ++i) {
-        if (m_availableBaudrates[i] == comm.baudrate) {
+    for (int i = 0; i < sizeof(m_availableBaudrates) / sizeof(int); ++i)
+    {
+        if (m_availableBaudrates[i] == comm.baudrate)
+        {
             m_baudrate.SetCurSel(i);
             break;
         }
@@ -245,14 +258,18 @@ void CConfigureCOMPortDlg::UpdateDlg() {
     m_handshake.SetCurSel(comm.flowControl);
 
     // 1d. The communication medium
-    if (comm.connectionType == FTP_CONNECTION) {
+    if (comm.connectionType == FTP_CONNECTION)
+    {
         m_curSetting = 2;
     }
-    else if (comm.connectionType == DIRECTORY_POLLING) {
+    else if (comm.connectionType == DIRECTORY_POLLING)
+    {
         m_curSetting = 3;
     }
-    else {
-        switch (comm.medium) {
+    else
+    {
+        switch (comm.medium)
+        {
         case MEDIUM_CABLE: m_curSetting = 0; break;
         case MEDIUM_FREEWAVE_SERIAL_MODEM: m_curSetting = 1; break;
         }
@@ -270,7 +287,7 @@ void CConfigureCOMPortDlg::UpdateDlg() {
     m_intervalMin = (int)((t - m_intervalHr * 3600) / 60);
     m_intervalSec = (int)(t % 60);
 
-    // 5. sleep period 
+    // 5. sleep period
     m_sleepHr = comm.sleepTime.hour;
     m_sleepMin = comm.sleepTime.minute;
     m_sleepSec = comm.sleepTime.second;
@@ -279,7 +296,8 @@ void CConfigureCOMPortDlg::UpdateDlg() {
     m_wakeSec = comm.wakeupTime.second;
 
     // 6. Update the screen
-    if (m_hWnd != nullptr) {
+    if (m_hWnd != nullptr)
+    {
         UpdateData(FALSE);
     }
 
@@ -293,42 +311,51 @@ void CConfigureCOMPortDlg::UpdateDlg() {
     m_directory.Format("%s", (LPCSTR)comm.directory);
 
     // 9. Update the screen
-    if (m_hWnd != nullptr) {
+    if (m_hWnd != nullptr)
+    {
         UpdateData(FALSE);
     }
 }
 
-void CConfigureCOMPortDlg::OnChangeMethod() {
+void CConfigureCOMPortDlg::OnChangeMethod()
+{
     if (m_hWnd != nullptr)
+    {
         UpdateData(TRUE); // <-- Save the data in the dialog
+    }
 
     SaveData(); // <-- Save the remaining data in the dialog
 
-    switch (m_curSetting) {
-    case 0:	ShowSerialCable(); break;
-    case 1:	ShowFreewaveSerial(); break;
-    case 2:	ShowFTP(); break;
-    case 3:	ShowDirectoryPolling(); break;
+    switch (m_curSetting)
+    {
+    case 0: ShowSerialCable(); break;
+    case 1: ShowFreewaveSerial(); break;
+    case 2: ShowFTP(); break;
+    case 3: ShowDirectoryPolling(); break;
     default: ShowFTP();
     }
 
     UpdateDlg();
 }
 
-void CConfigureCOMPortDlg::SaveData() {
+void CConfigureCOMPortDlg::SaveData()
+{
     int currentScanner, currentSpec;
 
     if (m_hWnd == nullptr)
+    {
         return;
+    }
 
     HTREEITEM hTree = m_scannerTree->GetSelectedItem();
     GetScanAndSpec(currentScanner, currentSpec);
 
-    if (currentSpec == -1) {
+    if (currentSpec == -1)
+    {
         return;
     }
 
-    // ------- Save the change ----------- 
+    // ------- Save the change -----------
     if (UpdateData(TRUE))
     {
         CConfigurationSetting::CommunicationSetting& comm = m_configuration->scanner[currentScanner].comm;
@@ -345,13 +372,16 @@ void CConfigureCOMPortDlg::SaveData() {
         comm.flowControl = m_handshake.GetCurSel();
 
         // 1d. The communication medium
-        switch (m_curSetting) {
+        switch (m_curSetting)
+        {
         case 0:
             comm.connectionType = SERIAL_CONNECTION;
-            comm.medium = MEDIUM_CABLE; break;
+            comm.medium = MEDIUM_CABLE;
+            break;
         case 1:
             comm.connectionType = SERIAL_CONNECTION;
-            comm.medium = MEDIUM_FREEWAVE_SERIAL_MODEM; break;
+            comm.medium = MEDIUM_FREEWAVE_SERIAL_MODEM;
+            break;
         case 2:
             comm.connectionType = FTP_CONNECTION;
             break;
@@ -388,11 +418,10 @@ void CConfigureCOMPortDlg::SaveData() {
         comm.wakeupTime.hour = m_wakeHr;
         comm.wakeupTime.minute = m_wakeMin;
         comm.wakeupTime.second = m_wakeSec;
-
     }
-
 }
-BOOL ConfigurationDialog::CConfigureCOMPortDlg::PreTranslateMessage(MSG* pMsg) {
+BOOL ConfigurationDialog::CConfigureCOMPortDlg::PreTranslateMessage(MSG* pMsg)
+{
     m_toolTip.RelayEvent(pMsg);
 
     return CPropertyPage::PreTranslateMessage(pMsg);
@@ -407,7 +436,8 @@ BOOL ConfigurationDialog::CConfigureCOMPortDlg::OnSetActive()
 
 
 /** Showing the settings for connecting through a serial cable */
-void CConfigureCOMPortDlg::ShowSerialCable() {
+void CConfigureCOMPortDlg::ShowSerialCable()
+{
     // 1. Set the labels
     SetDlgItemText(IDC_LABEL1, "COM-Port");
     SetDlgItemText(IDC_LABEL2, "Baudrate");
@@ -432,7 +462,8 @@ void CConfigureCOMPortDlg::ShowSerialCable() {
 }
 
 /** Showing the settings for connecting using a Freewave serial modem */
-void CConfigureCOMPortDlg::ShowFreewaveSerial() {
+void CConfigureCOMPortDlg::ShowFreewaveSerial()
+{
     // 1. Set the labels
     SetDlgItemText(IDC_LABEL1, "COM-Port");
     SetDlgItemText(IDC_LABEL2, "Baudrate");
@@ -457,7 +488,8 @@ void CConfigureCOMPortDlg::ShowFreewaveSerial() {
 }
 
 /** Showing the settings for connecting using FTP-Protocol*/
-void CConfigureCOMPortDlg::ShowFTP() {
+void CConfigureCOMPortDlg::ShowFTP()
+{
     // 1. Set the labels
     SetDlgItemText(IDC_LABEL1, "IP-Address");
     SetDlgItemText(IDC_LABEL2, "Username");
@@ -482,7 +514,8 @@ void CConfigureCOMPortDlg::ShowFTP() {
 }
 
 /** Showing the settings when polling directory */
-void CConfigureCOMPortDlg::ShowDirectoryPolling() {
+void CConfigureCOMPortDlg::ShowDirectoryPolling()
+{
     // 1. Set the labels
     SetDlgItemText(IDC_LABEL1, "");
     SetDlgItemText(IDC_LABEL2, "");
@@ -506,12 +539,16 @@ void CConfigureCOMPortDlg::ShowDirectoryPolling() {
     m_editTimeOut.ShowWindow(SW_HIDE);
     m_label5.ShowWindow(SW_HIDE);
 }
-void CConfigureCOMPortDlg::InitToolTips() {
+void CConfigureCOMPortDlg::InitToolTips()
+{
     if (m_toolTip.m_hWnd != nullptr)
+    {
         return;
+    }
 
     // Enable the tool tips
-    if (!m_toolTip.Create(this)) {
+    if (!m_toolTip.Create(this))
+    {
         TRACE0("Failed to create tooltip control\n");
     }
     m_toolTip.AddTool(&m_connectionIntervalLabel, IDC_INTERVAL_HR);
@@ -540,7 +577,8 @@ void ConfigurationDialog::CConfigureCOMPortDlg::OnBnClickedButtonPolDirBrowse()
     Common common;
     CString folderName;
 
-    if (common.BrowseForDirectory(folderName)) {
+    if (common.BrowseForDirectory(folderName))
+    {
         m_editDirectory.SetWindowText(folderName);
     }
 }

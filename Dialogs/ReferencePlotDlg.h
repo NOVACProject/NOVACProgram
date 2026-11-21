@@ -22,7 +22,10 @@ public:
     virtual ~CReferencePlotDlg();
 
     // Dialog Data
-    enum { IDD = IDD_REFERENCE_PLOT_DLG };
+    enum
+    {
+        IDD = IDD_REFERENCE_PLOT_DLG
+    };
 
 protected:
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -58,6 +61,5 @@ protected:
 
     /** The window for which we want to see the references */
     novac::CFitWindow& m_window;
-
 };
 }

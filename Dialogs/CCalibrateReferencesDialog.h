@@ -9,7 +9,7 @@ class ReferenceCreationController;
 
 namespace novac
 {
-    class StandardCrossSectionSetup;
+class StandardCrossSectionSetup;
 }
 
 class CCalibrateReferencesDialog : public CPropertyPage
@@ -25,7 +25,10 @@ public:
 
     // Dialog Data
 #ifdef AFX_DESIGN_TIME
-    enum { IDD = IDD_CALIBRATE_REFERENCES };
+    enum
+    {
+        IDD = IDD_CALIBRATE_REFERENCES
+    };
 #endif
 
 protected:

@@ -10,7 +10,7 @@
 
         Known children are:
             CGeometryEvaluator - calculates plume-heights in real-time from normal scans
-            CWindEvaluator		- calculates wind-speeds in real-time from wind-measurements
+            CWindEvaluator      - calculates wind-speeds in real-time from wind-measurements
         */
 
 class CCombinerThread : public CWinThread
@@ -53,14 +53,15 @@ protected:
 #endif
 
     /** a small class for storing the evaluation-logs */
-    class CEvalLogFile {
+    class CEvalLogFile
+    {
     public:
         CEvalLogFile();
         ~CEvalLogFile();
-        CString   fileName;     // <-- the filename of the evaluation log
-        int       volcanoIndex; // <-- the volcano index tells us which volcano this measurement comes from
+        CString fileName;     // <-- the filename of the evaluation log
+        int volcanoIndex; // <-- the volcano index tells us which volcano this measurement comes from
         novac::CDateTime arrived;      // <-- the (local PC) time when this thread found out about the file
-        long      matched;      // <-- how many evaluation-files that this file has been matched with already
+        long matched;      // <-- how many evaluation-files that this file has been matched with already
     };
 
     /** A list containing all the evaluation-log files that we know about.
@@ -68,12 +69,12 @@ protected:
         The list is sorted wrt the arrival time with the newest in the beginning of the list.
         If no matching eval-log file has arrived within a reasonable amount of
         time the eval-log will be removed from the list. */
-    CList <CEvalLogFile, CEvalLogFile&>	m_evalLogs;
+    CList<CEvalLogFile, CEvalLogFile&> m_evalLogs;
 
     /** Searches the list of evaluation logs and tries to find a log-file
             which matches the given evaluation-log.
             @return - the number of matching files found, this can be no more than MAX_MATCHING_FILES */
-    virtual int	FindMatchingEvalLog(const CString& evalLog, CString match[MAX_MATCHING_FILES], int volcanoIndex) = 0;
+    virtual int FindMatchingEvalLog(const CString& evalLog, CString match[MAX_MATCHING_FILES], int volcanoIndex) = 0;
 
     /** Inserts the given evaluation log into the correct position into the list. */
     virtual void InsertIntoList(const CString& evalLog, int volcanoIndex);
@@ -83,9 +84,5 @@ protected:
             together. The files are stored in the list, waiting for matching log-files
             to arrive. When long enough time has passed, the files are removed from
             the list. */
-    virtual void	CleanEvalLogList();
-
-
+    virtual void CleanEvalLogList();
 };
-
-

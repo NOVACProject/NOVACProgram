@@ -62,7 +62,8 @@ BOOL Dialogs::CFluxErrorDlg::OnInitDialog()
     // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CFluxErrorDlg::SaveData() {
+void CFluxErrorDlg::SaveData()
+{
     this->UpdateData(TRUE);
 }
 void Dialogs::CFluxErrorDlg::OnKillFocus(CWnd* pNewWnd)

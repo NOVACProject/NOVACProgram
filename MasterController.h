@@ -11,10 +11,10 @@ public:
     bool m_fRunning = false;
 
     /** Starts the program */
-    void  Start();
+    void Start();
 
     /** Stops the program */
-    void  Stop();
+    void Stop();
 
     /** Checks the settings */
     bool CheckSettings();

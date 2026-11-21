@@ -6,54 +6,56 @@
 namespace ConfigurationDialog
 {
 
-    class CVIIAdvancedConfigurationDlg : public CSystemConfigurationPage
+class CVIIAdvancedConfigurationDlg : public CSystemConfigurationPage
+{
+    DECLARE_DYNAMIC(CVIIAdvancedConfigurationDlg)
+
+public:
+    CVIIAdvancedConfigurationDlg();
+    virtual ~CVIIAdvancedConfigurationDlg();
+
+    // Dialog Data
+    enum
     {
-        DECLARE_DYNAMIC(CVIIAdvancedConfigurationDlg)
+        IDD = IDD_CONFIGURE_VII_ADVANCED
+    };
 
-    public:
-        CVIIAdvancedConfigurationDlg();
-        virtual ~CVIIAdvancedConfigurationDlg();
+protected:
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
-        // Dialog Data
-        enum { IDD = IDD_CONFIGURE_VII_ADVANCED };
+    DECLARE_MESSAGE_MAP()
 
-    protected:
-        virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+public:
+    /** Setup the tool tips */
+    void InitToolTips();
 
-        DECLARE_MESSAGE_MAP()
+    /** Initializing the dialog */
+    virtual BOOL OnInitDialog();
 
-    public:
-        /** Setup the tool tips */
-        void InitToolTips();
+    /** Handling the tool tips */
+    virtual BOOL PreTranslateMessage(MSG* pMsg);
 
-        /** Initializing the dialog */
-        virtual BOOL OnInitDialog();
+    /** Called when the user has changed the currently selected scanner */
+    virtual void OnChangeScanner() override;
 
-        /** Handling the tool tips */
-        virtual BOOL PreTranslateMessage(MSG* pMsg);
+    /** Called when the automatic measurements have been turned on/off */
+    afx_msg void OnOnOff();
 
-        /** Called when the user has changed the currently selected scanner */
-        virtual void OnChangeScanner() override;
+    /** Saves the data in the dialog */
+    afx_msg void SaveData();
 
-        /** Called when the automatic measurements have been turned on/off */
-        afx_msg void OnOnOff();
-
-        /** Saves the data in the dialog */
-        afx_msg void SaveData();
-
-    protected:
-
+protected:
         // ----------------------- DIALOG DATA ------------------------
 
-        /** the local copies of the settings */
-        int    m_automaticSetupChange;
-        int    m_useCalculatedPlumeParameters;
-        double m_windDirectionTolerance;
-        int    m_mode;
+    /** the local copies of the settings */
+    int m_automaticSetupChange;
+    int m_useCalculatedPlumeParameters;
+    double m_windDirectionTolerance;
+    int m_mode;
 
-        // ----------------------- DIALOG CONTROLS ------------------------
-        CEdit   m_editTolerance;
-        CButton m_radioMode1, m_radioMode2;
-        CButton m_checkUseAutoValues;
-    };
+    // ----------------------- DIALOG CONTROLS ------------------------
+    CEdit m_editTolerance;
+    CButton m_radioMode1, m_radioMode2;
+    CButton m_checkUseAutoValues;
+};
 }

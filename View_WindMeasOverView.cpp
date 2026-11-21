@@ -26,7 +26,8 @@ CView_WindMeasOverView::~CView_WindMeasOverView()
 
     // Clear the labels
     POSITION pos = m_serialLegend.GetHeadPosition();
-    while (pos != NULL) {
+    while (pos != NULL)
+    {
         CLegend* leg = m_serialLegend.GetNext(pos);
         delete leg;
     }
@@ -52,26 +53,30 @@ BOOL CView_WindMeasOverView::OnInitDialog()
     CRect thisRect, graphRect, labelRect, textRect;
     int margin = 15; // the margin between each element
     int labelWidth = 80; // the width of each label
-    int	labelHeight = 15;	// the height of each label
+    int labelHeight = 15; // the height of each label
     COLORREF colors[] = { RGB(255, 0, 0), RGB(0, 255, 0), RGB(0, 0, 255), RGB(255, 255, 0), RGB(255, 0, 255), RGB(0, 255, 255) };
     int nColors = 6;
 
     // The number of double spectrometers
     int nSpectrometers = 0;
-    for (unsigned int index = 0; index < g_settings.scannerNum; ++index) {
-        if (g_settings.scanner[index].spec[0].channelNum == 2) {
+    for (unsigned int index = 0; index < g_settings.scannerNum; ++index)
+    {
+        if (g_settings.scanner[index].spec[0].channelNum == 2)
+        {
             ++nSpectrometers;
         }
     }
     // if there are no double-spectrometers then we don't have anything to do
     if (nSpectrometers == 0)
+    {
         return TRUE;
+    }
 
     // The size of the window.
     this->GetWindowRect(thisRect);
 
     // The legends are arranged in a matrix with up to four in each row
-    //	and as many rows as are needed
+    //  and as many rows as are needed
     int nRows = 1 + (int)(nSpectrometers / 4);
 
     // Calculate the size of the graph
@@ -83,11 +88,11 @@ BOOL CView_WindMeasOverView::OnInitDialog()
     // The font we want to use
     CFont* font = new CFont();
     font->CreateFont((int)(16 - 0.2 * nSpectrometers), 0, 0, 0, FW_BOLD,
-                       FALSE, FALSE, 0, ANSI_CHARSET,
-                       OUT_DEFAULT_PRECIS,
-                       CLIP_DEFAULT_PRECIS,
-                       DEFAULT_QUALITY,
-                       DEFAULT_PITCH | FF_SWISS, "Arial");
+        FALSE, FALSE, 0, ANSI_CHARSET,
+        OUT_DEFAULT_PRECIS,
+        CLIP_DEFAULT_PRECIS,
+        DEFAULT_QUALITY,
+        DEFAULT_PITCH | FF_SWISS, "Arial");
 
     // Create the graph
     m_graph.SetXUnits(m_common.GetString(AXIS_UTCTIME));
@@ -103,8 +108,10 @@ BOOL CView_WindMeasOverView::OnInitDialog()
 
     // Create the legends
     int labelNo = -1;
-    for (unsigned long index = 0; index < g_settings.scannerNum; ++index) {
-        if (g_settings.scanner[index].spec[0].channelNum == 2) {
+    for (unsigned long index = 0; index < g_settings.scannerNum; ++index)
+    {
+        if (g_settings.scanner[index].spec[0].channelNum == 2)
+        {
             ++labelNo;
             // the size and position of the colored square
             labelRect.top = graphRect.bottom + margin / 2;
@@ -134,7 +141,8 @@ BOOL CView_WindMeasOverView::OnInitDialog()
     }
 
     // Enable the tool tips
-    if (!m_toolTip.Create(this)) {
+    if (!m_toolTip.Create(this))
+    {
         TRACE0("Failed to create tooltip control\n");
     }
     m_toolTip.AddTool(&m_graph, "Shows an overview of the wind-measurements performed today");
@@ -157,14 +165,16 @@ BOOL CView_WindMeasOverView::PreTranslateMessage(MSG* pMsg)
     return CPropertyPage::PreTranslateMessage(pMsg);
 }
 
-LRESULT CView_WindMeasOverView::OnUpdateGraphs(WPARAM wParam, LPARAM lParam) {
+LRESULT CView_WindMeasOverView::OnUpdateGraphs(WPARAM wParam, LPARAM lParam)
+{
     // Re-draw the screen
     DrawWindGraphs();
 
     return 0;
 }
 
-void CView_WindMeasOverView::DrawWindGraphs() {
+void CView_WindMeasOverView::DrawWindGraphs()
+{
     const int BUFFER_SIZE = 200;
     double timeBuffer[BUFFER_SIZE];
     double wsBuffer[BUFFER_SIZE];
@@ -180,7 +190,8 @@ void CView_WindMeasOverView::DrawWindGraphs() {
 
     // loop through all double-spectrometers
     POSITION pos = m_serialLegend.GetHeadPosition();
-    while (pos != NULL) {
+    while (pos != NULL)
+    {
         CLegend* legend = m_serialLegend.GetNext(pos);
 
         // get the serial of the spectrometer
@@ -190,13 +201,16 @@ void CView_WindMeasOverView::DrawWindGraphs() {
         int dataLength = m_evalDataStorage->GetWindMeasurementData(serial, timeBuffer, wsBuffer, wseBuffer, BUFFER_SIZE);
 
         // Sort the data into good measurements and bad ones
-        for (int k = 0; k < dataLength; ++k) {
-            if (wseBuffer[k] > 0.0) {
+        for (int k = 0; k < dataLength; ++k)
+        {
+            if (wseBuffer[k] > 0.0)
+            {
                 goodWs[nGoodWs] = wsBuffer[k];
                 goodTime[nGoodWs] = timeBuffer[k];
                 ++nGoodWs;
             }
-            else {
+            else
+            {
                 badWs[nBadWs] = wsBuffer[k];
                 badTime[nBadWs] = timeBuffer[k];
                 ++nBadWs;
@@ -206,7 +220,8 @@ void CView_WindMeasOverView::DrawWindGraphs() {
         // ---------- Plot the data ------------
 
         // Draw the wind-measurements as function of time
-        if (0 != dataLength) {
+        if (0 != dataLength)
+        {
             // First draw the bad values
             m_graph.SetCircleColor(RGB(150, 150, 150));
             m_graph.XYPlot(badTime, badWs, nBadWs, CGraphCtrl::PLOT_CIRCLES | CGraphCtrl::PLOT_FIXED_AXIS);

@@ -30,8 +30,6 @@ public:
     static bool RunInstrumentCalibration(Evaluation::CSpectrometer& spec, const std::string& scanFile, CConfigurationSetting& settings);
 
 private:
-
     static void AppendMessageToLog(const Evaluation::CSpectrometer& spectrometer, const std::string& message);
-
 };
 }

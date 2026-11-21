@@ -20,7 +20,8 @@ CLogDialog::~CLogDialog()
 {
 }
 
-BOOL CLogDialog::OnInitDialog() {
+BOOL CLogDialog::OnInitDialog()
+{
     CDialog::OnInitDialog();
 
     for (const std::string& msg : this->m_logEntries)

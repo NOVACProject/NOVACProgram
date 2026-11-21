@@ -22,7 +22,8 @@ CReEval_ScanDlg::CReEval_ScanDlg(CReEvaluator& reeval)
 }
 
 CReEval_ScanDlg::~CReEval_ScanDlg()
-{}
+{
+}
 
 void CReEval_ScanDlg::DoDataExchange(CDataExchange* pDX)
 {
@@ -58,7 +59,9 @@ void CReEval_ScanDlg::OnBnClickedBtnBrowsescanfile()
     Dialogs::CMultiSelectOpenFileDialog fileDialog(TRUE, nullptr, nullptr, OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_ALLOWMULTISELECT | OFN_EXPLORER, filter);
 
     if (fileDialog.DoModal() != IDOK)
+    {
         return;
+    }
 
     /** Reset the old values */
     m_reeval.m_scanFile.clear();
@@ -138,7 +141,9 @@ void CReEval_ScanDlg::OnLbnSelchangeScanfileList()
 void CReEval_ScanDlg::DrawSpectrum()
 {
     if (TryReadSpectrum())
+    {
         return;
+    }
 
     Graph::CSpectrumGraph::plotRange range;
     GetPlotRange(range);
@@ -206,7 +211,7 @@ int CReEval_ScanDlg::CheckScanFile()
     // Read the spectrum
     m_specNum = reader.CountSpectra(scanFileName);
 
-    // check if the file was ok. 
+    // check if the file was ok.
     if (reader.m_lastError == novac::FileError::SpectrumNotFound || reader.m_lastError == novac::FileError::EndOfFile)
     {
         return 0;
@@ -221,14 +226,20 @@ void CReEval_ScanDlg::OnChangeSpectrum(NMHDR* pNMHDR, LRESULT* pResult)
     LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
 
     if (m_specNum <= 0)
+    {
         return;
+    }
 
     // get the current spectrum index
     m_curSpec = m_specSpin.GetPos32();
     if (pNMUpDown->iDelta > 0)
+    {
         m_curSpec += 1;
+    }
     else
+    {
         m_curSpec -= 1;
+    }
 
     // set the limits for the selected spectrum
     m_curSpec = std::max(m_curSpec, 0L);
@@ -286,23 +297,30 @@ void CReEval_ScanDlg::UpdateInfo()
 
     // Show if this is a cone-scanner or a flat scanner
     if (fabs(info.m_coneAngle - 90.0) < 1e-2)
+    {
         geomStr.Format("Geometry: flat");
+    }
     else
+    {
         geomStr.Format("Geometry: Cone, %.1lf [deg]", info.m_coneAngle);
+    }
     SetDlgItemText(IDC_LBL_CONEORFLAT, geomStr);
-
 }
 
 /** Called when the user wants to remove the currently selected scan */
 void CReEval_ScanDlg::OnRemoveSelected()
 {
     if (m_specNum <= 0)
+    {
         return;
+    }
 
     // The currently selected scan-file
     m_curSpecFile = m_scanfileList.GetCurSel();
     if (m_curSpecFile == -1)
+    {
         return;
+    }
 
     // Remove the file
     m_reeval.m_scanFile.erase(begin(m_reeval.m_scanFile) + m_curSpecFile);
@@ -319,7 +337,6 @@ void CReEval_ScanDlg::OnRemoveSelected()
 
     // update the spectrum information
     UpdateInfo();
-
 }
 
 void CReEval_ScanDlg::GetPlotRange(Graph::CSpectrumGraph::plotRange& range)

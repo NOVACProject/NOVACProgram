@@ -2,7 +2,8 @@
 
 #include <SpectralEvaluation/Log.h>
 
-class NovacProgramLog : public novac::ILogger {
+class NovacProgramLog : public novac::ILogger
+{
 
 public:
     NovacProgramLog();
@@ -15,5 +16,4 @@ public:
 
     virtual void Error(const std::string& message) override;
     virtual void Error(const novac::LogContext& c, const std::string& message) override;
-
 };

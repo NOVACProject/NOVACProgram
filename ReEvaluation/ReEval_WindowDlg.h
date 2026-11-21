@@ -19,7 +19,10 @@ public:
     virtual ~CReEval_WindowDlg();
 
     // Dialog Data
-    enum { IDD = IDD_REEVAL_WINDOW };
+    enum
+    {
+        IDD = IDD_REEVAL_WINDOW
+    };
 
 protected:
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -27,8 +30,7 @@ protected:
     DECLARE_MESSAGE_MAP()
 
 private:
-
-    // --------------------------- PUBLIC DATA -------------------------- 
+    // --------------------------- PUBLIC DATA --------------------------
 
     /** The reference grid, enables the user to select reference files */
     DlgControls::CReferenceFileControl m_referenceGrid;
@@ -105,6 +107,5 @@ private:
 
     /** Lets the user browse for a solar-spectrum */
     afx_msg void OnBrowseSolarSpectrum();
-
 };
 }

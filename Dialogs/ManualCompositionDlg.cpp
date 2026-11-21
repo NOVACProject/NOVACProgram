@@ -9,7 +9,7 @@
 
 using namespace Dialogs;
 
-extern CConfigurationSetting g_settings;	// <-- The settings
+extern CConfigurationSetting g_settings; // <-- The settings
 extern CWinThread* g_comm;  // <-- The communication controller
 
 // CManualCompositionDlg dialog
@@ -51,7 +51,6 @@ void CManualCompositionDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Text(pDX, IDC_EDIT_MOTORSTEPSCOMP, m_motorStepsComp[0]);
     DDX_Text(pDX, IDC_EDIT_STEPSPERROUND, m_stepsPerRound[0]);
     DDX_Text(pDX, IDC_EDIT_COMPASSDIR, m_compass);
-
 }
 
 
@@ -63,13 +62,16 @@ END_MESSAGE_MAP()
 // CManualCompositionDlg message handlers
 
 /** Called to initialize the controls in the dialog*/
-BOOL CManualCompositionDlg::OnInitDialog() {
+BOOL CManualCompositionDlg::OnInitDialog()
+{
 
     CDialog::OnInitDialog();
 
     /** Setting up the list */
-    for (unsigned int k = 0; k < g_settings.scannerNum; ++k) {
-        for (unsigned int i = 0; i < g_settings.scanner[k].specNum; ++i) {
+    for (unsigned int k = 0; k < g_settings.scannerNum; ++k)
+    {
+        for (unsigned int i = 0; i < g_settings.scanner[k].specNum; ++i)
+        {
             // add this spectrometer to the lists
             m_spectrometer[m_specNum].Format(g_settings.scanner[k].spec[i].serialNumber);
             m_spectrometerList.AddString(m_spectrometer[m_specNum]);
@@ -79,7 +81,9 @@ BOOL CManualCompositionDlg::OnInitDialog() {
 
     // Select the first spectrometer in the list
     if (m_specNum > 0)
+    {
         m_spectrometerList.SetCurSel(0);
+    }
 
     // Set the focus to the motor-position edit-box
     m_editPlumeCentre.SetFocus();
@@ -88,7 +92,8 @@ BOOL CManualCompositionDlg::OnInitDialog() {
 }
 
 /** When the user presses the 'Send' - button */
-void CManualCompositionDlg::OnSend() {
+void CManualCompositionDlg::OnSend()
+{
     CString* fileName = new CString();
     CString* serialNumber = new CString();
     CString dateTime, message;
@@ -100,29 +105,35 @@ void CManualCompositionDlg::OnSend() {
 
     // 2. Get a handle to the selected spectrometer
     int curSel = m_spectrometerList.GetCurSel();
-    if (curSel < 0) {
+    if (curSel < 0)
+    {
         MessageBox("Please Select a spectrometer");
         return;
     }
     serialNumber->Format(m_spectrometer[curSel]);
     CConfigurationSetting::ScanningInstrumentSetting* scanner = NULL;
-    for (unsigned int k = 0; k < g_settings.scannerNum; ++k) {
-        if (Equals(g_settings.scanner[k].spec[0].serialNumber, *serialNumber)) {
+    for (unsigned int k = 0; k < g_settings.scannerNum; ++k)
+    {
+        if (Equals(g_settings.scanner[k].spec[0].serialNumber, *serialNumber))
+        {
             scanner = &g_settings.scanner[k];
             break;
         }
     }
 
     // 3. Get the directory where to temporarily store the cfgonce.txt
-    if (strlen(g_settings.outputDirectory) > 0) {
+    if (strlen(g_settings.outputDirectory) > 0)
+    {
         fileName->Format("%s\\Temp\\%s\\cfgonce.txt", (LPCSTR)g_settings.outputDirectory, (LPCSTR)*serialNumber);
     }
-    else {
+    else
+    {
         common.GetExePath();
         fileName->Format("%s\\cfgonce.txt", (LPCSTR)common.m_exePath);
     }
     FILE* f = fopen(*fileName, "w");
-    if (f == NULL) {
+    if (f == NULL)
+    {
         message.Format("Could not open %s for writing. Upload failed!!", (LPCSTR)*fileName);
         MessageBox(message, "Error");
         return;
@@ -147,11 +158,11 @@ void CManualCompositionDlg::OnSend() {
     alphaStep = stepAngle * floor(alphaStep / stepAngle); // the steps has to be a multiple of 1.8 degrees
 
     // The number of repetitions for the normal measurements, in the Manne-box only
-    int	repetitions = 67;
+    int repetitions = 67;
 
     // 4. Write the configuration-file
 
-    // 4a. A small header 
+    // 4a. A small header
     common.GetDateTimeText(dateTime);
     fprintf(f, "%% -------------Modified at %s------------\n\n", (LPCSTR)dateTime);
 
@@ -202,7 +213,8 @@ void CManualCompositionDlg::OnSend() {
 
     // 3k2. The measurements inside the plume
     alpha = m_plumeCentre - (measurementsInPlume - 1) * alphaStep / 2;
-    for (int k = 0; k < measurementsInPlume; ++k) {
+    for (int k = 0; k < measurementsInPlume; ++k)
+    {
         fprintf(f, "MEAS=%.0lf -1 15 %d 0 comp 1 0\n", alpha / stepAngle, repetitions);
 
         alpha += alphaStep;

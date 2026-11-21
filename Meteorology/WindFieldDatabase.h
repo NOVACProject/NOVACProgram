@@ -53,7 +53,6 @@ public:
     void Clear();
 
 private:
-
     // ------------------- PRIVATE DATA -------------------------
 
     /** Information about the wind */

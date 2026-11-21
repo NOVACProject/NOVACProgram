@@ -5,10 +5,12 @@ namespace FileHandler
 {
 
 CReEvalSettingsFileHandler::CReEvalSettingsFileHandler(void)
-{}
+{
+}
 
 CReEvalSettingsFileHandler::~CReEvalSettingsFileHandler(void)
-{}
+{
+}
 
 RETURN_CODE CReEvalSettingsFileHandler::WriteSettings(const ReEvaluation::CReEvaluator& reeval, const CString& fileName, bool overWrite)
 {
@@ -75,11 +77,11 @@ RETURN_CODE CReEvalSettingsFileHandler::WriteSettings(const ReEvaluation::CReEva
 
 RETURN_CODE CReEvalSettingsFileHandler::ReadSettings(ReEvaluation::CReEvaluator& reeval, const CString& fileName)
 {
-    char  lowIntensStr[] = _T("LowIntensity");
-    char  highIntensStr[] = _T("HighIntensity");
-    char  skySpecStr[] = _T("SkySpectrum");
-    char  darkSpecStr[] = _T("DarkSpectrum");
-    char  averageStr[] = _T("Average");
+    char lowIntensStr[] = _T("LowIntensity");
+    char highIntensStr[] = _T("HighIntensity");
+    char skySpecStr[] = _T("SkySpectrum");
+    char darkSpecStr[] = _T("DarkSpectrum");
+    char averageStr[] = _T("Average");
 
     CFileException exceFile;
     CStdioFile file;
@@ -96,7 +98,9 @@ RETURN_CODE CReEvalSettingsFileHandler::ReadSettings(ReEvaluation::CReEvaluator&
     {
         // no use to parse empty lines
         if (strlen(szToken) < 3)
+        {
             continue;
+        }
 
         if (Equals(szToken, lowIntensStr, strlen(lowIntensStr)))
         {
@@ -178,7 +182,9 @@ RETURN_CODE CReEvalSettingsFileHandler::Parse_IntensitySection(ReEvaluation::CRe
 
         // no use to parse empty lines
         if (strlen(szToken) < 3)
+        {
             continue;
+        }
 
         // ignore comments
         if (Equals(szToken, "!--", 3))
@@ -195,27 +201,39 @@ RETURN_CODE CReEvalSettingsFileHandler::Parse_IntensitySection(ReEvaluation::CRe
         {
             Parse_IntItem(TEXT("/Type"), tmpInt);
             if (type == 0)
+            {
                 reeval.m_ignore_Lower.m_type = (Evaluation::IgnoreType)tmpInt;
+            }
             else
+            {
                 reeval.m_ignore_Upper.m_type = (Evaluation::IgnoreType)tmpInt;
+            }
             continue;
         }
 
         if (Equals(szToken, "Intensity"))
         {
             if (type == 0)
+            {
                 Parse_FloatItem(TEXT("/Intensity"), reeval.m_ignore_Lower.m_intensity);
+            }
             else
+            {
                 Parse_FloatItem(TEXT("/Intensity"), reeval.m_ignore_Upper.m_intensity);
+            }
             continue;
         }
 
         if (Equals(szToken, "Channel"))
         {
             if (type == 0)
+            {
                 Parse_LongItem(TEXT("/Channel"), reeval.m_ignore_Lower.m_channel);
+            }
             else
+            {
                 Parse_LongItem(TEXT("/Channel"), reeval.m_ignore_Upper.m_channel);
+            }
             continue;
         }
     }
@@ -234,7 +252,9 @@ RETURN_CODE CReEvalSettingsFileHandler::Parse_SkySpecSection(ReEvaluation::CReEv
 
         // no use to parse empty lines
         if (strlen(szToken) < 3)
+        {
             continue;
+        }
 
         // ignore comments
         if (Equals(szToken, "!--", 3))
@@ -280,7 +300,9 @@ RETURN_CODE CReEvalSettingsFileHandler::Parse_DarkSpecSection(ReEvaluation::CReE
 
         // no use to parse empty lines
         if (strlen(szToken) < 3)
+        {
             continue;
+        }
 
         // ignore comments
         if (Equals(szToken, "!--", 3))

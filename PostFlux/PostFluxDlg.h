@@ -16,23 +16,25 @@ class CPostFluxDlg : public CDialog
 {
     DECLARE_DYNAMIC(CPostFluxDlg)
 
-    typedef struct Show {
-        bool	peakIntensity;
-        bool	fitIntensity;
-        bool	columnError;
-        bool	delta;
-        bool	chiSquare;
-    }Show;
+    typedef struct Show
+    {
+        bool peakIntensity;
+        bool fitIntensity;
+        bool columnError;
+        bool delta;
+        bool chiSquare;
+    } Show;
 
-    typedef struct Colors {
-        COLORREF	peakIntensity;
-        COLORREF	fitIntensity;
-        COLORREF	column;
-        COLORREF	badColumn;
-        COLORREF	delta;
-        COLORREF	chiSquare;
-        COLORREF	offset;
-    }Colors;
+    typedef struct Colors
+    {
+        COLORREF peakIntensity;
+        COLORREF fitIntensity;
+        COLORREF column;
+        COLORREF badColumn;
+        COLORREF delta;
+        COLORREF chiSquare;
+        COLORREF offset;
+    } Colors;
 
     // The possible options for which offset to use
 #define OFFSET_CALCULATE 0
@@ -40,14 +42,17 @@ class CPostFluxDlg : public CDialog
 #define OFFSET_USER 2
 
 public:
-    CPostFluxDlg(CWnd* pParent = NULL);	 // standard constructor
+    CPostFluxDlg(CWnd* pParent = NULL);  // standard constructor
     virtual ~CPostFluxDlg();
 
     // Dialog Data
-    enum { IDD = IDD_POSTFLUX_DLG };
+    enum
+    {
+        IDD = IDD_POSTFLUX_DLG
+    };
 
 protected:
-    virtual void DoDataExchange(CDataExchange* pDX);		// DDX/DDV support
+    virtual void DoDataExchange(CDataExchange* pDX);  // DDX/DDV support
 
     DECLARE_MESSAGE_MAP()
 public:
@@ -59,7 +64,7 @@ public:
     CComboBox m_fluxUnitCombo;
 
     /** The graph showing the information from the last scan */
-    Graph::CScanGraph	m_scanGraph;
+    Graph::CScanGraph m_scanGraph;
 
     /** The bounding frame for the graph */
     CStatic m_scanGraphFrame;
@@ -78,7 +83,7 @@ public:
     CComboBox m_coneangleCombo;
 
     /** The flux-errors */
-    Dialogs::CFluxErrorDlg	m_fluxErrorDlg;
+    Dialogs::CFluxErrorDlg m_fluxErrorDlg;
 
     /** The input-boxes for the wind-speed and wind-direction */
     CStatic m_editWindSpeed, m_editWindDirection, m_editPlumeHeight;
@@ -101,39 +106,39 @@ public:
     CPostFluxCalculator* m_calculator;
 
     /** The windfield to use */
-    CWindField		m_windField;
+    CWindField m_windField;
 
     /** The wind-field reader, if any */
     CWindFieldDatabase* m_windFieldFromFile = nullptr;
 
     /** The currently selected scan */
-    int					 m_curScan;
+    int m_curScan;
 
     /** The currently selected specie (if there are several in the evaluationlog) */
-    int					 m_curSpecie;
+    int m_curSpecie;
 
     /** A list of the datapoints selected for deletion */
-    int					 m_selected[MAX_SPEC_PER_SCAN];
+    int m_selected[MAX_SPEC_PER_SCAN];
 
     /** The number of data points that are selected for deletion */
-    int					 m_selectedNum;
+    int m_selectedNum;
 
     /** The list of possible cone-angles to use */
-    float					m_coneAngles[5];
+    float m_coneAngles[5];
 
     /** The number of cone-angles in the list*/
-    int						m_coneAngleNum;
+    int m_coneAngleNum;
 
     /** True if the intensity is represented as saturation ratios, not intensities. */
-    bool					m_useSaturationRatio;
+    bool m_useSaturationRatio;
 
-    // ------------------ METHODS ----------------------- 
+    // ------------------ METHODS -----------------------
 
     /** Initialzing the dialog */
     virtual BOOL OnInitDialog();
 
     /** Intitializing the plot-legend */
-    void	InitLegend();
+    void InitLegend();
 
     /** Called when the user wants to browse for, and open a new evaluation log */
     afx_msg void OnBrowseEvallog();
@@ -154,7 +159,7 @@ public:
 
     /** Retrieves the wind-speed and -direction to use and fills the values
             into the correct place for calculating the flux */
-    void	RetrieveWindField();
+    void RetrieveWindField();
 
     /** Called when the user wants to calculate the wind-direction for the current
             scan using the plume-centre information. */
@@ -196,7 +201,7 @@ public:
     afx_msg void OnChangeSelectionList();
 
     /** Converts the calculated flux from kg/s to the currently selected unit */
-    double	Convert(double flux);
+    double Convert(double flux);
 
     afx_msg void OnViewPeakIntensity();
     afx_msg void OnViewFitIntensity();
@@ -232,23 +237,24 @@ public:
 
 private:
     /** ?? */
-    bool		m_automaticChange;
+    bool m_automaticChange;
 
     /** The options for what to show in the graph */
-    Show		m_show;
+    Show m_show;
 
     /** The options for the colors of the graph */
-    Colors	m_color;
+    Colors m_color;
 
     /** The option for how to get the offset, either calculate it
             automatically or get it from the user */
-    int	 m_offsetOption;
+    int m_offsetOption;
 
     /** The user supplied offset */
-    double	m_userOffset;
+    double m_userOffset;
 
     /** Saves the offset saved in the user offset edit-box */
-    void	SaveUserOffset(bool correct = true);
+    void SaveUserOffset(bool correct = true);
+
 public:
     float m_chi2Limit;
     float m_intensityAbove;

@@ -23,7 +23,8 @@ CPakFileInspector::CPakFileInspector(CWnd* pParent /*=nullptr*/)
 }
 
 CPakFileInspector::~CPakFileInspector()
-{}
+{
+}
 
 void CPakFileInspector::DoDataExchange(CDataExchange* pDX)
 {
@@ -74,8 +75,10 @@ void CPakFileInspector::InitPropertiesList()
     this->m_propertiesFrame.GetWindowRect(rect);
     int height = rect.bottom - rect.top;
     int width = rect.right - rect.left;
-    rect.top = 20; rect.bottom = height - 10;
-    rect.left = 10; rect.right = width - 10;
+    rect.top = 20;
+    rect.bottom = height - 10;
+    rect.left = 10;
+    rect.right = width - 10;
     int columnWidth = (int)(0.5 * (rect.right - rect.left));
     m_propertyList.Create(WS_VISIBLE | WS_BORDER | LVS_REPORT, rect, &m_propertiesFrame, 65536);
     m_propertyList.InsertColumn(0, "", LVCFMT_LEFT, columnWidth);
@@ -96,8 +99,10 @@ void CPakFileInspector::InitHeaderList()
     this->m_headerFrame.GetWindowRect(rect);
     int height = rect.bottom - rect.top;
     int width = rect.right - rect.left;
-    rect.top = 0; rect.bottom = height;
-    rect.left = 0; rect.right = width;
+    rect.top = 0;
+    rect.bottom = height;
+    rect.left = 0;
+    rect.right = width;
     int columnWidth = (int)(0.4 * (rect.right - rect.left));
     m_headerList.Create(WS_VISIBLE | WS_BORDER | LVS_REPORT, rect, &m_headerFrame, 65536);
     m_headerList.InsertColumn(0, "", LVCFMT_LEFT, columnWidth);
@@ -140,7 +145,6 @@ void CPakFileInspector::InitHeaderList()
     m_headerList.InsertItem(index++, "ADC[5] ");
     m_headerList.InsertItem(index++, "ADC[6] ");
     m_headerList.InsertItem(index++, "ADC[7] ");
-
 }
 
 void CPakFileInspector::InitGraph()
@@ -152,8 +156,10 @@ void CPakFileInspector::InitGraph()
     this->m_graphFrame.GetWindowRect(rect);
     int height = rect.bottom - rect.top;
     int width = rect.right - rect.left;
-    rect.top = 0; rect.bottom = height;
-    rect.left = 0; rect.right = width;
+    rect.top = 0;
+    rect.bottom = height;
+    rect.left = 0;
+    rect.right = width;
     m_graph.Create(WS_VISIBLE | WS_CHILD, rect, &m_graphFrame);
     m_graph.SetRange(0, MAX_SPECTRUM_LENGTH, 1, 0.0, 4095.0, 1);
     m_graph.SetYUnits(common.GetString(AXIS_INTENSITY));
@@ -178,7 +184,7 @@ void CPakFileInspector::OnOpenPakFile()
     fileName.Format("");
 
     // 0. Turn off the zooming temporarily, this since if the user double-clicks
-    //		in the dialog we want to show then this can be percieved as a zoom-click by the graph...
+    //      in the dialog we want to show then this can be percieved as a zoom-click by the graph...
     m_graph.m_userZoomableGraph = false;
 
     // 1. Let the user browse for the reference file
@@ -209,7 +215,9 @@ void CPakFileInspector::CheckPakFile()
 
     // First check that the file exists...
     if (!IsExistingFile(m_fileName))
+    {
         return;
+    }
 
     // Get the size of the file
     try
@@ -266,14 +274,20 @@ void CPakFileInspector::OnChangeSpectrum(NMHDR* pNMHDR, LRESULT* pResult)
     LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
 
     if (strlen(m_fileName) <= 0)
+    {
         return;
+    }
 
     // get the current spectrum index
     m_curSpectrum = m_specSpinCtrl.GetPos32();
     if (pNMUpDown->iDelta > 0)
+    {
         m_curSpectrum += 1;
+    }
     else
+    {
         m_curSpectrum -= 1;
+    }
 
     // set the limits for the selected spectrum
     m_curSpectrum = max(m_curSpectrum, 0);

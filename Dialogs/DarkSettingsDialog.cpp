@@ -88,7 +88,6 @@ BEGIN_MESSAGE_MAP(CDarkSettingsDialog, CDialog)
 END_MESSAGE_MAP()
 
 
-
 // CDarkSettingsDialog message handlers
 
 void CDarkSettingsDialog::OnCancel()
@@ -105,7 +104,9 @@ void CDarkSettingsDialog::OnOK()
 
     // Save the changes the user has made
     if (this->m_darkSettings == NULL)
+    {
         return; // shouldn't happen...
+    }
 
     // Initialize the values of the dialog
     m_darkSettings->m_darkSpecOption = (Configuration::DARK_SPEC_OPTION)m_darkSpecOption;
@@ -113,10 +114,12 @@ void CDarkSettingsDialog::OnOK()
     m_darkSettings->m_offsetOption = (Configuration::DARK_MODEL_OPTION)m_offsetSpecOption;
 
     // the files
-    if (m_darkSettings->m_darkSpecOption == Configuration::DARK_SPEC_OPTION::USER_SUPPLIED) {
+    if (m_darkSettings->m_darkSpecOption == Configuration::DARK_SPEC_OPTION::USER_SUPPLIED)
+    {
         m_darkSettings->m_offsetSpec = std::string((LPCSTR)m_darkSpectrum_UserSupplied);
     }
-    else {
+    else
+    {
         m_darkSettings->m_offsetSpec = std::string((LPCSTR)m_offsetPath1);
         m_darkSettings->m_darkCurrentSpec = std::string((LPCSTR)m_dcPath1);
     }
@@ -124,7 +127,8 @@ void CDarkSettingsDialog::OnOK()
     CDialog::OnOK();
 }
 
-BOOL CDarkSettingsDialog::OnInitDialog() {
+BOOL CDarkSettingsDialog::OnInitDialog()
+{
     CDialog::OnInitDialog();
 
     // setup the tool tips
@@ -132,7 +136,9 @@ BOOL CDarkSettingsDialog::OnInitDialog() {
 
     // Initialize the values
     if (this->m_darkSettings == NULL)
+    {
         return FALSE; // shouldn't happen...
+    }
 
     // Initialize the values of the dialog
     m_darkSpecOption = (int)m_darkSettings->m_darkSpecOption;
@@ -140,10 +146,12 @@ BOOL CDarkSettingsDialog::OnInitDialog() {
     m_offsetSpecOption = (int)m_darkSettings->m_offsetOption;
 
     // the files
-    if (m_darkSpecOption == (int)Configuration::DARK_SPEC_OPTION::USER_SUPPLIED) {
+    if (m_darkSpecOption == (int)Configuration::DARK_SPEC_OPTION::USER_SUPPLIED)
+    {
         m_darkSpectrum_UserSupplied.Format("%s", m_darkSettings->m_offsetSpec.c_str());
     }
-    else {
+    else
+    {
         m_offsetPath1.Format("%s", m_darkSettings->m_offsetSpec.c_str());
         m_dcPath1.Format("%s", m_darkSettings->m_darkCurrentSpec.c_str());
     }
@@ -158,68 +166,80 @@ BOOL CDarkSettingsDialog::OnInitDialog() {
     // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CDarkSettingsDialog::InitToolTips() {
+void CDarkSettingsDialog::InitToolTips()
+{
     // Don't initialize the tool tips twice
     if (m_toolTip.m_hWnd != NULL)
+    {
         return;
+    }
 
     // Enable the tool tips
-    if (!m_toolTip.Create(this)) {
+    if (!m_toolTip.Create(this))
+    {
         TRACE0("Failed to create tooltip control\n");
     }
 
-    //	m_toolTip.AddTool(&m_labelVolcano,							IDC_EDIT_VOLCANO);
+    //  m_toolTip.AddTool(&m_labelVolcano,                          IDC_EDIT_VOLCANO);
 }
 
-void CDarkSettingsDialog::SaveData() {
+void CDarkSettingsDialog::SaveData()
+{
     CString str;
 
     if (m_hWnd == NULL)
+    {
         return;
+    }
 
-    // ------- Save the change ----------- 
+    // ------- Save the change -----------
     if (UpdateData(TRUE))
     {
     }
 }
 
-void CDarkSettingsDialog::UpdateDlg() {
+void CDarkSettingsDialog::UpdateDlg()
+{
     UpdateData(FALSE);
 }
 
-BOOL CDarkSettingsDialog::PreTranslateMessage(MSG* pMsg) {
+BOOL CDarkSettingsDialog::PreTranslateMessage(MSG* pMsg)
+{
     m_toolTip.RelayEvent(pMsg);
 
     return CDialog::PreTranslateMessage(pMsg);
 }
 
 
-void CDarkSettingsDialog::UpdateControls() {
+void CDarkSettingsDialog::UpdateControls()
+{
     // if there is only one channel on this spectrometer, then hide
-    //	the edit-boxes and labels that belongs to the slave
+    //  the edit-boxes and labels that belongs to the slave
     //if(m_curSpec->channelNum == 1){
-    //	m_labelSlave1.ShowWindow(SW_HIDE);
-    //	m_labelSlave2.ShowWindow(SW_HIDE);
-    //	m_editOffset2.ShowWindow(SW_HIDE);
-    //	m_editDC2.ShowWindow(SW_HIDE);
-    //	m_btnSlaveOff.ShowWindow(SW_HIDE);
-    //	m_btnSlaveDC.ShowWindow(SW_HIDE);
+    //  m_labelSlave1.ShowWindow(SW_HIDE);
+    //  m_labelSlave2.ShowWindow(SW_HIDE);
+    //  m_editOffset2.ShowWindow(SW_HIDE);
+    //  m_editDC2.ShowWindow(SW_HIDE);
+    //  m_btnSlaveOff.ShowWindow(SW_HIDE);
+    //  m_btnSlaveDC.ShowWindow(SW_HIDE);
     //}else{
-    //	m_labelSlave1.ShowWindow(SW_SHOW);
-    //	m_labelSlave2.ShowWindow(SW_SHOW);
-    //	m_editOffset2.ShowWindow(SW_SHOW);
-    //	m_editDC2.ShowWindow(SW_SHOW);
-    //	m_btnSlaveOff.ShowWindow(SW_SHOW);
-    //	m_btnSlaveDC.ShowWindow(SW_SHOW);
+    //  m_labelSlave1.ShowWindow(SW_SHOW);
+    //  m_labelSlave2.ShowWindow(SW_SHOW);
+    //  m_editOffset2.ShowWindow(SW_SHOW);
+    //  m_editDC2.ShowWindow(SW_SHOW);
+    //  m_btnSlaveOff.ShowWindow(SW_SHOW);
+    //  m_btnSlaveDC.ShowWindow(SW_SHOW);
     //}
 
     // If the user only wants to use measured spectra, then
-    //	the controls on the screed should be disabled
+    //  the controls on the screed should be disabled
     BOOL state = TRUE;
-    if (m_darkSpecOption == 0) {
+    if (m_darkSpecOption == 0)
+    {
         state = FALSE;
     }
-    else {
+    else
+    {
         state = TRUE;
     }
     m_labelMaster1.EnableWindow(state);
@@ -245,33 +265,46 @@ void CDarkSettingsDialog::UpdateControls() {
 }
 
 // The 'Browse' buttons
-void CDarkSettingsDialog::OnBrowseOffset1() {
+void CDarkSettingsDialog::OnBrowseOffset1()
+{
     if (1 == BrowseFile(IDC_EDIT_OFFSETSPECTRUM))
+    {
         m_offsetSpecOption = (int)Configuration::DARK_SPEC_OPTION::USER_SUPPLIED;
+    }
 
     UpdateData(FALSE);
 }
-void CDarkSettingsDialog::OnBrowseOffset2() {
+void CDarkSettingsDialog::OnBrowseOffset2()
+{
     if (1 == BrowseFile(IDC_EDIT_OFFSETSPECTRUM2))
+    {
         m_offsetSpecOption = (int)Configuration::DARK_SPEC_OPTION::USER_SUPPLIED;
+    }
 
     UpdateData(FALSE);
 }
-void CDarkSettingsDialog::OnBrowseDC1() {
+void CDarkSettingsDialog::OnBrowseDC1()
+{
     if (1 == BrowseFile(IDC_EDIT_DARKCURRENT_SPECTRUM))
+    {
         m_dcSpecOption = (int)Configuration::DARK_SPEC_OPTION::USER_SUPPLIED;
+    }
 
     UpdateData(FALSE);
 }
-void CDarkSettingsDialog::OnBrowseDC2() {
+void CDarkSettingsDialog::OnBrowseDC2()
+{
     if (1 == BrowseFile(IDC_EDIT_DARKCURRENT_SPECTRUM2))
+    {
         m_dcSpecOption = (int)Configuration::DARK_SPEC_OPTION::USER_SUPPLIED;
+    }
 
     UpdateData(FALSE);
 }
 
 /** Browsing for a file, the result will be saved in the edit box 'editbox' */
-int	CDarkSettingsDialog::BrowseFile(int editBox) {
+int CDarkSettingsDialog::BrowseFile(int editBox)
+{
     CString fileName;
     TCHAR filter[512];
     int n = _stprintf(filter, "Spectrum files\0");
@@ -281,7 +314,8 @@ int	CDarkSettingsDialog::BrowseFile(int editBox) {
 
     // Let the user browse for the file
     fileName.Format("");
-    if (!common.BrowseForFile(filter, fileName)) {
+    if (!common.BrowseForFile(filter, fileName))
+    {
         return 0;
     }
 
@@ -291,11 +325,14 @@ int	CDarkSettingsDialog::BrowseFile(int editBox) {
     return 1;
 }
 
-void CDarkSettingsDialog::OnChangeDarkSpecOption() {
-    if (UpdateData(TRUE)) { // <-- first save the data in the dialog
+void CDarkSettingsDialog::OnChangeDarkSpecOption()
+{
+    if (UpdateData(TRUE))
+    {
+        // <-- first save the data in the dialog
 
         // Enable the controls that should be enabled and disable the controls
-        //	that should be disabled
+        //  that should be disabled
         UpdateControls();
 
         // Save the data in the dialog

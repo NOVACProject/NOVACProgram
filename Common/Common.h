@@ -78,22 +78,43 @@ void UpdateMessage(const CString& message);
 // ---------------------------------------------------------------
 
 // defining if a function has failed or succeeded
-enum RETURN_CODE { FAIL, SUCCESS };
+enum RETURN_CODE
+{
+    FAIL,
+    SUCCESS
+};
 
 // The list of electronics boxes available
 // BOX_AXIS: The first generation Novac electronics based on Axis
 // BOX_MOXA: The third(!) Novac generation Novac electronics based on Moxa
 // BOX_AXIOMTEK: The forth generation Novac electronics based on Axiomtek
-const enum ELECTRONICS_BOX { BOX_AXIS, BOX_MOXA, BOX_AXIOMTEK };
+const enum ELECTRONICS_BOX
+{
+    BOX_AXIS,
+    BOX_MOXA,
+    BOX_AXIOMTEK
+};
 
 // The list of possible units for the flux
-const enum FLUX_UNIT { UNIT_KGS, UNIT_TONDAY };
+const enum FLUX_UNIT
+{
+    UNIT_KGS,
+    UNIT_TONDAY
+};
 
 // The list of possible units for the columns
-const enum COLUMN_UNIT { UNIT_PPMM, UNIT_MOLEC_CM2 };
+const enum COLUMN_UNIT
+{
+    UNIT_PPMM,
+    UNIT_MOLEC_CM2
+};
 
 // The list of languages that we can manage
-const enum LANGUAGES { LANGUAGE_ENGLISH, LANGUAGE_SPANISH };
+const enum LANGUAGES
+{
+    LANGUAGE_ENGLISH,
+    LANGUAGE_SPANISH
+};
 
 // The maximum number of references that can be fitted to a single spectrum
 #define MAX_N_REFERENCES 10
@@ -147,16 +168,16 @@ const enum LANGUAGES { LANGUAGE_ENGLISH, LANGUAGE_SPANISH };
 #endif
 
 //download status message for CCommunicationController
-#define START_DOWNLOADING	11
-#define FINISH_DOWNLOADING	12
-#define DOWNLOAD_ERROR		13
+#define START_DOWNLOADING 11
+#define FINISH_DOWNLOADING 12
+#define DOWNLOAD_ERROR 13
 
 // ----------------------------------------------------------------
 // ---------------- MATHEMATICAL CONSTANTS ------------------------
 // ----------------------------------------------------------------
 
 // converts degrees to radians
-#define DEGREETORAD 0.017453 
+#define DEGREETORAD 0.017453
 
 // converts radians to degrees
 #define RADTODEGREE 57.295791
@@ -218,17 +239,17 @@ const enum LANGUAGES { LANGUAGE_ENGLISH, LANGUAGE_SPANISH };
 //signal to upload a file to FTP server
 #define WM_UPLOAD_NEW_FILE WM_USER + 22
 
-//signal to begin a ftp uploading. 
-#define  WM_START_FTP WM_USER + 23
+//signal to begin a ftp uploading.
+#define WM_START_FTP WM_USER + 23
 
 //signal to update remote file tree
-#define	 WM_UPDATE_FILE_TREE WM_USER + 24
+#define WM_UPDATE_FILE_TREE WM_USER + 24
 
 // Signals to the GeometryEvaluator that a new Evaluation-log file has been evaluated
 #define WM_NEW_SCAN_EVALLOG WM_USER + 25
 
 //signal to upload cfgonce file
-#define  WM_UPLOAD_CFGONCE WM_USER + 26
+#define WM_UPLOAD_CFGONCE WM_USER + 26
 
 //signal from one thread which is going to download pak file
 #define WM_START_DOWNLOAD WM_USER + 27
@@ -266,7 +287,8 @@ const enum LANGUAGES { LANGUAGE_ENGLISH, LANGUAGE_SPANISH };
 // -------------------------------------------------------
 // ---------------- CLASS COMMON.H -----------------------
 // -------------------------------------------------------
-class Common {
+class Common
+{
 
 public:
     // --------------------------------------------------------------------
@@ -274,10 +296,10 @@ public:
     // --------------------------------------------------------------------
 
 
-        /** Get file size in bytes.
-            @param - The file name (including path)
-            @return - The file size (in bytes)
-        */
+    /** Get file size in bytes.
+        @param - The file name (including path)
+        @return - The file size (in bytes)
+    */
     static long RetrieveFileSize(CString& fileName);
 
     // --------------------------------------------------------------------
@@ -291,11 +313,11 @@ public:
     // --------------------------------------------------------------------
 
     /** Take out the file name from a long path
-            @param fileName path of the file	*/
+            @param fileName path of the file    */
     static void GetFileName(CString& fileName);
 
     /** Take out the file name from a long path
-            @param fileName path of the file	*/
+            @param fileName path of the file    */
     static void GetFileName(std::string& fullFileNameAndPath);
 
     /** Take out the directory from a long path name.
@@ -363,22 +385,22 @@ public:
     // ---------------------- DATE & TIME ---------------------------------
     // --------------------------------------------------------------------
     /** Returns the current year */
-    static int  GetYear();
+    static int GetYear();
 
     /** Returns the current month */
-    static int   GetMonth();
+    static int GetMonth();
 
     /** Returns the current day of the month */
-    static int   GetDay();
+    static int GetDay();
 
     /** Returns the current hour */
-    static int   GetHour();
+    static int GetHour();
 
     /** Returns the current minute */
-    static int   GetMinute();
+    static int GetMinute();
 
     /** Returns the current second */
-    static int   GetSecond();
+    static int GetSecond();
 
     /** pretty prints the current date into the string 'txt' */
     static void GetDateText(CString& txt);
@@ -394,15 +416,15 @@ public:
 
     /** Takes a given year and month and returns the number of days in that month.
             The month ranges from 1 to 12. Any illegal values in the month will return 0. */
-    static int	DaysInMonth(int year, int month);
+    static int DaysInMonth(int year, int month);
 
     /** Takes a given date and calculates the day of the year.
             An illegal day will return 0. */
-    static int	DayNr(const unsigned short day[3]);
+    static int DayNr(const unsigned short day[3]);
 
     /** Takes a given date and calculates the day of the year.
             An illegal day will return 0. */
-    static int	DayNr(const novac::CDateTime& day);
+    static int DayNr(const novac::CDateTime& day);
 
     /** Returns the Julian Day corresponding to the given date and time of day. */
     static double JulianDay(const novac::CDateTime& utcTime);
@@ -427,17 +449,17 @@ public:
     /** ????
         D  is the JulianDay counted from the 1st of January 2000 @ midnight
         Ra is the  Right Ascencion
-        dec	is the declination
+        dec is the declination
         EQT is the equation of time (in hours)
     */
     static void EquatorialCoordinates(double D, double& RA, double& dec, double& EQT);
 
     /** ???
             lat - latitude in degrees
-            H		- The hour angle, in degrees
+            H       - The hour angle, in degrees
             dec - The declination, degres
             elev - the returned elevation of the sun above the horizon
-            azim - the returned azimuth angle of the sun, counted from south to west			*/
+            azim - the returned azimuth angle of the sun, counted from south to west            */
     static void HorizontalCoordinates(double lat, double H, double dec, double& elev, double& azim);
 
     /** Returns the hour angle given the longitude and equation of time. */
@@ -481,15 +503,16 @@ public:
 
     /** Sorts a list of strings in either ascending or descending order.
             The algorithm is based on MergeSort (~O(NlogN)). */
-    static void Sort(CList <CString, CString&>& strings, bool files, bool ascending = true);
+    static void Sort(CList<CString, CString&>& strings, bool files, bool ascending = true);
+
 private:
     CString m_string[3];
 
     /** Merges the two lists 'list1' and 'list2' in a sorted way and stores
             the result in the output-list 'result' */
-    static void MergeLists(const CList <CString, CString&>& list1, const CList <CString, CString&>& list2, CList <CString, CString&>& result, bool files, bool ascending = true);
-public:
+    static void MergeLists(const CList<CString, CString&>& list1, const CList<CString, CString&>& list2, CList<CString, CString&>& result, bool files, bool ascending = true);
 
+public:
     // --------------------------------------------------------------------
     // -------------------- UNIT CONVERSION -------------------------------
     // --------------------------------------------------------------------
@@ -538,10 +561,10 @@ public:
 
 
     /** Get list of spectra files in directory **/
-    static int CheckForSpectraInDir(const CString& path, CList <CString, CString&>& fileList);
+    static int CheckForSpectraInDir(const CString& path, CList<CString, CString&>& fileList);
 
     /** Get list of spectra files in RXYZ directory **/
-    static void CheckForSpectraInHexDir(const CString& path, CList <CString, CString&>& fileList);
+    static void CheckForSpectraInHexDir(const CString& path, CList<CString, CString&>& fileList);
 
 };// end of class Common
 
@@ -553,11 +576,16 @@ public:
         @param pBuffer - The array in which to search for an element.
         @param bufLen - The length of the array.
         @return - The maximum value in the array */
-template <class T> T Max(T* pBuffer, long bufLen) {
+template <class T>
+T Max(T* pBuffer, long bufLen)
+{
     T maxValue = pBuffer[0];
-    for (long i = 1; i < bufLen; ++i) {
+    for (long i = 1; i < bufLen; ++i)
+    {
         if (pBuffer[i] > maxValue)
+        {
             maxValue = pBuffer[i];
+        }
     }
     return maxValue;
 }
@@ -566,11 +594,16 @@ template <class T> T Max(T* pBuffer, long bufLen) {
         @param pBuffer - The array in which to search for an element.
         @param bufLen - The length of the array.
         @return - The minimum value in the array */
-template <class T> T Min(T* pBuffer, long bufLen) {
+template <class T>
+T Min(T* pBuffer, long bufLen)
+{
     T minValue = pBuffer[0];
-    for (long i = 1; i < bufLen; i++) {
+    for (long i = 1; i < bufLen; i++)
+    {
         if (pBuffer[i] < minValue)
+        {
             minValue = pBuffer[i];
+        }
     }
     return minValue;
 }
@@ -581,24 +614,38 @@ template <class T> T Min(T* pBuffer, long bufLen) {
         @param array - the array to look into
         @param nElements - the number of elements in the supplied array
         @param output - the output array, must be at least 'N'- elements long
-        @param N - the number of values to take out. 	*/
-template <class T> bool FindNLowest(const T array[], long nElements, T output[], int N, int* indices = NULL) {
+        @param N - the number of values to take out.    */
+template <class T>
+bool FindNLowest(const T array[], long nElements, T output[], int N, int* indices = NULL)
+{
     for (int i = 0; i < N; ++i)
+    {
         output[i] = 1e16; // to get some initial value
+    }
 
     // loop through all elements in the array
-    for (int i = 0; i < nElements; ++i) {
+    for (int i = 0; i < nElements; ++i)
+    {
 
         // compare this element with all elements in the output array.
-        for (int j = 0; j < N; ++j) {
-            if (array[i] < output[j]) {
+        for (int j = 0; j < N; ++j)
+        {
+            if (array[i] < output[j])
+            {
                 // If we found a higher value, shift all other values down one step...
-                for (int k = N - 1; k > j; --k) {
+                for (int k = N - 1; k > j; --k)
+                {
                     output[k] = output[k - 1];
-                    if (indices)							indices[k] = indices[k - 1];
+                    if (indices)
+                    {
+                        indices[k] = indices[k - 1];
+                    }
                 }
                 output[j] = array[i];
-                if (indices)								indices[j] = i;
+                if (indices)
+                {
+                    indices[j] = i;
+                }
                 break;
             }
         }
@@ -610,12 +657,17 @@ template <class T> bool FindNLowest(const T array[], long nElements, T output[],
         in the supplied array.
         @param array - the array of which to calculate the average value
         @param nElements - the length of the array. */
-template <class T> double Average(T array[], long nElements) {
+template <class T>
+double Average(T array[], long nElements)
+{
     if (nElements <= 0)
+    {
         return 0.0;
+    }
 
     double sum = 0;
-    for (int k = 0; k < nElements; ++k) {
+    for (int k = 0; k < nElements; ++k)
+    {
         sum += array[k];
     }
     return (sum / nElements);
@@ -625,15 +677,20 @@ template <class T> double Average(T array[], long nElements) {
         in the supplied array.
         @param array - the array of which to calculate the average value
         @param nElements - the length of the array. */
-template <class T> double Variance(T array[], long nElements) {
+template <class T>
+double Variance(T array[], long nElements)
+{
     if (nElements <= 0)
+    {
         return 0.0;
+    }
 
     // First get the mean-value
     T mean = Average(array, nElements);
 
     double sum = 0;
-    for (int k = 0; k < nElements; ++k) {
+    for (int k = 0; k < nElements; ++k)
+    {
         sum += (array[k] - mean) * (array[k] - mean);
     }
     sum = sum / nElements;
@@ -644,9 +701,13 @@ template <class T> double Variance(T array[], long nElements) {
         in the supplied array.
         @param array - the array of which to calculate the average value
         @param nElements - the length of the array. */
-template <class T> double Std(T array[], long nElements) {
+template <class T>
+double Std(T array[], long nElements)
+{
     if (nElements <= 0)
+    {
         return 0.0;
+    }
 
     return sqrt(Variance(array, nElements));
 }

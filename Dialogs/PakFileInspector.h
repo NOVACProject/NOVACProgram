@@ -6,7 +6,8 @@
 
 // CPakFileInspector dialog
 
-namespace Dialogs {
+namespace Dialogs
+{
 class CPakFileInspector : public CDialog
 {
     DECLARE_DYNAMIC(CPakFileInspector)
@@ -16,7 +17,10 @@ public:
     virtual ~CPakFileInspector();
 
     // Dialog Data
-    enum { IDD = IDD_CHECK_PAKFILE };
+    enum
+    {
+        IDD = IDD_CHECK_PAKFILE
+    };
 
     // --------------- PUBLIC METHODS --------------------------
     /** Called to open a .pak-file to inspect */
@@ -103,7 +107,7 @@ private:
     void DrawSpectrum();
 
     /** Update the header list */
-    void  UpdateHeaderList();
+    void UpdateHeaderList();
 
     /** Update the file information */
     void UpdateFileInfo();

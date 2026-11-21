@@ -24,19 +24,22 @@ BEGIN_MESSAGE_MAP(CLabel, CStatic)
 END_MESSAGE_MAP()
 
 /** Sets the text color */
-void CLabel::SetForegroundColor(COLORREF rgb) {
+void CLabel::SetForegroundColor(COLORREF rgb)
+{
     m_textColor = rgb;
 }
 
 /** Sets the background color */
-void CLabel::SetBackgroundColor(COLORREF rgb) {
+void CLabel::SetBackgroundColor(COLORREF rgb)
+{
     m_backgroundColor = rgb;
     m_backgroundBrush.DeleteObject();
     m_backgroundBrush.CreateSolidBrush(m_backgroundColor);
 }
 
-HBRUSH CLabel::CtlColor(CDC* pDC, UINT nCtlColor) {
-    // TODO: Return a non-NULL brush if the parent's 
+HBRUSH CLabel::CtlColor(CDC* pDC, UINT nCtlColor)
+{
+    // TODO: Return a non-NULL brush if the parent's
     //handler should not be called
 
     //set text color

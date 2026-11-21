@@ -29,10 +29,13 @@ protected: // create from serialization only
 
 public:
     //{{AFX_DATA(CNovacMasterProgramView)
-    enum { IDD = IDD_NOVACMASTERPROGRAM_FORM };
+    enum
+    {
+        IDD = IDD_NOVACMASTERPROGRAM_FORM
+    };
     //}}AFX_DATA
 
-// Attributes
+    // Attributes
     CNovacMasterProgramDoc* GetDocument() const;
 
     // Overrides
@@ -50,7 +53,7 @@ public:
     virtual void Dump(CDumpContext& dc) const;
 #endif
 
-    // Generated message map functions
+// Generated message map functions
 protected:
     afx_msg LRESULT OnShowStatus(WPARAM wParam, LPARAM lParam);
     afx_msg LRESULT OnShowMessage(WPARAM wParam, LPARAM lParam);
@@ -128,10 +131,10 @@ public:
     // --------------- DIALOG COMPONENTS ------------------------------
     // the status messages
     CListBox m_statusListBox;
-    CStatic  m_statusFrame;
+    CStatic m_statusFrame;
 
     // the tool tips
-    CToolTipCtrl  m_toolTip;
+    CToolTipCtrl m_toolTip;
 
     // The property pages
     CArray<CView_Scanner*, CView_Scanner*> m_scannerPages;
@@ -195,4 +198,3 @@ inline CNovacMasterProgramDoc* CNovacMasterProgramView::GetDocument() const
     return reinterpret_cast<CNovacMasterProgramDoc*>(m_pDocument);
 }
 #endif
-

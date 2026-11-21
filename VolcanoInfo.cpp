@@ -24,7 +24,7 @@ CVolcanoInfo::CVolcanoInfo()
     m_peakLatitude[index] = -0.677;
     m_peakLongitude[index] = -78.436;
     m_peakHeight[index] = 5911;
-    m_hoursToGMT[index] = -5;	// Equador
+    m_hoursToGMT[index] = -5; // Equador
     m_observatory[index] = 3;
 
     ++index;
@@ -87,7 +87,7 @@ CVolcanoInfo::CVolcanoInfo()
     m_peakLatitude[index] = 11.98;
     m_peakLongitude[index] = -86.16;
     m_peakHeight[index] = 635;
-    m_hoursToGMT[index] = -6;	// Nicaragua
+    m_hoursToGMT[index] = -6; // Nicaragua
     m_observatory[index] = 4;
 
     ++index;
@@ -150,7 +150,7 @@ CVolcanoInfo::CVolcanoInfo()
     m_peakLatitude[index] = 10.20;
     m_peakLongitude[index] = -84.23;
     m_peakHeight[index] = 2708;
-    m_hoursToGMT[index] = -6;	// Costa Rica
+    m_hoursToGMT[index] = -6; // Costa Rica
     m_observatory[index] = 12;
 
     ++index;
@@ -168,7 +168,7 @@ CVolcanoInfo::CVolcanoInfo()
     m_peakLatitude[index] = 12.70;
     m_peakLongitude[index] = -87.0;
     m_peakHeight[index] = 1745;
-    m_hoursToGMT[index] = -6;	// Nicaragua
+    m_hoursToGMT[index] = -6; // Nicaragua
     m_observatory[index] = 4;
 
     ++index;
@@ -222,7 +222,7 @@ CVolcanoInfo::CVolcanoInfo()
     m_peakLatitude[index] = 10.025;
     m_peakLongitude[index] = -83.767;
     m_peakHeight[index] = 3340;
-    m_hoursToGMT[index] = -6;	// Costa Rica
+    m_hoursToGMT[index] = -6; // Costa Rica
     m_observatory[index] = 12;
 
     ++index;
@@ -283,4 +283,3 @@ novac::CNamedLocation GetVolcano(unsigned int volcanoIndex)
         g_volcanoes.m_peakHeight[volcanoIndex],
         std::string((LPCSTR)g_volcanoes.m_name[volcanoIndex]));
 }
-

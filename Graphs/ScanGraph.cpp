@@ -19,18 +19,19 @@ BEGIN_MESSAGE_MAP(CScanGraph, CGraphCtrl)
 END_MESSAGE_MAP()
 
 
-void CScanGraph::OnContextMenu(CWnd* pWnd, CPoint point) {
+void CScanGraph::OnContextMenu(CWnd* pWnd, CPoint point)
+{
     CMenu menu;
     VERIFY(menu.LoadMenu(IDR_MENU_SHOWFIT_CONTEXT));
     CMenu* pPopup = menu.GetSubMenu(0);
     ASSERT(pPopup != NULL);
 
-    //		pPopup->EnableMenuItem(ID__SAVEASBITMAP, MF_DISABLED | MF_GRAYED);
+    //      pPopup->EnableMenuItem(ID__SAVEASBITMAP, MF_DISABLED | MF_GRAYED);
 
-    if (parent != NULL) {
+    if (parent != NULL)
+    {
         pPopup->EnableMenuItem(ID__SAVEASASCII, MF_DISABLED | MF_GRAYED);
 
         pPopup->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, parent);
     }
-
 }

@@ -12,11 +12,9 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 using namespace Dialogs;
-/////////////////////////////////////////////////////////////////////////////
-// CMultiSelectOpenFileDialog
+// ---- CMultiSelectOpenFileDialog ----
 
 IMPLEMENT_DYNAMIC(CMultiSelectOpenFileDialog, CFileDialog)
-/////////////////////////////////////////////////////////////////////////////
 //
 //  CMultiSelectOpenFileDialog constructor  (public member function)
 //    Initializes the class variables
@@ -27,18 +25,15 @@ IMPLEMENT_DYNAMIC(CMultiSelectOpenFileDialog, CFileDialog)
 //  Returns :
 //    Nothing
 //
-/////////////////////////////////////////////////////////////////////////////
 
 
 CMultiSelectOpenFileDialog::CMultiSelectOpenFileDialog(BOOL bOpenFileDialog, LPCTSTR lpszDefExt, LPCTSTR lpszFileName,
-                               DWORD dwFlags, LPCTSTR lpszFilter, CWnd* pParentWnd) :
-    CFileDialog(bOpenFileDialog, lpszDefExt, lpszFileName, dwFlags, lpszFilter, pParentWnd)
+    DWORD dwFlags, LPCTSTR lpszFilter, CWnd* pParentWnd) : CFileDialog(bOpenFileDialog, lpszDefExt, lpszFileName, dwFlags, lpszFilter, pParentWnd)
 {
     Files = NULL;
     Folder = NULL;
     bParsed = FALSE;
 }
-/////////////////////////////////////////////////////////////////////////////
 //
 //  CMultiSelectOpenFileDialog destructor  (public member function)
 //    Cleans up the class variables
@@ -49,7 +44,6 @@ CMultiSelectOpenFileDialog::CMultiSelectOpenFileDialog(BOOL bOpenFileDialog, LPC
 //  Returns :
 //    Nothing
 //
-/////////////////////////////////////////////////////////////////////////////
 
 
 CMultiSelectOpenFileDialog::~CMultiSelectOpenFileDialog()
@@ -62,11 +56,10 @@ CMultiSelectOpenFileDialog::~CMultiSelectOpenFileDialog()
 }
 
 BEGIN_MESSAGE_MAP(CMultiSelectOpenFileDialog, CFileDialog)
-    //{{AFX_MSG_MAP(CMultiSelectOpenFileDialog)
-    //}}AFX_MSG_MAP
+//{{AFX_MSG_MAP(CMultiSelectOpenFileDialog)
+//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
-/////////////////////////////////////////////////////////////////////////////
 //
 //  CMultiSelectOpenFileDialog::DoModal  (public member function)
 //    Starts the CFileDialog and properly handles the return code
@@ -78,7 +71,6 @@ END_MESSAGE_MAP()
 //    IDOK if the user selected the OK button
 //    IDCANCEL if the user selected the Cancel button or an error occured
 //
-/////////////////////////////////////////////////////////////////////////////
 
 INT_PTR CMultiSelectOpenFileDialog::DoModal()
 {
@@ -95,13 +87,14 @@ INT_PTR CMultiSelectOpenFileDialog::DoModal()
     if (ret == IDCANCEL)
     {
         DWORD err = CommDlgExtendedError();
-        if (err == FNERR_BUFFERTOOSMALL/*0x3003*/ && Files)
+        if (err == FNERR_BUFFERTOOSMALL /*0x3003*/ && Files)
+        {
             ret = IDOK;
+        }
     }
     return ret;
 }
 
-/////////////////////////////////////////////////////////////////////////////
 //
 //  CMultiSelectOpenFileDialog::GetNextPathName  (public member function)
 //    Call this function to retrieve the next file name from the group
@@ -115,12 +108,13 @@ INT_PTR CMultiSelectOpenFileDialog::DoModal()
 //  Returns :
 //    The full path of the file
 //
-/////////////////////////////////////////////////////////////////////////////
 
 CString CMultiSelectOpenFileDialog::GetNextPathName(POSITION& pos) const
 {
     if (!Files)
+    {
         return CFileDialog::GetNextPathName(pos);
+    }
 
     ASSERT(pos);
     TCHAR* ptr = (TCHAR*)pos;
@@ -131,14 +125,17 @@ CString CMultiSelectOpenFileDialog::GetNextPathName(POSITION& pos) const
 
     ptr += _tcslen(ptr) + 1;
     if (*ptr)
+    {
         pos = (POSITION)ptr;
+    }
     else
+    {
         pos = NULL;
+    }
 
     return ret;
 }
 
-/////////////////////////////////////////////////////////////////////////////
 //
 //  CMultiSelectOpenFileDialog::GetStartPosition  (public member function)
 //    Call this member function to retrieve the POSITION of the first file
@@ -150,12 +147,13 @@ CString CMultiSelectOpenFileDialog::GetNextPathName(POSITION& pos) const
 //  Returns :
 //    A POSITION value that is used by the GetNextPathName function
 //
-/////////////////////////////////////////////////////////////////////////////
 
 POSITION CMultiSelectOpenFileDialog::GetStartPosition()
 {
     if (!Files)
+    {
         return CFileDialog::GetStartPosition();
+    }
 
     if (!bParsed)
     {
@@ -170,7 +168,9 @@ POSITION CMultiSelectOpenFileDialog::GetStartPosition()
         while (*ptr)
         {
             if ('\"' == *ptr)
+            {
                 *ptr = '\0';
+            }
             ++ptr;
         }
         bParsed = TRUE;
@@ -179,7 +179,6 @@ POSITION CMultiSelectOpenFileDialog::GetStartPosition()
     return (POSITION)Files;
 }
 
-/////////////////////////////////////////////////////////////////////////////
 //
 //  CMultiSelectOpenFileDialog::OnFileNameChange  (protected member function)
 //    If the lpstrFile and nMaxFile variables in the OPENFILENAME structure
@@ -195,7 +194,6 @@ POSITION CMultiSelectOpenFileDialog::GetStartPosition()
 //  Note :
 //    Works only if the CFileDialog is created with the OFN_EXPLORER flag
 //
-/////////////////////////////////////////////////////////////////////////////
 
 void CMultiSelectOpenFileDialog::OnFileNameChange()
 {
@@ -213,7 +211,7 @@ void CMultiSelectOpenFileDialog::_SetExtBuffer(DWORD dwReqBuffSize)
     try
     {
         GetOFN().nMaxFile = dwReqBuffSize;
-        delete[]m_pFileBuff;
+        delete[] m_pFileBuff;
         m_pFileBuff = new TCHAR[dwReqBuffSize];
         GetOFN().lpstrFile = m_pFileBuff;
     }

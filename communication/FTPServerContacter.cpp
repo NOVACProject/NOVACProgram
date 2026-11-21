@@ -84,10 +84,10 @@ void CFTPServerContacter::OnTimer(WPARAM /*nIDEvent*/, LPARAM /*lp*/)
 and upload the earliest. */
 void CFTPServerContacter::OnArrivedFile(WPARAM wp, LPARAM lp)
 {
-    // The filename of the newly arrived file is the first parameter 
+    // The filename of the newly arrived file is the first parameter
     CString* fileName = (CString*)wp;
 
-    // This index tells us which volcano that the file belongs to 
+    // This index tells us which volcano that the file belongs to
     FTPUploadOptions* options = (FTPUploadOptions*)lp;
     int volcanoIndex = options->volcanoIndex;
 
@@ -181,14 +181,14 @@ BOOL CFTPServerContacter::OnIdle(LONG /*lCount*/)
     {
         if (now < startTime || now > stopTime)
         {
-            return FALSE;	// no more idle-time needed
+            return FALSE; // no more idle-time needed
         }
     }
     else
     {
         if (now > stopTime && now < startTime)
         {
-            return FALSE;	// no more idle-time needed
+            return FALSE; // no more idle-time needed
         }
     }
 
@@ -260,9 +260,13 @@ BOOL CFTPServerContacter::OnIdle(LONG /*lCount*/)
                 double elapsedTime2 = ((double)timingStop.LowPart - (double)timingStart.LowPart) / (double)lpFrequency.LowPart;
 
                 if (useHighResolutionCounter)
+                {
                     linkSpeed = fileSize_kB / elapsedTime;
+                }
                 else
+                {
                     linkSpeed = fileSize_kB / elapsedTime2;
+                }
 
                 m_linkStatistics.AppendDownloadSpeed(linkSpeed);
 
@@ -356,7 +360,7 @@ bool CFTPServerContacter::ParseAFile(const CString& fileName)
     }
 
     // Temporarily lower the priority of this thread. This since the
-    //	reading in of very long file-lists can take quite some time...
+    //  reading in of very long file-lists can take quite some time...
     SetThreadPriority(THREAD_PRIORITY_LOWEST);
 
     while (fileRef.ReadString(line))
@@ -366,7 +370,7 @@ bool CFTPServerContacter::ParseAFile(const CString& fileName)
         while (szToken = strtok(szToken, "\n"))
         {
             CString fileName, volcanoName;
-            int			volcanoIndex, deleteFile;
+            int volcanoIndex, deleteFile;
 
             // find the tab which separates the file-name and the volcano index
             char* pt = strstr(szToken, "\t");
@@ -377,7 +381,7 @@ bool CFTPServerContacter::ParseAFile(const CString& fileName)
                 pt[0] = 0; // remove the tab
                 fileName.Format("%s", szToken);
 
-                // The rest of the string is; 
+                // The rest of the string is;
                 // 1) the volcano-name, either as an index (old) or as a string (new)...
                 // 2) the 'deleteFlag'
                 volcanoName.Format("%s", pt + 1);
@@ -463,7 +467,7 @@ bool CFTPServerContacter::ParseAFile(const CString& fileName)
         ExportList();
     }
 
-    // Restore the priority of this thread. 
+    // Restore the priority of this thread.
     SetThreadPriority(THREAD_PRIORITY_ABOVE_NORMAL);
 
     return true;
@@ -471,7 +475,7 @@ bool CFTPServerContacter::ParseAFile(const CString& fileName)
 
 void CFTPServerContacter::ExportList()
 {
-    POSITION	listPos;
+    POSITION listPos;
     CString line;
     int nLines = 0;
     time_t now;
@@ -531,8 +535,7 @@ void CFTPServerContacter::ExportList()
     }
 
     // Delete the old file-list and move the new one to it's place
-    //	(move the file fileList_temp.txt to fileList.txt)
+    //  (move the file fileList_temp.txt to fileList.txt)
     DeleteFile(m_listLogFile);
     MoveFile(m_listLogFile_Temp, m_listLogFile);
 }
-

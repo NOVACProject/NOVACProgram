@@ -64,9 +64,9 @@ std::unique_ptr<CScanResult> CScanEvaluation::GetResult()
 /** Called to evaluate one scan */
 long CScanEvaluation::EvaluateScan(novac::LogContext context, const std::string& scanfile, const CFitWindow& window, bool* fRun, const Configuration::CDarkSettings* darkSettings)
 {
-    CString message;	// used for ShowMessage messages
-    int	index = 0;		// keeping track of the index of the current spectrum into the .pak-file
-    double highestColumn = 0.0;	// the highest column-value in the evaluation
+    CString message; // used for ShowMessage messages
+    int index = 0;  // keeping track of the index of the current spectrum into the .pak-file
+    double highestColumn = 0.0; // the highest column-value in the evaluation
     bool success = true;
 
     // variables for storing the sky, dark and the measured spectra
@@ -82,12 +82,12 @@ long CScanEvaluation::EvaluateScan(novac::LogContext context, const std::string&
         return 0;
     }
 
-    // The CScanFileHandler is a structure for reading the spectral information 
+    // The CScanFileHandler is a structure for reading the spectral information
     //  from the scan-file
     CScanFileHandler scan(m_log);
 
     // Check the scan file, make sure it's correct and that the file
-    //	actually contains spectra
+    //  actually contains spectra
     const std::string scanFileName(scanfile);
     if (!scan.CheckScanFile(context, scanFileName))
     {
@@ -119,7 +119,7 @@ long CScanEvaluation::EvaluateScan(novac::LogContext context, const std::string&
     }
 
     // Get some important information about the spectra, like
-    //	interlace steps, spectrum length and start-channel
+    //  interlace steps, spectrum length and start-channel
     copyOfWindow.interlaceStep = scan.GetInterlaceSteps();
     copyOfWindow.specLength = scan.GetSpectrumLength() * copyOfWindow.interlaceStep;
     copyOfWindow.startChannel = scan.GetStartChannel();
@@ -132,7 +132,7 @@ long CScanEvaluation::EvaluateScan(novac::LogContext context, const std::string&
     std::unique_ptr<CEvaluationBase> eval;
 
     // If we have a solar-spectrum that we can use to determine the shift
-    //	& squeeze then fit that first so that we know the wavelength calibration
+    //  & squeeze then fit that first so that we know the wavelength calibration
     if (copyOfWindow.fraunhoferRef.m_path.size() > 4)
     {
         m_lastErrorMessage = "";
@@ -162,7 +162,7 @@ long CScanEvaluation::EvaluateScan(novac::LogContext context, const std::string&
         eval = std::make_unique<CEvaluationBase>(copyOfWindow, m_log);
     }
 
-    // Get the sky and dark spectra and divide them by the number of 
+    // Get the sky and dark spectra and divide them by the number of
     //     co-added spectra in it
     if (SUCCESS != GetSky(&scan, sky))
     {
@@ -198,7 +198,7 @@ long CScanEvaluation::EvaluateScan(novac::LogContext context, const std::string&
     for (int iteration = 0; iteration < nIt; ++iteration)
     {
         index = -1; // we're at spectrum number 0 in the .pak-file
-        m_indexOfMostAbsorbingSpectrum = -1;	// as far as we know, there's no absorption in any spectrum...
+        m_indexOfMostAbsorbingSpectrum = -1; // as far as we know, there's no absorption in any spectrum...
 
         newResult->SetSkySpecInfo(skySpectrumWithoutDarkCorrection.m_info);
         newResult->SetDarkSpecInfo(dark.m_info);
@@ -219,7 +219,7 @@ long CScanEvaluation::EvaluateScan(novac::LogContext context, const std::string&
             }
 
             // remember which spectrum we're at
-            int	spectrumIndex = current.ScanIndex();
+            int spectrumIndex = current.ScanIndex();
 
             // a. Read the next spectrum from the file
             int ret = scan.GetNextSpectrum(context, current);
@@ -239,9 +239,11 @@ long CScanEvaluation::EvaluateScan(novac::LogContext context, const std::string&
                     switch (scan.m_lastError)
                     {
                     case novac::FileError::ChecksumMismatch:
-                        errMsg.AppendFormat(", Checksum mismatch. Spectrum ignored"); break;
+                        errMsg.AppendFormat(", Checksum mismatch. Spectrum ignored");
+                        break;
                     case novac::FileError::DecompressionError:
-                        errMsg.AppendFormat(", Decompression error. Spectrum ignored"); break;
+                        errMsg.AppendFormat(", Decompression error. Spectrum ignored");
+                        break;
                     default:
                         m_log.Error(context, ", Unknown error. Spectrum ignored");
                     }
@@ -254,7 +256,7 @@ long CScanEvaluation::EvaluateScan(novac::LogContext context, const std::string&
 
             ++index; // we'have just read the next spectrum in the .pak-file
 
-            // If the read spectrum is the sky or the dark spectrum, 
+            // If the read spectrum is the sky or the dark spectrum,
             //   then don't evaluate it...
             if (current.ScanIndex() == sky.ScanIndex() || current.ScanIndex() == dark.ScanIndex())
             {
@@ -468,9 +470,13 @@ RETURN_CODE CScanEvaluation::GetDark(CScanFileHandler* scan, const CSpectrum& sp
     }
 
     if (successs)
+    {
         return SUCCESS;
+    }
     else
+    {
         return FAIL;
+    }
 }
 
 RETURN_CODE CScanEvaluation::GetSky(CScanFileHandler* scan, CSpectrum& sky) const
@@ -485,7 +491,9 @@ RETURN_CODE CScanEvaluation::GetSky(CScanFileHandler* scan, CSpectrum& sky) cons
         scan->GetSky(sky);
 
         if (sky.m_info.m_interlaceStep > 1)
+        {
             sky.InterpolateSpectrum();
+        }
 
         return SUCCESS;
     }
@@ -503,19 +511,27 @@ RETURN_CODE CScanEvaluation::GetSky(CScanFileHandler* scan, CSpectrum& sky) cons
         scan->ResetCounter();
         SpecData intens = tmp.MaxValue(fitLow, fitHigh);
         if (intens < 4095 * tmp.NumSpectra() && !tmp.IsDark())
+        {
             sky = tmp;
+        }
         else
+        {
             sky.Clear();
+        }
         while (scan->GetNextSpectrum(context, tmp))
         {
             intens = tmp.MaxValue(fitLow, fitHigh);
             if (intens < 4095 * tmp.NumSpectra() && !tmp.IsDark())
+            {
                 sky.Add(tmp);
+            }
         }
         scan->ResetCounter();
 
         if (sky.m_info.m_interlaceStep > 1)
+        {
             sky.InterpolateSpectrum();
+        }
 
         return SUCCESS;
     }
@@ -524,10 +540,14 @@ RETURN_CODE CScanEvaluation::GetSky(CScanFileHandler* scan, CSpectrum& sky) cons
     if (m_skySettings.skyOption == Configuration::SKY_OPTION::SPECTRUM_INDEX_IN_SCAN)
     {
         if (0 == scan->GetSpectrum(context, sky, m_skySettings.indexInScan))
+        {
             return FAIL;
+        }
 
         if (sky.m_info.m_interlaceStep > 1)
+        {
             sky.InterpolateSpectrum();
+        }
 
         return SUCCESS;
     }
@@ -540,17 +560,25 @@ RETURN_CODE CScanEvaluation::GetSky(CScanFileHandler* scan, CSpectrum& sky) cons
             // If the spectrum is in .pak format
             novac::CSpectrumIO reader;
             if (reader.ReadSpectrum(m_skySettings.skySpectrumFile, 0, sky))
+            {
                 return SUCCESS;
+            }
             else
+            {
                 return FAIL;
+            }
         }
         else if (EqualsIgnoringCase(Right(m_skySettings.skySpectrumFile, 4), ".std", 4))
         {
             // If the spectrum is in .std format
             if (CSTDFile::ReadSpectrum(sky, m_skySettings.skySpectrumFile))
+            {
                 return SUCCESS;
+            }
             else
+            {
                 return FAIL;
+            }
         }
         else
         {
@@ -570,14 +598,14 @@ void CScanEvaluation::SetOption_Sky(const Configuration::CSkySettings& settings)
     this->m_skySettings = settings;
 }
 
-void  CScanEvaluation::SetOption_Ignore(IgnoreOption lowerLimit, IgnoreOption upperLimit)
+void CScanEvaluation::SetOption_Ignore(IgnoreOption lowerLimit, IgnoreOption upperLimit)
 {
     this->m_ignore_Lower = lowerLimit;
     this->m_ignore_Upper = upperLimit;
 }
 
 /** Setting the option for wheather the spectra are averaged or not. */
-void	CScanEvaluation::SetOption_AveragedSpectra(bool averaged)
+void CScanEvaluation::SetOption_AveragedSpectra(bool averaged)
 {
     this->m_averagedSpectra = averaged;
 }
@@ -623,11 +651,11 @@ CEvaluationResult CScanEvaluation::FindOptimumShiftAndSqueeze(const CEvaluationB
     // 1. Find the spectrum with the highest column value
 
     // 2. Make sure that this spectrum was ok and that the column-value is high enough
-    //double columnError		= result->GetColumnError(m_indexOfMostAbsorbingSpectrum, specieNum); // <-- the column error that corresponds to the highest column-value
-    //double highestColumn	= result->GetColumn(m_indexOfMostAbsorbingSpectrum, specieNum);
+    //double columnError        = result->GetColumnError(m_indexOfMostAbsorbingSpectrum, specieNum); // <-- the column error that corresponds to the highest column-value
+    //double highestColumn  = result->GetColumn(m_indexOfMostAbsorbingSpectrum, specieNum);
     //if(highestColumn < 2 * columnError){
-    //	ShowMessage("Could not determine optimal shift & squeeze. Maximum column is too low.");
-    //	return;
+    //  ShowMessage("Could not determine optimal shift & squeeze. Maximum column is too low.");
+    //  return;
     //}
 
     // 2. Tell the user
@@ -661,7 +689,9 @@ CEvaluationResult CScanEvaluation::FindOptimumShiftAndSqueeze(const CEvaluationB
     // Get the dark-spectrum
     GetDark(scan, sky, dark);
     if (dark.NumSpectra() > 0 && !m_averagedSpectra)
+    {
         dark.Div(dark.NumSpectra());
+    }
 
     // Subtract the dark...
     sky.Sub(dark);

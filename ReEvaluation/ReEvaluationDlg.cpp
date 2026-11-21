@@ -6,10 +6,12 @@ namespace ReEvaluation
 {
 
 CReEvaluationDlg::CReEvaluationDlg(void)
-{}
+{
+}
 
 CReEvaluationDlg::~CReEvaluationDlg(void)
-{}
+{
+}
 BEGIN_MESSAGE_MAP(CReEvaluationDlg, CPropertySheet)
 END_MESSAGE_MAP()
 

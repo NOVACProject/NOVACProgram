@@ -28,11 +28,10 @@ private:
     NovacProgramLog m_log;
 
     // The controller which performs the ratio calculations.
-    // Notice that this is the owning class for the pointer and will delete it when done. 
+    // Notice that this is the owning class for the pointer and will delete it when done.
     // The same pointer is referenced by each page in the dialog but this is the sole owner.
     RatioCalculationController* m_controller;
 
     // Persisting the setup between sessions
     std::string SetupFilePath();
-
 };

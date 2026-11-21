@@ -14,7 +14,7 @@ class CSerialControllerWithTx;
 class CNodeControlInfo;
 
 class CCommunicationController
-    :public CWinThread
+    : public CWinThread
 {
 
 private:
@@ -32,7 +32,8 @@ private:
 
         CSerialInfo(int index, bool sleep, int medium)
             : m_mainIndex(index), m_sleepFlag(sleep), m_medium(medium)
-        {}
+        {
+        }
     };
 
 public:
@@ -62,7 +63,6 @@ public:
     void StartCommunicationThreads();
 
 public:
-
     /**set parameters for all the serial connections*/
     void SetupSerialConnections();
 

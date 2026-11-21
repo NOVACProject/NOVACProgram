@@ -28,7 +28,6 @@ public:
     RETURN_CODE WriteFitWindow(const novac::CFitWindow& window, const CString& fileName, bool overWrite);
 
 private:
-
     /** Parses a fit-window section of the .nfs file */
     RETURN_CODE Parse_FitWindow(novac::CFitWindow& window);
 

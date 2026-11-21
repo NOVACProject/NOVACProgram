@@ -26,7 +26,6 @@ using namespace novac;
 IMPLEMENT_DYNCREATE(CGeometryEvaluator, CWinThread)
 
 
-
 CGeometryEvaluator::CGeometryEvaluator()
 {
 }
@@ -41,11 +40,13 @@ BOOL CGeometryEvaluator::InitInstance()
     return TRUE;
 }
 
-void CGeometryEvaluator::OnQuit(WPARAM wp, LPARAM lp) {
+void CGeometryEvaluator::OnQuit(WPARAM wp, LPARAM lp)
+{
 }
 
 /** Called when the message queue is empty */
-BOOL CGeometryEvaluator::OnIdle(LONG lCount) {
+BOOL CGeometryEvaluator::OnIdle(LONG lCount)
+{
     return CCombinerThread::OnIdle(lCount);
 }
 BEGIN_MESSAGE_MAP(CGeometryEvaluator, CCombinerThread)
@@ -61,9 +62,12 @@ END_MESSAGE_MAP()
             evaluation log containing the scan.
         @param lp - not used.
 */
-void CGeometryEvaluator::OnEvaluatedScan(WPARAM wp, LPARAM lp) {
+void CGeometryEvaluator::OnEvaluatedScan(WPARAM wp, LPARAM lp)
+{
     if (wp == NULL)
+    {
         return;
+    }
 
     // 1. Go through the list of old eval-log names, if they are too old - remove them!
     CleanEvalLogList();
@@ -74,19 +78,27 @@ void CGeometryEvaluator::OnEvaluatedScan(WPARAM wp, LPARAM lp) {
     delete fn;
 
     // 2b. Get the volcano-index
-    int	volcanoIndex = (int)lp;
+    int volcanoIndex = (int)lp;
 
     // 3. Make sure that the filename is valid and that the file exists
     //     The name of an evaluation-log file is given on the form:
     //       SerialNumber_Date_StartTime_ChannelNumber.txt
     if (strlen(fileName) < 4)
+    {
         return;
+    }
     if (!IsExistingFile(fileName))
+    {
         return;
+    }
     if (!Equals(fileName.Right(4), ".txt"))
+    {
         return;
+    }
     if (fileName.Find('_') == -1)
+    {
         return;
+    }
 
     // 4. Find matching evaluation-logs, to make plume-height measurements
     CString match[MAX_MATCHING_FILES];
@@ -97,10 +109,13 @@ void CGeometryEvaluator::OnEvaluatedScan(WPARAM wp, LPARAM lp) {
 
     // 6. If there were no matching evaluation-logs in the list, quit it now...
     if (nFiles == 0)
+    {
         return;
+    }
 
     // 7. For each pair of files, make a geometry-calculation
-    for (int i = 0; i < nFiles; ++i) {
+    for (int i = 0; i < nFiles; ++i)
+    {
         CalculateGeometry(fileName, match[i], volcanoIndex);
     }
 }
@@ -108,64 +123,72 @@ void CGeometryEvaluator::OnEvaluatedScan(WPARAM wp, LPARAM lp) {
 /** Searches the list of evaluation logs and tries to find a log-file
         which matches the given evaluation-log.
         @return - the number of matching files found. */
-int	CGeometryEvaluator::FindMatchingEvalLog(const CString& evalLog, CString match[MAX_MATCHING_FILES], int volcanoIndex) {
+int CGeometryEvaluator::FindMatchingEvalLog(const CString& evalLog, CString match[MAX_MATCHING_FILES], int volcanoIndex)
+{
     int nFound = 0;
     CDateTime startTime1, startTime2; // <-- the start-times of the two scans
     CString serial1, serial2;     // <-- the serial-numbers of the two spectrometers
     CString message;
 
     // The name of an evaluation-log file is given by:
-    //	SerialNumber_Date_StartTime_ChannelNumber.txt
+    //  SerialNumber_Date_StartTime_ChannelNumber.txt
     // this function compares everything exept the part: '_ChannelNumber.txt'
     // The two files are considered to match if :
-    //		1 - the serial-numbers are different
-    //		2 - the dates are the same
-    //		3 - the start-times do not differ by more than MAX_TIME_DIFFERENCE seconds
-    //		4 - the measurements are made on the same volcano
+    //      1 - the serial-numbers are different
+    //      2 - the dates are the same
+    //      3 - the start-times do not differ by more than MAX_TIME_DIFFERENCE seconds
+    //      4 - the measurements are made on the same volcano
 
-    // 1. Get the serial and start-time 
-    if (!GetInfoFromFileName(evalLog, startTime1, serial1)) {
+    // 1. Get the serial and start-time
+    if (!GetInfoFromFileName(evalLog, startTime1, serial1))
+    {
         return 0;
     }
 
-    // 2. Go through the list of evaluation-logs and note how many have a 
+    // 2. Go through the list of evaluation-logs and note how many have a
     //      matching filename to this evallog
     POSITION pos = m_evalLogs.GetHeadPosition();
-    while (pos != NULL) {
+    while (pos != NULL)
+    {
         // 1a. Get (a copy) of the filename
         CString name = m_evalLogs.GetAt(pos).fileName;
 
-        // 1b. Get the serial and start-time 
-        if (!GetInfoFromFileName(name, startTime2, serial2)) {
+        // 1b. Get the serial and start-time
+        if (!GetInfoFromFileName(name, startTime2, serial2))
+        {
             m_evalLogs.GetNext(pos);
             continue;
         }
 
         // 1c. Get the volcanoIndex of the second evaluation-log
-        int	volcanoIndex2 = m_evalLogs.GetAt(pos).volcanoIndex;
+        int volcanoIndex2 = m_evalLogs.GetAt(pos).volcanoIndex;
 
         // 1d. The volcanoIndeces must be the same
-        if (volcanoIndex != volcanoIndex2) {
+        if (volcanoIndex != volcanoIndex2)
+        {
             m_evalLogs.GetNext(pos);
             continue;
         }
 
         // 1e. The serial-numbers must be different
-        if (Equals(serial1, serial2)) {
+        if (Equals(serial1, serial2))
+        {
             m_evalLogs.GetNext(pos);
             continue;
         }
 
         // 1f. The time elapsed between the two measurements must not be more than MAX_TIME_DIFFERENCE - seconds
         double timeDifference = fabs(CDateTime::Difference(startTime1, startTime2));
-        if (timeDifference > MAX_TIME_DIFFERENCE) {
+        if (timeDifference > MAX_TIME_DIFFERENCE)
+        {
             m_evalLogs.GetNext(pos);
             continue;
         }
 
         // 1g. This is a match
         match[nFound++].Format("%s", (LPCSTR)name);
-        if (nFound >= MAX_MATCHING_FILES) {
+        if (nFound >= MAX_MATCHING_FILES)
+        {
             message.Format("File: %s can be matched with %d other files", (LPCSTR)evalLog, nFound);
             ShowMessage(message);
             return nFound;
@@ -181,7 +204,8 @@ int	CGeometryEvaluator::FindMatchingEvalLog(const CString& evalLog, CString matc
 /** Takes the filename of an evaluation log and extracts the
         Serial-number of the spectrometer, the date the scan was performed
         and the start-time of the scan from the filename. */
-bool CGeometryEvaluator::GetInfoFromFileName(const CString fileName, CDateTime& start, CString& serial) {
+bool CGeometryEvaluator::GetInfoFromFileName(const CString fileName, CDateTime& start, CString& serial)
+{
     CString name, sDate, sTime, resToken;
     int iDate, iTime;
     int curPos = 0;
@@ -197,33 +221,43 @@ bool CGeometryEvaluator::GetInfoFromFileName(const CString fileName, CDateTime& 
     // The first part is the serial-number of the spectrometer
     resToken = name.Tokenize("_", curPos);
     if (resToken == "")
+    {
         return false;
+    }
     serial.Format(resToken);
 
     // The second part is the date
     resToken = name.Tokenize("_", curPos);
     if (resToken == "")
+    {
         return false;
-    if (sscanf(resToken, "%d", &iDate) == 1) {
+    }
+    if (sscanf(resToken, "%d", &iDate) == 1)
+    {
         start.year = (unsigned char)(iDate / 10000);
         start.month = (unsigned char)((iDate - start.year * 10000) / 100);
         start.day = (unsigned char)(iDate % 100);
         start.year += 2000;
     }
-    else {
+    else
+    {
         return false;
     }
 
     // The third part is the time
     resToken = name.Tokenize("_", curPos);
     if (resToken == "")
+    {
         return false;
-    if (sscanf(resToken, "%d", &iTime) == 1) {
+    }
+    if (sscanf(resToken, "%d", &iTime) == 1)
+    {
         start.hour = (unsigned char)(iTime / 100);
         start.minute = (unsigned char)((iTime - start.hour * 100));
         start.second = 0;
     }
-    else {
+    else
+    {
         return false;
     }
 
@@ -232,7 +266,8 @@ bool CGeometryEvaluator::GetInfoFromFileName(const CString fileName, CDateTime& 
 
 /** Calculate the plume-height using the two scans found in the
         given evaluation-files. */
-RETURN_CODE CGeometryEvaluator::CalculateGeometry(const CString& evalLog1, const CString& evalLog2, int volcanoIndex) {
+RETURN_CODE CGeometryEvaluator::CalculateGeometry(const CString& evalLog1, const CString& evalLog2, int volcanoIndex)
+{
     double plumeHeight, plumeHeightError, windDirection, windDirectionError;
     CString message;
     CDateTime startTime1, startTime2;
@@ -245,7 +280,8 @@ RETURN_CODE CGeometryEvaluator::CalculateGeometry(const CString& evalLog1, const
     ShowMessage("Geometry: Begin calculation of plume-height");
 
     // 1a. Calculate the plume height
-    if (false == CGeometryCalculator::CalculateGeometry(evalLog1, 0, evalLog2, 0, plumeHeight, plumeHeightError, windDirection, windDirectionError, info)) {
+    if (false == CGeometryCalculator::CalculateGeometry(evalLog1, 0, evalLog2, 0, plumeHeight, plumeHeightError, windDirection, windDirectionError, info))
+    {
         delete info;
         return FAIL;
     }
@@ -253,7 +289,8 @@ RETURN_CODE CGeometryEvaluator::CalculateGeometry(const CString& evalLog1, const
     ShowMessage(message);
 
     // 1b. Check the result, if it's reasonable or not...
-    if (plumeHeightError > 1000.0 || plumeHeightError > (plumeHeight + min(info->scanner[0].m_altitude, info->scanner[1].m_altitude))) {
+    if (plumeHeightError > 1000.0 || plumeHeightError > (plumeHeight + min(info->scanner[0].m_altitude, info->scanner[1].m_altitude)))
+    {
         // the measurement is too bad... Don't even write it down...
         delete info;
         return FAIL;
@@ -279,13 +316,15 @@ RETURN_CODE CGeometryEvaluator::CalculateGeometry(const CString& evalLog1, const
     fileName.Format("%sGeometryLog_%04d.%02d.%02d.txt", (LPCSTR)directory, startTime1.year, startTime1.month, startTime1.day);
     int exists = IsExistingFile(fileName);
     FILE* f = fopen(fileName, "a+");
-    if (f == NULL) {
+    if (f == NULL)
+    {
         delete info;
         return FAIL;
     }
 
     // 3c. If the file does not already exist, then create a small header for it
-    if (!exists) {
+    if (!exists)
+    {
         fprintf(f, "# This is the GeometryLog of the NovacProgram version %d.%d. Built: %s\n", CVersion::majorNumber, CVersion::minorNumber, __DATE__);
         fprintf(f, "# This file contains the result of combining two scans to calculate plume-height and/or wind-direction\n");
         fprintf(f, "Volcano\tEvaluationLog1\tEvaluationLog2\tAverageStartTime\tPlumeCentre1\tPlumeCentre2\tScannerDistance\tCalculatedPlumeHeight\tTotalPlumeHeight\tPlumeHeightError\tWindDirection\tWindDirectionError\n");
@@ -293,26 +332,32 @@ RETURN_CODE CGeometryEvaluator::CalculateGeometry(const CString& evalLog1, const
 
     // 3d. Write down our nice calculation
     CString evLogName1, evLogName2, volcanoName;
-    evLogName1.Format(evalLog1);		Common::GetFileName(evLogName1);
-    evLogName2.Format(evalLog2);		Common::GetFileName(evLogName2);
+    evLogName1.Format(evalLog1);
+    Common::GetFileName(evLogName1);
+    evLogName2.Format(evalLog2);
+    Common::GetFileName(evLogName2);
     volcanoName.Format(g_volcanoes.m_name[volcanoIndex]);
     fprintf(f, "%s\t", (LPCSTR)volcanoName);
     fprintf(f, "%s\t%s\t", (LPCSTR)evLogName1, (LPCSTR)evLogName2);
     fprintf(f, "%02d:%02d:%02d\t", startTime1.hour, startTime1.minute, startTime1.second);
     fprintf(f, "%.1lf\t%.1lf\t", info->plumeCentre[0], info->plumeCentre[1]);
     fprintf(f, "%.1lf\t", common.GPSDistance(info->scanner[0].m_latitude, info->scanner[0].m_longitude, info->scanner[1].m_latitude, info->scanner[1].m_longitude));
-    if (fabs(plumeHeight) < 1e4) {
+    if (fabs(plumeHeight) < 1e4)
+    {
         fprintf(f, "%.1lf\t", plumeHeight);
         fprintf(f, "%.1lf\t", plumeHeight + min(info->scanner[0].m_altitude, info->scanner[1].m_altitude));
     }
-    else {
+    else
+    {
         fprintf(f, "%.2e\t", plumeHeight);
         fprintf(f, "%.2e\t", plumeHeight + min(info->scanner[0].m_altitude, info->scanner[1].m_altitude));
     }
-    if (plumeHeightError < 1e4) {
+    if (plumeHeightError < 1e4)
+    {
         fprintf(f, "%.1lf\t", plumeHeightError);
     }
-    else {
+    else
+    {
         fprintf(f, "%.2e\t", plumeHeightError);
     }
     fprintf(f, "%.1lf\t", windDirection);

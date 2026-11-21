@@ -65,14 +65,22 @@ void CDOASFitGraph::DrawFit(int referenceIndex)
     else
     {
         if (minV < oldMinV)
+        {
             oldMinV = minV;
+        }
         else
+        {
             minV = oldMinV;
+        }
 
         if (maxV > oldMaxV)
+        {
             oldMaxV = maxV;
+        }
         else
+        {
             maxV = oldMaxV;
+        }
     }
 
     if (minV < maxV)
@@ -91,21 +99,23 @@ void CDOASFitGraph::DrawFit(int referenceIndex)
     }
 }
 
-void CDOASFitGraph::OnContextMenu(CWnd* pWnd, CPoint point) {
+void CDOASFitGraph::OnContextMenu(CWnd* pWnd, CPoint point)
+{
     CMenu menu;
     VERIFY(menu.LoadMenu(IDR_MENU_SHOWFIT_CONTEXT));
     CMenu* pPopup = menu.GetSubMenu(0);
     ASSERT(pPopup != NULL);
 
-    if (m_nReferences > 0 && m_fitHigh > 0 && m_fitLow < m_fitHigh) {
+    if (m_nReferences > 0 && m_fitHigh > 0 && m_fitLow < m_fitHigh)
+    {
         pPopup->EnableMenuItem(ID__SAVEASBITMAP, MF_DISABLED | MF_GRAYED);
 
         pPopup->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
     }
-
 }
 
-void CDOASFitGraph::OnSaveAsAscii() {
+void CDOASFitGraph::OnSaveAsAscii()
+{
     CString fileName;
     TCHAR filter[512];
     int n = _stprintf(filter, "Text File\0");
@@ -115,10 +125,14 @@ void CDOASFitGraph::OnSaveAsAscii() {
 
     // Make sure that there's something to save first...
     if (this->m_fitHigh == 0 || this->m_fitLow == 0 || this->m_nReferences == 0)
+    {
         return;
+    }
 
-    if (common.BrowseForFile_SaveAs(filter, fileName)) {
-        if (-1 == fileName.Find(".")) {
+    if (common.BrowseForFile_SaveAs(filter, fileName))
+    {
+        if (-1 == fileName.Find("."))
+        {
             fileName.AppendFormat(".txt");
         }
 
@@ -127,21 +141,26 @@ void CDOASFitGraph::OnSaveAsAscii() {
     }
 }
 
-void CDOASFitGraph::WriteAsciiFile(const CString& fileName) {
+void CDOASFitGraph::WriteAsciiFile(const CString& fileName)
+{
     int i, j;
 
     FILE* f = fopen(fileName, "w");
-    if (NULL != f) {
+    if (NULL != f)
+    {
         fprintf(f, "Pixel\tResidual\t");
-        for (j = 0; j < m_nReferences; ++j) {
+        for (j = 0; j < m_nReferences; ++j)
+        {
             fprintf(f, "OD(%s)\t", m_specieName[j].c_str());
         }
         fprintf(f, "\n");
 
-        for (i = m_fitLow; i < m_fitHigh; ++i) {
+        for (i = m_fitLow; i < m_fitHigh; ++i)
+        {
             fprintf(f, "%d\t%.4G\t", i, m_residual[i]);
 
-            for (j = 0; j < m_nReferences; ++j) {
+            for (j = 0; j < m_nReferences; ++j)
+            {
                 fprintf(f, "%.4G\t", m_fitResult[j][i]);
             }
             fprintf(f, "\n");
@@ -151,4 +170,3 @@ void CDOASFitGraph::WriteAsciiFile(const CString& fileName) {
         fclose(f);
     }
 }
-

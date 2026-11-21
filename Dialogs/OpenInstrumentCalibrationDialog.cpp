@@ -11,8 +11,7 @@
 IMPLEMENT_DYNAMIC(OpenInstrumentCalibrationDialog, CDialog)
 
 OpenInstrumentCalibrationDialog::OpenInstrumentCalibrationDialog(CWnd* pParent /*=nullptr*/)
-    : CDialog(IDD_CALIBRATE_OPEN_CALIBRATION, pParent)
-    , m_initialCalibrationFileTypeFilter("Extended Standard Files\0*.std\0\0")
+    : CDialog(IDD_CALIBRATE_OPEN_CALIBRATION, pParent), m_initialCalibrationFileTypeFilter("Extended Standard Files\0*.std\0\0")
 {
 }
 

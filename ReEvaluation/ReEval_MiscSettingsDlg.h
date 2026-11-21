@@ -15,7 +15,10 @@ public:
     virtual ~CReEval_MiscSettingsDlg();
 
     // Dialog Data
-    enum { IDD = IDD_REEVAL_MISC };
+    enum
+    {
+        IDD = IDD_REEVAL_MISC
+    };
 
 protected:
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -23,14 +26,13 @@ protected:
     DECLARE_MESSAGE_MAP()
 
 private:
-
     /** A handle to the reevaluator */
     CReEvaluator& m_reeval;
 
     /** Saving the data in the dialog */
     afx_msg void SaveData();
 
-    // --------------------------- DIALOG COMPONENTS -------------------------- 
+    // --------------------------- DIALOG COMPONENTS --------------------------
     CButton m_loadBtn, m_saveBtn;
 
     /** Lets the user browse for a spectrum to use as sky. */

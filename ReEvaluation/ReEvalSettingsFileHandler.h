@@ -27,7 +27,6 @@ public:
     RETURN_CODE WriteSettings(const ReEvaluation::CReEvaluator& reeval, const CString& fileName, bool overWrite);
 
 protected:
-
     /** Parses an intensity section of the file */
     RETURN_CODE Parse_IntensitySection(ReEvaluation::CReEvaluator& reeval, int type);
 
@@ -36,6 +35,5 @@ protected:
 
     /** Parses an dark-spectrum section of the file */
     RETURN_CODE Parse_DarkSpecSection(ReEvaluation::CReEvaluator& reeval);
-
 };
 }

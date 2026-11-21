@@ -5,7 +5,7 @@ struct CalibratePixelToWavelengthDialogSetup;
 
 namespace novac
 {
-    class StandardCrossSectionSetup;
+class StandardCrossSectionSetup;
 }
 
 /// <summary>
@@ -25,7 +25,10 @@ public:
 
     // Dialog Data
 #ifdef AFX_DESIGN_TIME
-    enum { IDD = IDD_CALIBRATE_WAVELENGTH_SETTINGS_DIALOG };
+    enum
+    {
+        IDD = IDD_CALIBRATE_WAVELENGTH_SETTINGS_DIALOG
+    };
 #endif
 
 protected:

@@ -18,7 +18,10 @@ public:
     virtual ~CReEval_DoEvaluationDlg();
 
     // Dialog Data
-    enum { IDD = IDD_REEVAL_FINAL };
+    enum
+    {
+        IDD = IDD_REEVAL_FINAL
+    };
 
 protected:
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -26,7 +29,6 @@ protected:
     DECLARE_MESSAGE_MAP()
 
 private:
-
     /** A handle to the reevaluator */
     CReEvaluator& m_reeval;
 
@@ -82,10 +84,10 @@ private:
     // --------------------------- PRIVATE METHODS --------------------------
 
     /** Initializes the graphs */
-    void  InitializeGraphs();
+    void InitializeGraphs();
 
     /** Populates the reference list */
-    void  PopulateRefList();
+    void PopulateRefList();
 
     /** Called to initialize the dialog */
     virtual BOOL OnInitDialog();
@@ -136,6 +138,5 @@ private:
     /** Called when the reevaluator has made some progress in the evaluation
             of the current scan-file */
     LRESULT OnProgress2(WPARAM wp, LPARAM lp);
-
 };
 }

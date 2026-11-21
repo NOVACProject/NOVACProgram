@@ -19,7 +19,6 @@ protected:
     DECLARE_MESSAGE_MAP()
 
 private:
-
     /** A handle to the reevaluator that this object modifies */
     CReEvaluator& m_reeval;
 

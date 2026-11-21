@@ -12,5 +12,4 @@ public:
 
     /** The name of the observatories */
     CString m_name[MAX_OBSERVATORIES];
-
 };

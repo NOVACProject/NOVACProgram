@@ -17,13 +17,10 @@ using namespace novac;
 IMPLEMENT_DYNCREATE(CCalibrationConfigurationDlg, CSystemConfigurationPage)
 
 
-
 // CCalibrationConfigurationDlg::CCalibrationConfigurationDlg - Constructor
 
-CCalibrationConfigurationDlg::CCalibrationConfigurationDlg() :
-    CSystemConfigurationPage(CCalibrationConfigurationDlg::IDD)
+CCalibrationConfigurationDlg::CCalibrationConfigurationDlg() : CSystemConfigurationPage(CCalibrationConfigurationDlg::IDD)
 {
-
 }
 
 // CCalibrationConfigurationDlg::DoDataExchange - Moves data between page and properties
@@ -135,9 +132,13 @@ void CCalibrationConfigurationDlg::UpdateDlg()
 void CCalibrationConfigurationDlg::OnChangeScanner()
 {
     if (m_hWnd == nullptr)
+    {
         return; // happens if this tab just disappeared
+    }
 
-    if (UpdateData(TRUE)) { // <-- first save the data in the dialog
+    if (UpdateData(TRUE))
+    {
+        // <-- first save the data in the dialog
 
         // Then change the settings so that we're using the newly selected scanner
         CSystemConfigurationPage::OnChangeScanner();
@@ -248,4 +249,3 @@ void ConfigurationDialog::CCalibrationConfigurationDlg::SaveData()
         m_curSpec->channel[m_channel].autoCalibration.intervalTimeOfDayHigh = 3600 * m_intervalHighHr + 60 * m_intervalHighMin;
     }
 }
-

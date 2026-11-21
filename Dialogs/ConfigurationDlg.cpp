@@ -10,10 +10,12 @@ namespace ConfigurationDialog
 IMPLEMENT_DYNAMIC(CConfigurationDlg, CDialog)
 CConfigurationDlg::CConfigurationDlg(CWnd* pParent /*=NULL*/)
     : CDialog(CConfigurationDlg::IDD, pParent)
-{}
+{
+}
 
 CConfigurationDlg::~CConfigurationDlg()
-{}
+{
+}
 
 void CConfigurationDlg::DoDataExchange(CDataExchange* pDX)
 {
@@ -182,7 +184,6 @@ RETURN_CODE ConfigurationDialog::CConfigurationDlg::CheckSettings()
                 MessageBox(str, "Configuration Error");
                 return FAIL;
             }
-
         }
     }
 

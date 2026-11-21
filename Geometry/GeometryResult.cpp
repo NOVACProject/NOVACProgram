@@ -18,7 +18,8 @@ CGeometryResult::~CGeometryResult(void)
 }
 
 /** Assignement operator */
-CGeometryResult& CGeometryResult::operator=(const CGeometryResult& gr) {
+CGeometryResult& CGeometryResult::operator=(const CGeometryResult& gr)
+{
     m_date = gr.m_date;
     m_startTime = gr.m_startTime;
     m_plumeHeight = gr.m_plumeHeight;

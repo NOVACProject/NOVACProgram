@@ -19,7 +19,7 @@ public:
     CWindField m_wind;
 
     /** The compass direction of the scanner */
-    float  m_compass;
+    float m_compass;
 
     /** The coneAngle (the opening angle for the scanning 'cone')
                 This is 90 degrees for the old scanner and varying between
@@ -27,18 +27,18 @@ public:
     float m_coneAngle;
 
     /** The tilt of the system */
-    float   m_tilt;
+    float m_tilt;
 
     /** The resulting flux, in kg/s */
-    double  m_flux;
+    double m_flux;
 
     /** The gasfactor for the current gas, converts from ppm*m to mg/m^2 */
-    double  m_gasFactor;
+    double m_gasFactor;
 
     /** The post-flux log */
     CString m_logFile;
 
-    // ------------------ METHODS ----------------------- 
+    // ------------------ METHODS -----------------------
 
     /** Calculates the flux from the given scan with the given
         metrological conditions. */
@@ -50,13 +50,12 @@ public:
     double CalculateOffset(int scanNr, const CString& specie, float chi2Limit = -1, float intensAbove = -1, float intensBelow = -1);
 
     /** Manually sets the offset for the given scan */
-    void  SetOffset(double offset, int scanNr);
+    void SetOffset(double offset, int scanNr);
 
     /** Writes the header of the post-flux log file */
-    void  WriteFluxLogHeader(int scanNr);
+    void WriteFluxLogHeader(int scanNr);
 
     /** Appends a result to the end of the post-flux log file */
-    void  AppendToFluxLog(int scanNr);
-
+    void AppendToFluxLog(int scanNr);
 };
 }

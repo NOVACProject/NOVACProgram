@@ -14,7 +14,7 @@
 #undef min
 #undef max
 
-#pragma region General helper methods for simplifying the display of data
+// ---- General helper methods for simplifying the display of data ----
 
 void SelectScanAngleAndColumnFromBasicScanEvaluationResult(
     const novac::BasicScanEvaluationResult& evaluationResult,
@@ -170,7 +170,6 @@ bool ResultShouldBeShown(const RatioCalculationResult* result, int resultFilterO
     return true;
 }
 
-#pragma endregion
 
 // CRatioEvaluationDialog dialog
 
@@ -178,7 +177,8 @@ IMPLEMENT_DYNAMIC(CRatioEvaluationDialog, CPropertyPage)
 
 CRatioEvaluationDialog::CRatioEvaluationDialog(RatioCalculationController* controller, CWnd* pParent /*=nullptr*/)
     : CPropertyPage(IDD_RATIO_EVALUATE_DIALOG), m_controller(controller)
-{}
+{
+}
 
 CRatioEvaluationDialog::~CRatioEvaluationDialog()
 {

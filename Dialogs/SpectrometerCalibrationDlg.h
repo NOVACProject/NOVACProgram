@@ -20,5 +20,4 @@ protected:
 private:
     CPropertyPage* m_calibratePixelToWavelength;
     CPropertyPage* m_calibrateReferences;
-
 };

@@ -20,11 +20,7 @@
 IMPLEMENT_DYNAMIC(CCalibrateReferencesDialog, CPropertyPage)
 
 CCalibrateReferencesDialog::CCalibrateReferencesDialog(CWnd* pParent /*=nullptr*/)
-    : CPropertyPage(IDD_CALIBRATE_REFERENCES)
-    , m_highPassFilterReference(TRUE)
-    , m_calibrationFile(_T(""))
-    , m_inputInVacuum(TRUE)
-    , m_standardCrossSections(nullptr)
+    : CPropertyPage(IDD_CALIBRATE_REFERENCES), m_highPassFilterReference(TRUE), m_calibrationFile(_T("")), m_inputInVacuum(TRUE), m_standardCrossSections(nullptr)
 {
     m_controller = new ReferenceCreationController();
 }
@@ -35,7 +31,8 @@ CCalibrateReferencesDialog::~CCalibrateReferencesDialog()
     delete m_standardCrossSections;
 }
 
-BOOL CCalibrateReferencesDialog::OnInitDialog() {
+BOOL CCalibrateReferencesDialog::OnInitDialog()
+{
     CPropertyPage::OnInitDialog();
 
     CRect rect;

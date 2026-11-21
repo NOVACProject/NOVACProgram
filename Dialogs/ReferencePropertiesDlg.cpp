@@ -72,7 +72,7 @@ END_MESSAGE_MAP()
 /** Saves the contents of the dialog */
 void CReferencePropertiesDlg::SaveData()
 {
-    UpdateData(TRUE); // <-- Save the data in the dialog	
+    UpdateData(TRUE); // <-- Save the data in the dialog
 
     // Save the strings (converting CString to std::string)
     m_ref.m_specieName = std::string((LPCSTR)m_specieName);
@@ -132,30 +132,56 @@ void CReferencePropertiesDlg::UpdateDlg()
     // save the shift option
     switch (m_ref.m_shiftOption)
     {
-    case 0: SHIFT_TYPE::SHIFT_FREE; m_shiftOption = 0; break;
-    case 1: SHIFT_TYPE::SHIFT_FIX;	m_shiftOption = 1;
-        m_shiftFixValue = m_ref.m_shiftValue;	break;
-    case 2: SHIFT_TYPE::SHIFT_LINK; m_shiftOption = 2;
-        m_shiftLinkValue = m_ref.m_shiftValue; break;
-    case 3: SHIFT_TYPE::SHIFT_LIMIT; m_shiftOption = 3;
+    case 0:
+        SHIFT_TYPE::SHIFT_FREE;
+        m_shiftOption = 0;
+        break;
+    case 1:
+        SHIFT_TYPE::SHIFT_FIX;
+        m_shiftOption = 1;
+        m_shiftFixValue = m_ref.m_shiftValue;
+        break;
+    case 2:
+        SHIFT_TYPE::SHIFT_LINK;
+        m_shiftOption = 2;
+        m_shiftLinkValue = m_ref.m_shiftValue;
+        break;
+    case 3:
+        SHIFT_TYPE::SHIFT_LIMIT;
+        m_shiftOption = 3;
         m_shiftLimitHigh = m_ref.m_shiftMaxValue;
-        m_shiftLimitLow = m_ref.m_shiftValue;	break;
+        m_shiftLimitLow = m_ref.m_shiftValue;
+        break;
     }
 
     // save the squeeze option
     switch (m_ref.m_squeezeOption)
     {
-    case 0: SHIFT_TYPE::SHIFT_FREE; m_squeezeOption = 0; break;
-    case 1: SHIFT_TYPE::SHIFT_FIX;  m_squeezeOption = 1; break;
-        m_squeezeFixValue = m_ref.m_squeezeValue;	break;
-    case 2: SHIFT_TYPE::SHIFT_LINK; m_squeezeOption = 2; break;
-        m_squeezeLinkValue = m_ref.m_squeezeValue; break;
-    case 3: SHIFT_TYPE::SHIFT_LIMIT; m_squeezeOption = 3;
+    case 0:
+        SHIFT_TYPE::SHIFT_FREE;
+        m_squeezeOption = 0;
+        break;
+    case 1:
+        SHIFT_TYPE::SHIFT_FIX;
+        m_squeezeOption = 1;
+        break;
+        m_squeezeFixValue = m_ref.m_squeezeValue;
+        break;
+    case 2:
+        SHIFT_TYPE::SHIFT_LINK;
+        m_squeezeOption = 2;
+        break;
+        m_squeezeLinkValue = m_ref.m_squeezeValue;
+        break;
+    case 3:
+        SHIFT_TYPE::SHIFT_LIMIT;
+        m_squeezeOption = 3;
         m_squeezeLimitHigh = m_ref.m_squeezeMaxValue;
-        m_squeezeLimitLow = m_ref.m_squeezeValue;	break;
+        m_squeezeLimitLow = m_ref.m_squeezeValue;
+        break;
     }
 
-    UpdateData(FALSE); // <-- Update the data in the dialog	
+    UpdateData(FALSE); // <-- Update the data in the dialog
 }
 void Dialogs::CReferencePropertiesDlg::OnOK()
 {
@@ -207,7 +233,9 @@ void Dialogs::CReferencePropertiesDlg::InitToolTips()
 {
     // Don't initialize the tool tips twice
     if (m_toolTip.m_hWnd != nullptr)
+    {
         return;
+    }
 
     // Enable the tool tips
     if (!m_toolTip.Create(this))

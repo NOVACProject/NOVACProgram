@@ -13,7 +13,7 @@ CExportDlg::CExportDlg()
 }
 
 CExportDlg::CExportDlg(UINT nIDCaption, CWnd* pParentWnd, UINT iSelectPage)
-    :CSimplePropertySheet(nIDCaption, pParentWnd, iSelectPage)
+    : CSimplePropertySheet(nIDCaption, pParentWnd, iSelectPage)
 {
 }
 
@@ -32,4 +32,3 @@ END_MESSAGE_MAP()
 
 
 // CExportDlg message handlers
-

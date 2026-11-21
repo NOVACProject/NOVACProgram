@@ -14,7 +14,7 @@ public:
 
     /** Specifies the full path and filename of the
         files to merge */
-    void SetFilesToMerge(CList <CString, CString&>& filesToMerge);
+    void SetFilesToMerge(CList<CString, CString&>& filesToMerge);
 
     /** Retrieves the last error message. This may be NULL!
         the returned pointer must not be deleted!
@@ -31,15 +31,15 @@ public:
             see 'GetErrorMessage' for complete error.
     */
     int MergeFiles();
-protected:
 
+protected:
     /** This is the full path and filename
         of the output file */
-    CString	m_outputFile;
+    CString m_outputFile;
 
     /** This is a list containing the full
         path and filename of the files to merge*/
-    CList <CString, CString&> m_filesToMerge;
+    CList<CString, CString&> m_filesToMerge;
 
 
     CString* m_errorMsg;

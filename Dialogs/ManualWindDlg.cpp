@@ -9,8 +9,8 @@
 
 using namespace Dialogs;
 
-extern CConfigurationSetting g_settings;	// <-- The settings
-extern CWinThread* g_comm;								// <-- The communication controller
+extern CConfigurationSetting g_settings; // <-- The settings
+extern CWinThread* g_comm;        // <-- The communication controller
 
 IMPLEMENT_DYNAMIC(CManualWindDlg, CDialog)
 CManualWindDlg::CManualWindDlg(CWnd* pParent /*=NULL*/)
@@ -69,14 +69,18 @@ END_MESSAGE_MAP()
 
 // CManualWindDlg message handlers
 /** Called to initialize the controls in the dialog*/
-BOOL CManualWindDlg::OnInitDialog() {
+BOOL CManualWindDlg::OnInitDialog()
+{
 
     CDialog::OnInitDialog();
 
     /** Setting up the list */
-    for (unsigned int k = 0; k < g_settings.scannerNum; ++k) {
-        for (unsigned int i = 0; i < g_settings.scanner[k].specNum; ++i) {
-            if (g_settings.scanner[k].spec[i].channelNum <= 1) {
+    for (unsigned int k = 0; k < g_settings.scannerNum; ++k)
+    {
+        for (unsigned int i = 0; i < g_settings.scanner[k].specNum; ++i)
+        {
+            if (g_settings.scanner[k].spec[i].channelNum <= 1)
+            {
                 continue;
             }
 
@@ -89,7 +93,9 @@ BOOL CManualWindDlg::OnInitDialog() {
 
     // Select the first spectrometer in the list
     if (m_specNum > 0)
+    {
         m_spectrometerList.SetCurSel(0);
+    }
 
     // Set the focus to the motor-position edit-box
     m_editMotorPosition.SetFocus();
@@ -101,7 +107,8 @@ BOOL CManualWindDlg::OnInitDialog() {
 }
 
 /** When the user presses the 'Send' - button */
-void CManualWindDlg::OnSend() {
+void CManualWindDlg::OnSend()
+{
     CString* fileName = new CString();
     CString* serialNumber = new CString();
     CString dateTime;
@@ -112,40 +119,47 @@ void CManualWindDlg::OnSend() {
 
     // 2. Get a handle to the selected spectrometer
     int curSel = m_spectrometerList.GetCurSel();
-    if (curSel < 0) {
+    if (curSel < 0)
+    {
         MessageBox("Please Select a spectrometer");
         return;
     }
     serialNumber->Format(m_spectrometer[curSel]);
     CConfigurationSetting::ScanningInstrumentSetting* scanner = NULL;
-    for (unsigned int k = 0; k < g_settings.scannerNum; ++k) {
-        if (Equals(g_settings.scanner[k].spec[0].serialNumber, *serialNumber)) {
+    for (unsigned int k = 0; k < g_settings.scannerNum; ++k)
+    {
+        if (Equals(g_settings.scanner[k].spec[0].serialNumber, *serialNumber))
+        {
             scanner = &g_settings.scanner[k];
             break;
         }
     }
-    if (!scanner) {
+    if (!scanner)
+    {
         MessageBox("Could not get scanner properties. Upload failed!!", "Error");
         return;
     }
 
     // 3. Get the directory where to temporarily store the cfgonce.txt
-    if (strlen(g_settings.outputDirectory) > 0) {
+    if (strlen(g_settings.outputDirectory) > 0)
+    {
         fileName->Format("%s\\Temp\\cfgonce.txt", (LPCSTR)g_settings.outputDirectory);
     }
-    else {
+    else
+    {
         common.GetExePath();
         fileName->Format("%s\\cfgonce.txt", (LPCSTR)common.m_exePath);
     }
     FILE* f = fopen(*fileName, "w");
-    if (f == NULL) {
+    if (f == NULL)
+    {
         MessageBox("Could not open cfgonce.txt for writing. Upload failed!!", "Error");
         return;
     }
 
     // 4. Write the configuration-file
 
-    // 4a. A small header 
+    // 4a. A small header
     common.GetDateTimeText(dateTime);
     fprintf(f, "%% -------------Modified at %s------------\n\n", (LPCSTR)dateTime);
 
@@ -209,7 +223,8 @@ void CManualWindDlg::OnSend() {
 }
 
 /** When the user presses changes the selected spectrometer */
-void CManualWindDlg::OnChangeSpectrometer() {
+void CManualWindDlg::OnChangeSpectrometer()
+{
     CString serialNumber;
 
     // 1. Get values the user has written in the dialog
@@ -217,18 +232,22 @@ void CManualWindDlg::OnChangeSpectrometer() {
 
     // 2. Get a handle to the selected spectrometer
     int curSel = m_spectrometerList.GetCurSel();
-    if (curSel < 0) {
+    if (curSel < 0)
+    {
         return;
     }
     serialNumber.Format(m_spectrometer[curSel]);
     CConfigurationSetting::ScanningInstrumentSetting* scanner = NULL;
-    for (unsigned int k = 0; k < g_settings.scannerNum; ++k) {
-        if (Equals(g_settings.scanner[k].spec[0].serialNumber, serialNumber)) {
+    for (unsigned int k = 0; k < g_settings.scannerNum; ++k)
+    {
+        if (Equals(g_settings.scanner[k].spec[0].serialNumber, serialNumber))
+        {
             scanner = &g_settings.scanner[k];
             break;
         }
     }
-    if (!scanner) {
+    if (!scanner)
+    {
         return;
     }
 

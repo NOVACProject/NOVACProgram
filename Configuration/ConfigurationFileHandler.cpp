@@ -13,7 +13,8 @@ namespace FileHandler
 
 CConfigurationFileHandler::CConfigurationFileHandler()
     : conf(nullptr), curScanner(nullptr)
-{}
+{
+}
 
 CConfigurationFileHandler::~CConfigurationFileHandler(void)
 {
@@ -57,7 +58,6 @@ static CString GetFtpLoginFilename(const CString* optionalFilename)
     }
 
     return filename;
-
 }
 
 void CConfigurationFileHandler::ReadConfigurationFile(CConfigurationSetting& configuration, const CString* fileName)
@@ -149,8 +149,8 @@ void CConfigurationFileHandler::WriteFtpLoginConfigurationFile(const CConfigurat
         throw ConfigurationFileException(common.GetString(ERROR_COULD_NOT_OPEN_EVALCONFIG) + "." + common.GetString(MSG_NO_CHANGES_WILL_BE_SAVED));
     }
     // , common.GetString(MSG_ERROR), MB_OK
-    // 
-        // 3. Write the header information 
+    //
+        // 3. Write the header information
     fprintf(f, TEXT("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n"));
     fprintf(f, TEXT("<!-- This is the configuration file for the FTP login to the NOVAC server.\n Keep this file in a secure location and do not share with others. -->\n\n"));
     fprintf(f, TEXT("<FtpLogin>\n"));
@@ -181,7 +181,7 @@ void CConfigurationFileHandler::WriteConfigurationFile(const CConfigurationSetti
         throw ConfigurationFileException(common.GetString(ERROR_COULD_NOT_OPEN_EVALCONFIG) + "." + common.GetString(MSG_NO_CHANGES_WILL_BE_SAVED));
     }
 
-    // 3. Write the header information 
+    // 3. Write the header information
     fprintf(f, TEXT("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n"));
     fprintf(f, TEXT("<!-- This is the configuration file for the evaluation of spectra in the NOVAC project.\n 	All spectrometers that are used must be defined here or their spectra will NOT be evaluated -->\n\n"));
     fprintf(f, TEXT("<Configuration>\n"));
@@ -346,7 +346,9 @@ void CConfigurationFileHandler::WriteConfigurationFile(const CConfigurationSetti
             }
 
             if (currentScanner.spec[spectrometerIdx].channelNum > 1)
+            {
                 hasDoubleSpectrometer = true;
+            }
 
             // The channels
             for (unsigned int channelIdx = 0; channelIdx < currentScanner.spec[spectrometerIdx].channelNum; ++channelIdx)
@@ -364,25 +366,41 @@ void CConfigurationFileHandler::WriteConfigurationFile(const CConfigurationSetti
                     // writing the shift
                     fprintf(f, TEXT(indent + "\t\t<shift>"));
                     if (reference.m_shiftOption == novac::SHIFT_TYPE::SHIFT_FIX)
+                    {
                         str.Format("fix to %.2lf", reference.m_shiftValue);
+                    }
                     else if (reference.m_shiftOption == novac::SHIFT_TYPE::SHIFT_FREE)
+                    {
                         str.Format("free");
+                    }
                     else if (reference.m_shiftOption == novac::SHIFT_TYPE::SHIFT_LIMIT)
+                    {
                         str.Format("limit from %.2lf to %.2lf", reference.m_shiftValue, reference.m_shiftMaxValue);
+                    }
                     else if (reference.m_shiftOption == novac::SHIFT_TYPE::SHIFT_LINK)
+                    {
                         str.Format("link to %.0lf", reference.m_shiftValue);
+                    }
                     fprintf(f, str);
                     fprintf(f, "</shift>\n");
                     // writing the squeeze
                     fprintf(f, TEXT(indent + "\t\t<squeeze>"));
                     if (reference.m_squeezeOption == novac::SHIFT_TYPE::SHIFT_FIX)
+                    {
                         str.Format("fix to %.2lf", reference.m_squeezeValue);
+                    }
                     else if (reference.m_squeezeOption == novac::SHIFT_TYPE::SHIFT_FREE)
+                    {
                         str.Format("free");
+                    }
                     else if (reference.m_squeezeOption == novac::SHIFT_TYPE::SHIFT_LIMIT)
+                    {
                         str.Format("limit from %.2lf to %.2lf", reference.m_squeezeValue, reference.m_squeezeMaxValue);
+                    }
                     else if (reference.m_squeezeOption == novac::SHIFT_TYPE::SHIFT_LINK)
+                    {
                         str.Format("link to %.0lf", reference.m_squeezeValue);
+                    }
                     fprintf(f, str);
                     fprintf(f, "</squeeze>\n");
                     fprintf(f, TEXT(indent + "\t</Reference>\n"));
@@ -513,7 +531,6 @@ void CConfigurationFileHandler::WriteConfigurationFile(const CConfigurationSetti
                 // radioID / callbook number
                 str.Format("%s<radioID>%s</radioID>\n", (LPCSTR)indent, (LPCSTR)comm.radioID);
                 fprintf(f, str);
-
             }
 
             if (comm.connectionType == FTP_CONNECTION)
@@ -599,7 +616,6 @@ void CConfigurationFileHandler::WriteConfigurationFile(const CConfigurationSetti
         }
 
         fprintf(f, TEXT("\t\t</scanningInstrument>\n"));
-
     }
 
     // Write the ending lines
@@ -714,7 +730,6 @@ int CConfigurationFileHandler::Parse()
             this->curScanner = &(conf->scanner[conf->scannerNum]);
             Parse_ScanningInstrument();
         }
-
     }
 
     return 0;
@@ -1021,11 +1036,13 @@ int CConfigurationFileHandler::Parse_Spectrometer()
             return 0;
         }
 
-        // found the serial number 
+        // found the serial number
         if (Equals(szToken, "serialNumber"))
         {
             if (curSpec != nullptr)
+            {
                 Parse_StringItem(TEXT("/serialNumber"), curSpec->serialNumber);
+            }
             continue;
         }
 
@@ -1036,7 +1053,7 @@ int CConfigurationFileHandler::Parse_Spectrometer()
             continue;
         }
 
-        // found the model number 
+        // found the model number
         if (Equals(szToken, "model"))
         {
             std::string tmpStr2;
@@ -1051,7 +1068,9 @@ int CConfigurationFileHandler::Parse_Spectrometer()
         if (Equals(szToken, "channel", 7))
         {
             if (curSpec != nullptr)
+            {
                 Parse_Channel();
+            }
             continue;
         }
 
@@ -1135,21 +1154,21 @@ int CConfigurationFileHandler::Parse_CustomSpectrometerModel(CConfigurationSetti
             return 0;
         }
 
-        // found the model name 
+        // found the model name
         if (Equals(szToken, "name"))
         {
             Parse_StringItem("/name", thisModel.modelName);
             continue;
         }
 
-        // found the maximum intensity 
+        // found the maximum intensity
         if (Equals(szToken, "maxIntensity"))
         {
             Parse_FloatItem("/maxIntensity", thisModel.maximumIntensityForSingleReadout);
             continue;
         }
 
-        // found the number of channels 
+        // found the number of channels
         if (Equals(szToken, "numChannels"))
         {
             Parse_IntItem("/numChannels", thisModel.numberOfChannels);
@@ -1435,7 +1454,7 @@ int CConfigurationFileHandler::Parse_Reference(CConfigurationSetting::Spectromet
             return 0;
         }
 
-        // found the specie name 
+        // found the specie name
         if (Equals(szToken, "name"))
         {
             if (curChannel != nullptr)
@@ -1445,7 +1464,7 @@ int CConfigurationFileHandler::Parse_Reference(CConfigurationSetting::Spectromet
             continue;
         }
 
-        // found the path to the reference file 
+        // found the path to the reference file
         if (Equals(szToken, "path"))
         {
             if (curChannel != nullptr)
@@ -1556,13 +1575,13 @@ int CConfigurationFileHandler::Parse_Medium(CConfigurationSetting::Communication
 }
 
 /** Parses one 'windmeasurement' section */
-int	CConfigurationFileHandler::Parse_WindMeasurement()
+int CConfigurationFileHandler::Parse_WindMeasurement()
 {
     CConfigurationSetting::WindSpeedMeasurementSetting* wind = &(curScanner->windSettings);
 
     // the fact that there is a windmeasurement section
-    //	in the configuration file means that we should automatically
-    //	do wind measurements
+    //  in the configuration file means that we should automatically
+    //  do wind measurements
     wind->automaticWindMeasurements = true;
 
     // the actual reading loop
@@ -1607,7 +1626,7 @@ int	CConfigurationFileHandler::Parse_WindMeasurement()
             continue;
         }
 
-        // found the minimum required column 
+        // found the minimum required column
         if (Equals(szToken, "minpeakcolumn"))
         {
             Parse_FloatItem("/minpeakcolumn", wind->minPeakColumn);
@@ -1645,8 +1664,8 @@ int CConfigurationFileHandler::Parse_RealTimeSetup()
     CConfigurationSetting::SetupChangeSetting* scs = &(curScanner->scSettings);
 
     // the fact that there is a real-time setup-section
-    //	in the configuration file means that we should automatically
-    //	do real-time changes of the configuration-file
+    //  in the configuration file means that we should automatically
+    //  do real-time changes of the configuration-file
     scs->automaticSetupChange = 1;
 
     // the actual reading loop
@@ -1688,7 +1707,7 @@ int CConfigurationFileHandler::Parse_RealTimeSetup()
 }
 
 /** Parses the 'sourceInfo' section */
-int	CConfigurationFileHandler::Parse_SourceInfo()
+int CConfigurationFileHandler::Parse_SourceInfo()
 {
     bool correct = false; // this is only true if the source is correctly configured
     int replace = -1; // this is non-negative if we should replace the already existing information with the one just read in
@@ -1737,7 +1756,7 @@ int	CConfigurationFileHandler::Parse_SourceInfo()
             Parse_StringItem("/name", name);
             correct = true;
             // Check if this source already exists in our list, if so then just replace that information
-            //	otherwise add it as a new source
+            //  otherwise add it as a new source
             for (unsigned int k = 0; k < g_volcanoes.m_volcanoNum; ++k)
             {
                 if (Equals(name, g_volcanoes.m_name[k]))
