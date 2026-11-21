@@ -11,7 +11,6 @@ class CMultiSelectOpenFileDialog : public CFileDialog
 
 private:
     LPTSTR m_pFileBuff = new TCHAR[0];
-    ;
     DWORD _CalcRequiredBuffSize();
     void _SetExtBuffer(DWORD dwReqBuffSize);
 

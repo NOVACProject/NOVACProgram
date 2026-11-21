@@ -336,7 +336,6 @@ void CGeometryDlg::DrawMap()
     static double iLat[BUFFERSIZE];
     static double iLon[BUFFERSIZE];
     static double iCol[BUFFERSIZE];
-    ;
     int nScanners = 0; // <-- the number of scanners to draw
     double maxColumn = -1e16; // <-- the highest column we will draw
     double minColumn = 1e16; // <-- the lowest column we will draw

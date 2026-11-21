@@ -525,7 +525,6 @@ void CDataBrowserDlg::DrawFlux()
     {
         columnAxisLabel.Format("%s [ton/day]", (LPCSTR)common.GetString(AXIS_FLUX));
         fluxUnitConversionFactor = 24 * 3.6;
-        ;
     }
     else
     {

@@ -57,7 +57,6 @@ public:
 
     /** The currently selected specie */
     long m_curSpecie;
-    ;
 
     /** The additional spectrum information of one spectrum. */
     novac::CSpectrumInfo m_specInfo;
