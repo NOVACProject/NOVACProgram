@@ -1087,7 +1087,7 @@ void CPostFluxDlg::RetrieveWindField()
         else
         {
             GetDlgItemText(IDC_PF_WINDSPEED, ws);
-            int ret = sscanf(ws, "%lf", &tmpDouble);
+            sscanf(ws, "%lf", &tmpDouble);
             m_calculator->m_wind.SetWindSpeed(tmpDouble, MET_USER);
         }
 
@@ -1099,7 +1099,7 @@ void CPostFluxDlg::RetrieveWindField()
         else
         {
             GetDlgItemText(IDC_PF_WINDDIRECTION, wd);
-            int ret = sscanf(wd, "%lf", &tmpDouble);
+            sscanf(wd, "%lf", &tmpDouble);
             m_calculator->m_wind.SetWindDirection(tmpDouble, MET_USER);
         }
 
@@ -1111,7 +1111,7 @@ void CPostFluxDlg::RetrieveWindField()
         else
         {
             GetDlgItemText(IDC_PF_PLUMEHEIGHT, ph);
-            int ret = sscanf(ph, "%lf", &tmpDouble);
+            sscanf(ph, "%lf", &tmpDouble);
             m_calculator->m_wind.SetPlumeHeight(tmpDouble, MET_USER);
         }
     }

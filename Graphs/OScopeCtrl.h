@@ -26,10 +26,6 @@ public:
     /** Default destructor */
     virtual ~COScopeCtrl();
 
-    /** Used when the plot is used in oscilloscope-mode. This function will
-        simply append one data point to the plot. */
-    double AppendPoint(double dNewPoint);
-
     /** Sets the range of the X-axis */
     void SetRange(double dLower, double dUpper, int nDecimalPlaces = 1);
 
@@ -52,12 +48,6 @@ public:
     /** Sets the color for the circles */
     void SetCircleColor(COLORREF color, bool clear = false);
 
-    /** Increases the linewith when drawing lines. */
-    void IncreaseLineWidth();
-
-    /** Decreases the linewidht when drawing lines */
-    void DecreaseLineWidth();
-
     /** Marks the whole plot for redrawing */
     void InvalidateCtrl();
 
@@ -70,58 +60,16 @@ public:
     /** ??? */
     void Reset();
 
-    /** Customized function for drawing points with lines connecting them.
-        @param yPositions - the y values for the points.
-        @param pointSum - the number of points to draw.
-        @param clear - if 'clear' is true the plot will be cleared before the points are drawn. */
-    void DrawMyPoint(double* yPositions, int pointSum, bool clear);
-
-    /** Customized function for drawing points with lines connecting them.
-        @param yPositions - the y values for the points.
-        @param pointSum - the number of points to draw.
-        @param xrange - the largest x-value (the smallest is assumed to be zero)
-        @param yrange - the largest y-value (the smallest is assumed to be zero)
-        @param clear - if 'clear' is true the plot will be cleared before the points are drawn.*/
-    void DrawMyPoint(double* yPositions, int pointSum, double xrange, double yrange, bool clear = true);
-
     void DrawLine(int type, double value, COLORREF pColor, int lineType);
-
-    /** ??? */
-    void DrawCircle();
-
-    /** ?? */
-    void DrawCircle(double verticalFactor);
 
 // Overrides
   // ClassWizard generated virtual function overrides
   //{{AFX_VIRTUAL(COScopeCtrl)
 public:
     virtual BOOL Create(DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID = NULL);
-    //}}AFX_VIRTUAL
-
-    /** */
-    void SetDotLines(int number);
-
-    /** */
-    void SetMoreDigits(int pDigits);
-
-    /** */
-    void DrawLeftUnit(CString strYMin, CString strYMax, CString strName);
 
     /** */
     void DrawCircles(double* x, double* y, double verticalRange, int nSum);
-
-    /** */
-    void DrawRects(double* dColumns, double* dDegrees, int nSum, bool clear = true);
-
-    /** */
-    void AppendRect(double dNewColumn, double dDegree, int nSum);
-
-    /** */
-    void AppendMyPoint(double dNewPoint);
-
-    /** */
-    void AppendCircle(double dNewColumn, double dDegree, double dVerticalRange);
 
     /** */
     void DrawRect(int nSum);

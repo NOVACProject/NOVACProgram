@@ -723,23 +723,3 @@ double CGeometryCalculator::GetWindDirection(const CGPSData source, const CGPSDa
     return wd;
 }
 
-/** Retrieve the plume height from a measurement using one scanning-instrument
-        with an given assumption of the wind-direction  */
-double CGeometryCalculator::GetPlumeHeight_OneInstrument(const CGPSData source, const CGPSData gps, double WindDirection, double alpha_center_of_mass, double phi_center_of_mass)
-{
-    Common common;
-
-    //horizontal distance between instrument and source:
-    double distance_to_source = common.GPSDistance(gps.m_latitude, gps.m_longitude, source.m_latitude, source.m_longitude);
-
-    //angle (in rad) pointing from instrument to source (with respect to north, clockwise):
-    double angle_to_source_rad = DEGREETORAD * common.GPSBearing(gps.m_latitude, gps.m_longitude, source.m_latitude, source.m_longitude);
-
-    //the two angles for the measured center of mass of the plume converted to rad:
-    double alpha_cm_rad = DEGREETORAD * alpha_center_of_mass;
-    double phi_cm_rad = DEGREETORAD * phi_center_of_mass;
-
-    double WindDirection_rad = DEGREETORAD * WindDirection;
-
-    return 1 / tan(alpha_cm_rad) * sin(angle_to_source_rad - WindDirection_rad) / sin(phi_cm_rad - WindDirection_rad) * distance_to_source;
-}

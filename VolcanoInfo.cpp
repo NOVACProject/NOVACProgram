@@ -270,16 +270,3 @@ int IndexOfVolcano(const std::string& volcanoName)
     return -1;
 }
 
-novac::CNamedLocation GetVolcano(unsigned int volcanoIndex)
-{
-    if (volcanoIndex >= g_volcanoes.m_volcanoNum)
-    {
-        return novac::CNamedLocation(0.0, 0.0, 0.0, "Unknown");
-    }
-
-    return novac::CNamedLocation(
-        g_volcanoes.m_peakLatitude[volcanoIndex],
-        g_volcanoes.m_peakLongitude[volcanoIndex],
-        g_volcanoes.m_peakHeight[volcanoIndex],
-        std::string((LPCSTR)g_volcanoes.m_name[volcanoIndex]));
-}

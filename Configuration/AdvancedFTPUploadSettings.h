@@ -42,12 +42,5 @@ public:
     /** Called when the user presses the 'OK'-button.
             Saves the filled in data in the dialog */
     virtual void OnOK();
-
-protected:
-        // ------------------ METHODS -----------------------
-
-    /** Returns the width of the supplied component to be able to fit in
-            the supplied string */
-    void GetNecessaryComponentSize(CWnd* wnd, CString& str, int& width, int& height);
 };
 }

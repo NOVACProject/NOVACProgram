@@ -74,7 +74,6 @@ private:
     CString m_fitHighBrO;
     CString m_polyOrderSO2;
     CString m_polyOrderBrO;
-    CString m_minInPlumeSpectrumColumn;
     CString m_minInPlumeSpectrumNumber;
     CString m_minOutOfPlumeSpectrumNumber;
     CString m_minInPlumeSpectrumColumnDifference;

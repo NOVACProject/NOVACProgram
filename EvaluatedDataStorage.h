@@ -98,9 +98,6 @@ public:
     void AppendSpecDataHistory(int scannerIndex, int time, double column, double columnError,
         double peakSaturation, double fitSaturation, double angle, bool isBadFit);
 
-    /** Returns the smallest and the largest flux in the data bank */
-    void GetFluxRange(const CString& serial, double& minFlux, double& maxFlux);
-
     /** Returns the smallest and the largest columns in the data bank */
     void GetColumnRange(const CString& serial, double& minColumn, double& maxColumn, bool fullDay = false);
 
@@ -230,18 +227,6 @@ public:
         @param bufferSize - the maximum number of data points that the buffer can handle.
         @return the number of data points copied into the dataBuffer*/
     long GetExposureTimeData(const CString& serial, double* timeBuffer, double* dataBuffer, long bufferSize);
-
-    /** Gets the lowest recorded temperature for the given spectrometer */
-    double GetMinTemperature(const CString& serial);
-
-    /** Gets the highest recorded temperature for the given spectrometer */
-    double GetMaxTemperature(const CString& serial);
-
-    /** Gets the lowest recorded battery voltage for the given spectrometer */
-    double GetMinBatteryVoltage(const CString& serial);
-
-    /** Gets the highest recorded battery voltage for the given spectrometer */
-    double GetMaxBatteryVoltage(const CString& serial);
 
 private:
     // ----------------------------------------------------------------------

@@ -213,29 +213,6 @@ void CSpectrometerHistory::AppendInstrumentCalibration(const CDateTime& timeOfSc
         { return a.startTime > b.startTime; });
 }
 
-int CSpectrometerHistory::SecondsSinceLastScan() const
-{
-
-    // 1. If no scan has arrived, return -1
-    if (m_scanInfo.GetCount() == 0)
-    {
-        return -1;
-    }
-
-    // 2. The arrival-time of the last scan
-    CScanInfo lastInfo = m_scanInfo.GetAt(m_scanInfo.GetHeadPosition());
-
-    // 3. The local time now
-    CDateTime now;
-    now.SetToNow();
-
-    // 4. Calculate the difference...
-    double secondsPassed = CDateTime::Difference(now, lastInfo.arrived);
-
-    // 5. Return
-    return (int)fabs(secondsPassed);
-}
-
 int CSpectrometerHistory::SecondsSinceLastWindMeas() const
 {
 
@@ -692,25 +669,3 @@ double CSpectrometerHistory::GetColumnMax(int scansToAverage)
     return maxColumn;
 }
 
-/** Returns the range of zenith-angles for the last scan
-        (Normally these are from -90 to +90)
-        If no scan collected today has been received then alpha_min will be +999.0
-        and alpha_max will be -999.0    */
-void CSpectrometerHistory::GetAlphaRange(double& alpha_min, double& alpha_max)
-{
-    alpha_min = +999.0;
-    alpha_max = -999.0;
-
-    POSITION pos = m_scanInfo.GetHeadPosition();
-    if (pos == nullptr)
-    {
-        return; // no scan today
-    }
-
-    CScanInfo info = m_scanInfo.GetNext(pos);
-
-    alpha_min = info.alpha[0];
-    alpha_max = info.alpha[1];
-
-    return;
-}

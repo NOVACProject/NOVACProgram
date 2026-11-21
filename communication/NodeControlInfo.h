@@ -41,10 +41,6 @@ public:
     CNodeControlInfo();
     ~CNodeControlInfo();
 
-    /**get the total number of nodes
-        *return total number of nodes */
-    int GetNodeSum();
-
     /** Gets the status of the given node, run, off, sleep, run in special mode
         @param mainIndex - the index in the array , also in the configuration file
         @return the status */
@@ -70,7 +66,5 @@ public:
 private:
     CArray<CControlInfo*, CControlInfo*> m_controlInfoArray;
 
-    /** Total number of nodes */
-    int m_totalNodeNum;
 };
 }

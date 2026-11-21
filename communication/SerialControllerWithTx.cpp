@@ -42,7 +42,6 @@ CSerialControllerWithTx::CSerialControllerWithTx(void)
             MessageBox(NULL, errorMsg, "Serious error", MB_OK);
         }
     }
-    m_commandMode = false;
     m_sleepFlag = false;
     m_radioID.Format("");
     m_electronicsBox = BOX_AXIS;
@@ -62,7 +61,6 @@ CSerialControllerWithTx::CSerialControllerWithTx(ELECTRONICS_BOX box)
         errorMsg.Format("Could not create storage-directory for serial-data!! Please check settings and restart");
         MessageBox(NULL, errorMsg, "Serious error", MB_OK);
     }
-    m_commandMode = false;
     m_sleepFlag = false;
     m_radioID.Format("");
     m_electronicsBox = box;
@@ -95,7 +93,6 @@ void CSerialControllerWithTx::SetSerialPort(int serialID, int COMPort, int baudr
     m_connectionID.Format("Serial %d", m_mainIndex);
     m_spectrometerSerialNumber.Format("%s", (LPCSTR)g_settings.scanner[m_mainIndex].spec[0].serialNumber);
     m_timeout = g_settings.scanner[m_mainIndex].comm.timeout;
-    m_interval = g_settings.scanner[m_mainIndex].comm.queryPeriod;
 
     // Make one directory for each instrument...
     m_storageDirectory.Format("%sTemp\\%s\\", (LPCSTR)g_settings.outputDirectory, (LPCSTR)m_spectrometerSerialNumber);
@@ -525,7 +522,6 @@ bool CSerialControllerWithTx::SwitchToDisk(char diskName)
         }
         WriteSerial(message, nChar + 2);
         FlushSerialPort(1);
-        m_commandMode = true;
     }
     else
     {
@@ -535,7 +531,6 @@ bool CSerialControllerWithTx::SwitchToDisk(char diskName)
         message[3] = LF;
         WriteSerial(message, 4);
         FlushSerialPort(1);
-        m_commandMode = true;
     }
 
     return true;
@@ -707,7 +702,6 @@ bool CSerialControllerWithTx::DownloadFile(char* fileName, CString filePath, cha
     fileFullName.Format("%s%s", (LPCSTR)filePath, (LPCSTR)fileName);
 
     pView->PostMessage(WM_SCANNER_RUN, (WPARAM) & (m_spectrometerSerialNumber), 0);
-    long remoteFileSize = 0;
     if (!CleanLocalFile(fileName))
     {
         return false;
@@ -745,7 +739,6 @@ bool CSerialControllerWithTx::DownloadFile(char* fileName, CString filePath, cha
 }
 int CSerialControllerWithTx::OrganizeFileList(CString folderName, char diskName)
 {
-    long fileSize = -1;
     int folderNameLen;
     long bufIndex = 0;
     char recBuf[MAXBUFFER];
@@ -855,49 +848,6 @@ long CSerialControllerWithTx::GetFileSize(char* fileName)
     return size;
 }
 
-long CSerialControllerWithTx::ParseFileSize(CString& fileName, char* string)
-{
-    static char seps[] = "\t\n";
-    char* token;
-    CString tokenStr;
-    token = strtok(string, seps);
-    int find = -1;
-    long fileSize = -1;
-    while (token != NULL)
-    {
-        /* While there are tokens in "string" */
-        tokenStr.Format("%s", token);
-
-        if (tokenStr.Find(fileName) != -1)
-        {
-            find = 1;
-            break;
-        }
-        /* Get next token: */
-        token = strtok(NULL, seps);
-    }
-    if (find == 1)
-    {
-        int i = 0;
-        CAtlString str = tokenStr;
-        CAtlString resToken;
-        int curPos = 0;
-
-        resToken = str.Tokenize(" \t", curPos);
-        while (resToken != "")
-        {
-            resToken = str.Tokenize(" \t", curPos);
-            if (i == 1)
-            {
-                fileSize = _tstol(resToken);
-                break;
-            }
-            i++;
-        }
-    }
-    return fileSize;
-}
-
 void CSerialControllerWithTx::EnterFolder(const char* folderName)
 {
     CString str;
@@ -995,7 +945,6 @@ int CSerialControllerWithTx::CheckKongoExit()
 
 int CSerialControllerWithTx::WakeUp(int mode)
 {
-    bool result = false;
     bool isConnect = false;
     int i;
     m_ErrorMsg = TEXT("Begin to connect to remote PC");
@@ -1047,29 +996,6 @@ int CSerialControllerWithTx::WakeUp(int mode)
     DownloadCfgTxt();
 
     return SUCCESS;
-}
-
-bool CSerialControllerWithTx::Reboot()
-{
-#define REBOOT_MSG_SIZE 8192
-
-    if (!InitCommunication('B'))
-    {
-        return false;
-    }
-    Sleep(5000);//wait for quiting tx
-    Bye();
-    InitCommandLine();
-    SendCommand("del command.txt");
-    m_ErrorMsg.Format("Reboot remote PC");
-    ShowMessage(m_ErrorMsg, m_connectionID);
-
-    SendCommand("reboot");
-    CloseSerialPort();
-    Sleep(9000); //wait for rebooting
-    SetRemotePCTime();
-
-    return true;
 }
 
 // send file name to remote PC
@@ -1365,15 +1291,6 @@ bool CSerialControllerWithTx::PutFile(char* name, CString fileFullPath, char dis
     return true;
 }
 
-void CSerialControllerWithTx::ExecuteCommand(char* cmd)
-{
-    m_ErrorMsg.Format("Executing command <%s>", cmd);
-    ShowMessage(m_ErrorMsg, m_connectionID);
-    FlushSerialPort(1);
-    SendCommand(TX_QUIT); // make sure tx.exe is not running
-    FlushSerialPort(500);
-    SendCommand(cmd);
-}
 bool CSerialControllerWithTx::Delete(char* fileName, char diskName)
 {
     CString msg;
@@ -1551,7 +1468,6 @@ bool CSerialControllerWithTx::CleanLocalFile(char* fileName)
 
 bool CSerialControllerWithTx::ArrangeFileList(char* string, CString folder)
 {
-    int curPos = 0;
     static char seps[] = "\t\n";
     char* token;
     CString tokenStr;
@@ -1747,21 +1663,6 @@ bool CSerialControllerWithTx::DownloadPakFile(CString folderName, long interval)
     return true;
 }
 
-bool CSerialControllerWithTx::CreatePakFileList()
-{
-    CString listTextB, listTextA, folderName;
-    char text[16184];
-    folderName.Format("");
-    if (!GetFileListText(listTextA, listTextB))
-    {
-        ShowMessage("Can not get pak file list", m_connectionID);
-        return false;
-    }
-    sprintf(text, "%s", (LPCSTR)listTextB);
-    ArrangeFileList(text, folderName);
-    return true;
-}
-
 void CSerialControllerWithTx::AddFolderInfo(CString string)
 {
     int folderNameLength = string.Find(" ");
@@ -1854,32 +1755,6 @@ int CSerialControllerWithTx::GetOldPakList(CString folderName)
         }
     }
     return result;
-}
-
-bool CSerialControllerWithTx::IsKongoRunning()
-{
-    int counter = 0;
-    CString statusFile;
-    statusFile.Format("%sSTATUS.DAT", (LPCSTR)m_storageDirectory);
-    while (DownloadFile("STATUS.DAT", m_storageDirectory, 'B') != SUCCESS)
-    {
-        counter++;
-        if (counter == 3)
-        {
-            return false;
-        }
-    }
-    m_statusFileReader.SetWorkingPath(m_storageDirectory);
-    if (m_statusFileReader.IsStart() == 1)
-    {
-        ShowMessage("Kongo is running");
-        return true;
-    }
-    else
-    {
-        ShowMessage("Kongo is not running");
-        return false;
-    }
 }
 
 bool CSerialControllerWithTx::DownloadSpectra(char* pakFileName)
@@ -2054,47 +1929,6 @@ bool CSerialControllerWithTx::GetFileListText_Folder(CString& folderName, CStrin
     } while (text.Find("files use") == -1);
 
     return true;
-}
-
-void CSerialControllerWithTx::SetRemotePCTime()
-{
-    char command[128];
-    char receiveBuf[SIZEOFBUFFER];
-    CString str;
-    int year, month, day, hour, minute, second;
-    int timeout = g_settings.scanner[m_mainIndex].comm.timeout;
-    year = m_common.GetYear();
-    month = m_common.GetMonth();
-    day = m_common.GetDay();
-    hour = m_common.GetHour();
-    minute = m_common.GetMinute();
-    second = m_common.GetSecond();
-    memset(command, 0, 128 * sizeof(char));
-    sprintf(command, "SETSTIME %d %d %d %d %d %d",
-        year, month, day, hour, minute, second);
-
-    WriteSerial(command, strlen(command));
-    InitCommandLine();
-
-    GetSerialData(receiveBuf, SIZEOFBUFFER, timeout);
-    str.Format("%s", receiveBuf);
-    ShowMessage("Set remote PC time");
-
-    if (str.Find("Not enough memory") != -1)
-    {
-        m_ErrorMsg.Format("Not enough memory, reboot remote PC");
-        ShowMessage(m_ErrorMsg, m_connectionID);
-        SendCommand("reboot");
-        InitCommandLine();
-        Sleep(3000);
-    }
-    else
-    {
-        m_ErrorMsg.Format("set remote PC to local PC time %d-%d-%d %02d:%02d:%02d",
-            year, month, day, hour, minute, second);
-        ShowMessage(m_ErrorMsg, m_connectionID);
-    }
-    //CloseSerialPort();
 }
 
 bool CSerialControllerWithTx::MakeCommandFile(char* content)

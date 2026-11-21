@@ -54,6 +54,6 @@ private:
     /** Saves a spectrum to a correct filename */
     void SaveSpectrum(const novac::CSpectrum& spec, const CString& path);
 
-    int m_skyIndex, m_darkIndex, m_specIndex;
+    int m_specIndex;
 };
 }

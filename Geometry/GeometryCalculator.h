@@ -60,10 +60,6 @@ public:
             @return true if a plume height could be calculated. */
     static bool GetPlumeHeight_Fuzzy(const novac::CGPSData source, const novac::CGPSData gps[2], const double compass[2], const double plumeCentre[2], const double coneAngle[2], const double tilt[2], double& plumeHeight);
 
-    /** Retrieve the plume height from a measurement using one scanning-instrument
-            with an given assumption of the wind-direction  */
-    static double GetPlumeHeight_OneInstrument(const novac::CGPSData source, const novac::CGPSData gps, double WindDirection, double alpha_center_of_mass, double phi_center_of_mass);
-
     /** Calculates the wind-direction for a scan, assuming that the plume originates
                 at the postition given in 'source' and that the centre of the plume is
                 at the scan angle 'plumeCentre' (in degrees). The height of the plume above

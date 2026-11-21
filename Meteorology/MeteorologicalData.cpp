@@ -33,11 +33,6 @@ int CMeteorologicalData::SetWindField(const CString& serialNumber, const CWindFi
     return 0;
 }
 
-void CMeteorologicalData::SetVolcanoes(const std::vector<CNamedLocation>& volcanoes)
-{
-    this->m_volcanoes = volcanoes;
-}
-
 int CMeteorologicalData::GetWindField(const CString& serialNumber, const CDateTime& dt, CWindField& windField)
 {
     int scannerIndex = -1;

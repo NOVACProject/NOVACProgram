@@ -191,30 +191,15 @@ public:
     /** Sets the color of the background grid */
     void SetGridColor(COLORREF color);
 
-    /** Retrieves the color of the background grid */
-    COLORREF GetGridColor();
-
     /** Sets the color with which the data is drawn. If the parameter 'clear' is
         set to true then the plot will be cleared, otherwise it will stay. */
     void SetPlotColor(COLORREF color, bool redraw = false);
 
-    /** Retrieves the color of the plot */
-    COLORREF GetPlotColor();
-
     /** Sets the color of the background */
     void SetBackgroundColor(COLORREF color);
 
-    /** Retrieves the color of the background */
-    COLORREF GetBackgroundColor();
-
     /** Sets the color for the circles */
     void SetCircleColor(COLORREF color, bool clear = false);
-
-    /** Increases the linewith when drawing lines. */
-    void IncreaseLineWidth();
-
-    /** Decreases the linewidth when drawing lines */
-    void DecreaseLineWidth();
 
     /** Sets the width of lines drawn */
     void SetLineWidth(int width, bool clear = false);
@@ -310,14 +295,6 @@ public:
         return XYPlot(x, y, color, nSum, plotOption | PLOT_CIRCLES);
     }
 
-    /** Prints out a string onto the plot.
-            The function generates a text-box into which the string will be
-                drawn centered using default font.   */
-    void DrawTextBox(double x_min, double x_max, double y_min, double y_max, CString& str);
-
-    /** Shades a filled square onto the plot */
-    void ShadeFilledSquare(double x_min, double x_max, double y_min, double y_max, double shade);
-
     /** Creates a bar chart with error bars,
             @param xPositions - the x-positions for each bar.
             @param yValues - the height of each bar
@@ -353,18 +330,6 @@ public:
             If xPositions is NULL then the bars will be drawn on 0, 1, 2, ...*/
     void BarChart2(double* xPositions, double* yValues1, double* yValues2, COLORREF color, int pointSum, int plotOption = 0);
 
-    /** Draws a vectorfield. The vector field is defined at the points
-        'x' and 'y'. The x-, and y-component of each vector is defined
-        in 'u', and 'v' respectively.
-        @param x - The x-coordinates where the vectorfield is defined
-        @param y - The y-coordinates where the vectorfield is defined
-        @param u - The x-component of the vector field
-        @param v - The y-component of the vector field        */
-    void DrawVectorField(double* start_x, double* start_y, double* x_comp, double* y_comp, int nSum);
-
-    /** Draws a small vector */
-    void DrawVector(double start_x, double start_y, double x_comp, double y_comp, bool invalidate = true);
-
     /** Clears the plot completely. */
     void CleanPlot();
 
@@ -389,9 +354,6 @@ public:
     /** Sets the range of both the X and Y-axes*/
     void SetRange(double dLeft, double dRight, int nXDecimal, double dLower, double dUpper, int nYDecimal);
 
-    /** Sets the range of both the second X and second Y-axes*/
-    void SetSecondRange(double dLeft, double dRight, int nXDecimal, double dLower, double dUpper, int nYDecimal);
-
     /** Sets the minimum range of the X-axis */
     void SetMinimumRangeX(double width)
     {
@@ -413,9 +375,6 @@ public:
     /** Sets the range for the second Y-axis */
     void SetSecondRangeY(double lower, double upper, int decimals, bool invalidate = true);
 
-    /** Sets the range for the second X-axis */
-    void SetSecondRangeX(double left, double right, int decimals, bool invalidate = true);
-
     /** Saves the current graph in a file using the supplied file-name */
     int SaveGraph(const CString& fileName);
 
@@ -428,9 +387,6 @@ protected:
 
     /** The number of decimals on the second y-axis */
     int m_nY2Decimals;
-
-    /** The number of decimals on the second x-axis */
-    int m_nX2Decimals;
 
     /** The position where the mouse-cursor is at the moment */
     CPoint m_cursorPosition;

@@ -47,6 +47,3 @@ public:
 /** Retrieves the index (in the CVolcanoInfo structure) of the volcano with the given name.
     Returns -1 if no volcano could be found. */
 int IndexOfVolcano(const std::string& volcanoName);
-
-/** Retrieves the information regarding the volcanoe with the given index */
-novac::CNamedLocation GetVolcano(unsigned int volcanoIndex);

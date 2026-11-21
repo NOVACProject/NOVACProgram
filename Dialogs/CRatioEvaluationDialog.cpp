@@ -375,7 +375,6 @@ void CRatioEvaluationDialog::UpdateStateWhileBackgroundProcessingIsRunning()
 
 LRESULT CRatioEvaluationDialog::OnBackgroundProcessingDone(WPARAM wParam, LPARAM /*lParam*/)
 {
-    m_backgroundProcessingThread = nullptr;
 
     // Re-enable the UI buttons
     UpdateStateWhileBackgroundProcessingIsRunning();
@@ -947,7 +946,7 @@ void CRatioEvaluationDialog::OnBnClickedRunEvaluationOnAllScans()
         processingSync->window = this->m_hWnd;
         processingSync->controller = this->m_controller;
         processingSync->evaluationIsRunning = &(this->m_backgroundProcessingIsRunning);
-        m_backgroundProcessingThread = AfxBeginThread(EvaluateAllScans, processingSync, THREAD_PRIORITY_NORMAL, 0, 0, NULL);
+        AfxBeginThread(EvaluateAllScans, processingSync, THREAD_PRIORITY_NORMAL, 0, 0, NULL);
     }
     catch (std::exception& ex)
     {

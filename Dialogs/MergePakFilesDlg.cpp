@@ -246,7 +246,6 @@ UINT MergePakFiles_Concatenate(LPVOID pParam)
     // Reading of the spectrum header
     const int HEADER_BUF_SIZE = 16384;
     char* spectrumHeader = (char*)calloc(HEADER_BUF_SIZE, sizeof(char)); // <-- the spectrum header, in binary format
-    int specHeaderSize = 0;
 
     Dialogs::CMergePakFilesDlg* dialog = (Dialogs::CMergePakFilesDlg*)pParam;
 
@@ -273,7 +272,6 @@ UINT MergePakFiles_Concatenate(LPVOID pParam)
     {
         CString& pakFile = dialog->m_pakFile.GetNext(pos); // <-- get the next .pak file in the list
 
-        int spectrumNum = 0; // <-- remember the spectrum we're at
 
         // Loop through all spectra in the file
         FILE* f = fopen(pakFile, "rb");

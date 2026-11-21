@@ -62,14 +62,6 @@ public:
         @return SUCCESS if the evaluation is sucessful */
     RETURN_CODE EvaluateScan(const CString& fileName, int volcanoIndex);
 
-    /** Evaluates a single spectrum in a scan-file. THIS FUNCTION ASSUMES
-        THAT THE FIRST SPECTRUM IN THE FILE IS THE SKY SPECTRUM, THE SECOND IS THE
-        DARK, AND THE INDEX IS A ZERO-BASED INDEX OF MEASURED SPECTRA (NOT INCLUDING SKY AND DARK)
-        @param fileName - The name of the pak-file in which the spectra are stored.
-        @param spectrumIndex - The spectrum to evaluate.
-        @return SUCCESS if the evaluation is sucessful */
-    RETURN_CODE EvaluateSpectrum(const CString& fileName, int spectrumIndex, CScanResult* result);
-
     /** Checks if this is a good time to initiate a special mode measurement
         for the given spectrometer.
         Special mode measurements are;
@@ -111,12 +103,6 @@ private:
 
     /** A common-object, for doing common tasks. */
     Common m_common;
-
-    /** Determines if the evaluation should be done in real-time or if we should
-        wait until a full scan has arrived. if m_realTime is true then the spectra will
-        be evaluated as they arrive, if m_realTime is false then they will not be evaluated
-        until a full scan has arrived. THIS IS NOT FULLY IMPLEMENTED YET. */
-    bool m_realTime;
 
     NovacProgramLog m_log;
 
@@ -209,9 +195,6 @@ private:
 
     /** Shows information about errors in identifying the spectrometer */
     void Output_SpectrometerNotIdentified();
-
-    /** Shows information about a fit failure */
-    void Output_FitFailure(const novac::CSpectrum& spec);
 
     /** Shows the information about a failure in the flux calculation */
     void Output_FluxFailure(const std::unique_ptr<CScanResult>& result, const CSpectrometer* spec);

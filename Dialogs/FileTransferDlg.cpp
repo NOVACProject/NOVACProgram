@@ -144,7 +144,6 @@ UINT DownloadFileWithSerial(LPVOID pParam)
     CFileTransferDlg* dlg = (CFileTransferDlg*)pParam;
     CString oldFullName, fileName, directory;
     char disk = dlg->m_diskName[0];
-    int curScanner = dlg->m_curScanner;
     char command[128];
     long fileSize;
 
@@ -277,7 +276,6 @@ UINT DownloadFolderWithSerial(LPVOID pParam)
     CString fileName, folderName;
     CString oldFullName, msg;
     char disk = dlg->m_diskName[0];
-    int curScanner = dlg->m_curScanner;
     char command[128];
     long fileSize;
 
@@ -525,7 +523,6 @@ UINT ViewFileBySerial(LPVOID pParam)
 {
     CString string, fileName, msg;
     long fileSize;
-    char* buffer = 0;
     char disk;
     CFileTransferDlg* dlg = (CFileTransferDlg*)pParam;
     //judge whether the file is  downloaded
@@ -869,7 +866,6 @@ UINT UploadFileWithSerial(LPVOID pParam)
     dlg->m_busy = true;
 
     // Set the settings for the serial controller
-    int curScanner = dlg->m_curScanner;
     dlg->m_SerialController->StartTx();
     if (dlg->m_SerialController->UploadFile(dlg->m_storagePath, dlg->m_remoteFileName, dlg->m_diskName[0]))
     {
@@ -985,7 +981,6 @@ BOOL CFileTransferDlg::OnInitDialog()
     m_ImageList.Add(&bm3, RGB(0, 0, 0));
     m_ImageList.Add(&bm4, RGB(0, 0, 0));
     m_ImageList.Add(&bm5, RGB(0, 0, 0));
-    int totalImg = m_ImageList.GetImageCount();
     m_fileTree.SetImageList(&m_ImageList, TVSIL_NORMAL);
 
     m_fileTree.parent = this;
@@ -1348,7 +1343,6 @@ void CFileTransferDlg::OnUploadFile()
 
 void CFileTransferDlg::OnTvnSelchangedFileTree(NMHDR* pNMHDR, LRESULT* pResult)
 {
-    LPNMTREEVIEW pNMTreeView = reinterpret_cast<LPNMTREEVIEW>(pNMHDR);
     // get the selected file name and its disk name
 
     HTREEITEM hSelItem, hRootItem, hParentItem;
@@ -1672,7 +1666,6 @@ int CFileTransferDlg::ParseDir(CString line, CList<CScannerFileInfo*, CScannerFi
     CString resToken, str, subToken;
     CString tmpStr;
     int curPos = 0;
-    int beginFlag = 0;
     int round = 0;
     int tokenLength = 0;
     int index;
@@ -1791,17 +1784,6 @@ void CFileTransferDlg::OnBnClickedBrowseButton()
     m_uploadFileEdit.SetWindowText(m_fileToUpload);
 }
 
-void CFileTransferDlg::EmptyFileArray()
-{
-    if (!m_fileListA.IsEmpty())
-    {
-        m_fileListA.RemoveAll();
-    }
-    if (!m_fileListB.IsEmpty())
-    {
-        m_fileListB.RemoveAll();
-    }
-}
 void CFileTransferDlg::OnBnClickedOk()
 {
     // TODO: Add your control notification handler code here

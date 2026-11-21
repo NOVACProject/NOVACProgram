@@ -166,7 +166,6 @@ void Dialogs::CReferencePlotDlg::OnSize(UINT nType, int cx, int cy)
     int margin = 5;    // the space between each plot
     int leftMargin = 25;  // the space to the left, for specie names
     int labelWidth = 10;  // the width of the labels
-    int titleBarHeight = 30; // the height of the title bar...
     int plotHeight = (cy - nReferences * margin) / nReferences; // the height of each graph
 
     // The width of each graph

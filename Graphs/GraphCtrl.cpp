@@ -28,7 +28,6 @@ CGraphCtrl::CGraphCtrl()
     m_nYDecimals = 3;
     m_nXDecimals = 1;
     m_nY2Decimals = 0;
-    m_nX2Decimals = 0;
 
     // The miminum values for the range
     m_axisOptions.minimumRangeX = 0;
@@ -228,46 +227,6 @@ void CGraphCtrl::SetCircleColor(COLORREF color, bool clear)
     }
 }
 
-COLORREF CGraphCtrl::GetGridColor()
-{
-    return m_colors.grid;
-}
-
-COLORREF CGraphCtrl::GetPlotColor()
-{
-    return m_colors.plot;
-}
-
-COLORREF CGraphCtrl::GetBackgroundColor()
-{
-    return m_colors.background;
-}
-
-
-void CGraphCtrl::IncreaseLineWidth()
-{
-    m_penPlot.DeleteObject();
-    m_penPlot.CreatePen(PS_SOLID, ++m_plotOptions.lineWidth, m_colors.plot);
-
-    // clear out the existing garbage, re-start with a clean plot
-    InvalidateCtrl();
-
-}  // IncreaseLineWidth
-
-void CGraphCtrl::DecreaseLineWidth()
-{
-    if (m_plotOptions.lineWidth == 0)
-    {
-        return;
-    }
-
-    m_penPlot.DeleteObject();
-    m_penPlot.CreatePen(PS_SOLID, --m_plotOptions.lineWidth, m_colors.plot);
-
-    // clear out the existing garbage, re-start with a clean plot
-    InvalidateCtrl();
-
-}  // DecreaseLineWidth
 
 void CGraphCtrl::SetLineWidth(int width, bool clear)
 {
@@ -583,8 +542,6 @@ void CGraphCtrl::XYPlot(double* xPosition, double* yPosition, double* color, dou
 
     // short hand notations
     const double left = (double)m_rectPlot.left;
-    const double right = (double)m_rectPlot.right;
-    const double top = (double)m_rectPlot.top;
     const double bottom = (double)m_rectPlot.bottom;
 
     // Prepare the coloring of the plot
@@ -828,79 +785,6 @@ void CGraphCtrl::CleanPlot()
     InvalidateCtrl();
 }
 
-/** Prints out a string onto the plot.
-        The function generates a text-box into which the string will be
-            drawn centered using default font.      */
-void CGraphCtrl::DrawTextBox(double x_min, double x_max, double y_min, double y_max, CString& str)
-{
-    CFont tmpFont, *oldFont;
-    double xFactor, yFactor, offsLeft, offsBottom;
-
-    // Transform the coordinates to pixels
-    GetTransform(offsLeft, offsBottom, xFactor, yFactor, m_axisOptions.first);
-
-    // The boundary for the Text-Box
-    RECT rect;
-    rect.left = (LONG)(m_rectPlot.left + (x_min - offsLeft) * xFactor);
-    rect.right = (LONG)(m_rectPlot.left + (x_max - offsLeft) * xFactor);
-    rect.top = (LONG)(m_rectPlot.bottom - (y_min - offsBottom) * yFactor);
-    rect.bottom = (LONG)(m_rectPlot.bottom - (y_max - offsBottom) * yFactor);
-
-    // The position...
-    int X, Y;
-    X = (int)(m_rectPlot.left + (x_min - offsLeft) * xFactor);
-    Y = (int)(m_rectPlot.bottom - (y_min - offsBottom) * yFactor);
-
-    // Create the font
-    tmpFont.CreateFont(m_axisOptions.axisFont.height, 0, 0, 0, m_axisOptions.axisFont.width,
-        FALSE, FALSE, 0, ANSI_CHARSET,
-        OUT_DEFAULT_PRECIS,
-        CLIP_DEFAULT_PRECIS,
-        DEFAULT_QUALITY,
-        DEFAULT_PITCH | FF_SWISS, "Arial");
-
-    // grab the new font
-    oldFont = m_dcPlot.SelectObject(&tmpFont);
-
-    m_dcPlot.SetTextColor(m_colors.plot);
-    m_dcPlot.SetBkColor(m_colors.background);
-    m_dcPlot.SetTextAlign(TA_CENTER | TA_BASELINE);
-    m_dcPlot.ExtTextOut((rect.right + rect.left) / 2, rect.top, ETO_CLIPPED, &rect, str, nullptr);
-
-    // restore the font
-    m_dcPlot.SelectObject(oldFont);
-}
-
-/** Draws a filled square onto the plot */
-void CGraphCtrl::ShadeFilledSquare(double x_min, double x_max, double y_min, double y_max, double shade)
-{
-    double xFactor, yFactor, offsLeft, offsBottom;
-    int i, j;
-
-    // Transform the coordinates to pixels
-    GetTransform(offsLeft, offsBottom, xFactor, yFactor, m_axisOptions.first);
-
-    // The boundary for the square
-    RECT rect;
-    rect.left = (LONG)(m_rectPlot.left + (x_min - offsLeft) * xFactor);
-    rect.right = (LONG)(m_rectPlot.left + (x_max - offsLeft) * xFactor);
-    rect.top = (LONG)(m_rectPlot.bottom - (y_min - offsBottom) * yFactor);
-    rect.bottom = (LONG)(m_rectPlot.bottom - (y_max - offsBottom) * yFactor);
-
-    COLORREF clr;
-    for (i = rect.left; i < rect.right; ++i)
-    {
-        for (j = rect.bottom; j < rect.top; ++j)
-        {
-            clr = m_dcPlot.GetPixel(i, j);
-            if (clr != m_colors.background)
-            {
-                clr = RGB(shade * GetRValue(clr), shade * GetGValue(clr), shade * GetBValue(clr));
-                m_dcPlot.SetPixel(i, j, clr);
-            }
-        }
-    }
-}
 void CGraphCtrl::BarChart(double* xPosition, double* yValues, int pointSum, int plotOption)
 {
     return BarChart(xPosition, yValues, nullptr, pointSum, plotOption);
@@ -1259,35 +1143,6 @@ void CGraphCtrl::BarChart2(double* xPosition, double* yValues1, double* yValues2
 }
 
 
-/** Draws a vectorfield. The vector field is defined at the points
-    'x' and 'y'. The x-, and y-component of each vector is defined
-    in 'u', and 'v' respectively.
-    @param x - The x-coordinates where the vectorfield is defined
-    @param y - The y-coordinates where the vectorfield is defined
-    @param u - The x-component of the vector field
-    @param v - The y-component of the vector field        */
-void CGraphCtrl::DrawVectorField(double* start_x, double* start_y, double* x_comp, double* y_comp, int nSum)
-{
-    int point;
-
-    // Draw each of the data points
-    for (point = 0; point < nSum; ++point)
-    {
-        DrawVector(start_x[point], start_y[point], x_comp[point], y_comp[point], false);
-    }
-
-    Invalidate(FALSE);
-}
-
-/** Draws a small vector */
-void CGraphCtrl::DrawVector(double start_x, double start_y, double x_comp, double y_comp, bool invalidate)
-{
-    double x[2] = { start_x, start_x + x_comp };
-    double y[2] = { start_y, start_y + y_comp };
-
-    XYPlot(x, y, 2, PLOT_FIXED_AXIS | PLOT_CONNECTED);
-}
-
 void CGraphCtrl::SetSecondYUnit(CString string)
 {
     m_strRightYUnit = string;
@@ -1582,30 +1437,6 @@ void CGraphCtrl::SetRangeY(double lower, double upper, int decimals, bool invali
     }
 }
 
-/** Sets the range of both the second X and second Y-axes*/
-void CGraphCtrl::SetSecondRange(double dLeft, double dRight, int nXDecimal, double dLower, double dUpper, int nYDecimal)
-{
-    if (m_axisOptions.second.equal)
-    {
-        double xRange = dRight - dLeft;
-        double yRange = dUpper - dLower;
-        if (xRange > yRange)
-        {
-            dLower -= (xRange - yRange) / 2;
-            dUpper += (xRange - yRange) / 2;
-        }
-        if (xRange < yRange)
-        {
-            dLeft -= (yRange - xRange) / 2;
-            dRight += (yRange - xRange) / 2;
-        }
-    }
-
-    SetSecondRangeX(dLeft, dRight, nXDecimal, false);
-    SetSecondRangeY(dLower, dUpper, nYDecimal, false);
-    InvalidateCtrl();
-}
-
 /** Sets the range for the second Y-axis */
 void CGraphCtrl::SetSecondRangeY(double lower, double upper, int decimals, bool invalidate)
 {
@@ -1613,19 +1444,6 @@ void CGraphCtrl::SetSecondRangeY(double lower, double upper, int decimals, bool 
     m_axisOptions.second.bottom = (double)lower;
     m_axisOptions.second.top = (double)upper;
     m_nY2Decimals = decimals;
-    if (invalidate)
-    {
-        InvalidateCtrl();
-    }
-}
-
-/** Sets the range for the second Y-axis */
-void CGraphCtrl::SetSecondRangeX(double left, double right, int decimals, bool invalidate)
-{
-    ASSERT(left < right);
-    m_axisOptions.second.left = (double)left;
-    m_axisOptions.second.right = (double)right;
-    m_nX2Decimals = decimals;
     if (invalidate)
     {
         InvalidateCtrl();

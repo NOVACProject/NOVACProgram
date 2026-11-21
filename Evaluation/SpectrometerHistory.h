@@ -48,10 +48,6 @@ public:
     *   @param calibration The resulting calibration. This will only copy out relevant information and not touch the pointer. */
     void AppendInstrumentCalibration(const novac::CDateTime& timeOfScan, const std::unique_ptr<novac::InstrumentCalibration>& calibration);
 
-    /** @return the number of seconds passed since the last scan arrived.
-        @return -1 if no scans has arrived */
-    int SecondsSinceLastScan() const;
-
     /** Returns the number of seconds passed since the last wind-measurement
             arrived. Return -1 if no wind-measurement has arrived */
     int SecondsSinceLastWindMeas() const;
@@ -68,12 +64,6 @@ public:
             starting of the scans that are collected today.
             Return -1 if no scans has arrived */
     double GetScanInterval();
-
-    /** Returns the range of zenith-angles for the last scan
-            (Normally these are from -90 to +90)
-            If no scan collected today has been received then alpha_min will be +999.0
-            and alpha_max will be -999.0 */
-    void GetAlphaRange(double& alpha_min, double& alpha_max);
 
     /** Returns the number of scans that are both:
             1) arrived from this spectrometer today AND

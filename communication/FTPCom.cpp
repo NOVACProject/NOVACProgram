@@ -288,7 +288,6 @@ bool CFTPCom::FindFile(const CString& fileName)
     BOOL result = finder.FindFile(_T(fileName));
     if (0 == result)
     {
-        DWORD retcode = GetLastError();
         //ShowMessage("Could not find remote file");
         return false;
     }
@@ -397,7 +396,6 @@ void CFTPCom::ReadResponse(CInternetFile* file)
         return;
     }
 
-    ULONGLONG a = file->GetLength();
     do
     {
         rd = file->Read(readBuf, 256);

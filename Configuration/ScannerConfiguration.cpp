@@ -353,8 +353,7 @@ void CScannerConfiguration::OnAddScanner()
 
     // 4b. Get the number of channels chosen
     int nChannels;
-    int sret = sscanf(channel, "%d", &nChannels);
-
+    sscanf(channel, "%d", &nChannels);
     // 5. Make a guess for the observatory name
     if (m_configuration->scannerNum >= 1)
     {

@@ -25,55 +25,6 @@ int CLogFileWriter::SetErrorLogFile(const CString& path, const CString& fileName
     return WriteToFile(str, ERROR_LOG, false);
 }
 
-int CLogFileWriter::SetResultLogFile(const CString& path, const CString& fileName, unsigned int resultLogFileNum)
-{
-    CString str;
-    if (resultLogFileNum > 1)
-    {
-        resultLogFileNum = 1;
-    }
-
-    int ret = CreateDirectoryStructure(path);
-    if (ret)
-    {
-        return 1; // error
-    }
-    m_resultFile[resultLogFileNum].Format("%s\\%s", (LPCSTR)path, (LPCSTR)fileName);
-
-    // try to open the file and make sure that the file can be written to
-    if (resultLogFileNum == 0)
-    {
-        GetHeaderString(str, RESULT_LOG1);
-        return WriteToFile(str, RESULT_LOG1, false);
-    }
-    else
-    {
-        GetHeaderString(str, RESULT_LOG2);
-        return WriteToFile(str, RESULT_LOG2, false);
-    }
-}
-
-/** Returns the name of the error log file */
-const CString& CLogFileWriter::GetErrorLogFile() const
-{
-    return m_errorFile;
-}
-
-/** Returns the name of the desired result log file */
-const CString& CLogFileWriter::GetResultLogFile(unsigned int resultLogFileNum) const
-{
-    if (resultLogFileNum < 0)
-    {
-        resultLogFileNum = 0;
-    }
-    if (resultLogFileNum >= 2)
-    {
-        resultLogFileNum = 1;
-    }
-
-    return m_resultFile[resultLogFileNum];
-}
-
 int CLogFileWriter::WriteErrorMessage(const CString& text) const
 {
     if (strlen(m_errorFile) == 0)
@@ -82,26 +33,6 @@ int CLogFileWriter::WriteErrorMessage(const CString& text) const
     }
 
     return WriteToFile(text, ERROR_LOG);
-}
-
-int CLogFileWriter::WriteResultMessage(const CString& text, unsigned int resultLogFileNum) const
-{
-    if ((strlen(m_resultFile[0]) == 0) && (resultLogFileNum == 0))
-    {
-        return 1;
-    }
-
-    if ((strlen(m_resultFile[1]) == 0) && (resultLogFileNum == 1))
-    {
-        return 1;
-    }
-
-    switch (resultLogFileNum)
-    {
-    case 0: return WriteToFile(text, RESULT_LOG1);
-    case 1: return WriteToFile(text, RESULT_LOG2);
-    }
-    return 1;
 }
 
 int CLogFileWriter::WriteToFile(const CString& str, const int file, bool timeStamp) const

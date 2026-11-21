@@ -28,11 +28,6 @@ void CNodeControlInfo::FillinNodeInfo(int mainIndex, DeviceMode mode, const CStr
     m_controlInfoArray.SetAtGrow(mainIndex, new CControlInfo(mainIndex, mode, spectrometerID, ""));
 }
 
-int CNodeControlInfo::GetNodeSum()
-{
-    return (int)m_controlInfoArray.GetCount();
-}
-
 DeviceMode CNodeControlInfo::GetNodeStatus(int mainIndex) const
 {
     if (mainIndex < 0 || mainIndex >= m_controlInfoArray.GetSize())

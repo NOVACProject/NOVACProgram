@@ -43,9 +43,6 @@ public:
     /** Saves the data in the dialog */
     afx_msg void SaveData();
 
-    /** Called when the user has changed between using angles or distances */
-    afx_msg void OnChangeAngleDistance();
-
 protected:
     /** the local copies of the settings */
     int automatic; // 0 or 1
@@ -62,11 +59,5 @@ protected:
 
     /** The edit-boxes on the screen */
     CEdit m_editDuration, m_editInterval, m_editMaxAngle, m_editStablePeriod, m_editMinPeakColumn, m_editMotorStepsComp;
-
-    // The special controls for the Heidelberg-instrument
-    CEdit m_editAngle, m_editDistance, m_editSwitchRange;
-    CButton m_radioAngle, m_radioDistance;
-    CButton m_useCalcWind;
-    CStatic m_labelDeg, m_labelMeters, m_frameDistance, m_labelSwitchRange;
 };
 }

@@ -46,9 +46,6 @@ public:
     */
     bool UploadFile(CString fileLocalPath);
 
-    /**delete a file in remote ftp server*/
-    bool DeleteFTPFile(CString fileName);
-
     /**Get file name from full file path
         @filePath - file's full path
     */
@@ -71,15 +68,9 @@ public:
         @return true if successful */
     bool Login(const CString& ftpServerIPOrHostName, const CString& userName, const CString& pwd, int ftpPort = 21);
 
-    /**Get system type*/
-    void GetSysType(CString& type);
-
     /** Enter one folder from the current working directory.
         @return true on success. */
     bool EnterFolder(const CString& folder);
-
-    /*Go to upper folder*/
-    bool GoToUpperFolder();
 
     /**Enter passive mode*/
     bool EnterPassiveMode();
@@ -99,23 +90,12 @@ public:
     /**List the files and other file information*/
     bool GetFileList();
 
-    /**Get the FTP server's features*/
-    bool GetServerFeature();
-
     /**Get the remote file size in FTP server,NOT FOR NOVAC SCANNER FTP SERVER
       @fileName - the remote file's name
       @return file size if successful,
       @return -1 if fails
     */
     long Size(CString& fileName);
-
-    /**Check whehter the remote file exists
-    *@remoteFileName - the remote file name
-    *@remoteDirectory - remote directory
-    *return true if exists
-    *return false if the file does not exist
-    */
-    bool CheckFileExistence(CString& remoteFileName, CString& remoteDirectory);
 
     /**Get FTP error code which is at the beginning of the reply
     *@ftpMsg- the mesage that the FTP server responses.
@@ -140,26 +120,12 @@ public:
 
     bool OpenFileHandle(CString& fileName);
 
-    /**Makes the given directory to be the current directory in the FTP server
-    *@directory the directory to be change to in the FTP server
-    */
-    bool SetCurrentFTPDirectory(CString& directory);
-
-    /**Get the current directory*/
-    bool GetCurrentFTPDirectory(CString& curDirectory);
-
     /**Get a string which is in one pair of seperator
     *@param line a string which includes the wanted part
     *@seperator one pair of seperators which keep the wanted part in the middle
     *for example, 220 xx "\" is the current. "\" is what we want
     */
     void GetCitedString(CString& line, CString& leftSeperator, CString& rightSeperator);
-
-    /**Create a directory in remote FTP server
-    *@param parenetDirectory parent directory name
-    *@param newDirectory new directory name
-    */
-    bool CreateFTPDirectory(CString& parentDirectory, CString& newDirectory);
 
     /**close socket*/
     int Disconnect();

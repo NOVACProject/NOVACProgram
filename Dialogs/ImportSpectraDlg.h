@@ -93,9 +93,6 @@ private:
     /** The import button */
     CButton m_importBtn;
 
-    /** The importing thread */
-    CWinThread* m_importThread;
-
     /** Browse for individual spectrum files to import */
     afx_msg void BrowseForSpectra();
 

@@ -159,7 +159,6 @@ void CReferenceFileControl::OnContextMenu(CWnd* pWnd, CPoint point)
     ASSERT(pPopup != nullptr);
 
     CCellRange cellRange = GetSelectedCellRange();
-    int minRow = cellRange.GetMinRow() - 1;
     int nRows = cellRange.GetRowSpan();
 
     if (nRows <= 0 && m_window->NumberOfReferences() > 1)

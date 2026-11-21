@@ -64,7 +64,6 @@ public:
     CStatic m_outputDirectory;
     CStatic m_startup;
     CStatic m_ftpUploadServer;
-    CStatic m_ftpURLLabel;
     CStatic m_ftpUserNameLabel;
     CStatic m_ftpPasswordLabel;
 
@@ -86,7 +85,5 @@ public:
     /** Controlling the behaviour of the local-directory edit */
     CEdit m_localDir;
 
-    /** Controlling the behaviour of the local/ftp radio-button */
-    int m_useLocalDirectory;
 };
 }

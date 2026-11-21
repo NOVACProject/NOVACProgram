@@ -582,12 +582,6 @@ const novac::CSpectrumInfo& CScanResult::GetSkySpectrumInfo() const
     return m_skySpecInfo;
 }
 
-/** Returns a reference to the spectrum info-structure of the dark-spectrum used */
-const novac::CSpectrumInfo& CScanResult::GetDarkSpectrumInfo() const
-{
-    return m_darkSpecInfo;
-}
-
 
 /** Assignment operator */
 CScanResult& CScanResult::operator=(const CScanResult& s2)
@@ -747,18 +741,6 @@ double CScanResult::GetPitch() const
 
     const novac::CSpectrumInfo& info = m_specInfo.at(0);
     return info.m_pitch;
-}
-
-/** Returns the roll of the scanning instrument */
-double CScanResult::GetRoll() const
-{
-    if (m_specNum == 0)
-    {
-        return 90.0;
-    }
-
-    const novac::CSpectrumInfo& info = m_specInfo.at(0);
-    return info.m_roll;
 }
 
 /** Returns the name of the requested spectrum */

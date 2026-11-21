@@ -64,8 +64,6 @@ private:
 
     CComboBox m_spectrometerModelCombo;
 
-    int m_currentlyDisplayedSpectrumIdx; // For the display of the spectrum. this is the index of the spectrum in the .pak file currently displayed.
-
     /** Retrieves the full file name and path of the currently selected .pak file
         Returns empty string if no file is selected. */
     std::string GetCurrentlySelectedPakFile() const;

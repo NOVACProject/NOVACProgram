@@ -1063,6 +1063,6 @@ void DDX_Text_Formatted(CDataExchange* pDX, int nIDC, double& value, LPCTSTR lps
 
     if (pDX->m_bSaveAndValidate)
     {
-        int ret = sscanf(temp, lpszInFormat, &value);
+        sscanf(temp, lpszInFormat, &value);
     }
 }

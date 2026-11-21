@@ -461,53 +461,6 @@ bool Common::BrowseForDirectory(CString& folderName)
     }
 }
 
-std::vector<std::string> Common::ListFilesInDirectory(const char* directory, const char* fileNameFilter)
-{
-    std::vector<std::string> result;
-
-    char searchPattern[MAX_PATH];
-    if (fileNameFilter == nullptr)
-    {
-        sprintf(searchPattern, "%s*", directory);
-    }
-    else
-    {
-        sprintf(searchPattern, "%s%s", directory, fileNameFilter);
-    }
-
-    WIN32_FIND_DATA FindFileData;
-    HANDLE hFile = FindFirstFile(searchPattern, &FindFileData);
-
-    if (hFile == INVALID_HANDLE_VALUE)
-    {
-        return result; // no files found
-    }
-
-    do
-    {
-        if (Equals(FindFileData.cFileName, ".") || Equals(FindFileData.cFileName, ".."))
-        {
-            continue;
-        }
-
-        if (FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-        {
-            // This is a directory that we've found. Skip
-        }
-        else
-        {
-            // Get the full name of the file that we've just found...
-            CString fileName;
-            fileName.Format("%s%s", directory, FindFileData.cFileName);
-            result.push_back(std::string(fileName));
-        }
-    } while (0 != FindNextFile(hFile, &FindFileData));
-
-    FindClose(hFile);
-
-    return result;
-}
-
 /* pretty prints the current date into the string 'txt' */
 void Common::GetDateText(CString& txt)
 {
@@ -793,7 +746,7 @@ const CString& Common::GetString(const UINT uID)
     index += 1;
     index %= 3;
 
-    int ret = m_string[index].LoadString(uID);
+    m_string[index].LoadString(uID);
     return m_string[index];
 }
 
@@ -1094,55 +1047,6 @@ void Common::GuessSpecieName(const CString& fileName, CString& specie)
 }
 
 
-int Common::CheckProcessExistance(CString& exeName, int pid)
-{
-    int ret;
-    CString processPath;
-    DWORD processid[1024], needed, processcount, i;
-    HMODULE hModule;
-    char path[MAX_PATH] = "";
-
-    EnumProcesses(processid, sizeof(processid), &needed);
-    processcount = needed / sizeof(DWORD);
-    for (i = 0; i < processcount; i++)
-    {
-        HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, false, processid[i]);
-        if (hProcess)
-        {
-            EnumProcessModules(hProcess, &hModule, sizeof(hModule), &needed);
-            GetModuleFileNameEx(hProcess, hModule, path, sizeof(path));
-            processPath.Format("%s", path);
-            GetFileName(processPath);
-            ret = processPath.Compare(exeName); //compare exe name and the process name
-            if (ret == 0) // names are same
-            {
-                if (pid != -1)
-                {
-                    if (processid[i] == pid)  //compare process id
-                    {
-                        CloseHandle(hProcess);
-                        return processid[i];
-                    }
-                    else
-                    {
-                        continue;
-                    }
-                }
-                else
-                {
-                    //MessageBox(NULL,"find txzm","notice",MB_OK);
-                    CloseHandle(hProcess);
-                    return processid[i];
-                }
-            }
-            CloseHandle(hProcess);
-        }
-    }
-
-    //MessageBox(NULL,"CAN NOT find txzm","notice",MB_OK);
-    return -1;
-}
-
 /** Get all Process-ID's running with a given executable-name
     @param exeName - the name of the executable (e.g. "txzm.exe")
     @param startPid - the function will search for processes with a
@@ -1191,111 +1095,6 @@ int Common::GetAllProcessIDs(CString& exeName, int pIDs[1024], int startPid)
     }
 
     return nPIDsFound;
-}
-
-BOOL WINAPI Common::KillProcess(IN DWORD dwProcessId)
-{
-    HANDLE hProcess;
-    DWORD dwError;
-
-    // first try to obtain handle to the process without the use of any
-    // additional privileges
-    hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, dwProcessId);
-    if (hProcess == NULL)
-    {
-        if (GetLastError() != ERROR_ACCESS_DENIED)
-        {
-            return FALSE;
-        }
-
-        //OSVERSIONINFO osvi;
-
-        // determine operating system version
-        //osvi.dwOSVersionInfoSize = sizeof(osvi);
-        //GetVersionEx(&osvi);
-
-        // we cannot do anything else if this is not Windows NT
-        //if (osvi.dwPlatformId != VER_PLATFORM_WIN32_NT)
-        if (!IsWindowsXPOrGreater())
-        {
-            MessageBox(NULL, "You need at least Windows XP", "Version Not Supported", MB_OK);
-            return SetLastError(ERROR_ACCESS_DENIED), FALSE;
-        }
-
-        // enable SE_DEBUG_NAME privilege and try again
-
-        TOKEN_PRIVILEGES Priv, PrivOld;
-        DWORD cbPriv = sizeof(PrivOld);
-        HANDLE hToken;
-
-        // obtain the token of the current thread
-        if (!OpenThreadToken(GetCurrentThread(),
-                TOKEN_QUERY | TOKEN_ADJUST_PRIVILEGES,
-                FALSE, &hToken))
-        {
-            if (GetLastError() != ERROR_NO_TOKEN)
-            {
-                return FALSE;
-            }
-
-            // revert to the process token
-            if (!OpenProcessToken(GetCurrentProcess(),
-                    TOKEN_QUERY | TOKEN_ADJUST_PRIVILEGES,
-                    &hToken))
-            {
-                return FALSE;
-            }
-        }
-
-        _ASSERTE(ANYSIZE_ARRAY > 0);
-
-        Priv.PrivilegeCount = 1;
-        Priv.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
-        LookupPrivilegeValue(NULL, SE_DEBUG_NAME, &Priv.Privileges[0].Luid);
-
-        // try to enable the privilege
-        if (!AdjustTokenPrivileges(hToken, FALSE, &Priv, sizeof(Priv), &PrivOld, &cbPriv))
-        {
-            dwError = GetLastError();
-            CloseHandle(hToken);
-            return SetLastError(dwError), FALSE;
-        }
-
-        if (GetLastError() == ERROR_NOT_ALL_ASSIGNED)
-        {
-            // the SE_DEBUG_NAME privilege is not present in the caller's
-            // token
-            CloseHandle(hToken);
-            return SetLastError(ERROR_ACCESS_DENIED), FALSE;
-        }
-
-        // try to open process handle again
-        hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, dwProcessId);
-        dwError = GetLastError();
-
-        // restore the original state of the privilege
-        AdjustTokenPrivileges(hToken, FALSE, &PrivOld, sizeof(PrivOld),
-            NULL, NULL);
-        CloseHandle(hToken);
-
-        if (hProcess == NULL)
-        {
-            return SetLastError(FALSE), NULL;
-        }
-    }
-
-    // terminate the process
-    if (!TerminateProcess(hProcess, (UINT)-1))
-    {
-        dwError = GetLastError();
-        CloseHandle(hProcess);
-        return SetLastError(dwError), FALSE;
-    }
-
-    CloseHandle(hProcess);
-
-    // completed successfully
-    return TRUE;
 }
 
 void Common::GetFileName(CString& fileName)

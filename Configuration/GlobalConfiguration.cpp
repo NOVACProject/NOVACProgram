@@ -14,7 +14,6 @@ IMPLEMENT_DYNAMIC(CGlobalConfiguration, CPropertyPage)
 CGlobalConfiguration::CGlobalConfiguration()
     : CPropertyPage(CGlobalConfiguration::IDD)
 {
-    m_useLocalDirectory = 0;
 }
 
 CGlobalConfiguration::~CGlobalConfiguration()
@@ -170,7 +169,6 @@ BOOL ConfigurationDialog::CGlobalConfiguration::OnInitDialog()
     }
 
     // Select the 'local' - directory
-    m_useLocalDirectory = 0;
 
     // Setup the tool tips
     InitToolTips();

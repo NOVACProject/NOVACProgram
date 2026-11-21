@@ -186,8 +186,6 @@ void CSpectrumGraph::DrawShadedRect(double lat1, double lon1, double lat2, doubl
     double xFactor, yFactor, offsLeft, offsBottom;
     int curX, curY, prevX, prevY;
     double left = (double)m_rectPlot.left;
-    double right = (double)m_rectPlot.right;
-    double top = (double)m_rectPlot.top;
     double bottom = (double)m_rectPlot.bottom;
     AxisOptions::FloatRect curAxis; // The current axis (either first or second axis)
     int i;

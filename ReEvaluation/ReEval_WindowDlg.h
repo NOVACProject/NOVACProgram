@@ -38,9 +38,6 @@ private:
     /** The fit window list */
     CFitWindowListBox m_windowList;
 
-    /** The electronic combo-box */
-    CComboBox m_electronicCombo;
-
     /** The frame for defining the size of the reference file control */
     CStatic m_referenceFrame;
 

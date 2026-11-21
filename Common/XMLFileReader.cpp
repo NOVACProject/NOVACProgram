@@ -167,33 +167,6 @@ int CXMLFileReader::Parse_IntItem(const CString& label, int& number)
     return 0;
 }
 
-int CXMLFileReader::Parse_IPNumber(const CString& label, BYTE& ip0, BYTE& ip1, BYTE& ip2, BYTE& ip3)
-{
-    while (szToken = NextToken())
-    {
-        int i0, i1, i2, i3;
-
-        if (Equals(szToken, label))
-        {
-            return 1;
-        }
-
-        if (sscanf(szToken, "%d.%d.%d.%d", &i0, &i1, &i2, &i3) == 4)
-        {
-            ip0 = BYTE(std::max(0, std::min(255, i0)));
-            ip1 = BYTE(std::max(0, std::min(255, i1)));
-            ip2 = BYTE(std::max(0, std::min(255, i2)));
-            ip3 = BYTE(std::max(0, std::min(255, i3)));
-        }
-        else
-        {
-            return 1;
-        }
-    }
-
-    return 0;
-}
-
 std::string CXMLFileReader::ParseAttribute(std::string token, std::string attributeName)
 {
     const size_t attributeStartPosition = token.find(attributeName);

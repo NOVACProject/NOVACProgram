@@ -35,47 +35,6 @@ void CLinkStatistics::Clear()
     this->m_uploads.RemoveAll();
 }
 
-// -------------------- Retrieving data -----------------------
-/** Getting the successrate for the number of downloads.
-        @return the portion of number of attempts to download files
-            that have succeeded (0 -> 1) */
-double CLinkStatistics::GetDownloadSuccessRate() const
-{
-    return GetSuccessRate(m_downloads);
-}
-
-/** Getting the average download speed for this link [kb/s] */
-double CLinkStatistics::GetAveragedDownloadSpeed() const
-{
-    return GetAverageSpeed(m_downloads);
-}
-
-/** Returns the number of successful downloads today on this link */
-long CLinkStatistics::GetDownloadNum() const
-{
-    return GetSuccessfulNum(m_downloads);
-}
-
-/** Getting the successrate for the number of uploads
-        @return the portion of number of attempts to upload files
-            that have succeeded (0 -> 1) */
-double CLinkStatistics::GetUploadSuccessRate() const
-{
-    return GetSuccessRate(m_uploads);
-}
-
-/** Getting the average upload speed for this link [kb/s] */
-double CLinkStatistics::GetAveragedUploadSpeed() const
-{
-    return GetAverageSpeed(m_uploads);
-}
-
-/** Returns the number of successful uploads today on this link */
-long CLinkStatistics::GetUploadNum() const
-{
-    return GetSuccessfulNum(m_uploads);
-}
-
 // ----------------------- Adding data -------------------------
 /** Append one download-speed to the history,
         this will also append one successfull download to the statistics */
@@ -148,36 +107,6 @@ void CLinkStatistics::TrimLists()
     }
 }
 
-/** Retrieves the success-rate from the given list */
-double CLinkStatistics::GetSuccessRate(const CList<CTransferInfo, CTransferInfo&>& list) const
-{
-    long nSuccess = 0;
-    long nFailure = 0;
-
-    POSITION pos = list.GetHeadPosition();
-    while (pos != NULL)
-    {
-        const CTransferInfo& info = list.GetNext(pos);
-
-        if (info.success)
-        {
-            ++nSuccess;
-        }
-        else
-        {
-            ++nFailure;
-        }
-    }
-
-    // If there were no transfers, then return 0
-    if (nSuccess == 0 && nFailure == 0)
-    {
-        return 0.0;
-    }
-
-    return nSuccess / (double)(nSuccess + nFailure);
-}
-
 /** Appends the given data-speed to the given list */
 void CLinkStatistics::AppendSuccessfulTransfer(double speed, CList<CTransferInfo, CTransferInfo&>& list)
 {
@@ -230,42 +159,3 @@ void CLinkStatistics::AppendFailedTransfer(CList<CTransferInfo, CTransferInfo&>&
     return;
 }
 
-/** Gets the average speed from the given list */
-double CLinkStatistics::GetAverageSpeed(const CList<CTransferInfo, CTransferInfo&>& list) const
-{
-    double avgSpeed = 0.0;
-    long nTransfers = 0;
-
-    POSITION pos = list.GetHeadPosition();
-    while (pos != NULL)
-    {
-        const CTransferInfo& info = list.GetNext(pos);
-
-        if (info.success && info.speed > 0)
-        {
-            ++nTransfers;
-            avgSpeed += info.speed;
-        }
-    }
-
-    return (avgSpeed / (double)nTransfers);
-}
-
-/** Returns the number of successful transfers today on this link */
-long CLinkStatistics::GetSuccessfulNum(const CList<CTransferInfo, CTransferInfo&>& list) const
-{
-    long nSuccess = 0;
-
-    POSITION pos = list.GetHeadPosition();
-    while (pos != NULL)
-    {
-        const CTransferInfo& info = list.GetNext(pos);
-
-        if (info.success)
-        {
-            ++nSuccess;
-        }
-    }
-
-    return nSuccess;
-}

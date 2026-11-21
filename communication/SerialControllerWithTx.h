@@ -139,15 +139,6 @@ public:
     /**get file  size  from list*/
     long GetListFileSize(char* fileName);
 
-    /**get file size from the "dir" result
-    *@param fileName file name
-    *@param string the string to be parsed
-    */
-    long ParseFileSize(CString& fileName, char* string);
-
-    /**reboot the remote pc*/
-    bool Reboot();
-
     RETURN_CODE Test();
 
     /**Start */
@@ -187,11 +178,6 @@ public:
     */
     bool PutFile(char* name, CString fileFullPath, char diskName);
 
-    /**execute remote command
-    *@param cmd command in remote PC
-    */
-    void ExecuteCommand(char* cmd);
-
     /**delete file in remote PC
     *@param fileName the name of the file in the remote PC, such as cfg.txt
     */
@@ -229,21 +215,12 @@ public:
     */
     int GetOldPakList(CString folderName);
 
-    /**check whether kongo is running*/
-    bool IsKongoRunning();
-
     bool UploadFile(CString localPath, char* fileName, char diskName);
 
     bool DownloadSpectra(char* pakFileName);
 
     bool GetFileListText(CString& textA, CString& textB);
     bool GetFileListText_Folder(CString& folderName, CString& text);
-
-    /**backup method when gps receiver stops working*/
-    void SetRemotePCTime();
-
-    /**get file list*/
-    bool CreatePakFileList();
 
     /**download Uxxx.pak file
     **@param folderName - the folder where files are
@@ -283,12 +260,6 @@ public:
 
     /**directory to store downloaded files*/
     CString m_storageDirectory;
-
-    /**downloading interval in configuration.xml*/
-    long m_interval;
-
-    /** flag of the command mode in the remote PC */
-    bool m_commandMode;
 
     /** The timeout of the connection. Configured through configuration.xml */
     int m_timeout;

@@ -366,7 +366,6 @@ public:
     {
     public:
         CFTPSetting();
-        void SetFTPStatus(int status);
         CString ftpAddress;     // the name of the FTP-server
         int port;               // FTP port, in case not default
         CString userName;       // the user name at the FTP-server
@@ -446,13 +445,6 @@ public:
     /** The settings for retrieving the wind-field from external sources */
     CWindFieldDataSettings windSourceSettings;
 };
-
-// ---------------------------------------------------------------------------------------------------------
-// --------------------------- Free functions working on the settings --------------------------------------
-// ---------------------------------------------------------------------------------------------------------
-
-/** Lists the name of all volcanoes monitored by instruments connected to this computer. */
-std::vector<std::string> ListMonitoredVolcanoes(const CConfigurationSetting& settings);
 
 /** Identifies the spectrometer with the provided serial in the current settings.
     The returned scannerIdx and spectrometerIdx identifies the found spectrometer.

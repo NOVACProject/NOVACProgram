@@ -230,7 +230,6 @@ int CEvaluatedDataStorage::AddData(const CString& serial, Evaluation::CScanResul
             continue;
         }
 
-        int nSpec = max(1, result->GetSpecNum(i));
 
         // All seems ok
         int time = 0;
@@ -385,43 +384,6 @@ int CEvaluatedDataStorage::AddWindData(const CString& serial, WindSpeedMeasureme
     return 0;
 }
 
-
-/** Returns the smallest and the largest flux in the data bank */
-void CEvaluatedDataStorage::GetFluxRange(const CString& serial, double& minFlux, double& maxFlux)
-{
-    // get the scanner index
-    int scannerIndex = GetScannerIndex(serial);
-    if (scannerIndex < 0)
-    {
-        minFlux = maxFlux = 0;
-        return;
-    }
-
-    // The unit conversion
-    double unitConversionFactor = 1.0;
-    if (g_userSettings.m_fluxUnit == UNIT_KGS)
-    {
-        unitConversionFactor = 1.0;
-    }
-    else if (g_userSettings.m_fluxUnit == UNIT_TONDAY)
-    {
-        unitConversionFactor = 3.6 * 24.0;
-    }
-
-    // find the maximum flux
-    maxFlux = m_data[scannerIndex][0].m_flux;
-    minFlux = m_data[scannerIndex][0].m_flux;
-
-    for (int i = 0; i < m_fluxIndex[scannerIndex]; ++i)
-    {
-        maxFlux = max(maxFlux, m_data[scannerIndex][i].m_flux);
-        minFlux = min(minFlux, m_data[scannerIndex][i].m_flux);
-    }
-
-    // convert to the correct unit
-    minFlux *= unitConversionFactor;
-    maxFlux *= unitConversionFactor;
-}
 
 /** Returns the smallest and the largest columns in the data bank */
 void CEvaluatedDataStorage::GetColumnRange(const CString& serial, double& minColumn, double& maxColumn, bool fullDay)
@@ -1252,70 +1214,6 @@ long CEvaluatedDataStorage::GetExposureTimeData(const CString& serial, double* t
 }
 
 
-/** Gets the lowest recorded temperature for the given spectrometer */
-double CEvaluatedDataStorage::GetMinTemperature(const CString& serial)
-{
-    int scannerIndex = GetScannerIndex(serial);
-    if (scannerIndex < 0)
-    {
-        return -1;
-    }
-
-    return m_temperatureRange[0][scannerIndex];
-}
-
-/** Gets the highest recorded temperature for the given spectrometer */
-double CEvaluatedDataStorage::GetMaxTemperature(const CString& serial)
-{
-    int scannerIndex = GetScannerIndex(serial);
-    if (scannerIndex < 0)
-    {
-        return -1;
-    }
-
-    return m_temperatureRange[1][scannerIndex];
-}
-
-
-/** Gets the lowest recorded battery voltage for the given spectrometer */
-double CEvaluatedDataStorage::GetMinBatteryVoltage(const CString& serial)
-{
-    int scannerIndex = GetScannerIndex(serial);
-    if (scannerIndex < 0)
-    {
-        return -1;
-    }
-
-    double minVoltage = 999;
-    for (int i = 0; i < m_fluxIndex[scannerIndex]; ++i)
-    {
-        if (m_data[scannerIndex][i].m_battery > -990)
-        {
-            minVoltage = min(minVoltage, m_data[scannerIndex][i].m_battery);
-        }
-    }
-    return minVoltage;
-}
-
-/** Gets the highest recorded battery voltage for the given spectrometer */
-double CEvaluatedDataStorage::GetMaxBatteryVoltage(const CString& serial)
-{
-    int scannerIndex = GetScannerIndex(serial);
-    if (scannerIndex < 0)
-    {
-        return -1;
-    }
-
-    double maxVoltage = -999;
-    for (int i = 0; i < m_fluxIndex[scannerIndex]; ++i)
-    {
-        if (m_data[scannerIndex][i].m_battery < 1000)
-        {
-            maxVoltage = max(maxVoltage, m_data[scannerIndex][i].m_battery);
-        }
-    }
-    return maxVoltage;
-}
 
 
 /** Returns the spectrometer index given a serial number */

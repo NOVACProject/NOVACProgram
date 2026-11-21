@@ -751,15 +751,6 @@ void CFTPHandler::WakeUp()
     }
 }
 
-void CFTPHandler::Reboot()
-{
-    if (!DeleteRemoteFile(m_commandFileName))
-    {
-        //      ShowMessage("Remote File command.txt could not be removed");
-    }
-    SendCommand("reboot");
-}
-
 int CFTPHandler::DownloadCfgTxt()
 {
     CString localFileName;
