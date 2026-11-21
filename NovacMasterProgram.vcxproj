@@ -1019,7 +1019,6 @@ copy "$(SolutionDir)External\curl-7.74.0-win32-mingw\bin\libcrypto-1_1.dll" "$(S
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Spectra\SpectrometerModel.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Spectra\Spectrum.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Spectra\SpectrumInfo.h" />
-    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Spectra\WavelengthCalibration.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\StringUtils.h" />
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\VectorUtils.h" />
     <ClInclude Include="StatusFileReader.h" />
