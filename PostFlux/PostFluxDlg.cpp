@@ -19,6 +19,7 @@ extern CVolcanoInfo g_volcanoes;           // The global list of volcanoes in th
 extern CUserSettings g_userSettings;       // <-- The users preferences
 
 using namespace novac;
+using namespace PostFlux;
 
 // CPostFluxDlg dialog
 

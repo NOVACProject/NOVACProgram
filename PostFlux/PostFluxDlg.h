@@ -10,8 +10,6 @@
 
 // CPostFluxDlg dialog
 
-using namespace PostFlux;
-
 class CPostFluxDlg : public CDialog
 {
     DECLARE_DYNAMIC(CPostFluxDlg)
@@ -103,7 +101,7 @@ public:
     // ------------------- DATA -------------------------
 
     /** The post flux calculator */
-    CPostFluxCalculator* m_calculator;
+    PostFlux::CPostFluxCalculator* m_calculator;
 
     /** The windfield to use */
     CWindField m_windField;
