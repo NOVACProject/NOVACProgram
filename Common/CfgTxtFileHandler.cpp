@@ -112,68 +112,68 @@ int CCfgTxtFileHandler::ReadCfgTxt(const CString& fileName)
             if (pt = strstr(txt, "DELAY="))
             {
                 pt = strstr(txt, "=");
-                int ret = sscanf(&pt[1], "%d", &m_motorDelay);
+                sscanf(&pt[1], "%d", &m_motorDelay);
             }
 
             if (pt = strstr(txt, "SKIPMOTOR="))
             {
                 pt = strstr(txt, "=");
-                int ret = sscanf(&pt[1], "%d", &m_motorSkip);
+                sscanf(&pt[1], "%d", &m_motorSkip);
             }
 
             // 2. Parse the channel-settings
             if (pt = strstr(txt, "STARTCHN="))
             {
                 pt = strstr(txt, "=");
-                int ret = sscanf(&pt[1], "%d", &m_startChn);
+                sscanf(&pt[1], "%d", &m_startChn);
             }
             if (pt = strstr(txt, "STOPCHN="))
             {
                 pt = strstr(txt, "=");
-                int ret = sscanf(&pt[1], "%d", &m_stopChn);
+                sscanf(&pt[1], "%d", &m_stopChn);
             }
 
             // 3. Parse the exposure-time settings
             if (pt = strstr(txt, "PERCENT="))
             {
                 pt = strstr(txt, "=");
-                int ret = sscanf(&pt[1], "%lf", &m_percent);
+                sscanf(&pt[1], "%lf", &m_percent);
             }
             if (pt = strstr(txt, "MAXINTTIME="))
             {
                 pt = strstr(txt, "=");
-                int ret = sscanf(&pt[1], "%d", &m_maxIntTime);
+                sscanf(&pt[1], "%d", &m_maxIntTime);
             }
             if (pt = strstr(txt, "MININTTIME="))
             {
                 pt = strstr(txt, "=");
-                int ret = sscanf(&pt[1], "%d", &m_minIntTime);
+                sscanf(&pt[1], "%d", &m_minIntTime);
             }
 
             // 4. Parse the stratospheric-measurement settings
             if (pt = strstr(txt, "STRATOANGLE="))
             {
                 pt = strstr(txt, "=");
-                int ret = sscanf(&pt[1], "%d", &m_stratoAngle);
+                sscanf(&pt[1], "%d", &m_stratoAngle);
             }
 
             // 5. Parse the energy-options...
             if (pt = strstr(txt, "POWERSAVE="))
             {
                 pt = strstr(txt, "=");
-                int ret = sscanf(&pt[1], "%d", &m_powerSave);
+                sscanf(&pt[1], "%d", &m_powerSave);
             }
             if (pt = strstr(txt, "BATTERYLIMIT="))
             {
                 pt = strstr(txt, "=");
-                int ret = sscanf(&pt[1], "%lf", &m_batteryLimit);
+                sscanf(&pt[1], "%lf", &m_batteryLimit);
             }
 
             // 6. Parse the FTP-server settings...
             if (pt = strstr(txt, "FTPTIMEOUT="))
             {
                 pt = strstr(txt, "=");
-                int ret = sscanf(&pt[1], "%d", &m_ftpServerTimeOut);
+                sscanf(&pt[1], "%d", &m_ftpServerTimeOut);
             }
             if (pt = strstr(txt, "SERVER="))
             {
@@ -198,7 +198,7 @@ int CCfgTxtFileHandler::ReadCfgTxt(const CString& fileName)
                 pt = strstr(txt, "=");
                 if (pt)
                 {
-                    int ret = sscanf(&pt[1], "%lf", &m_coneAngle);
+                    sscanf(&pt[1], "%lf", &m_coneAngle);
                 }
             }
             if (pt = strstr(txt, "COMPASS="))
@@ -206,7 +206,7 @@ int CCfgTxtFileHandler::ReadCfgTxt(const CString& fileName)
                 pt = strstr(txt, "=");
                 if (pt)
                 {
-                    int ret = sscanf(&pt[1], "%lf %lf %lf", &m_compass, &m_tiltX, &m_tiltY);
+                    sscanf(&pt[1], "%lf %lf %lf", &m_compass, &m_tiltX, &m_tiltY);
                 }
             }
 
@@ -245,9 +245,3 @@ int CCfgTxtFileHandler::ReadCfgTxt(const CString& fileName)
     return 1;
 }
 
-/** Writes a cfg.txt - file. */
-int CCfgTxtFileHandler::WriteCfgTxt(const CString& fileName)
-{
-
-    return 0;
-}

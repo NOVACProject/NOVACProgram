@@ -177,21 +177,3 @@ void CWindConfigurationDlg::SaveData()
     }
 }
 
-/** Called when the user has changed between using angles or distances */
-void CWindConfigurationDlg::OnChangeAngleDistance()
-{
-    if (UpdateData(TRUE))
-    {
-        // <-- first save the data in the dialog
-        if (useAngle == 0)
-        {
-            m_editAngle.EnableWindow(TRUE);
-            m_editDistance.EnableWindow(FALSE);
-        }
-        else
-        {
-            m_editAngle.EnableWindow(FALSE);
-            m_editDistance.EnableWindow(TRUE);
-        }
-    }
-}

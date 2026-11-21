@@ -1520,7 +1520,7 @@ int CConfigurationFileHandler::Parse_ShiftOrSqueeze(const CString& label, novac:
 
         if (pt = strstr(szToken, "fix to"))
         {
-            int ret = sscanf(szToken, "fix to %lf", &lowValue);
+            sscanf(szToken, "fix to %lf", &lowValue);
             option = novac::SHIFT_TYPE::SHIFT_FIX;
         }
         else if (pt = strstr(szToken, "free"))
@@ -1529,12 +1529,12 @@ int CConfigurationFileHandler::Parse_ShiftOrSqueeze(const CString& label, novac:
         }
         else if (pt = strstr(szToken, "limit"))
         {
-            int ret = sscanf(szToken, "limit from %lf to %lf", &lowValue, &highValue);
+            sscanf(szToken, "limit from %lf to %lf", &lowValue, &highValue);
             option = novac::SHIFT_TYPE::SHIFT_LIMIT;
         }
         else if (pt = strstr(szToken, "link"))
         {
-            int ret = sscanf(szToken, "link %lf", &lowValue);
+            sscanf(szToken, "link %lf", &lowValue);
             option = novac::SHIFT_TYPE::SHIFT_LINK;
         }
     }

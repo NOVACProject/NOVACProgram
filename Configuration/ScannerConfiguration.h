@@ -46,17 +46,11 @@ private:
     /** the evaluation configuration */
     CEvaluationConfigurationDlg m_pageEvaluation[MAX_CHANNEL_NUM];
 
-    /** The dark configuration */
-    CDarkConfigurationDlg m_pageDark;
-
     /** the automatic wind speed measurements page */
     CWindConfigurationDlg m_pageWind;
 
     /** Setting up automatic instrument calibration */
     CCalibrationConfigurationDlg m_pageCalibration;
-
-    /** the advanced settings for the Version-II instrument */
-    CVIIAdvancedConfigurationDlg m_pageVII;
 
     /** The communication configuration */
     CConfigureCOMPortDlg m_pageCommunication;

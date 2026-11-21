@@ -54,7 +54,6 @@ END_MESSAGE_MAP()
 CEvaluationController::CEvaluationController(void)
 {
     m_fluxSpecie = "SO2";
-    m_realTime = false;
     m_date[0] = m_date[1] = m_date[2] = 0;
 }
 
@@ -221,13 +220,6 @@ void CEvaluationController::OnArrivedSpectra(WPARAM wp, LPARAM /*lp*/)
 
     // 11. Clean Up
     DeleteFile(fileName);   // If the file still exists, try to delete it.
-}
-
-/** This function takes a scan-file and evaluates one of the spectra inside it */
-RETURN_CODE CEvaluationController::EvaluateSpectrum(const CString& /*fileName*/, int /*spectrumIndex*/, CScanResult* /*result*/)
-{
-
-    return FAIL;
 }
 
 /** This function takes care of the evaluation of one scan. */
@@ -1077,16 +1069,6 @@ void CEvaluationController::Output_ArrivedScan(const CSpectrometer* spec)
 {
     CString message;
     message.Format("%s %s", (LPCSTR)m_common.GetString(RECIEVED_NEW_SCAN_FROM), (LPCSTR)spec->m_settings.serialNumber);
-    ShowMessage(message);
-}
-
-/** Handles the output when a fit failure has occured */
-void CEvaluationController::Output_FitFailure(const CSpectrum& spec)
-{
-    CString message;
-    message.Format("Failed to evaluate spectrum from spectrometer: %s", spec.m_info.m_device.c_str());
-    m_logFileWriter.WriteErrorMessage(message);
-    pView->PostMessage(WM_EVAL_FAILURE, (WPARAM) & (spec.m_info.m_device));
     ShowMessage(message);
 }
 

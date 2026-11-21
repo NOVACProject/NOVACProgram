@@ -129,7 +129,7 @@ RETURN_CODE CWindFileReader::ReadWindFile(CWindFieldDatabase& result)
             if (curCol == m_col.windDirection)
             {
                 double fValue;
-                int nValues = sscanf(szToken, "%lf", &fValue);
+                sscanf(szToken, "%lf", &fValue);
                 windfield.SetWindDirection(fValue, windFieldSource);
                 szToken = nullptr;
                 continue;
@@ -139,7 +139,7 @@ RETURN_CODE CWindFileReader::ReadWindFile(CWindFieldDatabase& result)
             if (curCol == m_col.windSpeed)
             {
                 double fValue;
-                int nValues = sscanf(szToken, "%lf", &fValue);
+                sscanf(szToken, "%lf", &fValue);
                 windfield.SetWindSpeed(fValue, windFieldSource);
                 szToken = nullptr;
                 continue;
@@ -149,7 +149,7 @@ RETURN_CODE CWindFileReader::ReadWindFile(CWindFieldDatabase& result)
             if (curCol == m_col.plumeHeight)
             {
                 double fValue;
-                int nValues = sscanf(szToken, "%lf", &fValue);
+                sscanf(szToken, "%lf", &fValue);
                 windfield.SetPlumeHeight(fValue, windFieldSource);
                 szToken = nullptr;
                 continue;

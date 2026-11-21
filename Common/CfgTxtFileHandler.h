@@ -84,9 +84,5 @@ public:
         The read in parameters will be stored in this object.
         @return 1 on success otherwise 0*/
     int ReadCfgTxt(const CString& fileName);
-
-    /** Writes a cfg.txt - file.
-        @return 1 on success otherwise 0*/
-    int WriteCfgTxt(const CString& fileName);
 };
 }

@@ -53,26 +53,8 @@ public:
     */
     int CheckStatus(unsigned char status);
 
-    /**Check if command was received
-    *return 0 - if is not received
-    *return 1 - if it is received
-    */
-    int IsCommandReceived();
-
-    /**Check if kongo exited
-    *return 1 - exited
-    */
-    int IsExit();
-
-    /**check if kongo is started*/
-    int IsStart();
-
     /**check if kongo is power off*/
     int IsPoweroff();
-
-    void StatusPrint(unsigned char s);
-
-    void RecordStatus(char* txt);
 
     void SetWorkingPath(CString path);
 

@@ -97,17 +97,6 @@ private:
          @return the fit-result for the evaluated specie. */
     novac::CEvaluationResult FindOptimumShiftAndSqueeze(const novac::CEvaluationBase* originalEvaluation, novac::CScanFileHandler* scan, CScanResult* result);
 
-    /** Finds the optimum shift and squeeze for an scan by evaluating
-        with a solar-reference spectrum and studying the shift of the
-        Fraunhofer-lines.
-        @param eval - the evaluator to use for the evaluation. On successful determination
-            of the shift and squeeze then the shift and squeeze of the reference-files
-            in the CEvaluationBase-objects CFitWindow will be fixed to the optimum value found
-        @param scan - a handle to the spectrum file.
-        @return a new CFitWindow to use with the references shift and squeeze fixed to the found optimal value.
-        @return nullptr if an optimal shift and squeeze could not be found. */
-    novac::CFitWindow* FindOptimumShiftAndSqueeze_Fraunhofer(const novac::CEvaluationBase* originalEvaluation, novac::CScanFileHandler* scan);
-
     // ------------------------ THE PARAMETERS FOR THE EVALUATION ------------------
     /** This is the options for the sky spectrum */
     Configuration::CSkySettings m_skySettings;

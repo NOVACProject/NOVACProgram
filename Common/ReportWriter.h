@@ -59,9 +59,6 @@ private:
     /** Generate the footer of the Report */
     static void WriteReportFooter(FILE* f);
 
-    /** Generate a histogram of the data and stores it to a graphics file */
-    static int WriteDataHistogram(double* data, long nDataPoints, long nBins, const CString& filePath, const CString& fileName);
-
     /** Removes the bad data points from the 'timeBuffer' and 'dataBuffer'.
             The flag whether the data point is good or not is found in 'qualityBuffer' */
     static long RemoveBadFluxData(double* timeBuffer, double* dataBuffer, int* qualityBuffer, long numDataPoints);

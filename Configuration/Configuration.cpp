@@ -142,11 +142,6 @@ CConfigurationSetting::CFTPSetting::CFTPSetting()
 {
 }
 
-void CConfigurationSetting::CFTPSetting::SetFTPStatus(int status)
-{
-    ftpStatus = status;
-}
-
 
 CConfigurationSetting::CWindFieldDataSettings::CWindFieldDataSettings()
 {
@@ -174,21 +169,6 @@ void CConfigurationSetting::SetupChangeSetting::Clear()
     useCalculatedPlumeParameters = 0;
     windDirectionTolerance = 20.0;
     mode = CHANGEMODE_FAST;
-}
-
-std::vector<std::string> ListMonitoredVolcanoes(const CConfigurationSetting& settings)
-{
-    std::set<std::string> allVolcanoes;
-
-    for (unsigned int k = 0; k < settings.scannerNum; ++k)
-    {
-        std::string name = settings.scanner[k].volcano;
-        allVolcanoes.insert(name);
-    }
-
-    std::vector<std::string> volcanoNames{ begin(allVolcanoes), end(allVolcanoes) };
-
-    return volcanoNames;
 }
 
 

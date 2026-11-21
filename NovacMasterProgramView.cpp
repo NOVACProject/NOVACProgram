@@ -289,19 +289,6 @@ void CNovacMasterProgramView::OnInitialUpdate()
         }
     }
 
-    // Make the MeteorologicalData be aware of the volcanoes monitored
-    auto volcanoNames = ListMonitoredVolcanoes(g_settings);
-    std::vector<CNamedLocation> allVolcanoes(volcanoNames.size());
-    for (size_t ii = 0; ii < volcanoNames.size(); ++ii)
-    {
-        int volcanoIndex = IndexOfVolcano(volcanoNames[ii]);
-        if (volcanoIndex >= 0)
-        {
-            allVolcanoes[ii] = GetVolcano(volcanoIndex);
-        }
-    }
-    g_metData.SetVolcanoes(allVolcanoes);
-
     // Try to find and read in a wind-field file, if any can be found...
     CString windFieldFile;
     if (g_settings.windSourceSettings.enabled == 1 && g_settings.windSourceSettings.windFieldFile.GetLength() > 0 && IsExistingFile(g_settings.windSourceSettings.windFieldFile))
@@ -946,8 +933,7 @@ void CNovacMasterProgramView::OnUpdateMenuSummarizeFluxData(CCmdUI* pCmdUI)
 void CNovacMasterProgramView::OnMenuShowConfigurationDialog()
 {
     ConfigurationDialog::CConfigurationDlg dlg;
-    INT_PTR ret = dlg.DoModal();
-}
+    dlg.DoModal();}
 
 void CNovacMasterProgramView::OnMenuViewInstrumentTab()
 {

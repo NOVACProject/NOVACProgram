@@ -1028,12 +1028,12 @@ void CEvaluationLogFileHandler::ParseScanInformation(CSpectrumInfo& scanInfo, do
 
         if (pt = strstr(szLine, "battery="))
         {
-            int ret = sscanf(pt + 8, "%f", &scanInfo.m_batteryVoltage);
+            sscanf(pt + 8, "%f", &scanInfo.m_batteryVoltage);
         }
 
         if (pt = strstr(szLine, "temperature"))
         {
-            int ret = sscanf(pt + 12, "%f", &scanInfo.m_temperature);
+            sscanf(pt + 12, "%f", &scanInfo.m_temperature);
         }
     }
 }
@@ -1062,25 +1062,25 @@ void CEvaluationLogFileHandler::ParseFluxInformation(CWindField& windField, doub
 
         if (pt = strstr(szLine, "flux="))
         {
-            int ret = sscanf(pt + 5, "%lf", &flux);
+            sscanf(pt + 5, "%lf", &flux);
             continue;
         }
 
         if (pt = strstr(szLine, "windspeed="))
         {
-            int ret = sscanf(pt + 10, "%lf", &windSpeed);
+            sscanf(pt + 10, "%lf", &windSpeed);
             continue;
         }
 
         if (pt = strstr(szLine, "winddirection="))
         {
-            int ret = sscanf(pt + 14, "%lf", &windDirection);
+            sscanf(pt + 14, "%lf", &windDirection);
             continue;
         }
 
         if (pt = strstr(szLine, "plumeheight="))
         {
-            int ret = sscanf(pt + 12, "%lf", &plumeHeight);
+            sscanf(pt + 12, "%lf", &plumeHeight);
             continue;
         }
 
@@ -1369,7 +1369,6 @@ RETURN_CODE CEvaluationLogFileHandler::WriteEvaluationLog(const CString fileName
         novac::MeasurementMode mode = novac::CheckMeasurementMode(scan);
         string.AppendFormat("\tmode=%s\n", novac::ToString(mode).c_str());
 
-        double maxIntensity = CSpectrometerDatabase::GetInstance().GetModel(m_specInfo.m_specModelName).maximumIntensityForSingleReadout;
 
         // Finally, the version of the file and the version of the program
         string.AppendFormat("\tsoftwareversion=%d.%d\n", CVersion::majorNumber, CVersion::minorNumber);

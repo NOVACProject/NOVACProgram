@@ -119,8 +119,6 @@ public:
     /**set file subfix*/
     void SetFilter(TCHAR* filterText);
     afx_msg void OnBnClickedBrowseButton();
-    /**clean file arrays - m_fileArrayA, m_fileArrayB*/
-    void EmptyFileArray();
     // selected file to be uploaded
     CEdit m_uploadFileEdit;
     /**file to be uploaded, full file name with path */

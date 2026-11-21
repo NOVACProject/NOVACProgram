@@ -1343,9 +1343,6 @@
     <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Spectra\Scattering.h">
       <Filter>Header Files\SpectralEvaluation\Spectra</Filter>
     </ClInclude>
-    <ClInclude Include="SpectralEvaluation\include\SpectralEvaluation\Spectra\WavelengthCalibration.h">
-      <Filter>Header Files\SpectralEvaluation\Spectra</Filter>
-    </ClInclude>
     <ClInclude Include="Meteorology\WindField.h">
       <Filter>Header Files\Meteorology</Filter>
     </ClInclude>

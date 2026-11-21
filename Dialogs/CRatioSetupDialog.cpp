@@ -137,7 +137,6 @@ void CRatioSetupDialog::InitReferenceFileControl()
     {
         const auto& reference = m_controller->m_references[rowIdx];
 
-        int columnIdx = 0;
         int nItem = m_referencesList.InsertItem(rowIdx, reference.m_name.c_str());
         m_referencesList.SetItemData(nItem, rowIdx);
 

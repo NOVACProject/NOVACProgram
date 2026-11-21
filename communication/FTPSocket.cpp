@@ -60,25 +60,11 @@ void CFTPSocket::GetFileName(CString& filePath)
     int length = filePath.GetLength();
     filePath = filePath.Right(length - position - 1);
 }
-void CFTPSocket::GetSysType(CString& type)
-{
-    SendCommand("SYST", "");
-    if (ReadResponse() == 1)
-    {
-        type.Format("%s", (LPCSTR)m_serverMsg);
-    }
-}
 bool CFTPSocket::EnterFolder(const CString& folder)
 {
     SendCommand("CWD", folder);
 
     return (ReadResponse() == 1);
-}
-
-bool CFTPSocket::GoToUpperFolder()
-{
-    SendCommand("CDUP", "");
-    return true;
 }
 
 //enter passive mode, use common m_timeout
@@ -238,22 +224,6 @@ bool CFTPSocket::UploadFile(CString fileLocalPath)
         ShowMessage(m_msg);
     }
     return result;
-}
-bool CFTPSocket::DeleteFTPFile(CString fileName)
-{
-    SendCommand("DELE", fileName);
-    if (ReadResponse() != 1)
-    {
-        return false;
-    }
-    if (IsFTPCommandDone())
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
 }
 
 int CFTPSocket::SendCommand(const CString& command, const CString& commandText)
@@ -641,18 +611,6 @@ int CFTPSocket::GetPortNumber()
 
     return portNumber;
 }
-bool CFTPSocket::GetServerFeature()
-{
-    SendCommand("FEAT", "");
-    if (ReadResponse() == 1)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
 //NOT FOR THE NOVAC SCANNER FTP
 long CFTPSocket::Size(CString& fileName)
 {
@@ -665,30 +623,6 @@ long CFTPSocket::Size(CString& fileName)
     sizeStr = m_serverMsg;
     MessageBox(NULL, sizeStr, "notice", MB_OK);
     return fileSize;
-}
-//NOT FOR NOVAC SCANNER FTP SERVER
-bool CFTPSocket::CheckFileExistence(CString& remoteFileName, CString& remoteDirectory)
-{
-    CString serverReply;
-    SendCommand("SIZE", remoteFileName);
-    if (ReadResponse() != 1)
-    {
-        return false;
-    }
-    serverReply = m_serverMsg;
-    SendCommand("CWD", remoteDirectory + remoteFileName);
-    if (ReadResponse() != 1)
-    {
-        return false;
-    }
-    if (m_serverMsg.Find("550") != -1)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
 }
 int CFTPSocket::GetMsgCode(CString& ftpMsg)
 {
@@ -825,22 +759,10 @@ bool CFTPSocket::OpenFileHandle(CString& fileName)
     }
     return true;
 }
-bool CFTPSocket::SetCurrentFTPDirectory(CString& directory)
-{
-    SendCommand("CWD", directory);
-    if (ReadResponse() != 1)
-    {
-        return false;
-    }
-    bool returnFlag = IsFTPCommandDone();
-    CString curDirectory;
-    GetCurrentFTPDirectory(curDirectory);
-    return returnFlag;
-}
 
 bool CFTPSocket::IsFTPCommandDone()
 {
-    int code = GetMsgCode(m_serverMsg);
+    GetMsgCode(m_serverMsg);
     int i;
     int suc = TRUE;
 
@@ -863,33 +785,6 @@ bool CFTPSocket::IsFTPCommandDone()
         return false;
     }
 }
-bool CFTPSocket::GetCurrentFTPDirectory(CString& curDirectory)
-{
-    int msgLength, directoryLength;
-    CString seperator1 = _T("\"");
-    CString seperator2 = _T("\"");
-    SendCommand("PWD", "");
-    if (ReadResponse() != 1)
-    {
-        return false;
-    }
-
-    curDirectory = m_serverMsg;
-    msgLength = m_serverMsg.GetLength();
-    bool returnFlag = IsFTPCommandDone();
-    if (returnFlag)
-    {
-        GetCitedString(curDirectory, seperator1, seperator2);
-        directoryLength = curDirectory.GetLength();
-        if (directoryLength == msgLength)
-        {
-            returnFlag = false;
-        }
-        m_msg.Format("Current directory is %s", (LPCSTR)curDirectory);
-        ShowMessage(m_msg);
-    }
-    return returnFlag;
-}
 void CFTPSocket::GetCitedString(CString& line, CString& leftSeperator, CString& rightSeperator)
 {
     int leftPosition, rightPosition, msgLength;
@@ -905,28 +800,6 @@ void CFTPSocket::GetCitedString(CString& line, CString& leftSeperator, CString& 
     }
 
     line = line.Left(rightPosition);
-}
-bool CFTPSocket::CreateFTPDirectory(CString& parentDirectory, CString& newDirectory)
-{
-    CString curDirectory;
-    if (!GetCurrentFTPDirectory(curDirectory))
-    {
-        return false;
-    }
-    SetCurrentFTPDirectory(parentDirectory);
-    SendCommand("MKD", newDirectory);
-    if (ReadResponse() != 1)
-    {
-        return false;
-    }
-    if (IsFTPCommandDone())
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
 }
 bool CFTPSocket::IsDataReady(const SOCKET& socket, long timeout)
 {

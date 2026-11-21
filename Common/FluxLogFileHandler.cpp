@@ -19,10 +19,8 @@ RETURN_CODE CFluxLogFileHandler::ReadFluxLog()
     char scanstarttime[] = _T("scanstarttime");      // this string only exists in the header line.
     CString str;
     char szLine[8192];
-    int measNr = 0;
     double fValue;
     bool fReadingScan = false;
-    double flux = 0.0;
     Evaluation::CFluxResult curResult;
     CSpectrumInfo curScanInfo;
     curScanInfo.m_batteryVoltage = -999.0;

@@ -558,7 +558,7 @@ void CCalibratePixelToWavelengthDialog::OnClickedButtonRun()
         CCmdTarget::BeginWaitCursor();
 
         // Run the calibration in a background thread and wait for the calibration to finish (continues in OnCalibrationDone below)
-        auto pSpecThread = AfxBeginThread(RunCalibration, (LPVOID)(m_controller), THREAD_PRIORITY_NORMAL, 0, 0, NULL);
+        AfxBeginThread(RunCalibration, (LPVOID)(m_controller), THREAD_PRIORITY_NORMAL, 0, 0, NULL);
     }
     catch (std::exception& e)
     {

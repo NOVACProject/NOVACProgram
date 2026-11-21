@@ -159,9 +159,6 @@ public:
     /** Returns the pitch (tilt) of the scanning instrument */
     double GetPitch() const;
 
-    /** Returns the roll (scan-angle offset) of the scanning instrument */
-    double GetRoll() const;
-
     /** Returns the battery-voltage of the sky spectrum */
     float GetBatteryVoltage() const;
 
@@ -200,9 +197,6 @@ public:
 
     /** Returns a reference to the spectrum info-structure of the sky-spectrum used */
     const novac::CSpectrumInfo& GetSkySpectrumInfo() const;
-
-    /** Returns a reference to the spectrum info-structure of the dark-spectrum used */
-    const novac::CSpectrumInfo& GetDarkSpectrumInfo() const;
 
     /** returns the scan angle of evaluated spectrum number 'index'.
         @param index - the zero based index into the list of  evaluated spectra */

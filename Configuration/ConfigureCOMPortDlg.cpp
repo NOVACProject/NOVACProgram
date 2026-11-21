@@ -347,7 +347,6 @@ void CConfigureCOMPortDlg::SaveData()
         return;
     }
 
-    HTREEITEM hTree = m_scannerTree->GetSelectedItem();
     GetScanAndSpec(currentScanner, currentSpec);
 
     if (currentSpec == -1)

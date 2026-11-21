@@ -62,5 +62,4 @@ CObservatoryInfo::CObservatoryInfo()
     ++index;
     m_name[index].Format("unam"); // 17
 
-    m_observatoryNum = index + 1;
 }

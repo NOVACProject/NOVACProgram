@@ -32,9 +32,6 @@ protected:
     /** General parsing of a single, simple long integer item */
     int Parse_LongItem(const CString& label, long& number);
 
-    /** General parsing of a single, simple long integer item */
-    int Parse_IPNumber(const CString& label, BYTE& ip0, BYTE& ip1, BYTE& ip2, BYTE& ip3);
-
     // Parses an attribute from an already read in token string.
     // This will attempt to read the attribute from the token string, but not read anything more from file, nor change any members.
     static std::string ParseAttribute(std::string token, std::string attributeName);

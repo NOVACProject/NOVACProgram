@@ -47,7 +47,6 @@ CImportSpectraDlg::CImportSpectraDlg()
     m_channel = 0;
     m_averagedSpectra = 0;
 
-    m_importThread = NULL;
     m_running = false;
 
     m_doChangeNumExposures = 0;
@@ -277,7 +276,6 @@ void CImportSpectraDlg::BrowseForOutputDirectory()
 void CImportSpectraDlg::Import()
 {
     UpdateData(TRUE); // <-- Save the data in the dialog
-    CString* str = NULL;
 
     // 1. Check if the user wants to cancel the currently running importing...
     if (m_running)
@@ -342,14 +340,14 @@ void CImportSpectraDlg::Import()
     if (m_multiFile == 0)
     {
         m_statusLabel.SetWindowText("Importing spectra");
-        m_importThread = AfxBeginThread(ImportSpectraToOneFile, this, THREAD_PRIORITY_NORMAL, 0, 0, NULL);
+        AfxBeginThread(ImportSpectraToOneFile, this, THREAD_PRIORITY_NORMAL, 0, 0, NULL);
         this->SetDlgItemText(IDC_IMPORT_SPECTRA_BTN, "Cancel");
         m_running = true;
     }
     if (m_multiFile == 1)
     {
         m_statusLabel.SetWindowText("Importing ScanDOAS spectra");
-        m_importThread = AfxBeginThread(ImportScanDOASSpectra, this, THREAD_PRIORITY_NORMAL, 0, 0, NULL);
+        AfxBeginThread(ImportScanDOASSpectra, this, THREAD_PRIORITY_NORMAL, 0, 0, NULL);
         this->SetDlgItemText(IDC_IMPORT_SPECTRA_BTN, "Cancel");
         m_running = true;
     }
@@ -468,7 +466,6 @@ UINT ImportSpectraToOneFile(LPVOID pParam)
         return 1;
     }
 
-    unsigned int nSpecFiles = wnd->m_nSpecFiles;
     CSpectrumIO writer;
     CString serialNumber, scanDate, scanTime, pakFile;
 

@@ -141,8 +141,6 @@ BOOL CNovacMasterProgramApp::InitInstance()
     m_pMainWnd->SetWindowText("NovacProgram");
 
     // Get the resolution of the screen
-    int cx = GetSystemMetrics(SM_CXSCREEN);
-    int cy = GetSystemMetrics(SM_CYSCREEN);
 
     //m_pMainWnd->ShowWindow(SW_SHOWMAXIMIZED);
     // if(cx <= 1024){
@@ -155,7 +153,7 @@ BOOL CNovacMasterProgramApp::InitInstance()
     // }
 
     // Initialize resources used by libCurl
-    CURLcode returnCode = curl_global_init(CURL_GLOBAL_ALL);
+    [[maybe_unused]] CURLcode returnCode = curl_global_init(CURL_GLOBAL_ALL);
     assert(returnCode == CURLE_OK);
 
     // call DragAcceptFiles only if there's a suffix

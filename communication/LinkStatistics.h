@@ -16,29 +16,6 @@ public:
     /** Clearing the statistics */
     void Clear();
 
-    // -------------------- Retrieving data -----------------------
-    /** Getting the successrate for the number of downloads.
-            @return the portion of number of attempts to download files
-                that have succeeded (0 -> 1) */
-    double GetDownloadSuccessRate() const;
-
-    /** Getting the average download speed for this link [kb/s] */
-    double GetAveragedDownloadSpeed() const;
-
-    /** Returns the number of successful downloads today on this link */
-    long GetDownloadNum() const;
-
-    /** Getting the successrate for the number of uploads
-            @return the portion of number of attempts to upload files
-                that have succeeded (0 -> 1) */
-    double GetUploadSuccessRate() const;
-
-    /** Getting the average upload speed for this link [kb/s] */
-    double GetAveragedUploadSpeed() const;
-
-    /** Returns the number of successful uploads today on this link */
-    long GetUploadNum() const;
-
     // ----------------------- Adding data -------------------------
     /** Append one download-speed to the history,
             this will also append one successfull download to the statistics */
@@ -79,15 +56,6 @@ protected:
     /** Trim the list of transfer-data so that they only contain data from
             today... */
     void TrimLists();
-
-    /** Retrieves the success-rate from the given list */
-    double GetSuccessRate(const CList<CTransferInfo, CTransferInfo&>& list) const;
-
-    /** Gets the average speed from the given list */
-    double GetAverageSpeed(const CList<CTransferInfo, CTransferInfo&>& list) const;
-
-    /** Returns the number of successful transfers today on this link */
-    long GetSuccessfulNum(const CList<CTransferInfo, CTransferInfo&>& list) const;
 
     /** Appends the given data-speed to the given list */
     void AppendSuccessfulTransfer(double speed, CList<CTransferInfo, CTransferInfo&>& list);

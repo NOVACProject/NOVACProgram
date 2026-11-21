@@ -91,7 +91,6 @@ void CRatioScanFilesDialog::OnBnClickedBtnBrowsescanfile()
     // Reset all data
     m_controller->m_results.clear();
     m_controller->SetupPakFileList(std::vector<std::string>{});
-    m_currentlyDisplayedSpectrumIdx = 0;
 
     // Let the user select the file.
     Dialogs::CMultiSelectOpenFileDialog fileDialog(TRUE, NULL, NULL, OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_ALLOWMULTISELECT | OFN_EXPLORER, filter);
@@ -133,7 +132,6 @@ void CRatioScanFilesDialog::OnBnClickedBtnBrowsescanfile()
 
 void CRatioScanFilesDialog::OnChangeSpectrumInFile(NMHDR* pNMHDR, LRESULT* pResult)
 {
-    LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
 
     if (m_controller->ListPakFiles().size() == 0)
     {

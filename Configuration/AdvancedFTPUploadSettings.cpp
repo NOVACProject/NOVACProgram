@@ -54,26 +54,6 @@ BOOL CAdvancedFTPUploadSettings::OnInitDialog()
 }
 
 
-void CAdvancedFTPUploadSettings::GetNecessaryComponentSize(CWnd* wnd, CString& str, int& width, int& height)
-{
-    TEXTMETRIC tm;
-    CDC* dc = wnd->GetDC();
-    CFont* oldFont = dc->SelectObject(wnd->GetFont());
-    dc->GetTextMetrics(&tm);
-
-    CSize sz = dc->GetTextExtent(str);
-
-    // Add the avg width to prevent clipping
-    sz.cx += tm.tmAveCharWidth;
-
-    // Select the old font back into the DC
-    dc->SelectObject(oldFont);
-    wnd->ReleaseDC(dc);
-
-    width = sz.cx;
-    height = sz.cy;
-}
-
 void CAdvancedFTPUploadSettings::OnOK()
 {
     if (UpdateData(TRUE))

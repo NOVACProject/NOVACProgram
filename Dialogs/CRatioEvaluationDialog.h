@@ -64,8 +64,6 @@ private:
     // Boolean flag which is set to true while the processing of the scans is running in the background
     bool m_backgroundProcessingIsRunning = false;
 
-    CWinThread* m_backgroundProcessingThread = nullptr;
-
     // Graph type selector
     CListBox m_resultTypeList;
 

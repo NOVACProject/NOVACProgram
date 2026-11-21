@@ -323,13 +323,6 @@ public:
         @param fileName - the complete path of the file */
     static void GetDirectory(CString& fileName);
 
-    /** Check if a process is running.
-        @param exeName - the name of the executable (e.g. "txzm.exe")
-        @param pid - the function will search for processes with a
-          process ID higher than 'pid'
-        @return - processID of the found process, -1 if no process is found */
-    static int CheckProcessExistance(CString& exeName, int pid = -1);
-
     /** Get all Process-ID's running with a given executable-name
         @param exeName - the name of the executable (e.g. "txzm.exe")
         @param startPid - the function will search for processes with a
@@ -338,10 +331,6 @@ public:
           all pID's found (first empty item will be -1)
         @return - number of processID found */
     static int GetAllProcessIDs(CString& exeName, int pIDs[1024], int startPid = -1);
-
-    /** Kill a process with the supplied processID.
-    @return TRUE if the process was killed.*/
-    BOOL WINAPI KillProcess(IN DWORD dwProcessId);
 
     /** Retrieves the current path, and the filename of the program.
         Result is stored in 'm_exePath', and 'm_exeFileName' */
@@ -371,14 +360,6 @@ public:
             @return true if all is ok,
             @return false otherwise */
     static bool BrowseForDirectory(CString& folderName);
-
-    /** Lists all files in the provided directory.
-        If a fileNameFilter is supplied, then only files with names matching the given filter are returned.
-        Possible filters are '*.*', '*.xs' or 'SO2_*.txt'
-        This will not recurse into sub-directories.
-        @param directory The name of the directory to search. Must end with a backslash or forwardslash.
-        @return a vector containing the full file path to each file found (i.e. including directory and extension) */
-    static std::vector<std::string> ListFilesInDirectory(const char* directory, const char* fileNameFilter = nullptr);
 
     // --------------------------------------------------------------------
     // ---------------------- DATE & TIME ---------------------------------

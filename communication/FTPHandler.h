@@ -125,9 +125,6 @@ private:
         @return true if the file could be created successfully. */
     static bool MakeCommandFile(const CString& fileName, const char* command);
 
-    /** Reboots the remote scanner */
-    void Reboot();
-
     /** Download cfg.txt from the instrument.
         @return 1 if successful, otherwise 0*/
     int DownloadCfgTxt();

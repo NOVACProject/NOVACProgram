@@ -61,7 +61,7 @@ void CUserSettings::ReadSettings(const CString* fileName)
                 pt = strstr(txt, "=");
                 if (pt)
                 {
-                    int ret = sscanf(&pt[1], "%d", &m_fluxUnit);
+                    sscanf(&pt[1], "%d", &m_fluxUnit);
                 }
             }
 
@@ -71,7 +71,7 @@ void CUserSettings::ReadSettings(const CString* fileName)
                 pt = strstr(txt, "=");
                 if (pt)
                 {
-                    int ret = sscanf(&pt[1], "%d", &m_columnUnit);
+                    sscanf(&pt[1], "%d", &m_columnUnit);
                 }
             }
 
@@ -81,7 +81,7 @@ void CUserSettings::ReadSettings(const CString* fileName)
                 pt = strstr(txt, "=");
                 if (pt)
                 {
-                    int ret = sscanf(&pt[1], "%d", &m_language);
+                    sscanf(&pt[1], "%d", &m_language);
                 }
             }
         }
