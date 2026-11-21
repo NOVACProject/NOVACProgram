@@ -145,15 +145,15 @@ void PackSeg(unsigned char* utpek, long* kvar)
         i = BitsPrec(*incpy++);
         if (i > curr)
         {
-        /* i har blivit för stort. Vi ska då titta bakåt så att
-           vi tjänar in plats bakåt också på att öka bitantalet */
+            /* i har blivit för stort. Vi ska då titta bakåt så att
+               vi tjänar in plats bakåt också på att öka bitantalet */
             if (a * (i - curr) > headsiz)
             {
                 goto Fixat;
             }
 
-        /* gå till fixat om det inte lönar sig att öka
-           bitantalet på den föregående gruppen */
+            /* gå till fixat om det inte lönar sig att öka
+               bitantalet på den föregående gruppen */
 
             while (curr != i)          /* det lönade sig att byta */
             {
@@ -197,9 +197,9 @@ long UnPack(unsigned char* inpek, long kvar, long* ut)
     long bit = 0;
     FILE* f;
 
-  /*  memcpy(ut,inpek,kvar*2);
-  return(kvar);
-  */
+    /*  memcpy(ut,inpek,kvar*2);
+    return(kvar);
+    */
     f = fopen("chunks.txt", "w");
 
     utpek = ut;

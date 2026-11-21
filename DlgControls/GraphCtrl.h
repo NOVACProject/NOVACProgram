@@ -10,21 +10,21 @@
 
 namespace DlgControls
 {
-    /** Defining directions */
+/** Defining directions */
 const enum DIRECTION
 {
     HORIZONTAL,
     VERTICAL
 };
 
-    /** Defining line styles */
+/** Defining line styles */
 const enum LINE_STYLE
 {
     STYLE_SOLID,
     STYLE_DASHED
 };
 
-    /** Defining number formats */
+/** Defining number formats */
 const enum NUMBER_FORMAT
 {
     FORMAT_GENERAL,
@@ -105,7 +105,7 @@ protected:
     } PlotOptions;
 
 public:
-        /** Constants used for the options for plotting */
+    /** Constants used for the options for plotting */
     static const int PLOT_SECOND_AXIS = 0x0001;
     static const int PLOT_CONNECTED = 0x0002;
     static const int PLOT_CIRCLES = 0x0004;
@@ -118,25 +118,25 @@ public:
     /** Default destructor */
     virtual ~CGraphCtrl();
 
-        /** Creation override */
+    /** Creation override */
     virtual BOOL Create(DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID = NULL);
 
-        /** Sets the margin space around the graph */
+    /** Sets the margin space around the graph */
     void SetMarginSpace(double margin)
     {
         m_axisOptions.first.margin = margin;
     }
 
-        /** Sets the unit label of the X-axis */
+    /** Sets the unit label of the X-axis */
     void SetXUnits(CString string);
 
     /** Sets the unit label of the Y-axis */
     void SetYUnits(CString string);
 
-        /** Sets and enables the unit for the second Y-axis, to the right */
+    /** Sets and enables the unit for the second Y-axis, to the right */
     void SetSecondYUnit(CString string);
 
-        /** Sets the width of the fonts used. Use FW_REGULAR, FW_NORMAL or FW_BOLD. */
+    /** Sets the width of the fonts used. Use FW_REGULAR, FW_NORMAL or FW_BOLD. */
     void SetFontWidth(int width)
     {
         m_axisOptions.axisFont.width = width;
@@ -144,36 +144,36 @@ public:
         InvalidateCtrl();
     }
 
-        /** Returns the maximum value of the X-axis */
+    /** Returns the maximum value of the X-axis */
     double GetXMax(int dim = 0)
     {
         return (dim == 0) ? m_axisOptions.first.right : m_axisOptions.second.right;
     }
 
-        /** Returns the minimum value of the X-axis */
+    /** Returns the minimum value of the X-axis */
     double GetXMin(int dim = 0)
     {
         return (dim == 0) ? m_axisOptions.first.left : m_axisOptions.second.left;
     }
-        /** Returns the maximum value of the Y-axis */
+    /** Returns the maximum value of the Y-axis */
     double GetYMax(int dim = 0)
     {
         return (dim == 0) ? m_axisOptions.first.top : m_axisOptions.second.top;
     }
 
-        /** Returns the minimum value of the Y-axis */
+    /** Returns the minimum value of the Y-axis */
     double GetYMin(int dim = 0)
     {
         return (dim == 0) ? m_axisOptions.first.bottom : m_axisOptions.second.bottom;
     }
 
-        /** Sets the number format for the X-axis */
+    /** Sets the number format for the X-axis */
     void SetXAxisNumberFormat(NUMBER_FORMAT format);
 
-        /** Sets the number format for the Y-axis */
+    /** Sets the number format for the Y-axis */
     void SetYAxisNumberFormat(NUMBER_FORMAT format);
 
-        /** Sets the color of the background grid */
+    /** Sets the color of the background grid */
     void SetGridColor(COLORREF color);
 
     /** Sets the color with which the data is drawn. If the parameter 'clear' is
@@ -192,16 +192,16 @@ public:
     /** Decreases the linewidth when drawing lines */
     void DecreaseLineWidth();
 
-        /** Sets the width of lines drawn */
+    /** Sets the width of lines drawn */
     void SetLineWidth(int width, bool clear = false);
 
-        /** Sets the radius of the circles drawn */
+    /** Sets the radius of the circles drawn */
     void SetCircleRadius(int radius)
     {
         m_plotOptions.circleRadius = radius;
     }
 
-        /** Marks the whole plot for redrawing */
+    /** Marks the whole plot for redrawing */
     void InvalidateCtrl();
 
     /** Customized function for drawing points with lines connecting them.
@@ -215,41 +215,41 @@ public:
         return XYPlot(NULL, yPositions, pointSum, plotOption | PLOT_CONNECTED);
     }
 
-        /** Creates an XY-graph
-                @param xPosition - the x-values.
-                @param yPosition - the y-values.
-                @param pointSum - the number of points that will be drawn.
-                if xPositions is NULL then the yPositions will be drawn against their index in the array.
-                */
+    /** Creates an XY-graph
+            @param xPosition - the x-values.
+            @param yPosition - the y-values.
+            @param pointSum - the number of points that will be drawn.
+            if xPositions is NULL then the yPositions will be drawn against their index in the array.
+            */
     void XYPlot(double* xPosition, double* yPosition, long pointSum, int plotOption = PLOT_CONNECTED)
     {
         XYPlot(xPosition, yPosition, NULL, pointSum, plotOption);
     }
 
-        /** Creates an XY-graph with a customizable color of the plot.
-                @param xPosition - the x-values.
-                @param yPosition - the y-values.
-                @param color - the color value, the lowest value in this set will be blue and the highest red.
-                    If this is null then the common plot color will be used.
-                @param pointSum - the number of points that will be drawn.
-                if xPositions is NULL then the yPositions will be drawn against their index in the array.
-                */
+    /** Creates an XY-graph with a customizable color of the plot.
+            @param xPosition - the x-values.
+            @param yPosition - the y-values.
+            @param color - the color value, the lowest value in this set will be blue and the highest red.
+                If this is null then the common plot color will be used.
+            @param pointSum - the number of points that will be drawn.
+            if xPositions is NULL then the yPositions will be drawn against their index in the array.
+            */
     void XYPlot(double* xPosition, double* yPosition, double* color, long pointSum, int plotOption = PLOT_CONNECTED);
 
-        /** Draws a horizontal or vertical solid line across the whole plot area.
-                @param direction - the orientation of the line. 0 means horizontal line, 1 means vertical line
-                @param value - the logical value at which the line will be drawn. */
+    /** Draws a horizontal or vertical solid line across the whole plot area.
+            @param direction - the orientation of the line. 0 means horizontal line, 1 means vertical line
+            @param value - the logical value at which the line will be drawn. */
     void DrawLine(DIRECTION direction, double value)
     {
         return DrawLine(direction, value, m_colors.plot, STYLE_SOLID);
     }
 
-        /** Draws a horizontal or vertical line across the whole plot area.
-                @param direction - the orientation of the line. 0 means horizontal line, 1 means vertical line
-                @param value - the logical value at which the line will be drawn.
-                @param pColor -  the color of the line
-                @param lineType - the style of the line. 0 means dashed line, 1 means solid line.
-                @param plotOption - the options for how to plot the line */
+    /** Draws a horizontal or vertical line across the whole plot area.
+            @param direction - the orientation of the line. 0 means horizontal line, 1 means vertical line
+            @param value - the logical value at which the line will be drawn.
+            @param pColor -  the color of the line
+            @param lineType - the style of the line. 0 means dashed line, 1 means solid line.
+            @param plotOption - the options for how to plot the line */
     void DrawLine(DIRECTION direction, double value, COLORREF pColor, LINE_STYLE lineStyle = STYLE_SOLID, int plotOption = PLOT_FIXED_AXIS);
 
     /** Draws the data set as a set of small circles. The plotOptions decides the
@@ -268,17 +268,17 @@ public:
         return XYPlot(x, y, color, nSum, plotOption | PLOT_CIRCLES);
     }
 
-        /** Prints out a string onto the plot.
-                The function generates a text-box into which the string will be
-                    drawn centered using default font.      */
+    /** Prints out a string onto the plot.
+            The function generates a text-box into which the string will be
+                drawn centered using default font.      */
     void DrawTextBox(double x_min, double x_max, double y_min, double y_max, CString& str);
 
-        /** Creates a bar chart,
-                @param xPositions - the x-positions for each bar.
-                @param yValues - the height of each bar
-                @param pointSum - the total number of points to draw.
-                @param plotOptions - the options for the plot. Must be PLOT_SECOND_AXIS or PLOT_FIXED_AXIS.
-                If xPositions is NULL then the bars will be drawn on 0, 1, 2, ...*/
+    /** Creates a bar chart,
+            @param xPositions - the x-positions for each bar.
+            @param yValues - the height of each bar
+            @param pointSum - the total number of points to draw.
+            @param plotOptions - the options for the plot. Must be PLOT_SECOND_AXIS or PLOT_FIXED_AXIS.
+            If xPositions is NULL then the bars will be drawn on 0, 1, 2, ...*/
     void BarChart(double* xPositions, double* yValues, int pointSum, int plotOption = 0);
 
     /** Draws a vectorfield. The vector field is defined at the points
@@ -296,92 +296,92 @@ public:
     /** Clears the plot completely. */
     void CleanPlot();
 
-        /** Enables/disables the grid lines on the X-axis */
+    /** Enables/disables the grid lines on the X-axis */
     void EnableGridLinesX(bool enable = true)
     {
         this->m_gridOptions.X().active = enable;
     }
 
-        /** Enables/disables the grid lines on the Y-axis */
+    /** Enables/disables the grid lines on the Y-axis */
     void EnableGridLinesY(bool enable = true)
     {
         this->m_gridOptions.Y().active = enable;
     }
 
-        /** Sets the scaling of the x- and y-axes so that the range covered by both axes is the same */
+    /** Sets the scaling of the x- and y-axes so that the range covered by both axes is the same */
     inline void SetAxisEqual()
     {
         m_axisOptions.first.equal = true;
     }
 
-        /** Sets the range of both the X and Y-axes*/
+    /** Sets the range of both the X and Y-axes*/
     void SetRange(double dLeft, double dRight, int nXDecimal, double dLower, double dUpper, int nYDecimal);
 
-        /** Sets the range of both the second X and second Y-axes*/
+    /** Sets the range of both the second X and second Y-axes*/
     void SetSecondRange(double dLeft, double dRight, int nXDecimal, double dLower, double dUpper, int nYDecimal);
 
-        /** Sets the minimum range of the X-axis */
+    /** Sets the minimum range of the X-axis */
     void SetMinimumRangeX(double width)
     {
         this->m_axisOptions.minimumRangeX = width;
     }
 
-        /** Sets the minimum range of the Y-axis */
+    /** Sets the minimum range of the Y-axis */
     void SetMinimumRangeY(double height)
     {
         this->m_axisOptions.minimumRangeY = height;
     }
 
-        /** Sets the range of the X-axis */
+    /** Sets the range of the X-axis */
     void SetRangeX(double left, double right, int decimals, bool invalidate = true);
 
-        /** Sets the range of the Y-axis */
+    /** Sets the range of the Y-axis */
     void SetRangeY(double lower, double upper, int decimals, bool invalidate = true);
 
-        /** Sets the range for the second Y-axis */
+    /** Sets the range for the second Y-axis */
     void SetSecondRangeY(double lower, double upper, int decimals, bool invalidate = true);
 
-        /** Sets the range for the second X-axis */
+    /** Sets the range for the second X-axis */
     void SetSecondRangeX(double left, double right, int decimals, bool invalidate = true);
 
-        /** Saves the current graph in a file using the supplied file-name */
+    /** Saves the current graph in a file using the supplied file-name */
     int SaveGraph(const CString& fileName);
 
 protected:
     /** The number of decimals on the Y-axis */
     int m_nYDecimals;
 
-        /** The number of decimals on the X-axis */
+    /** The number of decimals on the X-axis */
     int m_nXDecimals;
 
-        /** The number of decimals on the second y-axis */
+    /** The number of decimals on the second y-axis */
     int m_nY2Decimals;
 
-        /** The number of decimals on the second x-axis */
+    /** The number of decimals on the second x-axis */
     int m_nX2Decimals;
 
-        /** The unit of the x-axis */
+    /** The unit of the x-axis */
     CString m_strXUnitsString;
 
-        /** The unit of the y-axis */
+    /** The unit of the y-axis */
     CString m_strYUnitsString;
 
-        /** The options for the colors to use when drawing the plot */
+    /** The options for the colors to use when drawing the plot */
     Colors m_colors;
 
-        /** The options for how to draw the grid */
+    /** The options for how to draw the grid */
     GridOptions m_gridOptions;
 
-        /** The options for how to draw the axis */
+    /** The options for how to draw the axis */
     AxisOptions m_axisOptions;
 
-        /** The options for the thickness of the lines/circles plotted */
+    /** The options for the thickness of the lines/circles plotted */
     PlotOptions m_plotOptions;
 
-        /** Called to repaint the graph, essentially only copies the bitmaps to the screen */
+    /** Called to repaint the graph, essentially only copies the bitmaps to the screen */
     afx_msg void OnPaint();
 
-        /** Called when the size of the graph has been changed */
+    /** Called when the size of the graph has been changed */
     afx_msg void OnSize(UINT nType, int cx, int cy);
 
     DECLARE_MESSAGE_MAP()
@@ -395,25 +395,25 @@ protected:
     /** The unit of the x-axis */
     CString m_strYMax;
 
-        /** The bounding box for the client area (the total plot) */
+    /** The bounding box for the client area (the total plot) */
     CRect m_rectClient;
 
-        /** The height of the client area (the total plot) */
+    /** The height of the client area (the total plot) */
     int m_nClientHeight;
 
-        /** The width of the client area (the total plot) */
+    /** The width of the client area (the total plot) */
     int m_nClientWidth;
 
-        /** The bounding box for the plot area (the area inside the axes) */
+    /** The bounding box for the plot area (the area inside the axes) */
     CRect m_rectPlot;
 
-        /** The height of the plot area (the area inside the axes) */
+    /** The height of the plot area (the area inside the axes) */
     int m_nPlotHeight;
 
-        /** The width of the plot area (the area inside the axes) */
+    /** The width of the plot area (the area inside the axes) */
     int m_nPlotWidth;
 
-        /** The vertical scaling factor */
+    /** The vertical scaling factor */
     double m_dVerticalFactor;
     double m_dHorizonFactor;
 
@@ -431,50 +431,50 @@ protected:
     CBitmap m_bitmapGrid;
     CBitmap m_bitmapPlot;
 
-        /** Sets the grid spacing for the desired dimension, given that the
-                output on the plot is supposed to be plotted as a general number */
+    /** Sets the grid spacing for the desired dimension, given that the
+            output on the plot is supposed to be plotted as a general number */
     void SetGridSpacing(double& left, double& right, int dim, NUMBER_FORMAT format);
 
-        /** Sets the grid spacing for the desired dimension, given that the
-                output on the plot is supposed to be plotted as a general number */
+    /** Sets the grid spacing for the desired dimension, given that the
+            output on the plot is supposed to be plotted as a general number */
     void SetGridSpacing(float& left, float& right, int dim, NUMBER_FORMAT format);
 
-        /** Sets the grid spacing for the X-Axis using the given limits */
+    /** Sets the grid spacing for the X-Axis using the given limits */
     void SetGridSpacingX(double& left, double& right)
     {
         SetGridSpacing(left, right, 0, m_axisOptions.first.formatX);
     }
 
-        /** Sets the grid spacing for the X-Axis using the given limits */
+    /** Sets the grid spacing for the X-Axis using the given limits */
     void SetGridSpacingX(float& left, float& right)
     {
         SetGridSpacing(left, right, 0, m_axisOptions.first.formatX);
     }
 
-        /** Sets the grid spacing for the Y-Axis using the given limits */
+    /** Sets the grid spacing for the Y-Axis using the given limits */
     void SetGridSpacingY(double& lower, double& upper)
     {
         SetGridSpacing(lower, upper, 1, m_axisOptions.first.formatY);
     }
 
-        /** Sets the grid spacing for the Y-Axis using the given limits */
+    /** Sets the grid spacing for the Y-Axis using the given limits */
     void SetGridSpacingY(float& lower, float& upper)
     {
         SetGridSpacing(lower, upper, 1, m_axisOptions.first.formatY);
     }
 
-        /** Prepares for plotting */
+    /** Prepares for plotting */
     template <class T>
     void PreparePlot(T* xValues, T* yValues, int pointSum,
         T& maxX, T& minX, T& maxY, T& minY)
     {
         GetDataRange(xValues, yValues, pointSum, maxX, minX, maxY, minY);
 
-            // Set the range for the plot
+        // Set the range for the plot
         SetRange(minX, maxX, m_nXDecimals, minY, maxY, m_nYDecimals);
     }
 
-        /** Prepares for plotting on the secondary axis */
+    /** Prepares for plotting on the secondary axis */
     template <class T>
     void GetDataRange(T* xValues, T* yValues, int pointSum,
         T& maxX, T& minX, T& maxY, T& minY)
@@ -494,17 +494,17 @@ protected:
         maxY = Max(yValues, pointSum);
     }
 
-        /** Finishes the plotting */
+    /** Finishes the plotting */
     inline void FinishPlot()
     {
-            // Changed 2006-06-05
+        // Changed 2006-06-05
         m_dcPlot.BitBlt(0, 0, m_nClientWidth, m_rectPlot.top + 1, &m_dcGrid, 0, 0, SRCCOPY);
         m_dcPlot.BitBlt(0, 0, m_rectPlot.left + 1, m_nClientHeight, &m_dcGrid, 0, 0, SRCCOPY);
         m_dcPlot.BitBlt(m_rectPlot.right, m_rectPlot.top, (m_nClientWidth - m_rectPlot.right), m_nPlotHeight, &m_dcGrid, m_rectPlot.right, m_rectPlot.top, SRCCOPY);
         m_dcPlot.BitBlt(0, m_rectPlot.bottom, m_nClientWidth, (m_nClientHeight - m_rectPlot.bottom), &m_dcGrid, 0, m_rectPlot.bottom, SRCCOPY);
     }
 
-        /** Creates the transform which converts from data point to screen - coordinates */
+    /** Creates the transform which converts from data point to screen - coordinates */
     template <class T>
     void GetTransform(T& leftOffset, T& bottomOffset, T& xScaling, T& yScaling, AxisOptions::FloatRect& coordinate)
     {
@@ -514,7 +514,7 @@ protected:
         yScaling = m_nPlotHeight / (coordinate.top - coordinate.bottom);
     }
 
-        /** Pretty prints the number into the supplied string. Used for the scaling of the axes */
+    /** Pretty prints the number into the supplied string. Used for the scaling of the axes */
     void PrintNumber(double number, int nDecimals, NUMBER_FORMAT format, CString& str);
 };
 }

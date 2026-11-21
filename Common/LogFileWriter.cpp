@@ -20,7 +20,7 @@ int CLogFileWriter::SetErrorLogFile(const CString& path, const CString& fileName
     }
     m_errorFile.Format("%s\\%s", (LPCSTR)path, (LPCSTR)fileName);
 
-        // try to open the file and make sure that the file can be written to
+    // try to open the file and make sure that the file can be written to
     GetHeaderString(str, ERROR_LOG);
     return WriteToFile(str, ERROR_LOG, false);
 }
@@ -40,7 +40,7 @@ int CLogFileWriter::SetResultLogFile(const CString& path, const CString& fileNam
     }
     m_resultFile[resultLogFileNum].Format("%s\\%s", (LPCSTR)path, (LPCSTR)fileName);
 
-        // try to open the file and make sure that the file can be written to
+    // try to open the file and make sure that the file can be written to
     if (resultLogFileNum == 0)
     {
         GetHeaderString(str, RESULT_LOG1);
@@ -53,13 +53,13 @@ int CLogFileWriter::SetResultLogFile(const CString& path, const CString& fileNam
     }
 }
 
-    /** Returns the name of the error log file */
+/** Returns the name of the error log file */
 const CString& CLogFileWriter::GetErrorLogFile() const
 {
     return m_errorFile;
 }
 
-    /** Returns the name of the desired result log file */
+/** Returns the name of the desired result log file */
 const CString& CLogFileWriter::GetResultLogFile(unsigned int resultLogFileNum) const
 {
     if (resultLogFileNum < 0)
@@ -142,8 +142,8 @@ int CLogFileWriter::WriteToFile(const CString& str, const int file, bool timeSta
     return (ret >= 0);
 }
 
-    /** Common handler to create the first, comment, line in the newly created file.
-        @param str - str will when the function returns contain the header string to be written to file. */
+/** Common handler to create the first, comment, line in the newly created file.
+    @param str - str will when the function returns contain the header string to be written to file. */
 int CLogFileWriter::GetHeaderString(CString& str, const int file) const
 {
     CString time, date;

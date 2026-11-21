@@ -40,34 +40,34 @@ public:
     CStatusFileReader(void);
     ~CStatusFileReader(void);
 
-        /**reorder the status records, from index=4 to index = 1023, records are listed
-        *from oldest to latest.
-        *@param fileFullName full path and name of the status.dat file
-        */
+    /**reorder the status records, from index=4 to index = 1023, records are listed
+    *from oldest to latest.
+    *@param fileFullName full path and name of the status.dat file
+    */
     void Reorder();
 
-        /**check latest 10 status records to find out one which is same as the input value
-        *@param status the status to be found
-        *return 0 - if status is not found
-        *return 1 - if status is found
-        */
+    /**check latest 10 status records to find out one which is same as the input value
+    *@param status the status to be found
+    *return 0 - if status is not found
+    *return 1 - if status is found
+    */
     int CheckStatus(unsigned char status);
 
-        /**Check if command was received
-        *return 0 - if is not received
-        *return 1 - if it is received
-        */
+    /**Check if command was received
+    *return 0 - if is not received
+    *return 1 - if it is received
+    */
     int IsCommandReceived();
 
-        /**Check if kongo exited
-        *return 1 - exited
-        */
+    /**Check if kongo exited
+    *return 1 - exited
+    */
     int IsExit();
 
-        /**check if kongo is started*/
+    /**check if kongo is started*/
     int IsStart();
 
-        /**check if kongo is power off*/
+    /**check if kongo is power off*/
     int IsPoweroff();
 
     void StatusPrint(unsigned char s);

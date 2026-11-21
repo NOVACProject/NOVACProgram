@@ -15,7 +15,7 @@ public:
     CExportSpectraDlg();
     virtual ~CExportSpectraDlg();
 
-        // Dialog Data
+    // Dialog Data
     enum
     {
         IDD = IDD_EXPORT_SPECTRA
@@ -26,32 +26,32 @@ protected:
 
     DECLARE_MESSAGE_MAP()
 public:
-        /** Called when the user wants too look for pak-file(s) to export */
+    /** Called when the user wants too look for pak-file(s) to export */
     afx_msg void OnBrowsePakFile();
 
-        /** Called when the user want to look for an output directory*/
+    /** Called when the user want to look for an output directory*/
     afx_msg void OnBrowseExportDir();
 
-        /** Called when the user changes the output directory */
+    /** Called when the user changes the output directory */
     afx_msg void OnChangeExportDir();
 
-        /** Does the actual exporting */
+    /** Does the actual exporting */
     afx_msg void OnExportSpectra();
 
-        /** Initializes the controls in the dialog */
+    /** Initializes the controls in the dialog */
     virtual BOOL OnInitDialog();
 
-        /** The 'export' - button */
+    /** The 'export' - button */
     CButton m_exportBtn;
 
-        /** The list of pak-files to export */
+    /** The list of pak-files to export */
     CList<CString, CString&> m_pakFile;
 
-        /** The format in which to export the spectra */
+    /** The format in which to export the spectra */
     int m_exportFormat;
 
 private:
-        /** Saves a spectrum to a correct filename */
+    /** Saves a spectrum to a correct filename */
     void SaveSpectrum(const novac::CSpectrum& spec, const CString& path);
 
     int m_skyIndex, m_darkIndex, m_specIndex;

@@ -15,16 +15,16 @@ public:
     CConfigurationTreeCtrl();
     virtual ~CConfigurationTreeCtrl();
 
-        /** The local copy of the configuration list */
+    /** The local copy of the configuration list */
     const CConfigurationSetting* m_configuration;
 
-        /** Updates the tree control */
+    /** Updates the tree control */
     void UpdateTree();
 
-        /** Fills in the configuration tree control */
+    /** Fills in the configuration tree control */
     void PopulateTreeControl();
 
-        /** Retrieves the currently selected scanner and spectrometer */
+    /** Retrieves the currently selected scanner and spectrometer */
     void GetCurScanAndSpec(int& curScan, int& curSpec);
 
 protected:

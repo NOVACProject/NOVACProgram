@@ -21,7 +21,7 @@ CGraphCtrl::CFontOption::CFontOption()
 // ---- CGraphCtrl ----
 CGraphCtrl::CGraphCtrl()
 {
-  // public variable for the number of decimal places on the axis
+    // public variable for the number of decimal places on the axis
     m_nYDecimals = 3;
     m_nXDecimals = 1;
     m_nY2Decimals = 0;
@@ -63,15 +63,15 @@ CGraphCtrl::CGraphCtrl()
     m_plotOptions.circleRadius = 4;
     m_plotOptions.lineWidth = 1;
 
-  // protected variables
+    // protected variables
     m_penPlot.CreatePen(PS_SOLID, m_plotOptions.lineWidth, m_colors.plot);
     m_brushBack.CreateSolidBrush(m_colors.background);
 
-  // public member variables, can be set directly
+    // public member variables, can be set directly
     m_strXUnitsString.Format("Samples");  // can also be set with SetXUnits
     m_strYUnitsString.Format("Y units");  // can also be set with SetYUnits
 
-  // protected bitmaps to restore the memory DC's
+    // protected bitmaps to restore the memory DC's
     m_pbitmapOldGrid = NULL;
     m_pbitmapOldPlot = NULL;
 
@@ -90,8 +90,8 @@ CGraphCtrl::CGraphCtrl()
 
 CGraphCtrl::~CGraphCtrl()
 {
-  // just to be picky restore the bitmaps for the two memory dc's
-  // (these dc's are being destroyed so there shouldn't be any leaks)
+    // just to be picky restore the bitmaps for the two memory dc's
+    // (these dc's are being destroyed so there shouldn't be any leaks)
     if (m_pbitmapOldGrid != NULL)
     {
         m_dcGrid.SelectObject(m_pbitmapOldGrid);
@@ -172,7 +172,7 @@ void CGraphCtrl::SetGridColor(COLORREF color)
 {
     m_colors.grid = color;
 
-  // clear out the existing garbage, re-start with a clean plot
+    // clear out the existing garbage, re-start with a clean plot
     InvalidateCtrl();
 
 }  // SetGridColor
@@ -185,7 +185,7 @@ void CGraphCtrl::SetPlotColor(COLORREF color, bool redraw)
     m_penPlot.DeleteObject();
     m_penPlot.CreatePen(PS_SOLID, m_plotOptions.lineWidth, m_colors.plot);
 
-  // clear out the existing garbage, re-start with a clean plot
+    // clear out the existing garbage, re-start with a clean plot
     if (redraw)
     {
         InvalidateCtrl();
@@ -201,7 +201,7 @@ void CGraphCtrl::SetBackgroundColor(COLORREF color)
     m_brushBack.DeleteObject();
     m_brushBack.CreateSolidBrush(m_colors.background);
 
-  // clear out the existing garbage, re-start with a clean plot
+    // clear out the existing garbage, re-start with a clean plot
     InvalidateCtrl();
 
 }  // SetBackgroundColor
@@ -223,7 +223,7 @@ void CGraphCtrl::IncreaseLineWidth()
     m_penPlot.DeleteObject();
     m_penPlot.CreatePen(PS_SOLID, ++m_plotOptions.lineWidth, m_colors.plot);
 
-  // clear out the existing garbage, re-start with a clean plot
+    // clear out the existing garbage, re-start with a clean plot
     InvalidateCtrl();
 
 }  // IncreaseLineWidth
@@ -238,7 +238,7 @@ void CGraphCtrl::DecreaseLineWidth()
     m_penPlot.DeleteObject();
     m_penPlot.CreatePen(PS_SOLID, --m_plotOptions.lineWidth, m_colors.plot);
 
-  // clear out the existing garbage, re-start with a clean plot
+    // clear out the existing garbage, re-start with a clean plot
     InvalidateCtrl();
 
 }  // DecreaseLineWidth
@@ -251,7 +251,7 @@ void CGraphCtrl::SetLineWidth(int width, bool clear)
         m_penPlot.DeleteObject();
         m_penPlot.CreatePen(PS_SOLID, m_plotOptions.lineWidth, m_colors.plot);
 
-      // clear out the existing garbage, re-start with a clean plot
+        // clear out the existing garbage, re-start with a clean plot
         if (clear)
         {
             InvalidateCtrl();
@@ -261,9 +261,9 @@ void CGraphCtrl::SetLineWidth(int width, bool clear)
 
 void CGraphCtrl::InvalidateCtrl()
 {
-  // There is a lot of drawing going on here - particularly in terms of
-  // drawing the grid.  Don't panic, this is all being drawn (only once)
-  // to a bitmap.  The result is then BitBlt'd to the control whenever needed.
+    // There is a lot of drawing going on here - particularly in terms of
+    // drawing the grid.  Don't panic, this is all being drawn (only once)
+    // to a bitmap.  The result is then BitBlt'd to the control whenever needed.
     int i;
     size_t nCharacters;
     CPen* oldPen;
@@ -271,10 +271,10 @@ void CGraphCtrl::InvalidateCtrl()
     CFont axisFont, yUnitFont, *oldFont;
     CString strTemp, xAxisStrMin[2], xAxisStrMax[2], yAxisStrMin[2], yAxisStrMax[2];
 
-  // in case we haven't established the memory dc's
+    // in case we haven't established the memory dc's
     CClientDC dc(this);
 
-  // if we don't have one yet, set up a memory dc for the grid
+    // if we don't have one yet, set up a memory dc for the grid
     if (m_dcGrid.GetSafeHdc() == NULL)
     {
         m_dcGrid.CreateCompatibleDC(&dc);
@@ -295,20 +295,20 @@ void CGraphCtrl::InvalidateCtrl()
         PrintNumber(m_axisOptions.second.bottom, m_nY2Decimals, m_axisOptions.second.formatY, yAxisStrMin[1]);
     }
 
-  // ---- Clear the grid DC ----
+    // ---- Clear the grid DC ----
     m_dcGrid.FillRect(m_rectClient, &m_brushBack);
 
-  // draw the plot rectangle:
-  // determine how wide the y axis scaling values are
+    // draw the plot rectangle:
+    // determine how wide the y axis scaling values are
     nCharacters = max(strlen(yAxisStrMax[0]), strlen(yAxisStrMin[0]));
 
-  // add an extra space
+    // add an extra space
     nCharacters = nCharacters + 2;
 
     m_rectPlot.left = m_rectClient.left + 6 * (long)nCharacters;
 
-  // adjust the plot rectangle dimensions
-  // assume 6 pixels per character (this may need to be adjusted)
+    // adjust the plot rectangle dimensions
+    // assume 6 pixels per character (this may need to be adjusted)
     if (m_axisOptions.drawRightUnits)
     {
         PrintNumber(m_axisOptions.second.top, m_nY2Decimals, m_axisOptions.second.formatY, strTemp);
@@ -324,7 +324,7 @@ void CGraphCtrl::InvalidateCtrl()
     }
     m_nPlotWidth = m_rectPlot.Width();
 
-  // draw the plot rectangle
+    // draw the plot rectangle
     oldPen = m_dcGrid.SelectObject(&solidPen);
     m_dcGrid.MoveTo(m_rectPlot.left, m_rectPlot.top);
     m_dcGrid.LineTo(m_rectPlot.right + 1, m_rectPlot.top);
@@ -366,9 +366,9 @@ void CGraphCtrl::InvalidateCtrl()
 
     // ------------- DRAW THE SCALE ON THE AXES -----------------------
 
-  // create some fonts (horizontal and vertical)
-  // use a height of 14 pixels and 900 weight
-  // (these may need to be adjusted depending on the display)
+    // create some fonts (horizontal and vertical)
+    // use a height of 14 pixels and 900 weight
+    // (these may need to be adjusted depending on the display)
     axisFont.CreateFont(m_axisOptions.axisFont.height, 0, 0, 0, m_axisOptions.axisFont.width,
         FALSE, FALSE, 0, ANSI_CHARSET,
         OUT_DEFAULT_PRECIS,
@@ -382,7 +382,7 @@ void CGraphCtrl::InvalidateCtrl()
         DEFAULT_QUALITY,
         DEFAULT_PITCH | FF_SWISS, "Arial");
 
-  // grab the horizontal font
+    // grab the horizontal font
     oldFont = m_dcGrid.SelectObject(&axisFont);
 
     // y max
@@ -390,27 +390,27 @@ void CGraphCtrl::InvalidateCtrl()
     m_dcGrid.SetTextAlign(TA_RIGHT | TA_TOP);
     m_dcGrid.TextOut(m_rectPlot.left - 4, m_rectPlot.top, yAxisStrMax[0]);
 
-  // y min
+    // y min
     m_dcGrid.SetTextAlign(TA_RIGHT | TA_BASELINE);
     m_dcGrid.TextOut(m_rectPlot.left - 4, m_rectPlot.bottom, yAxisStrMin[0]);
 
-  // x min
+    // x min
     m_dcGrid.SetTextAlign(TA_LEFT | TA_TOP);
     m_dcGrid.TextOut(m_rectPlot.left, m_rectPlot.bottom + 4, xAxisStrMin[0]);
 
-  // x max
+    // x max
     m_dcGrid.SetTextAlign(TA_RIGHT | TA_TOP);
     m_dcGrid.TextOut(m_rectPlot.right, m_rectPlot.bottom + 4, xAxisStrMax[0]);
 
-  // x units
+    // x units
     m_dcGrid.SetTextAlign(TA_CENTER | TA_TOP);
     m_dcGrid.TextOut((m_rectPlot.left + m_rectPlot.right) / 2,
         m_rectPlot.bottom + 4, m_strXUnitsString);
 
-  // restore the font
+    // restore the font
     m_dcGrid.SelectObject(oldFont);
 
-  // y units
+    // y units
     oldFont = m_dcGrid.SelectObject(&yUnitFont);
     m_dcGrid.SetTextAlign(TA_CENTER | TA_BASELINE);
     m_dcGrid.TextOut((m_rectClient.left + m_rectPlot.left) / 2,
@@ -442,7 +442,7 @@ void CGraphCtrl::InvalidateCtrl()
   // at this point we are done filling the the grid bitmap,
   // no more drawing to this bitmap is needed until the setting are changed
 
-  // if we don't have one yet, set up a memory dc for the plot
+    // if we don't have one yet, set up a memory dc for the plot
     if (m_dcPlot.GetSafeHdc() == NULL)
     {
         m_dcPlot.CreateCompatibleDC(&dc);
@@ -475,8 +475,8 @@ void CGraphCtrl::OnPaint()
   // no real plotting work is performed here,
   // just putting the existing bitmaps on the client
 
-  // to avoid flicker, establish a memory dc, draw to it
-  // and then BitBlt it to the client
+    // to avoid flicker, establish a memory dc, draw to it
+    // and then BitBlt it to the client
     memDC.CreateCompatibleDC(&dc);
     memBitmap.CreateCompatibleBitmap(&dc, m_nClientWidth, m_nClientHeight);
     oldBitmap = (CBitmap*)memDC.SelectObject(&memBitmap);
@@ -492,7 +492,7 @@ void CGraphCtrl::OnPaint()
     //memDC.BitBlt(0, 0, m_nClientWidth, m_nClientHeight,
     //             &m_dcPlot, 0, 0, SRCPAINT) ;  //SRCPAINT
 
-    // 2006-06-05: finally send the result to the display
+        // 2006-06-05: finally send the result to the display
         dc.BitBlt(0, 0, m_nClientWidth, m_nClientHeight,
             &m_dcPlot, 0, 0, SRCCOPY);
     }
@@ -662,31 +662,31 @@ void CGraphCtrl::OnSize(UINT nType, int cx, int cy)
 {
     CWnd::OnSize(nType, cx, cy);
 
-  // NOTE: OnSize automatically gets called during the setup of the control
+    // NOTE: OnSize automatically gets called during the setup of the control
 
     GetClientRect(m_rectClient);
 
-  // set some member variables to avoid multiple function calls
+    // set some member variables to avoid multiple function calls
     m_nClientHeight = m_rectClient.Height();
     m_nClientWidth = m_rectClient.Width();
 
-  // the "left" coordinate and "width" will be modified in
-  // InvalidateCtrl to be based on the width of the y axis scaling
+    // the "left" coordinate and "width" will be modified in
+    // InvalidateCtrl to be based on the width of the y axis scaling
     m_rectPlot.left = 20;
     m_rectPlot.top = 10;
     m_rectPlot.right = m_rectClient.right - 10;
     m_rectPlot.bottom = m_rectClient.bottom - 25;
 
-  // set some member variables to avoid multiple function calls
+    // set some member variables to avoid multiple function calls
     m_nPlotHeight = m_rectPlot.Height();
     m_nPlotWidth = m_rectPlot.Width();
 
-  // set the scaling factor for now, this can be adjusted
-  // in the SetRange functions
+    // set the scaling factor for now, this can be adjusted
+    // in the SetRange functions
     m_dVerticalFactor = (double)m_nPlotHeight / (m_axisOptions.first.top - m_axisOptions.first.bottom);
     m_dHorizonFactor = (double)m_nPlotWidth / (m_axisOptions.first.right - m_axisOptions.first.left);
 
-  // change the memory dc for the grid
+    // change the memory dc for the grid
     if (m_dcGrid.GetSafeHdc() != NULL)
     {
         CClientDC dc(this);
@@ -696,7 +696,7 @@ void CGraphCtrl::OnSize(UINT nType, int cx, int cy)
         m_pbitmapOldGrid = m_dcGrid.SelectObject(&m_bitmapGrid);
     }
 
-  // change the memory dc for the plot
+    // change the memory dc for the plot
     if (m_dcPlot.GetSafeHdc() != NULL)
     {
         CClientDC dc(this);
@@ -755,7 +755,7 @@ void CGraphCtrl::DrawTextBox(double x_min, double x_max, double y_min, double y_
     m_dcPlot.SetTextAlign(TA_CENTER | TA_BASELINE);
     m_dcPlot.ExtTextOut((rect.right + rect.left) / 2, rect.top, ETO_CLIPPED, &rect, str, NULL);
 
-  // restore the font
+    // restore the font
     m_dcPlot.SelectObject(oldFont);
 }
 
@@ -878,7 +878,7 @@ void CGraphCtrl::DrawVectorField(double* start_x, double* start_y, double* x_com
 {
     int point;
 
-  // Draw each of the data points
+    // Draw each of the data points
     for (point = 0; point < nSum; ++point)
     {
         DrawVector(start_x[point], start_y[point], x_comp[point], y_comp[point], false);

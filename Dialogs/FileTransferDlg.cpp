@@ -1632,7 +1632,7 @@ void CFileTransferDlg::OnLbnSelchangeScannerList()
         AfxBeginThread(DownloadFileListWithSerial, this, THREAD_PRIORITY_NORMAL, 0, 0, NULL);
 
         break;
-        //when it is ftp connection
+    //when it is ftp connection
     case FTP_CONNECTION:
         m_ftpController = new Communication::CFTPHandler(g_settings.scanner[curScanner].electronicsBox);
 

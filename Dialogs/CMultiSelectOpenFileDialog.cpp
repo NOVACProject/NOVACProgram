@@ -56,8 +56,8 @@ CMultiSelectOpenFileDialog::~CMultiSelectOpenFileDialog()
 }
 
 BEGIN_MESSAGE_MAP(CMultiSelectOpenFileDialog, CFileDialog)
-    //{{AFX_MSG_MAP(CMultiSelectOpenFileDialog)
-    //}}AFX_MSG_MAP
+//{{AFX_MSG_MAP(CMultiSelectOpenFileDialog)
+//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 //

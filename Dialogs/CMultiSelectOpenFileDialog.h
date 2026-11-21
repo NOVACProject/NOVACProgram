@@ -3,8 +3,8 @@
 namespace Dialogs
 {
 
-    // Code from: http://www.codeproject.com/dialog/pja_multiselect.asp
-    //  made by: PJ Arends
+// Code from: http://www.codeproject.com/dialog/pja_multiselect.asp
+//  made by: PJ Arends
 class CMultiSelectOpenFileDialog : public CFileDialog
 {
     DECLARE_DYNAMIC(CMultiSelectOpenFileDialog)

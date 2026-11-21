@@ -19,7 +19,7 @@ public:
     CNovacMasterProgramApp();
 
 
-    // Overrides
+// Overrides
 public:
     virtual BOOL InitInstance() override;
     virtual BOOL ExitInstance() override;

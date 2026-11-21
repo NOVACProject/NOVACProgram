@@ -14,7 +14,7 @@ public:
     CWindConfigurationDlg();
     virtual ~CWindConfigurationDlg();
 
-        // Dialog Data
+    // Dialog Data
     enum
     {
         IDD = IDD_CONFIGURE_WIND
@@ -25,29 +25,29 @@ protected:
 
     DECLARE_MESSAGE_MAP()
 public:
-        /** Setup the tool tips */
+    /** Setup the tool tips */
     void InitToolTips();
 
-        /** Initializing the dialog */
+    /** Initializing the dialog */
     virtual BOOL OnInitDialog();
 
-        /** Handling the tool tips */
+    /** Handling the tool tips */
     virtual BOOL PreTranslateMessage(MSG* pMsg);
 
-        /** Called when the user has changed the currently selected scanner */
+    /** Called when the user has changed the currently selected scanner */
     virtual void OnChangeScanner() override;
 
-        /** Called when the automatic measurements have been turned on/off */
+    /** Called when the automatic measurements have been turned on/off */
     afx_msg void OnOnOff();
 
-        /** Saves the data in the dialog */
+    /** Saves the data in the dialog */
     afx_msg void SaveData();
 
-        /** Called when the user has changed between using angles or distances */
+    /** Called when the user has changed between using angles or distances */
     afx_msg void OnChangeAngleDistance();
 
 protected:
-        /** the local copies of the settings */
+    /** the local copies of the settings */
     int automatic; // 0 or 1
     int duration; //minutes
     int interval; //minutes
@@ -60,10 +60,10 @@ protected:
     int useAngle;
 
 
-        /** The edit-boxes on the screen */
+    /** The edit-boxes on the screen */
     CEdit m_editDuration, m_editInterval, m_editMaxAngle, m_editStablePeriod, m_editMinPeakColumn, m_editMotorStepsComp;
 
-        // The special controls for the Heidelberg-instrument
+    // The special controls for the Heidelberg-instrument
     CEdit m_editAngle, m_editDistance, m_editSwitchRange;
     CButton m_radioAngle, m_radioDistance;
     CButton m_useCalcWind;

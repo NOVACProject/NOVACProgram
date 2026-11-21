@@ -16,71 +16,71 @@ struct FTPInformation
     CString password;
     long port;
 };
-    /** <b>CFTPController</b> class handles one link of downloading and uploading file
-    *to the remote PC
-    */
+/** <b>CFTPController</b> class handles one link of downloading and uploading file
+*to the remote PC
+*/
 class CFTPController : public CFTPSocket
 {
 public:
     CFTPController(void);
     ~CFTPController(void);
-        //-------------------------------------------//
-        //--------------public functions ------------//
-        //-------------------------------------------//
-        /**set ftp information*/
+    //-------------------------------------------//
+    //--------------public functions ------------//
+    //-------------------------------------------//
+    /**set ftp information*/
     void SetFTPInfo(int mainIndex, CString& IP, CString& userName, CString pwd, long portNumber = 5551);
-        /**poll one instrument*/
+    /**poll one instrument*/
     bool PollScanner();
     bool MakeCommandFile(char* cmdString);
     bool SendCommand(char* cmd);
     void GotoSleep();
     void WakeUp();
-        /**reboot the remote scanner*/
+    /**reboot the remote scanner*/
     void Reboot();
     bool DownloadRemoteFile(CString remoteFileName, CString savetoPath);
-        /**download upload.pak, Uxxx.pak files and evaluate*/
+    /**download upload.pak, Uxxx.pak files and evaluate*/
     bool DownloadSpectra(CString remoteFile, CString savetoPath);
-        /**download old pak files and evaluate*/
+    /**download old pak files and evaluate*/
     bool DownloadOldPak(long interval);
-        /**get file list*/
+    /**get file list*/
     bool GetPakFileList();
     void ParseFileInfo(CString line);
     int FillFileList();
-        /**delet remote file
-        @param remote file name ( without path)
-        return TRUE if deleted successfully
-        */
+    /**delet remote file
+    @param remote file name ( without path)
+    return TRUE if deleted successfully
+    */
     BOOL DeleteRemoteFile(CString& remoteFile);
-        /**get the file transfer speed, return bytes per second*/
+    /**get the file transfer speed, return bytes per second*/
     long GetFtpSpeed();
-        /*arrange file structure list*/
+    /*arrange file structure list*/
     bool ArrangeFileList(char* string);
-        /*add pak file name into m_oldpakfile list*/
+    /*add pak file name into m_oldpakfile list*/
     void AddPakFileInfo(CString string);
-        /*add Rxxx folder name into m_rFolderList*/
+    /*add Rxxx folder name into m_rFolderList*/
     void AddFolderInfo(CString string);
-        /*download Uxxx.pak files in m_oldpakList*/
+    /*download Uxxx.pak files in m_oldpakList*/
     bool DownloadPakFiles(CString& folder);
-        //-------------------------------------------//
-        //--------------public variables ------------//
-        //-------------------------------------------//
+    //-------------------------------------------//
+    //--------------public variables ------------//
+    //-------------------------------------------//
 
     struct FTPInformation m_ftpInfo;
-        /**index in the configuration.xml*/
+    /**index in the configuration.xml*/
     int m_mainIndex;
-        /**spectrometer's serial number, can be found by connecting spectrometer with USB cable*/
+    /**spectrometer's serial number, can be found by connecting spectrometer with USB cable*/
     CString m_spectrometerSerialID;
     FileHandler::CPakFileHandler* m_pakFileHandler;
     CString m_localFileFullPath;
     CString m_storageDirectory;
     Common m_common;
     CString m_statusMsg;
-        /**speed to download file, byte/second*/
+    /**speed to download file, byte/second*/
     long m_dataSpeed;
-        //list for first layer Uxxx.pak files
+    //list for first layer Uxxx.pak files
     CList<CFileInfo, CFileInfo&> m_oldPakList;
     CList<CFileInfo, CFileInfo&> m_fileList;
-        //list for Rxxx folders
+    //list for Rxxx folders
     CList<CString, CString&> m_rFolderList;
 };
 }

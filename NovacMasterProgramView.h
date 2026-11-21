@@ -35,7 +35,7 @@ public:
     };
     //}}AFX_DATA
 
-// Attributes
+    // Attributes
     CNovacMasterProgramDoc* GetDocument() const;
 
     // Overrides
@@ -53,7 +53,7 @@ public:
     virtual void Dump(CDumpContext& dc) const;
 #endif
 
-    // Generated message map functions
+// Generated message map functions
 protected:
     afx_msg LRESULT OnShowStatus(WPARAM wParam, LPARAM lParam);
     afx_msg LRESULT OnShowMessage(WPARAM wParam, LPARAM lParam);

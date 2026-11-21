@@ -153,17 +153,17 @@ void CCommunicationController::StartCommunicationThreads()
 
         switch (connectionType)
         {
-            //when it is serial connection
+        //when it is serial connection
         case SERIAL_CONNECTION:
             m_serialList.SetAtGrow(m_totalSerialConnection, new CSerialInfo(i, false, comm.medium));
             m_totalSerialConnection++;
             break;
-            //when it is ftp connection
+        //when it is ftp connection
         case FTP_CONNECTION:
             m_totalFTPConnection++;
             m_ftpList.AddTail(i);
             break;
-            //when it is http connection
+        //when it is http connection
         case HTTP_CONNECTION:
             m_totalHttpConnection = 1;
             m_httpList.AddTail(i);

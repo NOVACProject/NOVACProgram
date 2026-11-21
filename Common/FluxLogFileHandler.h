@@ -15,27 +15,27 @@ public:
     CFluxLogFileHandler(void);
     ~CFluxLogFileHandler(void);
 
-        /** The name of the flux log */
+    /** The name of the flux log */
     CString m_fluxLog;
 
         // ------------------- PUBLIC METHODS -------------------------
 
-        /** Reads the flux log */
+    /** Reads the flux log */
     RETURN_CODE ReadFluxLog();
 
         // ------------------- PUBLIC DATA -------------------------
 
-        /** Information of the measured fluxes */
+    /** Information of the measured fluxes */
     CArray<Evaluation::CFluxResult, Evaluation::CFluxResult&> m_fluxes;
 
-        /** Information of the instrument at the measurement occation */
+    /** Information of the instrument at the measurement occation */
     CArray<novac::CSpectrumInfo, novac::CSpectrumInfo&> m_scanInfo;
 
-        /** How many fluxes have been read in */
+    /** How many fluxes have been read in */
     int m_fluxesNum;
 
 protected:
-        // ------------------- PROTECTED DATA -------------------------
+    // ------------------- PROTECTED DATA -------------------------
 
     typedef struct LogColumns
     {
@@ -58,17 +58,17 @@ protected:
         int expTime;   // <-- the exposure-time
     } LogColumns;
 
-        /** Data structure to remember what column corresponds to which value in the evaluation log */
+    /** Data structure to remember what column corresponds to which value in the evaluation log */
     LogColumns m_col;
 
-        /** Reads the header line for the scan information and retrieves which
-            column represents which value. */
+    /** Reads the header line for the scan information and retrieves which
+        column represents which value. */
     void ParseScanHeader(const char szLine[8192]);
 
-        /** Resets the information about which column data is stored in */
+    /** Resets the information about which column data is stored in */
     void ResetColumns();
 
-        /** Sorts the scans in order of collection */
+    /** Sorts the scans in order of collection */
     void SortScans();
 };
 }

@@ -10,16 +10,16 @@ protected: // create from serialization only
     CNovacMasterProgramDoc();
     DECLARE_DYNCREATE(CNovacMasterProgramDoc)
 
-    // Attributes
+// Attributes
 public:
-    // Operations
+// Operations
 public:
-    // Overrides
+// Overrides
 public:
     virtual BOOL OnNewDocument();
     virtual void Serialize(CArchive& ar);
 
-    // Implementation
+// Implementation
 public:
     virtual ~CNovacMasterProgramDoc();
 #ifdef _DEBUG
@@ -28,7 +28,7 @@ public:
 #endif
 
 protected:
-    // Generated message map functions
+// Generated message map functions
 protected:
     DECLARE_MESSAGE_MAP()
 };

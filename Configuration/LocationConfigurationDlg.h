@@ -15,7 +15,7 @@ public:
     CLocationConfigurationDlg();
     virtual ~CLocationConfigurationDlg();
 
-        // Dialog Data
+    // Dialog Data
     enum
     {
         IDD = IDD_CONFIGURE_LOCATION
@@ -26,52 +26,52 @@ protected:
 
     DECLARE_MESSAGE_MAP()
 public:
-        /** Initializing the dialog */
+    /** Initializing the dialog */
     virtual BOOL OnInitDialog();
 
-        /** Setup the tool tips */
+    /** Setup the tool tips */
     void InitToolTips();
 
-        /** Called when this page is no longer the active page */
+    /** Called when this page is no longer the active page */
     virtual BOOL OnKillActive();
 
-        /** Handling the tool tips */
+    /** Handling the tool tips */
     virtual BOOL PreTranslateMessage(MSG* pMsg);
 
-        /** The user has changed the name of the volcano */
+    /** The user has changed the name of the volcano */
     afx_msg void OnChangeVolcano();
 
-        /** The user has changed the model of the spectrometer */
+    /** The user has changed the model of the spectrometer */
     afx_msg void OnChangeModel();
 
-        /** The user has changed the number of channels in the spectrometer */
+    /** The user has changed the number of channels in the spectrometer */
     afx_msg void OnChangeChannelNum();
 
-        /** Saving the data in the dialog */
+    /** Saving the data in the dialog */
     afx_msg void SaveData();
 
-        /** Updating the data in the dialog */
+    /** Updating the data in the dialog */
     afx_msg void UpdateDlg();
 
-        /** Adds a volcano to the list of volcanoes */
+    /** Adds a volcano to the list of volcanoes */
     void AddAVolcano();
 
-        /** Called when the user has changed the currently selected scanner */
+    /** Called when the user has changed the currently selected scanner */
     virtual void OnChangeScanner() override;
 
 private:
-        // The labels on the screen.
+    // The labels on the screen.
     CStatic m_labelVolcano;
     CStatic m_labelSite;
     CStatic m_labelObservatory;
 
 
-        // The edit controls on the screen.
+    // The edit controls on the screen.
     CStatic m_editSite, m_editObservatory, m_labelSPR;
     CEdit m_editSPR1, m_editSPR2, m_editMSC1, m_editMSC2;
     CStatic m_editSerial;
 
-        // The combo controls on the screen
+    // The combo controls on the screen
     CComboBox m_comboVolcano;
     CComboBox m_comboElectronics;
     CComboBox m_comboSpectrometerModel;
@@ -85,7 +85,7 @@ private:
     CEdit m_minFlux;
     CEdit m_maxFlux;
 
-        /** (Re-)initializes the list of volcanoes */
+    /** (Re-)initializes the list of volcanoes */
     void UpdateVolcanoList();
 
     void RecreateSpectrometerModelCombo();

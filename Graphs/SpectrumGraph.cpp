@@ -40,7 +40,7 @@ void CSpectrumGraph::OnMouseMove(UINT nFlags, CPoint point)
 
     //  parentWnd->PostMessage(WM_SHOW_LATLONG);
 
-        // If the user is dragging with the left mouse button pressed
+    // If the user is dragging with the left mouse button pressed
     if (nFlags & MK_LBUTTON)
     {
         if (!m_userZoomableGraph)

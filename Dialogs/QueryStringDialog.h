@@ -10,25 +10,25 @@ class CQueryStringDialog : public CDialog
     DECLARE_DYNAMIC(CQueryStringDialog)
 
 public:
-        /** Default constructor */
+    /** Default constructor */
     CQueryStringDialog(CWnd* pParent = NULL);
 
-        /** Default destructor */
+    /** Default destructor */
     virtual ~CQueryStringDialog();
 
-        // Dialog Data
+    // Dialog Data
     enum
     {
         IDD = IDD_QUERY_STRING_DIALOG
     };
 
-        /** The window text */
+    /** The window text */
     CString m_windowText;
 
-        /** The returned string */
+    /** The returned string */
     CString* m_inputString;
 
-        /** When the user presses the 'ok' button */
+    /** When the user presses the 'ok' button */
     virtual void OnOK();
 
 protected:
@@ -37,7 +37,7 @@ protected:
 
     DECLARE_MESSAGE_MAP()
 
-        /** The input edit-box */
+    /** The input edit-box */
     CEdit m_editBox;
 };
 }

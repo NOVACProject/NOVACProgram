@@ -168,7 +168,7 @@ bool CFTPSocket::GetFileNameList()
 }
 bool CFTPSocket::NameList()
 {
-//-----------------
+    //-----------------
     SendCommand("NLST", "");
     if (ReadData())
     {
@@ -220,7 +220,7 @@ bool CFTPSocket::UploadFile(CString fileLocalPath)
         return false;
     }
 
-        //Send the STOR command
+    //Send the STOR command
     CString fileName = fileLocalPath;
     //check file existence first - to be done
     GetFileName(fileName);

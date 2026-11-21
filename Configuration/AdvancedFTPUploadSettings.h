@@ -12,7 +12,7 @@ public:
     CAdvancedFTPUploadSettings(CWnd* pParent = NULL);   // standard constructor
     virtual ~CAdvancedFTPUploadSettings();
 
-        // Dialog Data
+    // Dialog Data
     enum
     {
         IDD = IDD_CONFIGURATION_ADVANCED_FTP_UPLOAD
@@ -25,29 +25,29 @@ protected:
 public:
         // ------------------- DATA -------------------------
 
-        /** the actual configuration */
+    /** the actual configuration */
     CConfigurationSetting* m_configuration = nullptr;
 
-        /** The time when to start uploading */
+    /** The time when to start uploading */
     int m_startHr, m_startMin, m_startSec;
 
-        /** The time when to stop uploading */
+    /** The time when to stop uploading */
     int m_stopHr, m_stopMin, m_stopSec;
 
         // ------------------ METHODS -----------------------
 
-        /** Initialzing the dialog */
+    /** Initialzing the dialog */
     virtual BOOL OnInitDialog();
 
-        /** Called when the user presses the 'OK'-button.
-                Saves the filled in data in the dialog */
+    /** Called when the user presses the 'OK'-button.
+            Saves the filled in data in the dialog */
     virtual void OnOK();
 
 protected:
         // ------------------ METHODS -----------------------
 
-        /** Returns the width of the supplied component to be able to fit in
-                the supplied string */
+    /** Returns the width of the supplied component to be able to fit in
+            the supplied string */
     void GetNecessaryComponentSize(CWnd* wnd, CString& str, int& width, int& height);
 };
 }

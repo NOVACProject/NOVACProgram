@@ -18,14 +18,14 @@ int libcurl_transfer_progress_callback(void* /*clientp*/, curl_off_t dltotal, cu
     return 0;
 }
 
-    // convenient handle to a file to be downloade
+// convenient handle to a file to be downloade
 struct FtpFile
 {
     const char* filename = nullptr;
     FILE* stream = nullptr;
 };
 
-    /* read data to upload */
+/* read data to upload */
 static size_t readfunc(void* ptr, size_t size, size_t nmemb, void* stream)
 {
     FILE* f = (FILE*)stream;
@@ -40,14 +40,14 @@ static size_t readfunc(void* ptr, size_t size, size_t nmemb, void* stream)
     return n;
 }
 
-    /* write data being downloaded to disk */
+/* write data being downloaded to disk */
 static size_t writefunc(void* buffer, size_t size, size_t nmemb, void* stream)
 {
     struct FtpFile* out = (struct FtpFile*)stream;
 
     if (!out->stream)
     {
-            /* open file for writing */
+        /* open file for writing */
         out->stream = fopen(out->filename, "wb");
         if (!out->stream)
         {
@@ -70,7 +70,7 @@ struct CSFTPCom::SftpConnection
         curlHandle = nullptr;
     }
 
-        // This object manages a connection and is thus not trivially copyable
+    // This object manages a connection and is thus not trivially copyable
     SftpConnection(const SftpConnection&) = delete;
     SftpConnection& operator=(const SftpConnection&) = delete;
 
@@ -143,7 +143,7 @@ int CSFTPCom::Connect(LPCTSTR siteName, LPCTSTR userName, LPCTSTR password, int 
 
         /* Switch on full protocol/debug output */
 #ifdef DEBUG
-        // enable progress report function
+    // enable progress report function
     returnCode = curl_easy_setopt(m_FtpConnection->curlHandle, CURLOPT_NOPROGRESS, FALSE);
     assert(returnCode == CURLE_OK);
 
@@ -184,11 +184,11 @@ int CSFTPCom::UpdateRemoteFile(LPCTSTR localFile, LPCTSTR remoteFile)
         return 0;
     }
 
-        // build the full url, from the filename
+    // build the full url, from the filename
     CString remoteUrl;
     remoteUrl.Format("%s/sftp%s%s", m_site.c_str(), GetCurrentPath().c_str(), remoteFile);
 
-        // set the mode.
+    // set the mode.
     CURLcode returnCode;
     returnCode = curl_easy_setopt(m_FtpConnection->curlHandle, CURLOPT_UPLOAD, TRUE);
     if (returnCode != CURLE_OK)
@@ -197,7 +197,7 @@ int CSFTPCom::UpdateRemoteFile(LPCTSTR localFile, LPCTSTR remoteFile)
         return 0;
     }
 
-        // set the remote url
+    // set the remote url
     returnCode = curl_easy_setopt(m_FtpConnection->curlHandle, CURLOPT_URL, (const char*)remoteUrl);
     if (returnCode != CURLE_OK)
     {
@@ -205,7 +205,7 @@ int CSFTPCom::UpdateRemoteFile(LPCTSTR localFile, LPCTSTR remoteFile)
         return 0;
     }
 
-        // make sure we get the contents of the file (this may be disabled by e.g. getting the file size)
+    // make sure we get the contents of the file (this may be disabled by e.g. getting the file size)
     returnCode = curl_easy_setopt(m_FtpConnection->curlHandle, CURLOPT_NOBODY, FALSE);
     if (returnCode != CURLE_OK)
     {
@@ -213,7 +213,7 @@ int CSFTPCom::UpdateRemoteFile(LPCTSTR localFile, LPCTSTR remoteFile)
         return 0;
     }
 
-        // set the function reading the data from the file handle
+    // set the function reading the data from the file handle
     returnCode = curl_easy_setopt(m_FtpConnection->curlHandle, CURLOPT_READFUNCTION, readfunc);
     if (returnCode != CURLE_OK)
     {
@@ -228,7 +228,7 @@ int CSFTPCom::UpdateRemoteFile(LPCTSTR localFile, LPCTSTR remoteFile)
         return 0;
     }
 
-        // set the file handle
+    // set the file handle
     returnCode = curl_easy_setopt(m_FtpConnection->curlHandle, CURLOPT_READDATA, f);
     if (returnCode != CURLE_OK)
     {
@@ -237,7 +237,7 @@ int CSFTPCom::UpdateRemoteFile(LPCTSTR localFile, LPCTSTR remoteFile)
         return 0;
     }
 
-        // make sure we overwrite the file if it already exists
+    // make sure we overwrite the file if it already exists
     returnCode = curl_easy_setopt(m_FtpConnection->curlHandle, CURLOPT_APPEND, 0L);
     if (returnCode != CURLE_OK)
     {
@@ -246,7 +246,7 @@ int CSFTPCom::UpdateRemoteFile(LPCTSTR localFile, LPCTSTR remoteFile)
         return 0;
     }
 
-        // do the upload
+    // do the upload
     returnCode = curl_easy_perform(m_FtpConnection->curlHandle);
 
     fclose(f);
@@ -264,17 +264,17 @@ int CSFTPCom::UpdateRemoteFile(LPCTSTR localFile, LPCTSTR remoteFile)
 
 int CSFTPCom::UploadFile(LPCTSTR localFile, LPCTSTR remoteFile)
 {
-        // Check the size of the file on the remote server. This returns -1 if the file doesn't exist.
+    // Check the size of the file on the remote server. This returns -1 if the file doesn't exist.
     const std::int64_t fileSize = GetFileSize(remoteFile);
 
     if (fileSize < 0)
     {
-            // File doesn't exist, upload
+        // File doesn't exist, upload
         return UpdateRemoteFile(localFile, remoteFile);
     }
     else
     {
-            // File does exist, quit
+        // File does exist, quit
         return 0;
     }
 }
@@ -287,11 +287,11 @@ bool CSFTPCom::DownloadAFile(LPCTSTR remoteFile, LPCTSTR fileFullName)
         return 0;
     }
 
-        // build the full url, from the filename
+    // build the full url, from the filename
     CString remoteUrl;
     remoteUrl.Format("%s%s%s", m_site.c_str(), GetCurrentPath().c_str(), remoteFile);
 
-        // set the mode.
+    // set the mode.
     CURLcode returnCode;
     returnCode = curl_easy_setopt(m_FtpConnection->curlHandle, CURLOPT_UPLOAD, FALSE);
     if (returnCode != CURLE_OK)
@@ -300,7 +300,7 @@ bool CSFTPCom::DownloadAFile(LPCTSTR remoteFile, LPCTSTR fileFullName)
         return 0;
     }
 
-        // set the remote url
+    // set the remote url
     returnCode = curl_easy_setopt(m_FtpConnection->curlHandle, CURLOPT_URL, (const char*)remoteUrl);
     if (returnCode != CURLE_OK)
     {
@@ -308,7 +308,7 @@ bool CSFTPCom::DownloadAFile(LPCTSTR remoteFile, LPCTSTR fileFullName)
         return 0;
     }
 
-        // make sure we get the contents of the file (this may be disabled by e.g. getting the file size)
+    // make sure we get the contents of the file (this may be disabled by e.g. getting the file size)
     returnCode = curl_easy_setopt(m_FtpConnection->curlHandle, CURLOPT_NOBODY, FALSE);
     if (returnCode != CURLE_OK)
     {
@@ -316,7 +316,7 @@ bool CSFTPCom::DownloadAFile(LPCTSTR remoteFile, LPCTSTR fileFullName)
         return 0;
     }
 
-        // set the function reading the data to the file handle
+    // set the function reading the data to the file handle
     returnCode = curl_easy_setopt(m_FtpConnection->curlHandle, CURLOPT_WRITEFUNCTION, writefunc);
     if (returnCode != CURLE_OK)
     {
@@ -324,12 +324,12 @@ bool CSFTPCom::DownloadAFile(LPCTSTR remoteFile, LPCTSTR fileFullName)
         return 0;
     }
 
-        // create a structure to upload data.
+    // create a structure to upload data.
     FtpFile ftpfile;
     ftpfile.filename = (const char*)fileFullName;
     ftpfile.stream = nullptr; // this will be opened by 'writefunc'
 
-        // set a pointer to our struct to pass to the callback
+    // set a pointer to our struct to pass to the callback
     returnCode = curl_easy_setopt(m_FtpConnection->curlHandle, CURLOPT_WRITEDATA, &ftpfile);
     if (returnCode != CURLE_OK)
     {
@@ -337,10 +337,10 @@ bool CSFTPCom::DownloadAFile(LPCTSTR remoteFile, LPCTSTR fileFullName)
         return 0;
     }
 
-        // do the download
+    // do the download
     returnCode = curl_easy_perform(m_FtpConnection->curlHandle);
 
-        // remember to close the local file stream
+    // remember to close the local file stream
     if (ftpfile.stream)
     {
         fclose(ftpfile.stream);
@@ -360,7 +360,7 @@ bool CSFTPCom::DownloadAFile(LPCTSTR remoteFile, LPCTSTR fileFullName)
 
 int CSFTPCom::CreateDirectory(LPCTSTR /*remoteDirectory*/)
 {
-        // This doesn't work here. The paths are created as files are updated.
+    // This doesn't work here. The paths are created as files are updated.
     return 1;
 }
 
@@ -374,7 +374,7 @@ std::int64_t CSFTPCom::GetFileSize(const CString& remoteFile)
 
     curl_off_t remoteFileSizeByte = -1;
 
-        // build the full url, from the filename
+    // build the full url, from the filename
     CString remoteUrl;
     remoteUrl.Format("%s%s%s", m_site.c_str(), GetCurrentPath().c_str(), (const char*)remoteFile);
 
@@ -447,7 +447,7 @@ bool CSFTPCom::EnterFolder(CString folder)
     }
     else
     {
-            // remove any forward or backward slashes in the path
+        // remove any forward or backward slashes in the path
         folder.Trim("/");
         m_currentPath.push_back(std::string(folder));
     }

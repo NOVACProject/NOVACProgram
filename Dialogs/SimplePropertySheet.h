@@ -3,7 +3,7 @@
 
 namespace Dialogs
 {
-    // CSimplePropertySheet
+// CSimplePropertySheet
 
 class CSimplePropertySheet : public CPropertySheet
 {
@@ -15,7 +15,7 @@ public:
     CSimplePropertySheet(LPCTSTR pszCaption, CWnd* pParentWnd = NULL, UINT iSelectPage = 0);
     virtual ~CSimplePropertySheet();
 
-        /** Initializing the dialog */
+    /** Initializing the dialog */
     virtual BOOL OnInitDialog();
 
 protected:

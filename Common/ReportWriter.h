@@ -7,10 +7,10 @@
 
 namespace FileHandler
 {
-    // The <b>CReportWriter</b> class takes care of writing a report at the end
-    //  of each day containing the results of the measurements for the past day.
-    //  The writing should take place ~2 hours after the last instrument has gone
-    //  to sleep for the night.
+// The <b>CReportWriter</b> class takes care of writing a report at the end
+//  of each day containing the results of the measurements for the past day.
+//  The writing should take place ~2 hours after the last instrument has gone
+//  to sleep for the night.
 
 class CReportWriter : public CWinThread
 {
@@ -26,26 +26,26 @@ public:
         // --------------------- PUBLIC METHODS ---------------------------------
         // ----------------------------------------------------------------------
 
-            /** Called when the thread is starting */
+    /** Called when the thread is starting */
     virtual BOOL InitInstance();
 
-        /** Called when the thread is stopping */
+    /** Called when the thread is stopping */
     virtual int ExitInstance();
 
-        /** Called to set the timer */
+    /** Called to set the timer */
     void SetTimer();
 
-        /** */
+    /** */
     afx_msg void OnTimer(WPARAM nIDEvent, LPARAM lp);
 
-        /** Called to write the report */
+    /** Called to write the report */
     static void WriteReport(CEvaluatedDataStorage* evalDataStorage, CCommunicationDataStorage* commDataStorage);
 
         // ----------------------------------------------------------------------
     // --------------------- PUBLIC VARIABLES --------------------------------
     // ----------------------------------------------------------------------
 
-        /** Timer */
+    /** Timer */
     UINT_PTR m_nTimerID;
 
 private:
@@ -53,17 +53,17 @@ private:
         // --------------------- PRIVATE METHODS --------------------------------
         // ----------------------------------------------------------------------
 
-            /** Generate the header of the Report */
+    /** Generate the header of the Report */
     static void WriteReportHeader(FILE* f);
 
-        /** Generate the footer of the Report */
+    /** Generate the footer of the Report */
     static void WriteReportFooter(FILE* f);
 
-        /** Generate a histogram of the data and stores it to a graphics file */
+    /** Generate a histogram of the data and stores it to a graphics file */
     static int WriteDataHistogram(double* data, long nDataPoints, long nBins, const CString& filePath, const CString& fileName);
 
-        /** Removes the bad data points from the 'timeBuffer' and 'dataBuffer'.
-                The flag whether the data point is good or not is found in 'qualityBuffer' */
+    /** Removes the bad data points from the 'timeBuffer' and 'dataBuffer'.
+            The flag whether the data point is good or not is found in 'qualityBuffer' */
     static long RemoveBadFluxData(double* timeBuffer, double* dataBuffer, int* qualityBuffer, long numDataPoints);
 };
 }

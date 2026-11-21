@@ -402,7 +402,7 @@ void CPostWindDlg::DrawColumn()
                     m_PreparedSeries[k]->length,
                     Graph::CGraphCtrl::PLOT_FIXED_AXIS | Graph::CGraphCtrl::PLOT_CONNECTED);
 
-                //              m_columnGraph.SetLineWidth(1);
+                    //              m_columnGraph.SetLineWidth(1);
             }
         }
     }

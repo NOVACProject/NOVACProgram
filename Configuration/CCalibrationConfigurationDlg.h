@@ -11,42 +11,42 @@ class CCalibrationConfigurationDlg : public CSystemConfigurationPage
 {
     DECLARE_DYNCREATE(CCalibrationConfigurationDlg)
 
-        // Constructors
+// Constructors
 public:
     CCalibrationConfigurationDlg();
 
-        // Dialog Data
+    // Dialog Data
     enum
     {
         IDD = IDD_CONFIGURE_CALIBRATION
     };
 
-        /** Initializing the dialog */
+    /** Initializing the dialog */
     virtual BOOL OnInitDialog();
 
-        /** The spectrometer channel that this object is modifying */
+    /** The spectrometer channel that this object is modifying */
     unsigned int m_channel = 0;
 
-        /** Updating the data in the control */
+    /** Updating the data in the control */
     void UpdateDlg();
 
-        /** Updates the control */
+    /** Updates the control */
     virtual void OnChangeScanner() override;
 
     virtual BOOL OnSetActive();
 
-        // Implementation
+// Implementation
 protected:
     virtual void DoDataExchange(CDataExchange* pDX);        // DDX/DDV support
 
     DECLARE_MESSAGE_MAP()
 
 private:
-        /** The time when to start performing the calibrations */
+    /** The time when to start performing the calibrations */
     int m_intervalLowHr;
     int m_intervalLowMin;
 
-        /** The time when to stop performing the calibrations */
+    /** The time when to stop performing the calibrations */
     int m_intervalHighHr;
     int m_intervalHighMin;
 
@@ -55,7 +55,7 @@ private:
     afx_msg void SaveData();
     afx_msg void ToggleDialogState();
 
-        /**  Enable or disable the controls based on if the auto calibration is enabled or nor */
+    /**  Enable or disable the controls based on if the auto calibration is enabled or nor */
     void UpdateDialogState();
 };
 }

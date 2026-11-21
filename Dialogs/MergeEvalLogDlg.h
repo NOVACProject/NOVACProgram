@@ -15,7 +15,7 @@ public:
     CMergeEvalLogDlg(CWnd* pParent = NULL);   // standard constructor
     virtual ~CMergeEvalLogDlg();
 
-        // Dialog Data
+    // Dialog Data
     enum
     {
         IDD = IDD_DLG_EVALLOGS_MERGE
@@ -26,7 +26,7 @@ protected:
 
     DECLARE_MESSAGE_MAP()
 
-        /** The list of eval-log files to merge*/
+    /** The list of eval-log files to merge*/
     CList<CString, CString&> m_evalLogFile;
 
 public:

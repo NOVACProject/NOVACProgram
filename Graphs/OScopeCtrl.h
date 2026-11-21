@@ -8,8 +8,8 @@
 
 namespace Graph
 {
-  /** <b>COScopeCtrl</b> is our old class for drawing the output from the program in
-      slightly fancy way. */
+/** <b>COScopeCtrl</b> is our old class for drawing the output from the program in
+    slightly fancy way. */
 class COScopeCtrl : public CWnd
 {
 
@@ -93,9 +93,9 @@ public:
     /** ?? */
     void DrawCircle(double verticalFactor);
 
-  // Overrides
-    // ClassWizard generated virtual function overrides
-    //{{AFX_VIRTUAL(COScopeCtrl)
+// Overrides
+  // ClassWizard generated virtual function overrides
+  //{{AFX_VIRTUAL(COScopeCtrl)
 public:
     virtual BOOL Create(DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID = NULL);
     //}}AFX_VIRTUAL
@@ -153,7 +153,7 @@ public:
 
     double m_xPosition; // x position
 
-    // Generated message map functions
+// Generated message map functions
 protected:
     //{{AFX_MSG(COScopeCtrl)
     afx_msg void OnPaint();

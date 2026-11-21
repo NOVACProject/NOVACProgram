@@ -14,7 +14,7 @@ CFTPController::~CFTPController(void)
 {
     delete m_pakFileHandler;
 }
-    /**set ftp information*/
+/**set ftp information*/
 void CFTPController::SetFTPInfo(int mainIndex, CString& IP, CString& userName, CString pwd, long portNumber)
 {
     CString listFileName;
@@ -96,15 +96,15 @@ bool CFTPController::DownloadOldPak(long interval)
     }
     //download Uxxx.pak files from Rxxx directories
 
-/*  for(i=0;i< m_oldPakList.GetCount();i++)
-    {
-        fileSize = m_oldPakList.GetTail()->m_fileSize;
-        //estimatedTime = fileSize/m_dataSpeed;
-        downloadResult = DownloadSpectra(m_oldPakList.GetTail()->m_fileName,m_storageDirectory);
+    /*  for(i=0;i< m_oldPakList.GetCount();i++)
+        {
+            fileSize = m_oldPakList.GetTail()->m_fileSize;
+            //estimatedTime = fileSize/m_dataSpeed;
+            downloadResult = DownloadSpectra(m_oldPakList.GetTail()->m_fileName,m_storageDirectory);
 
-        if( downloadResult )
-            m_oldPakList.RemoveTail();
-    }   */
+            if( downloadResult )
+                m_oldPakList.RemoveTail();
+        }   */
     return true;
 }
 //download pak files listed in m_oldpakList
@@ -247,7 +247,7 @@ bool CFTPController::DownloadSpectra(CString remoteFile, CString savetoPath)
             return false;
         }
     }
-//DELETE remote file
+    //DELETE remote file
     msg.Format("%s has been downloaded from %s", remoteFile, m_ftpInfo.IPAddress);
     ShowMessage(msg);
     DeleteRemoteFile(remoteFile);  //add later
@@ -261,7 +261,7 @@ BOOL CFTPController::DeleteRemoteFile(CString& remoteFile)
     {*/
     if (!FindFile(remoteFile))
     {
-    //      Disconnect();
+        //      Disconnect();
         return FALSE;
     }
     result = DeleteFTPFile(remoteFile);
@@ -327,10 +327,10 @@ bool CFTPController::SendCommand(char* cmd)
     //upload file to the server
     if (UploadFile(localFileFullPath) == 0)
     {
-    //  Disconnect();
+        //  Disconnect();
         return false;
     }
-//  Disconnect();
+    //  Disconnect();
     return true;
 }
 void CFTPController::GotoSleep()
@@ -361,14 +361,14 @@ bool CFTPController::ArrangeFileList(char* string)
     static char seps[] = "\t\n";
     char* token;
     CString tokenStr;
-//  CString str, resToken;
+    //  CString str, resToken;
     CString strFileName, strFolder;
     strFileName.Format("U");
     strFolder.Format("drw-------");
     token = strtok(string, seps);
     while (token != NULL)
     {
-    /* While there are tokens in "string" */
+        /* While there are tokens in "string" */
         tokenStr.Format("%s", token);
         //find the file name in the list
         if (tokenStr.Left(1) == strFileName)

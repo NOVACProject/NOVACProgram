@@ -150,7 +150,7 @@ BOOL CDataBrowserDlg::OnInitDialog()
     m_scanGraph.SetGridColor(RGB(255, 255, 255));
     m_scanGraph.SetRange(-90, 90, 0, 0, 100, 0);
 
-      // Initialize the Flux graph
+    // Initialize the Flux graph
     this->m_fluxGraphFrame.GetWindowRect(rect);
     height = rect.bottom - rect.top;
     width = rect.right - rect.left;

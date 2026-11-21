@@ -84,7 +84,7 @@ BEGIN_MESSAGE_MAP(CGeometryDlg, CDialog)
     //ON_COMMAND(ID_VIEW_PREVIOUSSCAN,              OnShowPreviousScan)
     //ON_COMMAND(ID_VIEW_NEXTSCAN,                      OnShowNextScan)
 
-      // Changing the selected scanner
+    // Changing the selected scanner
     ON_LBN_SELCHANGE(IDC_SCANNER_LIST, OnChangeScanner)
 
     // Changing the source
@@ -1213,12 +1213,12 @@ void Dialogs::CGeometryDlg::OnMenu_CalculateGeometries()
 
             for (scanNumber1 = 0; scanNumber1 < m_evalLogReader[it]->m_scanNum; ++scanNumber1)
             { // <-- loop through all scans in eval-log #1
-// Start-time of scan #1
+                // Start-time of scan #1
                 m_evalLogReader[it]->m_scan[scanNumber1].GetStartTime(0, time1);
 
                 for (scanNumber2 = 0; scanNumber2 < m_evalLogReader[it2]->m_scanNum; ++scanNumber2)
                 { // <-- loop through all scans in eval-log #2
-// Start-time of scan #2
+                    // Start-time of scan #2
                     m_evalLogReader[it2]->m_scan[scanNumber2].GetStartTime(0, time2);
 
                     // Check the difference in start-time

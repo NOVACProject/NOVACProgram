@@ -695,8 +695,8 @@ bool CPakFileHandler::IsFixedAngleMeasurement(CScanFileHandler& file)
             to be a wind-speed measurement if there are more than 50
             repetitions at a single scan-angle.  */
 
-            // 3. Go through the file, starting at the last spectrum in the file.
-            //      Skip the last few spectra since there might be a dark measurement in the end...
+    // 3. Go through the file, starting at the last spectrum in the file.
+    //      Skip the last few spectra since there might be a dark measurement in the end...
     if (1 != file.GetSpectrum(context, spectrum, numSpec - 3))
     {
         return false;
@@ -777,7 +777,7 @@ bool CPakFileHandler::IsWindSpeedMeasurement(CScanFileHandler& file)
             to be a wind-speed measurement if there are more than 50
             repetitions at a single scan-angle.  */
 
-            // 3. Go through the file, starting at the last spectrum in the file.
+    // 3. Go through the file, starting at the last spectrum in the file.
     if (1 != file.GetSpectrum(context, spectrum, numSpec - 3))
     {
         return false;

@@ -12,26 +12,26 @@ public:
     CLabel();
     virtual ~CLabel();
 
-        /** Sets the text color */
+    /** Sets the text color */
     void SetForegroundColor(COLORREF rgb);
 
-        /** Sets the background color */
+    /** Sets the background color */
     void SetBackgroundColor(COLORREF rgb);
 
-        /** Called when the window should be updated.
-                Used to change the colors of the text/backgroun. */
+    /** Called when the window should be updated.
+            Used to change the colors of the text/backgroun. */
     afx_msg HBRUSH CtlColor(CDC* pDC, UINT nCtlColor);
 
 protected:
     DECLARE_MESSAGE_MAP()
 
-        /** The color of the text */
+    /** The color of the text */
     COLORREF m_textColor;
 
-        /** The color of the background */
+    /** The color of the background */
     COLORREF m_backgroundColor;
 
-        /** The brush used for drawing the background */
+    /** The brush used for drawing the background */
     CBrush m_backgroundBrush;
 };
 }

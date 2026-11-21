@@ -12,7 +12,7 @@ CNodeControlInfo::CControlInfo::CControlInfo(int mainIndex, DeviceMode mode, con
 {
 }
 
-    //---------------------------class CNodeControlInfo------------------//
+//---------------------------class CNodeControlInfo------------------//
 CNodeControlInfo::CNodeControlInfo()
 {
     m_controlInfoArray.SetSize(1);

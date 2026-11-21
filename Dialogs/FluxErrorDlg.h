@@ -3,7 +3,7 @@
 
 namespace Dialogs
 {
-    // CFluxErrorDlg dialog
+// CFluxErrorDlg dialog
 
 class CFluxErrorDlg : public CDialog
 {
@@ -13,7 +13,7 @@ public:
     CFluxErrorDlg(CWnd* pParent = NULL);   // standard constructor
     virtual ~CFluxErrorDlg();
 
-        // Dialog Data
+    // Dialog Data
     enum
     {
         IDD = IDD_FLUXERROR_DIALOG
@@ -29,29 +29,29 @@ public:
         // ------------------ PUBLIC DATA -----------------------
         // ------------------------------------------------------
 
-        /** The geometrical error */
+    /** The geometrical error */
     double m_geomError;
 
-        /** The spectroscopical error */
+    /** The spectroscopical error */
     double m_specError;
 
-        /** The scattering error */
+    /** The scattering error */
     double m_scatteringError;
 
-        /** The wind error */
+    /** The wind error */
     double m_windError;
 
         // ------------------------------------------------------
         // ------------------ PUBLIC METHODS --------------------
         // ------------------------------------------------------
 
-        /** Initializing the dialog and everything in it */
+    /** Initializing the dialog and everything in it */
     virtual BOOL OnInitDialog();
 
-        /** Saving the data in the dialog */
+    /** Saving the data in the dialog */
     afx_msg void SaveData();
 
-        /** When the window is about to loose the input focus */
+    /** When the window is about to loose the input focus */
     afx_msg void OnKillFocus(CWnd* pNewWnd);
 
 private:
@@ -60,8 +60,8 @@ private:
         // ------------------------------------------------------
 
 
-        // ------------------------------------------------------
-        // ------------------ PRIVATE METHODS -------------------
-        // ------------------------------------------------------
+// ------------------------------------------------------
+// ------------------ PRIVATE METHODS -------------------
+// ------------------------------------------------------
 };
 }

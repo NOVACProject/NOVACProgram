@@ -31,7 +31,7 @@ public:
 
     // ------------------ DIALOG COMPONENTS -------------------------
 
-      /** The volcano selection combo-box */
+    /** The volcano selection combo-box */
     CComboBox m_comboVolcano;
 
     /** The spin control, which lets the user select which scan to show. */
@@ -48,7 +48,7 @@ public:
 
     // ------------------- DATA -------------------------
 
-      /** The evaluation log file handlerS */
+    /** The evaluation log file handlerS */
     FileHandler::CEvaluationLogFileHandler* m_evalLogReader[MAX_N_SCANNERS];
 
     /** The currently selected scanner */
@@ -141,8 +141,8 @@ public:
 protected:
     // --------------- PROTECTED METHODS -----------------------
 
-      /** This function extracts the gps - data from the evaluation log.
-                  If no data can be extracted, lat and lon will be set to 0.*/
+    /** This function extracts the gps - data from the evaluation log.
+                If no data can be extracted, lat and lon will be set to 0.*/
     void GetGPSData(int seriesNumber, double& lat, double& lon, long& alt);
 
     /** This function calculates the solar azimuth (saz) and solar zenith (sza)

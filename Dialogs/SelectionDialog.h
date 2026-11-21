@@ -4,7 +4,7 @@
 namespace Dialogs
 {
 
-    // CSelectionDialog dialog
+// CSelectionDialog dialog
 
 class CSelectionDialog : public CDialog
 {
@@ -14,7 +14,7 @@ public:
     CSelectionDialog(CWnd* pParent = NULL);   // standard constructor
     virtual ~CSelectionDialog();
 
-        // Dialog Data
+    // Dialog Data
     enum
     {
         IDD = IDD_QUERY_SELECTION_DIALOG
@@ -22,13 +22,13 @@ public:
 
     static const int MAX_OPTIONS = 50;
 
-        /** The options in the combo-box */
+    /** The options in the combo-box */
     CString m_option[MAX_OPTIONS];
 
-        /** The index of the selected string */
+    /** The index of the selected string */
     CString* m_currentSelection;
 
-        /** The window text */
+    /** The window text */
     CString m_windowText;
 
 protected:

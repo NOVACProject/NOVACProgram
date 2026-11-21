@@ -4,7 +4,7 @@
 
 namespace Dialogs
 {
-    // CExportDlg
+// CExportDlg
 
 class CExportDlg : public CSimplePropertySheet
 {

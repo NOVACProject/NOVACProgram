@@ -296,10 +296,10 @@ public:
     // --------------------------------------------------------------------
 
 
-        /** Get file size in bytes.
-            @param - The file name (including path)
-            @return - The file size (in bytes)
-        */
+    /** Get file size in bytes.
+        @param - The file name (including path)
+        @return - The file size (in bytes)
+    */
     static long RetrieveFileSize(CString& fileName);
 
     // --------------------------------------------------------------------

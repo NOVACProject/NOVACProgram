@@ -6,7 +6,7 @@
 namespace Dialogs
 {
 
-    // CExportEvallogDlg dialog
+// CExportEvallogDlg dialog
 
 class CExportEvallogDlg : public CPropertyPage, FileHandler::CEvaluationLogFileHandler
 {
@@ -16,7 +16,7 @@ public:
     CExportEvallogDlg();
     virtual ~CExportEvallogDlg();
 
-        // Dialog Data
+    // Dialog Data
     enum
     {
         IDD = IDD_EXPORT_EVALLOG
