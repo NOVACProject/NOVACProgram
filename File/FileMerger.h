@@ -1,6 +1,6 @@
-#include <afxtempl.h>
-
 #pragma once
+
+#include <afxtempl.h>
 
 class FileMerger
 {

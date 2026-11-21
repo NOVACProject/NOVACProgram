@@ -6,9 +6,6 @@
 #include <memory>
 #include <mutex>
 
-#ifndef METEROLOGY_H
-#define METEROLOGY_H
-
 /** <b>CMeteorologicalData</b> is the class which holds all the meterological data
     which is needed in the program. */
 class CMeteorologicalData
@@ -73,5 +70,3 @@ private:
 
     bool ReadWindFieldFromTextFile(const CString& fileName);
 };
-
-#endif

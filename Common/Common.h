@@ -1,10 +1,9 @@
+#pragma once
+
 /**
   Common.h is a general header file for storing definitions and constants
       which are used throughout the whole program.
 */
-
-#ifndef COMMON_H
-#define COMMON_H
 
 #include <math.h>
 #include <vector>
@@ -711,5 +710,3 @@ double Std(T array[], long nElements)
 
     return sqrt(Variance(array, nElements));
 }
-
-#endif

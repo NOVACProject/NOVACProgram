@@ -7,9 +7,6 @@
 #include <SpectralEvaluation/Configuration/DarkSettings.h>
 #include <SpectralEvaluation/Spectra/WavelengthRange.h>
 
-#ifndef _CCONFIGURATIONSETTINGS_H_
-#define _CCONFIGURATIONSETTINGS_H_
-
 /** The <b>CCConfigurationSetting</b> holds the configuration of the scanning Instruments
     that is found in the configuration.xml-file. */
 class CConfigurationSetting
@@ -466,5 +463,3 @@ std::vector<std::string> ListMonitoredVolcanoes(const CConfigurationSetting& set
     @param scannerIdx The index of the scanner.
     @param spectrometerIdx The index of the spectrometer */
 bool IdentifySpectrometer(const CConfigurationSetting& settings, const std::string& serial, int& scannerIdx, int& spectrometerIdx);
-
-#endif

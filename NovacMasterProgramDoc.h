@@ -1,8 +1,8 @@
+#pragma once
+
 // NovacMasterProgramDoc.h : interface of the CNovacMasterProgramDoc class
 //
 
-
-#pragma once
 
 class CNovacMasterProgramDoc : public CDocument
 {

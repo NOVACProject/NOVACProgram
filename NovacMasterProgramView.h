@@ -1,3 +1,5 @@
+#pragma once
+
 // NovacMasterProgramView.h : interface of the CNovacMasterProgramView class
 //
 
@@ -13,8 +15,6 @@
 #include "View_Scanner.h"
 
 #include "afxcmn.h"
-
-#pragma once
 
 class CCommunicationDataStorage;
 class CEvaluatedDataStorage;

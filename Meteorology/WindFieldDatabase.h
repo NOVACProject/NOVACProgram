@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef WINDFIELDRECORD_H
-#define WINDFIELDRECORD_H
-
 #include <vector>
 
 #include "../Common/Common.h"
@@ -58,5 +55,3 @@ private:
     /** Information about the wind */
     std::vector<CWindField> m_windField;
 };
-
-#endif
