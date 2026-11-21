@@ -88,21 +88,33 @@ enum RETURN_CODE
 // BOX_AXIS: The first generation Novac electronics based on Axis
 // BOX_MOXA: The third(!) Novac generation Novac electronics based on Moxa
 // BOX_AXIOMTEK: The forth generation Novac electronics based on Axiomtek
-const enum ELECTRONICS_BOX { BOX_AXIS,
+const enum ELECTRONICS_BOX
+{
+    BOX_AXIS,
     BOX_MOXA,
-    BOX_AXIOMTEK };
+    BOX_AXIOMTEK
+};
 
 // The list of possible units for the flux
-const enum FLUX_UNIT { UNIT_KGS,
-    UNIT_TONDAY };
+const enum FLUX_UNIT
+{
+    UNIT_KGS,
+    UNIT_TONDAY
+};
 
 // The list of possible units for the columns
-const enum COLUMN_UNIT { UNIT_PPMM,
-    UNIT_MOLEC_CM2 };
+const enum COLUMN_UNIT
+{
+    UNIT_PPMM,
+    UNIT_MOLEC_CM2
+};
 
 // The list of languages that we can manage
-const enum LANGUAGES { LANGUAGE_ENGLISH,
-    LANGUAGE_SPANISH };
+const enum LANGUAGES
+{
+    LANGUAGE_ENGLISH,
+    LANGUAGE_SPANISH
+};
 
 // The maximum number of references that can be fitted to a single spectrum
 #define MAX_N_REFERENCES 10

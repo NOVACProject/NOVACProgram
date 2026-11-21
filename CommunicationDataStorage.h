@@ -2,9 +2,12 @@
 
 #include "Common/Common.h"
 //GREEN - running, YELLOW - sleeping , RED - not connected
-const enum COMMUNICATION_STATUS { COMM_STATUS_GREEN,
+const enum COMMUNICATION_STATUS
+{
+    COMM_STATUS_GREEN,
     COMM_STATUS_YELLOW,
-    COMM_STATUS_RED };
+    COMM_STATUS_RED
+};
 
 class CCommunicationDataStorage
 {

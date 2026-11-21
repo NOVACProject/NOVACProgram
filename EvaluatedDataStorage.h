@@ -7,9 +7,12 @@
 /** <b>CEvaluatedDataStorage</b> is a class for holding evaluated data for
     later plotting. */
 
-const enum SPECTROMETER_STATUS { STATUS_GREEN,
+const enum SPECTROMETER_STATUS
+{
+    STATUS_GREEN,
     STATUS_YELLOW,
-    STATUS_RED };
+    STATUS_RED
+};
 
 class CEvaluatedDataStorage
 {

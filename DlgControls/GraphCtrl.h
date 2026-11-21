@@ -11,17 +11,26 @@
 namespace DlgControls
 {
     /** Defining directions */
-const enum DIRECTION { HORIZONTAL,
-    VERTICAL };
+const enum DIRECTION
+{
+    HORIZONTAL,
+    VERTICAL
+};
 
     /** Defining line styles */
-const enum LINE_STYLE { STYLE_SOLID,
-    STYLE_DASHED };
+const enum LINE_STYLE
+{
+    STYLE_SOLID,
+    STYLE_DASHED
+};
 
     /** Defining number formats */
-const enum NUMBER_FORMAT { FORMAT_GENERAL,
+const enum NUMBER_FORMAT
+{
+    FORMAT_GENERAL,
     FORMAT_TIME,
-    FORMAT_DATE };
+    FORMAT_DATE
+};
 
 
         /** <b>CGraphCtrl</b> is our class for drawing the output from the program in
