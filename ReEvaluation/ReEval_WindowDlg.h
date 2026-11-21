@@ -2,7 +2,7 @@
 
 #include "../DlgControls/ReferenceFileControl.h"
 #include "FitWindowListBox.h"
-#include "afxwin.h"
+#include <afxwin.h>
 
 // CReEval_WindowDlg dialog
 

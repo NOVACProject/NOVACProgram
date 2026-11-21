@@ -1,7 +1,7 @@
 // OScopeCtrl.cpp : implementation file//
 
 #include "stdafx.h"
-#include "math.h"
+#include <cmath>
 
 #include "OScopeCtrl.h"
 

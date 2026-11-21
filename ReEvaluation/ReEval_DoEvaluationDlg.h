@@ -1,6 +1,6 @@
 #pragma once
 
-#include "afxwin.h"
+#include <afxwin.h>
 #include <memory>
 #include "../Graphs/OScopeCtrl.h"
 #include "../Graphs/DoasFitGraph.h"

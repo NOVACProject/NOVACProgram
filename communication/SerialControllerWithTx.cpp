@@ -1,10 +1,10 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "serialcontrollerwithtx.h"
 #include "FTPCom.h"
 #include "..\Common\ASCII.h"
 #include "../Common/CfgTxtFileHandler.h"
 #include "../Configuration/configuration.h"
-#include "atlstr.h"
+#include <atlstr.h>
 
 
 #define SIZEOFBIGBUFFER 65536

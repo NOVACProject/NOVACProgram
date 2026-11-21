@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "LogFileWriter.h"
 #include "Version.h"
 #include "Common.h"

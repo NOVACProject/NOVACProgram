@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "math.h"
+#include <cmath>
 #include <atlimage.h>
 
 #include "GraphCtrl.h"

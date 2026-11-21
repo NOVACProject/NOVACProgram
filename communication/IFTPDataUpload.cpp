@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "IFTPDataUpload.h"
 #include "FTPCom.h"
 #include "SFTPCom.h"

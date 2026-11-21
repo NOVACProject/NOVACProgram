@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "fluxlogfilehandler.h"
 
 using namespace FileHandler;

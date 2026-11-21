@@ -1,6 +1,6 @@
 #pragma once
-#include "afxwin.h"
-#include "afxdlgs.h"
+#include <afxwin.h>
+#include <afxdlgs.h>
 #include <SpectralEvaluation/Spectra/SpectrometerModel.h>
 
 // CustomSpectrometerModelDlg dialog

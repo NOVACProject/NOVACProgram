@@ -1,9 +1,9 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "SFTPCom.h"
 #include "../Common/common.h"
 #include <curl/curl.h>
 #include <sstream>
-#include <assert.h>
+#include <cassert>
 
 // Use warning level 4 here
 #pragma warning(push, 4)

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "afxsock.h"
+#include <afxsock.h>
 #include <vector>
 #include <afxtempl.h>
 #define RESPONSE_LEN 12288

@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "SpectrometerHistory.h"
 #include <SpectralEvaluation/Calibration/InstrumentLineShape.h>
 #include <algorithm>

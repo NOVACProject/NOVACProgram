@@ -1,6 +1,6 @@
 // CSpectrometerCalibrationDlg.cpp : implementation file
 //
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "SpectrometerCalibrationDlg.h"
 #include "../resource.h"
 #include "CCalibratePixelToWavelengthDialog.h"

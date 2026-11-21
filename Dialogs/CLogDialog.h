@@ -2,7 +2,7 @@
 
 #include <vector>
 #include <string>
-#include "afxdlgs.h"
+#include <afxdlgs.h>
 
 // CLogDialog dialog
 

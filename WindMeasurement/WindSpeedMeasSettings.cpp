@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "windspeedmeassettings.h"
 #include "../Common/Common.h"
 

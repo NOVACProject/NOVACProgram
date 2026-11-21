@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "ScanEvaluation.h"
 #include "EvaluationResultView.h"
 #include <SpectralEvaluation/Evaluation/EvaluationBase.h>

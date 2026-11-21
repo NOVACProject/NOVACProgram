@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "evaluateddatastorage.h"
 #include "Configuration/Configuration.h"
 #include "VolcanoInfo.h"

@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "FTPSocket.h"
 #include "..\Common\Common.h"
 #include <iterator>

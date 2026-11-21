@@ -1,5 +1,5 @@
 #pragma once
-#include "afxdlgs.h"
+#include <afxdlgs.h>
 
 struct CalibratePixelToWavelengthDialogSetup;
 

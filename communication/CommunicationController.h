@@ -1,5 +1,5 @@
 #pragma once
-#include "afxwin.h"
+#include <afxwin.h>
 #include <memory>
 
 namespace Communication

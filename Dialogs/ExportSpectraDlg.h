@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Afxtempl.h>
-#include "afxwin.h"
+#include <afxwin.h>
 
 // CExportSpectraDlg dialog
 

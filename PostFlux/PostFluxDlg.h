@@ -1,16 +1,14 @@
 #pragma once
-#include "afxwin.h"
+#include <afxwin.h>
 #include "PostFluxCalculator.h"
 #include "../Graphs/ScanGraph.h"
 #include "../DlgControls/Label.h"
 #include "../Meteorology/WindField.h"
 #include "../File/WindFileReader.h"
 #include "../Dialogs/FluxErrorDlg.h"
-#include "afxcmn.h"
+#include <afxcmn.h>
 
 // CPostFluxDlg dialog
-
-using namespace PostFlux;
 
 class CPostFluxDlg : public CDialog
 {
@@ -103,7 +101,7 @@ public:
     // ------------------- DATA -------------------------
 
     /** The post flux calculator */
-    CPostFluxCalculator* m_calculator;
+    PostFlux::CPostFluxCalculator* m_calculator;
 
     /** The windfield to use */
     CWindField m_windField;

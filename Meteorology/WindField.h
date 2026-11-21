@@ -1,9 +1,7 @@
 #pragma once
+
 #include <SpectralEvaluation/DateTime.h>
 #include "MeteorologySource.h"
-
-#ifndef WINDFIELD_H
-#define WINDFIELD_H
 
 /** <b>CWindField</b> is a simle data structure which contains
     the wind speed, wind direction and the plume height at a
@@ -112,5 +110,3 @@ private:
     /** The date and time for which this wind-information is/was valid */
     novac::CDateTime m_time;
 };
-
-#endif

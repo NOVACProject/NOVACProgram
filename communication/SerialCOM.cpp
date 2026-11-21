@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "serialcom.h"
 
 using namespace Communication;

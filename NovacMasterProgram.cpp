@@ -13,7 +13,7 @@
 #include "UserSettings.h"
 
 #include <curl/curl.h>
-#include <assert.h>
+#include <cassert>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

@@ -1,9 +1,9 @@
 // CCalibrateReferenes.cpp : implementation file
 //
 
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "CCalibrateReferencesDialog.h"
-#include "afxdlgs.h"
+#include <afxdlgs.h>
 #include "../resource.h"
 #include <fstream>
 #include "../Common/Common.h"

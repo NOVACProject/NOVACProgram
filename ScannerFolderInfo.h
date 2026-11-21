@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ScannerFileInfo.h"
-#include "afxtempl.h"
+#include <afxtempl.h>
 
 class CScannerFolderInfo
 {

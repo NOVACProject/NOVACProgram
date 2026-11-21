@@ -1,6 +1,6 @@
 #pragma once
 
-#include "afxdlgs.h"
+#include <afxdlgs.h>
 
 // This is the spectrometer calibration dialog
 //  where we can both fit an instrument line shape _and_ calibrate the wavelength

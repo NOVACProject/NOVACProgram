@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "MeteorologicalData.h"
 #include "../File/WindFileReader.h"
 

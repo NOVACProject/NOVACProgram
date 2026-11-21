@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "CommunicationController.h"
 #include "../Configuration/configuration.h"
 #include "FTPCom.h"

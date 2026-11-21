@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "Configuration.h"
 #include <set>
 #include <SpectralEvaluation/StringUtils.h>

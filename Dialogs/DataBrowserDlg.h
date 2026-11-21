@@ -3,7 +3,7 @@
 #include "../Graphs/GraphCtrl.h"
 #include "../DlgControls/Label.h"
 #include "../PostFlux/PostFluxCalculator.h"
-#include "afxwin.h"
+#include <afxwin.h>
 
 // CDataBrowserDlg dialog
 

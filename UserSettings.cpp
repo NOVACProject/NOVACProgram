@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "usersettings.h"
 
 /** The global instance of user settings */

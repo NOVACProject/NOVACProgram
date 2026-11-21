@@ -1,6 +1,6 @@
 // ReportWriter.cpp : implementation file
 //
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "../NovacMasterProgram.h"
 #include "ReportWriter.h"
 #include "Common.h"

@@ -8,7 +8,7 @@
 #include "VIIAdvancedConfigurationDlg.h"
 #include "ConfigurationTreeCtrl.h"
 #include "CCalibrationConfigurationDlg.h"
-#include "afxwin.h"
+#include <afxwin.h>
 
 namespace ConfigurationDialog
 {

@@ -1,6 +1,6 @@
 #pragma once
-#include "afxcmn.h"
-#include "afxwin.h"
+#include <afxcmn.h>
+#include <afxwin.h>
 
 #include "../Configuration/GlobalConfiguration.h"
 #include "../Configuration/ScannerConfiguration.h"

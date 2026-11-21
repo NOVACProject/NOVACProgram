@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "StatusFileReader.h"
 #include "Common/Common.h"
 

@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "FTPHandler.h"
 #include "../Common/CfgTxtFileHandler.h"
 #include "../NovacProgramLog.h"

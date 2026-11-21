@@ -1,9 +1,9 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "CCalibratePixelToWavelengthSetupDialog.h"
 #include "CCalibratePixelToWavelengthDialog.h"
 #include "OpenInstrumentCalibrationDialog.h"
 #include "../Common/Common.h"
-#include "afxdlgs.h"
+#include <afxdlgs.h>
 #include "../resource.h"
 #include <SpectralEvaluation/Calibration/StandardCrossSectionSetup.h>
 #include <SpectralEvaluation/Spectra/SpectrometerModel.h>

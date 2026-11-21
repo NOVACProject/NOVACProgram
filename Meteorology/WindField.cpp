@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "WindField.h"
 
 CWindField::CWindField(const CWindField& other) : m_windSpeed(other.m_windSpeed),

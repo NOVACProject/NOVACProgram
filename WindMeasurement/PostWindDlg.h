@@ -5,7 +5,7 @@
 #include "../DlgControls/Label.h"
 #include "WindSpeedCalculator.h"
 #include "WindSpeedMeasSettings.h"
-#include "afxwin.h"
+#include <afxwin.h>
 
 // CPostWindDlg dialog
 

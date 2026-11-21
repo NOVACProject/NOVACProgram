@@ -1,5 +1,5 @@
 #pragma once
-#include "afxwin.h"
+#include <afxwin.h>
 
 #include "Common/Common.h"
 #include "EvaluatedDataStorage.h"

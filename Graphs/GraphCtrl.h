@@ -1,8 +1,7 @@
+#pragma once
+
 // OScopeCtrl.h : header file
 //
-
-#ifndef __GraphCtrl_H__
-#define __GraphCtrl_H__
 
 // ---- CGraphCtrl window ----
 
@@ -597,5 +596,3 @@ protected:
     void PrintNumber(double number, int nDecimals, NUMBER_FORMAT format, CString& str);
 };
 }
-
-#endif
