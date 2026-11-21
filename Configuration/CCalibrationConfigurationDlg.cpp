@@ -137,7 +137,8 @@ void CCalibrationConfigurationDlg::OnChangeScanner()
     }
 
     if (UpdateData(TRUE))
-    { // <-- first save the data in the dialog
+    {
+        // <-- first save the data in the dialog
 
         // Then change the settings so that we're using the newly selected scanner
         CSystemConfigurationPage::OnChangeScanner();

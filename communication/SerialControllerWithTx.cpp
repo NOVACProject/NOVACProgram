@@ -33,7 +33,8 @@ CSerialControllerWithTx::CSerialControllerWithTx(void)
     pakFileHandler = new FileHandler::CPakFileHandler(m_log);
     m_storageDirectory.Format("%sTemp\\", (LPCSTR)g_settings.outputDirectory);
     if (CreateDirectoryStructure(m_storageDirectory))
-    { // Make sure that the storage directory exists
+    {
+        // Make sure that the storage directory exists
         GetSysTempFolder(m_storageDirectory);
         if (CreateDirectoryStructure(m_storageDirectory))
         {
@@ -56,7 +57,8 @@ CSerialControllerWithTx::CSerialControllerWithTx(ELECTRONICS_BOX box)
     pakFileHandler = new FileHandler::CPakFileHandler(m_log);
     m_storageDirectory.Format("%sTemp\\", (LPCSTR)g_settings.outputDirectory);
     if (CreateDirectoryStructure(m_storageDirectory))
-    { // Make sure that the storage directory exists
+    {
+        // Make sure that the storage directory exists
         errorMsg.Format("Could not create storage-directory for serial-data!! Please check settings and restart");
         MessageBox(NULL, errorMsg, "Serious error", MB_OK);
     }
@@ -98,7 +100,8 @@ void CSerialControllerWithTx::SetSerialPort(int serialID, int COMPort, int baudr
     // Make one directory for each instrument...
     m_storageDirectory.Format("%sTemp\\%s\\", (LPCSTR)g_settings.outputDirectory, (LPCSTR)m_spectrometerSerialNumber);
     if (CreateDirectoryStructure(m_storageDirectory))
-    { // Make sure that the storage directory exists
+    {
+        // Make sure that the storage directory exists
         GetSysTempFolder(m_storageDirectory);
         if (CreateDirectoryStructure(m_storageDirectory))
         {
@@ -936,7 +939,8 @@ bool CSerialControllerWithTx::GoToSleep()
         return true;//to get all sleep later. 2007.5.23
     }
     do
-    { //keep it, change later.
+    {
+        //keep it, change later.
         if (UploadFile(m_storageDirectory, "command.txt", 'B'))
         {
             msg.Format("Command.txt is sent. Begin to stop kongo.");
@@ -1501,7 +1505,8 @@ bool CSerialControllerWithTx::InitCommunication(char diskName)
     if (m_radioID.GetLength() == 0)
     {
         if (InitialSerialPort() == 0)
-        {  //post error message,serial port is occupied or wrong setting
+        {
+            //post error message,serial port is occupied or wrong setting
             CloseSerialPort();
             ShowMessage("Can not initialize serial port", m_connectionID);
             pView->PostMessage(WM_SCANNER_NOT_CONNECT, (WPARAM) & (m_spectrometerSerialNumber), 0);
@@ -1686,7 +1691,8 @@ bool CSerialControllerWithTx::DownloadOldPak(long interval)
 }
 
 bool CSerialControllerWithTx::DeleteFolder(CString folder)
-{//out of tx
+{
+    //out of tx
     char cmd[32];
     if (m_electronicsBox != BOX_MOXA)
     {
@@ -2203,7 +2209,8 @@ int CSerialControllerWithTx::DownloadCfgTxt()
         return 0;
     }
     if (cfgTxtReader.m_motorStepsComp[0] != 0)
-    { // If we've found a motor steps comp...
+    {
+        // If we've found a motor steps comp...
         g_settings.scanner[m_mainIndex].motor[0].motorStepsComp = cfgTxtReader.m_motorStepsComp[0];
         g_settings.scanner[m_mainIndex].motor[0].stepsPerRound = cfgTxtReader.m_motorStepsPerRound[0];
         if (cfgTxtReader.m_nMotors == 2)

@@ -50,17 +50,20 @@ void CPakFileHandler::InitializeDirectories(const CString& serialNumber, const C
         }
 
         if (CreateDirectoryStructure(m_tempDir))
-        {        // create the temporary directory
+        {
+            // create the temporary directory
             message.Format("Could not create temp-directory; %s", (LPCSTR)m_tempDir);
             ShowMessage(message);
         }
         if (CreateDirectoryStructure(m_lostDir))
-        {    // create the lost directory
+        {
+            // create the lost directory
             message.Format("Could not create lost-directory; %s", (LPCSTR)m_lostDir);
             ShowMessage(message);
         }
         if (CreateDirectoryStructure(m_incompleteDir))
-        {  // create the incomplete-scans directory
+        {
+            // create the incomplete-scans directory
             message.Format("Could not create incomplete-directory; %s", (LPCSTR)m_incompleteDir);
             ShowMessage(message);
         }

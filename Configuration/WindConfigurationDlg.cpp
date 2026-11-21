@@ -93,7 +93,8 @@ BOOL CWindConfigurationDlg::PreTranslateMessage(MSG* pMsg)
 void CWindConfigurationDlg::OnChangeScanner()
 {
     if (UpdateData(TRUE))
-    { // <-- first save the data in the dialog
+    {
+        // <-- first save the data in the dialog
 
         // Then change the settings so that we're using the newly selected scanner
         CSystemConfigurationPage::OnChangeScanner();
@@ -156,7 +157,8 @@ void CWindConfigurationDlg::OnOnOff()
 void CWindConfigurationDlg::SaveData()
 {
     if (UpdateData(TRUE))
-    { // <-- first save the data in the dialog
+    {
+        // <-- first save the data in the dialog
 
         if (m_curScanner == NULL)
         {
@@ -179,7 +181,8 @@ void CWindConfigurationDlg::SaveData()
 void CWindConfigurationDlg::OnChangeAngleDistance()
 {
     if (UpdateData(TRUE))
-    { // <-- first save the data in the dialog
+    {
+        // <-- first save the data in the dialog
         if (useAngle == 0)
         {
             m_editAngle.EnableWindow(TRUE);

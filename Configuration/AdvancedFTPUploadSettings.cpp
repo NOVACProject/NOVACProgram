@@ -77,7 +77,8 @@ void CAdvancedFTPUploadSettings::GetNecessaryComponentSize(CWnd* wnd, CString& s
 void CAdvancedFTPUploadSettings::OnOK()
 {
     if (UpdateData(TRUE))
-    { // <-- first save the data in the dialog
+    {
+        // <-- first save the data in the dialog
         m_configuration->ftpSetting.ftpStartTime = this->m_startHr * 3600 + this->m_startMin * 60 + this->m_startSec;
         m_configuration->ftpSetting.ftpStopTime = this->m_stopHr * 3600 + this->m_stopMin * 60 + this->m_stopSec;
     }

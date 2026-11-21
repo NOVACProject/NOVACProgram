@@ -140,7 +140,8 @@ void CEvaluationController::OnArrivedSpectra(WPARAM wp, LPARAM /*lp*/)
     // 6. Move the file to the archive
     GetArchivingfileName(storeFileName_pak, storeFileName_txt, fileName);
     if (0 == MoveFileEx(fileName, storeFileName_pak, MOVEFILE_REPLACE_EXISTING))
-    {// after evaluation, move the file to the archive
+    {
+        // after evaluation, move the file to the archive
         DWORD errorCode = GetLastError();
         message.Format("Could not move file");
         CString str;

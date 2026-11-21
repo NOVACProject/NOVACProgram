@@ -328,7 +328,8 @@ int CDarkSettingsDialog::BrowseFile(int editBox)
 void CDarkSettingsDialog::OnChangeDarkSpecOption()
 {
     if (UpdateData(TRUE))
-    { // <-- first save the data in the dialog
+    {
+        // <-- first save the data in the dialog
 
         // Enable the controls that should be enabled and disable the controls
         //  that should be disabled

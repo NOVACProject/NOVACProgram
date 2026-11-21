@@ -144,7 +144,8 @@ int CScanResult::CalculateOffset(const std::string& specie)
     // Get the index for the specie for which we want to calculate the offset
     long specieIndex = GetSpecieIndex(specie);
     if (specieIndex == -1)
-    { // if the specified specie does not exist
+    {
+        // if the specified specie does not exist
         return 1;
     }
 

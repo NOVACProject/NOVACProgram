@@ -88,7 +88,8 @@ BOOL CVIIAdvancedConfigurationDlg::PreTranslateMessage(MSG* pMsg)
 void CVIIAdvancedConfigurationDlg::OnChangeScanner()
 {
     if (UpdateData(TRUE))
-    { // <-- first save the data in the dialog
+    {
+        // <-- first save the data in the dialog
 
         // Then change the settings so that we're using the newly selected scanner
         CSystemConfigurationPage::OnChangeScanner();
@@ -132,7 +133,8 @@ void CVIIAdvancedConfigurationDlg::OnOnOff()
 void CVIIAdvancedConfigurationDlg::SaveData()
 {
     if (UpdateData(TRUE))
-    { // <-- first save the data in the dialog
+    {
+        // <-- first save the data in the dialog
 
         if (m_curScanner == NULL)
         {

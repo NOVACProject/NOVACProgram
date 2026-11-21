@@ -178,7 +178,8 @@ int CGeometryDlg::BrowseForEvaluationLog(int seriesNumber)
         long alt;
         GetGPSData(seriesNumber, lat, lon, alt);
         if (fabs(lat) < 1e-5 && fabs(lon) < 1e-5)
-        {// <-- no gps-data
+        {
+            // <-- no gps-data
             MessageBox("Evaluation log does not contain gps-data");
             return 0;
         }
@@ -290,7 +291,8 @@ BOOL CGeometryDlg::OnInitDialog()
         long alt;
         GetGPSData(0, lat, lon, alt);
         if (fabs(lat) < 1e-5 && fabs(lon) < 1e-5)
-        {// <-- no gps-data
+        {
+            // <-- no gps-data
             MessageBox("Evaluation log does not contain gps-data");
             return 0;
         }
@@ -1180,7 +1182,8 @@ void Dialogs::CGeometryDlg::OnMenu_CalculateGeometries()
 
     // Now combine all scans with a not too large time-difference
     for (it = 0; it < MAX_N_SCANNERS - 1; ++it)
-    {   // <-- these two for-loops loop through all combinations of the evaluation-logs
+    {
+        // <-- these two for-loops loop through all combinations of the evaluation-logs
         if (m_evalLogReader[it] == nullptr)
         {
             continue;
@@ -1212,12 +1215,14 @@ void Dialogs::CGeometryDlg::OnMenu_CalculateGeometries()
             }
 
             for (scanNumber1 = 0; scanNumber1 < m_evalLogReader[it]->m_scanNum; ++scanNumber1)
-            { // <-- loop through all scans in eval-log #1
+            {
+                // <-- loop through all scans in eval-log #1
                 // Start-time of scan #1
                 m_evalLogReader[it]->m_scan[scanNumber1].GetStartTime(0, time1);
 
                 for (scanNumber2 = 0; scanNumber2 < m_evalLogReader[it2]->m_scanNum; ++scanNumber2)
-                { // <-- loop through all scans in eval-log #2
+                {
+                    // <-- loop through all scans in eval-log #2
                     // Start-time of scan #2
                     m_evalLogReader[it2]->m_scan[scanNumber2].GetStartTime(0, time2);
 

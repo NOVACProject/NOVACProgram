@@ -207,7 +207,8 @@ void CDarkConfigurationDlg::OnChangeScanner()
     }
 
     if (UpdateData(TRUE))
-    { // <-- first save the data in the dialog
+    {
+        // <-- first save the data in the dialog
 
         // Then change the settings so that we're using the newly selected scanner
         CSystemConfigurationPage::OnChangeScanner();
@@ -263,7 +264,8 @@ void CDarkConfigurationDlg::OnChangeDarkSpecOption()
     }
 
     if (UpdateData(TRUE))
-    { // <-- first save the data in the dialog
+    {
+        // <-- first save the data in the dialog
 
         // Enable the controls that should be enabled and disable the controls
         //  that should be disabled

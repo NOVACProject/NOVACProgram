@@ -679,7 +679,8 @@ RETURN_CODE CEvaluationLogFileHandler::ReadEvaluationLog()
 
             double dynamicRange = 1.0; // <-- unknown
             if (m_col.peakSaturation != -1)
-            { // If the intensity is specified as a saturation ratio...
+            {
+                // If the intensity is specified as a saturation ratio...
                 dynamicRange = CSpectrometerDatabase::GetInstance().GetModel(m_specInfo.m_specModelName).maximumIntensityForSingleReadout;
             }
             m_scan[sortOrder[m_scanNum]].CheckGoodnessOfFit(m_specInfo);

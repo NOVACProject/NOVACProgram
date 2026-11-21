@@ -909,7 +909,8 @@ CFileTransferDlg::CFileTransferDlg(CWnd* pParent /*=NULL*/)
     m_preScanner = -100;
     m_click = 0;
     if (CreateDirectoryStructure(m_storagePath))
-    { // Make sure that the storage directory exists
+    {
+        // Make sure that the storage directory exists
         GetSysTempFolder(m_storagePath); // Try with the system - temp folder instead
         if (CreateDirectoryStructure(m_storagePath))
         {
